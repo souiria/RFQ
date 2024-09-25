@@ -1,0 +1,807 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1B793919-0903-403E-9946-191F93A9E932}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Common.Core</RootNamespace>
+    <AssemblyName>Common.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Common.Core.xml</DocumentationFile>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'UAT|AnyCPU'">
+    <OutputPath>bin\UAT\</OutputPath>
+    <DefineConstants>TRACE;UAT</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\UAT\Common.Core.xml</DocumentationFile>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Live|AnyCPU'">
+    <OutputPath>bin\Live\</OutputPath>
+    <DefineConstants>TRACE;Live</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>bin\Debug\Common.Core.xml</DocumentationFile>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'UAT|x64'">
+    <OutputPath>bin\x64\UAT\</OutputPath>
+    <DefineConstants>TRACE;UAT</DefineConstants>
+    <DocumentationFile>bin\UAT\Common.Core.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Live|x64'">
+    <OutputPath>bin\x64\Live\</OutputPath>
+    <DefineConstants>TRACE;Live</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="Prism, Version=6.3.0.0, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Core.6.3.0\lib\net45\Prism.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Contracts\Interfaces\GlobalMasters\ICustomerSalesEntityHierarchy.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IMilestoneHierarchy.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IProjectHierarchy.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IProgramHierarchy.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IPlatformHierarchy.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\ICustomerBusinessHierarchy.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\ICustomerHierarchy.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IMaterialSpecificHierarchy.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPurchasingSupplierMaterialSpecificHierarchy.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\ISupplierMaterialPoPricingSpecificHierarchy.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\ISupplierSelectionSpecificHierarchy.cs" />
+    <Compile Include="Contracts\Models\Administration\Maintenance\BusinessProcessByCountryAndSitesModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Maintenance\CountryUserFunctionAssociationModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Maintenance\LanguageHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\CustomGroupMenuAssociationModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\GroupMasterModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\GroupMenuAssociationModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\MenuDataItem.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\UserGroupAssociationModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\UserGroupMenuAssociationModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\UserScreenAccessPermissionModel.cs" />
+    <Compile Include="Contracts\Models\Base\BaseSystemParameterSettings.cs" />
+    <Compile Include="Contracts\Models\ConcernLogSystem\AnalyserConcernAssociationModel.cs" />
+    <Compile Include="Contracts\Models\ConcernLogSystem\AnalyserEvidencAnalysisModel.cs" />
+    <Compile Include="Contracts\Models\ConcernLogSystem\AnalyzerFiveYAnalysisModel.cs" />
+    <Compile Include="Contracts\Models\ConcernLogSystem\AnalyzerRouteCauseAnalysisModel.cs" />
+    <Compile Include="Contracts\Models\ConcernLogSystem\CLSEmailConfigurationModel.cs" />
+    <Compile Include="Contracts\Models\ConcernLogSystem\CLSStatusEnquiryModel.cs" />
+    <Compile Include="Contracts\Models\ConcernLogSystem\CLSStatusModel.cs" />
+    <Compile Include="Contracts\Models\ConcernLogSystem\ComboCLSStatus.cs" />
+    <Compile Include="Contracts\Models\ConcernLogSystem\ConcernClassificationModel.cs" />
+    <Compile Include="Contracts\Models\ConcernLogSystem\ConcernCodeModel.cs" />
+    <Compile Include="Contracts\Models\ConcernLogSystem\ConcernLogSystemModel.cs" />
+    <Compile Include="Contracts\Models\ConcernLogSystem\CustomerLocationAssociationModel.cs" />
+    <Compile Include="Contracts\Models\ConcernLogSystem\CustomerOriginatorUserMasterModel.cs" />
+    <Compile Include="Contracts\Models\ConcernLogSystem\EnumCLSStages.cs" />
+    <Compile Include="Contracts\Models\ConcernLogSystem\FiveYAndRouteCauseAnalysisModel.cs" />
+    <Compile Include="Contracts\Models\ConcernLogSystem\SupplierRoleMasterModel.cs" />
+    <Compile Include="Contracts\Models\ConcernLogSystem\SupplierUserMasterModel.cs" />
+    <Compile Include="Contracts\Models\ConcernLogSystem\ValidateCLSOTPModel.cs" />
+    <Compile Include="Contracts\Models\Core\Filtering\SpecificDataFilteringModel.cs" />
+    <Compile Include="Contracts\Interfaces\Base\IId.cs" />
+    <Compile Include="Contracts\Interfaces\Base\INode.cs" />
+    <Compile Include="Contracts\Interfaces\Base\IValidatable.cs" />
+    <Compile Include="Contracts\Interfaces\Base\IBaseHierarchy.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IMaterialHierarchy.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPurchasingSupplierMaterialHierarchy.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\ISupplierMaterialPOPricingHierarchy.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\ISupplierSelectionHierarchy.cs" />
+    <Compile Include="Contracts\Models\Administration\Maintenance\H1ServiceValidationSettingModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Maintenance\LabelModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Maintenance\LanguageModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Maintenance\PerformanceData.cs" />
+    <Compile Include="Contracts\Models\Administration\Maintenance\UXRegionsModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\PermissionChangeCollectionModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\PermissionChangeModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\SecurityChangeDetail.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\SecurityChangeTransaction.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\SecurityTransactionCollection.cs" />
+    <Compile Include="Contracts\Models\Base\NodeCollection.cs" />
+    <Compile Include="Contracts\Models\Base\TreeCollection.cs" />
+    <Compile Include="Contracts\Models\Core\Email\Template.cs" />
+    <Compile Include="Contracts\Models\Core\Logging\NPRStageChangeLogModel.cs" />
+    <Compile Include="Contracts\Models\Core\Security\Group.cs" />
+    <Compile Include="Contracts\Models\Core\Security\MenuItem.cs" />
+    <Compile Include="Contracts\Models\Core\Security\User.cs" />
+    <Compile Include="Contracts\Models\ETL\EMACS\BUBANMModel.cs" />
+    <Compile Include="Contracts\Models\ETL\EMACS\CombinedCustomerQueryResultModel.cs" />
+    <Compile Include="Contracts\Models\ETL\EMACS\CombinedSupplierQueryResultModel.cs" />
+    <Compile Include="Contracts\Models\ETL\EMACS\CustomerDataModel.cs" />
+    <Compile Include="Contracts\Models\ETL\EMACS\EMACSDataNoConvModel.cs" />
+    <Compile Include="Contracts\Models\ETL\EMACS\EMACSSupplierNoXrefModel.cs" />
+    <Compile Include="Contracts\Models\ETL\NPA\NPACustomerModel.cs" />
+    <Compile Include="Contracts\Models\ETL\EMACS\PARTMSModel.cs" />
+    <Compile Include="Contracts\Models\ETL\EMACS\SearchResultModel.cs" />
+    <Compile Include="Contracts\Models\ETL\NPA\NPASupplierModel.cs" />
+    <Compile Include="Contracts\Models\ETL\NPA\VWMassNPAFromRFQModel.cs" />
+    <Compile Include="Contracts\Models\Finance\BusinessUnitFGPurchasedPriceAssociationModel.cs" />
+    <Compile Include="Contracts\Models\Finance\CustomerProductTransferPriceModel.cs" />
+    <Compile Include="Contracts\Models\Finance\FGPurchasedPriceAlertModel.cs" />
+    <Compile Include="Contracts\Models\Finance\FGSupplierInvoiceReconciliationModel.cs" />
+    <Compile Include="Contracts\Models\Finance\FinanceDataSyncConfigurationSetupModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\BusinessUnitWeekDayModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\CurrencyAndForeignExchangeSyncLogModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\CurrencyExchangeRateConversionAssociationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\CustomerBusinessGroupUserAssociationDetailModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\CustomerBusinessUserAssociationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\CustomerDeliveryPointAssociationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\CustomerUserAssociationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\ProductFamilyCustomerAssociationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\ProductFamilyCustomerBusinessEffectivityModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\ProjectEngineeringAssociationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\ReasonH1FunctionAssociationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\SiteUserAssociationDetailModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\SiteUserAssociationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\BusinessUnitManufacturingWebServiceModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\Business\CustomerBusinessHierarchyFlattenDataModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\Business\CustomerBusinessHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\Business\CustomerHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\Business\CustomerProjectHierarchyDetailsFlattenDataModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\Business\CustomerSalesEntityHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\Business\MilestoneHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\Business\PlatformHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\Business\ProgramHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\Business\ProjectHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\Business\ProjectHierarchyParameterModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\ConsolidatedCustomerProductModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\CustomerProductSearchModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\CustomerProjectAssociationComboModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\CustomerProjectAssociationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\DefectTypeModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\DropDownCustomerHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\DropDownProjectHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\FlexTypeModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\GlobalProductMasterModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\HarnessFamilyGroupDataModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\HarnessFamilyGroupModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\HarnessFamilyModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\LiabilityTypeModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\MaterialHierarchySpecificModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\WireColourModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\WireSizeModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\WireTypeModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\CustomerProduct\CombinedCustomerProductModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\CustomerProduct\CustomerProductModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\CustomerProduct\CustomerProductNumberModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\CustomerProduct\ManufacturingSiteModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\Customer\CombinedCustomerModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\Customer\CustomerBusinessUnitModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\Customer\CustomerLocationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\Customer\CustomerSalesEntityModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\MaterialHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\Project\CombinedProjectModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\Project\EventModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\Project\ModelModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\Project\PlatformModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\Project\ProjectModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\Project\VehicleModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\ReasonModel.cs" />
+    <Compile Include="Contracts\Models\ETL\CPD\InterfaceWHCPDMastersMaterialOriginModel.cs" />
+    <Compile Include="Contracts\Models\ETL\CPD\InterfaceWHCPDMastersMaterialSupplierModel.cs" />
+    <Compile Include="Contracts\Models\ETL\NPA\InterfaceWHNPAMaterialPriceModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\SupplierApprovalStatusModel.cs" />
+    <Compile Include="Contracts\Models\JsoxAudit\H1UserRegisterModel.cs" />
+    <Compile Include="Contracts\Models\JsoxAudit\H1UserRegisterReportModel.cs" />
+    <Compile Include="Contracts\Models\JsoxAudit\H1UserSessionLogModel.cs" />
+    <Compile Include="Contracts\Models\JsoxAudit\JsoxAuditH1UsersScreenPermissionModel.cs" />
+    <Compile Include="Contracts\Models\JsoxAudit\JsoxAuditReportModel.cs" />
+    <Compile Include="Contracts\Models\NPA\Engineering\ETLSearchNPAGridModel.cs" />
+    <Compile Include="Contracts\Models\NPA\Engineering\MassNPAUploadModel.cs" />
+    <Compile Include="Contracts\Models\NPA\Engineering\ArchiveNewPartsAuthorizationModel.cs" />
+    <Compile Include="Contracts\Models\NPA\Engineering\NewPartsAuthorizationModel.cs" />
+    <Compile Include="Contracts\Models\NPA\Engineering\NPAProjectDetailsModel.cs" />
+    <Compile Include="Contracts\Models\NPA\Engineering\RaiseSampleNPAModel.cs" />
+    <Compile Include="Contracts\Models\NPA\Engineering\SearchDHSForPartsFilterModel.cs" />
+    <Compile Include="Contracts\Models\NPA\Engineering\SearchDHSForPartsShowInventoryFilterModel.cs" />
+    <Compile Include="Contracts\Models\NPA\Engineering\SearchDHSForPartsShowInventoryProcedureModel.cs" />
+    <Compile Include="Contracts\Models\NPA\Engineering\SearchNPAFilterModel.cs" />
+    <Compile Include="Contracts\Models\NPA\Engineering\SearchNPAProcedureModel.cs" />
+    <Compile Include="Contracts\Models\NPA\Masters\NPAStatusCodeModel.cs" />
+    <Compile Include="Contracts\Models\NPA\Masters\NPATypeModel.cs" />
+    <Compile Include="Contracts\Models\NPA\Masters\ProductionPartApprovalProcessLevelModel.cs" />
+    <Compile Include="Contracts\Models\NPA\Masters\SubsidiaryModel.cs" />
+    <Compile Include="Contracts\Models\NPR\NPRPartSearchModel.cs" />
+    <Compile Include="Contracts\Models\NPR\NPRStatusEnquiryModel.cs" />
+    <Compile Include="Contracts\Models\NPR\NPRTypeModel.cs" />
+    <Compile Include="Contracts\Models\NPR\NPRSampleSiteModel.cs" />
+    <Compile Include="Contracts\Models\NPR\NewPartRequestModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\AuditConfigurationMaster.cs" />
+    <Compile Include="Contracts\Models\Purchasing\BusinessUnitAssociationInvoiceModel.cs" />
+    <Compile Include="Contracts\Models\ConcernLogSystem\DepartmentMasterModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLMaterialChangeLogGridModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLMaterialChangeLogParamModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLMaterialSiteChangeLogGridModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLMaterialSiteChangeLogParamModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLSupplierMaterialChangeLogGridModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLSupplierMaterialChangeLogParamModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLSupplierSelectionHierarchyGridModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\HierarchySupMatPOPriceModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\InvoiceManagementModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\InvoiceManagementUploadModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\InvoiceQueryReasonModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\MaterialShortageReportDHSModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\NPRAllPartCheckWebServiceModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierToolMaintenanceLogModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\NPRTransactionLogModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\NPRWebServiceModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\POPriceListIncSupplierMaterialDetailsGridNewFormatModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\PropagateNPRToH1Model.cs" />
+    <Compile Include="Contracts\Models\Purchasing\PurchasingSupplierMaterialHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\PurchasingSupplierMaterialSpecificHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\RFQSamplesSettingsModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\EmailModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\POPriceListIncSupplierMaterialDetailsSearchModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\POPriceListIncSupplierMaterialDetailsGridModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\PurchasingCustomerGroupModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\PurchasingCustomerModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\PurchasingFacilityGroupModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\PurchasingFacilityModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\PurchasingFacilityVehicleCustomerFCDataModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\PurchasingMaterialOriginCostSettings.cs" />
+    <Compile Include="Contracts\Models\Purchasing\RFQStatusModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\RFQParameterSettingsModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\RFQReasonModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\RFQEmailSettingsModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierMaterialMaintenanceHierarchyExportAllStatelessModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierMaterialMaintenanceHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierMaterialPOPricingHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierMaterialPOPricingHierarchyStatelessModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierMaterialPoPricingSpecificHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierMaterialHierarchyUploadModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierMatertialHierarchyPostModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierMatertialHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierPanelModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierPasswordHistoryModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierRFQFieldSettingsModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierMaterialOriginExceptionModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\PurchasingVehicleModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierRFQPortalSettingsModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierSelectionHierarchyDisplayModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierSelectionHierarchyStatelessModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierSelectionHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierSelectionSearchModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierSelectionSpecificHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierToolMaintenanceModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ToolOwnerModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ToolConditionModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ToolTypeModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ValidateSupplierOTPModel.cs" />
+    <Compile Include="Contracts\Models\RFQManagement\FunctionControlSequenceGeneratorModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Maintenance\FunctionControlSequenceTypeModel.cs" />
+    <Compile Include="Contracts\Models\RFQManagement\NPRBacklogModel.cs" />
+    <Compile Include="Contracts\Models\RFQManagement\RFQModel.cs" />
+    <Compile Include="Contracts\Models\RFQManagement\RFQSubmitAllFieldsModel.cs" />
+    <Compile Include="Contracts\Models\RFQManagement\RFQSupplierSelectionModel.cs" />
+    <Compile Include="Contracts\Models\Sales\AlternativePart\AlternativePartPrice.cs" />
+    <Compile Include="Contracts\Models\Sales\AlternativePart\AlternativePartProject.cs" />
+    <Compile Include="Contracts\Models\Sales\AlternativePart\AlternativePartSearchModel.cs" />
+    <Compile Include="Contracts\Models\Sales\AlternativePart\AlternativePartsResults.cs" />
+    <Compile Include="Contracts\Models\Sales\AlternativePart\AlternativePartSwap.cs" />
+    <Compile Include="Contracts\Models\Sales\AlternativePart\MaterialGroups.cs" />
+    <Compile Include="Contracts\Models\Sales\AlternativePart\MaterialType.cs" />
+    <Compile Include="Contracts\Models\Sales\AlternativePart\PartCategoryDetailModel.cs" />
+    <Compile Include="Contracts\Models\Sales\AlternativePart\PartClassDetailModel.cs" />
+    <Compile Include="Contracts\Models\Sales\AlternativePart\PartColourCode.cs" />
+    <Compile Include="Contracts\Models\Sales\AlternativePart\PartGroupConstModel.cs" />
+    <Compile Include="Contracts\Models\Sales\CAE\JH1_06_SplicePositions.cs" />
+    <Compile Include="Contracts\Models\Sales\CAE\JH1_07_SpliceAttachments.cs" />
+    <Compile Include="Contracts\Models\Sales\CAE\JH1_08_Terminals.cs" />
+    <Compile Include="Contracts\Models\Sales\CAE\JH1_09_TerminalAttachments.cs" />
+    <Compile Include="Contracts\Models\Sales\CAE\JH1_0_CommonData.cs" />
+    <Compile Include="Contracts\Models\Sales\CAE\JH1_10_LeadParts.cs" />
+    <Compile Include="Contracts\Models\Sales\CAE\JH1_11_BranchParts.cs" />
+    <Compile Include="Contracts\Models\Sales\CAE\JH1_12_BranchAttachments.cs" />
+    <Compile Include="Contracts\Models\Sales\CAE\JH1_13_Connectors.cs" />
+    <Compile Include="Contracts\Models\Sales\CAE\JH1_14_ConnectorAttachments.cs" />
+    <Compile Include="Contracts\Models\Sales\CAE\JH1_15_NodeParts.cs" />
+    <Compile Include="Contracts\Models\Sales\CAE\JH1_16_NodeAttachments.cs" />
+    <Compile Include="Contracts\Models\Sales\CAE\JH1_17_OptionTaping.cs" />
+    <Compile Include="Contracts\Models\Sales\CAE\JH1_18_HarnessAttachment.cs" />
+    <Compile Include="Contracts\Models\Sales\Enquiry\EnquiryModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\Enum\HeirarchyCategory.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\HarnessOneRFQPartModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\RFQDerivativeWireAssociationModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\RFQInformationProcedureModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\XRefHelperModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\CarSetMaintenanceModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\CustomerDemandCalculationProgramMaintenanceModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\CustomerDemandFunctionAndParametersModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\CustomerDemandInterchangeabilityModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\CustomerDemandParameterSettingsModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\CustomerProductNumberXREFModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DCLocationTypeModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DemandCalculationMethodModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DemandCalculationMethodSelectionModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\ABCAnalysisModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DRPPreCheckReportModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DRP\DRPManualOrderGenerationDataEntryModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DRP\DRPManualOrderGenerationLogModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DRP\DRPManualOrderGenerationModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DRP\DRPManualOrderGenerationReviewModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DRP\DRPOrderCancelationModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DRP\ExternalWMSLocationTypeAssociationModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DRP\FinishedGoodsStatusModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DRP\SupplierCalenderModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\EDIMessageDataModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\EDIMessageDetailMappingModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\ManualDemandDocumentDataEntryModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\ManualDemandDocumentDesignModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\ManualDemandDocumentStatusReviewModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\ApplicationReferenceModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\BuyerDetailsModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\ConsigneeDetailsModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\ConsignorDetailsModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\CustomerAccountDetailsModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\CustomerCalendarModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\CustomerDemandCalculationModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\CustomerDemandCalculationParametersModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\CustomerDemandCalculationSettingsMatrixModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\CustomerEDISetupFilterModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\CustomerEDISetupFlattenDataModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\CustomerEDISetupModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\CustomerEDITemplateSetupModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\CustomerIdentificationSettingsModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\CustomerProductNumberParametersModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DaysOfDemandSettingsModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DistributionCenterModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DistributionCenterTypeModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DRPGenerationReportDataModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DRPCalculationParametersModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DRPCalculationSettingsMatrixModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DRPGenerationReportIssueOrderModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DRP\DRPGenerationBySupplyChainMatrixDataDisplayModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DRP\DRPGenerationBySupplyChainMatrixModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DRP\SiteFacilityCalendarModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\DRP\WIPMaintenanceModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\EDIFileTypeModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\CustomerEDITemplateModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\EDIMessageDetailExtensionModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\EDIMessageDetailModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\EDIMessageHeaderMasterModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\EDIMessageHeaderModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\EDIMessageMatrixModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\EDIMessageMissingCustomerPartModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\EDIMessageSearchModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\EDIMessageTypeModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\EDITemplateSetupModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\EDITypeModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\H1CustomerHierarchyPPSCustomerMatrixModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\H1CustomerMappingModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\H1SupplyPlanningDataSyncLogArchiveFilterModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\H1SupplyPlanningDataSyncLogArchiveModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\H1SupplyPlanningDataSyncLogFilterModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\H1SupplyPlanningDataSyncLogModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\HarnessTypeModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\InvoiceeDetailsModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\LogisticsFinancialCalendarModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\MonthlyDemandSplitLogicModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\OrderBookStatusModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\OrderStatusModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\PackagingTypeModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\PartABCCategoryModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\PartNumberSearchModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\PPSCustomerASNCodeXrefModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\PPSCustomerCarModelFacilityModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\PPSCustomerMappingModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\PurchasePriceFromH1ToEWMSModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\SchedulingConditionModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\SchedulingFrequencyModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\SellerDetailsModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\SingleUserMaintenanceModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\SiteFinancialCalendarModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\SiteProductionCalendarModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\StockPositionCumulateModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\SupplyChainDesignModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\SupplyChainExceptionListModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\SupplyChainFieldSettingsModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\SupplyChainMappingUploadModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\SupplyChainMappingModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\SupplyChainMappingSectionModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\SupplyChainSettingsPartWiseModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\SupplyPlanningDataSyncCalendarFilterModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\SupplyPlanningDataSyncCalendarModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\SupplyPlanningDataSyncConfigurationSetupModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\SupplyPlanningEmailNotificationSettingsModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\SupplyPlanningMailDistributionSettingModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\SupplyPlanningParameterSettingsModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\TransportRouteModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\UNBSenderModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\UnloadingPointModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\UnlockSingleUserModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\WarehouseSiteCalendarModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\WeeklyDemandSplitLogicModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\WMSArticleModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\WMSInventorySerialDataMasterModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\WMSInventorySerialDataModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\WMSInventorySnapShotModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\WMSLocationMappingModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\WMSLocationReportingSectionModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\WMSOpeningStockModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\WMSProductModel.cs" />
+    <Compile Include="Contracts\Models\SupplyPlanning\WorkstationModel.cs" />
+    <Compile Include="Contracts\Models\TransportManagementSystem\PackageMasterModel.cs" />
+    <Compile Include="Contracts\Models\TransportManagementSystem\ProductCategoryModel.cs" />
+    <Compile Include="Contracts\Models\TransportManagementSystem\SiteSequenceTypeModel.cs" />
+    <Compile Include="Contracts\Models\TransportManagementSystem\TMSSiteMasterModel.cs" />
+    <Compile Include="Contracts\Models\TransportManagementSystem\TMSSiteUserAssociationModel.cs" />
+    <Compile Include="Contracts\Models\TransportManagementSystem\TransportCustomerMappingModel.cs" />
+    <Compile Include="Contracts\Models\TransportManagementSystem\TransportMethodMasterModel.cs" />
+    <Compile Include="Contracts\Models\TransportManagementSystem\TransportOrderModel.cs" />
+    <Compile Include="Contracts\Models\TransportManagementSystem\TransportSiteMasterModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\ActionModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\AuditDefinitionModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\AuditGradeModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\AuditModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\AuditNameModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\AuditPrimaryProcessModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\AuditStandardSectionsModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\AuditTypeModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\CiresModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\ConfirmationModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\DashboardModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\FileUploadFilterModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\ReportAssociationModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\ReportSection1SitesWithMaterialNumberModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\ReportSection2Model.cs" />
+    <Compile Include="Contracts\Models\Yokoten\ReportSection3Model.cs" />
+    <Compile Include="Contracts\Models\Yokoten\SearchConcernModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\SiteUserEmailMappingModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\SiteUserMappingModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\SystemModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\ManufacturingProcessEquipmentModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\ProcessTypeModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\ProductTypeModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\QualityConcernModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\ReportSection1Model.cs" />
+    <Compile Include="Contracts\Models\Yokoten\YokotenReplyModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\YokotenStatusSettingsModel.cs" />
+    <Compile Include="Contracts\Models\Yokoten\YokotenSystemParameterSettingsModel.cs" />
+    <Compile Include="Infrastructure\Attributes\DecimalPrecissionAttribute.cs" />
+    <Compile Include="Contracts\Interfaces\Administration\Maintenance\IHierarchyModel.cs" />
+    <Compile Include="Contracts\Interfaces\Administration\Security\ISecurityModel.cs" />
+    <Compile Include="Contracts\Interfaces\Base\IEntity.cs" />
+    <Compile Include="Contracts\Models\Administration\Maintenance\H1FieldMasterModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Maintenance\H1FunctionH1ModuleAssociationModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Maintenance\H1FunctionMasterModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Maintenance\H1ModuleH1ViewAssociationModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Maintenance\H1ModuleMasterModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Maintenance\H1ViewH1FieldAssociationModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Maintenance\H1ViewMasterModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Maintenance\UXLanguageModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Maintenance\UXResourceLabelModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\FieldHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\FieldOverrideModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\FieldOverrideRequestModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\FieldSecurityModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\FilterTypes.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\FunctionHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\FunctionSecurityModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\HelpdeskUserPreferences.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\LaunchStatus.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\ModuleHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\ModuleOwnerModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\ModuleSecurityModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\RoleModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\SecurityFilter.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\ServiceDataFilterModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\ViewHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\Administration\Security\ViewSecurityModel.cs" />
+    <Compile Include="Contracts\Models\Base\ExternalDataSourceModel.cs" />
+    <Compile Include="Contracts\Models\Core\Filtering\FilterCollectionMdoel.cs" />
+    <Compile Include="Contracts\Models\Core\Filtering\InternalFilterModel.cs" />
+    <Compile Include="Contracts\Models\Core\Logging\AuditLoggingModel.cs" />
+    <Compile Include="Contracts\Models\Core\Logging\AuditTrailModel.cs" />
+    <Compile Include="Contracts\Models\Core\Logging\ErrorLogModel.cs" />
+    <Compile Include="Contracts\Models\Core\Logging\ErrorType.cs" />
+    <Compile Include="Contracts\Models\Core\Email\EmailDetail.cs" />
+    <Compile Include="Contracts\Models\Core\Notifications\Notification.cs" />
+    <Compile Include="Contracts\Models\Core\Notifications\QueueStatus.cs" />
+    <Compile Include="Contracts\Models\Core\Notifications\SubscriptionChannel.cs" />
+    <Compile Include="Contracts\Models\Core\Notifications\SubscriptionService.cs" />
+    <Compile Include="Contracts\Models\Core\Filtering\DataPageModel.cs" />
+    <Compile Include="Contracts\Models\Core\Settings\Commercial\Connection.cs" />
+    <Compile Include="Contracts\Models\Core\Settings\Commercial\ServiceConfig.cs" />
+    <Compile Include="Contracts\Models\Core\Settings\Commercial\ConfigType.cs" />
+    <Compile Include="Contracts\Models\Core\Settings\H1ConfigurationKeyModel.cs" />
+    <Compile Include="Contracts\Models\Core\Settings\H1ConfigurationSettingModel.cs" />
+    <Compile Include="Contracts\Models\Base\BaseModel.cs" />
+    <Compile Include="Contracts\Models\Base\BindableBaseEntity.cs" />
+    <Compile Include="Contracts\Models\Base\CrudOperationType.cs" />
+    <Compile Include="Contracts\Models\Core\Settings\H1ServiceConfigurationSettingJSONModel.cs" />
+    <Compile Include="Contracts\Models\Core\Settings\H1ServiceConfigurationSettingModel.cs" />
+    <Compile Include="Contracts\Models\Core\Settings\DatabaseSyncModel.cs" />
+    <Compile Include="Contracts\Models\Core\Settings\ServiceValidationModel.cs" />
+    <Compile Include="Contracts\Models\ETL\CPD\CpdDatabaseModel.cs" />
+    <Compile Include="Contracts\Models\ETL\Helpdesk\HelpdeskApproval.cs" />
+    <Compile Include="Contracts\Models\ETL\Helpdesk\HelpdeskCallLog.cs" />
+    <Compile Include="Contracts\Models\ETL\NPA\NpaDatabaseModel.cs" />
+    <Compile Include="Contracts\Models\ETL\NPA\NpaUomModel.cs" />
+    <Compile Include="Contracts\Models\ETL\NPA\NpaUploadForRfqResultModel.cs" />
+    <Compile Include="Contracts\Models\ETL\NPA\NpaVerificationForRfqResultModel.cs" />
+    <Compile Include="Contracts\Models\ETL\NPA\TemporaryNpaUploadModel.cs" />
+    <Compile Include="Contracts\Models\ETL\NPA\TemporaryNpaVerificationForRfqModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\BusinessUnitGIStoreAssociationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\CountryRegionsAssociationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\CurrencyExchangeRateAssociationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\MaterialAssociationGridModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\MaterialAssociationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\MaterialAssociationSearchModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\ProcurementUnitBusinessUnitAssociationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\PurchasingOrganisationProcurementAssociationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\SourceApplicationArticleAssociationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\SupplierAssociationGridDataModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\SupplierAssociationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\SupplierAssociationSearchModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\SupplierMaterialAssociationGridModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\SupplierMaterialAssociationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\SupplierMaterialAssociationSearchModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\SupplierMaterialFCDataModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\SupplierMaterialUploadModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\TariffCodeCountryAssociationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\UnitofMeasureAssociationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMastersAssociation\UOMAssociationFilteredModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\AgressoSupplierModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\ApplicationArticleModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\BaseMaterialModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\BusinessUnitModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\BusinessUnitTypeModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\CommodityModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\CompositeModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\ContactModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\ContactTypeModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\CountryModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\CountryRegionsModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\CurrencyModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\CustomerModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\DerivativeModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\ExchangeRateModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\FacilityModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\ForecastTypeModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\GIStoreModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\IncotermsModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\IndexedMaterialModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\LogisticsConcernRaisedStatusModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\LogisticsConcernReasonModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\MaterialCostGroupModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\MaterialModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\MaterialSupplierModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\MaterialTypeModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\MaterialUploadModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\OriginStatusModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\PackFormModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\PartModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\PaymentTermsModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\ProcurementUnitModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\ProjectModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\PurchasingOrganisationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\RatingConcernModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\SiteModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\SiteTypeModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\SourceApplicationModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\SupplierGroupModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\SupplierModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\SupplierTypeModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\SupplierUploadModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\TariffCodeModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\TransportationModeModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\UnitOfMeasureModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\VehicleModel.cs" />
+    <Compile Include="Contracts\Models\GlobalMasters\WireModel.cs" />
+    <Compile Include="Contracts\Models\Procurement\ProcurementProcessCounterDetailModel.cs" />
+    <Compile Include="Contracts\Models\Procurement\ProcurementProcessCounterSettingModel.cs" />
+    <Compile Include="Contracts\Models\Procurement\ProcurementProcessPrefixSettingModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\BusinessUnitArticleSynchronizationModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\CPDSupplierCapacityPlanningProcedureModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\CPDToH1MaterialModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\CPDToH1MaterialSiteModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\DHSConsolidatedMRPErrorListProcedureModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\EPOCommodityGroupModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLConsolidatedMRPErrorListGridModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLFirstReceiptDateGridModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLMaterialInventoryGridModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLMaterialNoXReferenceGridModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLMaterialNoXReferenceParamModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLMaterialNoXReferenceProcedureModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLMaterialOriginGridModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLPurchasingArticleSynchronizationGridModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLPurchasingMaterialGridModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLPurchasingSupplierAssociationModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLPurchasingSupplierGridModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLPurchasingSupplierMaterialComboModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLPurchasingSupplierMaterialGridModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLPurchasingTariffContentEmailModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLSupplierCapacityPlanningGridModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLSupplierMaterialAssociationModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLSupplierMaterialPOPricingGridModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ETLSupplierSelectionGridModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\FirstReceiptDateModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\FirstReceiptDateSearchModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\ForecastAnnualBySiteModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\H1ToCPDBusinessUnitModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\H1ToCPDCommodityModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\H1ToCPDContactModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\H1ToCPDCurrencyModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\H1ToCPDEPOCommodityGroupModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\H1ToCPDIncotermsModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\H1ToCPDMaterialAssociationModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\H1ToCPDMaterialDataSyncModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\H1ToCPDMaterialOriginDataSyncModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\H1ToCPDPOPriceEffectiveDateTypeModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\H1ToCPDPOPriceTypeModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\H1ToCPDSupplierAssociationModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\H1ToCPDSupplierMaterialModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\H1ToCPDSupplierMaterialPOPricingModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\H1ToCPDSupplierModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\H1ToCPDSupplierSelectionModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\H1ToCPDUnitOfMeasureModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\MaterialChangeLogModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\MaterialDataSynchronizationModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\MaterialInventoryModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\MaterialInventorySearchModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\MaterialOriginModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\MaterialOriginSearchModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\POPriceEffectiveDateTypeModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\POPriceTypeModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\PurchasingArticleJobDetailsModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\PurchasingArticleJobSchedulerModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\PurchasingArticleSynchronizationModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\PurchasingCommodityModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\PurchasingMaterialModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\PurchasingSupplierMaterialModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\PurchasingSupplierMaterialSearchModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\PurchasingSupplierModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\PurchasingSupplierSelectionSearchModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SqlProcedureResultModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierCapacityPlanningSearchModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierDevelopmentTeamModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierMaterialPOPricingModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierMaterialPOPricingUploadModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierSelectionModel.cs" />
+    <Compile Include="Contracts\Models\Purchasing\SupplierSelectionUploadModel.cs" />
+    <Compile Include="Contracts\Models\Sales\DsiAssociation\BranchConfigurationBendAssociationModel.cs" />
+    <Compile Include="Contracts\Models\Sales\DsiAssociation\CompositeDetailCircuitOptionAssociationModel.cs" />
+    <Compile Include="Contracts\Models\Sales\DsiAssociation\HarnessScopeScopeAssociationModel.cs" />
+    <Compile Include="Contracts\Models\Sales\DsiAssociation\PinMappingCavityMappingAssociationModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\BendModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\BranchConfigurationModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\BranchInsulationModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\BranchInsulationThroughNodeModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\CavityMappingModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\CentreStripModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\CircuitOptionModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\ComponentModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\CompositeDetailModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\CompositeOptionModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\DsiModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\HarnessModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\HarnessScopeModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\ManualBomQuantityModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\MidWireComponentModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\ModuleChildDetailModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\ModuleCompatibilityModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\MulticoreSpecificationModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\PinMappingModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\ScopeModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\WireMulticoreMarkerModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\WireSpecificationModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Dsi\WireThroughNodeModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\AssociatedDerivativeInfoModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\CompositePartModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\DerivativeInformationModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\RFQCreationGroupedPartModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\RFQDerivativeCollectionModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\RFQMetadataModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\RFQParentHeirarchyModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\RFQPartModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\RFQPartSearchProcedureModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\RFQRemovedStoreModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\Enum\RFQStatus.cs" />
+    <Compile Include="Contracts\Models\User\UserPreferenceModel.cs" />
+    <Compile Include="Contracts\Models\User\UserReferenceModel.cs" />
+    <Compile Include="Infrastructure\Converters\JsonNodeCollectionConverter.cs" />
+    <Compile Include="Infrastructure\Endpoints\NetCoreServiceEndpointRoutesAdministration.cs" />
+    <Compile Include="Infrastructure\Endpoints\NetCoreServiceEndpointRoutesGlobalMasters.cs" />
+    <Compile Include="Infrastructure\Endpoints\NetCoreServiceEndpointRoutesSupplyPlanning.cs" />
+    <Compile Include="Infrastructure\Extensions\ListExtensions.cs" />
+    <Compile Include="Infrastructure\Extensions\ObjectExtensions.cs" />
+    <Compile Include="Infrastructure\Helpers\Compressor.cs" />
+    <Compile Include="Infrastructure\Helpers\HarnessOneSerializationBinder.cs" />
+    <Compile Include="Contracts\Interfaces\Base\ICompressor.cs" />
+    <Compile Include="Infrastructure\Helpers\Serializer.cs" />
+    <Compile Include="Infrastructure\Endpoints\NetCoreServiceEndpointRoutes.cs" />
+    <Compile Include="Infrastructure\Endpoints\NetCoreServiceEndpointRoutesPurchasing.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Contracts\Models\Sales\Commercial\" />
+    <Folder Include="Infrastructure\Logging\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)..\lib\"
+copy "$(TargetDir)$(TargetName).xml" "$(ProjectDir)..\lib\"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

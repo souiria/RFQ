@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ServiceManifest Name="Edi.DataProcessorPkg" Version="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ManifestId="08536899-05ec-4ed3-9965-61285d87bce3">
+  <ServiceTypes>
+    <!-- This is the name of your ServiceType. 
+         This name must match the string used in the RegisterServiceAsync call in Program.cs. -->
+    <StatelessServiceType ServiceTypeName="Edi.DataProcessorType" />
+  </ServiceTypes>
+  <!-- Code package is your service executable. -->
+  <CodePackage Name="Code" Version="1.0.0">
+    <EntryPoint>
+      <ExeHost>
+        <Program>Edi.DataProcessor.exe</Program>
+      </ExeHost>
+    </EntryPoint>
+    <EnvironmentVariables>
+      <EnvironmentVariable Name="APPINSIGHTS_CONNECTION" Value="InstrumentationKey=21c8f4f2-9c60-487c-8663-3726848c9bb2;IngestionEndpoint=https://ukwest-0.in.applicationinsights.azure.com/;LiveEndpoint=https://ukwest.livediagnostics.monitor.azure.com/" />
+      <EnvironmentVariable Name="RABBITMQ_CONNECTION" Value="localhost" />
+      <EnvironmentVariable Name="RABBIT_CLUSTERNAME" Value="rabbitmq://localhost/" />
+      <EnvironmentVariable Name="SEQ_CONNECTION" Value="http://localhost:5341/" />
+      <EnvironmentVariable Name="EDI_DATABASE_CONNECTION" Value="Server=TDDSQL004.SEWS-TDD.COM; Database=H1.Sales.Edi; User Id=CommercialSystem; Password=CommercialSystem; Encrypt=false;" />
+      <EnvironmentVariable Name="UNIT4_DATABASE_CONNECTION" Value="Server=UKHQUATSQL002.SEWS-E.COM; Database=agresso; User Id=CommercialSystem; Password=Com$3ept; Encrypt=false;" />
+      <EnvironmentVariable Name="QUOTATION_DATABASE_CONNECTION" Value="Server=CMSENTTEST.SEWS-E.COM; Database=Commercial; User Id=h1generalsql; Password=tQ1%ab4ds; Encrypt=false; MultiSubnetFailover=true; MultipleActiveResultSets=True; ApplicationIntent=ReadOnly;" />
+      <EnvironmentVariable Name="EDI_DIRECTORY_PATH" Value="C:\EDIFileWatcher" />
+      <EnvironmentVariable Name="EDI_EMAIL_RECIPIENT" Value="Anthony.Woods@sews-e.com" />
+    </EnvironmentVariables>
+  </CodePackage>
+  <!-- Config package is the contents of the Config directory under PackageRoot that contains an 
+       independently-updateable and versioned set of custom configuration settings for your service. -->
+  <ConfigPackage Name="Config" Version="1.0.0" />
+  <Resources>
+    <Endpoints>
+      <!-- This endpoint is used by the communication listener to obtain the port on which to 
+           listen. Please note that if your service is partitioned, this port is shared with 
+           replicas of different partitions that are placed in your code. -->
+      <Endpoint Name="ServiceEndpoint" />
+    </Endpoints>
+  </Resources>
+</ServiceManifest>

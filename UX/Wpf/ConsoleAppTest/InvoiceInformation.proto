@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+ 
+option csharp_namespace = "GrpcServices";
+ 
+package InvoiceInformation;
+
+service InvoiceInformationService {
+	rpc SayHello (HelloRequest) returns (HelloReply);
+	rpc GetEdiInvoiceInformation (google.protobuf.Empty) returns (ListInvoiceInformationData);
+    rpc GetEdiInvoiceInformationStream (google.protobuf.Empty) returns (stream InvoiceInformationData);
+}
+
+message HelloRequest {
+	string name = 1;
+}
+
+message HelloReply {
+	string message = 1;
+}
+
+message ListInvoiceInformationData {
+    repeated InvoiceInformationData InvoiceInformationData = 1;
+}
+
+message InvoiceInformationData {
+	string Id = 1;
+    string FileName = 2;
+    string FinanceCode = 3;
+    string DispatchNumber = 4;
+    google.protobuf.Timestamp DispatchDate = 5;
+    string CustomerOrderNumber = 6;
+    string PartNumber = 7;
+    string PartDescription = 8;
+    double Quantity = 9;
+    string UnloadingPoint = 10;
+    string WmsSiteCode = 11;
+    string WmsCustomerCode = 12;
+    string CustomerDispatchNumber = 13;
+    string MessageType = 14;
+    double ExchangeRate = 15;
+    string CustomerPartNumber = 16;
+    double TotalGrossWeight = 17;
+    double TotalNetWeight = 18;
+    string UnitOfMeasure = 19;
+    string TariffCode = 20;
+    string DeliveryTerms = 21;
+    string TransportDetails = 22;
+    string WMSInvoiceNumber = 23;
+
+    string CustomerLocationId = 24;
+    string BatchId = 25;
+    bool IsValidPrice = 26;
+    bool IsValidProduct = 27;
+    bool IsProcessStarted = 28;
+    google.protobuf.Timestamp ProcessStartDate = 29;
+    double OrderPrice = 30;
+    string CurrencyCode = 31;
+    double TotalInvoicePrice = 32;
+    string Status = 33;
+    bool IsValid = 34;
+    bool IsAgressoTransferred = 35;
+    google.protobuf.Timestamp ProcessCompletionDate = 36;
+    string Customer = 37;
+    string CustomerLocation = 38;
+}

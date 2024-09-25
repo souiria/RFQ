@@ -1,0 +1,50 @@
+﻿<igwpf:XamRibbonWindow x:Class="UX.Core.ShellDialog.Views.RibbonDialog"
+					   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					   xmlns:prism="http://www.codeplex.com/prism"
+					   xmlns:igwpf="http://schemas.infragistics.com/xaml/wpf"
+					   Height="600"
+					   Width="1250"
+					   WindowStartupLocation="CenterScreen">
+	<igwpf:RibbonWindowContentHost>
+		<igwpf:RibbonWindowContentHost.Ribbon>
+			<igwpf:XamRibbon Name="xamRibbon1"
+							 prism:RegionManager.RegionName="RibbonTabRegion">
+				<igwpf:XamRibbon.ApplicationMenu2010>
+					<igwpf:ApplicationMenu2010 Caption="MENU">
+
+						<igwpf:ApplicationMenu2010Item x:Name="btnInfo"
+													   Header="PO Pricing">
+							<Grid Margin="30,0,0,0">
+								<TextBlock FontSize="23"
+										   Text="Info" />
+							</Grid>
+						</igwpf:ApplicationMenu2010Item>
+
+						<igwpf:ApplicationMenu2010Separator />
+
+						<igwpf:ApplicationMenu2010Item x:Name="btnClose"
+													   Header="Close"
+													   Click="btnClose_Click" />
+
+					</igwpf:ApplicationMenu2010>
+				</igwpf:XamRibbon.ApplicationMenu2010>
+				<igwpf:XamRibbon.QuickAccessToolbar>
+					<igwpf:QuickAccessToolbar />
+				</igwpf:XamRibbon.QuickAccessToolbar>
+			</igwpf:XamRibbon>
+		</igwpf:RibbonWindowContentHost.Ribbon>
+
+		<DockPanel LastChildFill="True"
+				   Background="White">
+			<ContentControl x:Name="_contentRegion"
+							Background="White"
+							prism:RegionManager.RegionName="ContentRegion" />
+			<ContentControl prism:RegionManager.RegionName="WidgetBarGroupRegion"
+							DockPanel.Dock="Right"
+							Background="White"
+							Visibility="Hidden" />
+		</DockPanel>
+
+	</igwpf:RibbonWindowContentHost>
+</igwpf:XamRibbonWindow>

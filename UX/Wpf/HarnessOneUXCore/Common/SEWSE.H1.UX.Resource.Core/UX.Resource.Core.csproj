@@ -1,0 +1,713 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C2CF26EE-0145-4D38-85AD-68AFB5FCFFCB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SEWSE.H1.UX.Resource.Core</RootNamespace>
+    <AssemblyName>UX.Resource.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'UAT|AnyCPU'">
+    <OutputPath>bin\UAT\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'UAT|x64'">
+    <OutputPath>bin\x64\UAT\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Live|AnyCPU'">
+    <OutputPath>bin\Live\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Live|x64'">
+    <OutputPath>bin\x64\Live\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Helpers\FileNamesFromResourcePath.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Background1.jpg" />
+    <Resource Include="Images\Background2.jpg" />
+    <Resource Include="Images\Background3.jpg" />
+    <Resource Include="Images\Background4.jpg" />
+    <Resource Include="Images\Background5.jpg" />
+    <Resource Include="Images\Background6.jpg" />
+    <Resource Include="Images\Bold16.png" />
+    <Resource Include="Images\CenterAlign16.png" />
+    <Resource Include="Images\Clear16.png" />
+    <Resource Include="Images\Copy16.png" />
+    <Resource Include="Images\Cross16.png" />
+    <Resource Include="Images\CutBlue16.png" />
+    <Resource Include="Images\EditCopy24.png" />
+    <Resource Include="Images\EditCut24.png" />
+    <Resource Include="Images\EditRedo24.png" />
+    <Resource Include="Images\EditUndo24.png" />
+    <Resource Include="Images\Error64.png" />
+    <Resource Include="Images\EuroSign64.png" />
+    <Resource Include="Images\Find16.png" />
+    <Resource Include="Images\H1IconOld.ico" />
+    <Resource Include="Images\Information64.png" />
+    <Resource Include="Images\Italic16.png" />
+    <Resource Include="Images\Justify16.png" />
+    <Resource Include="Images\LeftAlign16.png" />
+    <Resource Include="Images\MaximizeLayout16.png" />
+    <Resource Include="Images\MinimizeLayout16.png" />
+    <Resource Include="Images\Paste16.png" />
+    <Resource Include="Images\RedoBlue16.png" />
+    <Resource Include="Images\RightAlign16.png" />
+    <Resource Include="Images\Save16.png" />
+    <Resource Include="Images\Search16.png" />
+    <Resource Include="Images\Themes\IG.png" />
+    <Resource Include="Images\Themes\Metro.png" />
+    <Resource Include="Images\Themes\Office2010.png" />
+    <Resource Include="Images\Themes\Office2013.png" />
+    <Resource Include="Images\Themes\RoyalDark.png" />
+    <Resource Include="Images\Underline16.png" />
+    <Resource Include="Images\UndoBlue16.png" />
+    <Resource Include="Images\UserSettings16.png" />
+    <Resource Include="Images\UserSettings24.png" />
+    <Resource Include="Images\WorldFlags\AD.png" />
+    <Resource Include="Images\WorldFlags\AE.png" />
+    <Resource Include="Images\WorldFlags\AF.png" />
+    <Resource Include="Images\WorldFlags\AG.png" />
+    <Resource Include="Images\WorldFlags\AI.png" />
+    <Resource Include="Images\WorldFlags\AL.png" />
+    <Resource Include="Images\WorldFlags\AM.png" />
+    <Resource Include="Images\WorldFlags\AN.png" />
+    <Resource Include="Images\WorldFlags\AO.png" />
+    <Resource Include="Images\WorldFlags\AQ.png" />
+    <Resource Include="Images\WorldFlags\AR.png" />
+    <Resource Include="Images\WorldFlags\AS.png" />
+    <Resource Include="Images\WorldFlags\AT.png" />
+    <Resource Include="Images\WorldFlags\AU.png" />
+    <Resource Include="Images\WorldFlags\AW.png" />
+    <Resource Include="Images\WorldFlags\AX.png" />
+    <Resource Include="Images\WorldFlags\AZ.png" />
+    <Resource Include="Images\WorldFlags\BA.png" />
+    <Resource Include="Images\WorldFlags\BB.png" />
+    <Resource Include="Images\WorldFlags\BD.png" />
+    <Resource Include="Images\WorldFlags\BE.png" />
+    <Resource Include="Images\WorldFlags\BF.png" />
+    <Resource Include="Images\WorldFlags\BG.png" />
+    <Resource Include="Images\WorldFlags\BH.png" />
+    <Resource Include="Images\WorldFlags\BI.png" />
+    <Resource Include="Images\WorldFlags\BJ.png" />
+    <Resource Include="Images\WorldFlags\BL.png" />
+    <Resource Include="Images\WorldFlags\BM.png" />
+    <Resource Include="Images\WorldFlags\BN.png" />
+    <Resource Include="Images\WorldFlags\BO.png" />
+    <Resource Include="Images\WorldFlags\BR.png" />
+    <Resource Include="Images\WorldFlags\BS.png" />
+    <Resource Include="Images\WorldFlags\BT.png" />
+    <Resource Include="Images\WorldFlags\BW.png" />
+    <Resource Include="Images\WorldFlags\BY.png" />
+    <Resource Include="Images\WorldFlags\BZ.png" />
+    <Resource Include="Images\WorldFlags\CA.png" />
+    <Resource Include="Images\WorldFlags\CC.png" />
+    <Resource Include="Images\WorldFlags\CD.png" />
+    <Resource Include="Images\WorldFlags\CF.png" />
+    <Resource Include="Images\WorldFlags\CG.png" />
+    <Resource Include="Images\WorldFlags\CH.png" />
+    <Resource Include="Images\WorldFlags\CI.png" />
+    <Resource Include="Images\WorldFlags\CK.png" />
+    <Resource Include="Images\WorldFlags\CL.png" />
+    <Resource Include="Images\WorldFlags\CM.png" />
+    <Resource Include="Images\WorldFlags\CN.png" />
+    <Resource Include="Images\WorldFlags\CO.png" />
+    <Resource Include="Images\WorldFlags\CR.png" />
+    <Resource Include="Images\WorldFlags\CU.png" />
+    <Resource Include="Images\WorldFlags\CV.png" />
+    <Resource Include="Images\WorldFlags\CW.png" />
+    <Resource Include="Images\WorldFlags\CX.png" />
+    <Resource Include="Images\WorldFlags\CY.png" />
+    <Resource Include="Images\WorldFlags\CZ.png" />
+    <Resource Include="Images\WorldFlags\DE.png" />
+    <Resource Include="Images\WorldFlags\DJ.png" />
+    <Resource Include="Images\WorldFlags\DK.png" />
+    <Resource Include="Images\WorldFlags\DM.png" />
+    <Resource Include="Images\WorldFlags\DO.png" />
+    <Resource Include="Images\WorldFlags\DZ.png" />
+    <Resource Include="Images\WorldFlags\EC.png" />
+    <Resource Include="Images\WorldFlags\EE.png" />
+    <Resource Include="Images\WorldFlags\EG.png" />
+    <Resource Include="Images\WorldFlags\EH.png" />
+    <Resource Include="Images\WorldFlags\ER.png" />
+    <Resource Include="Images\WorldFlags\ES.png" />
+    <Resource Include="Images\WorldFlags\ET.png" />
+    <Resource Include="Images\WorldFlags\EU.png" />
+    <Resource Include="Images\WorldFlags\FI.png" />
+    <Resource Include="Images\WorldFlags\FJ.png" />
+    <Resource Include="Images\WorldFlags\FK.png" />
+    <Resource Include="Images\WorldFlags\FM.png" />
+    <Resource Include="Images\WorldFlags\FO.png" />
+    <Resource Include="Images\WorldFlags\FR.png" />
+    <Resource Include="Images\WorldFlags\GA.png" />
+    <Resource Include="Images\WorldFlags\GB.png" />
+    <Resource Include="Images\WorldFlags\GD.png" />
+    <Resource Include="Images\WorldFlags\GE.png" />
+    <Resource Include="Images\WorldFlags\GG.png" />
+    <Resource Include="Images\WorldFlags\GH.png" />
+    <Resource Include="Images\WorldFlags\GI.png" />
+    <Resource Include="Images\WorldFlags\GL.png" />
+    <Resource Include="Images\WorldFlags\GM.png" />
+    <Resource Include="Images\WorldFlags\GN.png" />
+    <Resource Include="Images\WorldFlags\GQ.png" />
+    <Resource Include="Images\WorldFlags\GR.png" />
+    <Resource Include="Images\WorldFlags\GS.png" />
+    <Resource Include="Images\WorldFlags\GT.png" />
+    <Resource Include="Images\WorldFlags\GU.png" />
+    <Resource Include="Images\WorldFlags\GW.png" />
+    <Resource Include="Images\WorldFlags\GY.png" />
+    <Resource Include="Images\WorldFlags\HK.png" />
+    <Resource Include="Images\WorldFlags\HN.png" />
+    <Resource Include="Images\WorldFlags\HR.png" />
+    <Resource Include="Images\WorldFlags\HT.png" />
+    <Resource Include="Images\WorldFlags\HU.png" />
+    <Resource Include="Images\WorldFlags\IC.png" />
+    <Resource Include="Images\WorldFlags\ID.png" />
+    <Resource Include="Images\WorldFlags\IE.png" />
+    <Resource Include="Images\WorldFlags\IL.png" />
+    <Resource Include="Images\WorldFlags\IM.png" />
+    <Resource Include="Images\WorldFlags\IN.png" />
+    <Resource Include="Images\WorldFlags\IQ.png" />
+    <Resource Include="Images\WorldFlags\IR.png" />
+    <Resource Include="Images\WorldFlags\IS.png" />
+    <Resource Include="Images\WorldFlags\IT.png" />
+    <Resource Include="Images\WorldFlags\JE.png" />
+    <Resource Include="Images\WorldFlags\JM.png" />
+    <Resource Include="Images\WorldFlags\JO.png" />
+    <Resource Include="Images\WorldFlags\JP.png" />
+    <Resource Include="Images\WorldFlags\KE.png" />
+    <Resource Include="Images\WorldFlags\KG.png" />
+    <Resource Include="Images\WorldFlags\KH.png" />
+    <Resource Include="Images\WorldFlags\KI.png" />
+    <Resource Include="Images\WorldFlags\KM.png" />
+    <Resource Include="Images\WorldFlags\KN.png" />
+    <Resource Include="Images\WorldFlags\KP.png" />
+    <Resource Include="Images\WorldFlags\KR.png" />
+    <Resource Include="Images\WorldFlags\KW.png" />
+    <Resource Include="Images\WorldFlags\KY.png" />
+    <Resource Include="Images\WorldFlags\KZ.png" />
+    <Resource Include="Images\WorldFlags\LA.png" />
+    <Resource Include="Images\WorldFlags\LB.png" />
+    <Resource Include="Images\WorldFlags\LC.png" />
+    <Resource Include="Images\WorldFlags\LI.png" />
+    <Resource Include="Images\WorldFlags\LK.png" />
+    <Resource Include="Images\WorldFlags\LR.png" />
+    <Resource Include="Images\WorldFlags\LS.png" />
+    <Resource Include="Images\WorldFlags\LT.png" />
+    <Resource Include="Images\WorldFlags\LU.png" />
+    <Resource Include="Images\WorldFlags\LV.png" />
+    <Resource Include="Images\WorldFlags\LY.png" />
+    <Resource Include="Images\WorldFlags\MA.png" />
+    <Resource Include="Images\WorldFlags\MC.png" />
+    <Resource Include="Images\WorldFlags\MD.png" />
+    <Resource Include="Images\WorldFlags\ME.png" />
+    <Resource Include="Images\WorldFlags\MF.png" />
+    <Resource Include="Images\WorldFlags\MG.png" />
+    <Resource Include="Images\WorldFlags\MH.png" />
+    <Resource Include="Images\WorldFlags\MK.png" />
+    <Resource Include="Images\WorldFlags\ML.png" />
+    <Resource Include="Images\WorldFlags\MM.png" />
+    <Resource Include="Images\WorldFlags\MN.png" />
+    <Resource Include="Images\WorldFlags\MO.png" />
+    <Resource Include="Images\WorldFlags\MP.png" />
+    <Resource Include="Images\WorldFlags\MQ.png" />
+    <Resource Include="Images\WorldFlags\MR.png" />
+    <Resource Include="Images\WorldFlags\MS.png" />
+    <Resource Include="Images\WorldFlags\MT.png" />
+    <Resource Include="Images\WorldFlags\MU.png" />
+    <Resource Include="Images\WorldFlags\MV.png" />
+    <Resource Include="Images\WorldFlags\MW.png" />
+    <Resource Include="Images\WorldFlags\MX.png" />
+    <Resource Include="Images\WorldFlags\MY.png" />
+    <Resource Include="Images\WorldFlags\MZ.png" />
+    <Resource Include="Images\WorldFlags\NA.png" />
+    <Resource Include="Images\WorldFlags\NC.png" />
+    <Resource Include="Images\WorldFlags\NE.png" />
+    <Resource Include="Images\WorldFlags\NF.png" />
+    <Resource Include="Images\WorldFlags\NG.png" />
+    <Resource Include="Images\WorldFlags\NI.png" />
+    <Resource Include="Images\WorldFlags\NL.png" />
+    <Resource Include="Images\WorldFlags\NO.png" />
+    <Resource Include="Images\WorldFlags\NP.png" />
+    <Resource Include="Images\WorldFlags\NR.png" />
+    <Resource Include="Images\WorldFlags\NU.png" />
+    <Resource Include="Images\WorldFlags\NZ.png" />
+    <Resource Include="Images\WorldFlags\OM.png" />
+    <Resource Include="Images\WorldFlags\PA.png" />
+    <Resource Include="Images\WorldFlags\PE.png" />
+    <Resource Include="Images\WorldFlags\PF.png" />
+    <Resource Include="Images\WorldFlags\PG.png" />
+    <Resource Include="Images\WorldFlags\PH.png" />
+    <Resource Include="Images\WorldFlags\PK.png" />
+    <Resource Include="Images\WorldFlags\PL.png" />
+    <Resource Include="Images\WorldFlags\PN.png" />
+    <Resource Include="Images\WorldFlags\PR.png" />
+    <Resource Include="Images\WorldFlags\PS.png" />
+    <Resource Include="Images\WorldFlags\PT.png" />
+    <Resource Include="Images\WorldFlags\PW.png" />
+    <Resource Include="Images\WorldFlags\PY.png" />
+    <Resource Include="Images\WorldFlags\QA.png" />
+    <Resource Include="Images\WorldFlags\RO.png" />
+    <Resource Include="Images\WorldFlags\RS.png" />
+    <Resource Include="Images\WorldFlags\RU.png" />
+    <Resource Include="Images\WorldFlags\RW.png" />
+    <Resource Include="Images\WorldFlags\SA.png" />
+    <Resource Include="Images\WorldFlags\SB.png" />
+    <Resource Include="Images\WorldFlags\SC.png" />
+    <Resource Include="Images\WorldFlags\SD.png" />
+    <Resource Include="Images\WorldFlags\SE.png" />
+    <Resource Include="Images\WorldFlags\SG.png" />
+    <Resource Include="Images\WorldFlags\SH.png" />
+    <Resource Include="Images\WorldFlags\SI.png" />
+    <Resource Include="Images\WorldFlags\SK.png" />
+    <Resource Include="Images\WorldFlags\SL.png" />
+    <Resource Include="Images\WorldFlags\SM.png" />
+    <Resource Include="Images\WorldFlags\SN.png" />
+    <Resource Include="Images\WorldFlags\SO.png" />
+    <Resource Include="Images\WorldFlags\SR.png" />
+    <Resource Include="Images\WorldFlags\SS.png" />
+    <Resource Include="Images\WorldFlags\ST.png" />
+    <Resource Include="Images\WorldFlags\SV.png" />
+    <Resource Include="Images\WorldFlags\SY.png" />
+    <Resource Include="Images\WorldFlags\SZ.png" />
+    <Resource Include="Images\WorldFlags\TC.png" />
+    <Resource Include="Images\WorldFlags\TD.png" />
+    <Resource Include="Images\WorldFlags\TF.png" />
+    <Resource Include="Images\WorldFlags\TG.png" />
+    <Resource Include="Images\WorldFlags\TH.png" />
+    <Resource Include="Images\WorldFlags\TJ.png" />
+    <Resource Include="Images\WorldFlags\TK.png" />
+    <Resource Include="Images\WorldFlags\TL.png" />
+    <Resource Include="Images\WorldFlags\TM.png" />
+    <Resource Include="Images\WorldFlags\TN.png" />
+    <Resource Include="Images\WorldFlags\TO.png" />
+    <Resource Include="Images\WorldFlags\TR.png" />
+    <Resource Include="Images\WorldFlags\TT.png" />
+    <Resource Include="Images\WorldFlags\TV.png" />
+    <Resource Include="Images\WorldFlags\TW.png" />
+    <Resource Include="Images\WorldFlags\TZ.png" />
+    <Resource Include="Images\WorldFlags\UA.png" />
+    <Resource Include="Images\WorldFlags\UG.png" />
+    <Resource Include="Images\WorldFlags\US.png" />
+    <Resource Include="Images\WorldFlags\UY.png" />
+    <Resource Include="Images\WorldFlags\UZ.png" />
+    <Resource Include="Images\WorldFlags\VA.png" />
+    <Resource Include="Images\WorldFlags\VC.png" />
+    <Resource Include="Images\WorldFlags\VE.png" />
+    <Resource Include="Images\WorldFlags\VG.png" />
+    <Resource Include="Images\WorldFlags\VI.png" />
+    <Resource Include="Images\WorldFlags\VN.png" />
+    <Resource Include="Images\WorldFlags\VU.png" />
+    <Resource Include="Images\WorldFlags\WF.png" />
+    <Resource Include="Images\WorldFlags\WS.png" />
+    <Resource Include="Images\WorldFlags\YE.png" />
+    <Resource Include="Images\WorldFlags\YT.png" />
+    <Resource Include="Images\WorldFlags\ZA.png" />
+    <Resource Include="Images\WorldFlags\ZM.png" />
+    <Resource Include="Images\WorldFlags\ZW.png" />
+    <Resource Include="Images\WorldFlags\_abkhazia.png" />
+    <Resource Include="Images\WorldFlags\_basque-country.png" />
+    <Resource Include="Images\WorldFlags\_british-antarctic-territory.png" />
+    <Resource Include="Images\WorldFlags\_commonwealth.png" />
+    <Resource Include="Images\WorldFlags\_england.png" />
+    <Resource Include="Images\WorldFlags\_gosquared.png" />
+    <Resource Include="Images\WorldFlags\_kosovo.png" />
+    <Resource Include="Images\WorldFlags\_mars.png" />
+    <Resource Include="Images\WorldFlags\_nagorno-karabakh.png" />
+    <Resource Include="Images\WorldFlags\_nato.png" />
+    <Resource Include="Images\WorldFlags\_northern-cyprus.png" />
+    <Resource Include="Images\WorldFlags\_olympics.png" />
+    <Resource Include="Images\WorldFlags\_red-cross.png" />
+    <Resource Include="Images\WorldFlags\_scotland.png" />
+    <Resource Include="Images\WorldFlags\_somaliland.png" />
+    <Resource Include="Images\WorldFlags\_south-ossetia.png" />
+    <Resource Include="Images\WorldFlags\_united-nations.png" />
+    <Resource Include="Images\WorldFlags\_unknown.png" />
+    <Resource Include="Images\WorldFlags\_wales.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\22x22\actions\document-print.png" />
+    <Resource Include="Images\22x22\actions\document-save.png" />
+    <Resource Include="Images\22x22\actions\edit-undo.png" />
+    <Resource Include="Images\22x22\actions\File-XLS-Excel-32.png" />
+    <Resource Include="Images\22x22\actions\format-indent-more.png" />
+    <Resource Include="Images\22x22\actions\Help.png" />
+    <Resource Include="Images\22x22\actions\list-add.png" />
+    <Resource Include="Images\22x22\actions\list-remove.png" />
+    <Resource Include="Images\22x22\actions\process-stop.png" />
+    <Resource Include="Images\22x22\actions\system-search.png" />
+    <Resource Include="Images\22x22\actions\view-refresh.png" />
+    <Resource Include="Images\22x22\actions\window-new.png" />
+    <Resource Include="Images\48x48\actions\document-print.png" />
+    <Resource Include="Images\48x48\actions\document-save.png" />
+    <Resource Include="Images\48x48\actions\edit-undo.png" />
+    <Resource Include="Images\48x48\actions\File-XLS-Excel-32.png" />
+    <Resource Include="Images\48x48\actions\format-indent-more.png" />
+    <Resource Include="Images\48x48\actions\Help.png" />
+    <Resource Include="Images\48x48\actions\list-add.png" />
+    <Resource Include="Images\48x48\actions\list-remove.png" />
+    <Resource Include="Images\48x48\actions\process-stop.png" />
+    <Resource Include="Images\48x48\actions\system-search.png" />
+    <Resource Include="Images\48x48\actions\view-refresh.png" />
+    <Resource Include="Images\AllCategories32.png" />
+    <Resource Include="Images\Database_Server_info.png" />
+    <Resource Include="Images\DHS_Login.png" />
+    <Resource Include="Images\Dialog\Error_Dialog.png" />
+    <Resource Include="Images\Dialog\Help.png" />
+    <Resource Include="Images\Dialog\Help_Dialog.png" />
+    <Resource Include="Images\Dialog\Help_Dialog_32.png" />
+    <Resource Include="Images\Dialog\icon_StageError.gif" />
+    <Resource Include="Images\Dialog\icon_StageSuccess.png" />
+    <Resource Include="Images\Dialog\info_b.png" />
+    <Resource Include="Images\Dialog\StatusFlagRed.png" />
+    <Resource Include="Images\Dialog\SuccessFlag.png" />
+    <Resource Include="Images\HarnessOne.png" />
+    <Resource Include="Images\HelpDesk\Attachment-64.png" />
+    <Resource Include="Images\HelpDesk\check-spelling-icon-128.png" />
+    <Resource Include="Images\HelpDesk\Decrease-Font-64.png" />
+    <Resource Include="Images\HelpDesk\email_send-32.png" />
+    <Resource Include="Images\HelpDesk\email_send-48.png" />
+    <Resource Include="Images\HelpDesk\Hyperlink-icon_64.png" />
+    <Resource Include="Images\HelpDesk\Increase-Font-64.png" />
+    <Resource Include="Images\HelpDesk\Paste-32.png" />
+    <Resource Include="Images\HelpDesk\Paste-48.png" />
+    <Resource Include="Images\HelpDesk\Picture-icon_64.png" />
+    <Resource Include="Images\HelpDesk\Text-Align-Center-32.png" />
+    <Resource Include="Images\HelpDesk\Text-Align-Justity-32.png" />
+    <Resource Include="Images\HelpDesk\Text-Align-Left-32.png" />
+    <Resource Include="Images\HelpDesk\Text-Align-Right-32.png" />
+    <Resource Include="Images\HelpDesk\Text-Bold-32.png" />
+    <Resource Include="Images\HelpDesk\Text-Italic-32.png" />
+    <Resource Include="Images\HelpDesk\Text-Underline-32.png" />
+    <Resource Include="Images\icon_Close1.png" />
+    <Resource Include="Images\icon_Login.png" />
+    <Resource Include="Images\Key.png" />
+    <Resource Include="Images\Lock.png" />
+    <Resource Include="Images\login-dhs.png" />
+    <Resource Include="Images\Module\16x16\01. Master Module.png" />
+    <Resource Include="Images\Module\16x16\02. Planning Module.png" />
+    <Resource Include="Images\Module\16x16\03. Purchase Module.png" />
+    <Resource Include="Images\Module\16x16\04. Receipt Module.png" />
+    <Resource Include="Images\Module\16x16\05. Stores Module.png" />
+    <Resource Include="Images\Module\16x16\06. Stock Module.png" />
+    <Resource Include="Images\Module\16x16\07. WIP Module.png" />
+    <Resource Include="Images\Module\16x16\08. Multisite Module.png" />
+    <Resource Include="Images\Module\16x16\09. Finance Module.png" />
+    <Resource Include="Images\Module\16x16\10. MIS Module.png" />
+    <Resource Include="Images\Module\16x16\11. BOM Module.png" />
+    <Resource Include="Images\Module\16x16\12. MPS Module.png" />
+    <Resource Include="Images\Module\16x16\14. MCS Module.png" />
+    <Resource Include="Images\Module\16x16\15. CCS Module.png" />
+    <Resource Include="Images\Module\16x16\90. Admin Module.png" />
+    <Resource Include="Images\Module\16x16\99. Security Module.png" />
+    <Resource Include="Images\Module\24x24\01. Master Module.png" />
+    <Resource Include="Images\Module\24x24\02. Planning Module.png" />
+    <Resource Include="Images\Module\24x24\03. Purchase Module.png" />
+    <Resource Include="Images\Module\24x24\04. Receipt Module.png" />
+    <Resource Include="Images\Module\24x24\05. Stores Module.png" />
+    <Resource Include="Images\Module\24x24\06. Stock Module.png" />
+    <Resource Include="Images\Module\24x24\07. WIP Module.png" />
+    <Resource Include="Images\Module\24x24\08. Multisite Module.png" />
+    <Resource Include="Images\Module\24x24\09. Finance Module.png" />
+    <Resource Include="Images\Module\24x24\10. MIS Module.png" />
+    <Resource Include="Images\Module\24x24\11. BOM Module.png" />
+    <Resource Include="Images\Module\24x24\12. MPS Module.png" />
+    <Resource Include="Images\Module\24x24\14. MCS Module.png" />
+    <Resource Include="Images\Module\24x24\15. CCS Module.png" />
+    <Resource Include="Images\Module\24x24\90. Admin Module.png" />
+    <Resource Include="Images\Module\24x24\99. Security Module.png" />
+    <Resource Include="Images\System_Info.png" />
+    <Resource Include="Images\unknown.png" />
+    <Resource Include="Images\User.png" />
+    <Resource Include="Images\Users.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\GP.png" />
+    <Resource Include="Images\GP_Blue.png" />
+    <Resource Include="Images\GP_CC.png" />
+    <Resource Include="Images\GP_Gray.png" />
+    <Resource Include="Images\GP_LighterBlue.png" />
+    <Resource Include="Images\GP_Light_Blue.png" />
+    <Resource Include="Images\GP_Purple.png" />
+    <Resource Include="Images\GP_Turquise.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Themes\HarnessOneBlue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PercentSign64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Themes\HarnessOnePurple.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\EmailList64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\icon_BusyIndicator_Cross.png" />
+    <Resource Include="Images\icon_Refresh.png" />
+    <Resource Include="Images\icon_Search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\User64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Dashboard64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Search64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Add64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Upload64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\UploadFile64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Function\16x16\16. Sales Function.png" />
+    <Resource Include="Images\Function\24x24\16. Sales Function.png" />
+    <Resource Include="Images\Module\16x16\16. Enquiry Module.png" />
+    <Resource Include="Images\Module\24x24\16. Enquiry Module.png" />
+    <Resource Include="Images\SpreadsheetNumbers64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Sales\Enquiry\MissingRFQImage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Function\16x16\17. SystemAdmin Function.png" />
+    <Resource Include="Images\Function\24x24\17. SystemAdmin Function.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SystemAdmin\Gear16.png" />
+    <Resource Include="Images\SystemAdmin\Gear64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\UserAlt64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\22x22\actions\icon_Upload.png" />
+    <Resource Include="Images\48x48\actions\icon_Upload.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\icon_Generic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Move Previous %28Arrow%2916.png" />
+    <Resource Include="Images\Move Previous %28Arrow%2964.png" />
+    <Resource Include="Images\UploadFile16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\GlobalMasters\Masters16.png" />
+    <Resource Include="Images\GlobalMasters\Masters64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SystemAdmin\SecurityLock16.png" />
+    <Resource Include="Images\SystemAdmin\SecurityLock64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\icon_Find.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\icon_POPriceList16.png" />
+    <Resource Include="Images\icon_POPriceList24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\48x48\actions\icon_Add.png" />
+    <Resource Include="Images\48x48\actions\icon_Cancel.png" />
+    <Resource Include="Images\48x48\actions\icon_Delete.png" />
+    <Resource Include="Images\48x48\actions\icon_Export.png" />
+    <Resource Include="Images\48x48\actions\icon_Help.png" />
+    <Resource Include="Images\48x48\actions\icon_Print.png" />
+    <Resource Include="Images\48x48\actions\icon_Save.png" />
+    <Resource Include="Images\48x48\actions\icon_XLSOpen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\22x22\actions\icon_Add.png" />
+    <Resource Include="Images\22x22\actions\icon_Cancel.png" />
+    <Resource Include="Images\22x22\actions\icon_Delete.png" />
+    <Resource Include="Images\22x22\actions\icon_Export.png" />
+    <Resource Include="Images\22x22\actions\icon_Help.png" />
+    <Resource Include="Images\22x22\actions\icon_Print.png" />
+    <Resource Include="Images\22x22\actions\icon_Save.png" />
+    <Resource Include="Images\22x22\actions\icon_XLSOpen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\22x22\actions\icon_Refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\48x48\actions\icon_Refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\22x22\actions\icon_Download.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\48x48\actions\icon_Download.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\icon_Download64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\22x22\actions\icon_BrowseFile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\48x48\actions\icon_BrowseFile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\icon_BrowseFile64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\48x48\Email48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Background7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Background8.png" />
+    <Resource Include="Images\Background9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\H1Icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\technology-main.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\technology-main.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\48x48\EmailDisabled48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Themes\Preview\Corporate Blue.png" />
+    <Resource Include="Images\Themes\Preview\Corporate Grey.png" />
+    <Resource Include="Images\Themes\Preview\No Theme.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\GP_Red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Themes\Preview\Corporate Purple.PNG" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\22x22\actions\Screenshot.png" />
+    <Resource Include="Images\48x48\actions\Screenshot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\GroupOfUsers64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\GP_Green.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\GP_White.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Remove64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ChartingBlue64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Move Next %28Arrow%29 Blue16.png" />
+    <Resource Include="Images\Move Next %28Arrow%29 Blue64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\NutAndBoltAdd64.png" />
+    <Resource Include="Images\NutAndBoltCheck64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Refresh Blue16.png" />
+    <Resource Include="Images\Refresh Blue64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\22x22\actions\SpreadsheetNumbers.png" />
+    <Resource Include="Images\48x48\actions\SpreadsheetNumbers.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(TargetDir)$(ProjectName).dll" "$(SolutionDir)lib" /Y</PostBuildEvent>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,8 @@
+﻿<Application x:Class="SEWSE.H1.UX.Shell.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:SEWSE.H1.UX.Shell">
+    <Application.Resources>
+         
+    </Application.Resources>
+</Application>

@@ -1,0 +1,89 @@
+﻿<igWpf:RibbonTabItem x:Class="UX.Commercial.Edi.RibbonTabs.Views.CustomerParameterTab"
+                          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                          xmlns:igWpf="http://infragistics.com/Ribbon"
+                          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:prism="http://prismlibrary.com/"                     
+                          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                          xmlns:igWindows="http://infragistics.com/Windows"
+                          mc:Ignorable="d" d:DesignHeight="20" d:DesignWidth="100" 
+                          Header="{Binding Header}"
+                          prism:ViewModelLocator.AutoWireViewModel="True">
+    <!--<igWpf:RibbonTabItem.DataContext>
+        <viewmodels:LocationMasterCTBViewModel />
+    </igWpf:RibbonTabItem.DataContext>-->    
+    
+    <igWpf:RibbonGroup Caption="{Binding HelpdeskCaption}">
+        <igWpf:ButtonTool Caption="{Binding HelpCaption}"
+                          Command="{Binding HelpCommand}"
+                          LargeImage="pack://application:,,,/Common.UX;component/Resources/Images/48x48/actions/Screenshot.png"
+                          SmallImage="pack://application:,,,/Common.UX;component/Resources/Images/22x22/actions/Screenshot.png"
+                          igWpf:RibbonGroup.MaximumSize="ImageAndTextLarge" />
+    </igWpf:RibbonGroup>
+    <igWpf:RibbonGroup Caption="{Binding ActionsCaption}" >
+        <!--<igWpf:ButtonTool Caption="Reset" 
+                          Command="{Binding Command}"
+                          LargeImage="pack://application:,,,/Common.UX;component/Resources/Images/48x48/actions/icon_Refresh.png"
+                          SmallImage="pack://application:,,,/Common.UX;component/Resources/Images/22x22/actions/icon_Refresh.png"
+                          igWpf:RibbonGroup.MaximumSize="ImageAndTextLarge"
+                          Visibility="Collapsed" />-->
+        <igWpf:ButtonTool Caption="{Binding AddCaption}" 
+                          Command="{Binding CreateCommand}"
+                          IsEnabled="{Binding CreateEnabled}"
+                          LargeImage="pack://application:,,,/Common.UX;component/Resources/Images/48x48/actions/icon_Add.png"
+                          SmallImage="pack://application:,,,/Common.UX;component/Resources/Images/22x22/actions/icon_Add.png"
+                          igWpf:RibbonGroup.MaximumSize="ImageAndTextLarge" />
+        <igWpf:ButtonTool Caption="{Binding DuplicateCaption}" 
+                          Command="{Binding DuplicateCommand}"
+                          IsEnabled="{Binding DuplicateEnabled}"
+                          LargeImage="pack://application:,,,/Common.UX;component/Resources/Images/48x48/actions/icon_Duplicate.png"
+                          SmallImage="pack://application:,,,/Common.UX;component/Resources/Images/22x22/actions/icon_Duplicate.png"
+                          igWpf:RibbonGroup.MaximumSize="ImageAndTextLarge" />        
+        <!--<igWpf:ButtonTool Caption="{Binding DeleteCaption}" 
+                          Command="{Binding DeleteCommand}"
+                          IsEnabled="{Binding DeleteEnabled}"
+                          LargeImage="pack://application:,,,/Common.UX;component/Resources/Images/48x48/actions/icon_Delete.png"
+                          SmallImage="pack://application:,,,/Common.UX;component/Resources/Images/22x22/actions/icon_Delete.png"
+                          igWpf:RibbonGroup.MaximumSize="ImageAndTextLarge" />-->
+        <igWpf:ButtonTool Caption="{Binding SaveCaption}" 
+                          Command="{Binding SaveCommand}"
+                          IsEnabled="{Binding IsSaveEnabled}"
+                          LargeImage="pack://application:,,,/Common.UX;component/Resources/Images/48x48/actions/icon_Save.png"
+                          SmallImage="pack://application:,,,/Common.UX;component/Resources/Images/22x22/actions/icon_Save.png"
+                          igWpf:RibbonGroup.MaximumSize="ImageAndTextLarge" />
+        <igWpf:ButtonTool Caption="{Binding RefreshCaption}" 
+                          Command="{Binding RefreshCommand}"
+                          LargeImage="pack://application:,,,/Common.UX;component/Resources/Images/48x48/actions/icon_Refresh.png"
+                          SmallImage="pack://application:,,,/Common.UX;component/Resources/Images/22x22/actions/icon_Refresh.png"
+                          igWpf:RibbonGroup.MaximumSize="ImageAndTextLarge" />
+    </igWpf:RibbonGroup>
+    <igWpf:RibbonGroup Caption="{Binding ExportCaption}" >
+        <!--<igWpf:ButtonTool Caption="{Binding PrintCaption}" 
+                          Command="{Binding PrintCommand}"
+                          LargeImage="pack://application:,,,/Common.UX;component/Resources/Images/48x48/actions/icon_Print.png"
+                          SmallImage="pack://application:,,,/Common.UX;component/Resources/Images/22x22/actions/icon_Print.png"
+                          igWpf:RibbonGroup.MaximumSize="ImageAndTextLarge" />-->
+        <igWpf:ButtonTool x:Name="BtnExport" 
+                          Caption="{Binding ExportCaption}"
+                          Command="{Binding ExportCommand}"
+                          LargeImage="pack://application:,,,/Common.UX;component/Resources/Images/48x48/actions/icon_Export.png"
+                          SmallImage="pack://application:,,,/Common.UX;component/Resources/Images/22x22/actions/icon_Export.png"
+                          igWpf:RibbonGroup.MaximumSize="ImageAndTextLarge" />
+    </igWpf:RibbonGroup>
+    <igWpf:RibbonGroup Caption="{Binding XLSExportCaption}" >
+        <StackPanel Orientation="Vertical"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+            <CheckBox x:Name="chkOpenExcel" Margin="03,0,0,0" 
+                      Content="{Binding OpenOnExportCaption}"
+                      IsEnabled="{Binding ElementName=BtnExport,Path=IsEnabled}"
+                      IsChecked="{Binding IsSelected}"/>
+            <igWpf:ButtonTool x:Name="btnLastExported" 
+                              Caption="{Binding OpenLastCaption}"
+                              Command="{Binding OpenLastExportCommand, UpdateSourceTrigger=PropertyChanged}"                              
+                              LargeImage="pack://application:,,,/Common.UX;component/Resources/Images/48x48/actions/icon_XLSOpen.png"
+                              SmallImage="pack://application:,,,/Common.UX;component/Resources/Images/22x22/actions/icon_XLSOpen.png"
+                              igWpf:RibbonGroup.MaximumSize="ImageAndTextNormal" />
+        </StackPanel>
+    </igWpf:RibbonGroup>
+</igWpf:RibbonTabItem>

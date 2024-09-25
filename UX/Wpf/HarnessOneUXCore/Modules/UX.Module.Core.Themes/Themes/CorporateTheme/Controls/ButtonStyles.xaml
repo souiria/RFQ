@@ -1,0 +1,1354 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--==== Default Style ====-->
+
+    <Style TargetType="Button" x:Key="ButtonDefault">
+        <Setter Property="SnapsToDevicePixels"
+          Value="true" />
+        <Setter Property="OverridesDefaultStyle"
+          Value="true" />
+        <Setter Property="Background" Value="{DynamicResource Primary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Highlights}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <!--<Setter Property="MinHeight"
+          Value="23" />
+        <Setter Property="MinWidth"
+          Value="75" />-->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border x:Name="ButtonBorder" TextBlock.Foreground="{TemplateBinding Foreground}" 
+                            BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}">
+                            <Grid>
+                                <Border x:Name="HoverBorder" Background="{DynamicResource MouseOverHighlights}" Opacity="0"/>
+                                <ContentPresenter Margin="2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                RecognizesAccessKey="True"/>
+
+                            </Grid>
+                        </Border>
+
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0.2"/>
+                            <Setter Property="Background" Value="{DynamicResource MouseOverPrimary}"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource MouseOverText}"/>
+                        </Trigger>
+
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="ButtonBorder" Value="{DynamicResource PressedPrimary}"/>
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource PressedText}"/>
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="BorderBrush" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Button" x:Key="ButtonDefaultRounded">
+        <Setter Property="SnapsToDevicePixels"
+          Value="true" />
+        <Setter Property="OverridesDefaultStyle"
+          Value="true" />
+        <Setter Property="Background" Value="{DynamicResource Background}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Highlights}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <!--<Setter Property="MinHeight"
+          Value="23" />
+        <Setter Property="MinWidth"
+          Value="75" />-->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border x:Name="ButtonBorder" TextBlock.Foreground="{TemplateBinding Foreground}" 
+                            BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}" CornerRadius="5">
+                            <Grid>
+                                <Border x:Name="HoverBorder" Background="{DynamicResource MouseOverHighlights}" Opacity="0" CornerRadius="4"/>
+                                <ContentPresenter Margin="2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                RecognizesAccessKey="True"/>
+                                <!--<StackPanel Margin="5,0,0,0" Orientation="Horizontal">
+                                    <Image Source="/Common.UX;component/Resources/Images/icon_Search.png"/>
+                                </StackPanel>-->
+                            </Grid>
+                        </Border>
+                        <!--<StackPanel Margin="5,0,0,0" Orientation="Horizontal">
+                            <Image Source="/Common.UX;component/Resources/Images/icon_Search.png"/>
+                        </StackPanel>-->
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0.2"/>
+                            <Setter Property="Background" Value="{DynamicResource MouseOverPrimary}"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource MouseOverText}"/>
+                            <Setter Property="Cursor" Value="Hand" />
+                        </Trigger>
+
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="ButtonBorder" Value="{DynamicResource PressedHighlights}"/>
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource PressedText}"/>
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="BorderBrush" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                        <Trigger Property="MinHeight" Value="0">
+                            <Setter Property="Height" Value="30"/>
+                        </Trigger>
+                        <Trigger Property="MinWidth" Value="0">
+                            <Setter Property="Width" Value="80"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Button" x:Key="ButtonLight">
+        <Setter Property="SnapsToDevicePixels"
+          Value="true" />
+        <Setter Property="OverridesDefaultStyle"
+          Value="true" />
+        <Setter Property="Background" Value="{DynamicResource Background}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Highlights}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <!--<Setter Property="MinHeight"
+          Value="23" />
+        <Setter Property="MinWidth"
+          Value="75" />-->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border x:Name="ButtonBorder" TextBlock.Foreground="{TemplateBinding Foreground}" 
+                            BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}">
+                            <Grid>
+                                <ContentPresenter Margin="2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                RecognizesAccessKey="True"/>
+                                <Border x:Name="DarkHoverBorder" Background="{DynamicResource PressedHighlights}" Opacity="0"/>
+                                <Border x:Name="LightHoverBorder" Background="{DynamicResource MouseOverHighlights}" Opacity="0"/>
+                            </Grid>
+                        </Border>
+
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" TargetName="LightHoverBorder" Value="0.2"/>
+                            <Setter Property="Background" Value="{DynamicResource MouseOverPrimary}"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource MouseOverText}"/>
+                        </Trigger>
+
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Opacity" TargetName="DarkHoverBorder" Value="0.6"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource PressedText}"/>
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="BorderBrush" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Button" x:Key="ButtonLightRounded">
+        <Setter Property="SnapsToDevicePixels"
+          Value="true" />
+        <Setter Property="OverridesDefaultStyle"
+          Value="true" />
+        <Setter Property="Background" Value="{DynamicResource Background}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Highlights}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <!--<Setter Property="MinHeight"
+          Value="23" />
+        <Setter Property="MinWidth"
+          Value="75" />-->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border x:Name="ButtonBorder" TextBlock.Foreground="{TemplateBinding Foreground}" 
+                            BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}" CornerRadius="5">
+                            <Grid>
+                                <ContentPresenter Margin="2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                RecognizesAccessKey="True"/>
+                                <Border x:Name="DarkHoverBorder" Background="{DynamicResource PressedHighlights}" Opacity="0" CornerRadius="4"/>
+                                <Border x:Name="LightHoverBorder" Background="{DynamicResource MouseOverHighlights}" Opacity="0" CornerRadius="4"/>
+                            </Grid>
+                        </Border>
+
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" TargetName="LightHoverBorder" Value="0.2"/>
+                            <Setter Property="Background" Value="{DynamicResource MouseOverPrimary}"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource MouseOverText}"/>
+                        </Trigger>
+
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Opacity" TargetName="DarkHoverBorder" Value="0.6"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource PressedText}"/>
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="BorderBrush" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Button" x:Key="H1ButtonSearch">
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <!--<Setter Property="Background" Value="White"/>-->
+        <!--<Setter Property="Foreground" Value="#0075c1"/>-->
+        <Setter Property="Background" Value="{DynamicResource Background}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Highlights}"/>
+
+        <Setter Property="BorderThickness" Value="1"/>
+        <!--<Setter Property="FontSize" Value="12"/>-->
+        <!--<Setter Property="FontFamily" Value="Segoe UI regular"/>-->
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="3,2"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border x:Name="RootElementBorder"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                Background="{TemplateBinding Background}"
+                                TextBlock.Foreground="{TemplateBinding Foreground}"
+                                CornerRadius="5"                                
+                                >
+                            <Grid>
+                                <Border x:Name="HoverBorder" 
+                                Background="{DynamicResource MouseOverHighlights}" 
+                                Opacity="0" CornerRadius="4"/>
+                                <ContentPresenter Margin="2"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    RecognizesAccessKey="True"                                                  
+                                    />
+                            </Grid>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0.2"/>
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property="Background" Value="{DynamicResource MouseOverPrimary}"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource MouseOverText}"/>
+                        </Trigger>
+                        <Trigger Property="MinHeight" Value="0">
+                            <Setter Property="Height" Value="30"/>
+                        </Trigger>
+                        <Trigger Property="MinWidth" Value="0">
+                            <Setter Property="Width" Value="80"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="BorderBrush" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="RootElementBorder" Value="{DynamicResource PressedHighlights}"/>
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource PressedText}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Button" x:Key="H1ButtonSearchIncImage">
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="Background" Value="{DynamicResource Background}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Highlights}"/>
+
+        <Setter Property="BorderThickness" Value="1"/>
+        <!--<Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontFamily" Value="Segoe UI regular"/>-->
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="3,2"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <StackPanel>
+                        <Border x:Name="RootElementBorder"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="5"                                
+                                TextBlock.Foreground="{TemplateBinding Foreground}">
+                            <StackPanel Orientation="Horizontal">
+                                <Border x:Name="HoverBorder" 
+                                Background="{TemplateBinding BorderBrush}" 
+                                   Opacity="0" CornerRadius="4"/>
+                                <Image x:Name="findImage" 
+                                       Source="pack://application:,,,/Common.UX;component/Resources/Images/icon_Find.png"
+                                       Stretch="None"
+                                       HorizontalAlignment="Left"
+                                       RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                                <ContentPresenter Margin="2"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0.2"/>
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property="Background" Value="{DynamicResource MouseOverPrimary}"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource MouseOverText}"/>
+                        </Trigger>
+                        <Trigger Property="MinHeight" Value="0">
+                            <Setter Property="Height" Value="30"/>
+                        </Trigger>
+                        <Trigger Property="MinWidth" Value="0">
+                            <Setter Property="Width" Value="80"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="BorderBrush" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="RootElementBorder" Value="{DynamicResource PressedHighlights}"/>
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource PressedText}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--//print-->
+
+    <Style TargetType="Button" x:Key="H1ButtonPrint">
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <!--<Setter Property="Background" Value="White"/>-->
+        <!--<Setter Property="Foreground" Value="#0075c1"/>-->
+        <Setter Property="Background" Value="{DynamicResource Background}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Highlights}"/>
+
+        <Setter Property="BorderThickness" Value="1"/>
+        <!--<Setter Property="FontSize" Value="12"/>-->
+        <!--<Setter Property="FontFamily" Value="Segoe UI regular"/>-->
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="3,2"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border x:Name="RootElementBorder"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                Background="{TemplateBinding Background}"
+                                TextBlock.Foreground="{TemplateBinding Foreground}"
+                                CornerRadius="5"                                
+                                >
+                            <Grid>
+                                <Border x:Name="HoverBorder" 
+                                Background="{DynamicResource MouseOverHighlights}" 
+                                Opacity="0" CornerRadius="4"/>
+                                <ContentPresenter Margin="2"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    RecognizesAccessKey="True"                                                  
+                                    />
+                            </Grid>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0.2"/>
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property="Background" Value="{DynamicResource MouseOverPrimary}"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource MouseOverText}"/>
+                        </Trigger>
+                        <Trigger Property="MinHeight" Value="0">
+                            <Setter Property="Height" Value="30"/>
+                        </Trigger>
+                        <Trigger Property="MinWidth" Value="0">
+                            <Setter Property="Width" Value="80"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="BorderBrush" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="RootElementBorder" Value="{DynamicResource PressedHighlights}"/>
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource PressedText}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Button" x:Key="H1ButtonPrintIncImage">
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="Background" Value="{DynamicResource Background}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Highlights}"/>
+
+        <Setter Property="BorderThickness" Value="1"/>
+        <!--<Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontFamily" Value="Segoe UI regular"/>-->
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="3,2"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <StackPanel>
+                        <Border x:Name="RootElementBorder"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="5"                                
+                                TextBlock.Foreground="{TemplateBinding Foreground}">
+                            <StackPanel Orientation="Horizontal">
+                                <Border x:Name="HoverBorder" 
+                                Background="{TemplateBinding BorderBrush}" 
+                                   Opacity="0" CornerRadius="4"/>
+                                <Image x:Name="findImage" 
+                                       Source="pack://application:,,,/Common.UX;component/Resources/Images/22x22/actions/icon_Print.png"
+                                       Stretch="None"
+                                       HorizontalAlignment="Left"
+                                       RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                                <ContentPresenter Margin="2"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0.2"/>
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property="Background" Value="{DynamicResource MouseOverPrimary}"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource MouseOverText}"/>
+                        </Trigger>
+                        <Trigger Property="MinHeight" Value="0">
+                            <Setter Property="Height" Value="30"/>
+                        </Trigger>
+                        <Trigger Property="MinWidth" Value="0">
+                            <Setter Property="Width" Value="80"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="BorderBrush" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="RootElementBorder" Value="{DynamicResource PressedHighlights}"/>
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource PressedText}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--//Export-->
+
+    <Style TargetType="Button" x:Key="H1ButtonExport">
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <!--<Setter Property="Background" Value="White"/>-->
+        <!--<Setter Property="Foreground" Value="#0075c1"/>-->
+        <Setter Property="Background" Value="{DynamicResource Background}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Highlights}"/>
+
+        <Setter Property="BorderThickness" Value="1"/>
+        <!--<Setter Property="FontSize" Value="12"/>-->
+        <!--<Setter Property="FontFamily" Value="Segoe UI regular"/>-->
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="3,2"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border x:Name="RootElementBorder"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                Background="{TemplateBinding Background}"
+                                TextBlock.Foreground="{TemplateBinding Foreground}"
+                                CornerRadius="5"                                
+                                >
+                            <Grid>
+                                <Border x:Name="HoverBorder" 
+                                Background="{DynamicResource MouseOverHighlights}" 
+                                Opacity="0" CornerRadius="4"/>
+                                <ContentPresenter Margin="2"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    RecognizesAccessKey="True"                                                  
+                                    />
+                            </Grid>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0.2"/>
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property="Background" Value="{DynamicResource MouseOverPrimary}"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource MouseOverText}"/>
+                        </Trigger>
+                        <Trigger Property="MinHeight" Value="0">
+                            <Setter Property="Height" Value="30"/>
+                        </Trigger>
+                        <Trigger Property="MinWidth" Value="0">
+                            <Setter Property="Width" Value="80"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="BorderBrush" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="RootElementBorder" Value="{DynamicResource PressedHighlights}"/>
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource PressedText}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Button" x:Key="H1ButtonExportIncImage">
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="Background" Value="{DynamicResource Background}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Highlights}"/>
+
+        <Setter Property="BorderThickness" Value="1"/>
+        <!--<Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontFamily" Value="Segoe UI regular"/>-->
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="3,2"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <StackPanel>
+                        <Border x:Name="RootElementBorder"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="5"                                
+                                TextBlock.Foreground="{TemplateBinding Foreground}">
+                            <StackPanel Orientation="Horizontal">
+                                <Border x:Name="HoverBorder" 
+                                Background="{TemplateBinding BorderBrush}" 
+                                   Opacity="0" CornerRadius="4"/>
+                                <Image x:Name="findImage" 
+                                       Source="pack://application:,,,/Common.UX;component/Resources/Images/22x22/actions/icon_Export.png"
+                                       Stretch="None"
+                                       HorizontalAlignment="Left"
+                                       RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                                <ContentPresenter Margin="2"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0.2"/>
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property="Background" Value="{DynamicResource MouseOverPrimary}"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource MouseOverText}"/>
+                        </Trigger>
+                        <Trigger Property="MinHeight" Value="0">
+                            <Setter Property="Height" Value="30"/>
+                        </Trigger>
+                        <Trigger Property="MinWidth" Value="0">
+                            <Setter Property="Width" Value="80"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="BorderBrush" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="RootElementBorder" Value="{DynamicResource PressedHighlights}"/>
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource PressedText}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Button" x:Key="H1ButtonRefresh">
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="Background" Value="{DynamicResource Background}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Highlights}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <!--<Setter Property="FontSize" Value="12"/>-->
+        <!--<Setter Property="FontFamily" Value="Segoe UI regular"/>-->
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="3,2"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <ControlTemplate.Resources>
+                    </ControlTemplate.Resources>
+                    <StackPanel>
+                        <Border x:Name="RootElementBorder"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="5"                                
+                                TextBlock.Foreground="{TemplateBinding Foreground}">
+                            <StackPanel>
+                                <Border x:Name="HoverBorder" 
+                                Background="{TemplateBinding BorderBrush}" 
+                                   Opacity="0" CornerRadius="4"/>
+                                <ContentPresenter Margin="2"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    RecognizesAccessKey="True"
+                                    />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0.2"/>
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property ="TextBlock.TextAlignment" Value="Center" />
+                            <Setter Property="Background" Value="{DynamicResource MouseOverPrimary}"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource MouseOverText}"/>
+                        </Trigger>
+                        <Trigger Property="MinHeight" Value="0">
+                            <Setter Property="Height" Value="30"/>
+                        </Trigger>
+                        <Trigger Property="MinWidth" Value="0">
+                            <Setter Property="Width" Value="80"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="BorderBrush" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="RootElementBorder" Value="{DynamicResource PressedHighlights}"/>
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource PressedText}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Button" x:Key="H1ButtonRefreshIncImage">
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="Background" Value="{DynamicResource Background}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Highlights}"/>
+
+        <Setter Property="BorderThickness" Value="1"/>
+        <!--<Setter Property="FontSize" Value="12"/>-->
+        <!--<Setter Property="FontFamily" Value="Segoe UI regular"/>-->
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="3,2"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <ControlTemplate.Resources>
+                    </ControlTemplate.Resources>
+                    <StackPanel>
+                        <Border x:Name="RootElementBorder"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="5"                                
+                                TextBlock.Foreground="{TemplateBinding Foreground}">
+                            <StackPanel Orientation="Horizontal">
+                                <Border x:Name="HoverBorder" 
+                                Background="{TemplateBinding BorderBrush}" 
+                                   Opacity="0" CornerRadius="4"/>
+                                <Image x:Name="refreshImage" 
+                                       Source="pack://application:,,,/Common.UX;component/Resources/Images/icon_Refresh.png"
+                                       Stretch="None"
+                                       HorizontalAlignment="Left"
+                                       RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                                <ContentPresenter Margin="2"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0.2"/>
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property ="TextBlock.TextAlignment" Value="Center" />
+                            <Setter Property="Background" Value="{DynamicResource MouseOverPrimary}"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource MouseOverText}"/>
+                        </Trigger>
+                        <Trigger Property="MinHeight" Value="0">
+                            <Setter Property="Height" Value="30"/>
+                        </Trigger>
+                        <Trigger Property="MinWidth" Value="0">
+                            <Setter Property="Width" Value="80"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="BorderBrush" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="RootElementBorder" Value="{DynamicResource PressedHighlights}"/>
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource PressedText}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Button" x:Key="H1ButtonAddIncImage">
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="Background" Value="{DynamicResource Background}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Highlights}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <!--<Setter Property="FontSize" Value="12"/>-->
+        <!--<Setter Property="FontFamily" Value="Segoe UI regular"/>-->
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="3,2"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <ControlTemplate.Resources>
+                    </ControlTemplate.Resources>
+                    <StackPanel>
+                        <Border x:Name="RootElementBorder"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="5"                                
+                                TextBlock.Foreground="{TemplateBinding Foreground}">
+                            <StackPanel Orientation="Horizontal">
+                                <Border x:Name="HoverBorder" 
+                                Background="{TemplateBinding BorderBrush}" 
+                                   Opacity="0" CornerRadius="4"/>
+                                <Image x:Name="refreshImage" 
+                                       Source="pack://application:,,,/Common.UX;component/Resources/Images/22x22/actions/icon_Add.png"
+                                       Stretch="None"
+                                       HorizontalAlignment="Left"
+                                       RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                                <ContentPresenter Margin="2"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0.2"/>
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property ="TextBlock.TextAlignment" Value="Center" />
+                            <Setter Property="Background" Value="{DynamicResource MouseOverPrimary}"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource MouseOverText}"/>
+                        </Trigger>
+                        <Trigger Property="MinHeight" Value="0">
+                            <Setter Property="Height" Value="30"/>
+                        </Trigger>
+                        <Trigger Property="MinWidth" Value="0">
+                            <Setter Property="Width" Value="80"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="BorderBrush" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="RootElementBorder" Value="{DynamicResource PressedHighlights}"/>
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource PressedText}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Button" x:Key="H1ButtonDeleteIncImage">
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="Background" Value="{DynamicResource Background}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Highlights}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <!--<Setter Property="FontSize" Value="12"/>-->
+        <!--<Setter Property="FontFamily" Value="Segoe UI regular"/>-->
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="3,2"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <ControlTemplate.Resources>
+                    </ControlTemplate.Resources>
+                    <StackPanel>
+                        <Border x:Name="RootElementBorder"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="5"                                
+                                TextBlock.Foreground="{TemplateBinding Foreground}">
+                            <StackPanel Orientation="Horizontal">
+                                <Border x:Name="HoverBorder" 
+                                Background="{TemplateBinding BorderBrush}" 
+                                   Opacity="0" CornerRadius="4"/>
+                                <Image x:Name="refreshImage" 
+                                       Source="pack://application:,,,/Common.UX;component/Resources/Images/22x22/actions/icon_Delete.png"
+                                       Stretch="None"
+                                       HorizontalAlignment="Left"
+                                       RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                                <ContentPresenter Margin="2"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0.2"/>
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property ="TextBlock.TextAlignment" Value="Center" />
+                            <Setter Property="Background" Value="{DynamicResource MouseOverPrimary}"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource MouseOverText}"/>
+                        </Trigger>
+                        <Trigger Property="MinHeight" Value="0">
+                            <Setter Property="Height" Value="30"/>
+                        </Trigger>
+                        <Trigger Property="MinWidth" Value="0">
+                            <Setter Property="Width" Value="80"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="BorderBrush" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="RootElementBorder" Value="{DynamicResource PressedHighlights}"/>
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource PressedText}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Button" x:Key="H1ButtonSaveIncImage">
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="Background" Value="{DynamicResource Background}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Highlights}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <!--<Setter Property="FontSize" Value="12"/>-->
+        <!--<Setter Property="FontFamily" Value="Segoe UI regular"/>-->
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="3,2"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <ControlTemplate.Resources>
+                    </ControlTemplate.Resources>
+                    <StackPanel>
+                        <Border x:Name="RootElementBorder"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="5"                                
+                                TextBlock.Foreground="{TemplateBinding Foreground}">
+                            <StackPanel Orientation="Horizontal">
+                                <Border x:Name="HoverBorder" 
+                                Background="{TemplateBinding BorderBrush}" 
+                                   Opacity="0" CornerRadius="4"/>
+                                <Image x:Name="refreshImage" 
+                                       Source="pack://application:,,,/Common.UX;component/Resources/Images/22x22/actions/icon_Save.png"
+                                       Stretch="None"
+                                       HorizontalAlignment="Left"
+                                       RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                                <ContentPresenter Margin="2"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0.2"/>
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property ="TextBlock.TextAlignment" Value="Center" />
+                            <Setter Property="Background" Value="{DynamicResource MouseOverPrimary}"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource MouseOverText}"/>
+                        </Trigger>
+                        <Trigger Property="MinHeight" Value="0">
+                            <Setter Property="Height" Value="30"/>
+                        </Trigger>
+                        <Trigger Property="MinWidth" Value="0">
+                            <Setter Property="Width" Value="80"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="BorderBrush" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="RootElementBorder" Value="{DynamicResource PressedHighlights}"/>
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource PressedText}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Button" x:Key="H1ButtonWidgetDownloadIncImage">
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="Background" Value="{DynamicResource Background}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Highlights}"/>
+
+        <Setter Property="BorderThickness" Value="1"/>
+        <!--<Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontFamily" Value="Segoe UI regular"/>-->
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="3,2"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <StackPanel>
+                        <Border x:Name="RootElementBorder"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="5"                                
+                                TextBlock.Foreground="{TemplateBinding Foreground}">
+                            <StackPanel Orientation="Horizontal">
+                                <Border x:Name="HoverBorder" 
+                                Background="{TemplateBinding BorderBrush}" 
+                                   Opacity="0" CornerRadius="4"/>
+                                <Image x:Name="findImage" 
+                                       Source="pack://application:,,,/Common.UX;component/Resources/Images/22x22/actions/icon_Download.png"
+                                       Stretch="None"                                       
+                                       HorizontalAlignment="Left"
+                                       RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                                <ContentPresenter Margin="2"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0.2"/>
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property="Background" Value="{DynamicResource MouseOverPrimary}"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource MouseOverText}"/>
+                        </Trigger>
+                        <Trigger Property="MinHeight" Value="0">
+                            <Setter Property="Height" Value="40"/>
+                        </Trigger>
+                        <Trigger Property="MinWidth" Value="0">
+                            <Setter Property="Width" Value="100"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="BorderBrush" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="RootElementBorder" Value="{DynamicResource PressedHighlights}"/>
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource PressedText}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type Button}" x:Key="NotificationButtonStyle">
+        <Setter Property="Foreground" Value="{DynamicResource PressedText}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Primary}"/>
+        <Setter Property="Background" Value="{DynamicResource Transparent}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid  Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" >
+                        <!--<Border x:Name="PART_Background" CornerRadius="8"  Background="{StaticResource BellButtonDefaultBackground}"/>                        -->
+                        <Viewbox>
+                            <Grid Width="27" Height="27" Margin="5" >
+                                <Image >
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Setter Property="Source" Value="pack://application:,,,/Common.UX;component/Resources/Images/48x48/EmailDisabled48.png"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Online}" Value="True">
+                                                    <Setter Property="Source" Value="pack://application:,,,/Common.UX;component/Resources/Images/48x48/Email48.png"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                                <Grid x:Name="PART_NotifyNumber" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="Visible" Margin="-1">
+                                    <Ellipse Fill="{DynamicResource NotificationButtonNotifyBubbleBackground}" Width="12" Height="12" Stroke="{DynamicResource NotificationButtonNotifyBubbleBorder}" StrokeThickness="0.5"/>
+                                    <Viewbox Height="12" Width="12">
+                                        <ContentPresenter Margin="0,0,0,1" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="True"/>
+                                    </Viewbox>
+                                </Grid>
+                            </Grid>
+                        </Viewbox>
+                        <Border x:Name="PART_Hover" CornerRadius="8" Background="Transparent"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+
+
+
+                        <DataTrigger Binding="{Binding Content, RelativeSource={RelativeSource Self}}" Value="{x:Null}">
+                            <Setter Property="Visibility" TargetName="PART_NotifyNumber" Value="Collapsed"/>
+                        </DataTrigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="PART_Hover" Value="{DynamicResource MouseOverButtonOverlayWhite}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="PART_Hover" Value="{DynamicResource PressedButtonOverlayWhite}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type Button}" x:Key="UserManualButtonStyle">
+        <Setter Property="Foreground" Value="{DynamicResource PressedText}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Primary}"/>
+        <Setter Property="Background" Value="{DynamicResource Transparent}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid  Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" >
+                        <!--<Border x:Name="PART_Background" CornerRadius="8"  Background="{StaticResource BellButtonDefaultBackground}"/>                        -->
+                        <Viewbox>
+                            <Grid Width="27" Height="27" Margin="5" >
+                                <Image >
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Setter Property="Source" Value="pack://application:,,,/Common.UX;component/Resources/Images/UserSettings24.png"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Online}" Value="True">
+                                                    <Setter Property="Source" Value="pack://application:,,,/Common.UX;component/Resources/Images/UserSettings24.png"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                                <Grid x:Name="PART_NotifyNumber" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="Visible" Margin="-1">
+                                    <Ellipse Fill="{DynamicResource NotificationButtonNotifyBubbleBackground}" Width="12" Height="12" Stroke="{DynamicResource NotificationButtonNotifyBubbleBorder}" StrokeThickness="0.5"/>
+                                    <Viewbox Height="12" Width="12">
+                                        <ContentPresenter Margin="0,0,0,1" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="True"/>
+                                    </Viewbox>
+                                </Grid>
+                            </Grid>
+                        </Viewbox>
+                        <Border x:Name="PART_Hover" CornerRadius="8" Background="Transparent"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+
+
+
+                        <DataTrigger Binding="{Binding Content, RelativeSource={RelativeSource Self}}" Value="{x:Null}">
+                            <Setter Property="Visibility" TargetName="PART_NotifyNumber" Value="Collapsed"/>
+                        </DataTrigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="PART_Hover" Value="{DynamicResource MouseOverButtonOverlayWhite}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="PART_Hover" Value="{DynamicResource PressedButtonOverlayWhite}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--<Style TargetType="{x:Type Button}" x:Key="FirstPageButtonStyle">
+        <Setter Property="Foreground" Value="{StaticResource PressedText}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Primary}"/>
+        <Setter Property="Background" Value="{StaticResource Transparent}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid  Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" >
+                        <Viewbox>
+                            <Grid Width="27" Height="27" Margin="5" >
+                                <Image >
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Setter Property="Source" Value="pack://application:,,,/Common.UX;component/Resources/Images/first_page.png"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Online}" Value="True">
+                                                    <Setter Property="Source" Value="pack://application:,,,/Common.UX;component/Resources/Images/first_page.png"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                                <Grid x:Name="PART_NotifyNumber" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="Visible" Margin="-1">
+                                    <Ellipse Fill="{StaticResource LightHighlights}" Width="12" Height="12" Stroke="{StaticResource Primary}" StrokeThickness="0.5"/>
+                                    <Viewbox Height="12" Width="12">
+                                        <ContentPresenter Margin="0,0,0,1" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="True"/>
+                                    </Viewbox>
+                                </Grid>
+                            </Grid>
+                        </Viewbox>
+                        <Border x:Name="PART_Hover" CornerRadius="8" Background="Transparent"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Content, RelativeSource={RelativeSource Self}}" Value="{x:Null}">
+                            <Setter Property="Visibility" TargetName="PART_NotifyNumber" Value="Collapsed"/>
+                        </DataTrigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="PART_Hover">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{Binding Color,Source={StaticResource Primary}}" Opacity=".2"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="PART_Hover">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{Binding Color,Source={StaticResource Primary}}" Opacity=".4"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>-->
+
+    <Style TargetType="Button" x:Key="PagingButtonDefaultRounded">
+        <Setter Property="SnapsToDevicePixels"
+          Value="true" />
+        <Setter Property="OverridesDefaultStyle"
+          Value="true" />
+        <Setter Property="Background" Value="{DynamicResource Background}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Highlights}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <!--<Setter Property="MinHeight"
+          Value="23" />
+        <Setter Property="MinWidth"
+          Value="75" />-->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border x:Name="ButtonBorder" TextBlock.Foreground="{TemplateBinding Foreground}" 
+                            BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}" CornerRadius="5">
+                            <Grid>
+                                <Border x:Name="HoverBorder" Background="{DynamicResource MouseOverHighlights}" Opacity="0" CornerRadius="4"/>
+                                <ContentPresenter Margin="2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                RecognizesAccessKey="True"/>
+                                <!--<StackPanel Margin="5,0,0,0" Orientation="Horizontal">
+                                    <Image Source="/Common.UX;component/Resources/Images/icon_Search.png"/>
+                                </StackPanel>-->
+                            </Grid>
+                        </Border>
+                        <!--<StackPanel Margin="5,0,0,0" Orientation="Horizontal">
+                            <Image Source="/Common.UX;component/Resources/Images/icon_Search.png"/>
+                        </StackPanel>-->
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0.25"/>
+                            <Setter Property="Background" Value="{DynamicResource MouseOverPrimary}"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource MouseOverText}"/>
+                            <Setter Property="Cursor" Value="Hand" />
+                        </Trigger>
+
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="ButtonBorder" Value="{DynamicResource PressedHighlights}"/>
+                            <Setter Property="Opacity" TargetName="HoverBorder" Value="0"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource PressedText}"/>
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="BorderBrush" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                        <Trigger Property="MinHeight" Value="0">
+                            <Setter Property="Height" Value="30"/>
+                        </Trigger>
+                        <Trigger Property="MinWidth" Value="0">
+                            <Setter Property="Width" Value="50"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="ToggleButton" x:Key="ToggleButtonLightRounded">
+        <Setter Property="SnapsToDevicePixels"
+          Value="true" />
+        <Setter Property="OverridesDefaultStyle"
+          Value="true" />
+        <Setter Property="Background" Value="{DynamicResource Background}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Highlights}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <!--<Setter Property="MinHeight"
+          Value="23" />
+        <Setter Property="MinWidth"
+          Value="75" />-->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Grid>
+                        <Border x:Name="ButtonBorder" TextBlock.Foreground="{TemplateBinding Foreground}" 
+                            BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}" CornerRadius="5">
+                            <Grid>
+                                <ContentPresenter Margin="2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                RecognizesAccessKey="True"/>
+                                <Border x:Name="DarkHoverBorder" Background="{DynamicResource PressedHighlights}" Opacity="0" CornerRadius="4"/>
+                                <Border x:Name="LightHoverBorder" Background="{DynamicResource MouseOverHighlights}" Opacity="0" CornerRadius="4"/>
+                            </Grid>
+                        </Border>
+
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" TargetName="LightHoverBorder" Value="0.2"/>
+                            <Setter Property="Background" Value="{DynamicResource MouseOverPrimary}"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource MouseOverText}"/>
+                        </Trigger>
+
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Opacity" TargetName="DarkHoverBorder" Value="0.6"/>
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource PressedText}"/>
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="BorderBrush" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Disabled}"/>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

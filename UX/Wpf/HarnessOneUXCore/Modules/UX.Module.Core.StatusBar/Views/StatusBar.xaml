@@ -1,0 +1,230 @@
+﻿<UserControl x:Class="SEWSE.H1.UX.Module.Core.StatusBar.Views.StatusBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:SEWSE.H1.UX.Module.Core.StatusBar.Views"
+             mc:Ignorable="d"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:ig="http://schemas.infragistics.com/xaml"
+             xmlns:igPrim="http://schemas.infragistics.com/xaml/primitives"
+             xmlns:igWPF="http://schemas.infragistics.com/xaml/wpf"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             Height="30">
+    <!--<Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Column="0" Text="{Binding Path=MaximizeLayout, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+        <TextBlock Grid.Column="1" Text="{Binding Path=UpdateStatus, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+    </Grid>-->
+    <!--#region Status Bar Area-->
+
+    <StatusBar x:Name="statusBar">
+        <StatusBar.Resources>
+            <Style TargetType="TextBlock"
+                   x:Key="StatusBarTextBlock">
+                <Setter Property="TextWrapping"
+                        Value="NoWrap" />
+                <Setter Property="TextTrimming"
+                        Value="CharacterEllipsis" />
+                <Setter Property="Padding"
+                        Value="2,0" />
+            </Style>
+
+            <Style TargetType="Separator"
+                   BasedOn="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}">
+                <Setter Property="Margin"
+                        Value="2,0" />
+            </Style>
+        </StatusBar.Resources>
+
+        <!--Animations-->
+
+        <StatusBar.Style>
+            <Style TargetType="StatusBar">
+                <Setter x:Name="UpdateColor" Property="Background" Value="{Binding StatusColor, Mode=OneWay, NotifyOnTargetUpdated=True}"/>
+                <Style.Triggers>
+
+                    <!--Clear Currently running animations-->
+                    <DataTrigger Binding="{Binding ColorChanged}" Value="None">
+                        <DataTrigger.EnterActions>
+                            <SkipStoryboardToFill BeginStoryboardName="RedAnim"/>
+                            <RemoveStoryboard BeginStoryboardName="RedAnim"/>
+                            <SkipStoryboardToFill BeginStoryboardName="OrangeAnim"/>
+                            <RemoveStoryboard BeginStoryboardName="OrangeAnim"/>
+                            <SkipStoryboardToFill BeginStoryboardName="GreenAnim"/>
+                            <RemoveStoryboard BeginStoryboardName="GreenAnim"/>
+                        </DataTrigger.EnterActions>
+                    </DataTrigger>
+
+                    <!--Error Message-->
+                    <DataTrigger Binding="{Binding ColorChanged}" Value="Red">
+                        <DataTrigger.EnterActions>
+                            <BeginStoryboard x:Name="RedAnim">
+                                <Storyboard>
+                                    <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(StatusBar.Background).Color" Duration="0:0:1" FillBehavior="HoldEnd">
+                                        <ColorAnimationUsingKeyFrames.KeyFrames>
+                                            <ColorKeyFrameCollection>
+                                                <DiscreteColorKeyFrame Value="Red" KeyTime="0:0:0"/>
+                                                <LinearColorKeyFrame Value="#9A0008"/>
+                                            </ColorKeyFrameCollection>
+                                        </ColorAnimationUsingKeyFrames.KeyFrames>
+                                    </ColorAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.EnterActions>
+                        <DataTrigger.ExitActions>
+                            <RemoveStoryboard BeginStoryboardName="RedAnim"/>
+                        </DataTrigger.ExitActions>
+                    </DataTrigger>
+
+                    <!--Operation Message-->
+                    <DataTrigger Binding="{Binding ColorChanged}" Value="Orange">
+                        <DataTrigger.EnterActions>
+                            <BeginStoryboard x:Name="OrangeAnim">
+                                <Storyboard>
+                                    <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(StatusBar.Background).Color" Duration="0:0:1" FillBehavior="HoldEnd">
+                                        <ColorAnimationUsingKeyFrames.KeyFrames>
+                                            <ColorKeyFrameCollection>
+                                                <DiscreteColorKeyFrame Value="Orange" KeyTime="0:0:0"/>
+                                                <LinearColorKeyFrame Value="#D04D03"/>
+                                            </ColorKeyFrameCollection>
+                                        </ColorAnimationUsingKeyFrames.KeyFrames>
+                                    </ColorAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.EnterActions>
+                        <DataTrigger.ExitActions>
+                            <RemoveStoryboard BeginStoryboardName="OrangeAnim"/>
+                        </DataTrigger.ExitActions>
+                    </DataTrigger>
+
+                    <!--Success Message-->
+                    <DataTrigger Binding="{Binding ColorChanged}" Value="Green">
+                        <DataTrigger.EnterActions>
+                            <BeginStoryboard x:Name="GreenAnim">
+                                <Storyboard>
+                                    <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(StatusBar.Background).Color" Duration="0:0:1" FillBehavior="HoldEnd">
+                                        <ColorAnimationUsingKeyFrames.KeyFrames>
+                                            <ColorKeyFrameCollection>
+                                                <DiscreteColorKeyFrame Value="#3ED884" KeyTime="0:0:0"/>
+                                                <LinearColorKeyFrame Value="#217346"/>
+                                            </ColorKeyFrameCollection>
+                                        </ColorAnimationUsingKeyFrames.KeyFrames>
+                                    </ColorAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.EnterActions>
+                        <DataTrigger.ExitActions>
+                            <RemoveStoryboard BeginStoryboardName="GreenAnim"/>
+                        </DataTrigger.ExitActions>
+                    </DataTrigger>
+
+                    <!--Hide Messages-->
+                    <DataTrigger Binding="{Binding ColorChanged}" Value="Transparent">
+                        <DataTrigger.Setters>
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="Transparent"/>
+                            <Setter Property="Visibility" Value="Hidden"/>
+                        </DataTrigger.Setters>
+                    </DataTrigger>
+
+                </Style.Triggers>
+            </Style>
+        </StatusBar.Style>
+
+
+        <StatusBarItem Foreground="White"
+                       Name="stabarVersion"
+                       HorizontalAlignment="Center">
+            <DockPanel LastChildFill="True"
+                       Grid.Column="1">
+                <!--<Image DockPanel.Dock="Left"
+                       Margin="2,0"
+                       Source="http://www.hello.com/sites/default/files/big-red-x.gif"
+                       Width="16"
+                       Visibility="Collapsed" />-->
+                <TextBlock Style="{StaticResource StatusBarTextBlock}"
+                           ToolTip="{Binding StatusMessage}"
+                           Text="{Binding StatusMessage}"/>
+            </DockPanel>
+        </StatusBarItem>
+
+        <StatusBarItem>
+            <Button Name="Show" Content="Show All" Command="{Binding ShowClickCommand}" Margin="5,0,0,0" Visibility="{Binding EnableList}"/>
+        </StatusBarItem>
+
+        <!--Popup for ErrorList-->
+        <Popup IsOpen = "{Binding ShowList}" 
+            PlacementTarget = "{Binding ElementName = Show}" Placement="Top"
+            AllowsTransparency = "True" PopupAnimation = "Slide"
+            HorizontalOffset = "0" VerticalOffset = "-5">
+
+            <ListView ItemsSource="{Binding StatusMessageList, Mode=OneWay, NotifyOnSourceUpdated=True}" Visibility="{Binding EnableList}" Name="MessageList">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Background="{Binding StatusColor}" Orientation="Horizontal">
+                            <TextBlock Text="{Binding Message}" Foreground="White" Width="{Binding DataContext.Longest, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"/>
+                            <TextBlock Text="{Binding Progress}" Foreground="Black" Background="White" Width="20" Height="20" TextAlignment="Center" FontWeight="Bold"/>
+                            <Button Margin="5,0,0,0">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Content" Value="X"/>
+                                        <Setter Property="Command" Value="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"/>
+                                        <Setter Property="CommandParameter" Value="{Binding Message}"/>
+                                        <Setter Property="Background" Value="Red"/>
+                                        <Setter Property="BorderBrush" Value="Black"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter Property="Width" Value="20"/>
+                                        <Setter Property="FontWeight" Value="SemiBold"/>
+                                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="Background" Value="{Binding StatusColor}"/>
+                        <Setter Property="IsEnabled" Value="True"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+
+        </Popup>
+
+        <StatusBarItem Foreground="White"
+                       HorizontalAlignment="Right"
+                       Margin="0,0,10,0">
+            <StackPanel Orientation="Horizontal"
+                       Grid.Column="1">
+                <TextBlock Name="stabarServiceFabric"
+                           Style="{StaticResource StatusBarTextBlock}"
+                           Text="{Binding UpdateStatus}" />
+                <!--<Separator DockPanel.Dock="Left" />
+                <TextBlock Name="stabarServer"
+                           Style="{StaticResource StatusBarTextBlock}" />
+                <Separator DockPanel.Dock="Left" />
+                <TextBlock Name="stabarApp"
+                           Style="{StaticResource StatusBarTextBlock}" />-->
+            </StackPanel>
+        </StatusBarItem>
+
+        <StatusBarItem Foreground="White"
+                       HorizontalAlignment="Right"
+                       Margin="0,0,10,0">
+            <Button HorizontalAlignment="Right" Content="X" Background="Red" BorderBrush="Black" Foreground="White" Width="20" FontWeight="SemiBold" VerticalAlignment="Center" 
+                Command="{Binding CloseClickCommand}" Visibility="{Binding EnableButton}"/>
+        </StatusBarItem>
+
+    </StatusBar>
+    <!--#endregion Status Bar Area-->
+</UserControl>

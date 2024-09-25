@@ -1,0 +1,62 @@
+﻿<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:ig="http://schemas.infragistics.com/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    x:Class="SEWSE.H1.UX.Module.Core.StartupWizard.Views.GroupPermission"
+             mc:Ignorable="d" 
+             d:DesignHeight="540" d:DesignWidth="960">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="8*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="8*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel Margin="40">
+                <TextBlock Text="To have access to the modules within Harness One, you'll need certain permissions granted. This can be done by assigning yourself a group from the box below." 
+                       TextWrapping="Wrap"  FontSize="12" TextAlignment="Center" />
+                <TextBlock Text="Alternatively you can customize your permissions by using the 'Advanced' button."
+                           TextWrapping="Wrap" FontSize="12" TextAlignment="Center" Margin="10" Visibility="Collapsed"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1">
+                <TextBlock Text="Role: " Margin="10" VerticalAlignment="Center"/>
+                <ComboBox x:Name="RolesComboBox" Margin="10" HorizontalAlignment="Center" MinWidth="300" 
+                          ItemsSource="{Binding Roles}" DisplayMemberPath="ActiveDirectoryName" SelectedItem="{Binding SelectedRole, Mode=OneWayToSource}" Style="{DynamicResource ComboBoxDefault}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="2">
+                <TextBlock Text="Or define your own custom permissions:" Margin="10" VerticalAlignment="Center"/>
+                <Button Content="Advanced" Margin="10"  Command="{Binding AdvancedCommand}"  Style="{DynamicResource ButtonDefault}"/>
+            </StackPanel>
+            <Button Grid.Row="3" Content="Ok" Margin="20" HorizontalAlignment="Right" VerticalAlignment="Bottom" MinWidth="75"
+                    Command="{Binding ReviewCommand}" Style="{DynamicResource ButtonDefault}"/>
+        </Grid>
+
+        <ig:XamBusyIndicator IsBusy="True" Grid.ColumnSpan="3" Grid.RowSpan="3" Visibility="{Binding ShowOverlay}">
+            <ig:XamBusyIndicator.BusyContent>
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" >
+                    <TextBlock Text="Connection to the Harness One service couldn't be established." 
+                           TextWrapping="Wrap" FontWeight="Thin" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Center"
+                           TextAlignment="Center" Margin="10" Foreground="White"/>
+                    <TextBlock Text="Please check your internet connection while we try to reconnect you..." 
+                           TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center"
+                           TextAlignment="Center" Margin="10" Foreground="White"/>
+                </StackPanel>
+            </ig:XamBusyIndicator.BusyContent>
+        </ig:XamBusyIndicator>
+    </Grid>
+</UserControl>

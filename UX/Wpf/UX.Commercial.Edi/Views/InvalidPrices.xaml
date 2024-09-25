@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="UX.Commercial.Edi.Views.InvalidPrices"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:igDp="http://infragistics.com/DataPresenter"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:converters="clr-namespace:UX.Commercial.Edi.Core.Converters"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <igDp:XamDataGrid x:Name="InvalidPricesDetails" AutoFit="True" DataSource="{Binding Path=InvalidPricesData}">
+                <igDp:XamDataGrid.Resources>
+                    <converters:PriceLagConverter x:Key="PriceLagConverter" />
+                </igDp:XamDataGrid.Resources>
+                <igDp:XamDataGrid.FieldSettings>
+                    <igDp:FieldSettings AllowEdit="False" LabelTextWrapping="Wrap" AllowCellVirtualization="True" />
+                </igDp:XamDataGrid.FieldSettings>
+                <igDp:XamDataGrid.FieldLayoutSettings>
+                    <igDp:FieldLayoutSettings AutoGenerateFields="False" AutoFitMode="Always" AllowClipboardOperations="Copy" SelectionTypeCell="Single"  SelectionTypeRecord="None" />
+                </igDp:XamDataGrid.FieldLayoutSettings>
+                <igDp:XamDataGrid.FieldLayouts>
+                    <igDp:FieldLayout>
+                        <igDp:FieldLayout.Fields>
+                            <igDp:Field Name="FileName" Label="File Name" />
+                            <igDp:TextField Name="Customer" Label="Business Unit" />
+                            <igDp:TextField Name="CustomerLocation" Label="Customer Location Name" />
+                            <igDp:TextField Name="CustomerOrderNumber" Label="Customer Order Number" />
+                            <igDp:TextField Name="FinanceCode" Label="Finance Code" />
+                            <igDp:TextField Name="WmsInvoiceNumber" Label="WMS Invoice Number" />
+                            <igDp:TextField Name="PartNumber" Label="Part Number" />
+                            <igDp:TextField Name="CustomerPartNumber" Label="Customer Part Number" />
+                            <igDp:CheckBoxField Name="IsUsingPartNumber" Label="Is Using Part Number" />
+                            <igDp:TextField Name="PartDescription" Label="Part Description" />
+                            <igDp:DateTimeField Name="DispatchDate" Label="Dispatch Date" />
+                            <igDp:TextField Name="DispatchNumber" Label="Dispatch Number" />
+                            <igDp:Field Name="BatchId" Label="Price Lag" Converter="{StaticResource PriceLagConverter}" />
+                            <igDp:CurrencyField Name="TotalInvoicePrice" Label="Held Up" Format="€ #,##0.00" />
+                            <igDp:NumericField Name="Quantity" Label="Quantity"  />
+                        </igDp:FieldLayout.Fields>
+                    </igDp:FieldLayout>
+                </igDp:XamDataGrid.FieldLayouts>
+            </igDp:XamDataGrid>
+        </Grid>
+    </Grid>
+</UserControl>

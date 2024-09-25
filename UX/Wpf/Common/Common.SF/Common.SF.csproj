@@ -1,0 +1,599 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{33F19074-D650-4D5A-86C0-5C990FB52B82}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Common.SF</RootNamespace>
+    <AssemblyName>Common.SF</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Common.SF.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'UAT|AnyCPU'">
+    <OutputPath>bin\UAT\</OutputPath>
+    <DefineConstants>TRACE;UAT</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\UAT\Common.SF.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Live|AnyCPU'">
+    <OutputPath>bin\Live\</OutputPath>
+    <DefineConstants>TRACE;Live</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>bin\Debug\Common.SF.xml</DocumentationFile>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'UAT|x64'">
+    <OutputPath>bin\x64\UAT\</OutputPath>
+    <DefineConstants>TRACE;UAT</DefineConstants>
+    <DocumentationFile>bin\UAT\Common.SF.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Live|x64'">
+    <OutputPath>bin\x64\Live\</OutputPath>
+    <DefineConstants>TRACE;Live</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Configuration.2.0.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.Abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Configuration.Abstractions.2.0.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.Binder, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Configuration.Binder.2.0.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.Binder.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.2.0.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Options.2.0.0\lib\netstandard2.0\Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options.ConfigurationExtensions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Options.ConfigurationExtensions.2.0.0\lib\netstandard2.0\Microsoft.Extensions.Options.ConfigurationExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Primitives.2.0.0\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ServiceFabric.Actors, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
+      <HintPath>..\packages\Microsoft.ServiceFabric.Actors.3.3.644\lib\net462\Microsoft.ServiceFabric.Actors.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ServiceFabric.Data, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
+      <HintPath>..\packages\Microsoft.ServiceFabric.Data.3.3.644\lib\net462\Microsoft.ServiceFabric.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ServiceFabric.Data.Extensions, Version=1.4.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ServiceFabric.Data.Extensions.1.4.644\lib\net462\Microsoft.ServiceFabric.Data.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ServiceFabric.Data.Interfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
+      <HintPath>..\packages\Microsoft.ServiceFabric.Data.Interfaces.3.3.644\lib\net462\Microsoft.ServiceFabric.Data.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ServiceFabric.Diagnostics, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
+      <HintPath>..\packages\Microsoft.ServiceFabric.Diagnostics.Internal.3.3.644\lib\net462\Microsoft.ServiceFabric.Diagnostics.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ServiceFabric.FabricTransport, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
+      <HintPath>..\packages\Microsoft.ServiceFabric.FabricTransport.Internal.3.3.644\lib\net462\Microsoft.ServiceFabric.FabricTransport.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ServiceFabric.FabricTransport.V2, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
+      <HintPath>..\packages\Microsoft.ServiceFabric.FabricTransport.Internal.3.3.644\lib\net462\Microsoft.ServiceFabric.FabricTransport.V2.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ServiceFabric.Internal, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
+      <HintPath>..\packages\Microsoft.ServiceFabric.6.4.644\lib\net462\Microsoft.ServiceFabric.Internal.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ServiceFabric.Internal.Strings, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
+      <HintPath>..\packages\Microsoft.ServiceFabric.6.4.644\lib\net462\Microsoft.ServiceFabric.Internal.Strings.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ServiceFabric.Preview, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
+      <HintPath>..\packages\Microsoft.ServiceFabric.6.4.644\lib\net462\Microsoft.ServiceFabric.Preview.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ServiceFabric.ReliableCollection.Interop, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ServiceFabric.Data.Extensions.1.4.644\lib\net462\Microsoft.ServiceFabric.ReliableCollection.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ServiceFabric.Services, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
+      <HintPath>..\packages\Microsoft.ServiceFabric.Services.3.3.644\lib\net462\Microsoft.ServiceFabric.Services.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ServiceFabric.Services.Remoting, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
+      <HintPath>..\packages\Microsoft.ServiceFabric.Services.Remoting.3.3.644\lib\net462\Microsoft.ServiceFabric.Services.Remoting.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceFabric.PubSubActors, Version=7.3.4.0, Culture=neutral, PublicKeyToken=a316d205d3b60794, processorArchitecture=AMD64">
+      <HintPath>..\packages\ServiceFabric.PubSubActors.7.3.4\lib\net46\ServiceFabric.PubSubActors.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceFabric.PubSubActors.Interfaces, Version=7.3.4.0, Culture=neutral, PublicKeyToken=a316d205d3b60794, processorArchitecture=AMD64">
+      <HintPath>..\packages\ServiceFabric.PubSubActors.Interfaces.7.3.4\lib\net46\ServiceFabric.PubSubActors.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.4.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.ConfigurationManager, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Configuration.ConfigurationManager.4.5.0\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.OracleClient" />
+    <Reference Include="System.Data.SqlClient, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SqlClient.4.4.0\lib\net461\System.Data.SqlClient.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Fabric, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
+      <HintPath>..\packages\Microsoft.ServiceFabric.6.4.644\lib\net462\System.Fabric.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Fabric.Management.ServiceModel, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
+      <HintPath>..\packages\Microsoft.ServiceFabric.6.4.644\lib\net462\System.Fabric.Management.ServiceModel.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Fabric.Strings, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
+      <HintPath>..\packages\Microsoft.ServiceFabric.6.4.644\lib\net462\System.Fabric.Strings.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq.Dynamic, Version=1.0.6132.35681, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Dynamic.1.0.7\lib\net40\System.Linq.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.4.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security.AccessControl, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.AccessControl.4.5.0\lib\net461\System.Security.AccessControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Permissions, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Permissions.4.5.0\lib\net461\System.Security.Permissions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Principal.Windows, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Principal.Windows.4.5.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Contracts\Interfaces\Administration\Maintenance\IFunctionControlSequenceType.cs" />
+    <Compile Include="Contracts\Interfaces\Administration\Maintenance\UXData\IHierarchy.cs" />
+    <Compile Include="Contracts\Interfaces\Administration\Maintenance\UXData\ILabels.cs" />
+    <Compile Include="Contracts\Interfaces\Administration\Maintenance\UXData\ILanguageHierarchy.cs" />
+    <Compile Include="Contracts\Interfaces\Administration\Maintenance\UXData\ILanguages.cs" />
+    <Compile Include="Contracts\Interfaces\Administration\Maintenance\IPerformance.cs" />
+    <Compile Include="Contracts\Interfaces\Administration\Maintenance\UXData\IUXData.cs" />
+    <Compile Include="Contracts\Interfaces\Administration\Security\Access\IAccess.cs" />
+    <Compile Include="Contracts\Interfaces\Administration\Security\Access\IHelpdeskCallQueue.cs" />
+    <Compile Include="Contracts\Interfaces\Administration\Security\Access\IModuleOwners.cs" />
+    <Compile Include="Contracts\Interfaces\Administration\Security\DataFilter\IDataFilter.cs" />
+    <Compile Include="Contracts\Interfaces\Administration\Security\DataFilter\IFieldOverride.cs" />
+    <Compile Include="Contracts\Interfaces\Base\IBase64.cs" />
+    <Compile Include="Contracts\Interfaces\Core\Logging\INPRStageChangeLog.cs" />
+    <Compile Include="Contracts\Interfaces\Core\Logging\IAuditLog.cs" />
+    <Compile Include="Contracts\Interfaces\Core\Email\IEmail.cs" />
+    <Compile Include="Contracts\Interfaces\Core\Notifications\INotifications.cs" />
+    <Compile Include="Contracts\Interfaces\Core\Logging\ILogging.cs" />
+    <Compile Include="Contracts\Interfaces\Core\Notifications\ISubscriptions.cs" />
+    <Compile Include="Contracts\Interfaces\Core\Security\IJSOXH1UserRegistration.cs" />
+    <Compile Include="Contracts\Interfaces\Core\Security\IMenu.cs" />
+    <Compile Include="Contracts\Interfaces\Core\Security\ISecurity.cs" />
+    <Compile Include="Contracts\Interfaces\Core\Security\ISecurityAudit.cs" />
+    <Compile Include="Contracts\Interfaces\Core\Security\IUserList.cs" />
+    <Compile Include="Contracts\Interfaces\Core\ServiceConfiguration\IConnections.cs" />
+    <Compile Include="Contracts\Interfaces\Core\User\IUser.cs" />
+    <Compile Include="Contracts\Interfaces\ETL\IHelpdesk.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMastersAssociation\IProjectEngineeringAssociation.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMastersAssociation\IReasonH1FunctionAssociation.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IWireColour.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IWireSize.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IWireType.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\ICustomerBusinessHierarchyService.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IFlexType.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IReason.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\ISupplierApprovalStatus.cs" />
+    <Compile Include="Contracts\Interfaces\NPA\IArchiveNewPartsAuthorization.cs" />
+    <Compile Include="Contracts\Interfaces\NPA\INewPartsAuthorization.cs" />
+    <Compile Include="Contracts\Interfaces\NPA\INPAProjectDetails.cs" />
+    <Compile Include="Contracts\Interfaces\NPA\INPAStatusCode.cs" />
+    <Compile Include="Contracts\Interfaces\NPA\INPAType.cs" />
+    <Compile Include="Contracts\Interfaces\NPA\IProductionPartApprovalProcessLevel.cs" />
+    <Compile Include="Contracts\Interfaces\NPA\ISearchDHSForParts.cs" />
+    <Compile Include="Contracts\Interfaces\NPA\ISearchNPA.cs" />
+    <Compile Include="Contracts\Interfaces\NPA\ISubsidiary.cs" />
+    <Compile Include="Contracts\Interfaces\NPR\ICustomerProjectStatus.cs" />
+    <Compile Include="Contracts\Interfaces\NPR\INPRType.cs" />
+    <Compile Include="Contracts\Interfaces\NPR\INewPartRequest.cs" />
+    <Compile Include="Contracts\Interfaces\NPR\INPRPartSearch.cs" />
+    <Compile Include="Contracts\Interfaces\NPR\INPRPartValidation.cs" />
+    <Compile Include="Contracts\Interfaces\NPR\IProjectDetails.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IHierarchyUploadValidations.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IMaterialHierarchyService.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPropagateNPRToH1.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IRFQSamplesSettings.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IMaterialOriginCostSettings.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPurchasingCustomer.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPurchasingCustomerFacilityVehicle.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPurchasingCustomerGroup.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPurchasingFacilityMaster.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPurchasingVehicleMaster.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPurchasingCustomerMaster.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPurchasingFacility.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPurchasingFacilityGroup.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IRFQStatus.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IRFQParameterSettings.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IRFQReason.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IRFQEmailSettings.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\ISupplierMaterialOriginException.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPurchasingVehicle.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\ISupplierMaterialPOPricingUploadValidations.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\ISupplierPanel.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\ISupplierRFQFieldSettings.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\ISupplierRFQPortalSettings.cs" />
+    <Compile Include="Contracts\Interfaces\RFQManagement\IFunctionControlSequenceGenerator.cs" />
+    <Compile Include="Contracts\Interfaces\RFQManagement\IRFQSupplierSelection.cs" />
+    <Compile Include="Contracts\Interfaces\RFQManagement\INPRBacklog.cs" />
+    <Compile Include="Contracts\Interfaces\RFQManagement\IRFQ.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\AlternativePart\IAlternativeParts.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\AlternativePart\IAlternativePartsCAE.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\AlternativePart\IAlternativePartsConst.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\AlternativePart\IAlternativePartsData.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\DsiAssociation\IDsiAssociation.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\IDsi.cs" />
+    <Compile Include="Contracts\Interfaces\SupplyPlanning\ICustomerEDISetup.cs" />
+    <Compile Include="Contracts\Interfaces\SupplyPlanning\ICustomerEDITemplate.cs" />
+    <Compile Include="Contracts\Interfaces\SupplyPlanning\IEDISetupMasters.cs" />
+    <Compile Include="Contracts\Interfaces\SupplyPlanning\IEDIType.cs" />
+    <Compile Include="Contracts\Interfaces\SupplyPlanning\IEDIFileType.cs" />
+    <Compile Include="Contracts\Interfaces\Yokoten\IAudit.cs" />
+    <Compile Include="Contracts\Interfaces\Yokoten\IAuditDefinition.cs" />
+    <Compile Include="Contracts\Interfaces\Yokoten\IAuditGrade.cs" />
+    <Compile Include="Contracts\Interfaces\Yokoten\IManufacturingProcessEquipment.cs" />
+    <Compile Include="Contracts\Interfaces\Yokoten\IProductType.cs" />
+    <Compile Include="Contracts\Interfaces\Yokoten\IQualityConcern.cs" />
+    <Compile Include="Contracts\Interfaces\Yokoten\IProcessType.cs" />
+    <Compile Include="Contracts\Interfaces\Yokoten\IYokotenMasters.cs" />
+    <Compile Include="Contracts\Models\Core\Proxy\Commercial\Proxy.cs" />
+    <Compile Include="Contracts\Models\Core\Proxy\Commercial\RangeCollection.cs" />
+    <Compile Include="Contracts\Models\Core\Proxy\ProxyBase64.cs" />
+    <Compile Include="Contracts\Models\Core\Proxy\ServicePartitionProxyInformation.cs" />
+    <Compile Include="Infrastructure\AsyncEnumerable\Enumerators\AsyncSelectEnumerator.cs" />
+    <Compile Include="Infrastructure\AsyncEnumerable\Enumerators\AsyncSelectManyEnumerator.cs" />
+    <Compile Include="Infrastructure\AsyncEnumerable\Enumerators\AsyncSkipWhileEnumerator.cs" />
+    <Compile Include="Infrastructure\AsyncEnumerable\Enumerators\AsyncTakeWhileEnumerator.cs" />
+    <Compile Include="Infrastructure\AsyncEnumerable\Enumerators\AsyncWhereEnumerator.cs" />
+    <Compile Include="Infrastructure\AsyncEnumerable\Extensions\AsyncAllExtensions.cs" />
+    <Compile Include="Infrastructure\AsyncEnumerable\Extensions\AsyncAnyExtensions.cs" />
+    <Compile Include="Infrastructure\AsyncEnumerable\Extensions\AsyncEnumerableExtensions.cs" />
+    <Compile Include="Infrastructure\AsyncEnumerable\Extensions\AsyncEnumerableSelectExtensions.cs" />
+    <Compile Include="Infrastructure\AsyncEnumerable\Extensions\AsyncEnumerableSkipExtensions.cs" />
+    <Compile Include="Infrastructure\AsyncEnumerable\Extensions\AsyncEnumerableWhereExtensions.cs" />
+    <Compile Include="Infrastructure\AsyncEnumerable\Extensions\AsyncFirstExtensions.cs" />
+    <Compile Include="Infrastructure\AsyncEnumerable\Extensions\AsyncSelectManyExtensions.cs" />
+    <Compile Include="Infrastructure\AsyncEnumerable\Extensions\AsyncTakeExtensions.cs" />
+    <Compile Include="Infrastructure\Base\ActorServiceBase.cs" />
+    <Compile Include="Infrastructure\Base\Commercial\ActorServiceBase.cs" />
+    <Compile Include="Infrastructure\Base\Commercial\StatefulServiceBase.cs" />
+    <Compile Include="Infrastructure\Base\Commercial\StatelessServiceBase.cs" />
+    <Compile Include="Infrastructure\Base\ServiceEventSource.cs" />
+    <Compile Include="Infrastructure\Base\StatefulServiceBase.cs" />
+    <Compile Include="Infrastructure\Base\StatelessServiceBase.cs" />
+    <Compile Include="Contracts\Interfaces\Administration\Maintenance\UXData\IH1FieldMaster.cs" />
+    <Compile Include="Contracts\Interfaces\Administration\Maintenance\UXData\IH1FunctionH1ModuleAssociation.cs" />
+    <Compile Include="Contracts\Interfaces\Administration\Maintenance\UXData\IH1FunctionMaster.cs" />
+    <Compile Include="Contracts\Interfaces\Administration\Maintenance\UXData\IH1ModuleH1ViewAssociation.cs" />
+    <Compile Include="Contracts\Interfaces\Administration\Maintenance\UXData\IH1ModuleMaster.cs" />
+    <Compile Include="Contracts\Interfaces\Administration\Maintenance\UXData\IH1ViewH1FieldAssociation.cs" />
+    <Compile Include="Contracts\Interfaces\Administration\Maintenance\UXData\IH1ViewMaster.cs" />
+    <Compile Include="Contracts\Interfaces\Base\IBaseByte.cs" />
+    <Compile Include="Contracts\Interfaces\Base\IRecoveryByte.cs" />
+    <Compile Include="Contracts\Interfaces\Base\IBase.cs" />
+    <Compile Include="Contracts\Interfaces\Base\IDeleteAll.cs" />
+    <Compile Include="Contracts\Interfaces\Base\IRecovery64.cs" />
+    <Compile Include="Contracts\Interfaces\Core\Logging\IErrorLog.cs" />
+    <Compile Include="Contracts\Interfaces\Core\IUtilities.cs" />
+    <Compile Include="Contracts\Interfaces\Core\ServiceConfiguration\IServiceConfiguration.cs" />
+    <Compile Include="Contracts\Interfaces\Core\ServiceConfiguration\IConfig.cs" />
+    <Compile Include="Contracts\Interfaces\Core\ServiceConfiguration\IH1ConfigurationKey.cs" />
+    <Compile Include="Contracts\Interfaces\Core\ServiceConfiguration\IH1ConfigurationSetting.cs" />
+    <Compile Include="Contracts\Interfaces\Core\ServiceConfiguration\IH1ServiceConfigurationSetting.cs" />
+    <Compile Include="Contracts\Interfaces\ETL\Emacs\IEmacsCustomer.cs" />
+    <Compile Include="Contracts\Interfaces\ETL\Emacs\IEmacsCustomerData.cs" />
+    <Compile Include="Contracts\Interfaces\ETL\Emacs\IEmacsImport.cs" />
+    <Compile Include="Contracts\Interfaces\ETL\Emacs\IEmacsNpaCustomer.cs" />
+    <Compile Include="Contracts\Interfaces\ETL\Emacs\IEmacsNpaSupplier.cs" />
+    <Compile Include="Contracts\Interfaces\ETL\Emacs\IEmacsPart.cs" />
+    <Compile Include="Contracts\Interfaces\ETL\Emacs\IEmacsSearch.cs" />
+    <Compile Include="Contracts\Interfaces\ETL\Emacs\IEmacsSupplier.cs" />
+    <Compile Include="Contracts\Interfaces\ETL\ICPD.cs" />
+    <Compile Include="Contracts\Interfaces\ETL\IEngSol.cs" />
+    <Compile Include="Contracts\Interfaces\ETL\Npa\INpaStatus.cs" />
+    <Compile Include="Contracts\Interfaces\ETL\Npa\INpaUpload.cs" />
+    <Compile Include="Contracts\Interfaces\ETL\Npa\INpaVerification.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMastersAssociation\IBusinessUnitGIStoreAssociation.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMastersAssociation\ICountryRegionsAssociation .cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMastersAssociation\ICurrencyExchangeRateAssociation.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMastersAssociation\IMaterialAssociation.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMastersAssociation\IProcurementUnitBusinessUnitAssociation.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMastersAssociation\IPurchasingOrganisationProcurementAssociation.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMastersAssociation\ISourceApplicationArticleAssociation.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMastersAssociation\ISupplierAssociation.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMastersAssociation\ISupplierMaterialAssociation.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMastersAssociation\ISupplierMaterialUploadValidations.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMastersAssociation\IUnitofMeasureAssociation.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMastersAssociation\IValidationSupplierMaterialAssociation.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IAgressoSupplier.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IApplicationArticle.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IBusinessUnit.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IBusinessUnitType.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\ICommodity.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IComposite.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IContact.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IContactType.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\ICountry.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\ICountryRegions.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\ICurrency.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\ICustomer.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IDerivative.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IExchangeRate.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IFacility.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IForecastType.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IGIStore.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IIncoterms.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IIndexedMaterial.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\ILogisticsConcernRaisedStatus.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\ILogisticsConcernReason.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IMaterial.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IMaterialCostGroup.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IMaterialSupplier.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IMaterialType.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IMaterialUploadValidation.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IOriginStatus.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IPackForm.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IPart.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IPaymentTerms.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IProcurementUnit.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IProject.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IPurchasingOrganisation.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IRatingConcern.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\ISite.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\ISiteType.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\ISourceApplication.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\ISupplier.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\ISupplierGroup.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\ISupplierType.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\ISupplierUploadValidations.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\ITariffCode.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\ITransportationMode.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IUnitOfMeasure.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IValidationMaterial.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IValidationSupplier.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IVehicle.cs" />
+    <Compile Include="Contracts\Interfaces\GlobalMasters\IWire.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IBusinessUnitArticleSynchronization.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\ICPDReports.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\ICPDToH1SynchronizationScheduler.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IEPOCommodityGroup.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IETLConsolidatedMRPErrorList.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IETLFirstReceiptDate.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IETLMaterialInventory.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IETLMaterialNoXReference.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IETLMaterialOrigin.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IETLPurchasingArticleSynchronization.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IETLPurchasingCommonUtilities.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IETLPurchasingMaterial.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IETLPurchasingSupplier.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IETLPurchasingSupplierMaterial.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IETLSupplierCapacityPlanning.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IETLSupplierMaterialPOPricing.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IETLSupplierSelection.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IFirstReceiptDate.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IForecastAnnualBySite.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IH1ToCPDSynchronization.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IMaterialInventory.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IMaterialOrigin.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\INPAToH1DataSynchronization.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPOPriceEffectiveDateType.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPOPriceType.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPOPriceValidations.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPurchasingArticleJobDetails.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPurchasingArticleJobScheduler.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPurchasingArticleSynchronization.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPurchasingCommodity.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPurchasingMaterial.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPurchasingSupplier.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IPurchasingSupplierMaterial.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\IRestoreServiceDataFromDB.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\ISupplierDevelopmentTeam.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\ISupplierMaterialPOPricing.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\ISupplierSelection.cs" />
+    <Compile Include="Contracts\Interfaces\Purchasing\ISupplierSelectionUploadValidations.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\DsiAssociation\IBranchConfigurationBend.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\DsiAssociation\ICompositeDetailCircuitOption.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\DsiAssociation\IHarnessScopeScope.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\DsiAssociation\IPinMappingCavityMapping.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\IBend.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\IBranchConfiguration.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\IBranchInsulation.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\IBranchInsulationThroughNode.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\ICavityMapping.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\ICentreStrip.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\ICircuitOption.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\IComponent.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\ICompositeDetail.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\ICompositeOption.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\IDataSynchronisation.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\IHarness.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\IHarnessScope.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\IManualBomQuantity.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\IMidWireComponent.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\IModuleChildDetail.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\IModuleCompatibility.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\IMulticoreSpecification.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\IPinMapping.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\IScope.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\IWireMulticoreMarker.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\IWireSpecification.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Dsi\IWireThroughNode.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Rfq\IRFQData.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Rfq\IRFQEnquiry.cs" />
+    <Compile Include="Contracts\Interfaces\Sales\Rfq\IRFQPartSearch.cs" />
+    <Compile Include="Contracts\Models\Core\Notifications\NotificationChannelPair.cs" />
+    <Compile Include="Contracts\Models\Core\Notifications\NotificationModelConverter.cs" />
+    <Compile Include="Contracts\Models\Core\Proxy\Commercial\ProxyCollection.cs" />
+    <Compile Include="Contracts\Models\Core\Proxy\Commercial\V2ProxyCollection.cs" />
+    <Compile Include="Contracts\Models\Core\Proxy\ProxyCollection.cs" />
+    <Compile Include="Contracts\Models\Core\Proxy\Range.cs" />
+    <Compile Include="Contracts\Models\Core\Proxy\V2ProxyCollection.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\CustomerCodeModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\CustomerMasterData.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\NpaMasterData.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\NpaMaterialOriginModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\RFQSupplierModel.cs" />
+    <Compile Include="Contracts\Models\Sales\Rfq\SupplierNumberModel.cs" />
+    <Compile Include="Infrastructure\Core\FabricClientProvider.cs" />
+    <Compile Include="Infrastructure\Core\Wrapped.cs" />
+    <Compile Include="Infrastructure\Core\WrappedApplication.cs" />
+    <Compile Include="Infrastructure\Core\WrappedApplicationList.cs" />
+    <Compile Include="Infrastructure\Core\WrappedFabricClient.cs" />
+    <Compile Include="Infrastructure\Core\WrappedHealthClient.cs" />
+    <Compile Include="Infrastructure\Core\WrappedPartition.cs" />
+    <Compile Include="Infrastructure\Core\WrappedPropertyManagementClient.cs" />
+    <Compile Include="Infrastructure\Core\WrappedQueryClient.cs" />
+    <Compile Include="Infrastructure\Core\WrappedService.cs" />
+    <Compile Include="Infrastructure\Core\WrappedServiceHealth.cs" />
+    <Compile Include="Infrastructure\Core\WrappedServiceList.cs" />
+    <Compile Include="Infrastructure\Core\WrappedServicePartitionInformation.cs" />
+    <Compile Include="Infrastructure\Core\WrappedServicePartitionList.cs" />
+    <Compile Include="Infrastructure\Helpers\ExceptionMethods.cs" />
+    <Compile Include="Infrastructure\EntityFramework\Commercial\EntityFrameworkRepository.cs" />
+    <Compile Include="Infrastructure\EntityFramework\Commercial\IRepository.cs" />
+    <Compile Include="Infrastructure\EntityFramework\Commercial\Repository.cs" />
+    <Compile Include="Infrastructure\EntityFramework\Conventions\DecimalPrecisionAttributeConvention.cs" />
+    <Compile Include="Infrastructure\EntityFramework\DefaultConnectionStringHelper.cs" />
+    <Compile Include="Infrastructure\EntityFramework\Entities.cs" />
+    <Compile Include="Infrastructure\EntityFramework\EntityFrameworkRespository.cs" />
+    <Compile Include="Infrastructure\EntityFramework\Interfaces\IReadOnlyRepository.cs" />
+    <Compile Include="Infrastructure\EntityFramework\Interfaces\IRepository.cs" />
+    <Compile Include="Infrastructure\EntityFramework\ReadOnlyRepository.cs" />
+    <Compile Include="Infrastructure\EntityFramework\Repository.cs" />
+    <Compile Include="Infrastructure\Helpers\NetCoreServiceProxy.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Infrastructure\PubSub\Wrappers\ActorReferenceWrapper.cs" />
+    <Compile Include="Infrastructure\PubSub\Models\BokerServiceLocator.cs" />
+    <Compile Include="Infrastructure\PubSub\Models\BrokerActor.cs" />
+    <Compile Include="Infrastructure\PubSub\Models\BrokerActorState.cs" />
+    <Compile Include="Infrastructure\PubSub\Serializers\DefaultPayloadSerializer.cs" />
+    <Compile Include="Infrastructure\PubSub\Interfaces\IBrokerActor.cs" />
+    <Compile Include="Infrastructure\PubSub\Interfaces\IBrokerActorLocator.cs" />
+    <Compile Include="Infrastructure\PubSub\Interfaces\ISubscriberActor.cs" />
+    <Compile Include="Infrastructure\PubSub\Interfaces\ISubscriberService.cs" />
+    <Compile Include="Infrastructure\PubSub\Wrappers\MessageWrapper.cs" />
+    <Compile Include="Infrastructure\PubSub\Helpers\PublisherActorHelper.cs" />
+    <Compile Include="Infrastructure\PubSub\Helpers\PublisherServiceHelper.cs" />
+    <Compile Include="Infrastructure\PubSub\Wrappers\ReferenceWrapper.cs" />
+    <Compile Include="Infrastructure\PubSub\Wrappers\ServiceReferenceWrapper.cs" />
+    <Compile Include="Infrastructure\PubSub\Extensions\SubscriberActorExtensions.cs" />
+    <Compile Include="Infrastructure\PubSub\Helpers\SubscriberActorHelper.cs" />
+    <Compile Include="Infrastructure\PubSub\Extensions\SubscriberServiceExtensions.cs" />
+    <Compile Include="Infrastructure\PubSub\Helpers\SubscriberServiceHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common.Core\Common.Core.csproj">
+      <Project>{1389b76b-3d18-4734-963a-d7ae7ecfd614}</Project>
+      <Name>Common.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Contracts\Interfaces\Base\Base64\" />
+    <Folder Include="Contracts\Interfaces\Base\Byte\" />
+    <Folder Include="Infrastructure\EntityFramework\Contexts\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.ServiceFabric.Actors.3.3.644\build\net45\Microsoft.ServiceFabric.Actors.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ServiceFabric.Actors.3.3.644\build\net45\Microsoft.ServiceFabric.Actors.targets'))" />
+  </Target>
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(SolutionDir)lib\"
+copy "$(TargetDir)$(TargetName).xml" "$(SolutionDir)lib\"</PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="..\packages\Microsoft.ServiceFabric.Actors.3.3.644\build\net45\Microsoft.ServiceFabric.Actors.targets" Condition="Exists('..\packages\Microsoft.ServiceFabric.Actors.3.3.644\build\net45\Microsoft.ServiceFabric.Actors.targets')" />
+</Project>

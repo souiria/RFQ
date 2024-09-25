@@ -1,0 +1,448 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3D7A76A8-4004-4F04-8EDC-FD0597360722}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Common.UX.Wpf</RootNamespace>
+    <AssemblyName>Common.UX.Wpf</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'UAT|AnyCPU'">
+    <OutputPath>bin\UAT\</OutputPath>
+    <DefineConstants>TRACE;UAT</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Live|AnyCPU'">
+    <OutputPath>bin\Live\</OutputPath>
+    <DefineConstants>TRACE;Live</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CachingFramework.Redis, Version=7.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CachingFramework.Redis.7.5.0\lib\net461\CachingFramework.Redis.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaCompressionDotNet, Version=1.1.0.0, Culture=neutral, PublicKeyToken=1d14d6e5194e7f4a, processorArchitecture=MSIL">
+      <HintPath>..\packages\DeltaCompressionDotNet.1.1.0\lib\net20\DeltaCompressionDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaCompressionDotNet.MsDelta, Version=1.1.0.0, Culture=neutral, PublicKeyToken=46b2138a390abf55, processorArchitecture=MSIL">
+      <HintPath>..\packages\DeltaCompressionDotNet.1.1.0\lib\net20\DeltaCompressionDotNet.MsDelta.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaCompressionDotNet.PatchApi, Version=1.1.0.0, Culture=neutral, PublicKeyToken=3e8888ee913ed789, processorArchitecture=MSIL">
+      <HintPath>..\packages\DeltaCompressionDotNet.1.1.0\lib\net20\DeltaCompressionDotNet.PatchApi.dll</HintPath>
+    </Reference>
+    <Reference Include="InfragisticsWPF, Version=18.2.20182.186, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL">
+      <HintPath>..\..\lib\InfragisticsWPF.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="InfragisticsWPF.Controls.Editors.XamComboEditor">
+      <HintPath>..\..\lib\InfragisticsWPF.Controls.Editors.XamComboEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="InfragisticsWPF.DataManager">
+      <HintPath>..\..\lib\InfragisticsWPF.DataManager.dll</HintPath>
+    </Reference>
+    <Reference Include="InfragisticsWPF.DataPresenter">
+      <HintPath>..\..\lib\InfragisticsWPF.DataPresenter.dll</HintPath>
+    </Reference>
+    <Reference Include="InfragisticsWPF.DataPresenter.ExcelExporter">
+      <HintPath>..\..\lib\InfragisticsWPF.DataPresenter.ExcelExporter.dll</HintPath>
+    </Reference>
+    <Reference Include="InfragisticsWPF.Documents.Excel">
+      <HintPath>..\..\lib\InfragisticsWPF.Documents.Excel.dll</HintPath>
+    </Reference>
+    <Reference Include="InfragisticsWPF.Editors">
+      <HintPath>..\..\lib\InfragisticsWPF.Editors.dll</HintPath>
+    </Reference>
+    <Reference Include="InfragisticsWPF.OutlookBar">
+      <HintPath>..\..\lib\InfragisticsWPF.OutlookBar.dll</HintPath>
+    </Reference>
+    <Reference Include="InfragisticsWPF.Ribbon">
+      <HintPath>..\..\lib\InfragisticsWPF.Ribbon.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Configuration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.RegistrationByConvention, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.Common">
+      <HintPath>..\..\Common\lib\Microsoft.ReportViewer.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.ProcessingObjectModel">
+      <HintPath>..\..\Common\lib\Microsoft.ReportViewer.ProcessingObjectModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WinForms">
+      <HintPath>..\..\Common\lib\Microsoft.ReportViewer.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MSTest.TestFramework.1.4.0\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MSTest.TestFramework.1.4.0\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.9.6.1\lib\net45\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Mdb, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.9.6.1\lib\net45\Mono.Cecil.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.9.6.1\lib\net45\Mono.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.9.6.1\lib\net45\Mono.Cecil.Rocks.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq">
+      <HintPath>..\packages\Moq.4.10.1\lib\net45\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NuGet.Squirrel, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\squirrel.windows.1.8.0\lib\Net45\NuGet.Squirrel.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Prism, Version=6.3.0.0, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Core.6.3.0\lib\net45\Prism.dll</HintPath>
+    </Reference>
+    <Reference Include="Prism.Wpf, Version=6.3.0.0, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Wpf.6.3.0\lib\net45\Prism.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="ReachFramework" />
+    <Reference Include="SharpCompress, Version=0.17.1.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpCompress.0.17.1\lib\net45\SharpCompress.dll</HintPath>
+    </Reference>
+    <Reference Include="Splat, Version=1.6.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Splat.1.6.2\lib\Net45\Splat.dll</HintPath>
+    </Reference>
+    <Reference Include="Squirrel, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\squirrel.windows.1.8.0\lib\Net45\Squirrel.dll</HintPath>
+    </Reference>
+    <Reference Include="StackExchange.Redis, Version=1.2.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\StackExchange.Redis.1.2.6\lib\net46\StackExchange.Redis.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Printing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Wpf.6.3.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UIAutomationTypes" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AttachedProperties\LoadedFocusAttachment.cs" />
+    <Compile Include="AttachedProperties\MaxLengthValueConstraintAttachment.cs" />
+    <Compile Include="AttachedProperties\ScrollToNewItemAttachment.cs" />
+    <Compile Include="Attributes\ModulePriorityAttribute.cs" />
+    <Compile Include="Attributes\RibbonTabAttribute.cs" />
+    <Compile Include="Attributes\RolesAttribute.cs" />
+    <Compile Include="Attributes\WidgetGroupAttribute.cs" />
+    <Compile Include="Base\AsyncCRUDViewModelBase.cs" />
+    <Compile Include="Base\AsyncCRUDViewModelBaseExtension.cs" />
+    <Compile Include="Base\AsyncViewModelBase.cs" />
+    <Compile Include="Base\BaseViewModel.cs" />
+    <Compile Include="Base\Commercial\AsyncCRUDViewModelBase.cs" />
+    <Compile Include="Base\Commercial\AsyncViewModelBase.cs" />
+    <Compile Include="Base\Commercial\BaseViewModel.cs" />
+    <Compile Include="Base\Commercial\ViewModelBase.cs" />
+    <Compile Include="Base\CRUDViewModelBase.cs" />
+    <Compile Include="Base\ViewModelBase.cs" />
+    <Compile Include="Commands\IGlobalCommands.cs" />
+    <Compile Include="Contracts\Interfaces\IAsyncCommand.cs" />
+    <Compile Include="Contracts\Interfaces\IBusyIndicator.cs" />
+    <Compile Include="Contracts\Interfaces\ICustomDialogHelper.cs" />
+    <Compile Include="Contracts\Interfaces\IDialog.cs" />
+    <Compile Include="Contracts\Interfaces\IDialogAware.cs" />
+    <Compile Include="Contracts\Interfaces\IDialogService.cs" />
+    <Compile Include="Contracts\Interfaces\IDockAware.cs" />
+    <Compile Include="Contracts\Interfaces\IDownloadDataToExcelHelper.cs" />
+    <Compile Include="Contracts\Interfaces\IExcelCommunicatorHelper.cs" />
+    <Compile Include="Contracts\Interfaces\IRibbonTabItem.cs" />
+    <Compile Include="Contracts\Interfaces\IShell.cs" />
+    <Compile Include="Contracts\Interfaces\ISSRSReportViewer.cs" />
+    <Compile Include="Contracts\Interfaces\IStatusBarMessageHelper.cs" />
+    <Compile Include="Contracts\Interfaces\ISupportDataContext.cs" />
+    <Compile Include="Contracts\Interfaces\IViewModel.cs" />
+    <Compile Include="Contracts\Interfaces\IWidgetHandler.cs" />
+    <Compile Include="Contracts\Models\Administration\ComboModuleHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\Administration\OwnedStatus.cs" />
+    <Compile Include="Contracts\Models\Administration\UXModuleHierarchyModel.cs" />
+    <Compile Include="Contracts\Models\BusyIndicator.cs" />
+    <Compile Include="Contracts\Models\GroupListModel.cs" />
+    <Compile Include="Contracts\Models\SSRSReportViewer.cs" />
+    <Compile Include="Contracts\Models\ThemeModel.cs" />
+    <Compile Include="Contracts\Models\Administration\UXFunctionHierarchyModel.cs" />
+    <Compile Include="Controls\CollapsibleMenu.xaml.cs">
+      <DependentUpon>CollapsibleMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GroupList.xaml.cs">
+      <DependentUpon>GroupList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LookUpTextBlock.xaml.cs">
+      <DependentUpon>LookUpTextBlock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PagingHelper.xaml.cs">
+      <DependentUpon>PagingHelper.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PopupWindow.xaml.cs">
+      <DependentUpon>PopupWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SearchBar.xaml.cs">
+      <DependentUpon>SearchBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SSRSReportControl.xaml.cs">
+      <DependentUpon>SSRSReportControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\InverseBoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\InvertBoolConverter.cs" />
+    <Compile Include="Converters\IsGuidEmptyConverter.cs" />
+    <Compile Include="Converters\IsLessThanConverter.cs" />
+    <Compile Include="Converters\IsNotNullConverter.cs" />
+    <Compile Include="Converters\LabelCodeToTextConverter.cs" />
+    <Compile Include="Converters\RelativeDateConverter.cs" />
+    <Compile Include="Converters\RoleToVisibilityConverter.cs" />
+    <Compile Include="Converters\RowCellSeparator.cs" />
+    <Compile Include="Converters\UriConverter.cs" />
+    <Compile Include="Events\ChangeThemeEvent.cs" />
+    <Compile Include="Events\CloseSplashEvent.cs" />
+    <Compile Include="EventHandlers\ConnectionEventHandler.cs" />
+    <Compile Include="Events\Collections\ApplicationArticleEvent.cs" />
+    <Compile Include="Events\Collections\BusinessUnitEvent.cs" />
+    <Compile Include="Events\Collections\BusinessUnitTypeEvent.cs" />
+    <Compile Include="Events\Collections\CommodityEvent.cs" />
+    <Compile Include="Events\Collections\ContactEvent.cs" />
+    <Compile Include="Events\Collections\ContactTypeEvent.cs" />
+    <Compile Include="Events\Collections\CountryEvent.cs" />
+    <Compile Include="Events\Collections\CountryRegionsAssociationEvent.cs" />
+    <Compile Include="Events\Collections\CountryRegionsEvent.cs" />
+    <Compile Include="Events\Collections\CurrencyEvent.cs" />
+    <Compile Include="Events\Collections\CustomerEvent.cs" />
+    <Compile Include="Events\Collections\EPOCommodityGroupEvent.cs" />
+    <Compile Include="Events\Collections\GIStoreEvent.cs" />
+    <Compile Include="Events\Collections\H1MenuEvent.cs" />
+    <Compile Include="Events\Collections\NPRBacklogDetailEvent.cs" />
+    <Compile Include="Events\Collections\ProjectEvent.cs" />
+    <Compile Include="Events\Collections\PurchasingFacilityEvent.cs" />
+    <Compile Include="Events\Collections\SupplierApprovalStatusEvent.cs" />
+    <Compile Include="Events\Collections\SupplierMaterialOriginExceptionEvent.cs" />
+    <Compile Include="Events\Collections\PurchasingVehicleEvent.cs" />
+    <Compile Include="Events\Collections\PurchasingCustomerEvent.cs" />
+    <Compile Include="Events\Collections\IncotermsEvent.cs" />
+    <Compile Include="Events\Collections\MaterialAssociationEvent.cs" />
+    <Compile Include="Events\Collections\MaterialOriginEvent.cs" />
+    <Compile Include="Events\Collections\MaterialTypeEvent.cs" />
+    <Compile Include="Events\Collections\NPAProjectDetailsEvent.cs" />
+    <Compile Include="Events\Collections\NPAStatusCodeEvent.cs" />
+    <Compile Include="Events\Collections\NPATypeEvent.cs" />
+    <Compile Include="Events\Collections\POPriceEffectiveDateTypeEvent.cs" />
+    <Compile Include="Events\Collections\POPriceTypeEvent.cs" />
+    <Compile Include="Events\Collections\ProcurementUnitBusinessUnitAssociationEvent.cs" />
+    <Compile Include="Events\Collections\ProcurementUnitEvent.cs" />
+    <Compile Include="Events\Collections\ProductionPartApprovalProcessLevelEvent.cs" />
+    <Compile Include="Events\Collections\PurchasingOrganisationEvent.cs" />
+    <Compile Include="Events\Collections\PurchasingSupplierEvent.cs" />
+    <Compile Include="Events\Collections\PurchasingSupplierMaterialEvent.cs" />
+    <Compile Include="Events\Collections\ReasonEvent.cs" />
+    <Compile Include="Events\Collections\SourceApplicationArticleAssociationEvent.cs" />
+    <Compile Include="Events\Collections\SourceApplicationEvent.cs" />
+    <Compile Include="Events\Collections\SupplierAssociationEvent.cs" />
+    <Compile Include="Events\Collections\SupplierEvent.cs" />
+    <Compile Include="Events\Collections\SupplierGroupEvent.cs" />
+    <Compile Include="Events\Collections\SupplierMaterialAssociationEvent.cs" />
+    <Compile Include="Events\Collections\SupplierMaterialAssociationUploadEvent.cs" />
+    <Compile Include="Events\Collections\SupplierMaterialPOPricingEvent.cs" />
+    <Compile Include="Events\Collections\SupplierSelectionEvent.cs" />
+    <Compile Include="Events\Collections\SupplierSelectionUploadEvent.cs" />
+    <Compile Include="Events\Collections\SupplierTypeEvent.cs" />
+    <Compile Include="Events\Collections\TariffCodeCountryAssociationEvent.cs" />
+    <Compile Include="Events\Collections\TariffCodeEvent.cs" />
+    <Compile Include="Events\Collections\UnitofMeasureAssociationEvent.cs" />
+    <Compile Include="Events\Collections\UnitOfMeasureEvent.cs" />
+    <Compile Include="Events\Collections\UXLanguageEvent.cs" />
+    <Compile Include="Events\DownloadingEvent.cs" />
+    <Compile Include="Events\ExportExcelEvent.cs" />
+    <Compile Include="Events\ExportGridDataEvent.cs" />
+    <Compile Include="Events\Collections\H1ConfigurationKeyEvent.cs" />
+    <Compile Include="Events\Collections\H1ConfigurationSettingEvent.cs" />
+    <Compile Include="Events\Collections\H1FunctionH1ModuleAssociationEvent.cs" />
+    <Compile Include="Events\Collections\H1FunctionMasterEvent.cs" />
+    <Compile Include="Events\Collections\H1ModuleH1ViewAssociationEvent.cs" />
+    <Compile Include="Events\Collections\H1ModuleMasterEvent.cs" />
+    <Compile Include="Events\Collections\H1ServiceConfigurationSettingEvent.cs" />
+    <Compile Include="Events\Collections\H1ViewMasterEvent.cs" />
+    <Compile Include="Events\LoadingEvent.cs" />
+    <Compile Include="Events\LoadingUsingProgressEvent.cs" />
+    <Compile Include="Events\MaterialEvent.cs" />
+    <Compile Include="Events\MaterialUploadEvent.cs" />
+    <Compile Include="Events\MaximizeScreenEvent.cs" />
+    <Compile Include="Events\MessageUpdateEvent.cs" />
+    <Compile Include="Events\ModuleLoadedEvent.cs" />
+    <Compile Include="Events\Collections\OriginStatusEvent.cs" />
+    <Compile Include="Events\PerformanceDataEvent.cs" />
+    <Compile Include="Events\ProgressEvent.cs" />
+    <Compile Include="Events\SelectedModuleEvent.cs" />
+    <Compile Include="Events\ShellDialogEvent.cs" />
+    <Compile Include="Events\ShowUpdateDialogEvent.cs" />
+    <Compile Include="Events\StandardNotificationEvent.cs" />
+    <Compile Include="Events\StatusBarNotificationChangedEvent.cs" />
+    <Compile Include="Events\SupplierUploadEvent.cs" />
+    <Compile Include="Events\SynchronizingEvent.cs" />
+    <Compile Include="Events\UpdateNotificationCountEvent.cs" />
+    <Compile Include="Events\UpdateStatusBarMessageEvent.cs" />
+    <Compile Include="EventHandlers\WidgetBarOpenEventHandler.cs" />
+    <Compile Include="Events\UpdateViewEvent.cs" />
+    <Compile Include="Events\UploadingEvent.cs" />
+    <Compile Include="Extensions\ExtendedModuleManager.cs" />
+    <Compile Include="Extensions\FocusExtension.cs" />
+    <Compile Include="Extensions\PrioritizedDirectoryModuleCatalog.cs" />
+    <Compile Include="Extensions\StringExtension.cs" />
+    <Compile Include="Helpers\ApplicationUpdater.cs" />
+    <Compile Include="Helpers\CustomDialogHelper.cs" />
+    <Compile Include="Helpers\DownloadDataToExcelHelper.cs" />
+    <Compile Include="Helpers\ExcelCommunicatorHelper.cs" />
+    <Compile Include="Helpers\HelpDeskHelper.cs" />
+    <Compile Include="Helpers\NotificationHelper.cs" />
+    <Compile Include="Helpers\PreviewKeyDownHelper.cs" />
+    <Compile Include="Helpers\RegionNames.cs" />
+    <Compile Include="Helpers\ResourceLabelProvider.cs" />
+    <Compile Include="Helpers\RoleBasedModuleInitializer.cs" />
+    <Compile Include="Helpers\Searcher.cs" />
+    <Compile Include="Helpers\ServiceHelperExceptionLogging.cs" />
+    <Compile Include="Helpers\StartupHelper.cs" />
+    <Compile Include="Helpers\StatusBarMessageHelper.cs" />
+    <Compile Include="Helpers\UserPreferenceSetupHelper.cs" />
+    <Compile Include="Helpers\XamDataGridExportHelper.cs" />
+    <Compile Include="Helpers\XamlPathElementFinder.cs" />
+    <Compile Include="Commands\AwaitableDelegateCommand.cs" />
+    <Compile Include="EventHandlers\ContextualTabHandler.cs" />
+    <Compile Include="Contracts\Models\CurrentThemeModel.cs" />
+    <Compile Include="Contracts\Models\DataContextProxy.cs" />
+    <Compile Include="Contracts\Models\Dialog\UXConfirmationDialog.cs" />
+    <Compile Include="Contracts\Models\Dialog\UXCustomDialogBase.cs" />
+    <Compile Include="Contracts\Models\Dialog\UXDialogTypes.cs" />
+    <Compile Include="Contracts\Models\Dialog\UXErrorDialog.cs" />
+    <Compile Include="Contracts\Models\HarnessOneTheme.cs" />
+    <Compile Include="Contracts\Models\LoadingSettings.cs" />
+    <Compile Include="Contracts\Models\ObservableDictionary.cs" />
+    <Compile Include="Contracts\Models\UploadingSettings.cs" />
+    <Compile Include="Contracts\Models\UXNotificationType.cs" />
+    <Compile Include="Contracts\Models\UXStatusBarNotification.cs" />
+    <Compile Include="Contracts\Models\UXTreeNode.cs" />
+    <Compile Include="Contracts\Models\ViewMenuItem.cs" />
+    <Compile Include="EventHandlers\WidgetGroupHandler.cs" />
+    <Compile Include="Contracts\Models\WindowAnimationDirection.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Selectors\HierarchyDataRecordPresenterStyleSelector.cs" />
+    <Compile Include="Test\Base\TestBaseViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Common.Core\Common.Core.csproj">
+      <Project>{1389b76b-3d18-4734-963a-d7ae7ecfd614}</Project>
+      <Name>Common.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common.UX\Common.UX.csproj">
+      <Project>{D00CEE8E-87FA-4D22-99CD-B264A7B99C15}</Project>
+      <Name>Common.UX</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Controls\CollapsibleMenu.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\GroupList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LookUpTextBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PagingHelper.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\PopupWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\SearchBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\SSRSReportControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(SolutionDir)lib\"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

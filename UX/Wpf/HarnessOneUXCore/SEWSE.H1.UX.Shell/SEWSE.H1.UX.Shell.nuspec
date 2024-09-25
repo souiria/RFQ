@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">   
+  <metadata>    
+    <id>SEWSE_$configuration$.H1.UX.Shell</id>        
+    <title>Harness One $configuration$</title>    
+    <version>1.0.0</version>
+    <authors>SEWS-E Dev Team</authors>
+    <owners>SEWS-E</owners>
+    <licenseUrl>http://yourcompany.com</licenseUrl>
+    <projectUrl>http://yourcompany.com</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Harness One Application Package</description>
+    <releaseNotes>Summary of changes made in this release of the Harness One package.</releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <dependencies/>
+  </metadata>
+  <files>   
+    <file src="bin\$configuration$\*.*" target="lib\net45\" exclude="bin\$configuration$\*.pdb; bin\$configuration$\*.xml; bin\$configuration$\*.exe.config; bin\$configuration$\*.nupkg"/>
+    <file src="bin\$configuration$\Modules\*.*" target="lib\net45\Modules"/>
+    <file src="bin\$configuration$\File Upload Template\*.*" target="lib\net45\File Upload Template"/>
+    <file src="bin\$configuration$\Logs\" target="lib\net45\Logs"/>
+    <file src="bin\$configuration$\SSRSReport\*.*" target="lib\net45\SSRSReport"/>   
+    <file src="bin\$configuration$\x64\**\*.*" target="lib\net45\x64"/>
+    <!--<file src="bin\$configuration$\x86\**\*.*" target="lib\net45\x86"/>-->
+  </files>
+</package>
+
+<!--**Open Developer Command Prompt for VS 2017, Navigate to HarnessOneUXCore.sln file, and run the following command**
+
+msbuild HarnessOneUXCore.sln /t:Build /p:RunOctoPack=true /p:OctoPackPackageVersion=1.0.0
+
+<file src="bin\$configuration$\*.*" target="lib\net45\" exclude="bin\$configuration$\*.pdb; bin\$configuration$\*.xml; bin\$configuration$\*.exe.config; bin\$configuration$\*.nupkg"/>
+<file src="bin\$configuration$\Modules\*.*" target="lib\net45\Modules"/>
+
+<file src="bin\UAT\*.*" target="lib\net45\" exclude="bin\UAT\*.pdb; bin\UAT\*.xml; bin\UAT\*.exe.config; bin\UAT\*.nupkg"/>
+<file src="bin\UAT\Modules\*.*" target="lib\net45\Modules"/>
+
+<file src="bin\Debug\*.*" target="lib\net45\" exclude="bin\Debug\*.pdb; bin\Debug\*.xml; bin\Debug\*.exe.config;"/>
+<file src="bin\Debug\Modules\*.*" target="lib\net45\Modules"/>
+
+msbuild HarnessOneUXCore.sln /t:Build /p:RunOctoPack=true /p:OctoPackPackageVersion=1.0.0 "/p:OctoPackNuGetProperties=configuration=Release"
+
+**TODO: Move created nuget package to dedicated folder
+        Allow for automatic configuration detection
+
+**Useful Links**
+https://octopus.com/docs/packaging-applications/creating-packages/nuget-packages/using-octopack
+https://docs.microsoft.com/en-us/nuget/schema/nuspec
+-->
+

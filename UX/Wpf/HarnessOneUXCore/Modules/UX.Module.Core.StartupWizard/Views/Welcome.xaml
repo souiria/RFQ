@@ -1,0 +1,40 @@
+﻿<UserControl x:Class="SEWSE.H1.UX.Module.Core.StartupWizard.Views.Welcome"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" 
+             d:DesignHeight="540" d:DesignWidth="960">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="8*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="8*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Viewbox Margin="40">
+                <TextBlock Text="Welcome to Harness One" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="90" FontWeight="Thin" />
+            </Viewbox>
+            <Viewbox Margin="40" Grid.Row="1">
+                <TextBlock Text="Before we get started, we need to set up your permissions and user preferences for the system." TextWrapping="Wrap"/>
+            </Viewbox>
+            <Button x:Name="NextButton" Grid.Row="2" Width="75" Height="35" Command="{Binding PermissionCommand}" Style="{DynamicResource ButtonDefault}">
+                <Viewbox Margin="3">
+                    <TextBlock Text="Next" Foreground="{Binding Foreground, ElementName=NextButton}"/>
+                </Viewbox>
+            </Button>
+        </Grid>        
+    </Grid>
+</UserControl>

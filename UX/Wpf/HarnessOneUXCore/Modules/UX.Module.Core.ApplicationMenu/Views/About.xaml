@@ -1,0 +1,11 @@
+﻿<UserControl x:Class="SEWSE.H1.UX.Module.Core.ApplicationMenu.Views.About"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:dataPresenter="http://infragistics.com/DataPresenter"
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <Grid>
+        <dataPresenter:XamDataGrid x:Name="SampleDataGrid"
+                          DataSource="{Binding ModuleDataItems}"/>
+    </Grid>
+</UserControl>

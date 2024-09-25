@@ -1,0 +1,40 @@
+﻿using Common.UX.Wpf.Events;
+using Prism.Events;
+using Prism.Mvvm;
+
+namespace SEWSE.H1.UX.Module.Core.Splash.ViewModels
+{
+    public class SplashViewModel : BindableBase
+    {
+        #region Declarations
+        private string _status;
+        #endregion
+
+        #region ctor
+        public SplashViewModel(IEventAggregator eventAggregator)
+        {
+            eventAggregator.GetEvent<ModuleLoadedEvent>().Subscribe(e => UpdateMessage(e.Message));
+        }
+        #endregion
+
+        #region Public Properties
+        public string Status
+        {
+            get => _status;
+            set => SetProperty(ref _status, value);
+        }
+        #endregion
+
+        #region Private Methods
+        private void UpdateMessage(string message)
+        {
+            if (string.IsNullOrEmpty(message))
+            {
+                return;
+            }
+            
+            Status = message;
+        }
+        #endregion
+    }
+}

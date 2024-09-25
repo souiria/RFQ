@@ -1,0 +1,98 @@
+﻿<UserControl x:Class="SEWSE.H1.UX.Module.Core.StartupWizard.Views.CustomisePermissions"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ig="http://schemas.infragistics.com/xaml"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:sample="clr-namespace:SEWSE.H1.UX.Module.Core.StartupWizard.SampleData"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d"
+             d:DesignHeight="1080" d:DesignWidth="1920"
+             d:DataContext="{d:DesignInstance sample:DesignCustomisePermissionsViewModel, IsDesignTimeCreatable=True}">
+    <UserControl.Resources>
+        <ResourceDictionary Source="/UX.Core.StartupWizard;component/Resources/CustomisePermissionsResources.xaml"/>
+    </UserControl.Resources>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding PageLoadedCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+
+        <StackPanel Margin="5" Grid.Row="0">
+            <!--<StackPanel Orientation="Horizontal" Margin="15,0">-->
+            <TextBlock Text="Please  select the views you would like to have access to:" FontSize="16" Margin="5" />
+            <!--<ComboBox ItemsSource="{Binding HarnessOneFunctions}" DisplayMemberPath="FunctionName" SelectedItem="{Binding SelectedFunction, Mode=TwoWay}" Width="500" Height="25"/>
+            </StackPanel>-->
+
+            <TextBlock FontSize="10" Text="Selecting a View or selecting a module to select all views will not automatically select all fields owned by that view. If you would like to select all fields of a view hold SHIFT while selecting the checkbox" 
+                           Foreground="Gray" VerticalAlignment="Center" Margin="5" TextWrapping="Wrap"/>
+
+        </StackPanel>
+
+        <ig:XamDataTree Name="MenuDataTree" NodeCheckedChanged="MenuDataTree_NodeCheckedChanged" ItemsSource="{Binding Hierarchy, Mode=TwoWay}" Grid.Row="1">
+            <ig:XamDataTree.CheckBoxSettings>
+                <ig:CheckBoxSettings CheckBoxVisibility="Collapsed" CheckBoxMode="Manual"/>
+            </ig:XamDataTree.CheckBoxSettings>
+            <ig:XamDataTree.GlobalNodeLayouts>
+                <ig:NodeLayout Key="FunctionLayout" TargetTypeName="FunctionHierarchyModel" DisplayMemberPath="FunctionName" CheckBoxMemberPath="IsSelected">
+                    <ig:NodeLayout.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" IsEnabled="{Binding Data.IsActive}" Style="{StaticResource TreeStackPanelStyle}">
+                                <CheckBox x:Name="Checkbox" Grid.Column="2" HorizontalAlignment="Center" IsTabStop="False" IsThreeState="{Binding Node.NodeLayout.CheckBoxSettings.IsCheckBoxThreeStateResolved}" 
+                                          IsChecked="{Binding Data.IsSelected}" VerticalAlignment="Center" Style="{StaticResource TreeCheckBoxStyle}"/>
+                                <TextBlock Text="{Binding Data.FunctionName}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ig:NodeLayout.ItemTemplate>
+                </ig:NodeLayout>
+                <ig:NodeLayout Key="ModuleLayout" TargetTypeName="ModuleHierarchyModel" DisplayMemberPath="ModuleName" CheckBoxMemberPath="IsSelected">
+                    <ig:NodeLayout.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" IsEnabled="{Binding Data.IsActive}" Style="{StaticResource TreeStackPanelStyle}">
+                                <CheckBox x:Name="Checkbox" Grid.Column="2" HorizontalAlignment="Center" IsTabStop="False" IsThreeState="{Binding Node.NodeLayout.CheckBoxSettings.IsCheckBoxThreeStateResolved}" 
+                                          IsChecked="{Binding Data.IsSelected}" VerticalAlignment="Center" Style="{StaticResource TreeCheckBoxStyle}"/>
+                                <TextBlock Text="{Binding Data.ModuleName}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ig:NodeLayout.ItemTemplate>
+                </ig:NodeLayout>
+                <ig:NodeLayout Key="ViewLayout" TargetTypeName="ViewHierarchyModel" DisplayMemberPath="ViewName" CheckBoxMemberPath="IsSelected">
+                    <ig:NodeLayout.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" IsEnabled="{Binding Data.IsActive}" Style="{StaticResource TreeStackPanelStyle}">
+                                <CheckBox x:Name="Checkbox" Grid.Column="2" HorizontalAlignment="Center" IsTabStop="False" IsThreeState="{Binding Node.NodeLayout.CheckBoxSettings.IsCheckBoxThreeStateResolved}" 
+                                          IsChecked="{Binding Data.IsSelected}" VerticalAlignment="Center" Style="{StaticResource TreeCheckBoxStyle}"/>
+                                <TextBlock Text="{Binding Data.ViewName}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ig:NodeLayout.ItemTemplate>
+                </ig:NodeLayout>
+                <ig:NodeLayout Key="FieldLayout" TargetTypeName="FieldHierarchyModel" DisplayMemberPath="FieldName" CheckBoxMemberPath="IsSelected">
+                    <ig:NodeLayout.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" IsEnabled="{Binding Data.IsActive}" Style="{StaticResource TreeStackPanelStyle}">
+                                <CheckBox x:Name="Checkbox" Grid.Column="2" HorizontalAlignment="Center" IsTabStop="False" IsThreeState="{Binding Node.NodeLayout.CheckBoxSettings.IsCheckBoxThreeStateResolved}" 
+                                          IsChecked="{Binding Data.IsSelected}" VerticalAlignment="Center" Style="{StaticResource TreeCheckBoxStyle}"/>
+                                <TextBlock Text="{Binding Data.FieldName}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ig:NodeLayout.ItemTemplate>
+                </ig:NodeLayout>
+            </ig:XamDataTree.GlobalNodeLayouts>
+        </ig:XamDataTree>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button  Content="Confirm" Margin="10"  Command="{Binding DataPermissionsCommand}"  Style="{DynamicResource ButtonDefault}" Width="100" Height="30"/>
+            <Button  Content="Cancel" Margin="10"  Command="{Binding PermissionCommand}"  Style="{DynamicResource ButtonDefault}" Width="100" Height="30"/>
+        </StackPanel>
+
+    </Grid>
+</UserControl>
