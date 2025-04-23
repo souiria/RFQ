@@ -1,6 +1,0 @@
-@Edi.Api_HostAddress = http://localhost:5248
-
-GET {{Edi.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
