@@ -1,4 +1,5 @@
 ﻿using Master.Endpoints.GrpcServices;
+using Master.Services;
 
 namespace Master
 {
@@ -26,6 +27,7 @@ namespace Master
             #region Additional Services
 
             builder.Services.AddGrpc();
+            builder.Services.AddHostedService<DataImportSchedulerService>();
 
             #endregion
 
