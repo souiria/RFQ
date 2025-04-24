@@ -10,10 +10,4 @@
 		<PackageReference Include="Grpc.AspNetCore" Version="2.64.0" />
 	</ItemGroup>
 
-  <ItemGroup>
-	  <Protobuf Update="Protos\greet.proto">
-      <GrpcServices>Server</GrpcServices>
-    </Protobuf>
-  </ItemGroup>
-
 </Project>
