@@ -1,5 +1,5 @@
-﻿using Master.Data.Model;
-using Master.DTOs;
+﻿using Master.Data.DTOs;
+using Master.Data.Model;
 
 namespace Master.Extensions
 {

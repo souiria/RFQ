@@ -27,7 +27,7 @@ namespace Master
             #region Additional Services
 
             builder.Services.AddGrpc();
-            builder.Services.AddHostedService<DataImportSchedulerService>();
+            //builder.Services.AddHostedService<DataImportSchedulerService>();
 
             #endregion
 

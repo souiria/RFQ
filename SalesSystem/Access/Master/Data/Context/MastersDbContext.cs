@@ -17,6 +17,16 @@ namespace Master.Data.Context
         #region DbSet
 
         public DbSet<DbCurrency> CurrencyItems => Set<DbCurrency>();
+        public DbSet<DbCustomerBusinessHierarchy> CustomerBusinessUnitItems => Set<DbCustomerBusinessHierarchy>();
+        public DbSet<DbCustomerBusinessUserAssociation> CustomerBusinessUserAssociationItems => Set<DbCustomerBusinessUserAssociation>();
+        public DbSet<DbCustomerHierarchy> CustomerLocationItems => Set<DbCustomerHierarchy>();
+        public DbSet<DbCustomerProjectAssociation> CustomerProjectAssociationItems => Set<DbCustomerProjectAssociation>();
+        public DbSet<DbCustomerSalesEntity> CustomerSalesEntityItems => Set<DbCustomerSalesEntity>();
+        public DbSet<DbMilestoneHierarchy> MilestoneHierarchyItems => Set<DbMilestoneHierarchy>();
+        public DbSet<DbPlatformHierarchy> PlatformItems => Set<DbPlatformHierarchy>();
+        public DbSet<DbProgramHierarchy> ProgramItems => Set<DbProgramHierarchy>();
+        public DbSet<DbProjectHierarchy> ProjectItems => Set<DbProjectHierarchy>();
+        public DbSet<DbVehicle> VehicleItems => Set<DbVehicle>();
 
         #endregion
 

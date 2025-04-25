@@ -17,5 +17,15 @@ namespace Master.Endpoints.GrpcServices
                 Message = "Hello " + request.Name
             });
         }
+
+        public override Task<ListCurrencyData> GetCurrencyData(CurrencyGrpcRequest request, ServerCallContext context)
+        {
+            return base.GetCurrencyData(request, context);
+        }
+
+        public override Task GetCurrencyDataStream(CurrencyGrpcRequest request, IServerStreamWriter<CurrencyData> responseStream, ServerCallContext context)
+        {
+            return base.GetCurrencyDataStream(request, responseStream, context);
+        }
     }
 }

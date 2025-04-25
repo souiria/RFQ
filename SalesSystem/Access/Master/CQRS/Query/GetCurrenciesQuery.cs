@@ -1,5 +1,4 @@
-﻿using Master.DTOs;
-using MediatR;
+﻿using Master.Data.DTOs;
 
 namespace Master.CQRS.Query
 {

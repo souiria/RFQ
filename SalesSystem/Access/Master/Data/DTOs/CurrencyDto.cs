@@ -1,4 +1,4 @@
-﻿namespace Master.DTOs
+﻿namespace Master.Data.DTOs
 {
     public class CurrencyDto
     {

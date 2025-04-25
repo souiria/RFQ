@@ -22,7 +22,7 @@
 
 	<ItemGroup>
 	  <Folder Include="CQRS\Command\" />
-	  <Folder Include="CQRS\Specification\" />
+	  <Folder Include="Mediatr\Response\" />
 	</ItemGroup>
 
   

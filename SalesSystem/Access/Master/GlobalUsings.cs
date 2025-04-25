@@ -1,0 +1,9 @@
+﻿global using Master.CQRS.Query;
+global using Master.Data.Interface;
+global using Master.Data.Model;
+global using Master.Data.DTOs;
+global using MediatR;
+global using Ardalis.Specification;
+global using Master.CQRS.Specification;
+global using Master.Mediatr.Request;
+global using SharedKernel;
