@@ -1,4 +1,4 @@
-﻿namespace Master.CQRS.Specification
+﻿namespace Master.CQRS.Specification.Currency
 {
     public class GetCurrenciesReadOnlySpec : Specification<DbCurrency>
     {

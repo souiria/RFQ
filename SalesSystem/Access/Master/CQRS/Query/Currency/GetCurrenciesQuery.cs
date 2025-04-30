@@ -1,6 +1,6 @@
 ﻿using Master.Data.DTOs;
 
-namespace Master.CQRS.Query
+namespace Master.CQRS.Query.Currency
 {
     public class GetCurrenciesQuery : IRequest<List<CurrencyDto>>
     {

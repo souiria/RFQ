@@ -30,6 +30,8 @@
 
         #region Handlers
 
+        #region Currency
+
         public async Task<List<CurrencyDto>> Handle(CurrencyRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -49,6 +51,17 @@
             await PopulateCurrenciesAsync(cancellationToken);
             return true;
         }
+
+        #endregion
+
+        #region Customer
+        #endregion
+
+        #region Project
+        #endregion
+
+        #region Vehicle
+        #endregion
 
         #endregion
 

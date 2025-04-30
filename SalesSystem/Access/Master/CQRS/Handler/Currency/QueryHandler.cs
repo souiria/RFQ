@@ -1,14 +1,15 @@
-﻿using Master.Data.DTOs;
+﻿using Master.CQRS.Query.Currency;
+using Master.Data.DTOs;
 using Master.Extensions;
 
-namespace Master.CQRS.Handler
+namespace Master.CQRS.Handler.Currency
 {
-    public class GetCurrenciesQueryHandler : IRequestHandler<GetCurrenciesQuery, List<CurrencyDto>>
+    public class QueryHandler : IRequestHandler<GetCurrenciesQuery, List<CurrencyDto>>
     {
         readonly IMastersReadRepository<DbCurrency> _Repository;
         List<CurrencyDto> _ToReturn = new();
 
-        public GetCurrenciesQueryHandler(IMastersReadRepository<DbCurrency> repository)
+        public QueryHandler(IMastersReadRepository<DbCurrency> repository)
         {
             _Repository = repository;
         }
