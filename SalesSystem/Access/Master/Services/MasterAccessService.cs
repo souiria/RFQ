@@ -4,7 +4,7 @@
     /// This class is used to make calls to the database queries and to hold the data dictionaries.
     /// It is used by both the Grpc and Http api services
     /// </summary>
-    public class MasterAccessService : IRequestHandler<CurrencyRequest, List<CurrencyDto>>,
+    public class MasterAccessService : IMasterAccessService, IRequestHandler<CurrencyRequest, List<CurrencyDto>>,
         IRequestHandler<PopulateMasterDataRequest, bool>
     {
         readonly IMediator _Mediator;
@@ -67,7 +67,7 @@
 
         #region Data Imports
 
-        public async Task PopulateCurrenciesAsync(CancellationToken cancellationToken)
+        public async Task<bool> PopulateCurrenciesAsync(CancellationToken cancellationToken)
         {
             if (!_CurrencyRefreshInProgress)
             {
@@ -76,7 +76,10 @@
                 List<CurrencyDto> results = await _Mediator.Send(new GetCurrenciesQuery(), cancellationToken);
                 _Currencies = results;
                 _CurrencyRefreshInProgress = false;
+                return true;
             }
+
+            return false;
         }
 
         #endregion

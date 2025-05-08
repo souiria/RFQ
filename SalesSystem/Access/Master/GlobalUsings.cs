@@ -11,3 +11,4 @@ global using Master.CQRS.Specification.Vehicle;
 global using Master.CQRS.Query.Currency;
 global using Master.Mediatr.Request;
 global using SharedKernel;
+global using Microsoft.Extensions.DependencyInjection;
