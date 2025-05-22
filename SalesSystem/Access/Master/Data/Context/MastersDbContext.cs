@@ -1,15 +1,10 @@
-﻿using Master.Data.Model;
-using Microsoft.EntityFrameworkCore;
-using SharedKernel;
-using System.Reflection;
-
-namespace Master.Data.Context
+﻿namespace Master.Data.Context
 {
-    public class MastersDbContext : DbContext
+    public class MastersDbContext : DbContext, IMastersDbContext
     {
-        readonly IDomainEventDispatcher? _Dispatcher;
+        readonly IDomainEventsDispatcher _Dispatcher;
 
-        public MastersDbContext(DbContextOptions<MastersDbContext> options, IDomainEventDispatcher? dispatcher) : base(options)
+        public MastersDbContext(DbContextOptions<MastersDbContext> options, IDomainEventsDispatcher dispatcher) : base(options)
         {
             _Dispatcher = dispatcher;
         }
@@ -46,26 +41,31 @@ namespace Master.Data.Context
         {
             int result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-            // ignore events if no dispatcher provided
-            if (_Dispatcher == null)
-            {
-                return result;
-            }
-
-            // dispatch events only if save was successful
-            HasDomainEventsBase[] entitiesWithEvents = ChangeTracker.Entries<HasDomainEventsBase>()
-                .Select(e => e.Entity)
-                .Where(e => e.DomainEvents.Any())
-                .ToArray();
-
-            await _Dispatcher.DispatchAndClearEvents(entitiesWithEvents);
-
+            await PublishDomainEventsAsync();
             return result;
         }
 
         public override int SaveChanges()
         {
             return SaveChangesAsync().GetAwaiter().GetResult();
+        }
+
+        async Task PublishDomainEventsAsync()
+        {
+            List<IDomainEvent> domainEvents = ChangeTracker
+                .Entries<Entity>()
+                .Select(entry => entry.Entity)
+                .SelectMany(entity =>
+                {
+                    List<IDomainEvent> domainEvents = (List<IDomainEvent>)entity.DomainEvents;
+
+                    entity.ClearDomainEvents();
+
+                    return domainEvents;
+                })
+                .ToList();
+
+            await _Dispatcher.DispatchAsync(domainEvents);
         }
 
         #endregion

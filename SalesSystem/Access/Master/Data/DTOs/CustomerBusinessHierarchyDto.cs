@@ -6,5 +6,6 @@
         public required string? CustomerBusinessGroupName { get; set; }
         public required Guid? Id { get; set; }
         public required string? SEWSEBusinessTeam { get; set; }
+        public required bool? IsActive { get; set; }
     }
 }

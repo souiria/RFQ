@@ -16,7 +16,6 @@
     <ProjectReference Include="..\Access\CPD\CPD.csproj" />
     <ProjectReference Include="..\Access\Emacs\Emacs.csproj" />
     <ProjectReference Include="..\Access\Master\Master.csproj" />
-    <ProjectReference Include="..\Access\NPR\NPR.csproj" />
     <ProjectReference Include="..\Access\Rfq\Rfq.csproj" />
     <ProjectReference Include="..\Manager\RfqManager\RfqManager.csproj" />
     <ProjectReference Include="..\SalesSystem.ApiService\SalesSystem.ApiService.csproj" />

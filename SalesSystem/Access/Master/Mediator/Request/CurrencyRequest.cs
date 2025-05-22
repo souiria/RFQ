@@ -1,6 +1,6 @@
-﻿namespace Master.Mediatr.Request
+﻿namespace Master.Mediator.Request
 {
-    public class CurrencyRequest : RequestBase, IRequest<List<CurrencyDto>>
+    public class CurrencyRequest : RequestBase, IQuery<List<CurrencyDto>>
     {
         public CurrencyRequestType RequestType { get; set; }
     }

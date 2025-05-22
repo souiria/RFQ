@@ -27,8 +27,10 @@ namespace Master
             #region Additional Services
             builder.Logging.AddSeq();
             builder.Services.AddGrpc();
-            builder.Services.AddTransient<IMasterAccessService, MasterAccessService>();
+            builder.Services.AddInfrastructure(builder.Configuration);
+            builder.Services.AddSingleton<IMasterAccessService, MasterAccessService>();
             builder.Services.AddHostedService<DataImportSchedulerService>();
+            
 
             #endregion
 

@@ -3,53 +3,59 @@
     public class DataImportSchedulerService : BackgroundService
     {
 
-        readonly IMasterAccessService? _MasterAccessService;
+        IMasterAccessService _MasterAccessService;
+        //readonly IServiceProvider _ServiceProvider;
         readonly ILogger<DataImportSchedulerService> _Logger;
 
-        public DataImportSchedulerService(IServiceProvider serviceProvider, ILogger<DataImportSchedulerService> logger)
+        public DataImportSchedulerService(IMasterAccessService masterAccessService, ILogger<DataImportSchedulerService> logger)
         {
-            using (IServiceScope scope = serviceProvider.CreateScope())
-            {
-                _MasterAccessService = scope.ServiceProvider.GetService<IMasterAccessService>();
-            }
-
+            _MasterAccessService = masterAccessService;
             _Logger = logger;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-#pragma warning disable CA1848 // Use the LoggerMessage delegates
+            #pragma warning disable CA1848 // Use the LoggerMessage delegates
             _Logger.LogInformation("Background service is running");
-#pragma warning restore CA1848 // Use the LoggerMessage delegates
+            #pragma warning restore CA1848 // Use the LoggerMessage delegates
 
-             await PopulateGlobalDataAsync(stoppingToken);
+            await PopulateGlobalDataAsync(stoppingToken);
+            await DailyWorker(23, 30, 00, async () => await PopulateGlobalDataAsync(stoppingToken), stoppingToken);
 
-            Task<bool> getMasterData = (Task<bool>)DailyWorker(23, 30, 00, async () => await PopulateGlobalDataAsync(stoppingToken), stoppingToken);
-
+            //using (PeriodicTimer timer = new PeriodicTimer(TimeSpan.FromSeconds(30)))
+            //{
+            //    while (await timer.WaitForNextTickAsync(stoppingToken))
+            //    {
+            //        // Your scheduled work here
+            //        await PopulateGlobalDataAsync(stoppingToken);
+            //    }
+            //}
         }
 
         async Task<bool> PopulateGlobalDataAsync(CancellationToken stoppingToken)
         {
+
             if (_MasterAccessService != null)
             {
-                bool check = await _MasterAccessService.PopulateCurrenciesAsync(stoppingToken);
-                if (check)
-                {
-#pragma warning disable CA1848 // Use the LoggerMessage delegates
-                    _Logger.LogInformation("Emacs data retrieved successfully");
-#pragma warning restore CA1848 // Use the LoggerMessage delegates
-                }
-                else
-                {
-#pragma warning disable CA1848 // Use the LoggerMessage delegates
-                    _Logger.LogInformation("Emacs data retrieval failed!!");
-#pragma warning restore CA1848 // Use the LoggerMessage delegates
-                }
+                bool check;
+                check = await _MasterAccessService.PopulateCurrenciesAsync(stoppingToken);
+                await LogDataPopulationSuccess("Currency", check);
+                check = await _MasterAccessService.PopulateCustomersAsync(stoppingToken);
+                await LogDataPopulationSuccess("Customers", check);
+                check = await _MasterAccessService.PopulateCustomerLocationsAsync(stoppingToken);
+                await LogDataPopulationSuccess("CustomerLocations", check);
+                check = await _MasterAccessService.PopulateCustomerSalesEntitiesAsync(stoppingToken);
+                await LogDataPopulationSuccess("CustomerSalesEntities", check);
+                check = await _MasterAccessService.PopulateCustomerBusinessUserAssociationsAsync(stoppingToken);
+                await LogDataPopulationSuccess("CustomerBusinessUserAssociations", check);
+                check = await _MasterAccessService.PopulateCustomerProjectAssociationsAsync(stoppingToken);
+                await LogDataPopulationSuccess("CustomerProjectAssociations", check);
             }
 
             return true;
+
         }
-        public async Task DailyWorker(int hour, int min, int sec, Action actionToExecute, CancellationToken token)
+        async Task DailyWorker(int hour, int min, int sec, Action actionToExecute, CancellationToken token)
         {
             while (!token.IsCancellationRequested)
             {
@@ -88,5 +94,24 @@
                 }
             }
         }
+
+#pragma warning disable CA1848 // Use the LoggerMessage delegates
+#pragma warning disable CA2254 // Template should be a static expression
+        async Task LogDataPopulationSuccess(string data, bool check)
+        {
+            await Task.Delay(0);
+            if (check)
+            {
+
+                _Logger.LogInformation($"{data} data retrieved successfully");
+
+            }
+            else
+            {
+                _Logger.LogInformation($"{data} data retrieval failed!!");
+            }
+        }
+#pragma warning restore CA2254 // Template should be a static expression
+#pragma warning restore CA1848 // Use the LoggerMessage delegates
     }
 }

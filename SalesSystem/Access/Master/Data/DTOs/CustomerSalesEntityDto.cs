@@ -14,5 +14,6 @@
         public required Guid? CustomerHierarchyGuid { get; set; }
         public required Guid? Id { get; set; }
         public required Guid? CustomerSalesCountryGuid { get; set; }
+        public required bool? IsActive { get; set; }
     }
 }

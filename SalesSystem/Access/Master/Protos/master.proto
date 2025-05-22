@@ -13,6 +13,17 @@ service Master {
   rpc SayHello (HelloRequest) returns (HelloReply);
   rpc GetCurrencyData (CurrencyGrpcRequest) returns (ListCurrencyData);
   rpc GetCurrencyDataStream (CurrencyGrpcRequest) returns (stream CurrencyData);
+
+  rpc GetCustomerData (CustomerGrpcRequest) returns (ListCustomerData);
+  rpc GetCustomerDataStream (CustomerGrpcRequest) returns (stream CustomerData);
+  rpc GetCustomerLocationData (CustomerLocationGrpcRequest) returns (ListCustomerLocationData);
+  rpc GetCustomerLocationDataStream (CustomerLocationGrpcRequest) returns (stream CustomerLocationData);
+  rpc GetCustomerSalesEntityData (CustomerSalesEntityGrpcRequest) returns (ListCustomerSalesEntityData);
+  rpc GetCustomerSalesEntityDataStream (CustomerSalesEntityGrpcRequest) returns (stream CustomerSalesEntityData);
+  rpc GetCustomerProjectAssociationData (CustomerProjectAssociationGrpcRequest) returns (ListCustomerProjectAssociationData);
+  rpc GetCustomerProjectAssociationDataStream (CustomerProjectAssociationGrpcRequest) returns (stream CustomerProjectAssociationData);
+  rpc GetCustomerBusinessUserAssociationData (CustomerBusinessUserAssociationGrpcRequest) returns (ListCustomerBusinessUserAssociationData);
+  rpc GetCustomerBusinessUserAssociationDataStream (CustomerBusinessUserAssociationGrpcRequest) returns (stream CustomerBusinessUserAssociationData);
 }
 
 // The request message containing the user's name.
@@ -40,4 +51,86 @@ message CurrencyData {
 
 message ListCurrencyData {
     repeated CurrencyData CurrencyData = 1;
+}
+
+message CustomerGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message CustomerData {
+    string Id = 1;
+    string CustomerBusinessGroupCode = 2;
+    string CustomerBusinessGroupName = 3;   
+    string SEWSEBusinessTeam = 4;
+    bool IsActive = 5;
+}
+
+message ListCustomerData {
+    repeated CustomerData CustomerData = 1;
+}
+
+message CustomerLocationGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message CustomerLocationData {
+    string Id = 1;
+    string CustomerCode = 2;
+    string CustomerName = 3;   
+    bool IsActive = 4;
+}
+
+message ListCustomerLocationData {
+    repeated CustomerLocationData CustomerLocationData = 1;
+}
+
+message CustomerSalesEntityGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message CustomerSalesEntityData {
+    string Id = 1;
+    string CustomerSalesEntityCode = 2;
+    string CustomerSalesEntityName = 3;   
+    string FinanceCode = 4;  
+    bool IsActive = 5;
+}
+
+message ListCustomerSalesEntityData {
+    repeated CustomerSalesEntityData CustomerSalesEntityData = 1;
+}
+
+message CustomerProjectAssociationGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message CustomerProjectAssociationData {
+    string Id = 1;
+    string CustomerLocationGuid = 2;
+    string ProjectGuid = 3;    
+    bool IsActive = 4;
+}
+
+message ListCustomerProjectAssociationData {
+    repeated CustomerProjectAssociationData CustomerProjectAssociationData = 1;
+}
+
+message CustomerBusinessUserAssociationGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message CustomerBusinessUserAssociationData {
+    string Id = 1;
+    string CustomerBusinessHierarchyList = 2;
+    string UserGuid = 3;    
+    bool IsActive = 4;
+}
+
+message ListCustomerBusinessUserAssociationData {
+    repeated CustomerBusinessUserAssociationData CustomerBusinessUserAssociationData = 1;
 }

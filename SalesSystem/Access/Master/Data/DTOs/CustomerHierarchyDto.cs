@@ -16,5 +16,6 @@
         public required Guid? Id { get; set; }
         public required string? CustomerBusinessQualityManagerName { get; set; }
         public required Guid? CustomerCountryGuid { get; set; }
+        public required bool? IsActive { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Master.Data.DTOs;
 using Master.Data.Model;
+using SharedKernel;
 
 namespace Master.Extensions
 {
@@ -19,6 +20,18 @@ namespace Master.Extensions
             };
         }
 
+        public static CurrencyData MapToCurrencyData(this CurrencyDto entity)
+        {
+            return new CurrencyData
+            {
+                Id = entity.Id.ToString(),
+                CurrencyCode = entity.CurrencyCode,
+                CurrencyName = entity.CurrencyName,
+                EuroRate = entity.EuroRate,
+                IsActive = entity.IsActive ?? false
+            };
+        }
+
         #endregion
 
         #region Customer
@@ -30,7 +43,20 @@ namespace Master.Extensions
                 Id = entity.Id,
                 CustomerBusinessGroupCode = entity.CustomerBusinessGroupCode,
                 CustomerBusinessGroupName = entity.CustomerBusinessGroupName,
-                SEWSEBusinessTeam = entity.SEWSEBusinessTeam
+                SEWSEBusinessTeam = entity.SEWSEBusinessTeam ?? "",
+                IsActive = entity.IsActive
+            };
+        }
+
+        public static CustomerData MapToCustomerData(this CustomerBusinessHierarchyDto entity)
+        {
+            return new CustomerData
+            {
+                Id = entity.Id.ToString(),
+                CustomerBusinessGroupCode = entity.CustomerBusinessGroupCode,
+                CustomerBusinessGroupName = entity.CustomerBusinessGroupName,
+                SEWSEBusinessTeam = entity.SEWSEBusinessTeam,
+                IsActive = entity.IsActive ?? false
             };
         }
 
@@ -51,7 +77,51 @@ namespace Master.Extensions
                 IndexedMaterial = entity.IndexedMaterial,
                 CustomerBusinessHierarchyGuid = entity.CustomerBusinessHierarchyGuid,
                 CustomerBusinessQualityManagerName = entity.CustomerBusinessQualityManagerName,
-                CustomerCountryGuid = entity.CustomerCountryGuid
+                CustomerCountryGuid = entity.CustomerCountryGuid,
+                IsActive = entity.IsActive
+            };
+        }
+
+        public static CustomerLocationData MapToCustomerLocationData(this CustomerHierarchyDto entity)
+        {
+            return new CustomerLocationData
+            {
+                Id = entity.Id.ToString(),
+                CustomerCode = entity.CustomerCode,
+                CustomerName = entity.CustomerName,
+                IsActive = entity.IsActive ?? false
+            };
+        }
+
+        public static CustomerSalesEntityDto MapToCustomerSalesEntityDto(this DbCustomerSalesEntity entity)
+        {
+            return new CustomerSalesEntityDto
+            {
+                CustomerSalesEntityCode = entity.CustomerSalesEntityCode,
+                CustomerSalesEntityName = entity.CustomerSalesEntityName,
+                FinanceCode = entity.FinanceCode,
+                StreetNumber = entity.StreetNumber,
+                StreetName = entity.StreetName,
+                City = entity.City,
+                Region = entity.Region,
+                ZipCode = entity.ZipCode,
+                Country = entity.Country,
+                CustomerHierarchyGuid = entity.CustomerHierarchyGuid,
+                Id = entity.Id,
+                CustomerSalesCountryGuid = entity.CustomerSalesCountryGuid,
+                IsActive = entity.IsActive
+            };
+        }
+
+        public static CustomerSalesEntityData MapToCustomerSalesEntityData(this CustomerSalesEntityDto entity)
+        {
+            return new CustomerSalesEntityData
+            {
+                Id = entity.Id.ToString(),
+                CustomerSalesEntityCode = entity.CustomerSalesEntityCode,
+                CustomerSalesEntityName = entity.CustomerSalesEntityName,
+                FinanceCode = entity.FinanceCode,
+                IsActive = entity.IsActive ?? false
             };
         }
 
@@ -61,7 +131,41 @@ namespace Master.Extensions
             {
                 Id = entity.Id,
                 CustomerLocationGuid = entity.CustomerGuid,
-                ProjectGuid = entity.ProjectGuid
+                ProjectGuid = entity.ProjectGuid,
+                IsActive = entity.IsActive
+            };
+        }
+
+        public static CustomerProjectAssociationData MapToCustomerProjectAssociationData(this CustomerProjectAssociationDto entity)
+        {
+            return new CustomerProjectAssociationData
+            {
+                Id = entity.Id.ToString(),
+                CustomerLocationGuid = entity.CustomerLocationGuid.ToString(),
+                ProjectGuid = entity.ProjectGuid.ToString(),
+                IsActive = entity.IsActive ?? false
+            };
+        }
+
+        public static CustomerBusinessUserAssociationDto MapToCustomerBusinessUserAssociationDto(this DbCustomerBusinessUserAssociation entity)
+        {
+            return new CustomerBusinessUserAssociationDto
+            {
+                Id = entity.Id,
+                CustomerBusinessHierarchyList = entity.CustomerBusinessHierarchyList,
+                UserGuid = entity.UserGuid,
+                IsActive = entity.IsActive
+            };
+        }
+
+        public static CustomerBusinessUserAssociationData MapToCustomerBusinessUserAssociationData(this CustomerBusinessUserAssociationDto entity)
+        {
+            return new CustomerBusinessUserAssociationData
+            {
+                Id = entity.Id.ToString(),
+                CustomerBusinessHierarchyList = entity.CustomerBusinessHierarchyList,
+                UserGuid = entity.UserGuid.ToString(),
+                IsActive = entity.IsActive ?? false
             };
         }
 

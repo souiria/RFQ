@@ -1,12 +1,10 @@
-﻿using MediatR;
-
-namespace SharedKernel
+﻿namespace SharedKernel
 {
     /// <summary>
     /// Source: https://code-maze.com/cqrs-mediatr-fluentvalidation/
     /// </summary>
     /// <typeparam name="TResponse"></typeparam>
-    public interface ICommand<out TResponse> : IRequest<TResponse>
-    {
-    }
+    public interface ICommand;
+
+    public interface ICommand<TResponse>;
 }
