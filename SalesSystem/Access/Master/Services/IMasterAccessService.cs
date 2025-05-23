@@ -4,23 +4,42 @@
     {
         #region Currency
         Task<Result<List<CurrencyDto>>> GetAllCurrencies(CancellationToken cancellationToken);
+        Task<bool> PopulateCurrenciesAsync(CancellationToken cancellationToken);
         #endregion
 
         #region Customer
 
         Task<Result<List<CustomerBusinessHierarchyDto>>> GetAllCustomerBusinessUnits(CancellationToken cancellationToken);
+        Task<bool> PopulateCustomersAsync(CancellationToken cancellationToken);
         Task<Result<List<CustomerHierarchyDto>>> GetAllCustomerLocations(CancellationToken cancellationToken);
+        Task<bool> PopulateCustomerLocationsAsync(CancellationToken cancellationToken);
         Task<Result<List<CustomerProjectAssociationDto>>> GetAllCustomerProjectAssociations(CancellationToken cancellationToken);
+        Task<bool> PopulateCustomerProjectAssociationsAsync(CancellationToken cancellationToken);
         Task<Result<List<CustomerSalesEntityDto>>> GetAllCustomerSalesEntities(CancellationToken cancellationToken);
+        Task<bool> PopulateCustomerSalesEntitiesAsync(CancellationToken cancellationToken);
         Task<Result<List<CustomerBusinessUserAssociationDto>>> GetCustomerBusinessUserAssociations(CancellationToken cancellationToken);
+        Task<bool> PopulateCustomerBusinessUserAssociationsAsync(CancellationToken cancellationToken);
 
         #endregion
 
-        Task<bool> PopulateCurrenciesAsync(CancellationToken cancellationToken);
-        Task<bool> PopulateCustomersAsync(CancellationToken cancellationToken);
-        Task<bool> PopulateCustomerLocationsAsync(CancellationToken cancellationToken);
-        Task<bool> PopulateCustomerProjectAssociationsAsync(CancellationToken cancellationToken);
-        Task<bool> PopulateCustomerSalesEntitiesAsync(CancellationToken cancellationToken);
-        Task<bool> PopulateCustomerBusinessUserAssociationsAsync(CancellationToken cancellationToken);
+        #region Project
+
+        Task<Result<List<PlatformHierarchyDto>>> GetAllPlatforms(CancellationToken cancellationToken);
+        Task<bool> PopulatePlatformsAsync(CancellationToken cancellationToken);
+        Task<Result<List<ProgramHierarchyDto>>> GetAllPrograms(CancellationToken cancellationToken);
+        Task<bool> PopulateProgramsAsync(CancellationToken cancellationToken);
+        Task<Result<List<ProjectHierarchyDto>>> GetAllProjects(CancellationToken cancellationToken);
+        Task<bool> PopulateProjectsAsync(CancellationToken cancellationToken);
+        Task<Result<List<MilestoneHierarchyDto>>> GetAllMilestones(CancellationToken cancellationToken);
+        Task<bool> PopulateMilestonesAsync(CancellationToken cancellationToken);
+
+        #endregion
+
+        #region Vehicle
+
+        Task<Result<List<VehicleDto>>> GetAllVehicles(CancellationToken cancellationToken);
+        Task<bool> PopulateVehiclesAsync(CancellationToken cancellationToken);
+
+        #endregion
     }
 }

@@ -6,5 +6,6 @@
         public required string? VehicleName { get; set; }
         public required string? ProjectReference { get; set; }
         public required string? VehicleDisplay { get; set; }
+        public required bool? IsActive { get; set; }
     }
 }

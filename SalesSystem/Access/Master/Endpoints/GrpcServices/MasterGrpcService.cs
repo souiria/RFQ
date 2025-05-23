@@ -156,5 +156,123 @@ namespace Master.Endpoints.GrpcServices
         }
 
         #endregion
+
+        #region Project
+
+        public override async Task<ListPlatformData> GetPlatformData(PlatformGrpcRequest request, ServerCallContext context)
+        {
+            ListPlatformData listPlatformData = new();
+            Result<List<PlatformHierarchyDto>> results = await _MasterAccessService.GetAllPlatforms(context.CancellationToken);
+            foreach (PlatformHierarchyDto result in results.Value)
+            {
+                listPlatformData.PlatformData.Add(result.MapToData());
+            }
+
+            return listPlatformData;
+        }
+
+        public override async Task GetPlatformDataStream(PlatformGrpcRequest request, IServerStreamWriter<PlatformData> responseStream, ServerCallContext context)
+        {
+            Result<List<PlatformHierarchyDto>> results = await _MasterAccessService.GetAllPlatforms(context.CancellationToken);
+            foreach (PlatformHierarchyDto result in results.Value)
+            {
+                PlatformData item = result.MapToData();
+                await responseStream.WriteAsync(item);
+            }
+        }
+
+        public override async Task<ListProgramData> GetProgramData(ProgramGrpcRequest request, ServerCallContext context)
+        {
+            ListProgramData listProgramData = new();
+            Result<List<ProgramHierarchyDto>> results = await _MasterAccessService.GetAllPrograms(context.CancellationToken);
+            foreach (ProgramHierarchyDto result in results.Value)
+            {
+                listProgramData.ProgramData.Add(result.MapToData());
+            }
+
+            return listProgramData;
+        }
+
+        public override async Task GetProgramDataStream(ProgramGrpcRequest request, IServerStreamWriter<ProgramData> responseStream, ServerCallContext context)
+        {
+            Result<List<ProgramHierarchyDto>> results = await _MasterAccessService.GetAllPrograms(context.CancellationToken);
+            foreach (ProgramHierarchyDto result in results.Value)
+            {
+                ProgramData item = result.MapToData();
+                await responseStream.WriteAsync(item);
+            }
+        }
+
+        public override async Task<ListProjectData> GetProjectData(ProjectGrpcRequest request, ServerCallContext context)
+        {
+            ListProjectData data = new();
+            Result<List<ProjectHierarchyDto>> results = await _MasterAccessService.GetAllProjects(context.CancellationToken);
+            foreach (ProjectHierarchyDto result in results.Value)
+            {
+                data.ProjectData.Add(result.MapToData());
+            }
+
+            return data;
+        }
+
+        public override async Task GetProjectDataStream(ProjectGrpcRequest request, IServerStreamWriter<ProjectData> responseStream, ServerCallContext context)
+        {
+            Result<List<ProjectHierarchyDto>> results = await _MasterAccessService.GetAllProjects(context.CancellationToken);
+            foreach (ProjectHierarchyDto result in results.Value)
+            {
+                ProjectData item = result.MapToData();
+                await responseStream.WriteAsync(item);
+            }
+        }
+
+        public override async Task<ListMilestoneData> GetMilestoneData(MilestoneGrpcRequest request, ServerCallContext context)
+        {
+            ListMilestoneData data = new();
+            Result<List<MilestoneHierarchyDto>> results = await _MasterAccessService.GetAllMilestones(context.CancellationToken);
+            foreach (MilestoneHierarchyDto result in results.Value)
+            {
+                data.MilestoneData.Add(result.MapToData());
+            }
+
+            return data;
+        }
+
+        public override async Task GetMilestoneDataStream(MilestoneGrpcRequest request, IServerStreamWriter<MilestoneData> responseStream, ServerCallContext context)
+        {
+            Result<List<MilestoneHierarchyDto>> results = await _MasterAccessService.GetAllMilestones(context.CancellationToken);
+            foreach (MilestoneHierarchyDto result in results.Value)
+            {
+                MilestoneData item = result.MapToData();
+                await responseStream.WriteAsync(item);
+            }
+        }
+
+        #endregion
+
+        #region Vehicle
+
+        public override async Task<ListVehicleData> GetVehicleData(VehicleGrpcRequest request, ServerCallContext context)
+        {
+            ListVehicleData data = new();
+            Result<List<VehicleDto>> results = await _MasterAccessService.GetAllVehicles(context.CancellationToken);
+            foreach (VehicleDto result in results.Value)
+            {
+                data.VehicleData.Add(result.MapToData());
+            }
+
+            return data;
+        }
+
+        public override async Task GetVehicleDataStream(VehicleGrpcRequest request, IServerStreamWriter<VehicleData> responseStream, ServerCallContext context)
+        {
+            Result<List<VehicleDto>> results = await _MasterAccessService.GetAllVehicles(context.CancellationToken);
+            foreach (VehicleDto result in results.Value)
+            {
+                VehicleData item = result.MapToData();
+                await responseStream.WriteAsync(item);
+            }
+        }
+
+        #endregion
     }
 }

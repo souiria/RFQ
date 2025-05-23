@@ -11,7 +11,14 @@ namespace Master.Services
     {
         #region In Memory Datasets
 
+        #region Currency
+
         List<CurrencyDto> _Currencies;
+
+        #endregion
+
+        #region Customer
+
         List<CustomerBusinessHierarchyDto> _Customers;
         List<CustomerHierarchyDto> _CustomerLocations;
         List<CustomerSalesEntityDto> _CustomerSalesEntities;
@@ -20,16 +27,39 @@ namespace Master.Services
 
         #endregion
 
+        #region Project
+
+        List<PlatformHierarchyDto> _Platforms;
+        List<ProgramHierarchyDto> _Programs;
+        List<ProjectHierarchyDto> _Projects;
+        List<MilestoneHierarchyDto> _Milestones;
+
+        #endregion
+
+        #region Vehicle
+
+        List<VehicleDto> _Vehicles;
+
+        #endregion
+
+        #endregion
+
         #region Fields and Properties
 
+        #region Currency
+
         IQueryHandler<GetCurrenciesQuery, List<CurrencyDto>>? _CurrencyHandler;
+        bool _CurrencyRefreshInProgress;
+
+        #endregion
+
+        #region Customer
+
         IQueryHandler<GetAllCustomerBusinessUnitsQuery, List<CustomerBusinessHierarchyDto>>? _CustomerHandler;
         IQueryHandler<GetAllCustomerLocationsQuery, List<CustomerHierarchyDto>>? _CustomerLocationHandler;
         IQueryHandler<GetAllCustomerProjectAssociationsQuery, List<CustomerProjectAssociationDto>>? _CustomerProjectAssociationsHandler;
         IQueryHandler<GetAllCustomerSalesEntitiesQuery, List<CustomerSalesEntityDto>>? _CustomerSalesEntitiesHandler;
         IQueryHandler<GetCustomerBusinessUserAssociationsQuery, List<CustomerBusinessUserAssociationDto>>? _CustomerBusinessUserAssociationsHandler;
-        readonly IServiceProvider _ServiceProvider;
-        bool _CurrencyRefreshInProgress;
         bool _CustomerRefreshInProgress;
         bool _CustomerLocationRefreshInProgress;
         bool _CustomerProjectAssociationsRefreshInProgress;
@@ -38,20 +68,79 @@ namespace Master.Services
 
         #endregion
 
+        #region Project
+
+        IQueryHandler<GetAllPlatformHierarchiesQuery, List<PlatformHierarchyDto>>? _PlatformHandler;
+        IQueryHandler<GetAllProgramHierarchiesQuery, List<ProgramHierarchyDto>>? _ProgramHandler;
+        IQueryHandler<GetAllProjectHierarchiesQuery, List<ProjectHierarchyDto>>? _ProjectHandler;
+        IQueryHandler<GetAllMilestoneHierarchiesQuery, List<MilestoneHierarchyDto>>? _MilestoneHandler;
+        bool _PlatformRefreshInProgress;
+        bool _ProgramRefreshInProgress;
+        bool _ProjectRefreshInProgress;
+        bool _MilestoneRefreshInProgress;
+
+        #endregion
+
+        #region Vehicle
+
+        IQueryHandler<GetAllVehiclesQuery, List<VehicleDto>>? _VehicleHandler;
+        bool _VehicleRefreshInProgress;
+
+        #endregion
+
+        readonly IServiceProvider _ServiceProvider;
+
+        #endregion
+
         #region Constructor
         public MasterAccessService(IServiceProvider serviceProvider)
         {
+            #region Currency
+
             _Currencies = [];
+            _CurrencyRefreshInProgress = false;
+
+            #endregion
+
+            #region Customer
+
             _Customers = [];
             _CustomerLocations = [];
             _CustomerSalesEntities = [];
             _CustomerProjectAssociations = [];
             _CustomerBusinessUserAssociations = [];
-            _CurrencyRefreshInProgress = false;
             _CustomerRefreshInProgress = false;
             _CustomerLocationRefreshInProgress = false;
+            _CustomerProjectAssociationsRefreshInProgress = false;
+            _CustomerSalesEntitiesRefreshInProgress = false;
+            _CustomerBusinessUserAssociationsRefreshInProgress = false;
+
+            #endregion
+
+            #region Project
+
+            _Platforms = [];
+            _Programs = [];
+            _Projects = [];
+            _Milestones = [];
+            
+            _PlatformRefreshInProgress = false;
+            _ProgramRefreshInProgress = false;
+            _ProjectRefreshInProgress = false;
+            _MilestoneRefreshInProgress = false;
+
+            #endregion
+
+            #region Vehicle
+
+            _Vehicles = [];
+            _VehicleRefreshInProgress = false;
+
+            #endregion
+
             _ServiceProvider = serviceProvider;
         }
+
         #endregion
 
         #region Handlers
@@ -149,9 +238,81 @@ namespace Master.Services
         #endregion
 
         #region Project
+
+        public async Task<Result<List<PlatformHierarchyDto>>> GetAllPlatforms(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_Platforms.Any())
+            {
+                return _Platforms;
+            }
+            else
+            {
+                await PopulatePlatformsAsync(cancellationToken);
+                return _Platforms;
+            }
+        }
+
+        public async Task<Result<List<ProgramHierarchyDto>>> GetAllPrograms(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_Programs.Any())
+            {
+                return _Programs;
+            }
+            else
+            {
+                await PopulateProgramsAsync(cancellationToken);
+                return _Programs;
+            }
+        }
+
+        public async Task<Result<List<ProjectHierarchyDto>>> GetAllProjects(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_Projects.Any())
+            {
+                return _Projects;
+            }
+            else
+            {
+                await PopulateProjectsAsync(cancellationToken);
+                return _Projects;
+            }
+        }
+
+        public async Task<Result<List<MilestoneHierarchyDto>>> GetAllMilestones(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_Milestones.Any())
+            {
+                return _Milestones;
+            }
+            else
+            {
+                await PopulateMilestonesAsync(cancellationToken);
+                return _Milestones;
+            }
+        }
+
         #endregion
 
         #region Vehicle
+
+        public async Task<Result<List<VehicleDto>>> GetAllVehicles(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_Vehicles.Any())
+            {
+                return _Vehicles;
+            }
+            else
+            {
+                await PopulateVehiclesAsync(cancellationToken);
+                return _Vehicles;
+            }
+        }
+
         #endregion
 
         async Task<Result<bool>> PopulateMasterData(CancellationToken cancellationToken)
@@ -311,6 +472,139 @@ namespace Master.Services
                     }
 
                     _CustomerBusinessUserAssociationsRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
+
+        #region Project
+
+        public async Task<bool> PopulatePlatformsAsync(CancellationToken cancellationToken)
+        {
+            if (!_PlatformRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _PlatformHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllPlatformHierarchiesQuery, List<PlatformHierarchyDto>>>();
+                    _PlatformRefreshInProgress = true;
+                    GetAllPlatformHierarchiesQuery query = new GetAllPlatformHierarchiesQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<PlatformHierarchyDto>> results = await _PlatformHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count > 0)
+                    {
+                        _Platforms.Clear();
+                        _Platforms = results.Value;
+                    }
+
+                    _PlatformRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public async Task<bool> PopulateProgramsAsync(CancellationToken cancellationToken)
+        {
+            if (!_ProgramRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _ProgramHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllProgramHierarchiesQuery, List<ProgramHierarchyDto>>>();
+                    _ProgramRefreshInProgress = true;
+                    GetAllProgramHierarchiesQuery query = new GetAllProgramHierarchiesQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<ProgramHierarchyDto>> results = await _ProgramHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count > 0)
+                    {
+                        _Programs.Clear();
+                        _Programs = results.Value;
+                    }
+
+                    _ProgramRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public async Task<bool> PopulateProjectsAsync(CancellationToken cancellationToken)
+        {
+            if (!_ProjectRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _ProjectHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllProjectHierarchiesQuery, List<ProjectHierarchyDto>>>();
+                    _ProjectRefreshInProgress = true;
+                    GetAllProjectHierarchiesQuery query = new GetAllProjectHierarchiesQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<ProjectHierarchyDto>> results = await _ProjectHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count > 0)
+                    {
+                        _Projects.Clear();
+                        _Projects = results.Value;
+                    }
+
+                    _ProjectRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public async Task<bool> PopulateMilestonesAsync(CancellationToken cancellationToken)
+        {
+            if (!_MilestoneRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _MilestoneHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllMilestoneHierarchiesQuery, List<MilestoneHierarchyDto>>>();
+                    _MilestoneRefreshInProgress = true;
+                    GetAllMilestoneHierarchiesQuery query = new GetAllMilestoneHierarchiesQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<MilestoneHierarchyDto>> results = await _MilestoneHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count > 0)
+                    {
+                        _Milestones.Clear();
+                        _Milestones = results.Value;
+                    }
+
+                    _MilestoneRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
+
+        #region Vehicle
+
+        public async Task<bool> PopulateVehiclesAsync(CancellationToken cancellationToken)
+        {
+            if (!_VehicleRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _VehicleHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllVehiclesQuery, List<VehicleDto>>>();
+                    _VehicleRefreshInProgress = true;
+                    GetAllVehiclesQuery query = new GetAllVehiclesQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<VehicleDto>> results = await _VehicleHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count > 0)
+                    {
+                        _Vehicles.Clear();
+                        _Vehicles = results.Value;
+                    }
+
+                    _VehicleRefreshInProgress = false;
                     return true;
                 }
             }

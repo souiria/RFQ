@@ -9,5 +9,6 @@
         public required int? ProjectAnnualVolume { get; set; }
         public required Guid? ProgramHierarchyGuid { get; set; }
         public required Guid Id { get; set; }
+        public required bool? IsActive { get; set; }
     }
 }

@@ -7,5 +7,6 @@
         public required DateTime? EventEndDate { get; set; }
         public required Guid? ProjectHierarchyGuid { get; set; }
         public required Guid? Id { get; set; }
+        public required bool? IsActive { get; set; }
     }
 }

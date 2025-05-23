@@ -6,5 +6,6 @@
         public required Guid? CustomerHierarchyGuid { get; set; }
         public required Guid? Id { get; set; }
         public required string? PlatformManagerName { get; set; }
+        public required bool? IsActive { get; set; }
     }
 }

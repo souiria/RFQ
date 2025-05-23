@@ -50,6 +50,16 @@
                 await LogDataPopulationSuccess("CustomerBusinessUserAssociations", check);
                 check = await _MasterAccessService.PopulateCustomerProjectAssociationsAsync(stoppingToken);
                 await LogDataPopulationSuccess("CustomerProjectAssociations", check);
+                check = await _MasterAccessService.PopulatePlatformsAsync(stoppingToken);
+                await LogDataPopulationSuccess("Platforms", check);
+                check = await _MasterAccessService.PopulateProgramsAsync(stoppingToken);
+                await LogDataPopulationSuccess("Programs", check);
+                check = await _MasterAccessService.PopulateProjectsAsync(stoppingToken);
+                await LogDataPopulationSuccess("Projects", check);
+                check = await _MasterAccessService.PopulateMilestonesAsync(stoppingToken);
+                await LogDataPopulationSuccess("Milestones", check);
+                check = await _MasterAccessService.PopulateVehiclesAsync(stoppingToken);
+                await LogDataPopulationSuccess("Vehicles", check);
             }
 
             return true;

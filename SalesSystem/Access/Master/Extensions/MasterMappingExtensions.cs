@@ -25,9 +25,9 @@ namespace Master.Extensions
             return new CurrencyData
             {
                 Id = entity.Id.ToString(),
-                CurrencyCode = entity.CurrencyCode,
-                CurrencyName = entity.CurrencyName,
-                EuroRate = entity.EuroRate,
+                CurrencyCode = entity.CurrencyCode ?? "",
+                CurrencyName = entity.CurrencyName ?? "",
+                EuroRate = entity.EuroRate ?? "",
                 IsActive = entity.IsActive ?? false
             };
         }
@@ -53,9 +53,9 @@ namespace Master.Extensions
             return new CustomerData
             {
                 Id = entity.Id.ToString(),
-                CustomerBusinessGroupCode = entity.CustomerBusinessGroupCode,
-                CustomerBusinessGroupName = entity.CustomerBusinessGroupName,
-                SEWSEBusinessTeam = entity.SEWSEBusinessTeam,
+                CustomerBusinessGroupCode = entity.CustomerBusinessGroupCode ?? "",
+                CustomerBusinessGroupName = entity.CustomerBusinessGroupName ?? "",
+                SEWSEBusinessTeam = entity.SEWSEBusinessTeam ?? "",
                 IsActive = entity.IsActive ?? false
             };
         }
@@ -87,8 +87,8 @@ namespace Master.Extensions
             return new CustomerLocationData
             {
                 Id = entity.Id.ToString(),
-                CustomerCode = entity.CustomerCode,
-                CustomerName = entity.CustomerName,
+                CustomerCode = entity.CustomerCode ?? "",
+                CustomerName = entity.CustomerName ?? "",
                 IsActive = entity.IsActive ?? false
             };
         }
@@ -118,9 +118,9 @@ namespace Master.Extensions
             return new CustomerSalesEntityData
             {
                 Id = entity.Id.ToString(),
-                CustomerSalesEntityCode = entity.CustomerSalesEntityCode,
-                CustomerSalesEntityName = entity.CustomerSalesEntityName,
-                FinanceCode = entity.FinanceCode,
+                CustomerSalesEntityCode = entity.CustomerSalesEntityCode ?? "",
+                CustomerSalesEntityName = entity.CustomerSalesEntityName ?? "",
+                FinanceCode = entity.FinanceCode ?? "",
                 IsActive = entity.IsActive ?? false
             };
         }
@@ -163,8 +163,142 @@ namespace Master.Extensions
             return new CustomerBusinessUserAssociationData
             {
                 Id = entity.Id.ToString(),
-                CustomerBusinessHierarchyList = entity.CustomerBusinessHierarchyList,
+                CustomerBusinessHierarchyList = entity.CustomerBusinessHierarchyList ?? "",
                 UserGuid = entity.UserGuid.ToString(),
+                IsActive = entity.IsActive ?? false
+            };
+        }
+
+        #endregion
+
+        #region Project
+
+        public static MilestoneHierarchyDto MapToDto(this DbMilestoneHierarchy entity)
+        {
+            return new MilestoneHierarchyDto
+            {
+                Id = entity.Id,
+                MilestoneEventName = entity.MilestoneEventName,
+                EventStartDate = entity.EventStartDate,
+                EventEndDate = entity.EventEndDate,
+                ProjectHierarchyGuid = entity.ProjectHierarchyGuid,
+                IsActive = entity.IsActive
+            };
+        }
+
+        public static MilestoneData MapToData(this MilestoneHierarchyDto entity)
+        {
+            return new MilestoneData
+            {
+                Id = entity.Id.ToString(),
+                MilestoneEventName = entity.MilestoneEventName ?? "",
+                EventStartDate = entity.EventStartDate?.ToUniversalTime().ToTimestamp(),
+                EventEndDate = entity.EventEndDate?.ToUniversalTime().ToTimestamp(),
+                ProjectHierarchyGuid = entity.ProjectHierarchyGuid.ToString(),
+                IsActive = entity.IsActive ?? false
+            };
+        }
+
+        public static PlatformHierarchyDto MapToDto(this DbPlatformHierarchy entity)
+        {
+            return new PlatformHierarchyDto
+            {
+                Id = entity.Id,
+                PlatformName = entity.PlatformName,
+                CustomerHierarchyGuid = entity.CustomerHierarchyGuid,
+                PlatformManagerName = entity.PlatformManagerName,
+                IsActive = entity.IsActive
+            };
+        }
+
+        public static PlatformData MapToData(this PlatformHierarchyDto entity)
+        {
+            return new PlatformData
+            {
+                Id = entity.Id.ToString(),
+                PlatformName = entity.PlatformName ?? "",
+                CustomerHierarchyGuid = entity.CustomerHierarchyGuid.ToString(),
+                PlatformManagerName = entity.PlatformManagerName ?? "",
+                IsActive = entity.IsActive ?? false
+            };
+        }
+
+        public static ProgramHierarchyDto MapToDto(this DbProgramHierarchy entity)
+        {
+            return new ProgramHierarchyDto
+            {
+                Id = entity.Id,
+                ProgramName = entity.ProgramName,
+                PlatformHierarchyGuid = entity.PlatformHierarchyGuid,
+                IsActive = entity.IsActive
+            };
+        }
+
+        public static ProgramData MapToData(this ProgramHierarchyDto entity)
+        {
+            return new ProgramData
+            {
+                Id = entity.Id.ToString(),
+                ProgramName = entity.ProgramName ?? "",
+                PlatformHierarchyGuid = entity.PlatformHierarchyGuid.ToString(),
+                IsActive = entity.IsActive ?? false
+            };
+        }
+
+        public static ProjectHierarchyDto MapToDto(this DbProjectHierarchy entity)
+        {
+            return new ProjectHierarchyDto
+            {
+                Id = entity.Id,
+                ProjectCode = entity.ProjectCode,
+                ProjectName = entity.ProjectName,
+                CustomerProjectCode = entity.CustomerProjectCode,
+                ProjectDescription = entity.ProjectDescription,
+                ProjectAnnualVolume = entity.ProjectAnnualVolume,
+                ProgramHierarchyGuid = entity.ProgramHierarchyGuid,
+                IsActive = entity.IsActive
+            };
+        }
+
+        public static ProjectData MapToData(this ProjectHierarchyDto entity)
+        {
+            return new ProjectData
+            {
+                Id = entity.Id.ToString(),
+                ProjectCode = entity.ProjectCode ?? "",
+                ProjectName = entity.ProjectName ?? "",
+                CustomerProjectCode = entity.CustomerProjectCode ?? "",
+                ProjectDescription = entity.ProjectDescription ?? "",
+                ProjectAnnualVolume = entity.ProjectAnnualVolume ?? 0,
+                ProgramHierarchyGuid = entity.ProgramHierarchyGuid.ToString(),
+                IsActive = entity.IsActive ?? false
+            };
+        }
+
+        #endregion
+
+        #region Vehicle
+
+        public static VehicleDto MapToDto(this DbVehicle entity)
+        {
+            return new VehicleDto
+            {
+                Id = entity.Id,
+                VehicleName = entity.VehicleName,
+                ProjectReference = entity.ProjectReference,
+                VehicleDisplay = entity.VehicleDisplay,
+                IsActive = entity.IsActive
+            };
+        }
+
+        public static VehicleData MapToData(this VehicleDto entity)
+        {
+            return new VehicleData
+            {
+                Id = entity.Id.ToString(),
+                VehicleName = entity.VehicleName ?? "",
+                ProjectReference = entity.ProjectReference ?? "",
+                VehicleDisplay = entity.VehicleDisplay ?? "",
                 IsActive = entity.IsActive ?? false
             };
         }

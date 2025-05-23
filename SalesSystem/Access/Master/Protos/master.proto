@@ -24,6 +24,18 @@ service Master {
   rpc GetCustomerProjectAssociationDataStream (CustomerProjectAssociationGrpcRequest) returns (stream CustomerProjectAssociationData);
   rpc GetCustomerBusinessUserAssociationData (CustomerBusinessUserAssociationGrpcRequest) returns (ListCustomerBusinessUserAssociationData);
   rpc GetCustomerBusinessUserAssociationDataStream (CustomerBusinessUserAssociationGrpcRequest) returns (stream CustomerBusinessUserAssociationData);
+
+  rpc GetMilestoneData (MilestoneGrpcRequest) returns (ListMilestoneData);
+  rpc GetMilestoneDataStream (MilestoneGrpcRequest) returns (stream MilestoneData);
+  rpc GetPlatformData (PlatformGrpcRequest) returns (ListPlatformData);
+  rpc GetPlatformDataStream (PlatformGrpcRequest) returns (stream PlatformData);
+  rpc GetProgramData (ProgramGrpcRequest) returns (ListProgramData);
+  rpc GetProgramDataStream (ProgramGrpcRequest) returns (stream ProgramData);
+  rpc GetProjectData (ProjectGrpcRequest) returns (ListProjectData);
+  rpc GetProjectDataStream (ProjectGrpcRequest) returns (stream ProjectData);
+
+  rpc GetVehicleData (VehicleGrpcRequest) returns (ListVehicleData);
+  rpc GetVehicleDataStream (VehicleGrpcRequest) returns (stream VehicleData);
 }
 
 // The request message containing the user's name.
@@ -133,4 +145,92 @@ message CustomerBusinessUserAssociationData {
 
 message ListCustomerBusinessUserAssociationData {
     repeated CustomerBusinessUserAssociationData CustomerBusinessUserAssociationData = 1;
+}
+
+message MilestoneGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message MilestoneData {
+    string Id = 1;
+    string MilestoneEventName = 2;
+    google.protobuf.Timestamp EventStartDate = 3;    
+    google.protobuf.Timestamp EventEndDate = 4;  
+    string ProjectHierarchyGuid = 5;
+    bool IsActive = 6;
+}
+
+message ListMilestoneData {
+    repeated MilestoneData MilestoneData = 1;
+}
+
+message PlatformGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message PlatformData {
+    string Id = 1;
+    string PlatformName = 2;
+    string PlatformManagerName = 3;    
+    string CustomerHierarchyGuid = 4;
+    bool IsActive = 5;
+}
+
+message ListPlatformData {
+    repeated PlatformData PlatformData = 1;
+}
+
+message ProgramGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message ProgramData {
+    string Id = 1;
+    string ProgramName = 2;   
+    string PlatformHierarchyGuid = 3;
+    bool IsActive = 4;
+}
+
+message ListProgramData {
+    repeated ProgramData ProgramData = 1;
+}
+
+message ProjectGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message ProjectData {
+    string Id = 1;
+    string ProjectCode = 2;   
+    string ProjectName = 3;
+    string CustomerProjectCode = 4;
+    string ProjectDescription = 5;
+    int32 ProjectAnnualVolume = 6;
+    string ProgramHierarchyGuid = 7;
+    bool IsActive = 8;
+}
+
+message ListProjectData {
+    repeated ProjectData ProjectData = 1;
+}
+
+message VehicleGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message VehicleData {
+    string Id = 1;
+    string VehicleName = 2;   
+    string ProjectReference = 3;
+    string VehicleDisplay = 4;
+    bool IsActive = 5;
+}
+
+message ListVehicleData {
+    repeated VehicleData VehicleData = 1;
 }
