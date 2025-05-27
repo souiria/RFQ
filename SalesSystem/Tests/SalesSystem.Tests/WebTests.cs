@@ -17,8 +17,8 @@ namespace SalesSystem.Tests
             await app.StartAsync();
 
             // Act
-            using HttpClient httpClient = app.CreateHttpClient("webfrontend");
-            await resourceNotificationService.WaitForResourceAsync("webfrontend", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
+            using HttpClient httpClient = app.CreateHttpClient("RfqFrontEnd");
+            await resourceNotificationService.WaitForResourceAsync("RfqFrontEnd", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
             HttpResponseMessage response = await httpClient.GetAsync(new Uri("/", UriKind.Relative));
 
             // Assert
