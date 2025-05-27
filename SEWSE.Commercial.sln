@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Debug", "Debug", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", "{89B6A227-43EB-4F2A-957C-AB70DC0ABF04}"
+	ProjectSection(SolutionItems) = preProject
+		SalesSystem\src\Deployment\Placeholder.txt = SalesSystem\src\Deployment\Placeholder.txt
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Manager", "Manager", "{3F465083-C68C-4844-B412-A9FCC2EEF3BC}"
 EndProject
