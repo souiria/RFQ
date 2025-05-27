@@ -17,8 +17,9 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
   </ItemGroup>
 
+
   <ItemGroup>
-    <ProjectReference Include="..\SalesSystem.AppHost\SalesSystem.AppHost.csproj" />
+    <ProjectReference Include="..\..\src\Debug\SalesSystem.AppHost\SalesSystem.AppHost.csproj" />
   </ItemGroup>
 
   <ItemGroup>
