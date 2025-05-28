@@ -1,8 +1,4 @@
-﻿using Master.Data.Repository;
-using SharedKernel;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-
-namespace Master.Extensions
+﻿namespace Master.Extensions
 {
     public static class ServiceCollectionExtensions
     {

@@ -50,7 +50,9 @@ namespace Master
                 app.UseHsts();
             }
 
-            app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
+            GrpcWebOptions grpcWebOptions = new GrpcWebOptions();
+            grpcWebOptions.DefaultEnabled = true;
+            app.UseGrpcWeb(grpcWebOptions);
             app.MapGrpcService<MasterGrpcService>();
             app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
 
