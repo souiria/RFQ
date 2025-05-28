@@ -12,11 +12,11 @@
         readonly IMastersReadRepository<DbCustomerSalesEntity> _CustomerSalesEntityRepository;
         readonly IMastersReadRepository<DbCustomerBusinessUserAssociation> _CustomerBusinessUserAssociationRepository;
 
-        List<CustomerBusinessHierarchyDto> _Customers = new();
-        List<CustomerHierarchyDto> _CustomerLocations = new();
-        List<CustomerProjectAssociationDto> _CustomerProjectAssociations = new();
-        List<CustomerSalesEntityDto> _CustomerSalesEntities = new();
-        List<CustomerBusinessUserAssociationDto> _CustomerBusinessUserAssociations = new();
+        List<CustomerBusinessHierarchyDto> _Customers;
+        List<CustomerHierarchyDto> _CustomerLocations;
+        List<CustomerProjectAssociationDto> _CustomerProjectAssociations;
+        List<CustomerSalesEntityDto> _CustomerSalesEntities;
+        List<CustomerBusinessUserAssociationDto> _CustomerBusinessUserAssociations;
 
         public QueryHandler(IMastersReadRepository<DbCustomerBusinessHierarchy> customerBusinessHierarchyRepository,
             IMastersReadRepository<DbCustomerHierarchy> customerHierarchyRepository,
@@ -29,15 +29,23 @@
             _CustomerProjectAssociationRepository = customerProjectAssociationRepository;
             _CustomerSalesEntityRepository = customerSalesEntityRepository;
             _CustomerBusinessUserAssociationRepository = customerBusinessUserAssociationRepository;
+
+            _Customers = [];
+            _CustomerLocations = [];
+            _CustomerProjectAssociations = [];
+            _CustomerSalesEntities = [];
+            _CustomerBusinessUserAssociations = [];
         }
 
         async Task<Result<List<CustomerBusinessHierarchyDto>>> IQueryHandler<GetAllCustomerBusinessUnitsQuery, List<CustomerBusinessHierarchyDto>>.Handle(GetAllCustomerBusinessUnitsQuery query, CancellationToken cancellationToken)
         {
             _Customers.Clear();
-            List<DbCustomerBusinessHierarchy> results = await _CustomerBusinessHierarchyRepository.ListAsync(new GetCustomerBusinessUnitsReadOnlySpec(query.Position, query.TakeAmount), cancellationToken);
+            GetCustomerBusinessUnitsReadOnlySpec spec = new GetCustomerBusinessUnitsReadOnlySpec(query.Position, query.TakeAmount);
+            List<DbCustomerBusinessHierarchy> results = await _CustomerBusinessHierarchyRepository.ListAsync(spec, cancellationToken);
             foreach (DbCustomerBusinessHierarchy result in results)
             {
-                _Customers.Add(result.MapToCustomerBusinessHierarchyDto());
+                CustomerBusinessHierarchyDto mapping = result.MapToCustomerBusinessHierarchyDto();
+                _Customers.Add(mapping);
             }
 
             return _Customers;
