@@ -2,7 +2,8 @@
 {
     public class CurrencyRequest : RequestBase, IQuery<List<CurrencyDto>>
     {
-        public CurrencyRequestType RequestType { get; set; }
+        public CurrencyRequestType RequestType
+        { get; set; }
     }
 
     public enum CurrencyRequestType

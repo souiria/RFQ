@@ -2,7 +2,9 @@ namespace Master.CQRS.Query.Project
 {
     public class GetAllProjectHierarchiesQuery : IQuery<List<ProjectHierarchyDto>>
     {
-        public int? Position { get; set; }
-        public int? TakeAmount { get; set; }
+        public int? Position
+        { get; set; }
+        public int? TakeAmount
+        { get; set; }
     }
 }
