@@ -2,13 +2,13 @@
 {
     public class CustomerBusinessUserAssociationDto
     {
-        public required Guid? UserGuid
+        public Guid? UserGuid
         { get; set; }
-        public required string? CustomerBusinessHierarchyList
+        public string? CustomerBusinessHierarchyList
         { get; set; }
-        public required Guid? Id
+        public Guid? Id
         { get; set; }
-        public required bool? IsActive
+        public bool? IsActive
         { get; set; }
     }
 }

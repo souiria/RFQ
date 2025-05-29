@@ -30,7 +30,8 @@
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            modelBuilder.ApplyConfigurationsFromAssembly(assembly);
         }
 
         #endregion
@@ -45,10 +46,7 @@
             return result;
         }
 
-        public override int SaveChanges()
-        {
-            return SaveChangesAsync().GetAwaiter().GetResult();
-        }
+        public override int SaveChanges() => SaveChangesAsync().GetAwaiter().GetResult();
 
         async Task PublishDomainEventsAsync()
         {

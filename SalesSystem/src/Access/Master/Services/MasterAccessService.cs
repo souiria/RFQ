@@ -1,7 +1,4 @@
-﻿using Master.CQRS.Handler.Currency;
-using System.Collections.Generic;
-
-namespace Master.Services
+﻿namespace Master.Services
 {
     /// <summary>
     /// This class is used to make calls to the database queries and to hold the data dictionaries.
@@ -337,7 +334,10 @@ namespace Master.Services
                     GetCurrenciesQuery query = new GetCurrenciesQuery();
                     await Task.Delay(1, cancellationToken);
                     Result<List<CurrencyDto>> results = await _CurrencyHandler.Handle(query, cancellationToken);
-                    if (results.Value.Count > 0)
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
                     {
                         _Currencies.Clear();
                         _Currencies = results.Value;
@@ -365,7 +365,10 @@ namespace Master.Services
                     GetAllCustomerBusinessUnitsQuery query = new GetAllCustomerBusinessUnitsQuery();
                     await Task.Delay(1, cancellationToken);
                     Result<List<CustomerBusinessHierarchyDto>> results = await _CustomerHandler.Handle(query, cancellationToken);
-                    if (results.Value.Count > 0)
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
                     {
                         _Customers.Clear();
                         _Customers = results.Value;
@@ -390,7 +393,10 @@ namespace Master.Services
                     GetAllCustomerLocationsQuery query = new GetAllCustomerLocationsQuery();
                     await Task.Delay(1, cancellationToken);
                     Result<List<CustomerHierarchyDto>> results = await _CustomerLocationHandler.Handle(query, cancellationToken);
-                    if (results.Value.Count > 0)
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
                     {
                         _CustomerLocations.Clear();
                         _CustomerLocations = results.Value;
@@ -415,7 +421,10 @@ namespace Master.Services
                     GetAllCustomerProjectAssociationsQuery query = new GetAllCustomerProjectAssociationsQuery();
                     await Task.Delay(1, cancellationToken);
                     Result<List<CustomerProjectAssociationDto>> results = await _CustomerProjectAssociationsHandler.Handle(query, cancellationToken);
-                    if (results.Value.Count > 0)
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
                     {
                         _CustomerProjectAssociations.Clear();
                         _CustomerProjectAssociations = results.Value;
@@ -440,7 +449,10 @@ namespace Master.Services
                     GetAllCustomerSalesEntitiesQuery query = new GetAllCustomerSalesEntitiesQuery();
                     await Task.Delay(1, cancellationToken);
                     Result<List<CustomerSalesEntityDto>> results = await _CustomerSalesEntitiesHandler.Handle(query, cancellationToken);
-                    if (results.Value.Count > 0)
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
                     {
                         _CustomerSalesEntities.Clear();
                         _CustomerSalesEntities = results.Value;
@@ -465,7 +477,10 @@ namespace Master.Services
                     GetCustomerBusinessUserAssociationsQuery query = new GetCustomerBusinessUserAssociationsQuery();
                     await Task.Delay(1, cancellationToken);
                     Result<List<CustomerBusinessUserAssociationDto>> results = await _CustomerBusinessUserAssociationsHandler.Handle(query, cancellationToken);
-                    if (results.Value.Count > 0)
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
                     {
                         _CustomerBusinessUserAssociations.Clear();
                         _CustomerBusinessUserAssociations = results.Value;
@@ -494,7 +509,10 @@ namespace Master.Services
                     GetAllPlatformHierarchiesQuery query = new GetAllPlatformHierarchiesQuery();
                     await Task.Delay(1, cancellationToken);
                     Result<List<PlatformHierarchyDto>> results = await _PlatformHandler.Handle(query, cancellationToken);
-                    if (results.Value.Count > 0)
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
                     {
                         _Platforms.Clear();
                         _Platforms = results.Value;
@@ -519,7 +537,10 @@ namespace Master.Services
                     GetAllProgramHierarchiesQuery query = new GetAllProgramHierarchiesQuery();
                     await Task.Delay(1, cancellationToken);
                     Result<List<ProgramHierarchyDto>> results = await _ProgramHandler.Handle(query, cancellationToken);
-                    if (results.Value.Count > 0)
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
                     {
                         _Programs.Clear();
                         _Programs = results.Value;
@@ -544,7 +565,10 @@ namespace Master.Services
                     GetAllProjectHierarchiesQuery query = new GetAllProjectHierarchiesQuery();
                     await Task.Delay(1, cancellationToken);
                     Result<List<ProjectHierarchyDto>> results = await _ProjectHandler.Handle(query, cancellationToken);
-                    if (results.Value.Count > 0)
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
                     {
                         _Projects.Clear();
                         _Projects = results.Value;
@@ -569,7 +593,10 @@ namespace Master.Services
                     GetAllMilestoneHierarchiesQuery query = new GetAllMilestoneHierarchiesQuery();
                     await Task.Delay(1, cancellationToken);
                     Result<List<MilestoneHierarchyDto>> results = await _MilestoneHandler.Handle(query, cancellationToken);
-                    if (results.Value.Count > 0)
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
                     {
                         _Milestones.Clear();
                         _Milestones = results.Value;
@@ -598,7 +625,10 @@ namespace Master.Services
                     GetAllVehiclesQuery query = new GetAllVehiclesQuery();
                     await Task.Delay(1, cancellationToken);
                     Result<List<VehicleDto>> results = await _VehicleHandler.Handle(query, cancellationToken);
-                    if (results.Value.Count > 0)
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
                     {
                         _Vehicles.Clear();
                         _Vehicles = results.Value;
