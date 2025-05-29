@@ -95,7 +95,7 @@
                 }
                 catch (OperationCanceledException ex)
                 {
-                    _Logger.GenericLogError(ex.Message);
+                    _Logger.GenericLogError(ex.Message, ex);
                 }
             }
         }

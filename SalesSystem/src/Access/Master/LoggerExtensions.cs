@@ -23,9 +23,9 @@
             _GenericLogInformation(logger, information, null!); //<--appending ! is null forgiving operator
         }
         public static void GenericLogError(
-            this ILogger logger, string errorMessage)
+            this ILogger logger, string errorMessage, Exception e)
         {
-            _GenericLogError(logger, errorMessage, null!);
+            _GenericLogError(logger, errorMessage, e);
         }
     }
 }
