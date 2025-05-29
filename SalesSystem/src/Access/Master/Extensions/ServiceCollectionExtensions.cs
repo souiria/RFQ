@@ -23,6 +23,7 @@
         {
             string? connectionString = configuration.GetConnectionString("Database");
             //DbContextOptionsBuilder options = DbContextOptionsBuilder<MastersDbContext>();
+            TimeSpan retryDelay = TimeSpan.FromSeconds(30);
 
             services.AddScoped(typeof(IMastersReadRepository<>), typeof(MastersRepository<>));
             services.AddScoped(typeof(IMastersRepository<>), typeof(MastersRepository<>));
@@ -33,7 +34,7 @@
                         sqlOptions.UseCompatibilityLevel(130);
                         sqlOptions.EnableRetryOnFailure(
                         maxRetryCount: 10,
-                        maxRetryDelay: TimeSpan.FromSeconds(30),
+                        maxRetryDelay: retryDelay,
                         errorNumbersToAdd: null);
                     }));
 

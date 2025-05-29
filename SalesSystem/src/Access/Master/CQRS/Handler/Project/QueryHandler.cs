@@ -12,10 +12,10 @@ namespace Master.CQRS.Handler.Project
         readonly IMastersReadRepository<DbProgramHierarchy> _ProgramHierarchyRepository;
         readonly IMastersReadRepository<DbProjectHierarchy> _ProjectHierarchyRepository;
 
-        List<MilestoneHierarchyDto> _Milestones = new();
-        List<PlatformHierarchyDto> _Platforms = new();
-        List<ProgramHierarchyDto> _Programs = new();
-        List<ProjectHierarchyDto> _Projects = new();
+        List<MilestoneHierarchyDto> _Milestones;
+        List<PlatformHierarchyDto> _Platforms;
+        List<ProgramHierarchyDto> _Programs;
+        List<ProjectHierarchyDto> _Projects;
 
         public QueryHandler(IMastersReadRepository<DbMilestoneHierarchy> milestoneHierarchyRepository, IMastersReadRepository<DbPlatformHierarchy> platformHierarchyRepository, IMastersReadRepository<DbProgramHierarchy> programHierarchyRepository, IMastersReadRepository<DbProjectHierarchy> projectHierarchyRepository)
         {
@@ -23,15 +23,21 @@ namespace Master.CQRS.Handler.Project
             _PlatformHierarchyRepository = platformHierarchyRepository;
             _ProgramHierarchyRepository = programHierarchyRepository;
             _ProjectHierarchyRepository = projectHierarchyRepository;
+            _Milestones = [];
+            _Platforms = [];
+            _Programs = [];
+            _Projects = [];
         }
 
         async Task<Result<List<MilestoneHierarchyDto>>> IQueryHandler<GetAllMilestoneHierarchiesQuery, List<MilestoneHierarchyDto>>.Handle(GetAllMilestoneHierarchiesQuery query, CancellationToken cancellationToken)
         {
             _Milestones.Clear();
-            List<DbMilestoneHierarchy> results = await _MilestoneHierarchyRepository.ListAsync(new GetMilestoneHierarchyReadOnlySpec(query.Position, query.TakeAmount), cancellationToken);
+            GetMilestoneHierarchyReadOnlySpec spec = new GetMilestoneHierarchyReadOnlySpec(query.Position, query.TakeAmount);
+            List<DbMilestoneHierarchy> results = await _MilestoneHierarchyRepository.ListAsync(spec, cancellationToken);
             foreach (DbMilestoneHierarchy result in results)
             {
-                _Milestones.Add(result.MapToDto());
+                MilestoneHierarchyDto mapping = result.MapToDto();
+                _Milestones.Add(mapping);
             }
 
             return _Milestones;
@@ -40,10 +46,12 @@ namespace Master.CQRS.Handler.Project
         async Task<Result<List<PlatformHierarchyDto>>> IQueryHandler<GetAllPlatformHierarchiesQuery, List<PlatformHierarchyDto>>.Handle(GetAllPlatformHierarchiesQuery query, CancellationToken cancellationToken)
         {
             _Platforms.Clear();
-            List<DbPlatformHierarchy> results = await _PlatformHierarchyRepository.ListAsync(new GetPlatformHierarchyReadOnlySpec(query.Position, query.TakeAmount), cancellationToken);
+            GetPlatformHierarchyReadOnlySpec spec = new GetPlatformHierarchyReadOnlySpec(query.Position, query.TakeAmount);
+            List<DbPlatformHierarchy> results = await _PlatformHierarchyRepository.ListAsync(spec, cancellationToken);
             foreach (DbPlatformHierarchy result in results)
             {
-                _Platforms.Add(result.MapToDto());
+                PlatformHierarchyDto mapping = result.MapToDto();
+                _Platforms.Add(mapping);
             }
 
             return _Platforms;
@@ -52,10 +60,12 @@ namespace Master.CQRS.Handler.Project
         async Task<Result<List<ProgramHierarchyDto>>> IQueryHandler<GetAllProgramHierarchiesQuery, List<ProgramHierarchyDto>>.Handle(GetAllProgramHierarchiesQuery query, CancellationToken cancellationToken)
         {
             _Programs.Clear();
-            List<DbProgramHierarchy> results = await _ProgramHierarchyRepository.ListAsync(new GetProgramHierarchyReadOnlySpec(query.Position, query.TakeAmount), cancellationToken);
+            GetProgramHierarchyReadOnlySpec spec = new GetProgramHierarchyReadOnlySpec(query.Position, query.TakeAmount);
+            List<DbProgramHierarchy> results = await _ProgramHierarchyRepository.ListAsync(spec, cancellationToken);
             foreach (DbProgramHierarchy result in results)
             {
-                _Programs.Add(result.MapToDto());
+                ProgramHierarchyDto mapping = result.MapToDto();
+                _Programs.Add(mapping);
             }
 
             return _Programs;
@@ -64,10 +74,12 @@ namespace Master.CQRS.Handler.Project
         async Task<Result<List<ProjectHierarchyDto>>> IQueryHandler<GetAllProjectHierarchiesQuery, List<ProjectHierarchyDto>>.Handle(GetAllProjectHierarchiesQuery query, CancellationToken cancellationToken)
         {
             _Projects.Clear();
-            List<DbProjectHierarchy> results = await _ProjectHierarchyRepository.ListAsync(new GetProjectHierarchyReadOnlySpec(query.Position, query.TakeAmount), cancellationToken);
+            GetProjectHierarchyReadOnlySpec spec = new GetProjectHierarchyReadOnlySpec(query.Position, query.TakeAmount);
+            List<DbProjectHierarchy> results = await _ProjectHierarchyRepository.ListAsync(spec, cancellationToken);
             foreach (DbProjectHierarchy result in results)
             {
-                _Projects.Add(result.MapToDto());
+                ProjectHierarchyDto mapping = result.MapToDto();
+                _Projects.Add(mapping);
             }
 
             return _Projects;

@@ -54,10 +54,12 @@
         async Task<Result<List<CustomerHierarchyDto>>> IQueryHandler<GetAllCustomerLocationsQuery, List<CustomerHierarchyDto>>.Handle(GetAllCustomerLocationsQuery query, CancellationToken cancellationToken)
         {
             _CustomerLocations.Clear();
-            List<DbCustomerHierarchy> results = await _CustomerHierarchyRepository.ListAsync(new GetCustomerLocationsReadOnlySpec(query.Position, query.TakeAmount), cancellationToken);
+            GetCustomerLocationsReadOnlySpec spec = new GetCustomerLocationsReadOnlySpec(query.Position, query.TakeAmount);
+            List<DbCustomerHierarchy> results = await _CustomerHierarchyRepository.ListAsync(spec, cancellationToken);
             foreach (DbCustomerHierarchy result in results)
             {
-                _CustomerLocations.Add(result.MapToCustomerHierarchyDto());
+                CustomerHierarchyDto mapping = result.MapToCustomerHierarchyDto();
+                _CustomerLocations.Add(mapping);
             }
 
             return _CustomerLocations;
@@ -66,10 +68,12 @@
         async Task<Result<List<CustomerProjectAssociationDto>>> IQueryHandler<GetAllCustomerProjectAssociationsQuery, List<CustomerProjectAssociationDto>>.Handle(GetAllCustomerProjectAssociationsQuery query, CancellationToken cancellationToken)
         {
             _CustomerProjectAssociations.Clear();
-            List<DbCustomerProjectAssociation> results = await _CustomerProjectAssociationRepository.ListAsync(new GetCustomerProjectAssociationReadOnlySpec(query.Position, query.TakeAmount), cancellationToken);
+            GetCustomerProjectAssociationReadOnlySpec spec = new GetCustomerProjectAssociationReadOnlySpec(query.Position, query.TakeAmount);
+            List<DbCustomerProjectAssociation> results = await _CustomerProjectAssociationRepository.ListAsync(spec, cancellationToken);
             foreach (DbCustomerProjectAssociation result in results)
             {
-                _CustomerProjectAssociations.Add(result.MapToCustomerProjectAssociationDto());
+                CustomerProjectAssociationDto mapping = result.MapToCustomerProjectAssociationDto();
+                _CustomerProjectAssociations.Add(mapping);
             }
 
             return _CustomerProjectAssociations;
@@ -78,10 +82,12 @@
         async Task<Result<List<CustomerSalesEntityDto>>> IQueryHandler<GetAllCustomerSalesEntitiesQuery, List<CustomerSalesEntityDto>>.Handle(GetAllCustomerSalesEntitiesQuery query, CancellationToken cancellationToken)
         {
             _CustomerSalesEntities.Clear();
-            List<DbCustomerSalesEntity> results = await _CustomerSalesEntityRepository.ListAsync(new GetCustomerSalesEntitiesReadOnlySpec(query.Position, query.TakeAmount), cancellationToken);
+            GetCustomerSalesEntitiesReadOnlySpec spec = new GetCustomerSalesEntitiesReadOnlySpec(query.Position, query.TakeAmount);
+            List<DbCustomerSalesEntity> results = await _CustomerSalesEntityRepository.ListAsync(spec, cancellationToken);
             foreach (DbCustomerSalesEntity result in results)
             {
-                _CustomerSalesEntities.Add(result.MapToCustomerSalesEntityDto());
+                CustomerSalesEntityDto mapping = result.MapToCustomerSalesEntityDto();
+                _CustomerSalesEntities.Add(mapping);
             }
 
             return _CustomerSalesEntities;
@@ -90,10 +96,12 @@
         async Task<Result<List<CustomerBusinessUserAssociationDto>>> IQueryHandler<GetCustomerBusinessUserAssociationsQuery, List<CustomerBusinessUserAssociationDto>>.Handle(GetCustomerBusinessUserAssociationsQuery query, CancellationToken cancellationToken)
         {
             _CustomerBusinessUserAssociations.Clear();
-            List<DbCustomerBusinessUserAssociation> results = await _CustomerBusinessUserAssociationRepository.ListAsync(new GetCustomerBusinessUserAssociationReadOnlySpec(query.Position, query.TakeAmount, query.UserGuid), cancellationToken);
+            GetCustomerBusinessUserAssociationReadOnlySpec spec = new GetCustomerBusinessUserAssociationReadOnlySpec(query.Position, query.TakeAmount, query.UserGuid);
+            List<DbCustomerBusinessUserAssociation> results = await _CustomerBusinessUserAssociationRepository.ListAsync(spec, cancellationToken);
             foreach (DbCustomerBusinessUserAssociation result in results)
             {
-                _CustomerBusinessUserAssociations.Add(result.MapToCustomerBusinessUserAssociationDto());
+                CustomerBusinessUserAssociationDto mapping = result.MapToCustomerBusinessUserAssociationDto();
+                _CustomerBusinessUserAssociations.Add(mapping);
             }
 
             return _CustomerBusinessUserAssociations;
