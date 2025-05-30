@@ -2,15 +2,15 @@
 {
     public class PlatformHierarchyDto
     {
-        public required string? PlatformName
+        public string? PlatformName
         { get; set; }
-        public required Guid? CustomerHierarchyGuid
+        public Guid? CustomerHierarchyGuid
         { get; set; }
-        public required Guid? Id
+        public Guid? Id
         { get; set; }
-        public required string? PlatformManagerName
+        public string? PlatformManagerName
         { get; set; }
-        public required bool? IsActive
+        public bool? IsActive
         { get; set; }
     }
 }

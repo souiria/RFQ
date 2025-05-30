@@ -13,10 +13,10 @@ namespace Master.Endpoints.GrpcServices
 
         public override Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context)
         {
-            return Task.FromResult(new HelloReply
-            {
-                Message = "Hello " + request.Name
-            });
+            HelloReply reply = new HelloReply();
+            reply.Message = "Hello " + request.Name;
+            Task<HelloReply> result = Task.FromResult(reply);
+            return result;
         }
 
         #region Currency
@@ -26,7 +26,8 @@ namespace Master.Endpoints.GrpcServices
             Result<List<CurrencyDto>> results = await _MasterAccessService.GetAllCurrencies(context.CancellationToken);
             foreach (CurrencyDto result in results.Value)
             {
-                listCurrencyData.CurrencyData.Add(result.MapToCurrencyData());
+                CurrencyData currencyData = result.MapToCurrencyData();
+                listCurrencyData.CurrencyData.Add(currencyData);
             }
 
             return listCurrencyData;
@@ -51,7 +52,8 @@ namespace Master.Endpoints.GrpcServices
             Result<List<CustomerBusinessHierarchyDto>> results = await _MasterAccessService.GetAllCustomerBusinessUnits(context.CancellationToken);
             foreach (CustomerBusinessHierarchyDto result in results.Value)
             {
-                listCustomerData.CustomerData.Add(result.MapToCustomerData());
+                CustomerData customerData = result.MapToCustomerData();
+                listCustomerData.CustomerData.Add(customerData);
             }
 
             return listCustomerData;
@@ -73,7 +75,8 @@ namespace Master.Endpoints.GrpcServices
             Result<List<CustomerHierarchyDto>> results = await _MasterAccessService.GetAllCustomerLocations(context.CancellationToken);
             foreach (CustomerHierarchyDto result in results.Value)
             {
-                listCustomerLocationData.CustomerLocationData.Add(result.MapToCustomerLocationData());
+                CustomerLocationData locationData = result.MapToCustomerLocationData(); 
+                listCustomerLocationData.CustomerLocationData.Add(locationData);
             }
 
             return listCustomerLocationData;
@@ -95,7 +98,8 @@ namespace Master.Endpoints.GrpcServices
             Result<List<CustomerSalesEntityDto>> results = await _MasterAccessService.GetAllCustomerSalesEntities(context.CancellationToken);
             foreach (CustomerSalesEntityDto result in results.Value)
             {
-                listCustomerSalesEntityData.CustomerSalesEntityData.Add(result.MapToCustomerSalesEntityData());
+                CustomerSalesEntityData entityData = result.MapToCustomerSalesEntityData();
+                listCustomerSalesEntityData.CustomerSalesEntityData.Add(entityData);
             }
 
             return listCustomerSalesEntityData;
@@ -117,7 +121,8 @@ namespace Master.Endpoints.GrpcServices
             Result<List<CustomerProjectAssociationDto>> results = await _MasterAccessService.GetAllCustomerProjectAssociations(context.CancellationToken);
             foreach (CustomerProjectAssociationDto result in results.Value)
             {
-                listCustomerProjectAssociationData.CustomerProjectAssociationData.Add(result.MapToCustomerProjectAssociationData());
+                CustomerProjectAssociationData projectAssociationData = result.MapToCustomerProjectAssociationData();
+                listCustomerProjectAssociationData.CustomerProjectAssociationData.Add(projectAssociationData);
             }
 
             return listCustomerProjectAssociationData;
@@ -139,7 +144,8 @@ namespace Master.Endpoints.GrpcServices
             Result<List<CustomerBusinessUserAssociationDto>> results = await _MasterAccessService.GetCustomerBusinessUserAssociations(context.CancellationToken);
             foreach (CustomerBusinessUserAssociationDto result in results.Value)
             {
-                listCustomerBusinessUserAssociationData.CustomerBusinessUserAssociationData.Add(result.MapToCustomerBusinessUserAssociationData());
+                CustomerBusinessUserAssociationData userAssociationData = result.MapToCustomerBusinessUserAssociationData();
+                listCustomerBusinessUserAssociationData.CustomerBusinessUserAssociationData.Add(userAssociationData);
             }
 
             return listCustomerBusinessUserAssociationData;
@@ -165,7 +171,8 @@ namespace Master.Endpoints.GrpcServices
             Result<List<PlatformHierarchyDto>> results = await _MasterAccessService.GetAllPlatforms(context.CancellationToken);
             foreach (PlatformHierarchyDto result in results.Value)
             {
-                listPlatformData.PlatformData.Add(result.MapToData());
+                PlatformData platformData = result.MapToData();
+                listPlatformData.PlatformData.Add(platformData);
             }
 
             return listPlatformData;
@@ -187,7 +194,8 @@ namespace Master.Endpoints.GrpcServices
             Result<List<ProgramHierarchyDto>> results = await _MasterAccessService.GetAllPrograms(context.CancellationToken);
             foreach (ProgramHierarchyDto result in results.Value)
             {
-                listProgramData.ProgramData.Add(result.MapToData());
+                ProgramData programData = result.MapToData();
+                listProgramData.ProgramData.Add(programData);
             }
 
             return listProgramData;
@@ -209,7 +217,8 @@ namespace Master.Endpoints.GrpcServices
             Result<List<ProjectHierarchyDto>> results = await _MasterAccessService.GetAllProjects(context.CancellationToken);
             foreach (ProjectHierarchyDto result in results.Value)
             {
-                data.ProjectData.Add(result.MapToData());
+                ProjectData projectData = result.MapToData();
+                data.ProjectData.Add(projectData);
             }
 
             return data;
@@ -231,7 +240,8 @@ namespace Master.Endpoints.GrpcServices
             Result<List<MilestoneHierarchyDto>> results = await _MasterAccessService.GetAllMilestones(context.CancellationToken);
             foreach (MilestoneHierarchyDto result in results.Value)
             {
-                data.MilestoneData.Add(result.MapToData());
+                MilestoneData milestoneData = result.MapToData();
+                data.MilestoneData.Add(milestoneData);
             }
 
             return data;
@@ -257,7 +267,8 @@ namespace Master.Endpoints.GrpcServices
             Result<List<VehicleDto>> results = await _MasterAccessService.GetAllVehicles(context.CancellationToken);
             foreach (VehicleDto result in results.Value)
             {
-                data.VehicleData.Add(result.MapToData());
+                VehicleData vehicleData = result.MapToData();
+                data.VehicleData.Add(vehicleData);
             }
 
             return data;

@@ -2,21 +2,21 @@
 {
     public class ProjectHierarchyDto
     {
-        public required string? ProjectCode
+        public string? ProjectCode
         { get; set; }
-        public required string? ProjectName
+        public string? ProjectName
         { get; set; }
-        public required string? CustomerProjectCode
+        public string? CustomerProjectCode
         { get; set; }
-        public required string? ProjectDescription
+        public string? ProjectDescription
         { get; set; }
-        public required int? ProjectAnnualVolume
+        public int? ProjectAnnualVolume
         { get; set; }
-        public required Guid? ProgramHierarchyGuid
+        public Guid? ProgramHierarchyGuid
         { get; set; }
-        public required Guid Id
+        public Guid Id
         { get; set; }
-        public required bool? IsActive
+        public bool? IsActive
         { get; set; }
     }
 }

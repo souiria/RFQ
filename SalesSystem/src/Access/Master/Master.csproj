@@ -16,9 +16,11 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5" />
 		<PackageReference Include="Seq.Extensions.Logging" Version="8.0.0" />
 		<PackageReference Include="Scrutor" Version="6.0.1" />
+		<PackageReference Include="IDesign.Analyzers" Version="1.0.18" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\Debug\SalesSystem.ServiceDefaults\SalesSystem.ServiceDefaults.csproj" />
 	  <ProjectReference Include="..\..\Utilities\SharedKernal\SharedKernel.csproj" />
 	</ItemGroup>
 

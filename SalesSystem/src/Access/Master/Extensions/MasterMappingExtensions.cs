@@ -1,6 +1,4 @@
-﻿using Master.Data.DTOs;
-using Master.Data.Model;
-using SharedKernel;
+﻿using System.Reflection.Emit;
 
 namespace Master.Extensions
 {
@@ -10,26 +8,24 @@ namespace Master.Extensions
 
         public static CurrencyDto MapToCurrencyDto(this DbCurrency entity)
         {
-            return new CurrencyDto
-            {
-                Id = entity.Id,
-                CurrencyCode = entity.CurrencyCode,
-                CurrencyName = entity.CurrencyName,
-                EuroRate = entity.EuroRate,
-                IsActive = entity.IsActive
-            };
+            CurrencyDto dto = new CurrencyDto();
+            dto.Id = entity.Id;
+            dto.CurrencyCode = entity.CurrencyCode;
+            dto.CurrencyName = entity.CurrencyName;
+            dto.EuroRate = entity.EuroRate;
+            dto.IsActive = entity.IsActive;
+            return dto;
         }
 
         public static CurrencyData MapToCurrencyData(this CurrencyDto entity)
         {
-            return new CurrencyData
-            {
-                Id = entity.Id.ToString(),
-                CurrencyCode = entity.CurrencyCode ?? "",
-                CurrencyName = entity.CurrencyName ?? "",
-                EuroRate = entity.EuroRate ?? "",
-                IsActive = entity.IsActive ?? false
-            };
+            CurrencyData currencyData = new CurrencyData();
+            currencyData.Id = entity.Id.ToString();
+            currencyData.CurrencyCode = entity.CurrencyCode ?? "";
+            currencyData.CurrencyName = entity.CurrencyName ?? "";
+            currencyData.EuroRate = entity.EuroRate ?? "";
+            currencyData.IsActive = entity.IsActive ?? false;
+            return currencyData;
         }
 
         #endregion
@@ -38,135 +34,126 @@ namespace Master.Extensions
 
         public static CustomerBusinessHierarchyDto MapToCustomerBusinessHierarchyDto(this DbCustomerBusinessHierarchy entity)
         {
-            return new CustomerBusinessHierarchyDto
-            {
-                Id = entity.Id,
-                CustomerBusinessGroupCode = entity.CustomerBusinessGroupCode,
-                CustomerBusinessGroupName = entity.CustomerBusinessGroupName,
-                SEWSEBusinessTeam = entity.SEWSEBusinessTeam ?? "",
-                IsActive = entity.IsActive
-            };
+            CustomerBusinessHierarchyDto dto = new CustomerBusinessHierarchyDto();
+            dto.Id = entity.Id;
+            dto.CustomerBusinessGroupCode = entity.CustomerBusinessGroupCode;
+            dto.CustomerBusinessGroupName = entity.CustomerBusinessGroupName;
+            dto.SEWSEBusinessTeam = entity.SEWSEBusinessTeam;
+            dto.IsActive = entity.IsActive;
+            return dto;
         }
 
         public static CustomerData MapToCustomerData(this CustomerBusinessHierarchyDto entity)
         {
-            return new CustomerData
-            {
-                Id = entity.Id.ToString(),
-                CustomerBusinessGroupCode = entity.CustomerBusinessGroupCode ?? "",
-                CustomerBusinessGroupName = entity.CustomerBusinessGroupName ?? "",
-                SEWSEBusinessTeam = entity.SEWSEBusinessTeam ?? "",
-                IsActive = entity.IsActive ?? false
-            };
+            CustomerData customerData = new CustomerData();
+            customerData.Id = entity.Id.ToString();
+            customerData.CustomerBusinessGroupCode = entity.CustomerBusinessGroupCode ?? "";
+            customerData.CustomerBusinessGroupName = entity.CustomerBusinessGroupName ?? "";
+            customerData.SEWSEBusinessTeam = entity.SEWSEBusinessTeam ?? "";
+            customerData.IsActive = entity.IsActive ?? false;
+            return customerData;
         }
 
         public static CustomerHierarchyDto MapToCustomerHierarchyDto(this DbCustomerHierarchy entity)
         {
-            return new CustomerHierarchyDto
-            {
-                Id = entity.Id,
-                CustomerCode = entity.CustomerCode,
-                CustomerName = entity.CustomerName,
-                StreetNumber = entity.StreetNumber,
-                StreetName = entity.StreetName,
-                City = entity.City,
-                Region = entity.Region,
-                ZipCode = entity.ZipCode,
-                Country = entity.Country,
-                CustomerBusinessType = entity.CustomerBusinessType,
-                IndexedMaterial = entity.IndexedMaterial,
-                CustomerBusinessHierarchyGuid = entity.CustomerBusinessHierarchyGuid,
-                CustomerBusinessQualityManagerName = entity.CustomerBusinessQualityManagerName,
-                CustomerCountryGuid = entity.CustomerCountryGuid,
-                IsActive = entity.IsActive
-            };
+            CustomerHierarchyDto dto = new CustomerHierarchyDto();
+
+            dto.Id = entity.Id;
+            dto.CustomerCode = entity.CustomerCode;
+            dto.CustomerName = entity.CustomerName;
+            dto.StreetNumber = entity.StreetNumber;
+            dto.StreetName = entity.StreetName;
+            dto.City = entity.City;
+            dto.Region = entity.Region;
+            dto.ZipCode = entity.ZipCode;
+            dto.Country = entity.Country;
+            dto.CustomerBusinessType = entity.CustomerBusinessType;
+            dto.IndexedMaterial = entity.IndexedMaterial;
+            dto.CustomerBusinessHierarchyGuid = entity.CustomerBusinessHierarchyGuid;
+            dto.CustomerBusinessQualityManagerName = entity.CustomerBusinessQualityManagerName;
+            dto.CustomerCountryGuid = entity.CustomerCountryGuid;
+            dto.IsActive = entity.IsActive;
+            return dto;
         }
 
         public static CustomerLocationData MapToCustomerLocationData(this CustomerHierarchyDto entity)
         {
-            return new CustomerLocationData
-            {
-                Id = entity.Id.ToString(),
-                CustomerCode = entity.CustomerCode ?? "",
-                CustomerName = entity.CustomerName ?? "",
-                IsActive = entity.IsActive ?? false
-            };
+            CustomerLocationData locationData = new CustomerLocationData();
+            locationData.Id = entity.Id.ToString();
+            locationData.CustomerCode = entity.CustomerCode ?? "";
+            locationData.CustomerName = entity.CustomerName ?? "";
+            locationData.IsActive = entity.IsActive ?? false;
+            return locationData;
         }
 
         public static CustomerSalesEntityDto MapToCustomerSalesEntityDto(this DbCustomerSalesEntity entity)
         {
-            return new CustomerSalesEntityDto
-            {
-                CustomerSalesEntityCode = entity.CustomerSalesEntityCode,
-                CustomerSalesEntityName = entity.CustomerSalesEntityName,
-                FinanceCode = entity.FinanceCode,
-                StreetNumber = entity.StreetNumber,
-                StreetName = entity.StreetName,
-                City = entity.City,
-                Region = entity.Region,
-                ZipCode = entity.ZipCode,
-                Country = entity.Country,
-                CustomerHierarchyGuid = entity.CustomerHierarchyGuid,
-                Id = entity.Id,
-                CustomerSalesCountryGuid = entity.CustomerSalesCountryGuid,
-                IsActive = entity.IsActive
-            };
+            CustomerSalesEntityDto dto = new CustomerSalesEntityDto();
+            dto.Id = entity.Id;
+            dto.CustomerSalesEntityCode = entity.CustomerSalesEntityCode;
+            dto.CustomerSalesEntityName = entity.CustomerSalesEntityName;
+            dto.FinanceCode = entity.FinanceCode;
+            dto.StreetNumber = entity.StreetNumber;
+            dto.StreetName = entity.StreetName;
+            dto.City = entity.City;
+            dto.Region = entity.Region;
+            dto.ZipCode = entity.ZipCode;
+            dto.Country = entity.Country;
+            dto.CustomerHierarchyGuid = entity.CustomerHierarchyGuid;
+            dto.CustomerSalesCountryGuid = entity.CustomerSalesCountryGuid;
+            dto.IsActive = entity.IsActive;
+            return dto;
         }
 
         public static CustomerSalesEntityData MapToCustomerSalesEntityData(this CustomerSalesEntityDto entity)
         {
-            return new CustomerSalesEntityData
-            {
-                Id = entity.Id.ToString(),
-                CustomerSalesEntityCode = entity.CustomerSalesEntityCode ?? "",
-                CustomerSalesEntityName = entity.CustomerSalesEntityName ?? "",
-                FinanceCode = entity.FinanceCode ?? "",
-                IsActive = entity.IsActive ?? false
-            };
+            CustomerSalesEntityData salesEntity = new CustomerSalesEntityData();
+            salesEntity.Id = entity.Id.ToString();
+            salesEntity.CustomerSalesEntityCode = entity.CustomerSalesEntityCode ?? "";
+            salesEntity.CustomerSalesEntityName = entity.CustomerSalesEntityName ?? "";
+            salesEntity.FinanceCode = entity.FinanceCode ?? "";
+            salesEntity.IsActive = entity.IsActive ?? false;
+            return salesEntity;
         }
 
         public static CustomerProjectAssociationDto MapToCustomerProjectAssociationDto(this DbCustomerProjectAssociation entity)
         {
-            return new CustomerProjectAssociationDto
-            {
-                Id = entity.Id,
-                CustomerLocationGuid = entity.CustomerGuid,
-                ProjectGuid = entity.ProjectGuid,
-                IsActive = entity.IsActive
-            };
+            CustomerProjectAssociationDto dto = new CustomerProjectAssociationDto();
+            dto.Id = entity.Id;
+            dto.CustomerLocationGuid = entity.CustomerGuid;
+            dto.ProjectGuid = entity.ProjectGuid;
+            dto.IsActive = entity.IsActive;
+            return dto;
         }
 
         public static CustomerProjectAssociationData MapToCustomerProjectAssociationData(this CustomerProjectAssociationDto entity)
         {
-            return new CustomerProjectAssociationData
-            {
-                Id = entity.Id.ToString(),
-                CustomerLocationGuid = entity.CustomerLocationGuid.ToString(),
-                ProjectGuid = entity.ProjectGuid.ToString(),
-                IsActive = entity.IsActive ?? false
-            };
+            CustomerProjectAssociationData projectAssociationData = new CustomerProjectAssociationData();
+            projectAssociationData.Id = entity.Id.ToString();
+            projectAssociationData.CustomerLocationGuid = entity.CustomerLocationGuid.ToString();
+            projectAssociationData.ProjectGuid = entity.ProjectGuid.ToString();
+            projectAssociationData.IsActive = entity.IsActive ?? false;
+            return projectAssociationData;
         }
 
         public static CustomerBusinessUserAssociationDto MapToCustomerBusinessUserAssociationDto(this DbCustomerBusinessUserAssociation entity)
         {
-            return new CustomerBusinessUserAssociationDto
-            {
-                Id = entity.Id,
-                CustomerBusinessHierarchyList = entity.CustomerBusinessHierarchyList,
-                UserGuid = entity.UserGuid,
-                IsActive = entity.IsActive
-            };
+            CustomerBusinessUserAssociationDto dto = new CustomerBusinessUserAssociationDto();
+            dto.Id = entity.Id;
+            dto.CustomerBusinessHierarchyList = entity.CustomerBusinessHierarchyList;
+            dto.UserGuid = entity.UserGuid;
+            dto.IsActive = entity.IsActive;
+            return dto;
         }
 
         public static CustomerBusinessUserAssociationData MapToCustomerBusinessUserAssociationData(this CustomerBusinessUserAssociationDto entity)
         {
-            return new CustomerBusinessUserAssociationData
-            {
-                Id = entity.Id.ToString(),
-                CustomerBusinessHierarchyList = entity.CustomerBusinessHierarchyList ?? "",
-                UserGuid = entity.UserGuid.ToString(),
-                IsActive = entity.IsActive ?? false
-            };
+            CustomerBusinessUserAssociationData userAssociationData = new CustomerBusinessUserAssociationData();
+            userAssociationData.Id = entity.Id.ToString();
+            userAssociationData.CustomerBusinessHierarchyList = entity.CustomerBusinessHierarchyList ?? "";
+            userAssociationData.UserGuid = entity.UserGuid.ToString();
+            userAssociationData.IsActive = entity.IsActive ?? false;
+            return userAssociationData;
         }
 
         #endregion
@@ -175,104 +162,96 @@ namespace Master.Extensions
 
         public static MilestoneHierarchyDto MapToDto(this DbMilestoneHierarchy entity)
         {
-            return new MilestoneHierarchyDto
-            {
-                Id = entity.Id,
-                MilestoneEventName = entity.MilestoneEventName,
-                EventStartDate = entity.EventStartDate,
-                EventEndDate = entity.EventEndDate,
-                ProjectHierarchyGuid = entity.ProjectHierarchyGuid,
-                IsActive = entity.IsActive
-            };
+            MilestoneHierarchyDto dto = new MilestoneHierarchyDto();
+            dto.Id = entity.Id;
+            dto.MilestoneEventName = entity.MilestoneEventName;
+            dto.EventStartDate = entity.EventStartDate;
+            dto.EventEndDate = entity.EventEndDate;
+            dto.ProjectHierarchyGuid = entity.ProjectHierarchyGuid;
+            dto.IsActive = entity.IsActive;
+            return dto;
         }
 
         public static MilestoneData MapToData(this MilestoneHierarchyDto entity)
         {
-            return new MilestoneData
-            {
-                Id = entity.Id.ToString(),
-                MilestoneEventName = entity.MilestoneEventName ?? "",
-                EventStartDate = entity.EventStartDate?.ToUniversalTime().ToTimestamp(),
-                EventEndDate = entity.EventEndDate?.ToUniversalTime().ToTimestamp(),
-                ProjectHierarchyGuid = entity.ProjectHierarchyGuid.ToString(),
-                IsActive = entity.IsActive ?? false
-            };
+            MilestoneData milestoneData = new MilestoneData();
+            milestoneData.Id = entity.Id.ToString();
+            milestoneData.MilestoneEventName = entity.MilestoneEventName ?? "";
+            milestoneData.EventStartDate = entity.EventStartDate?.ToUniversalTime().ToTimestamp();
+            milestoneData.EventEndDate = entity.EventEndDate?.ToUniversalTime().ToTimestamp();
+            milestoneData.ProjectHierarchyGuid = entity.ProjectHierarchyGuid.ToString();
+            milestoneData.IsActive = entity.IsActive ?? false;
+            return milestoneData;
         }
 
         public static PlatformHierarchyDto MapToDto(this DbPlatformHierarchy entity)
         {
-            return new PlatformHierarchyDto
-            {
-                Id = entity.Id,
-                PlatformName = entity.PlatformName,
-                CustomerHierarchyGuid = entity.CustomerHierarchyGuid,
-                PlatformManagerName = entity.PlatformManagerName,
-                IsActive = entity.IsActive
-            };
+            PlatformHierarchyDto dto = new PlatformHierarchyDto();
+            dto.Id = entity.Id;
+            dto.PlatformName = entity.PlatformName;
+            dto.CustomerHierarchyGuid = entity.CustomerHierarchyGuid;
+            dto.PlatformManagerName = entity.PlatformManagerName;
+            dto.IsActive = entity.IsActive;
+            return dto;
         }
 
         public static PlatformData MapToData(this PlatformHierarchyDto entity)
         {
-            return new PlatformData
-            {
-                Id = entity.Id.ToString(),
-                PlatformName = entity.PlatformName ?? "",
-                CustomerHierarchyGuid = entity.CustomerHierarchyGuid.ToString(),
-                PlatformManagerName = entity.PlatformManagerName ?? "",
-                IsActive = entity.IsActive ?? false
-            };
+            PlatformData platformData = new PlatformData();
+            platformData.Id = entity.Id.ToString();
+            platformData.PlatformName = entity.PlatformName ?? "";
+            platformData.CustomerHierarchyGuid = entity.CustomerHierarchyGuid.ToString();
+            platformData.PlatformManagerName = entity.PlatformManagerName ?? "";
+            platformData.IsActive = entity.IsActive ?? false;
+            return platformData;
         }
 
         public static ProgramHierarchyDto MapToDto(this DbProgramHierarchy entity)
         {
-            return new ProgramHierarchyDto
-            {
-                Id = entity.Id,
-                ProgramName = entity.ProgramName,
-                PlatformHierarchyGuid = entity.PlatformHierarchyGuid,
-                IsActive = entity.IsActive
-            };
+            ProgramHierarchyDto dto = new ProgramHierarchyDto();
+            dto.Id = entity.Id;
+            dto.ProgramName = entity.ProgramName;
+            dto.PlatformHierarchyGuid = entity.PlatformHierarchyGuid;
+            dto.IsActive = entity.IsActive;
+            return dto;
         }
 
         public static ProgramData MapToData(this ProgramHierarchyDto entity)
         {
-            return new ProgramData
-            {
-                Id = entity.Id.ToString(),
-                ProgramName = entity.ProgramName ?? "",
-                PlatformHierarchyGuid = entity.PlatformHierarchyGuid.ToString(),
-                IsActive = entity.IsActive ?? false
-            };
+            ProgramData programData = new ProgramData();
+            programData.Id = entity.Id.ToString();
+            programData.ProgramName = entity.ProgramName ?? "";
+            programData.PlatformHierarchyGuid = entity.PlatformHierarchyGuid.ToString();
+            programData.IsActive = entity.IsActive ?? false;
+            return programData;
         }
 
         public static ProjectHierarchyDto MapToDto(this DbProjectHierarchy entity)
         {
-            return new ProjectHierarchyDto
-            {
-                Id = entity.Id,
-                ProjectCode = entity.ProjectCode,
-                ProjectName = entity.ProjectName,
-                CustomerProjectCode = entity.CustomerProjectCode,
-                ProjectDescription = entity.ProjectDescription,
-                ProjectAnnualVolume = entity.ProjectAnnualVolume,
-                ProgramHierarchyGuid = entity.ProgramHierarchyGuid,
-                IsActive = entity.IsActive
-            };
+            ProjectHierarchyDto dto = new ProjectHierarchyDto();
+            dto.Id = entity.Id;
+            dto.ProjectCode = entity.ProjectCode;
+            dto.ProjectName = entity.ProjectName;
+            dto.CustomerProjectCode = entity.CustomerProjectCode;
+            dto.ProjectDescription = entity.ProjectDescription;
+            dto.ProjectAnnualVolume = entity.ProjectAnnualVolume;
+            dto.ProgramHierarchyGuid = entity.ProgramHierarchyGuid;
+            dto.IsActive = entity.IsActive;
+            return dto;
         }
 
         public static ProjectData MapToData(this ProjectHierarchyDto entity)
         {
-            return new ProjectData
-            {
-                Id = entity.Id.ToString(),
-                ProjectCode = entity.ProjectCode ?? "",
-                ProjectName = entity.ProjectName ?? "",
-                CustomerProjectCode = entity.CustomerProjectCode ?? "",
-                ProjectDescription = entity.ProjectDescription ?? "",
-                ProjectAnnualVolume = entity.ProjectAnnualVolume ?? 0,
-                ProgramHierarchyGuid = entity.ProgramHierarchyGuid.ToString(),
-                IsActive = entity.IsActive ?? false
-            };
+            ProjectData projectData = new ProjectData();
+            projectData.Id = entity.Id.ToString();
+            projectData.ProjectCode = entity.ProjectCode ?? "";
+            projectData.ProjectName = entity.ProjectName ?? "";
+            projectData.CustomerProjectCode = entity.CustomerProjectCode ?? "";
+            projectData.ProjectDescription = entity.ProjectDescription ?? "";
+            projectData.ProjectAnnualVolume = entity.ProjectAnnualVolume ?? 0;
+            projectData.ProgramHierarchyGuid = entity.ProgramHierarchyGuid.ToString();
+            projectData.IsActive = entity.IsActive ?? false;
+            return projectData;
         }
 
         #endregion
@@ -281,26 +260,24 @@ namespace Master.Extensions
 
         public static VehicleDto MapToDto(this DbVehicle entity)
         {
-            return new VehicleDto
-            {
-                Id = entity.Id,
-                VehicleName = entity.VehicleName,
-                ProjectReference = entity.ProjectReference,
-                VehicleDisplay = entity.VehicleDisplay,
-                IsActive = entity.IsActive
-            };
+            VehicleDto dto = new VehicleDto();
+            dto.Id = entity.Id;
+            dto.VehicleName = entity.VehicleName;
+            dto.ProjectReference = entity.ProjectReference;
+            dto.VehicleDisplay = entity.VehicleDisplay;
+            dto.IsActive = entity.IsActive;
+            return dto;
         }
 
         public static VehicleData MapToData(this VehicleDto entity)
         {
-            return new VehicleData
-            {
-                Id = entity.Id.ToString(),
-                VehicleName = entity.VehicleName ?? "",
-                ProjectReference = entity.ProjectReference ?? "",
-                VehicleDisplay = entity.VehicleDisplay ?? "",
-                IsActive = entity.IsActive ?? false
-            };
+            VehicleData vehicleData = new VehicleData();
+            vehicleData.Id = entity.Id.ToString();
+            vehicleData.VehicleName = entity.VehicleName ?? "";
+            vehicleData.ProjectReference = entity.ProjectReference ?? "";
+            vehicleData.VehicleDisplay = entity.VehicleDisplay ?? "";
+            vehicleData.IsActive = entity.IsActive ?? false;
+            return vehicleData;
         }
 
         #endregion

@@ -2,15 +2,15 @@
 {
     public class CurrencyDto
     {
-        public required string? CurrencyCode
+        public string? CurrencyCode
         { get; set; }
-        public required string? CurrencyName
+        public string? CurrencyName
         { get; set; }
-        public required string? EuroRate
+        public string? EuroRate
         { get; set; }
-        public required bool? IsActive
+        public bool? IsActive
         { get; set; }
-        public required Guid? Id
+        public Guid? Id
         { get; set; }
     }
 }

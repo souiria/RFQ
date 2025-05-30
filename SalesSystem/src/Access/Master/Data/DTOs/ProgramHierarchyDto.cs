@@ -2,13 +2,13 @@
 {
     public class ProgramHierarchyDto
     {
-        public required string? ProgramName
+        public string? ProgramName
         { get; set; }
-        public required Guid? PlatformHierarchyGuid
+        public Guid? PlatformHierarchyGuid
         { get; set; }
-        public required Guid? Id
+        public Guid? Id
         { get; set; }
-        public required bool? IsActive
+        public bool? IsActive
         { get; set; }
     }
 }

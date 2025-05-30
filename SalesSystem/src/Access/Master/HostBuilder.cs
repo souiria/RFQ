@@ -25,6 +25,7 @@ namespace Master
             // *********************************************************************
 
             #region Additional Services
+            builder.AddServiceDefaults();
             builder.Logging.AddSeq();
             builder.Services.AddGrpc();
             builder.Services.AddInfrastructure(builder.Configuration);

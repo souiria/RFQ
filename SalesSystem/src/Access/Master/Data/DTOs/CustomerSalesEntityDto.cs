@@ -1,32 +1,34 @@
-﻿namespace Master.Data.DTOs
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Master.Data.DTOs
 {
     public class CustomerSalesEntityDto
     {
-        public required string? CustomerSalesEntityCode
+        public string? CustomerSalesEntityCode
         { get; set; }
-        public required string? CustomerSalesEntityName
+        public string? CustomerSalesEntityName
         { get; set; }
-        public required string? FinanceCode
+        public string? FinanceCode
         { get; set; }
-        public required string? StreetNumber
+        public string? StreetNumber
         { get; set; }
-        public required string? StreetName
+        public string? StreetName
         { get; set; }
-        public required string? City
+        public string? City
         { get; set; }
-        public required string? Region
+        public string? Region
         { get; set; }
-        public required string? ZipCode
+        public string? ZipCode
         { get; set; }
-        public required string? Country
+        public string? Country
         { get; set; }
-        public required Guid? CustomerHierarchyGuid
+        public Guid? CustomerHierarchyGuid
         { get; set; }
-        public required Guid? Id
+        public Guid? Id
         { get; set; }
-        public required Guid? CustomerSalesCountryGuid
+        public Guid? CustomerSalesCountryGuid
         { get; set; }
-        public required bool? IsActive
+        public bool? IsActive
         { get; set; }
     }
 }

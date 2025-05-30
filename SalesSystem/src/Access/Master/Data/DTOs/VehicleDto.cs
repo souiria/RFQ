@@ -2,15 +2,15 @@
 {
     public class VehicleDto
     {
-        public required Guid? Id
+        public Guid? Id
         { get; set; }
-        public required string? VehicleName
+        public string? VehicleName
         { get; set; }
-        public required string? ProjectReference
+        public string? ProjectReference
         { get; set; }
-        public required string? VehicleDisplay
+        public string? VehicleDisplay
         { get; set; }
-        public required bool? IsActive
+        public bool? IsActive
         { get; set; }
     }
 }

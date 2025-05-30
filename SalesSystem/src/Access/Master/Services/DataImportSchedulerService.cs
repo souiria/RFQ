@@ -78,13 +78,13 @@
                     sec); // <-- Seconds when the method should be started.
 
                 TimeSpan ts;
-                if (scanDateTime > dateTimeNow)
+                if (scanDateTime <= dateTimeNow)
                 {
+                    scanDateTime = scanDateTime.AddDays(1);
                     ts = scanDateTime - dateTimeNow;
                 }
                 else
                 {
-                    scanDateTime = scanDateTime.AddDays(1);
                     ts = scanDateTime - dateTimeNow;
                 }
 
