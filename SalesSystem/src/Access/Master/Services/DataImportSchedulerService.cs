@@ -15,10 +15,9 @@
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            #pragma warning disable CA1848 // Use the LoggerMessage delegates
-            _Logger.LogInformation("Background service is running");
-            #pragma warning restore CA1848 // Use the LoggerMessage delegates
-
+       
+            _Logger.GenericLogInformation("Background service is running");
+          
             await PopulateGlobalDataAsync(stoppingToken);
             await DailyWorker(23, 30, 00, async () => await PopulateGlobalDataAsync(stoppingToken), stoppingToken);
 
@@ -96,32 +95,24 @@
                 }
                 catch (OperationCanceledException ex)
                 {
-#pragma warning disable CA1848 // Use the LoggerMessage delegates
-#pragma warning disable CA2254 // Template should be a static expression
-                    _Logger.LogError(ex.Message);
-#pragma warning restore CA2254 // Template should be a static expression
-#pragma warning restore CA1848 // Use the LoggerMessage delegates
+                    _Logger.GenericLogError(ex.Message, ex);
                 }
             }
         }
 
-#pragma warning disable CA1848 // Use the LoggerMessage delegates
-#pragma warning disable CA2254 // Template should be a static expression
         async Task LogDataPopulationSuccess(string data, bool check)
         {
             await Task.Delay(0);
             if (check)
             {
 
-                _Logger.LogInformation($"{data} data retrieved successfully");
+                _Logger.GenericLogInformation($"{data} data retrieved successfully");
 
             }
             else
             {
-                _Logger.LogInformation($"{data} data retrieval failed!!");
+                _Logger.GenericLogInformation($"{data} data retrieval failed!!");
             }
         }
-#pragma warning restore CA2254 // Template should be a static expression
-#pragma warning restore CA1848 // Use the LoggerMessage delegates
     }
 }
