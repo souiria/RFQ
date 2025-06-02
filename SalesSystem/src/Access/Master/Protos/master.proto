@@ -43,6 +43,8 @@ service Master {
 
   rpc GetVehicleData (VehicleGrpcRequest) returns (ListVehicleData);
   rpc GetVehicleDataStream (VehicleGrpcRequest) returns (stream VehicleData);
+  rpc GetVehicleDataById (VehicleByIdGrpcRequest) returns (ListVehicleData);
+  rpc GetVehicleDataByDisplay (VehicleByDisplayGrpcRequest) returns (ListVehicleData);
 }
 
 // The request message containing the user's name.
@@ -256,6 +258,14 @@ message ListProjectData {
 message VehicleGrpcRequest {
   int32 position = 1;
   int32 takeamount = 2;
+}
+
+message VehicleByIdGrpcRequest {
+    string Id = 1;
+}
+
+message VehicleByDisplayGrpcRequest {
+    string VehicleDisplay = 1;
 }
 
 message VehicleData {

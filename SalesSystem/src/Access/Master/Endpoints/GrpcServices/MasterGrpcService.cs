@@ -378,6 +378,32 @@ namespace Master.Endpoints.GrpcServices
                 await responseStream.WriteAsync(item);
             }
         }
+        public override async Task<ListVehicleData> GetVehicleDataById(VehicleByIdGrpcRequest request, ServerCallContext context)
+        {
+            ListVehicleData data = new();
+            Guid vehicleId = Guid.Parse(request.Id);
+            Result<List<VehicleDto>> results = await _MasterAccessService.GetVehiclesById(vehicleId ,context.CancellationToken);
+            foreach (VehicleDto result in results.Value)
+            {
+                VehicleData vehicleData = result.MapToData();
+                data.VehicleData.Add(vehicleData);
+            }
+
+            return data;
+        }
+
+        public override async Task<ListVehicleData> GetVehicleDataByDisplay(VehicleByDisplayGrpcRequest request, ServerCallContext context)
+        {
+            ListVehicleData data = new();
+            Result<List<VehicleDto>> results = await _MasterAccessService.GetVehiclesByDisplay(request.VehicleDisplay ,context.CancellationToken);
+            foreach (VehicleDto result in results.Value)
+            {
+                VehicleData vehicleData = result.MapToData();
+                data.VehicleData.Add(vehicleData);
+            }
+
+            return data;
+        }
 
         #endregion
     }
