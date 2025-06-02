@@ -1,4 +1,9 @@
-﻿namespace Master.Services
+﻿
+using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json;
+
+namespace Master.Services
 {
     /// <summary>
     /// This class is used to make calls to the database queries and to hold the data dictionaries.
@@ -17,16 +22,21 @@
         #region Customer
 
         List<CustomerBusinessHierarchyDto> _Customers;
+        List<CustomerBusinessHierarchyDto> _FilteredCustomers;
         List<CustomerHierarchyDto> _CustomerLocations;
+        List<CustomerHierarchyDto> _FilteredLocations;
         List<CustomerSalesEntityDto> _CustomerSalesEntities;
+        List<CustomerSalesEntityDto> _FilteredCustomerSalesEntities;
         List<CustomerProjectAssociationDto> _CustomerProjectAssociations;
+        List<CustomerProjectAssociationDto> _FilteredCustomerProjectAssociations;
         List<CustomerBusinessUserAssociationDto> _CustomerBusinessUserAssociations;
+        List<CustomerBusinessUserAssociationDto> _FilteredCustomerBusinessUserAssociations;
 
         #endregion
 
         #region Project
 
-        List<PlatformHierarchyDto> _Platforms;
+       List<PlatformHierarchyDto> _Platforms;
         List<ProgramHierarchyDto> _Programs;
         List<ProjectHierarchyDto> _Projects;
         List<MilestoneHierarchyDto> _Milestones;
@@ -102,10 +112,15 @@
             #region Customer
 
             _Customers = [];
+            _FilteredCustomers = [];
             _CustomerLocations = [];
+            _FilteredLocations = [];
             _CustomerSalesEntities = [];
+            _FilteredCustomerSalesEntities = [];
             _CustomerProjectAssociations = [];
+            _FilteredCustomerProjectAssociations = [];
             _CustomerBusinessUserAssociations = [];
+            _FilteredCustomerBusinessUserAssociations = [];
             _CustomerRefreshInProgress = false;
             _CustomerLocationRefreshInProgress = false;
             _CustomerProjectAssociationsRefreshInProgress = false;
@@ -176,6 +191,22 @@
             }
         }
 
+        public async Task<Result<List<CustomerBusinessHierarchyDto>>> GetCustomerBusinessUnitsById(Guid id, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            _FilteredCustomers.Clear();
+            if (_Customers.Any())
+            {
+                _FilteredCustomers = _Customers.Where(x => x.Id == id).ToList();
+                return _FilteredCustomers;
+            }
+            else
+            {
+                await PopulateCustomersAsync(cancellationToken);
+                return _FilteredCustomers;
+            }
+        }
+
         public async Task<Result<List<CustomerHierarchyDto>>> GetAllCustomerLocations(CancellationToken cancellationToken)
         {
             await Task.Delay(0, cancellationToken);
@@ -187,6 +218,54 @@
             {
                 await PopulateCustomerLocationsAsync(cancellationToken);
                 return _CustomerLocations;
+            }
+        }
+
+        public async Task<Result<List<CustomerHierarchyDto>>> GetCustomerLocationsById(Guid id ,CancellationToken cancellationToken)
+        {
+            await Task.Delay(0, cancellationToken);
+            _FilteredLocations.Clear();
+            if (_CustomerLocations.Any())
+            {
+                _FilteredLocations = _CustomerLocations.Where(x => x.Id == id).ToList();
+                return _FilteredLocations;
+            }
+            else
+            {
+                await PopulateCustomerLocationsAsync(cancellationToken);
+                return _FilteredLocations;
+            }
+        }
+
+        public async Task<Result<List<CustomerHierarchyDto>>> GetCustomerLocationsByUserId(Guid userId ,CancellationToken cancellationToken)
+        {
+            await Task.Delay(0, cancellationToken);
+            _FilteredLocations.Clear();
+            if (_CustomerLocations.Any() && _CustomerBusinessUserAssociations.Any())
+            {
+                CustomerBusinessUserAssociationDto user = _CustomerBusinessUserAssociations.Where(x => x.UserGuid == userId).First();
+                if (user.CustomerBusinessHierarchyList != null)
+                {
+                    List<CustomerHierarchyDto>? userLocations = JsonConvert.DeserializeObject<List<CustomerHierarchyDto>>(user.CustomerBusinessHierarchyList);
+                    if (userLocations != null)
+                    {
+                        foreach (CustomerHierarchyDto location in userLocations)
+                        {
+                            if (location.IsActive == true)
+                            {
+                                _FilteredLocations = _CustomerLocations.Where(x => x.CustomerBusinessHierarchyGuid == location.CustomerBusinessHierarchyGuid).ToList();
+                            }
+                        }
+                    }
+                }
+
+                return _FilteredLocations;
+            }
+            else
+            {
+                await PopulateCustomerLocationsAsync(cancellationToken);
+                await PopulateCustomerBusinessUserAssociationsAsync(cancellationToken);
+                return _FilteredLocations;
             }
         }
 
@@ -204,6 +283,45 @@
             }
         }
 
+        public async Task<Result<List<CustomerProjectAssociationDto>>> GetAllCustomerProjectAssociationsByUserId(Guid userId ,CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            _FilteredLocations.Clear();
+            if (_CustomerProjectAssociations.Any() && _CustomerBusinessUserAssociations.Any())
+            {
+                CustomerBusinessUserAssociationDto user = GetCustomerBusinessUserAssociationsByUserId(userId, cancellationToken).Result.Value.First();
+                if(user.CustomerBusinessHierarchyList != null)
+                {
+                    List<CustomerHierarchyDto>? userLocations = JsonConvert.DeserializeObject<List<CustomerHierarchyDto>>(user.CustomerBusinessHierarchyList);
+                    if (userLocations != null) 
+                    {
+                        foreach (CustomerHierarchyDto location in userLocations)
+                        {
+                            if (location.IsActive == true)
+                            {
+                                if (location.CustomerBusinessHierarchyGuid != null)
+                                {
+                                    _FilteredLocations = _CustomerLocations.Where(x => x.CustomerBusinessHierarchyGuid == location.CustomerBusinessHierarchyGuid).ToList();
+                                    foreach(CustomerHierarchyDto customerLocation in _FilteredLocations)
+                                    {
+                                        List<CustomerProjectAssociationDto> customerProjects = _CustomerProjectAssociations.Where(x => x.CustomerLocationGuid == customerLocation.Id).ToList();
+                                        _FilteredCustomerProjectAssociations.AddRange(customerProjects);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return _FilteredCustomerProjectAssociations;
+            }
+            else
+            {
+                await PopulateCustomerProjectAssociationsAsync(cancellationToken);
+                return _FilteredCustomerProjectAssociations;
+            }
+        }
+
         public async Task<Result<List<CustomerSalesEntityDto>>> GetAllCustomerSalesEntities(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -218,6 +336,28 @@
             }
         }
 
+        public async Task<Result<List<CustomerSalesEntityDto>>> GetAllCustomerSalesByUserIdEntities(Guid userId ,CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            _FilteredCustomerSalesEntities.Clear();
+            if (_CustomerSalesEntities.Any())
+            {
+                Result<List<CustomerHierarchyDto>> locations = await GetCustomerLocationsByUserId(userId, cancellationToken);
+                foreach(CustomerHierarchyDto location in locations.Value)
+                {
+                    List<CustomerSalesEntityDto> salesByLocation = _CustomerSalesEntities.Where(x => x.CustomerHierarchyGuid == location.Id).ToList();
+                    _FilteredCustomerSalesEntities.AddRange(salesByLocation);
+                }
+
+                return _FilteredCustomerSalesEntities;
+            }
+            else
+            {
+                await PopulateCustomerSalesEntitiesAsync(cancellationToken);
+                return _FilteredCustomerSalesEntities;
+            }
+        }
+
         public async Task<Result<List<CustomerBusinessUserAssociationDto>>> GetCustomerBusinessUserAssociations(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -229,6 +369,21 @@
             {
                 await PopulateCustomerBusinessUserAssociationsAsync(cancellationToken);
                 return _CustomerBusinessUserAssociations;
+            }
+        }
+        public async Task<Result<List<CustomerBusinessUserAssociationDto>>> GetCustomerBusinessUserAssociationsByUserId(Guid userId, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            _FilteredCustomerBusinessUserAssociations.Clear();
+            if (_CustomerBusinessUserAssociations.Any())
+            {
+                _FilteredCustomerBusinessUserAssociations = _CustomerBusinessUserAssociations.Where(x => x.UserGuid == userId).ToList();
+                return _FilteredCustomerBusinessUserAssociations;
+            }
+            else
+            {
+                await PopulateCustomerBusinessUserAssociationsAsync(cancellationToken);
+                return _FilteredCustomerBusinessUserAssociations;
             }
         }
 
