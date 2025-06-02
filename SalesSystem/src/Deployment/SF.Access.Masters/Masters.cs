@@ -15,6 +15,8 @@ namespace SF.Access.Masters
         /// Optional override to create listeners (like tcp, http) for this service instance.
         /// </summary>
         /// <returns>The collection of listeners.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0300:Simplify collection initialization", Justification = "Service Fabric Boilerplate")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "Service Fabric Boilerplate")]
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
             return new ServiceInstanceListener[]
@@ -22,7 +24,7 @@ namespace SF.Access.Masters
                 new ServiceInstanceListener(serviceContext =>
                     new KestrelCommunicationListener(serviceContext, "ServiceEndpoint", (url, listener) =>
                     {
-                        ServiceEventSource.Current.ServiceMessage(serviceContext, $"Starting Kestrel on {url}");
+                        ServiceEventSource._Current.ServiceMessage(serviceContext, $"Starting Kestrel on {url}");
 
                         WebApplicationBuilder builder = WebApplication.CreateBuilder();
 
@@ -33,7 +35,11 @@ namespace SF.Access.Masters
                                         int port = serviceContext.CodePackageActivationContext.GetEndpoint("ServiceEndpoint").Port;
                                         opt.Listen(IPAddress.IPv6Any, port, listenOptions =>
                                         {
-                                            listenOptions.UseHttps(FindMatchingCertificateBySubject("*.SEWS-E.COM"));
+#if DEBUG
+                                            listenOptions.UseHttps(GetCertificateFromStore());
+#else
+                                            listenOptions.UseHttps(FindMatchingCertificateBySubject("*.sews-e.com"));
+#endif
                                             listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
                                         });
                                     })
@@ -42,7 +48,7 @@ namespace SF.Access.Masters
                                     .UseUrls(url);
 
                         
-                        return Masters.HostBuilder.CreateApp(builder, serviceContext, url);
+                        return Master.HostBuilder.CreateApp(builder, url);
 
                     }))
             };
@@ -76,16 +82,18 @@ namespace SF.Access.Masters
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0300:Simplify collection initialization", Justification = "Service Fabric Boilerplate")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "Service Fabric Boilerplate")]
         X509Certificate2 FindMatchingCertificateBySubject(string subjectCommonName)
         {
-            using X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
+            using X509Store store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
             store.Open(OpenFlags.OpenExistingOnly | OpenFlags.ReadOnly);
             X509Certificate2Collection certCollection = store.Certificates;
             X509Certificate2Collection matchingCerts = new X509Certificate2Collection();
 
             foreach (X509Certificate2 enumeratedCert in certCollection.Where(enumeratedCert => StringComparer.OrdinalIgnoreCase.Equals(subjectCommonName, enumeratedCert.GetNameInfo(X509NameType.SimpleName, forIssuer: false))
                                                                                   && DateTime.Now < enumeratedCert.NotAfter
-                                                                                  && DateTime.Now >= enumeratedCert.NotBefore))
+                                                                                  && enumeratedCert.NotBefore <= DateTime.Now))
             {
                 matchingCerts.Add(enumeratedCert);
             }
@@ -94,7 +102,7 @@ namespace SF.Access.Masters
             {
                 foreach (X509Certificate2? enumeratedCert in certCollection.Where(enumeratedCert => StringComparer.OrdinalIgnoreCase.Equals("*.sews-e.com", enumeratedCert.GetNameInfo(X509NameType.SimpleName, forIssuer: false))
                                                                                   && DateTime.Now < enumeratedCert.NotAfter
-                                                                                  && DateTime.Now >= enumeratedCert.NotBefore))
+                                                                                  && enumeratedCert.NotBefore <= DateTime.Now))
                 {
                     matchingCerts.Add(enumeratedCert);
                 }

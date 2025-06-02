@@ -17,14 +17,15 @@ namespace SF.Access.Masters
                 ServiceRuntime.RegisterServiceAsync("SF.Access.MastersType",
                     context => new Masters(context)).GetAwaiter().GetResult();
 
-                ServiceEventSource.Current.ServiceTypeRegistered(Environment.ProcessId, typeof(Masters).Name);
+                ServiceEventSource._Current.ServiceTypeRegistered(Environment.ProcessId, typeof(Masters).Name);
 
                 // Prevents this host process from terminating so services keeps running. 
                 Thread.Sleep(Timeout.Infinite);
             }
             catch (Exception e)
             {
-                ServiceEventSource.Current.ServiceHostInitializationFailed(e.ToString());
+                string exceptionString = e.ToString();
+                ServiceEventSource._Current.ServiceHostInitializationFailed(exceptionString);
                 throw;
             }
         }

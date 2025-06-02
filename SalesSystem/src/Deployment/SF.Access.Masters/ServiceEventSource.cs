@@ -13,10 +13,11 @@ namespace SF.Access.Masters
     [EventSource(Name = "MyCompany-SF.Commercial.Access-SF.Access.Masters")]
     sealed class ServiceEventSource : EventSource
     {
-        public static readonly ServiceEventSource Current = new ServiceEventSource();
+        public static readonly ServiceEventSource _Current;
 
         static ServiceEventSource()
         {
+            _Current = new();
             // A workaround for the problem where ETW activities do not get tracked until Tasks infrastructure is initialized.
             // This problem will be fixed in .NET Framework 4.6.2.
             Task.Run(() => { });
@@ -72,10 +73,12 @@ namespace SF.Access.Masters
             {
 
                 string finalMessage = string.Format(CultureInfo.InvariantCulture, message, args);
+                string serviceName = serviceContext.ServiceName.ToString();
+                long replicaId = GetReplicaOrInstanceId(serviceContext);
                 ServiceMessage(
-                    serviceContext.ServiceName.ToString(),
+                    serviceName,
                     serviceContext.ServiceTypeName,
-                    GetReplicaOrInstanceId(serviceContext),
+                    replicaId,
                     serviceContext.PartitionId,
                     serviceContext.CodePackageActivationContext.ApplicationName,
                     serviceContext.CodePackageActivationContext.ApplicationTypeName,
