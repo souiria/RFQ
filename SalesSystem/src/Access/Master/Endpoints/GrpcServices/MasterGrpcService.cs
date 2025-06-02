@@ -42,6 +42,20 @@ namespace Master.Endpoints.GrpcServices
                 await responseStream.WriteAsync(item);
             }
         }
+
+        public override async Task<ListCurrencyData> GetCurrencyDataById(CurrencyByIdGrpcRequest request, ServerCallContext context)
+        {
+            ListCurrencyData listCurrencyData = new();
+            Guid currencyId = Guid.Parse(request.Id);
+            Result<List<CurrencyDto>> results = await _MasterAccessService.GetCurrenciesById(currencyId, context.CancellationToken);
+            foreach (CurrencyDto result in results.Value)
+            {
+                CurrencyData currencyData = result.MapToCurrencyData();
+                listCurrencyData.CurrencyData.Add(currencyData);
+            }
+
+            return listCurrencyData;
+        }
         #endregion
 
         #region Customer

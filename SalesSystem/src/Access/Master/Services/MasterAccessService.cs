@@ -16,6 +16,7 @@ namespace Master.Services
         #region Currency
 
         List<CurrencyDto> _Currencies;
+        List<CurrencyDto> _FilteredCurrencies;
 
         #endregion
 
@@ -109,6 +110,7 @@ namespace Master.Services
             #region Currency
 
             _Currencies = [];
+            _FilteredCurrencies = [];
             _CurrencyRefreshInProgress = false;
 
             #endregion
@@ -178,6 +180,22 @@ namespace Master.Services
             {
                 await PopulateCurrenciesAsync(cancellationToken);
                 return _Currencies;
+            }
+        }
+
+        public async Task<Result<List<CurrencyDto>>> GetCurrenciesById(Guid id ,CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_Currencies.Any())
+            {
+                _FilteredCurrencies.Clear();
+                _FilteredCurrencies = _Currencies.Where(x => x.Id == id).ToList();
+                return _FilteredCurrencies;
+            }
+            else
+            {
+                await PopulateCurrenciesAsync(cancellationToken);
+                return _FilteredCurrencies;
             }
         }
 
