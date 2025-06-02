@@ -13,6 +13,7 @@ service Master {
   rpc SayHello (HelloRequest) returns (HelloReply);
   rpc GetCurrencyData (CurrencyGrpcRequest) returns (ListCurrencyData);
   rpc GetCurrencyDataStream (CurrencyGrpcRequest) returns (stream CurrencyData);
+  rpc GetCurrencyDataById (CurrencyByIdGrpcRequest) returns (ListCurrencyData);
 
   rpc GetCustomerData (CustomerGrpcRequest) returns (ListCustomerData);
   rpc GetCustomerDataStream (CustomerGrpcRequest) returns (stream CustomerData);
@@ -51,6 +52,10 @@ message HelloReply {
 message CurrencyGrpcRequest {
   int32 position = 1;
   int32 takeamount = 2;
+}
+
+message CurrencyByIdGrpcRequest {
+    string Id = 1;
 }
 
 message CurrencyData {
