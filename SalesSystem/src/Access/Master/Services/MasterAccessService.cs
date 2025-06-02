@@ -36,10 +36,14 @@ namespace Master.Services
 
         #region Project
 
-       List<PlatformHierarchyDto> _Platforms;
+        List<PlatformHierarchyDto> _Platforms;
+        List<PlatformHierarchyDto> _FilteredPlatforms;
         List<ProgramHierarchyDto> _Programs;
+        List<ProgramHierarchyDto> _FilteredPrograms;
         List<ProjectHierarchyDto> _Projects;
+        List<ProjectHierarchyDto> _FilteredProjects;
         List<MilestoneHierarchyDto> _Milestones;
+        List<MilestoneHierarchyDto> _FilteredMilestones;
 
         #endregion
 
@@ -132,9 +136,13 @@ namespace Master.Services
             #region Project
 
             _Platforms = [];
+            _FilteredPlatforms = [];
             _Programs = [];
+            _FilteredPrograms = [];
             _Projects = [];
+            _FilteredProjects = [];
             _Milestones = [];
+            _FilteredMilestones = [];
             
             _PlatformRefreshInProgress = false;
             _ProgramRefreshInProgress = false;
@@ -404,6 +412,21 @@ namespace Master.Services
                 return _Platforms;
             }
         }
+        public async Task<Result<List<PlatformHierarchyDto>>> GetPlatformsById(Guid id ,CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_Platforms.Any())
+            {
+                _FilteredPlatforms.Clear();
+                _FilteredPlatforms = _Platforms.Where(x => x.Id == id).ToList();
+                return _FilteredPlatforms;
+            }
+            else
+            {
+                await PopulatePlatformsAsync(cancellationToken);
+                return _FilteredPlatforms;
+            }
+        }
 
         public async Task<Result<List<ProgramHierarchyDto>>> GetAllPrograms(CancellationToken cancellationToken)
         {
@@ -416,6 +439,21 @@ namespace Master.Services
             {
                 await PopulateProgramsAsync(cancellationToken);
                 return _Programs;
+            }
+        }
+        public async Task<Result<List<ProgramHierarchyDto>>> GetProgramsById(Guid id,CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_Programs.Any())
+            {
+                _FilteredPrograms.Clear();
+                _FilteredPrograms = _Programs.Where(x => x.Id == id).ToList();
+                return _FilteredPrograms;
+            }
+            else
+            {
+                await PopulateProgramsAsync(cancellationToken);
+                return _FilteredPrograms;
             }
         }
 
@@ -433,6 +471,22 @@ namespace Master.Services
             }
         }
 
+        public async Task<Result<List<ProjectHierarchyDto>>> GetProjectsById(Guid id, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_Projects.Any())
+            {
+                _FilteredProjects.Clear();
+                _FilteredProjects = _Projects.Where(x => x.Id == id).ToList();
+                return _FilteredProjects;
+            }
+            else
+            {
+                await PopulateProjectsAsync(cancellationToken);
+                return _FilteredProjects;
+            }
+        }
+
         public async Task<Result<List<MilestoneHierarchyDto>>> GetAllMilestones(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -444,6 +498,22 @@ namespace Master.Services
             {
                 await PopulateMilestonesAsync(cancellationToken);
                 return _Milestones;
+            }
+        }
+
+        public async Task<Result<List<MilestoneHierarchyDto>>> GetMilestonesById(Guid id ,CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_Milestones.Any())
+            {
+                _FilteredMilestones.Clear();
+                _FilteredMilestones = _Milestones.Where(x => x.Id == id).ToList();
+                return _FilteredMilestones;
+            }
+            else
+            {
+                await PopulateMilestonesAsync(cancellationToken);
+                return _FilteredMilestones;
             }
         }
 

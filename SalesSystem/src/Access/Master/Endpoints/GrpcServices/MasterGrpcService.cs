@@ -258,7 +258,6 @@ namespace Master.Endpoints.GrpcServices
 
             return listPlatformData;
         }
-
         public override async Task GetPlatformDataStream(PlatformGrpcRequest request, IServerStreamWriter<PlatformData> responseStream, ServerCallContext context)
         {
             Result<List<PlatformHierarchyDto>> results = await _MasterAccessService.GetAllPlatforms(context.CancellationToken);
@@ -267,6 +266,19 @@ namespace Master.Endpoints.GrpcServices
                 PlatformData item = result.MapToData();
                 await responseStream.WriteAsync(item);
             }
+        }
+        public override async Task<ListPlatformData> GetPlatformDataById(PlatformByIdGrpcRequest request, ServerCallContext context)
+        {
+            ListPlatformData listPlatformData = new();
+            Guid platformId = Guid.Parse(request.Id);
+            Result<List<PlatformHierarchyDto>> results = await _MasterAccessService.GetPlatformsById(platformId, context.CancellationToken);
+            foreach (PlatformHierarchyDto result in results.Value)
+            {
+                PlatformData platformData = result.MapToData();
+                listPlatformData.PlatformData.Add(platformData);
+            }
+
+            return listPlatformData;
         }
 
         public override async Task<ListProgramData> GetProgramData(ProgramGrpcRequest request, ServerCallContext context)
@@ -292,6 +304,20 @@ namespace Master.Endpoints.GrpcServices
             }
         }
 
+        public override async Task<ListProgramData> GetProgramDataById(ProgramByIdGrpcRequest request, ServerCallContext context)
+        {
+            ListProgramData listProgramData = new();
+            Guid programId = Guid.Parse(request.Id);
+            Result<List<ProgramHierarchyDto>> results = await _MasterAccessService.GetProgramsById(programId , context.CancellationToken);
+            foreach (ProgramHierarchyDto result in results.Value)
+            {
+                ProgramData programData = result.MapToData();
+                listProgramData.ProgramData.Add(programData);
+            }
+
+            return listProgramData;
+        }
+
         public override async Task<ListProjectData> GetProjectData(ProjectGrpcRequest request, ServerCallContext context)
         {
             ListProjectData data = new();
@@ -314,7 +340,19 @@ namespace Master.Endpoints.GrpcServices
                 await responseStream.WriteAsync(item);
             }
         }
+        public override async Task<ListProjectData> GetProjectDataById(ProjectByIdGrpcRequest request, ServerCallContext context)
+        {
+            ListProjectData data = new();
+            Guid projectId = Guid.Parse(request.Id);
+            Result<List<ProjectHierarchyDto>> results = await _MasterAccessService.GetProjectsById(projectId, context.CancellationToken);
+            foreach (ProjectHierarchyDto result in results.Value)
+            {
+                ProjectData projectData = result.MapToData();
+                data.ProjectData.Add(projectData);
+            }
 
+            return data;
+        }
         public override async Task<ListMilestoneData> GetMilestoneData(MilestoneGrpcRequest request, ServerCallContext context)
         {
             ListMilestoneData data = new();
@@ -336,6 +374,20 @@ namespace Master.Endpoints.GrpcServices
                 MilestoneData item = result.MapToData();
                 await responseStream.WriteAsync(item);
             }
+        }
+
+        public override async Task<ListMilestoneData> GetMilestoneDataById(MilestoneByIdGrpcRequest request, ServerCallContext context)
+        {
+            ListMilestoneData data = new();
+            Guid milestoneId = Guid.Parse(request.Id);
+            Result<List<MilestoneHierarchyDto>> results = await _MasterAccessService.GetMilestonesById(milestoneId, context.CancellationToken);
+            foreach (MilestoneHierarchyDto result in results.Value)
+            {
+                MilestoneData milestoneData = result.MapToData();
+                data.MilestoneData.Add(milestoneData);
+            }
+
+            return data;
         }
 
         #endregion

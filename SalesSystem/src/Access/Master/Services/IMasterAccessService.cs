@@ -31,12 +31,16 @@
         #region Project
 
         Task<Result<List<PlatformHierarchyDto>>> GetAllPlatforms(CancellationToken cancellationToken);
+        Task<Result<List<PlatformHierarchyDto>>> GetPlatformsById(Guid id,CancellationToken cancellationToken);
         Task<bool> PopulatePlatformsAsync(CancellationToken cancellationToken);
         Task<Result<List<ProgramHierarchyDto>>> GetAllPrograms(CancellationToken cancellationToken);
+        Task<Result<List<ProgramHierarchyDto>>> GetProgramsById(Guid id, CancellationToken cancellationToken);
         Task<bool> PopulateProgramsAsync(CancellationToken cancellationToken);
         Task<Result<List<ProjectHierarchyDto>>> GetAllProjects(CancellationToken cancellationToken);
+        Task<Result<List<ProjectHierarchyDto>>> GetProjectsById(Guid id, CancellationToken cancellationToken);
         Task<bool> PopulateProjectsAsync(CancellationToken cancellationToken);
         Task<Result<List<MilestoneHierarchyDto>>> GetAllMilestones(CancellationToken cancellationToken);
+        Task<Result<List<MilestoneHierarchyDto>>> GetMilestonesById(Guid id, CancellationToken cancellationToken);
         Task<bool> PopulateMilestonesAsync(CancellationToken cancellationToken);
 
         #endregion
