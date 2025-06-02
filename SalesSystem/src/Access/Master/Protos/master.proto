@@ -34,12 +34,16 @@ service Master {
 
   rpc GetMilestoneData (MilestoneGrpcRequest) returns (ListMilestoneData);
   rpc GetMilestoneDataStream (MilestoneGrpcRequest) returns (stream MilestoneData);
+  rpc GetMilestoneDataById (MilestoneByIdGrpcRequest) returns (ListMilestoneData);
   rpc GetPlatformData (PlatformGrpcRequest) returns (ListPlatformData);
   rpc GetPlatformDataStream (PlatformGrpcRequest) returns (stream PlatformData);
+  rpc GetPlatformDataById (PlatformByIdGrpcRequest) returns (ListPlatformData);
   rpc GetProgramData (ProgramGrpcRequest) returns (ListProgramData);
   rpc GetProgramDataStream (ProgramGrpcRequest) returns (stream ProgramData);
+  rpc GetProgramDataById (ProgramByIdGrpcRequest) returns (ListProgramData);
   rpc GetProjectData (ProjectGrpcRequest) returns (ListProjectData);
   rpc GetProjectDataStream (ProjectGrpcRequest) returns (stream ProjectData);
+  rpc GetProjectDataById (ProjectByIdGrpcRequest) returns (ListProjectData);
 
   rpc GetVehicleData (VehicleGrpcRequest) returns (ListVehicleData);
   rpc GetVehicleDataStream (VehicleGrpcRequest) returns (stream VehicleData);
@@ -186,6 +190,9 @@ message MilestoneGrpcRequest {
   int32 position = 1;
   int32 takeamount = 2;
 }
+message MilestoneByIdGrpcRequest {
+    string Id = 1;
+}
 
 message MilestoneData {
     string Id = 1;
@@ -205,6 +212,10 @@ message PlatformGrpcRequest {
   int32 takeamount = 2;
 }
 
+message PlatformByIdGrpcRequest {
+    string Id = 1;
+}
+
 message PlatformData {
     string Id = 1;
     string PlatformName = 2;
@@ -222,6 +233,10 @@ message ProgramGrpcRequest {
   int32 takeamount = 2;
 }
 
+message ProgramByIdGrpcRequest {
+    string Id = 1;
+}
+
 message ProgramData {
     string Id = 1;
     string ProgramName = 2;   
@@ -236,6 +251,9 @@ message ListProgramData {
 message ProjectGrpcRequest {
   int32 position = 1;
   int32 takeamount = 2;
+}
+message ProjectByIdGrpcRequest {
+    string Id = 1;
 }
 
 message ProjectData {
