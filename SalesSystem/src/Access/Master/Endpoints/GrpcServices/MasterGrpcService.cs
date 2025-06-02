@@ -83,6 +83,20 @@ namespace Master.Endpoints.GrpcServices
             }
         }
 
+        public override async Task<ListCustomerData> GetCustomerDataById(CustomerByIdGrpcRequest request, ServerCallContext context)
+        {
+            ListCustomerData listCustomerData = new();
+            Guid customerId = Guid.Parse(request.Id);
+            Result<List<CustomerBusinessHierarchyDto>> results = await _MasterAccessService.GetCustomerBusinessUnitsById(customerId, context.CancellationToken);
+            foreach (CustomerBusinessHierarchyDto result in results.Value)
+            {
+                CustomerData customerData = result.MapToCustomerData();
+                listCustomerData.CustomerData.Add(customerData);
+            }
+
+            return listCustomerData;
+        }
+
         public override async Task<ListCustomerLocationData> GetCustomerLocationData(CustomerLocationGrpcRequest request, ServerCallContext context)
         {
             ListCustomerLocationData listCustomerLocationData = new();
@@ -104,6 +118,33 @@ namespace Master.Endpoints.GrpcServices
                 CustomerLocationData item = result.MapToCustomerLocationData();
                 await responseStream.WriteAsync(item);
             }
+        }
+
+        public override async Task<ListCustomerLocationData> GetCustomerLocationDataById(CustomerLocationByIdGrpcRequest request, ServerCallContext context)
+        {
+            ListCustomerLocationData listCustomerLocationData = new();
+            Guid customerId = Guid.Parse(request.Id);
+            Result<List<CustomerHierarchyDto>> results = await _MasterAccessService.GetCustomerLocationsById(customerId, context.CancellationToken);
+            foreach (CustomerHierarchyDto result in results.Value)
+            {
+                CustomerLocationData customerLocationData = result.MapToCustomerLocationData();
+                listCustomerLocationData.CustomerLocationData.Add(customerLocationData);
+            }
+
+            return listCustomerLocationData;
+        }
+        public override async Task<ListCustomerLocationData> GetCustomerLocationDataByUserId(CustomerLocationByUserIdGrpcRequest request, ServerCallContext context)
+        {
+            ListCustomerLocationData listCustomerLocationData = new();
+            Guid userId = Guid.Parse(request.UserId);
+            Result<List<CustomerHierarchyDto>> results = await _MasterAccessService.GetCustomerLocationsByUserId(userId, context.CancellationToken);
+            foreach (CustomerHierarchyDto result in results.Value)
+            {
+                CustomerLocationData customerLocationData = result.MapToCustomerLocationData();
+                listCustomerLocationData.CustomerLocationData.Add(customerLocationData);
+            }
+
+            return listCustomerLocationData;
         }
 
         public override async Task<ListCustomerSalesEntityData> GetCustomerSalesEntityData(CustomerSalesEntityGrpcRequest request, ServerCallContext context)
@@ -129,10 +170,37 @@ namespace Master.Endpoints.GrpcServices
             }
         }
 
+        public override async Task<ListCustomerSalesEntityData> GetCustomerSalesEntityDataByUserId(CustomerSalesEntityByUserIdGrpcRequest request, ServerCallContext context)
+        {
+            ListCustomerSalesEntityData listCustomerSalesEntityData = new();
+            Guid userId = Guid.Parse(request.UserId);
+            Result<List<CustomerSalesEntityDto>> results = await _MasterAccessService.GetAllCustomerSalesByUserIdEntities(userId, context.CancellationToken);
+            foreach (CustomerSalesEntityDto result in results.Value)
+            {
+                CustomerSalesEntityData entityData = result.MapToCustomerSalesEntityData();
+                listCustomerSalesEntityData.CustomerSalesEntityData.Add(entityData);
+            }
+
+            return listCustomerSalesEntityData;
+        }
+
         public override async Task<ListCustomerProjectAssociationData> GetCustomerProjectAssociationData(CustomerProjectAssociationGrpcRequest request, ServerCallContext context)
         {
             ListCustomerProjectAssociationData listCustomerProjectAssociationData = new();
             Result<List<CustomerProjectAssociationDto>> results = await _MasterAccessService.GetAllCustomerProjectAssociations(context.CancellationToken);
+            foreach (CustomerProjectAssociationDto result in results.Value)
+            {
+                CustomerProjectAssociationData projectAssociationData = result.MapToCustomerProjectAssociationData();
+                listCustomerProjectAssociationData.CustomerProjectAssociationData.Add(projectAssociationData);
+            }
+
+            return listCustomerProjectAssociationData;
+        }
+        public override async Task<ListCustomerProjectAssociationData> GetCustomerProjectAssociationDataByUserId(CustomerProjectAssociationByUserIdGrpcRequest request, ServerCallContext context)
+        {
+            ListCustomerProjectAssociationData listCustomerProjectAssociationData = new();
+            Guid userId = Guid.Parse(request.UserId);
+            Result<List<CustomerProjectAssociationDto>> results = await _MasterAccessService.GetAllCustomerProjectAssociationsByUserId(userId ,context.CancellationToken);
             foreach (CustomerProjectAssociationDto result in results.Value)
             {
                 CustomerProjectAssociationData projectAssociationData = result.MapToCustomerProjectAssociationData();
@@ -156,6 +224,19 @@ namespace Master.Endpoints.GrpcServices
         {
             ListCustomerBusinessUserAssociationData listCustomerBusinessUserAssociationData = new();
             Result<List<CustomerBusinessUserAssociationDto>> results = await _MasterAccessService.GetCustomerBusinessUserAssociations(context.CancellationToken);
+            foreach (CustomerBusinessUserAssociationDto result in results.Value)
+            {
+                CustomerBusinessUserAssociationData userAssociationData = result.MapToCustomerBusinessUserAssociationData();
+                listCustomerBusinessUserAssociationData.CustomerBusinessUserAssociationData.Add(userAssociationData);
+            }
+
+            return listCustomerBusinessUserAssociationData;
+        }
+        public override async Task<ListCustomerBusinessUserAssociationData> GetCustomerBusinessUserAssociationDataByUserId(CustomerBusinessUserAssociationByUserIdGrpcRequest request, ServerCallContext context)
+        {
+            ListCustomerBusinessUserAssociationData listCustomerBusinessUserAssociationData = new();
+            Guid userId = Guid.Parse(request.UserId);
+            Result<List<CustomerBusinessUserAssociationDto>> results = await _MasterAccessService.GetCustomerBusinessUserAssociationsByUserId(userId, context.CancellationToken);
             foreach (CustomerBusinessUserAssociationDto result in results.Value)
             {
                 CustomerBusinessUserAssociationData userAssociationData = result.MapToCustomerBusinessUserAssociationData();

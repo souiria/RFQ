@@ -17,14 +17,20 @@ service Master {
 
   rpc GetCustomerData (CustomerGrpcRequest) returns (ListCustomerData);
   rpc GetCustomerDataStream (CustomerGrpcRequest) returns (stream CustomerData);
+  rpc GetCustomerDataById (CustomerByIdGrpcRequest) returns (ListCustomerData);
   rpc GetCustomerLocationData (CustomerLocationGrpcRequest) returns (ListCustomerLocationData);
   rpc GetCustomerLocationDataStream (CustomerLocationGrpcRequest) returns (stream CustomerLocationData);
+  rpc GetCustomerLocationDataById (CustomerLocationByIdGrpcRequest) returns (ListCustomerLocationData);
+  rpc GetCustomerLocationDataByUserId (CustomerLocationByUserIdGrpcRequest) returns (ListCustomerLocationData);
   rpc GetCustomerSalesEntityData (CustomerSalesEntityGrpcRequest) returns (ListCustomerSalesEntityData);
   rpc GetCustomerSalesEntityDataStream (CustomerSalesEntityGrpcRequest) returns (stream CustomerSalesEntityData);
+  rpc GetCustomerSalesEntityDataByUserId (CustomerSalesEntityByUserIdGrpcRequest) returns (ListCustomerSalesEntityData);
   rpc GetCustomerProjectAssociationData (CustomerProjectAssociationGrpcRequest) returns (ListCustomerProjectAssociationData);
   rpc GetCustomerProjectAssociationDataStream (CustomerProjectAssociationGrpcRequest) returns (stream CustomerProjectAssociationData);
+  rpc GetCustomerProjectAssociationDataByUserId (CustomerProjectAssociationByUserIdGrpcRequest) returns (ListCustomerProjectAssociationData);
   rpc GetCustomerBusinessUserAssociationData (CustomerBusinessUserAssociationGrpcRequest) returns (ListCustomerBusinessUserAssociationData);
   rpc GetCustomerBusinessUserAssociationDataStream (CustomerBusinessUserAssociationGrpcRequest) returns (stream CustomerBusinessUserAssociationData);
+  rpc GetCustomerBusinessUserAssociationDataByUserId (CustomerBusinessUserAssociationByUserIdGrpcRequest) returns (ListCustomerBusinessUserAssociationData);
 
   rpc GetMilestoneData (MilestoneGrpcRequest) returns (ListMilestoneData);
   rpc GetMilestoneDataStream (MilestoneGrpcRequest) returns (stream MilestoneData);
@@ -75,6 +81,10 @@ message CustomerGrpcRequest {
   int32 takeamount = 2;
 }
 
+message CustomerByIdGrpcRequest {
+    string Id = 1;
+}
+
 message CustomerData {
     string Id = 1;
     string CustomerBusinessGroupCode = 2;
@@ -92,6 +102,14 @@ message CustomerLocationGrpcRequest {
   int32 takeamount = 2;
 }
 
+message CustomerLocationByIdGrpcRequest {
+    string Id = 1;
+}
+
+message CustomerLocationByUserIdGrpcRequest {
+    string UserId = 1;
+}
+
 message CustomerLocationData {
     string Id = 1;
     string CustomerCode = 2;
@@ -106,6 +124,10 @@ message ListCustomerLocationData {
 message CustomerSalesEntityGrpcRequest {
   int32 position = 1;
   int32 takeamount = 2;
+}
+
+message CustomerSalesEntityByUserIdGrpcRequest {
+  string UserId = 1;
 }
 
 message CustomerSalesEntityData {
@@ -125,6 +147,10 @@ message CustomerProjectAssociationGrpcRequest {
   int32 takeamount = 2;
 }
 
+message CustomerProjectAssociationByUserIdGrpcRequest {
+    string UserId = 1;
+}
+
 message CustomerProjectAssociationData {
     string Id = 1;
     string CustomerLocationGuid = 2;
@@ -139,6 +165,10 @@ message ListCustomerProjectAssociationData {
 message CustomerBusinessUserAssociationGrpcRequest {
   int32 position = 1;
   int32 takeamount = 2;
+}
+
+message CustomerBusinessUserAssociationByUserIdGrpcRequest {
+  string UserId = 1;
 }
 
 message CustomerBusinessUserAssociationData {
