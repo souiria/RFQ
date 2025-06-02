@@ -4,6 +4,7 @@
     {
         #region Currency
         Task<Result<List<CurrencyDto>>> GetAllCurrencies(CancellationToken cancellationToken);
+        Task<Result<List<CurrencyDto>>> GetCurrenciesById(Guid id ,CancellationToken cancellationToken);
         Task<bool> PopulateCurrenciesAsync(CancellationToken cancellationToken);
         #endregion
 
