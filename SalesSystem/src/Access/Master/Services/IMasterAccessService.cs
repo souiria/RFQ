@@ -50,6 +50,8 @@
 
         Task<Result<List<VehicleDto>>> GetAllVehicles(CancellationToken cancellationToken);
         Task<bool> PopulateVehiclesAsync(CancellationToken cancellationToken);
+        Task<Result<List<VehicleDto>>> GetVehiclesById(Guid id, CancellationToken cancellationToken);
+        Task<Result<List<VehicleDto>>> GetVehiclesByDisplay(string vehicleDisplay, CancellationToken cancellationToken);
 
         #endregion
     }

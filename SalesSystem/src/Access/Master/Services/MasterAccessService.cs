@@ -51,6 +51,7 @@ namespace Master.Services
         #region Vehicle
 
         List<VehicleDto> _Vehicles;
+        List<VehicleDto> _FilteredVehicles;
 
         #endregion
 
@@ -156,6 +157,7 @@ namespace Master.Services
             #region Vehicle
 
             _Vehicles = [];
+            _FilteredVehicles = [];
             _VehicleRefreshInProgress = false;
 
             #endregion
@@ -550,6 +552,38 @@ namespace Master.Services
             {
                 await PopulateVehiclesAsync(cancellationToken);
                 return _Vehicles;
+            }
+        }
+
+        public async Task<Result<List<VehicleDto>>> GetVehiclesById(Guid id, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_Vehicles.Any())
+            {
+                _FilteredVehicles.Clear();
+                _FilteredVehicles = _Vehicles.Where(x => x.Id == id).ToList();
+                return _FilteredVehicles;
+            }
+            else
+            {
+                await PopulateVehiclesAsync(cancellationToken);
+                return _FilteredVehicles;
+            }
+        }
+
+        public async Task<Result<List<VehicleDto>>> GetVehiclesByDisplay(string vehicleDisplay , CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_Vehicles.Any())
+            {
+                _FilteredVehicles.Clear();
+                _FilteredVehicles = _Vehicles.Where(x => x.VehicleDisplay == vehicleDisplay).ToList();
+                return _FilteredVehicles;
+            }
+            else
+            {
+                await PopulateVehiclesAsync(cancellationToken);
+                return _FilteredVehicles;
             }
         }
 
