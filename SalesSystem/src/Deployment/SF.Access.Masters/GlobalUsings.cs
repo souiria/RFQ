@@ -1,0 +1,16 @@
+﻿global using System;
+global using System.Collections.Generic;
+global using System.Fabric;
+global using System.IO;
+global using System.Linq;
+global using System.Net;
+global using System.Security.Cryptography.X509Certificates;
+global using System.Threading;
+global using System.Threading.Tasks;
+global using Microsoft.AspNetCore.Hosting;
+global using Microsoft.AspNetCore.Server.Kestrel.Core;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.ServiceFabric.Data;
+global using Microsoft.ServiceFabric.Services.Communication.AspNetCore;
+global using Microsoft.ServiceFabric.Services.Communication.Runtime;
+global using Microsoft.ServiceFabric.Services.Runtime;
