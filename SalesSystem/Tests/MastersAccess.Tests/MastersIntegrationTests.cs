@@ -1,13 +1,11 @@
 ﻿using Grpc.Core;
 using Grpc.Core.Testing;
 using Master;
-using Master.Data.DTOs;
 using Master.Endpoints.GrpcServices;
 using Master.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
-using SharedKernel;
 
 namespace MastersAccess.Tests
 {
@@ -18,9 +16,9 @@ namespace MastersAccess.Tests
         [SetUp]
         public void Setup()
         {
-            ServiceCollection sC = new ServiceCollection();
-            ServiceProvider ps = sC.BuildServiceProvider();
-            _MasterAccessService = new MasterAccessService(ps, true);
+            ServiceCollection serviceCollection = new ServiceCollection();
+            ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
+            _MasterAccessService = new MasterAccessService(serviceProvider, true);
             Mock<ILogger<MasterGrpcService>> logger = new Mock<ILogger<MasterGrpcService>>();
             _GrpcService = new MasterGrpcService(_MasterAccessService, logger.Object);
         }
