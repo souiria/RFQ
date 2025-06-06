@@ -9,7 +9,7 @@ namespace Master.Services
     /// This class is used to make calls to the database queries and to hold the data dictionaries.
     /// It is used by both the Grpc and Http api services
     /// </summary>
-    sealed class MasterAccessService : IMasterAccessService
+    public sealed class MasterAccessService : IMasterAccessService
     {
         #region In Memory Datasets
 
@@ -106,8 +106,9 @@ namespace Master.Services
         #endregion
 
         #region Constructor
-        public MasterAccessService(IServiceProvider serviceProvider)
+        public MasterAccessService(IServiceProvider serviceProvider, bool testing = false)
         {
+
             #region Currency
 
             _Currencies = [];
@@ -146,7 +147,7 @@ namespace Master.Services
             _FilteredProjects = [];
             _Milestones = [];
             _FilteredMilestones = [];
-            
+
             _PlatformRefreshInProgress = false;
             _ProgramRefreshInProgress = false;
             _ProjectRefreshInProgress = false;
@@ -163,8 +164,12 @@ namespace Master.Services
             #endregion
 
             _ServiceProvider = serviceProvider;
-        }
 
+            if (testing)
+            {
+                PopulateSampleData();
+            }
+        }
         #endregion
 
         #region Handlers
@@ -271,17 +276,20 @@ namespace Master.Services
             _FilteredLocations.Clear();
             if (_CustomerLocations.Any() && _CustomerBusinessUserAssociations.Any())
             {
-                CustomerBusinessUserAssociationDto user = _CustomerBusinessUserAssociations.Where(x => x.UserGuid == userId).First();
-                if (user.CustomerBusinessHierarchyList != null)
+                CustomerBusinessUserAssociationDto? user = _CustomerBusinessUserAssociations.Where(x => x.UserGuid == userId).FirstOrDefault();
+                if (user != null)
                 {
-                    List<CustomerHierarchyDto>? userLocations = JsonConvert.DeserializeObject<List<CustomerHierarchyDto>>(user.CustomerBusinessHierarchyList);
-                    if (userLocations != null)
+                    if (user.CustomerBusinessHierarchyList != null)
                     {
-                        foreach (CustomerHierarchyDto location in userLocations)
+                        List<CustomerHierarchyDto>? userLocations = JsonConvert.DeserializeObject<List<CustomerHierarchyDto>>(user.CustomerBusinessHierarchyList);
+                        if (userLocations != null)
                         {
-                            if (location.IsActive == true)
+                            foreach (CustomerHierarchyDto location in userLocations)
                             {
-                                _FilteredLocations = _CustomerLocations.Where(x => x.CustomerBusinessHierarchyGuid == location.CustomerBusinessHierarchyGuid).ToList();
+                                if (location.IsActive == true)
+                                {
+                                    _FilteredLocations = _CustomerLocations.Where(x => x.CustomerBusinessHierarchyGuid == location.CustomerBusinessHierarchyGuid).ToList();
+                                }
                             }
                         }
                     }
@@ -317,23 +325,26 @@ namespace Master.Services
             _FilteredLocations.Clear();
             if (_CustomerProjectAssociations.Any() && _CustomerBusinessUserAssociations.Any())
             {
-                CustomerBusinessUserAssociationDto user = GetCustomerBusinessUserAssociationsByUserId(userId, cancellationToken).Result.Value.First();
-                if(user.CustomerBusinessHierarchyList != null)
+                CustomerBusinessUserAssociationDto? user = GetCustomerBusinessUserAssociationsByUserId(userId, cancellationToken).Result.Value.FirstOrDefault();
+                if (user != null)
                 {
-                    List<CustomerHierarchyDto>? userLocations = JsonConvert.DeserializeObject<List<CustomerHierarchyDto>>(user.CustomerBusinessHierarchyList);
-                    if (userLocations != null) 
+                    if (user.CustomerBusinessHierarchyList != null)
                     {
-                        foreach (CustomerHierarchyDto location in userLocations)
+                        List<CustomerHierarchyDto>? customers = JsonConvert.DeserializeObject<List<CustomerHierarchyDto>>(user.CustomerBusinessHierarchyList);
+                        if (customers != null)
                         {
-                            if (location.IsActive == true)
+                            foreach (CustomerHierarchyDto customer in customers)
                             {
-                                if (location.CustomerBusinessHierarchyGuid != null)
+                                if (customer.IsActive == true)
                                 {
-                                    _FilteredLocations = _CustomerLocations.Where(x => x.CustomerBusinessHierarchyGuid == location.CustomerBusinessHierarchyGuid).ToList();
-                                    foreach(CustomerHierarchyDto customerLocation in _FilteredLocations)
+                                    if (customer.CustomerBusinessHierarchyGuid != null)
                                     {
-                                        List<CustomerProjectAssociationDto> customerProjects = _CustomerProjectAssociations.Where(x => x.CustomerLocationGuid == customerLocation.Id).ToList();
-                                        _FilteredCustomerProjectAssociations.AddRange(customerProjects);
+                                        _FilteredLocations = _CustomerLocations.Where(x => x.CustomerBusinessHierarchyGuid == customer.CustomerBusinessHierarchyGuid).ToList();
+                                        foreach (CustomerHierarchyDto customerLocation in _FilteredLocations)
+                                        {
+                                            List<CustomerProjectAssociationDto> customerProjects = _CustomerProjectAssociations.Where(x => x.CustomerLocationGuid == customerLocation.Id).ToList();
+                                            _FilteredCustomerProjectAssociations.AddRange(customerProjects);
+                                        }
                                     }
                                 }
                             }
@@ -922,5 +933,20 @@ namespace Master.Services
         #endregion
 
         #endregion
+
+        void PopulateSampleData()
+        {
+            _Currencies = (List<CurrencyDto>)SampleMasterDataService.PopulateCurrencyData();
+            _Customers = (List<CustomerBusinessHierarchyDto>)SampleMasterDataService.PopulateCustomerData();
+            _CustomerLocations = (List<CustomerHierarchyDto>)SampleMasterDataService.PopulateCustomerLocationsData();
+            _CustomerSalesEntities = (List<CustomerSalesEntityDto>)SampleMasterDataService.PopulateCustomerSalesEntityData();
+            _CustomerProjectAssociations = (List<CustomerProjectAssociationDto>)SampleMasterDataService.PopulateCustomerProjectAssociationData();
+            _CustomerBusinessUserAssociations = (List<CustomerBusinessUserAssociationDto>)SampleMasterDataService.PopulateCustomerBusinessUserAssociationData();
+            _Platforms = (List<PlatformHierarchyDto>)SampleMasterDataService.PopulatePlatformData();
+            _Programs = (List<ProgramHierarchyDto>)SampleMasterDataService.PopulateProgramData();
+            _Projects = (List<ProjectHierarchyDto>)SampleMasterDataService.PopulateProjectData();
+            _Milestones = (List<MilestoneHierarchyDto>)SampleMasterDataService.PopulateMilestoneData();
+            _Vehicles = (List<VehicleDto>)SampleMasterDataService.PopulateVehicleData();
+        }
     }
 }
