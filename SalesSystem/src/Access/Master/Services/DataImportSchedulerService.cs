@@ -15,7 +15,6 @@
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-       
             _Logger.GenericLogInformation("Background service is running");
           
             await PopulateGlobalDataAsync(stoppingToken);

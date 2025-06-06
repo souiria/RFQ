@@ -13,7 +13,7 @@
 
             _GenericLogInformation = LoggerMessage.Define<String>(
             logLevel: LogLevel.Information,
-            eventId: 1,
+            eventId: 2,
             formatString: "{String}");
         }
 

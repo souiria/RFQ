@@ -1,5 +1,7 @@
 ﻿using Master.Endpoints.GrpcServices;
 using Master.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace Master
 {
@@ -7,6 +9,7 @@ namespace Master
     {
         public static WebApplication CreateApp(WebApplicationBuilder? builder = null, params string[] args)
         {
+
             builder ??= WebApplication.CreateBuilder(args);
 
             #region Builder
@@ -23,7 +26,7 @@ namespace Master
             // Add additional generic services here (anything ServiceFabric specific
             // should go in Api.cs CreateServiceInstanceListeners method)
             // *********************************************************************
-
+     
             #region Additional Services
             builder.AddServiceDefaults();
             builder.Logging.AddSeq();
