@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-
-namespace Emacs.Extensions
+﻿namespace Emacs.Extensions
 {
     public static class EMACSMappingExtentions
     {

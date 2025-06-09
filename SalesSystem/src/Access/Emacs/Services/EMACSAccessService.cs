@@ -1,7 +1,4 @@
-﻿
-using Emacs.Data.Model;
-
-namespace Emacs.Services
+﻿namespace Emacs.Services
 {
     public class EMACSAccessService : IEMACSAccessService
     {
