@@ -17,6 +17,8 @@ service Emacs {
   rpc GetCombinedPartsDataCount (CombinedPartsCountGrpcRequest) returns (CombinedPartsCountData);
 
   rpc GetPartCategoryDetailData (PartCategoryDetailGrpcRequest) returns (ListPartCategoryDetail);
+
+  rpc GetPartClassDetailData (PartClassDetailGrpcRequest) returns (ListPartClassDetail);
 }
 
 // The request message containing the user's name.
@@ -68,4 +70,20 @@ message PartCategoryDetail {
     string CategoryCode = 1;
     double DetailedCategoryCode = 2;
     string CategoryName = 3;
+}
+
+message PartClassDetailGrpcRequest {
+    int32 position = 1;
+    int32 takeAmount = 2;
+}
+
+message ListPartClassDetail {
+    repeated PartClassDetail PartClassDetail = 1;
+}
+
+message PartClassDetail {
+    string Class1 = 1;
+    string Class1Name = 2;
+    double Class2 = 3;
+    string Class2Name = 4;
 }

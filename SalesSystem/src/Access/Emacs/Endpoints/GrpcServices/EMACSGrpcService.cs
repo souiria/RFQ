@@ -58,5 +58,20 @@
             return listPartCatogoryDetailData;
         }
         #endregion
+        #region PartClassDetail
+        public override async Task<ListPartClassDetail> GetPartClassDetailData(PartClassDetailGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetPartClassDetailData starting");
+            ListPartClassDetail listPartClassDetailData = new();
+            Result<List<PartClassDetailDto>> results = await _EMACSAccessService.GetAllPartClassDetail(context.CancellationToken);
+            foreach (PartClassDetailDto result in results.Value)
+            {
+                PartClassDetail combinedPartsData = result.MapToPartClassDetailData();
+                listPartClassDetailData.PartClassDetail.Add(combinedPartsData);
+            }
+
+            return listPartClassDetailData;
+        }
+        #endregion
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Emacs.Extensions
+﻿using System.Security.Claims;
+
+namespace Emacs.Extensions
 {
     public static class EMACSMappingExtentions
     {
@@ -49,6 +51,29 @@
             entity.CategoryCode = dto.CategoryCode;
             entity.DetailedCategoryCode = dto.DetailedCategoryCode;
             entity.CategoryName = dto.CategoryName;
+
+            return entity;
+        }
+        #endregion
+        #region PartClassDetail
+        public static PartClassDetailDto MapToPartClassDetailDto(this DbPartClassDetail entity)
+        {
+            PartClassDetailDto dto = new PartClassDetailDto();
+            dto.Class1 = entity.Class1;
+            dto.Class1Name = entity.Class1Name;
+            dto.Class2 = entity.Class2;
+            dto.Class2Name = entity.Class2Name;
+
+            return dto;
+        }
+
+        public static PartClassDetail MapToPartClassDetailData(this PartClassDetailDto dto)
+        {
+            PartClassDetail entity = new PartClassDetail();
+            entity.Class1 = dto.Class1;
+            entity.Class1Name = dto.Class1Name;
+            entity.Class2 = dto.Class2;
+            entity.Class2Name = dto.Class2Name;
 
             return entity;
         }
