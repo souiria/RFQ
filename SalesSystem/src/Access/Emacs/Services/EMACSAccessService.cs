@@ -61,7 +61,7 @@ namespace Emacs.Services
 
         #endregion
 
-        #region PartGroupsDetail
+        #region PartGroups
 
         IQueryHandler<GetPartGroupsQuery, List<PartGroupsDto>>? _PartGroupsHandler;
         bool _PartGroupsRefreshInProgress;
@@ -169,7 +169,7 @@ namespace Emacs.Services
         }
         #endregion
 
-        #region PartCategoryDetail
+        #region PartClassDetail
 
         public async Task<Result<List<PartClassDetailDto>>> GetAllPartClassDetail(CancellationToken cancellationToken)
         {
@@ -186,7 +186,7 @@ namespace Emacs.Services
         }
         #endregion
 
-        #region PartGroupDetail
+        #region PartGroups
 
         public async Task<Result<List<PartGroupsDto>>> GetAllPartGroups(CancellationToken cancellationToken)
         {
