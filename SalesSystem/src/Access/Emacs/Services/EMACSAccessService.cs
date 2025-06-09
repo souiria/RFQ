@@ -127,7 +127,7 @@
         }
         #endregion
 
-        #region PartCategoryDetail
+        #region PartClassDetail
 
         public async Task<Result<List<PartClassDetailDto>>> GetAllPartClassDetail(CancellationToken cancellationToken)
         {
