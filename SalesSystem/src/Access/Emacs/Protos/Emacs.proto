@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "Emacs";
+
+package emacs;
+
+// The Emacs service definition.
+service Emacs {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply);
+  
+  rpc GetCombinedPartsData (CombinedPartsGrpcRequest) returns (ListCombinedPartsData);
+  rpc GetCombinedPartsDataCount (CombinedPartsCountGrpcRequest) returns (CombinedPartsCountData);
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings.
+message HelloReply {
+  string message = 1;
+}
+
+message CombinedPartsGrpcRequest {
+  int32 position = 1;
+  int32 takeAmount = 2;
+}
+
+message CombinedPartsCountGrpcRequest {
+}
+
+message CombinedPartsData {
+    google.protobuf.StringValue SumitomoNumber = 1;
+    google.protobuf.StringValue CustomerNumber = 2;
+    google.protobuf.StringValue CustomerName = 3;
+    google.protobuf.StringValue SupplierNumber = 4;
+    google.protobuf.StringValue UniformSumitomoNumber = 5;
+    google.protobuf.StringValue UniformCustomerNumber = 6;
+    google.protobuf.StringValue UniformSupplierNumber = 7;
+}
+
+message ListCombinedPartsData {
+    repeated CombinedPartsData CombinedPartsData = 1;
+}
+
+message CombinedPartsCountData {
+    int32 count = 1;
+}

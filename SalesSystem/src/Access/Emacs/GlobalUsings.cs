@@ -1,0 +1,16 @@
+﻿global using System.Reflection;
+global using Ardalis.Specification;
+global using Emacs.Data.Context;
+global using Emacs.Data.CQRS.Query;
+global using Emacs.Data.CQRS.Specification;
+global using Emacs.Data.DTOs;
+global using Emacs.Data.Interface;
+global using Emacs.Data.Model;
+global using Emacs.Data.Repository;
+global using Emacs.Data.Time;
+global using Emacs.Endpoints.GrpcServices;
+global using Emacs.Extensions;
+global using Emacs.Services;
+global using Microsoft.EntityFrameworkCore;
+global using SharedKernel;
+
