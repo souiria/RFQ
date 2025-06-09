@@ -53,7 +53,7 @@
 
         #endregion
 
-        #region PartGroupsDetail
+        #region PartGroups
 
         IQueryHandler<GetPartGroupsQuery, List<PartGroupsDto>>? _PartGroupsHandler;
         bool _PartGroupsRefreshInProgress;
@@ -80,17 +80,17 @@
 
             #endregion
 
-            #region PartGroups
-
-            _PartGroups = [];
-            _PartGroupsRefreshInProgress = false;
-
-            #endregion
-
             #region PartClassDetail
 
             _PartClassDetail = [];
             _PartClassDetailRefreshInProgress = false;
+
+            #endregion
+
+            #region PartGroups
+
+            _PartGroups = [];
+            _PartGroupsRefreshInProgress = false;
 
             #endregion
 
@@ -164,7 +164,7 @@
         }
         #endregion
 
-        #region PartGroupDetail
+        #region PartGroups
 
         public async Task<Result<List<PartGroupsDto>>> GetAllPartGroups(CancellationToken cancellationToken)
         {
