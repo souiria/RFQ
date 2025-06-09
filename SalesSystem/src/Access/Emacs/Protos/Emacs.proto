@@ -21,6 +21,8 @@ service Emacs {
   rpc GetPartClassDetailData (PartClassDetailGrpcRequest) returns (ListPartClassDetail);
 
   rpc GetPartGroupsData (PartGroupsGrpcRequest) returns (ListPartGroups);
+
+  rpc GetPartGroupsConstData (PartGroupsConstGrpcRequest) returns (ListPartGroupsConst);
 }
 
 // The request message containing the user's name.
@@ -102,4 +104,22 @@ message ListPartGroups {
 message PartGroups {
     string PartGroup = 1;
     string GroupDescription = 2;
+}
+
+message PartGroupsConstGrpcRequest {
+    int32 position = 1;
+    int32 takeAmount = 2;
+}
+
+message ListPartGroupsConst {
+    repeated PartGroupsConst PartGroupsConst = 1;
+}
+
+message PartGroupsConst {
+    int32 Id = 1;
+    int32 GroupNo = 2;
+    int32 GroupPos = 3;
+    string GroupName = 4;
+    string Code = 5;
+    string Description = 6;
 }

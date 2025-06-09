@@ -1,4 +1,6 @@
-﻿namespace Emacs.Services
+﻿using Emacs.Data.Model;
+
+namespace Emacs.Services
 {
     public class EMACSAccessService : IEMACSAccessService
     {
@@ -25,6 +27,12 @@
         #region PartGroups
 
         List<PartGroupsDto> _PartGroups;
+
+        #endregion
+
+        #region PartGroupsConst
+
+        List<PartGroupsConstDto> _PartGroupsConst;
 
         #endregion
 
@@ -60,6 +68,13 @@
 
         #endregion
 
+        #region PartGroupsConst
+
+        IQueryHandler<GetPartGroupsConstQuery, List<PartGroupsConstDto>>? _PartGroupsConstHandler;
+        bool _PartGroupsConstRefreshInProgress;
+
+        #endregion
+
         readonly IServiceProvider _ServiceProvider;
         #endregion
 
@@ -80,6 +95,13 @@
 
             #endregion
 
+            #region PartClassDetail
+
+            _PartClassDetail = [];
+            _PartClassDetailRefreshInProgress = false;
+
+            #endregion
+
             #region PartGroups
 
             _PartGroups = [];
@@ -87,10 +109,10 @@
 
             #endregion
 
-            #region PartClassDetail
+            #region PartGroupsConst
 
-            _PartClassDetail = [];
-            _PartClassDetailRefreshInProgress = false;
+            _PartGroupsConst = [];
+            _PartGroupsConstRefreshInProgress = false;
 
             #endregion
 
@@ -177,6 +199,23 @@
             {
                 await PopulatePartGroupsAsync(cancellationToken);
                 return _PartGroups;
+            }
+        }
+        #endregion
+
+        #region PartGroupsConst
+
+        public async Task<Result<List<PartGroupsConstDto>>> GetAllPartGroupsConst(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_PartGroupsConst.Any())
+            {
+                return _PartGroupsConst;
+            }
+            else
+            {
+                await PopulatePartGroupsConstAsync(cancellationToken);
+                return _PartGroupsConst;
             }
         }
         #endregion
@@ -301,6 +340,37 @@
                     }
 
                     _PartGroupsRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region PartGroupsConst
+
+        public async Task<bool> PopulatePartGroupsConstAsync(CancellationToken cancellationToken)
+        {
+            if (!_PartGroupsConstRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _PartGroupsConstHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartGroupsConstQuery, List<PartGroupsConstDto>>>();
+                    _PartGroupsConstRefreshInProgress = true;
+                    GetPartGroupsConstQuery query = new GetPartGroupsConstQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<PartGroupsConstDto>> results = await _PartGroupsConstHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _PartGroupsConst.Clear();
+                        _PartGroupsConst = results.Value;
+                    }
+
+                    _PartGroupsConstRefreshInProgress = false;
                     return true;
                 }
             }

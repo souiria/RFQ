@@ -90,5 +90,21 @@
             return listPartGroupsData;
         }
         #endregion
+
+        #region PartGroupsConst
+        public override async Task<ListPartGroupsConst> GetPartGroupsConstData(PartGroupsConstGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetPartGroupsConstData starting");
+            ListPartGroupsConst listPartGroupsConstData = new();
+            Result<List<PartGroupsConstDto>> results = await _EMACSAccessService.GetAllPartGroupsConst(context.CancellationToken);
+            foreach (PartGroupsConstDto result in results.Value)
+            {
+                PartGroupsConst combinedPartsData = result.MapToPartGroupsConstData();
+                listPartGroupsConstData.PartGroupsConst.Add(combinedPartsData);
+            }
+
+            return listPartGroupsConstData;
+        }
+        #endregion
     }
 }

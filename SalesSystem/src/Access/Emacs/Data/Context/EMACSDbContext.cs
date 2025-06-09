@@ -13,6 +13,7 @@
         public DbSet<DbPartCategoryDetail> PartCategoryDetails => Set<DbPartCategoryDetail>();
         public DbSet<DbPartClassDetail> PartClassDetail => Set<DbPartClassDetail>();
         public DbSet<DbPartGroups> PartGroups => Set<DbPartGroups>();
+        public DbSet<DbPartGroupsConst> PartGroupsConst => Set<DbPartGroupsConst>();
 
         #endregion
 

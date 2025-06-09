@@ -10,6 +10,8 @@
         { get; }
         DbSet<DbPartGroups> PartGroups
         { get; }
+        DbSet<DbPartGroupsConst> PartGroupsConst
+        { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
