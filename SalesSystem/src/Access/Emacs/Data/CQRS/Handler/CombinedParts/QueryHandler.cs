@@ -18,8 +18,8 @@
             List<DbCombinedParts> results = await _Repository.ListAsync(spec, cancellationToken);
             foreach (DbCombinedParts result in results)
             {
-                CombinedPartsDto currencyDto = result.MapToCurrencyDto();
-                _CombinedParts.Add(currencyDto);
+                CombinedPartsDto combinedPartsDto = result.MapToCombinePartsDto();
+                _CombinedParts.Add(combinedPartsDto);
             }
 
             return _CombinedParts;

@@ -8,5 +8,12 @@
 
         Task<bool> PopulateCombinedPartsAsync(CancellationToken cancellationToken);
         #endregion
+
+        #region PartCategoryDetail
+
+        Task<Result<List<PartCategoryDetailDto>>> GetAllPartCategoryDetail(CancellationToken cancellationToken);
+
+        Task<bool> PopulatePartCategoryDetailAsync(CancellationToken cancellationToken);
+        #endregion
     }
 }

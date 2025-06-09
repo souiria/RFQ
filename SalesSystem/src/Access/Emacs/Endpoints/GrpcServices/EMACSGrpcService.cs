@@ -1,6 +1,4 @@
-﻿using Grpc.Core;
-
-namespace Emacs.Endpoints.GrpcServices
+﻿namespace Emacs.Endpoints.GrpcServices
 {
     public class EMACSGrpcService : Emacs.EmacsBase
     {
@@ -42,6 +40,22 @@ namespace Emacs.Endpoints.GrpcServices
             Result<int> results = await _EMACSAccessService.GetCombinedPartsDataCount(context.CancellationToken);
             combinedPartsCountData.Count = results.Value;
             return combinedPartsCountData;
+        }
+        #endregion
+
+        #region PartCatogoryDetail
+        public override async Task<ListPartCategoryDetail> GetPartCategoryDetailData(PartCategoryDetailGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetPartCategoryDetailData starting");
+            ListPartCategoryDetail listPartCatogoryDetailData = new();
+            Result<List<PartCategoryDetailDto>> results = await _EMACSAccessService.GetAllPartCategoryDetail(context.CancellationToken);
+            foreach (PartCategoryDetailDto result in results.Value)
+            {
+                PartCategoryDetail combinedPartsData = result.MapToPartCategoryDetailData();
+                listPartCatogoryDetailData.PartCategoryDetail.Add(combinedPartsData);
+            }
+
+            return listPartCatogoryDetailData;
         }
         #endregion
     }

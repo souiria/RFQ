@@ -10,6 +10,8 @@
         }
         #region DbSet
         public DbSet<DbCombinedParts> CombinedParts => Set<DbCombinedParts>();
+        public DbSet<DbPartCategoryDetail> PartCategoryDetails => Set<DbPartCategoryDetail>();
+
         #endregion
 
         #region OnModelCreating
