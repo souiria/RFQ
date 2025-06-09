@@ -6,6 +6,8 @@
         { get; }
         DbSet<DbPartCategoryDetail> PartCategoryDetails
         { get; }
+        DbSet<DbPartGroups> PartGroups
+        { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

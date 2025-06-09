@@ -22,6 +22,12 @@
 
         #endregion
 
+        #region PartGroups
+
+        List<PartGroupsDto> _PartGroups;
+
+        #endregion
+
         #endregion
 
         #region Fields and Properties
@@ -47,6 +53,13 @@
 
         #endregion
 
+        #region PartGroupsDetail
+
+        IQueryHandler<GetPartGroupsQuery, List<PartGroupsDto>>? _PartGroupsHandler;
+        bool _PartGroupsRefreshInProgress;
+
+        #endregion
+
         readonly IServiceProvider _ServiceProvider;
         #endregion
 
@@ -64,6 +77,13 @@
 
             _PartCatogoryDetail = [];
             _PartCatogoryDetailRefreshInProgress = false;
+
+            #endregion
+
+            #region PartGroups
+
+            _PartGroups = [];
+            _PartGroupsRefreshInProgress = false;
 
             #endregion
 
@@ -143,6 +163,24 @@
             }
         }
         #endregion
+
+        #region PartGroupDetail
+
+        public async Task<Result<List<PartGroupsDto>>> GetAllPartGroups(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_PartGroups.Any())
+            {
+                return _PartGroups;
+            }
+            else
+            {
+                await PopulatePartGroupsAsync(cancellationToken);
+                return _PartGroups;
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Data Imports
@@ -238,7 +276,37 @@
 
             return false;
         }
+        #endregion
 
+        #region PartGroups
+
+        public async Task<bool> PopulatePartGroupsAsync(CancellationToken cancellationToken)
+        {
+            if (!_PartGroupsRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _PartGroupsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartGroupsQuery, List<PartGroupsDto>>>();
+                    _PartGroupsRefreshInProgress = true;
+                    GetPartGroupsQuery query = new GetPartGroupsQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<PartGroupsDto>> results = await _PartGroupsHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _PartGroups.Clear();
+                        _PartGroups = results.Value;
+                    }
+
+                    _PartGroupsRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
         #endregion
 
         #endregion
