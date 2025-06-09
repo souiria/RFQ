@@ -14,6 +14,7 @@
         public DbSet<DbPartClassDetail> PartClassDetail => Set<DbPartClassDetail>();
         public DbSet<DbPartGroups> PartGroups => Set<DbPartGroups>();
         public DbSet<DbPartGroupsConst> PartGroupsConst => Set<DbPartGroupsConst>();
+        public DbSet<DbCustomerData> CustomerData => Set<DbCustomerData>();
 
         #endregion
 

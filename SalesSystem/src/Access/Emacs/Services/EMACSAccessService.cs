@@ -36,6 +36,12 @@ namespace Emacs.Services
 
         #endregion
 
+        #region CustomerData
+
+        List<CustomerDataDto> _CustomerData;
+
+        #endregion
+
         #endregion
 
         #region Fields and Properties
@@ -72,6 +78,13 @@ namespace Emacs.Services
 
         IQueryHandler<GetPartGroupsConstQuery, List<PartGroupsConstDto>>? _PartGroupsConstHandler;
         bool _PartGroupsConstRefreshInProgress;
+
+        #endregion
+
+        #region CustomerData
+
+        IQueryHandler<GetCustomerDataQuery, List<CustomerDataDto>>? _CustomerDataHandler;
+        bool _CustomerDataRefreshInProgress;
 
         #endregion
 
@@ -113,6 +126,13 @@ namespace Emacs.Services
 
             _PartGroupsConst = [];
             _PartGroupsConstRefreshInProgress = false;
+
+            #endregion
+
+            #region CustomerData
+
+            _CustomerData = [];
+            _CustomerDataRefreshInProgress = false;
 
             #endregion
 
@@ -216,6 +236,22 @@ namespace Emacs.Services
             {
                 await PopulatePartGroupsConstAsync(cancellationToken);
                 return _PartGroupsConst;
+            }
+        }
+        #endregion
+
+        #region CustomerData
+        public async Task<Result<List<CustomerDataDto>>> GetAllCustomerData(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_CustomerData.Any())
+            {
+                return _CustomerData;
+            }
+            else
+            {
+                await PopulateCustomerDataAsync(cancellationToken);
+                return _CustomerData;
             }
         }
         #endregion
@@ -371,6 +407,37 @@ namespace Emacs.Services
                     }
 
                     _PartGroupsConstRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region CustomerData
+
+        public async Task<bool> PopulateCustomerDataAsync(CancellationToken cancellationToken)
+        {
+            if (!_CustomerDataRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _CustomerDataHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCustomerDataQuery, List<CustomerDataDto>>>();
+                    _CustomerDataRefreshInProgress = true;
+                    GetCustomerDataQuery query = new GetCustomerDataQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<CustomerDataDto>> results = await _CustomerDataHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _CustomerData.Clear();
+                        _CustomerData = results.Value;
+                    }
+
+                    _CustomerDataRefreshInProgress = false;
                     return true;
                 }
             }

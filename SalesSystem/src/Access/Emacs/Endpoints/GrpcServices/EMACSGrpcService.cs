@@ -106,5 +106,21 @@
             return listPartGroupsConstData;
         }
         #endregion
+
+        #region CustomerData
+        public override async Task<ListCustomerData> GetCustomerData(GetCustomerDataGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetCustomerData starting");
+            ListCustomerData listCustomerDataData = new();
+            Result<List<CustomerDataDto>> results = await _EMACSAccessService.GetAllCustomerData(context.CancellationToken);
+            foreach (CustomerDataDto result in results.Value)
+            {
+                CustomerData combinedPartsData = result.MapToCustomerData();
+                listCustomerDataData.CustomerData.Add(combinedPartsData);
+            }
+
+            return listCustomerDataData;
+        }
+        #endregion
     }
 }

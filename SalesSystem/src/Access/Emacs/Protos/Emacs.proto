@@ -23,6 +23,8 @@ service Emacs {
   rpc GetPartGroupsData (PartGroupsGrpcRequest) returns (ListPartGroups);
 
   rpc GetPartGroupsConstData (PartGroupsConstGrpcRequest) returns (ListPartGroupsConst);
+
+  rpc GetCustomerData (GetCustomerDataGrpcRequest) returns (ListCustomerData);
 }
 
 // The request message containing the user's name.
@@ -122,4 +124,19 @@ message PartGroupsConst {
     string GroupName = 4;
     string Code = 5;
     string Description = 6;
+}
+
+message GetCustomerDataGrpcRequest {
+    int32 position = 1;
+    int32 takeAmount = 2;
+}
+
+message ListCustomerData {
+    repeated CustomerData CustomerData = 1;
+}
+
+message CustomerData {
+    string CustomerCode = 1;
+    string Customer = 2;
+    string CustomerGroup = 3;
 }

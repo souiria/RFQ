@@ -125,5 +125,27 @@
             return entity;
         }
         #endregion
+
+        #region CustomerData
+        public static CustomerDataDto MapToCustomerDataDto(this DbCustomerData entity)
+        {
+            CustomerDataDto dto = new CustomerDataDto();
+            dto.CustomerCode = entity.CustomerCode;
+            dto.Customer = entity.Customer;
+            dto.CustomerGroup = entity.CustomerGroup;
+
+            return dto;
+        }
+
+        public static CustomerData MapToCustomerData(this CustomerDataDto dto)
+        {
+            CustomerData entity = new CustomerData();
+            entity.CustomerCode = dto.CustomerCode;
+            entity.Customer = dto.Customer;
+            entity.CustomerGroup = dto.CustomerGroup;
+
+            return entity;
+        }
+        #endregion
     }
 }
