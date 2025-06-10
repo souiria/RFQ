@@ -78,5 +78,12 @@
 
         Task<bool> PopulateNPASupplierAsync(CancellationToken cancellationToken);
         #endregion
+
+        #region Suppliers
+
+        Task<Result<List<SuppliersDto>>> GetAllSuppliers(CancellationToken cancellationToken);
+
+        Task<bool> PopulateSuppliersAsync(CancellationToken cancellationToken);
+        #endregion
     }
 }

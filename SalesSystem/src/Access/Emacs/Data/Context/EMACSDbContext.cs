@@ -20,6 +20,7 @@
         public DbSet<DbMaterialTypes> MaterialTypes => Set<DbMaterialTypes>();
         public DbSet<DbNPACustomer> NPACustomers => Set<DbNPACustomer>();
         public DbSet<DbNPASupplier> NPASuppliers => Set<DbNPASupplier>();
+        public DbSet<DbSuppliers> Suppliers => Set<DbSuppliers>();
 
         #endregion
 

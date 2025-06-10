@@ -202,5 +202,21 @@
             return listNPASupplierData;
         }
         #endregion
+
+        #region Suppliers
+        public override async Task<ListSuppliers> GetSuppliersData(GetSuppliersGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetSuppliers starting");
+            ListSuppliers listSuppliersData = new();
+            Result<List<SuppliersDto>> results = await _EMACSAccessService.GetAllSuppliers(context.CancellationToken);
+            foreach (SuppliersDto result in results.Value)
+            {
+                Suppliers combinedPartsData = result.MapToSuppliers();
+                listSuppliersData.Suppliers.Add(combinedPartsData);
+            }
+
+            return listSuppliersData;
+        }
+        #endregion
     }
 }

@@ -72,6 +72,12 @@ namespace Emacs.Services
 
         #endregion
 
+        #region Suppliers
+
+        List<SuppliersDto> _Suppliers;
+
+        #endregion
+
         #endregion
 
         #region Fields and Properties
@@ -150,6 +156,13 @@ namespace Emacs.Services
 
         IQueryHandler<GetNPASupplierQuery, List<NPASupplierDto>>? _NPASupplierHandler;
         bool _NPASupplierRefreshInProgress;
+
+        #endregion
+
+        #region Suppliers
+
+        IQueryHandler<GetSuppliersQuery, List<SuppliersDto>>? _SuppliersHandler;
+        bool _SuppliersRefreshInProgress;
 
         #endregion
 
@@ -233,6 +246,13 @@ namespace Emacs.Services
 
             _NPASupplier = [];
             _NPASupplierRefreshInProgress = false;
+
+            #endregion
+
+            #region Suppliers
+
+            _Suppliers = [];
+            _SuppliersRefreshInProgress = false;
 
             #endregion
 
@@ -432,6 +452,22 @@ namespace Emacs.Services
             {
                 await PopulateNPASupplierAsync(cancellationToken);
                 return _NPASupplier;
+            }
+        }
+        #endregion
+
+        #region Suppliers
+        public async Task<Result<List<SuppliersDto>>> GetAllSuppliers(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_Suppliers.Any())
+            {
+                return _Suppliers;
+            }
+            else
+            {
+                await PopulateSuppliersAsync(cancellationToken);
+                return _Suppliers;
             }
         }
         #endregion
@@ -773,6 +809,37 @@ namespace Emacs.Services
                     }
 
                     _NPASupplierRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region Suppliers
+
+        public async Task<bool> PopulateSuppliersAsync(CancellationToken cancellationToken)
+        {
+            if (!_SuppliersRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _SuppliersHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetSuppliersQuery, List<SuppliersDto>>>();
+                    _SuppliersRefreshInProgress = true;
+                    GetSuppliersQuery query = new GetSuppliersQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<SuppliersDto>> results = await _SuppliersHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _Suppliers.Clear();
+                        _Suppliers = results.Value;
+                    }
+
+                    _SuppliersRefreshInProgress = false;
                     return true;
                 }
             }

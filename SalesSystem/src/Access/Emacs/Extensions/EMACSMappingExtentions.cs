@@ -293,5 +293,25 @@
             return entity;
         }
         #endregion
+
+        #region Suppliers
+        public static SuppliersDto MapToSuppliersDto(this DbSuppliers entity)
+        {
+            SuppliersDto dto = new SuppliersDto();
+            dto.SupplierCode = entity.SupplierCode;
+            dto.SupplierName = entity.SupplierName;
+
+            return dto;
+        }
+
+        public static Suppliers MapToSuppliers(this SuppliersDto dto)
+        {
+            Suppliers entity = new Suppliers();
+            entity.SupplierCode = dto.SupplierCode;
+            entity.SupplierName = dto.SupplierName;
+
+            return entity;
+        }
+        #endregion
     }
 }
