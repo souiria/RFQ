@@ -66,6 +66,12 @@ namespace Emacs.Services
 
         #endregion
 
+        #region NPASupplier
+
+        List<NPASupplierDto> _NPASupplier;
+
+        #endregion
+
         #endregion
 
         #region Fields and Properties
@@ -137,6 +143,13 @@ namespace Emacs.Services
 
         IQueryHandler<GetNPACustomerQuery, List<NPACustomerDto>>? _NPACustomerHandler;
         bool _NPACustomerRefreshInProgress;
+
+        #endregion
+
+        #region NPASupplier
+
+        IQueryHandler<GetNPASupplierQuery, List<NPASupplierDto>>? _NPASupplierHandler;
+        bool _NPASupplierRefreshInProgress;
 
         #endregion
 
@@ -213,6 +226,13 @@ namespace Emacs.Services
 
             _NPACustomer = [];
             _NPACustomerRefreshInProgress = false;
+
+            #endregion
+
+            #region NPASupplier
+
+            _NPASupplier = [];
+            _NPASupplierRefreshInProgress = false;
 
             #endregion
 
@@ -396,6 +416,22 @@ namespace Emacs.Services
             {
                 await PopulateNPACustomerAsync(cancellationToken);
                 return _NPACustomer;
+            }
+        }
+        #endregion
+
+        #region NPASupplier
+        public async Task<Result<List<NPASupplierDto>>> GetAllNPASupplier(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_NPASupplier.Any())
+            {
+                return _NPASupplier;
+            }
+            else
+            {
+                await PopulateNPASupplierAsync(cancellationToken);
+                return _NPASupplier;
             }
         }
         #endregion
@@ -706,6 +742,37 @@ namespace Emacs.Services
                     }
 
                     _NPACustomerRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region NPASupplier
+
+        public async Task<bool> PopulateNPASupplierAsync(CancellationToken cancellationToken)
+        {
+            if (!_NPASupplierRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _NPASupplierHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetNPASupplierQuery, List<NPASupplierDto>>>();
+                    _NPASupplierRefreshInProgress = true;
+                    GetNPASupplierQuery query = new GetNPASupplierQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<NPASupplierDto>> results = await _NPASupplierHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _NPASupplier.Clear();
+                        _NPASupplier = results.Value;
+                    }
+
+                    _NPASupplierRefreshInProgress = false;
                     return true;
                 }
             }

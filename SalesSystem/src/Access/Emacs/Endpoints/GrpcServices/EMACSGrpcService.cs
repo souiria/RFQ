@@ -186,5 +186,21 @@
             return listNPACustomerData;
         }
         #endregion
+
+        #region NPASupplier
+        public override async Task<ListNPASupplier> GetNPASupplierData(GetNPASupplierGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetNPASupplier starting");
+            ListNPASupplier listNPASupplierData = new();
+            Result<List<NPASupplierDto>> results = await _EMACSAccessService.GetAllNPASupplier(context.CancellationToken);
+            foreach (NPASupplierDto result in results.Value)
+            {
+                NPASupplier combinedPartsData = result.MapToNPASupplier();
+                listNPASupplierData.NPASupplier.Add(combinedPartsData);
+            }
+
+            return listNPASupplierData;
+        }
+        #endregion
     }
 }

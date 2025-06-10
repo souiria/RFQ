@@ -22,6 +22,8 @@
         { get; }
         DbSet<DbNPACustomer> NPACustomers
         { get; }
+        DbSet<DbNPASupplier> NPASuppliers
+        { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

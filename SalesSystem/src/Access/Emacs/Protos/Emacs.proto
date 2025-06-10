@@ -33,6 +33,8 @@ service Emacs {
   rpc GetMaterialTypesData (GetMaterialTypesGrpcRequest) returns (ListMaterialTypes);
 
   rpc GetNPACustomerData (GetNPACustomerGrpcRequest) returns (ListNPACustomer);
+
+  rpc GetNPASupplierData (GetNPASupplierGrpcRequest) returns (ListNPASupplier);
 }
 
 // The request message containing the user's name.
@@ -216,4 +218,28 @@ message NPACustomer {
     string Contact = 9;
     string Alternate_contact = 10;
     google.protobuf.BoolValue active = 11;
+}
+
+message GetNPASupplierGrpcRequest {
+    int32 position = 1;
+    int32 takeAmount = 2;
+}
+
+message ListNPASupplier {
+    repeated NPASupplier NPASupplier = 1;
+}
+
+message NPASupplier {
+    int64 Id = 1;
+    string Code = 2;
+    string Name = 3;
+    int64 Subsidiary_id = 4;
+    int64 Buyer_id = 5;
+    string Address = 6;
+    string Phone =  7;
+    string Email  = 8;
+    string Contact = 9;
+    string Alternate_contact = 10;
+    google.protobuf.BoolValue Active = 11;
+    google.protobuf.BoolValue J_Supplier = 12;
 }

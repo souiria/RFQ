@@ -253,5 +253,45 @@
             return entity;
         }
         #endregion
+
+        #region NPASupplier
+        public static NPASupplierDto MapToNPASupplierDto(this DbNPASupplier entity)
+        {
+            NPASupplierDto dto = new NPASupplierDto();
+            dto.Id = entity.Id;
+            dto.Code = entity.Code;
+            dto.Name = entity.Name;
+            dto.Subsidiary_id = entity.Subsidiary_id;
+            dto.Buyer_id = entity.Buyer_id;
+            dto.Address = entity.Address;
+            dto.Phone = entity.Phone;
+            dto.Email = entity.Email;
+            dto.Contact = entity.Contact;
+            dto.Alternate_contact = entity.Alternate_contact;
+            dto.Active = entity.Active;
+            dto.J_Supplier = entity.J_Supplier;
+
+            return dto;
+        }
+
+        public static NPASupplier MapToNPASupplier(this NPASupplierDto dto)
+        {
+            NPASupplier entity = new NPASupplier();
+            entity.Id = dto.Id;
+            entity.Code = dto.Code;
+            entity.Name = dto.Name;
+            entity.SubsidiaryId = dto.Subsidiary_id;
+            entity.BuyerId = dto.Buyer_id;
+            entity.Address = dto.Address;
+            entity.Phone = dto.Phone;
+            entity.Email = dto.Email;
+            entity.Contact = dto.Contact;
+            entity.AlternateContact = dto.Alternate_contact;
+            entity.Active = dto.Active;
+            entity.JSupplier = dto.J_Supplier;
+
+            return entity;
+        }
+        #endregion
     }
 }
