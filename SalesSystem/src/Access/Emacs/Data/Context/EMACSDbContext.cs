@@ -17,6 +17,7 @@
         public DbSet<DbCustomerData> CustomerData => Set<DbCustomerData>();
         public DbSet<DbColourCode> ColourCode => Set<DbColourCode>();
         public DbSet<DbMaterialGroups> MaterialGroups => Set<DbMaterialGroups>();
+        public DbSet<DbMaterialTypes> MaterialTypes => Set<DbMaterialTypes>();
 
         #endregion
 

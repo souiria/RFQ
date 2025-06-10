@@ -54,6 +54,12 @@ namespace Emacs.Services
 
         #endregion
 
+        #region MaterialTypes
+
+        List<MaterialTypesDto> _MaterialTypes;
+
+        #endregion
+
         #endregion
 
         #region Fields and Properties
@@ -111,6 +117,13 @@ namespace Emacs.Services
 
         IQueryHandler<GetMaterialGroupsQuery, List<MaterialGroupsDto>>? _MaterialGroupsHandler;
         bool _MaterialGroupsRefreshInProgress;
+
+        #endregion
+
+        #region MaterialTypes
+
+        IQueryHandler<GetMaterialTypesQuery, List<MaterialTypesDto>>? _MaterialTypesHandler;
+        bool _MaterialTypesRefreshInProgress;
 
         #endregion
 
@@ -173,6 +186,13 @@ namespace Emacs.Services
 
             _MaterialGroups = [];
             _MaterialGroupsRefreshInProgress = false;
+
+            #endregion
+
+            #region MaterialTypes
+
+            _MaterialTypes = [];
+            _MaterialTypesRefreshInProgress = false;
 
             #endregion
 
@@ -324,6 +344,22 @@ namespace Emacs.Services
             {
                 await PopulateMaterialGroupsAsync(cancellationToken);
                 return _MaterialGroups;
+            }
+        }
+        #endregion
+
+        #region MaterialTypes
+        public async Task<Result<List<MaterialTypesDto>>> GetAllMaterialTypes(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_MaterialTypes.Any())
+            {
+                return _MaterialTypes;
+            }
+            else
+            {
+                await PopulateMaterialTypesAsync(cancellationToken);
+                return _MaterialTypes;
             }
         }
         #endregion
@@ -572,6 +608,37 @@ namespace Emacs.Services
                     }
 
                     _MaterialGroupsRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region MaterialTypes
+
+        public async Task<bool> PopulateMaterialTypesAsync(CancellationToken cancellationToken)
+        {
+            if (!_MaterialTypesRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _MaterialTypesHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetMaterialTypesQuery, List<MaterialTypesDto>>>();
+                    _MaterialTypesRefreshInProgress = true;
+                    GetMaterialTypesQuery query = new GetMaterialTypesQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<MaterialTypesDto>> results = await _MaterialTypesHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _MaterialTypes.Clear();
+                        _MaterialTypes = results.Value;
+                    }
+
+                    _MaterialTypesRefreshInProgress = false;
                     return true;
                 }
             }

@@ -193,5 +193,27 @@
             return entity;
         }
         #endregion
+
+        #region MaterialTypes
+        public static MaterialTypesDto MapToMaterialTypesDto(this DbMaterialTypes entity)
+        {
+            MaterialTypesDto dto = new MaterialTypesDto();
+            dto.MaterialGroup = entity.MaterialGroup;
+            dto.MaterialType = entity.MaterialType;
+            dto.TypeDescription = entity.TypeDescription;
+
+            return dto;
+        }
+
+        public static MaterialTypes MapToMaterialTypes(this MaterialTypesDto dto)
+        {
+            MaterialTypes entity = new MaterialTypes();
+            entity.MaterialGroup = dto.MaterialGroup;
+            entity.MaterialType = dto.MaterialType;
+            entity.TypeDescription = dto.TypeDescription;
+
+            return entity;
+        }
+        #endregion
     }
 }

@@ -154,5 +154,21 @@
             return listMaterialGroupsData;
         }
         #endregion
+
+        #region MaterialTypes
+        public override async Task<ListMaterialTypes> GetMaterialTypesData(GetMaterialTypesGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetMaterialTypes starting");
+            ListMaterialTypes listMaterialTypesData = new();
+            Result<List<MaterialTypesDto>> results = await _EMACSAccessService.GetAllMaterialTypes(context.CancellationToken);
+            foreach (MaterialTypesDto result in results.Value)
+            {
+                MaterialTypes combinedPartsData = result.MapToMaterialTypes();
+                listMaterialTypesData.MaterialType.Add(combinedPartsData);
+            }
+
+            return listMaterialTypesData;
+        }
+        #endregion
     }
 }

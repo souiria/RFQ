@@ -18,6 +18,8 @@
         { get; }
         DbSet<DbMaterialGroups> MaterialGroups
         { get; }
+        DbSet<DbMaterialTypes> MaterialTypes
+        { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

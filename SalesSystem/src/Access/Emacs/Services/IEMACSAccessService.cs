@@ -57,5 +57,12 @@
 
         Task<bool> PopulateMaterialGroupsAsync(CancellationToken cancellationToken);
         #endregion
+
+        #region MaterialTypes
+
+        Task<Result<List<MaterialTypesDto>>> GetAllMaterialTypes(CancellationToken cancellationToken);
+
+        Task<bool> PopulateMaterialTypesAsync(CancellationToken cancellationToken);
+        #endregion
     }
 }
