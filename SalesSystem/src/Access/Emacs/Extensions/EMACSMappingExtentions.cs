@@ -3,7 +3,7 @@
     public static class EMACSMappingExtentions
     {
         #region CombinedParts
-        public static CombinedPartsDto MapToCurrencyDto(this DbCombinedParts entity)
+        public static CombinedPartsDto MapToCombinePartsDto(this DbCombinedParts entity)
         {
             CombinedPartsDto dto = new CombinedPartsDto();
             dto.SumitomoNumber = entity.SumitomoNumber;
@@ -29,6 +29,28 @@
             combinePartsData.UniformSupplierNumber = dto.UniformSupplierNumber;
 
             return combinePartsData;
+        }
+        #endregion
+
+        #region PartCatogoryDetail
+        public static PartCategoryDetailDto MapToPartCategoryDetailDto(this DbPartCategoryDetail entity)
+        {
+            PartCategoryDetailDto dto = new PartCategoryDetailDto();
+            dto.CategoryCode = entity.CategoryCode;
+            dto.DetailedCategoryCode = entity.DetailedCategoryCode;
+            dto.CategoryName = entity.CategoryName;
+
+            return dto;
+        }
+
+        public static PartCategoryDetail MapToPartCategoryDetailData(this PartCategoryDetailDto dto)
+        {
+            PartCategoryDetail entity = new PartCategoryDetail();
+            entity.CategoryCode = dto.CategoryCode;
+            entity.DetailedCategoryCode = dto.DetailedCategoryCode;
+            entity.CategoryName = dto.CategoryName;
+
+            return entity;
         }
         #endregion
     }

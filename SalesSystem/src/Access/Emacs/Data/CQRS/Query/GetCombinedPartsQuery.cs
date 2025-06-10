@@ -1,6 +1,4 @@
-﻿using Emacs.Data.DTOs;
-
-namespace Emacs.Data.CQRS.Query
+﻿namespace Emacs.Data.CQRS.Query
 {
     public class GetCombinedPartsQuery : IQuery<List<CombinedPartsDto>>
     {

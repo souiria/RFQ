@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace Emacs.Data.Configuration
+﻿namespace Emacs.Data.Configuration
 {
     public class DbCombinedPartsConfiguration : IEntityTypeConfiguration<DbCombinedParts>
     {

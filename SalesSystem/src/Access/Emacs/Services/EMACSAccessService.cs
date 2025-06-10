@@ -11,6 +11,12 @@ namespace Emacs.Services
 
         #endregion
 
+        #region PartCategoryDetail
+
+        List<PartCategoryDetailDto> _PartCatogoryDetail;
+
+        #endregion
+
         #endregion
 
         #region Fields and Properties
@@ -19,6 +25,12 @@ namespace Emacs.Services
 
         IQueryHandler<GetCombinedPartsQuery, List<CombinedPartsDto>>? _CombinedPartsHandler;
         bool _CombinedPartsRefreshInProgress;
+
+        #endregion
+        #region PartCatogoryDetail
+
+        IQueryHandler<GetPartCatogoryDetailQuery, List<PartCategoryDetailDto>>? _PartCatogoryDetailHandler;
+        bool _PartCatogoryDetailRefreshInProgress;
 
         #endregion
 
@@ -32,6 +44,12 @@ namespace Emacs.Services
 
             _CombinedParts = [];
             _CombinedPartsRefreshInProgress = false;
+
+            #endregion
+            #region PartCatogoryDetail
+
+            _PartCatogoryDetail = [];
+            _PartCatogoryDetailRefreshInProgress = false;
 
             #endregion
 
@@ -70,6 +88,23 @@ namespace Emacs.Services
         }
 
         #endregion
+
+        #region PartCategoryDetail
+
+        public async Task<Result<List<PartCategoryDetailDto>>> GetAllPartCategoryDetail(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_PartCatogoryDetail.Any())
+            {
+                return _PartCatogoryDetail;
+            }
+            else
+            {
+                await PopulatePartCategoryDetailAsync(cancellationToken);
+                return _PartCatogoryDetail;
+            }
+        }
+        #endregion
         #endregion
 
         #region Data Imports
@@ -96,6 +131,34 @@ namespace Emacs.Services
                     }
 
                     _CombinedPartsRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public async Task<bool> PopulatePartCategoryDetailAsync(CancellationToken cancellationToken)
+        {
+            if (!_PartCatogoryDetailRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _PartCatogoryDetailHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartCatogoryDetailQuery, List<PartCategoryDetailDto>>>();
+                    _PartCatogoryDetailRefreshInProgress = true;
+                    GetPartCatogoryDetailQuery query = new GetPartCatogoryDetailQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<PartCategoryDetailDto>> results = await _PartCatogoryDetailHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _PartCatogoryDetail.Clear();
+                        _PartCatogoryDetail = results.Value;
+                    }
+
+                    _PartCatogoryDetailRefreshInProgress = false;
                     return true;
                 }
             }

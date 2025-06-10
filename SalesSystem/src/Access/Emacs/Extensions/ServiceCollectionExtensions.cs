@@ -1,6 +1,4 @@
-﻿using Emacs.Data.Repository;
-
-namespace Emacs.Extensions
+﻿namespace Emacs.Extensions
 {
     public static class ServiceCollectionExtensions
     {

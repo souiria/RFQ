@@ -1,6 +1,4 @@
-﻿using Ardalis.Specification.EntityFrameworkCore;
-
-namespace Emacs.Data.Repository
+﻿namespace Emacs.Data.Repository
 {
     public class EMACSRepository<T> : RepositoryBase<T>, IEMACSReadRepository<T>, IEMACSRepository<T> where T : class, IAggregateRoot
     {

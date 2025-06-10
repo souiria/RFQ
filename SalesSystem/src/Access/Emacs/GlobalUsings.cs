@@ -1,5 +1,7 @@
-﻿global using System.Reflection;
+﻿global using System.ComponentModel.DataAnnotations.Schema;
+global using System.Reflection;
 global using Ardalis.Specification;
+global using Ardalis.Specification.EntityFrameworkCore;
 global using Emacs.Data.Context;
 global using Emacs.Data.CQRS.Query;
 global using Emacs.Data.CQRS.Specification;
@@ -11,6 +13,8 @@ global using Emacs.Data.Time;
 global using Emacs.Endpoints.GrpcServices;
 global using Emacs.Extensions;
 global using Emacs.Services;
+global using Grpc.Core;
 global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using SharedKernel;
 
