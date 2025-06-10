@@ -16,6 +16,8 @@
         { get; }
         DbSet<DbColourCode> ColourCode
         { get; }
+        DbSet<DbMaterialGroups> MaterialGroups
+        { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

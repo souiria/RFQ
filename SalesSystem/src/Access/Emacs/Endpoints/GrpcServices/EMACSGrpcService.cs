@@ -138,5 +138,21 @@
             return listColourCodeData;
         }
         #endregion
+
+        #region MaterialGroups
+        public override async Task<ListMaterialGroups> GetMaterialGroupsData(GetMaterialGroupsGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetMaterialGroups starting");
+            ListMaterialGroups listMaterialGroupsData = new();
+            Result<List<MaterialGroupsDto>> results = await _EMACSAccessService.GetAllMaterialGroups(context.CancellationToken);
+            foreach (MaterialGroupsDto result in results.Value)
+            {
+                MaterialGroups combinedPartsData = result.MapToMaterialGroups();
+                listMaterialGroupsData.MaterialGroups.Add(combinedPartsData);
+            }
+
+            return listMaterialGroupsData;
+        }
+        #endregion
     }
 }

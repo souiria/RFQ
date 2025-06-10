@@ -173,5 +173,25 @@
             return entity;
         }
         #endregion
+
+        #region MaterialGroups
+        public static MaterialGroupsDto MapToMaterialGroupsDto(this DbMaterialGroups entity)
+        {
+            MaterialGroupsDto dto = new MaterialGroupsDto();
+            dto.MaterialGroup = entity.MaterialGroup;
+            dto.GroupDescription = entity.GroupDescription;
+
+            return dto;
+        }
+
+        public static MaterialGroups MapToMaterialGroups(this MaterialGroupsDto dto)
+        {
+            MaterialGroups entity = new MaterialGroups();
+            entity.MaterialGroup = dto.MaterialGroup;
+            entity.GroupDescription = dto.GroupDescription;
+
+            return entity;
+        }
+        #endregion
     }
 }

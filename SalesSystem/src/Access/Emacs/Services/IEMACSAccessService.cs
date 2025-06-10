@@ -50,5 +50,12 @@
 
         Task<bool> PopulateColourCodeAsync(CancellationToken cancellationToken);
         #endregion
+
+        #region MaterialGroups
+
+        Task<Result<List<MaterialGroupsDto>>> GetAllMaterialGroups(CancellationToken cancellationToken);
+
+        Task<bool> PopulateMaterialGroupsAsync(CancellationToken cancellationToken);
+        #endregion
     }
 }

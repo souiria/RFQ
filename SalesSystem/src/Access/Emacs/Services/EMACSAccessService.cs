@@ -48,6 +48,12 @@ namespace Emacs.Services
 
         #endregion
 
+        #region MaterialGroups
+
+        List<MaterialGroupsDto> _MaterialGroups;
+
+        #endregion
+
         #endregion
 
         #region Fields and Properties
@@ -98,6 +104,13 @@ namespace Emacs.Services
 
         IQueryHandler<GetColourCodeQuery, List<ColourCodeDto>>? _ColourCodeHandler;
         bool _ColourCodeRefreshInProgress;
+
+        #endregion
+
+        #region MaterialGroups
+
+        IQueryHandler<GetMaterialGroupsQuery, List<MaterialGroupsDto>>? _MaterialGroupsHandler;
+        bool _MaterialGroupsRefreshInProgress;
 
         #endregion
 
@@ -153,6 +166,13 @@ namespace Emacs.Services
 
             _ColourCode = [];
             _ColourCodeRefreshInProgress = false;
+
+            #endregion
+
+            #region MaterialGroups
+
+            _MaterialGroups = [];
+            _MaterialGroupsRefreshInProgress = false;
 
             #endregion
 
@@ -288,6 +308,22 @@ namespace Emacs.Services
             {
                 await PopulateColourCodeAsync(cancellationToken);
                 return _ColourCode;
+            }
+        }
+        #endregion
+
+        #region MaterialGroups
+        public async Task<Result<List<MaterialGroupsDto>>> GetAllMaterialGroups(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_MaterialGroups.Any())
+            {
+                return _MaterialGroups;
+            }
+            else
+            {
+                await PopulateMaterialGroupsAsync(cancellationToken);
+                return _MaterialGroups;
             }
         }
         #endregion
@@ -505,6 +541,37 @@ namespace Emacs.Services
                     }
 
                     _ColourCodeRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region MaterialGroups
+
+        public async Task<bool> PopulateMaterialGroupsAsync(CancellationToken cancellationToken)
+        {
+            if (!_MaterialGroupsRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _MaterialGroupsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetMaterialGroupsQuery, List<MaterialGroupsDto>>>();
+                    _MaterialGroupsRefreshInProgress = true;
+                    GetMaterialGroupsQuery query = new GetMaterialGroupsQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<MaterialGroupsDto>> results = await _MaterialGroupsHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _MaterialGroups.Clear();
+                        _MaterialGroups = results.Value;
+                    }
+
+                    _MaterialGroupsRefreshInProgress = false;
                     return true;
                 }
             }

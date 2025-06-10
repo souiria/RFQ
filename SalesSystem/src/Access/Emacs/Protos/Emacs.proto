@@ -27,6 +27,8 @@ service Emacs {
   rpc GetCustomerData (GetCustomerDataGrpcRequest) returns (ListCustomerData);
 
   rpc GetColourCodeData (GetColourCodeGrpcRequest) returns (ListColourCode);
+
+  rpc GetMaterialGroupsData (GetMaterialGroupsGrpcRequest) returns (ListMaterialGroups);
 }
 
 // The request message containing the user's name.
@@ -158,4 +160,18 @@ message ColourCode {
     string ColorName = 3;
     int32 WireUnitsFlag = 4;
     int32 PartUnitsFlag = 5;
+}
+
+message GetMaterialGroupsGrpcRequest {
+    int32 position = 1;
+    int32 takeAmount = 2;
+}
+
+message ListMaterialGroups {
+    repeated MaterialGroups MaterialGroups = 1;
+}
+
+message MaterialGroups {
+    string MaterialGroup = 1;
+    string GroupDescription = 2;
 }

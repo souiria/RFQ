@@ -16,6 +16,7 @@
         public DbSet<DbPartGroupsConst> PartGroupsConst => Set<DbPartGroupsConst>();
         public DbSet<DbCustomerData> CustomerData => Set<DbCustomerData>();
         public DbSet<DbColourCode> ColourCode => Set<DbColourCode>();
+        public DbSet<DbMaterialGroups> MaterialGroups => Set<DbMaterialGroups>();
 
         #endregion
 
