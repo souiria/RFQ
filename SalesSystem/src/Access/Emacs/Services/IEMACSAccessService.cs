@@ -43,5 +43,12 @@
 
         Task<bool> PopulateCustomerDataAsync(CancellationToken cancellationToken);
         #endregion
+
+        #region ColourCode
+
+        Task<Result<List<ColourCodeDto>>> GetAllColourCode(CancellationToken cancellationToken);
+
+        Task<bool> PopulateColourCodeAsync(CancellationToken cancellationToken);
+        #endregion
     }
 }

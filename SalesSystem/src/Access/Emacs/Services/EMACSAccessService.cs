@@ -42,6 +42,12 @@ namespace Emacs.Services
 
         #endregion
 
+        #region ColourCode
+
+        List<ColourCodeDto> _ColourCode;
+
+        #endregion
+
         #endregion
 
         #region Fields and Properties
@@ -85,6 +91,13 @@ namespace Emacs.Services
 
         IQueryHandler<GetCustomerDataQuery, List<CustomerDataDto>>? _CustomerDataHandler;
         bool _CustomerDataRefreshInProgress;
+
+        #endregion
+
+        #region ColourCode
+
+        IQueryHandler<GetColourCodeQuery, List<ColourCodeDto>>? _ColourCodeHandler;
+        bool _ColourCodeRefreshInProgress;
 
         #endregion
 
@@ -133,6 +146,13 @@ namespace Emacs.Services
 
             _CustomerData = [];
             _CustomerDataRefreshInProgress = false;
+
+            #endregion
+
+            #region ColourCode
+
+            _ColourCode = [];
+            _ColourCodeRefreshInProgress = false;
 
             #endregion
 
@@ -252,6 +272,22 @@ namespace Emacs.Services
             {
                 await PopulateCustomerDataAsync(cancellationToken);
                 return _CustomerData;
+            }
+        }
+        #endregion
+
+        #region ColourCode
+        public async Task<Result<List<ColourCodeDto>>> GetAllColourCode(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ColourCode.Any())
+            {
+                return _ColourCode;
+            }
+            else
+            {
+                await PopulateColourCodeAsync(cancellationToken);
+                return _ColourCode;
             }
         }
         #endregion
@@ -438,6 +474,37 @@ namespace Emacs.Services
                     }
 
                     _CustomerDataRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region ColourCode
+
+        public async Task<bool> PopulateColourCodeAsync(CancellationToken cancellationToken)
+        {
+            if (!_ColourCodeRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _ColourCodeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetColourCodeQuery, List<ColourCodeDto>>>();
+                    _ColourCodeRefreshInProgress = true;
+                    GetColourCodeQuery query = new GetColourCodeQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<ColourCodeDto>> results = await _ColourCodeHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _ColourCode.Clear();
+                        _ColourCode = results.Value;
+                    }
+
+                    _ColourCodeRefreshInProgress = false;
                     return true;
                 }
             }

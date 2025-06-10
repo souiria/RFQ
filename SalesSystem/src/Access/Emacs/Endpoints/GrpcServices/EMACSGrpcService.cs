@@ -122,5 +122,21 @@
             return listCustomerDataData;
         }
         #endregion
+
+        #region ColourCode
+        public override async Task<ListColourCode> GetColourCode(GetColourCodeGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetColourCode starting");
+            ListColourCode listColourCodeData = new();
+            Result<List<ColourCodeDto>> results = await _EMACSAccessService.GetAllColourCode(context.CancellationToken);
+            foreach (ColourCodeDto result in results.Value)
+            {
+                ColourCode combinedPartsData = result.MapToColourCode();
+                listColourCodeData.ColourCode.Add(combinedPartsData);
+            }
+
+            return listColourCodeData;
+        }
+        #endregion
     }
 }

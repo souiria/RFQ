@@ -147,5 +147,31 @@
             return entity;
         }
         #endregion
+
+        #region ColourCode
+        public static ColourCodeDto MapToColourCodeDto(this DbColourCode entity)
+        {
+            ColourCodeDto dto = new ColourCodeDto();
+            dto.ClMk = entity.ClMk;
+            dto.ClCode = entity.ClCode;
+            dto.ColorName = entity.ColorName;
+            dto.WireUnitsFlag = entity.WireUnitsFlag;
+            dto.PartUnitsFlag = entity.PartUnitsFlag;
+
+            return dto;
+        }
+
+        public static ColourCode MapToColourCode(this ColourCodeDto dto)
+        {
+            ColourCode entity = new ColourCode();
+            entity.Clmk = dto.ClMk;
+            entity.ClCode = dto.ClCode;
+            entity.ColorName = dto.ColorName;
+            entity.WireUnitsFlag = dto.WireUnitsFlag;
+            entity.PartUnitsFlag = dto.PartUnitsFlag;
+
+            return entity;
+        }
+        #endregion
     }
 }

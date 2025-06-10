@@ -25,6 +25,8 @@ service Emacs {
   rpc GetPartGroupsConstData (PartGroupsConstGrpcRequest) returns (ListPartGroupsConst);
 
   rpc GetCustomerData (GetCustomerDataGrpcRequest) returns (ListCustomerData);
+
+  rpc GetColourCode (GetColourCodeGrpcRequest) returns (ListColourCode);
 }
 
 // The request message containing the user's name.
@@ -139,4 +141,21 @@ message CustomerData {
     string CustomerCode = 1;
     string Customer = 2;
     string CustomerGroup = 3;
+}
+
+message GetColourCodeGrpcRequest {
+    int32 position = 1;
+    int32 takeAmount = 2;
+}
+
+message ListColourCode {
+    repeated ColourCode ColourCode = 1;
+}
+
+message ColourCode {
+    string Clmk = 1;
+    string ClCode = 2;
+    string ColorName = 3;
+    int32 WireUnitsFlag = 4;
+    int32 PartUnitsFlag = 5;
 }

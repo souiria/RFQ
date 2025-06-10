@@ -14,6 +14,8 @@
         { get; }
         DbSet<DbCustomerData> CustomerData
         { get; }
+        DbSet<DbColourCode> ColourCode
+        { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
