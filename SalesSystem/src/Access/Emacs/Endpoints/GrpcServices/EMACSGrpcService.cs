@@ -170,5 +170,21 @@
             return listMaterialTypesData;
         }
         #endregion
+
+        #region NPACustomer
+        public override async Task<ListNPACustomer> GetNPACustomerData(GetNPACustomerGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetNPACustomer starting");
+            ListNPACustomer listNPACustomerData = new();
+            Result<List<NPACustomerDto>> results = await _EMACSAccessService.GetAllNPACustomer(context.CancellationToken);
+            foreach (NPACustomerDto result in results.Value)
+            {
+                NPACustomer combinedPartsData = result.MapToNPACustomer();
+                listNPACustomerData.NPACustomer.Add(combinedPartsData);
+            }
+
+            return listNPACustomerData;
+        }
+        #endregion
     }
 }

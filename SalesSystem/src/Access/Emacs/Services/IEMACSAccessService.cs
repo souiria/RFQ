@@ -64,5 +64,12 @@
 
         Task<bool> PopulateMaterialTypesAsync(CancellationToken cancellationToken);
         #endregion
+
+        #region NPACustomer
+
+        Task<Result<List<NPACustomerDto>>> GetAllNPACustomer(CancellationToken cancellationToken);
+
+        Task<bool> PopulateNPACustomerAsync(CancellationToken cancellationToken);
+        #endregion
     }
 }

@@ -60,6 +60,12 @@ namespace Emacs.Services
 
         #endregion
 
+        #region NPACustomer
+
+        List<NPACustomerDto> _NPACustomer;
+
+        #endregion
+
         #endregion
 
         #region Fields and Properties
@@ -124,6 +130,13 @@ namespace Emacs.Services
 
         IQueryHandler<GetMaterialTypesQuery, List<MaterialTypesDto>>? _MaterialTypesHandler;
         bool _MaterialTypesRefreshInProgress;
+
+        #endregion
+
+        #region NPACustomer
+
+        IQueryHandler<GetNPACustomerQuery, List<NPACustomerDto>>? _NPACustomerHandler;
+        bool _NPACustomerRefreshInProgress;
 
         #endregion
 
@@ -193,6 +206,13 @@ namespace Emacs.Services
 
             _MaterialTypes = [];
             _MaterialTypesRefreshInProgress = false;
+
+            #endregion
+
+            #region NPACustomer
+
+            _NPACustomer = [];
+            _NPACustomerRefreshInProgress = false;
 
             #endregion
 
@@ -360,6 +380,22 @@ namespace Emacs.Services
             {
                 await PopulateMaterialTypesAsync(cancellationToken);
                 return _MaterialTypes;
+            }
+        }
+        #endregion
+
+        #region NPACustomer
+        public async Task<Result<List<NPACustomerDto>>> GetAllNPACustomer(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_NPACustomer.Any())
+            {
+                return _NPACustomer;
+            }
+            else
+            {
+                await PopulateNPACustomerAsync(cancellationToken);
+                return _NPACustomer;
             }
         }
         #endregion
@@ -639,6 +675,37 @@ namespace Emacs.Services
                     }
 
                     _MaterialTypesRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region NPACustomer
+
+        public async Task<bool> PopulateNPACustomerAsync(CancellationToken cancellationToken)
+        {
+            if (!_NPACustomerRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _NPACustomerHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetNPACustomerQuery, List<NPACustomerDto>>>();
+                    _NPACustomerRefreshInProgress = true;
+                    GetNPACustomerQuery query = new GetNPACustomerQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<NPACustomerDto>> results = await _NPACustomerHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _NPACustomer.Clear();
+                        _NPACustomer = results.Value;
+                    }
+
+                    _NPACustomerRefreshInProgress = false;
                     return true;
                 }
             }

@@ -20,6 +20,8 @@
         { get; }
         DbSet<DbMaterialTypes> MaterialTypes
         { get; }
+        DbSet<DbNPACustomer> NPACustomers
+        { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
