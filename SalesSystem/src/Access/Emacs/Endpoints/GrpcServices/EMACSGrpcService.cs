@@ -124,7 +124,7 @@
         #endregion
 
         #region ColourCode
-        public override async Task<ListColourCode> GetColourCode(GetColourCodeGrpcRequest request, ServerCallContext context)
+        public override async Task<ListColourCode> GetColourCodeData(GetColourCodeGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetColourCode starting");
             ListColourCode listColourCodeData = new();

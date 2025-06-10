@@ -26,7 +26,7 @@ service Emacs {
 
   rpc GetCustomerData (GetCustomerDataGrpcRequest) returns (ListCustomerData);
 
-  rpc GetColourCode (GetColourCodeGrpcRequest) returns (ListColourCode);
+  rpc GetColourCodeData (GetColourCodeGrpcRequest) returns (ListColourCode);
 }
 
 // The request message containing the user's name.
