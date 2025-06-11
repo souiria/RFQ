@@ -8,6 +8,8 @@
         { get; }
         DbSet<DbPartClassDetail> PartClassDetail
         { get; }
+        DbSet<DbPartGroups> PartGroups
+        { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

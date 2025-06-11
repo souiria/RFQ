@@ -53,6 +53,7 @@
             return entity;
         }
         #endregion
+
         #region PartClassDetail
         public static PartClassDetailDto MapToPartClassDetailDto(this DbPartClassDetail entity)
         {
@@ -72,6 +73,26 @@
             entity.Class1Name = dto.Class1Name;
             entity.Class2 = dto.Class2;
             entity.Class2Name = dto.Class2Name;
+
+            return entity;
+        }
+        #endregion
+
+        #region PartGroups
+        public static PartGroupsDto MapToPartGroupsDto(this DbPartGroups entity)
+        {
+            PartGroupsDto dto = new PartGroupsDto();
+            dto.PartGroup = entity.PartGroup;
+            dto.GroupDescription = entity.GroupDescription;
+
+            return dto;
+        }
+
+        public static PartGroups MapToPartGroupsData(this PartGroupsDto dto)
+        {
+            PartGroups entity = new PartGroups();
+            entity.PartGroup = dto.PartGroup;
+            entity.GroupDescription = dto.GroupDescription;
 
             return entity;
         }
