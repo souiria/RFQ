@@ -12,6 +12,8 @@
         { get; }
         DbSet<DbPartGroupsConst> PartGroupsConst
         { get; }
+        DbSet<DbCustomerData> CustomerData
+        { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
