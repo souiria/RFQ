@@ -11,6 +11,7 @@
         #region DbSet
         public DbSet<DbCombinedParts> CombinedParts => Set<DbCombinedParts>();
         public DbSet<DbPartCategoryDetail> PartCategoryDetails => Set<DbPartCategoryDetail>();
+        public DbSet<DbPartClassDetail> PartClassDetail => Set<DbPartClassDetail>();
 
         #endregion
 

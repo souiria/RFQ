@@ -15,5 +15,11 @@
 
         Task<bool> PopulatePartCategoryDetailAsync(CancellationToken cancellationToken);
         #endregion
+        #region PartClassDetail
+
+        Task<Result<List<PartClassDetailDto>>> GetAllPartClassDetail(CancellationToken cancellationToken);
+
+        Task<bool> PopulatePartClassDetailAsync(CancellationToken cancellationToken);
+        #endregion
     }
 }

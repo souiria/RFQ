@@ -1,5 +1,4 @@
-﻿
-namespace Emacs.Services
+﻿namespace Emacs.Services
 {
     public class EMACSAccessService : IEMACSAccessService
     {
@@ -17,6 +16,12 @@ namespace Emacs.Services
 
         #endregion
 
+        #region PartClassDetail
+
+        List<PartClassDetailDto> _PartClassDetail;
+
+        #endregion
+
         #endregion
 
         #region Fields and Properties
@@ -27,10 +32,18 @@ namespace Emacs.Services
         bool _CombinedPartsRefreshInProgress;
 
         #endregion
+
         #region PartCatogoryDetail
 
         IQueryHandler<GetPartCatogoryDetailQuery, List<PartCategoryDetailDto>>? _PartCatogoryDetailHandler;
         bool _PartCatogoryDetailRefreshInProgress;
+
+        #endregion
+
+        #region PartClassDetail
+
+        IQueryHandler<GetPartClassDetailQuery, List<PartClassDetailDto>>? _PartClassDetailHandler;
+        bool _PartClassDetailRefreshInProgress;
 
         #endregion
 
@@ -46,10 +59,18 @@ namespace Emacs.Services
             _CombinedPartsRefreshInProgress = false;
 
             #endregion
+
             #region PartCatogoryDetail
 
             _PartCatogoryDetail = [];
             _PartCatogoryDetailRefreshInProgress = false;
+
+            #endregion
+
+            #region PartClassDetail
+
+            _PartClassDetail = [];
+            _PartClassDetailRefreshInProgress = false;
 
             #endregion
 
@@ -105,6 +126,23 @@ namespace Emacs.Services
             }
         }
         #endregion
+
+        #region PartClassDetail
+
+        public async Task<Result<List<PartClassDetailDto>>> GetAllPartClassDetail(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_PartClassDetail.Any())
+            {
+                return _PartClassDetail;
+            }
+            else
+            {
+                await PopulatePartClassDetailAsync(cancellationToken);
+                return _PartClassDetail;
+            }
+        }
+        #endregion
         #endregion
 
         #region Data Imports
@@ -137,6 +175,9 @@ namespace Emacs.Services
 
             return false;
         }
+        #endregion
+
+        #region PartCategoryDetail
 
         public async Task<bool> PopulatePartCategoryDetailAsync(CancellationToken cancellationToken)
         {
@@ -165,6 +206,39 @@ namespace Emacs.Services
 
             return false;
         }
+
+        #endregion
+
+        #region PartClassDetail
+
+        public async Task<bool> PopulatePartClassDetailAsync(CancellationToken cancellationToken)
+        {
+            if (!_PartClassDetailRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _PartClassDetailHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartClassDetailQuery, List<PartClassDetailDto>>>();
+                    _PartClassDetailRefreshInProgress = true;
+                    GetPartClassDetailQuery query = new GetPartClassDetailQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<PartClassDetailDto>> results = await _PartClassDetailHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _PartClassDetail.Clear();
+                        _PartClassDetail = results.Value;
+                    }
+
+                    _PartClassDetailRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         #endregion
 
         #endregion
