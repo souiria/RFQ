@@ -27,5 +27,11 @@
 
         Task<bool> PopulatePartGroupsAsync(CancellationToken cancellationToken);
         #endregion
+        #region PartGroupsConst
+
+        Task<Result<List<PartGroupsConstDto>>> GetAllPartGroupsConst(CancellationToken cancellationToken);
+
+        Task<bool> PopulatePartGroupsConstAsync(CancellationToken cancellationToken);
+        #endregion
     }
 }

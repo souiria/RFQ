@@ -97,5 +97,33 @@
             return entity;
         }
         #endregion
+
+        #region PartGroupsConst
+        public static PartGroupsConstDto MapToPartGroupsConstDto(this DbPartGroupsConst entity)
+        {
+            PartGroupsConstDto dto = new PartGroupsConstDto();
+            dto.Id = entity.Id;
+            dto.GroupNo = entity.GroupNo;
+            dto.GroupPos = entity.GroupPos;
+            dto.GroupName = entity.GroupName;
+            dto.Code = entity.Code;
+            dto.Description = entity.Description;
+
+            return dto;
+        }
+
+        public static PartGroupsConst MapToPartGroupsConstData(this PartGroupsConstDto dto)
+        {
+            PartGroupsConst entity = new PartGroupsConst();
+            entity.Id = dto.Id;
+            entity.GroupNo = dto.GroupNo;
+            entity.GroupPos = dto.GroupPos;
+            entity.GroupName = dto.GroupName;
+            entity.Code = dto.Code;
+            entity.Description = dto.Description;
+
+            return entity;
+        }
+        #endregion
     }
 }
