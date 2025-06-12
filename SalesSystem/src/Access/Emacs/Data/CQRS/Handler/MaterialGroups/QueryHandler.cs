@@ -1,5 +1,4 @@
-﻿
-namespace Emacs.Data.CQRS.Handler.MaterialGroups
+﻿namespace Emacs.Data.CQRS.Handler.MaterialGroups
 {
     public class QueryHandler : IQueryHandler<GetMaterialGroupsQuery, List<MaterialGroupsDto>>
     {

@@ -1,7 +1,4 @@
-﻿
-using Emacs.Data.Model;
-
-namespace Emacs.Data.CQRS.Handler.MaterialTypes
+﻿namespace Emacs.Data.CQRS.Handler.MaterialTypes
 {
     public class QueryHandler : IQueryHandler<GetMaterialTypesQuery, List<MaterialTypesDto>>
     {

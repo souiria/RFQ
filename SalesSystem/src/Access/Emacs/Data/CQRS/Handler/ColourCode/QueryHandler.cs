@@ -1,7 +1,4 @@
-﻿
-using Emacs.Data.Model;
-
-namespace Emacs.Data.CQRS.Handler.ColourCode
+﻿namespace Emacs.Data.CQRS.Handler.ColourCode
 {
     public class QueryHandler : IQueryHandler<GetColourCodeQuery, List<ColourCodeDto>>
     {

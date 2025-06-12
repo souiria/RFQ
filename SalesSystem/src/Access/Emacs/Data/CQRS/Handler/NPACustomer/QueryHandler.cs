@@ -1,7 +1,4 @@
-﻿
-using Emacs.Data.Model;
-
-namespace Emacs.Data.CQRS.Handler.NPACustomer
+﻿namespace Emacs.Data.CQRS.Handler.NPACustomer
 {
     public class QueryHandler : IQueryHandler<GetNPACustomerQuery, List<NPACustomerDto>>
     {

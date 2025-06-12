@@ -1,7 +1,4 @@
-﻿
-using Emacs.Data.Model;
-
-namespace Emacs.Data.CQRS.Handler.CustomerData
+﻿namespace Emacs.Data.CQRS.Handler.CustomerData
 {
     public class QueryHandler : IQueryHandler<GetCustomerDataQuery, List<CustomerDataDto>>
     {

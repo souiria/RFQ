@@ -1,5 +1,4 @@
-﻿
-namespace Emacs.Data.CQRS.Handler.Suppliers
+﻿namespace Emacs.Data.CQRS.Handler.Suppliers
 {
     public class QueryHandler : IQueryHandler<GetSuppliersQuery, List<SuppliersDto>>
     {
