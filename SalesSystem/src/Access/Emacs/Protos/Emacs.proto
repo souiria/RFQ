@@ -25,6 +25,18 @@ service Emacs {
   rpc GetPartGroupsConstData (PartGroupsConstGrpcRequest) returns (ListPartGroupsConst);
 
   rpc GetCustomerData (GetCustomerDataGrpcRequest) returns (ListCustomerData);
+
+  rpc GetColourCodeData (GetColourCodeGrpcRequest) returns (ListColourCode);
+
+  rpc GetMaterialGroupsData (GetMaterialGroupsGrpcRequest) returns (ListMaterialGroups);
+
+  rpc GetMaterialTypesData (GetMaterialTypesGrpcRequest) returns (ListMaterialTypes);
+
+  rpc GetNPACustomerData (GetNPACustomerGrpcRequest) returns (ListNPACustomer);
+
+  rpc GetNPASupplierData (GetNPASupplierGrpcRequest) returns (ListNPASupplier);
+
+  rpc GetSuppliersData (GetSuppliersGrpcRequest) returns (ListSuppliers);
 }
 
 // The request message containing the user's name.
@@ -139,4 +151,111 @@ message CustomerData {
     string CustomerCode = 1;
     string Customer = 2;
     string CustomerGroup = 3;
+}
+
+message GetColourCodeGrpcRequest {
+    int32 position = 1;
+    int32 takeAmount = 2;
+}
+
+message ListColourCode {
+    repeated ColourCode ColourCode = 1;
+}
+
+message ColourCode {
+    string Clmk = 1;
+    string ClCode = 2;
+    string ColorName = 3;
+    int32 WireUnitsFlag = 4;
+    int32 PartUnitsFlag = 5;
+}
+
+message GetMaterialGroupsGrpcRequest {
+    int32 position = 1;
+    int32 takeAmount = 2;
+}
+
+message ListMaterialGroups {
+    repeated MaterialGroups MaterialGroups = 1;
+}
+
+message MaterialGroups {
+    string MaterialGroup = 1;
+    string GroupDescription = 2;
+}
+
+message GetMaterialTypesGrpcRequest {
+    int32 position = 1;
+    int32 takeAmount = 2;
+}
+
+message ListMaterialTypes {
+    repeated MaterialTypes MaterialType = 1;
+}
+
+message MaterialTypes {
+    string MaterialGroup = 1;
+    string MaterialType = 2;
+    string TypeDescription = 3;
+}
+
+message GetNPACustomerGrpcRequest {
+    int32 position = 1;
+    int32 takeAmount = 2;
+}
+
+message ListNPACustomer {
+    repeated NPACustomer NPACustomer = 1;
+}
+
+message NPACustomer {
+    int64 Id = 1;
+    string Code = 2;
+    string Name = 3;
+    int64 Subsidiary_id = 4;
+    int64 Buyer_id = 5;
+    string Address = 6;
+    string Phone =  7;
+    string Email  = 8;
+    string Contact = 9;
+    string Alternate_contact = 10;
+    google.protobuf.BoolValue active = 11;
+}
+
+message GetNPASupplierGrpcRequest {
+    int32 position = 1;
+    int32 takeAmount = 2;
+}
+
+message ListNPASupplier {
+    repeated NPASupplier NPASupplier = 1;
+}
+
+message NPASupplier {
+    int64 Id = 1;
+    string Code = 2;
+    string Name = 3;
+    int64 Subsidiary_id = 4;
+    int64 Buyer_id = 5;
+    string Address = 6;
+    string Phone =  7;
+    string Email  = 8;
+    string Contact = 9;
+    string Alternate_contact = 10;
+    google.protobuf.BoolValue Active = 11;
+    google.protobuf.BoolValue J_Supplier = 12;
+}
+
+message GetSuppliersGrpcRequest {
+    int32 position = 1;
+    int32 takeAmount = 2;
+}
+
+message ListSuppliers {
+    repeated Suppliers Suppliers = 1;
+}
+
+message Suppliers {
+    int32 SupplierCode = 1;
+    string SupplierName = 2;
 }

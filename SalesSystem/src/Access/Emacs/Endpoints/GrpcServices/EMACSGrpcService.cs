@@ -122,5 +122,101 @@
             return listCustomerDataData;
         }
         #endregion
+
+        #region ColourCode
+        public override async Task<ListColourCode> GetColourCodeData(GetColourCodeGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetColourCode starting");
+            ListColourCode listColourCodeData = new();
+            Result<List<ColourCodeDto>> results = await _EMACSAccessService.GetAllColourCode(context.CancellationToken);
+            foreach (ColourCodeDto result in results.Value)
+            {
+                ColourCode combinedPartsData = result.MapToColourCode();
+                listColourCodeData.ColourCode.Add(combinedPartsData);
+            }
+
+            return listColourCodeData;
+        }
+        #endregion
+
+        #region MaterialGroups
+        public override async Task<ListMaterialGroups> GetMaterialGroupsData(GetMaterialGroupsGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetMaterialGroups starting");
+            ListMaterialGroups listMaterialGroupsData = new();
+            Result<List<MaterialGroupsDto>> results = await _EMACSAccessService.GetAllMaterialGroups(context.CancellationToken);
+            foreach (MaterialGroupsDto result in results.Value)
+            {
+                MaterialGroups combinedPartsData = result.MapToMaterialGroups();
+                listMaterialGroupsData.MaterialGroups.Add(combinedPartsData);
+            }
+
+            return listMaterialGroupsData;
+        }
+        #endregion
+
+        #region MaterialTypes
+        public override async Task<ListMaterialTypes> GetMaterialTypesData(GetMaterialTypesGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetMaterialTypes starting");
+            ListMaterialTypes listMaterialTypesData = new();
+            Result<List<MaterialTypesDto>> results = await _EMACSAccessService.GetAllMaterialTypes(context.CancellationToken);
+            foreach (MaterialTypesDto result in results.Value)
+            {
+                MaterialTypes combinedPartsData = result.MapToMaterialTypes();
+                listMaterialTypesData.MaterialType.Add(combinedPartsData);
+            }
+
+            return listMaterialTypesData;
+        }
+        #endregion
+
+        #region NPACustomer
+        public override async Task<ListNPACustomer> GetNPACustomerData(GetNPACustomerGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetNPACustomer starting");
+            ListNPACustomer listNPACustomerData = new();
+            Result<List<NPACustomerDto>> results = await _EMACSAccessService.GetAllNPACustomer(context.CancellationToken);
+            foreach (NPACustomerDto result in results.Value)
+            {
+                NPACustomer combinedPartsData = result.MapToNPACustomer();
+                listNPACustomerData.NPACustomer.Add(combinedPartsData);
+            }
+
+            return listNPACustomerData;
+        }
+        #endregion
+
+        #region NPASupplier
+        public override async Task<ListNPASupplier> GetNPASupplierData(GetNPASupplierGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetNPASupplier starting");
+            ListNPASupplier listNPASupplierData = new();
+            Result<List<NPASupplierDto>> results = await _EMACSAccessService.GetAllNPASupplier(context.CancellationToken);
+            foreach (NPASupplierDto result in results.Value)
+            {
+                NPASupplier combinedPartsData = result.MapToNPASupplier();
+                listNPASupplierData.NPASupplier.Add(combinedPartsData);
+            }
+
+            return listNPASupplierData;
+        }
+        #endregion
+
+        #region Suppliers
+        public override async Task<ListSuppliers> GetSuppliersData(GetSuppliersGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetSuppliers starting");
+            ListSuppliers listSuppliersData = new();
+            Result<List<SuppliersDto>> results = await _EMACSAccessService.GetAllSuppliers(context.CancellationToken);
+            foreach (SuppliersDto result in results.Value)
+            {
+                Suppliers combinedPartsData = result.MapToSuppliers();
+                listSuppliersData.Suppliers.Add(combinedPartsData);
+            }
+
+            return listSuppliersData;
+        }
+        #endregion
     }
 }

@@ -14,6 +14,18 @@
         { get; }
         DbSet<DbCustomerData> CustomerData
         { get; }
+        DbSet<DbColourCode> ColourCode
+        { get; }
+        DbSet<DbMaterialGroups> MaterialGroups
+        { get; }
+        DbSet<DbMaterialTypes> MaterialTypes
+        { get; }
+        DbSet<DbNPACustomer> NPACustomers
+        { get; }
+        DbSet<DbNPASupplier> NPASuppliers
+        { get; }
+        DbSet<DbSuppliers> Suppliers
+        { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

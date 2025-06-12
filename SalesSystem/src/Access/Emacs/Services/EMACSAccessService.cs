@@ -42,6 +42,42 @@ namespace Emacs.Services
 
         #endregion
 
+        #region ColourCode
+
+        List<ColourCodeDto> _ColourCode;
+
+        #endregion
+
+        #region MaterialGroups
+
+        List<MaterialGroupsDto> _MaterialGroups;
+
+        #endregion
+
+        #region MaterialTypes
+
+        List<MaterialTypesDto> _MaterialTypes;
+
+        #endregion
+
+        #region NPACustomer
+
+        List<NPACustomerDto> _NPACustomer;
+
+        #endregion
+
+        #region NPASupplier
+
+        List<NPASupplierDto> _NPASupplier;
+
+        #endregion
+
+        #region Suppliers
+
+        List<SuppliersDto> _Suppliers;
+
+        #endregion
+
         #endregion
 
         #region Fields and Properties
@@ -85,6 +121,48 @@ namespace Emacs.Services
 
         IQueryHandler<GetCustomerDataQuery, List<CustomerDataDto>>? _CustomerDataHandler;
         bool _CustomerDataRefreshInProgress;
+
+        #endregion
+
+        #region ColourCode
+
+        IQueryHandler<GetColourCodeQuery, List<ColourCodeDto>>? _ColourCodeHandler;
+        bool _ColourCodeRefreshInProgress;
+
+        #endregion
+
+        #region MaterialGroups
+
+        IQueryHandler<GetMaterialGroupsQuery, List<MaterialGroupsDto>>? _MaterialGroupsHandler;
+        bool _MaterialGroupsRefreshInProgress;
+
+        #endregion
+
+        #region MaterialTypes
+
+        IQueryHandler<GetMaterialTypesQuery, List<MaterialTypesDto>>? _MaterialTypesHandler;
+        bool _MaterialTypesRefreshInProgress;
+
+        #endregion
+
+        #region NPACustomer
+
+        IQueryHandler<GetNPACustomerQuery, List<NPACustomerDto>>? _NPACustomerHandler;
+        bool _NPACustomerRefreshInProgress;
+
+        #endregion
+
+        #region NPASupplier
+
+        IQueryHandler<GetNPASupplierQuery, List<NPASupplierDto>>? _NPASupplierHandler;
+        bool _NPASupplierRefreshInProgress;
+
+        #endregion
+
+        #region Suppliers
+
+        IQueryHandler<GetSuppliersQuery, List<SuppliersDto>>? _SuppliersHandler;
+        bool _SuppliersRefreshInProgress;
 
         #endregion
 
@@ -133,6 +211,48 @@ namespace Emacs.Services
 
             _CustomerData = [];
             _CustomerDataRefreshInProgress = false;
+
+            #endregion
+
+            #region ColourCode
+
+            _ColourCode = [];
+            _ColourCodeRefreshInProgress = false;
+
+            #endregion
+
+            #region MaterialGroups
+
+            _MaterialGroups = [];
+            _MaterialGroupsRefreshInProgress = false;
+
+            #endregion
+
+            #region MaterialTypes
+
+            _MaterialTypes = [];
+            _MaterialTypesRefreshInProgress = false;
+
+            #endregion
+
+            #region NPACustomer
+
+            _NPACustomer = [];
+            _NPACustomerRefreshInProgress = false;
+
+            #endregion
+
+            #region NPASupplier
+
+            _NPASupplier = [];
+            _NPASupplierRefreshInProgress = false;
+
+            #endregion
+
+            #region Suppliers
+
+            _Suppliers = [];
+            _SuppliersRefreshInProgress = false;
 
             #endregion
 
@@ -252,6 +372,102 @@ namespace Emacs.Services
             {
                 await PopulateCustomerDataAsync(cancellationToken);
                 return _CustomerData;
+            }
+        }
+        #endregion
+
+        #region ColourCode
+        public async Task<Result<List<ColourCodeDto>>> GetAllColourCode(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ColourCode.Any())
+            {
+                return _ColourCode;
+            }
+            else
+            {
+                await PopulateColourCodeAsync(cancellationToken);
+                return _ColourCode;
+            }
+        }
+        #endregion
+
+        #region MaterialGroups
+        public async Task<Result<List<MaterialGroupsDto>>> GetAllMaterialGroups(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_MaterialGroups.Any())
+            {
+                return _MaterialGroups;
+            }
+            else
+            {
+                await PopulateMaterialGroupsAsync(cancellationToken);
+                return _MaterialGroups;
+            }
+        }
+        #endregion
+
+        #region MaterialTypes
+        public async Task<Result<List<MaterialTypesDto>>> GetAllMaterialTypes(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_MaterialTypes.Any())
+            {
+                return _MaterialTypes;
+            }
+            else
+            {
+                await PopulateMaterialTypesAsync(cancellationToken);
+                return _MaterialTypes;
+            }
+        }
+        #endregion
+
+        #region NPACustomer
+        public async Task<Result<List<NPACustomerDto>>> GetAllNPACustomer(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_NPACustomer.Any())
+            {
+                return _NPACustomer;
+            }
+            else
+            {
+                await PopulateNPACustomerAsync(cancellationToken);
+                return _NPACustomer;
+            }
+        }
+        #endregion
+
+        #region NPASupplier
+        public async Task<Result<List<NPASupplierDto>>> GetAllNPASupplier(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_NPASupplier.Any())
+            {
+                return _NPASupplier;
+            }
+            else
+            {
+                await PopulateNPASupplierAsync(cancellationToken);
+                return _NPASupplier;
+            }
+        }
+        #endregion
+
+        #region Suppliers
+        public async Task<Result<List<SuppliersDto>>> GetAllSuppliers(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_Suppliers.Any())
+            {
+                return _Suppliers;
+            }
+            else
+            {
+                await PopulateSuppliersAsync(cancellationToken);
+                return _Suppliers;
             }
         }
         #endregion
@@ -438,6 +654,192 @@ namespace Emacs.Services
                     }
 
                     _CustomerDataRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region ColourCode
+
+        public async Task<bool> PopulateColourCodeAsync(CancellationToken cancellationToken)
+        {
+            if (!_ColourCodeRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _ColourCodeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetColourCodeQuery, List<ColourCodeDto>>>();
+                    _ColourCodeRefreshInProgress = true;
+                    GetColourCodeQuery query = new GetColourCodeQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<ColourCodeDto>> results = await _ColourCodeHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _ColourCode.Clear();
+                        _ColourCode = results.Value;
+                    }
+
+                    _ColourCodeRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region MaterialGroups
+
+        public async Task<bool> PopulateMaterialGroupsAsync(CancellationToken cancellationToken)
+        {
+            if (!_MaterialGroupsRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _MaterialGroupsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetMaterialGroupsQuery, List<MaterialGroupsDto>>>();
+                    _MaterialGroupsRefreshInProgress = true;
+                    GetMaterialGroupsQuery query = new GetMaterialGroupsQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<MaterialGroupsDto>> results = await _MaterialGroupsHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _MaterialGroups.Clear();
+                        _MaterialGroups = results.Value;
+                    }
+
+                    _MaterialGroupsRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region MaterialTypes
+
+        public async Task<bool> PopulateMaterialTypesAsync(CancellationToken cancellationToken)
+        {
+            if (!_MaterialTypesRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _MaterialTypesHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetMaterialTypesQuery, List<MaterialTypesDto>>>();
+                    _MaterialTypesRefreshInProgress = true;
+                    GetMaterialTypesQuery query = new GetMaterialTypesQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<MaterialTypesDto>> results = await _MaterialTypesHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _MaterialTypes.Clear();
+                        _MaterialTypes = results.Value;
+                    }
+
+                    _MaterialTypesRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region NPACustomer
+
+        public async Task<bool> PopulateNPACustomerAsync(CancellationToken cancellationToken)
+        {
+            if (!_NPACustomerRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _NPACustomerHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetNPACustomerQuery, List<NPACustomerDto>>>();
+                    _NPACustomerRefreshInProgress = true;
+                    GetNPACustomerQuery query = new GetNPACustomerQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<NPACustomerDto>> results = await _NPACustomerHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _NPACustomer.Clear();
+                        _NPACustomer = results.Value;
+                    }
+
+                    _NPACustomerRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region NPASupplier
+
+        public async Task<bool> PopulateNPASupplierAsync(CancellationToken cancellationToken)
+        {
+            if (!_NPASupplierRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _NPASupplierHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetNPASupplierQuery, List<NPASupplierDto>>>();
+                    _NPASupplierRefreshInProgress = true;
+                    GetNPASupplierQuery query = new GetNPASupplierQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<NPASupplierDto>> results = await _NPASupplierHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _NPASupplier.Clear();
+                        _NPASupplier = results.Value;
+                    }
+
+                    _NPASupplierRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region Suppliers
+
+        public async Task<bool> PopulateSuppliersAsync(CancellationToken cancellationToken)
+        {
+            if (!_SuppliersRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _SuppliersHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetSuppliersQuery, List<SuppliersDto>>>();
+                    _SuppliersRefreshInProgress = true;
+                    GetSuppliersQuery query = new GetSuppliersQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<SuppliersDto>> results = await _SuppliersHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _Suppliers.Clear();
+                        _Suppliers = results.Value;
+                    }
+
+                    _SuppliersRefreshInProgress = false;
                     return true;
                 }
             }

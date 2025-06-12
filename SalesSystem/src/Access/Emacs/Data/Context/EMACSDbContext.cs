@@ -15,6 +15,12 @@
         public DbSet<DbPartGroups> PartGroups => Set<DbPartGroups>();
         public DbSet<DbPartGroupsConst> PartGroupsConst => Set<DbPartGroupsConst>();
         public DbSet<DbCustomerData> CustomerData => Set<DbCustomerData>();
+        public DbSet<DbColourCode> ColourCode => Set<DbColourCode>();
+        public DbSet<DbMaterialGroups> MaterialGroups => Set<DbMaterialGroups>();
+        public DbSet<DbMaterialTypes> MaterialTypes => Set<DbMaterialTypes>();
+        public DbSet<DbNPACustomer> NPACustomers => Set<DbNPACustomer>();
+        public DbSet<DbNPASupplier> NPASuppliers => Set<DbNPASupplier>();
+        public DbSet<DbSuppliers> Suppliers => Set<DbSuppliers>();
 
         #endregion
 

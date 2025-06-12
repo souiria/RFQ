@@ -147,5 +147,171 @@
             return entity;
         }
         #endregion
+
+        #region ColourCode
+        public static ColourCodeDto MapToColourCodeDto(this DbColourCode entity)
+        {
+            ColourCodeDto dto = new ColourCodeDto();
+            dto.ClMk = entity.ClMk;
+            dto.ClCode = entity.ClCode;
+            dto.ColorName = entity.ColorName;
+            dto.WireUnitsFlag = entity.WireUnitsFlag;
+            dto.PartUnitsFlag = entity.PartUnitsFlag;
+
+            return dto;
+        }
+
+        public static ColourCode MapToColourCode(this ColourCodeDto dto)
+        {
+            ColourCode entity = new ColourCode();
+            entity.Clmk = dto.ClMk;
+            entity.ClCode = dto.ClCode;
+            entity.ColorName = dto.ColorName;
+            entity.WireUnitsFlag = dto.WireUnitsFlag;
+            entity.PartUnitsFlag = dto.PartUnitsFlag;
+
+            return entity;
+        }
+        #endregion
+
+        #region MaterialGroups
+        public static MaterialGroupsDto MapToMaterialGroupsDto(this DbMaterialGroups entity)
+        {
+            MaterialGroupsDto dto = new MaterialGroupsDto();
+            dto.MaterialGroup = entity.MaterialGroup;
+            dto.GroupDescription = entity.GroupDescription;
+
+            return dto;
+        }
+
+        public static MaterialGroups MapToMaterialGroups(this MaterialGroupsDto dto)
+        {
+            MaterialGroups entity = new MaterialGroups();
+            entity.MaterialGroup = dto.MaterialGroup;
+            entity.GroupDescription = dto.GroupDescription;
+
+            return entity;
+        }
+        #endregion
+
+        #region MaterialTypes
+        public static MaterialTypesDto MapToMaterialTypesDto(this DbMaterialTypes entity)
+        {
+            MaterialTypesDto dto = new MaterialTypesDto();
+            dto.MaterialGroup = entity.MaterialGroup;
+            dto.MaterialType = entity.MaterialType;
+            dto.TypeDescription = entity.TypeDescription;
+
+            return dto;
+        }
+
+        public static MaterialTypes MapToMaterialTypes(this MaterialTypesDto dto)
+        {
+            MaterialTypes entity = new MaterialTypes();
+            entity.MaterialGroup = dto.MaterialGroup;
+            entity.MaterialType = dto.MaterialType;
+            entity.TypeDescription = dto.TypeDescription;
+
+            return entity;
+        }
+        #endregion
+
+        #region NPACustomer
+        public static NPACustomerDto MapToNPACustomerDto(this DbNPACustomer entity)
+        {
+            NPACustomerDto dto = new NPACustomerDto();
+            dto.Id = entity.Id;
+            dto.Code = entity.Code;
+            dto.Name = entity.Name;
+            dto.Subsidiary_id = entity.Subsidiary_id;
+            dto.Buyer_id = entity.Buyer_id;
+            dto.Address = entity.Address;
+            dto.Phone = entity.Phone;
+            dto.Email = entity.Email;
+            dto.Contact = entity.Contact;
+            dto.Alternate_contact = entity.Alternate_contact;
+            dto.Active = entity.Active;
+
+            return dto;
+        }
+
+        public static NPACustomer MapToNPACustomer(this NPACustomerDto dto)
+        {
+            NPACustomer entity = new NPACustomer();
+            entity.Id = dto.Id;
+            entity.Code = dto.Code;
+            entity.Name = dto.Name;
+            entity.SubsidiaryId = dto.Subsidiary_id;
+            entity.BuyerId = dto.Buyer_id;
+            entity.Address = dto.Address;
+            entity.Phone = dto.Phone;
+            entity.Email = dto.Email;
+            entity.Contact = dto.Contact;
+            entity.AlternateContact = dto.Alternate_contact;
+            entity.Active = dto.Active;
+
+            return entity;
+        }
+        #endregion
+
+        #region NPASupplier
+        public static NPASupplierDto MapToNPASupplierDto(this DbNPASupplier entity)
+        {
+            NPASupplierDto dto = new NPASupplierDto();
+            dto.Id = entity.Id;
+            dto.Code = entity.Code;
+            dto.Name = entity.Name;
+            dto.Subsidiary_id = entity.Subsidiary_id;
+            dto.Buyer_id = entity.Buyer_id;
+            dto.Address = entity.Address;
+            dto.Phone = entity.Phone;
+            dto.Email = entity.Email;
+            dto.Contact = entity.Contact;
+            dto.Alternate_contact = entity.Alternate_contact;
+            dto.Active = entity.Active;
+            dto.J_Supplier = entity.J_Supplier;
+
+            return dto;
+        }
+
+        public static NPASupplier MapToNPASupplier(this NPASupplierDto dto)
+        {
+            NPASupplier entity = new NPASupplier();
+            entity.Id = dto.Id;
+            entity.Code = dto.Code;
+            entity.Name = dto.Name;
+            entity.SubsidiaryId = dto.Subsidiary_id;
+            entity.BuyerId = dto.Buyer_id;
+            entity.Address = dto.Address;
+            entity.Phone = dto.Phone;
+            entity.Email = dto.Email;
+            entity.Contact = dto.Contact;
+            entity.AlternateContact = dto.Alternate_contact;
+            entity.Active = dto.Active;
+            entity.JSupplier = dto.J_Supplier;
+
+            return entity;
+        }
+        #endregion
+
+        #region Suppliers
+        public static SuppliersDto MapToSuppliersDto(this DbSuppliers entity)
+        {
+            SuppliersDto dto = new SuppliersDto();
+            dto.SupplierCode = entity.SupplierCode;
+            dto.SupplierName = entity.SupplierName;
+
+            return dto;
+        }
+
+        public static Suppliers MapToSuppliers(this SuppliersDto dto)
+        {
+            Suppliers entity = new Suppliers();
+            entity.SupplierCode = dto.SupplierCode;
+            entity.SupplierName = dto.SupplierName;
+
+            return entity;
+        }
+        #endregion
     }
 }

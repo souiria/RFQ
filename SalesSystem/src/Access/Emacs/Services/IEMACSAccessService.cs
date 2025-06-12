@@ -43,5 +43,47 @@
 
         Task<bool> PopulateCustomerDataAsync(CancellationToken cancellationToken);
         #endregion
+
+        #region ColourCode
+
+        Task<Result<List<ColourCodeDto>>> GetAllColourCode(CancellationToken cancellationToken);
+
+        Task<bool> PopulateColourCodeAsync(CancellationToken cancellationToken);
+        #endregion
+
+        #region MaterialGroups
+
+        Task<Result<List<MaterialGroupsDto>>> GetAllMaterialGroups(CancellationToken cancellationToken);
+
+        Task<bool> PopulateMaterialGroupsAsync(CancellationToken cancellationToken);
+        #endregion
+
+        #region MaterialTypes
+
+        Task<Result<List<MaterialTypesDto>>> GetAllMaterialTypes(CancellationToken cancellationToken);
+
+        Task<bool> PopulateMaterialTypesAsync(CancellationToken cancellationToken);
+        #endregion
+
+        #region NPACustomer
+
+        Task<Result<List<NPACustomerDto>>> GetAllNPACustomer(CancellationToken cancellationToken);
+
+        Task<bool> PopulateNPACustomerAsync(CancellationToken cancellationToken);
+        #endregion
+
+        #region NPASupplier
+
+        Task<Result<List<NPASupplierDto>>> GetAllNPASupplier(CancellationToken cancellationToken);
+
+        Task<bool> PopulateNPASupplierAsync(CancellationToken cancellationToken);
+        #endregion
+
+        #region Suppliers
+
+        Task<Result<List<SuppliersDto>>> GetAllSuppliers(CancellationToken cancellationToken);
+
+        Task<bool> PopulateSuppliersAsync(CancellationToken cancellationToken);
+        #endregion
     }
 }
