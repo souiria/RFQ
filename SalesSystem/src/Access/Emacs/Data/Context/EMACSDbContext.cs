@@ -21,6 +21,8 @@
         public DbSet<DbNPACustomer> NPACustomers => Set<DbNPACustomer>();
         public DbSet<DbNPASupplier> NPASuppliers => Set<DbNPASupplier>();
         public DbSet<DbSuppliers> Suppliers => Set<DbSuppliers>();
+        public DbSet<DbEmacsRFIView> EmacsRFIViews => Set<DbEmacsRFIView>();
+        public DbSet<DbPARTMS> DbPARTMS => Set<DbPARTMS>();
 
         #endregion
 

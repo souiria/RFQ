@@ -1,6 +1,6 @@
 ﻿namespace Emacs.Data.CQRS.Query
 {
-    public class GetMaterialTypesQuery : IQuery<List<MaterialTypesDto>>
+    public class GetMaterialTypesQuery : IQuery<List<MaterialTypesData>>
     {
         public int? Position
         { get; set; }

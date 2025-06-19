@@ -26,7 +26,31 @@ namespace Emacs.Services
             {
                 bool check;
                 check = await _EMACSAccessService.PopulateCombinedPartsAsync(stoppingToken);
-                await LogDataPopulationSuccess("Currency", check);
+                await LogDataPopulationSuccess("CombinedParts", check);
+                check = await _EMACSAccessService.PopulatePartCategoryDetailAsync(stoppingToken);
+                await LogDataPopulationSuccess("PartCategoryDetail", check);
+                check = await _EMACSAccessService.PopulatePartClassDetailAsync(stoppingToken);
+                await LogDataPopulationSuccess("PartClassDetail", check);
+                check = await _EMACSAccessService.PopulatePartGroupsAsync(stoppingToken);
+                await LogDataPopulationSuccess("PartGroups", check);
+                check = await _EMACSAccessService.PopulatePartGroupsConstAsync(stoppingToken);
+                await LogDataPopulationSuccess("PartGroupsConst", check);
+                check = await _EMACSAccessService.PopulateCustomerDataAsync(stoppingToken);
+                await LogDataPopulationSuccess("CustomerData", check);
+                check = await _EMACSAccessService.PopulateColourCodeAsync(stoppingToken);
+                await LogDataPopulationSuccess("ColourCode", check);
+                check = await _EMACSAccessService.PopulateMaterialGroupsAsync(stoppingToken);
+                await LogDataPopulationSuccess("MaterialGroups", check);
+                check = await _EMACSAccessService.PopulateMaterialTypesAsync(stoppingToken);
+                await LogDataPopulationSuccess("MaterialTypes", check);
+                check = await _EMACSAccessService.PopulateNPACustomerAsync(stoppingToken);
+                await LogDataPopulationSuccess("NPACustomer", check);
+                check = await _EMACSAccessService.PopulateSuppliersAsync(stoppingToken);
+                await LogDataPopulationSuccess("Suppliers", check);
+                //check = await _EMACSAccessService.PopulateEmacsRFIViewAsync(stoppingToken);
+                //await LogDataPopulationSuccess("EmacsRFIView", check);
+                check = await _EMACSAccessService.PopulatePARTMSAsync(stoppingToken);
+                await LogDataPopulationSuccess("PARTMS", check);
             }
 
             return true;

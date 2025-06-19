@@ -4,6 +4,7 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
+
 option csharp_namespace = "Emacs";
 
 package emacs;
@@ -16,27 +17,45 @@ service Emacs {
   rpc GetCombinedPartsData (CombinedPartsGrpcRequest) returns (ListCombinedPartsData);
   rpc GetCombinedPartsDataCount (CombinedPartsCountGrpcRequest) returns (CombinedPartsCountData);
 
-  rpc GetPartCategoryDetailData (PartCategoryDetailGrpcRequest) returns (ListPartCategoryDetail);
+  rpc GetPartCategoryDetailData (PartCategoryDetailGrpcRequest) returns (ListPartCategoryDetailData);
+  rpc GetPartCategoryDetailDataByPARTMS (PartCategoryDetailByPARTMSGrpcRequest) returns (ListPartCategoryDetailData);
 
-  rpc GetPartClassDetailData (PartClassDetailGrpcRequest) returns (ListPartClassDetail);
+  rpc GetPartClassDetailData (PartClassDetailGrpcRequest) returns (ListPartClassDetailData);
+  rpc GetPartClassDetailDataByPARTMS (PartClassDetailByPARTMSGrpcRequest) returns (ListPartClassDetailData);
 
-  rpc GetPartGroupsData (PartGroupsGrpcRequest) returns (ListPartGroups);
+  rpc GetPartGroupsData (PartGroupsGrpcRequest) returns (ListPartGroupsData);
+  rpc GetPartGroupsDataByPARTMS (PartGroupsByPARTMSGrpcRequest) returns (ListPartGroupsData);
 
-  rpc GetPartGroupsConstData (PartGroupsConstGrpcRequest) returns (ListPartGroupsConst);
+  rpc GetPartGroupsConstData (PartGroupsConstGrpcRequest) returns (ListPartGroupsConstData);
+  rpc GetPartGroupsConstDataByPARTMS (PartGroupsConstByPARTMSGrpcRequest) returns (ListPartGroupsConstData);
 
-  rpc GetCustomerData (GetCustomerDataGrpcRequest) returns (ListCustomerData);
+  rpc GetCustomerData (GetCustomerDataGrpcRequest) returns (ListCustomerDataGrpc);
 
-  rpc GetColourCodeData (GetColourCodeGrpcRequest) returns (ListColourCode);
+  rpc GetColourCodeData (GetColourCodeGrpcRequest) returns (ListColourCodeData);
+  rpc GetColourCodeDataByPARTMS (GetColourCodeByPARTMSGrpcRequest) returns (ListColourCodeData);
 
-  rpc GetMaterialGroupsData (GetMaterialGroupsGrpcRequest) returns (ListMaterialGroups);
+  rpc GetMaterialGroupsData (GetMaterialGroupsGrpcRequest) returns (ListMaterialGroupsData);
+  rpc GetMaterialGroupsDataByPARTMS (GetMaterialGroupsByPARTMSGrpcRequest) returns (ListMaterialGroupsData);
 
-  rpc GetMaterialTypesData (GetMaterialTypesGrpcRequest) returns (ListMaterialTypes);
+  rpc GetMaterialTypesData (GetMaterialTypesGrpcRequest) returns (ListMaterialTypesData);
+  rpc GetMaterialTypesDataByPARTMS (GetMaterialTypesByPARTMSGrpcRequest) returns (ListMaterialTypesData);
 
-  rpc GetNPACustomerData (GetNPACustomerGrpcRequest) returns (ListNPACustomer);
+  rpc GetNPACustomerData (GetNPACustomerGrpcRequest) returns (ListNPACustomerData);
 
-  rpc GetNPASupplierData (GetNPASupplierGrpcRequest) returns (ListNPASupplier);
+  rpc GetNPASupplierData (GetNPASupplierGrpcRequest) returns (ListNPASupplierData);
 
-  rpc GetSuppliersData (GetSuppliersGrpcRequest) returns (ListSuppliers);
+  rpc GetSuppliersData (GetSuppliersGrpcRequest) returns (ListSuppliersData);
+
+  rpc GetEmacsRFIViewData (GetEmacsRFIViewGrpcRequest) returns (ListEmacsRFIViewData);
+
+  rpc GetPARTMS (GetPARTMSGrpcRequest) returns (ListPARTMS);
+  rpc GetPARTMSByClass (GetPARTMSByClassGrpcRequest) returns (ListPARTMS);
+  rpc GetPARTMSByColorCode (GetPARTMSByColorCodeGrpcRequest) returns (ListPARTMS);
+  rpc GetPARTMSByMaterial (GetPARTMSByMaterialGrpcRequest) returns (ListPARTMS);
+  rpc GetPARTMSByMaterialGroup (GetPARTMSByMaterialGroupGrpcRequest) returns (ListPARTMS);
+  rpc GetPARTMSByPartGroup(GetPARTMSByPartGroupGrpcRequest) returns (ListPARTMS);
+  rpc GetPARTMSByCatogoryCode(GetPARTMSByCatogoryCodeGrpcRequest) returns (ListPARTMS);
+  rpc GetPARTMSByPartGroupsConstCode(GetPARTMSByPartGroupsConstCodeGrpcRequest) returns (ListPARTMS);
 }
 
 // The request message containing the user's name.
@@ -79,12 +98,15 @@ message PartCategoryDetailGrpcRequest  {
     int32 position = 1;
     int32 takeAmount = 2;
 }
-
-message ListPartCategoryDetail {
-    repeated PartCategoryDetail PartCategoryDetail = 1;
+message PartCategoryDetailByPARTMSGrpcRequest  {
+    string CategoryCode = 1;
 }
 
-message PartCategoryDetail {
+message ListPartCategoryDetailData {
+    repeated PartCategoryDetailData PartCategoryDetailData = 1;
+}
+
+message PartCategoryDetailData {
     string CategoryCode = 1;
     double DetailedCategoryCode = 2;
     string CategoryName = 3;
@@ -94,12 +116,16 @@ message PartClassDetailGrpcRequest {
     int32 position = 1;
     int32 takeAmount = 2;
 }
-
-message ListPartClassDetail {
-    repeated PartClassDetail PartClassDetail = 1;
+message PartClassDetailByPARTMSGrpcRequest {
+    string Class1 = 1;
+    double Class2 = 2;
 }
 
-message PartClassDetail {
+message ListPartClassDetailData {
+    repeated PartClassDetailData PartClassDetailData = 1;
+}
+
+message PartClassDetailData {
     string Class1 = 1;
     string Class1Name = 2;
     double Class2 = 3;
@@ -111,11 +137,15 @@ message PartGroupsGrpcRequest {
     int32 takeAmount = 2;
 }
 
-message ListPartGroups {
-    repeated PartGroups PartGroups = 1;
+message PartGroupsByPARTMSGrpcRequest {
+    string PartGroup = 1;
 }
 
-message PartGroups {
+message ListPartGroupsData {
+    repeated PartGroupsData PartGroupsData = 1;
+}
+
+message PartGroupsData {
     string PartGroup = 1;
     string GroupDescription = 2;
 }
@@ -124,12 +154,15 @@ message PartGroupsConstGrpcRequest {
     int32 position = 1;
     int32 takeAmount = 2;
 }
-
-message ListPartGroupsConst {
-    repeated PartGroupsConst PartGroupsConst = 1;
+message PartGroupsConstByPARTMSGrpcRequest {
+    string Group3 = 1;
 }
 
-message PartGroupsConst {
+message ListPartGroupsConstData {
+    repeated PartGroupsConstData PartGroupsConstData = 1;
+}
+
+message PartGroupsConstData {
     int32 Id = 1;
     int32 GroupNo = 2;
     int32 GroupPos = 3;
@@ -143,11 +176,11 @@ message GetCustomerDataGrpcRequest {
     int32 takeAmount = 2;
 }
 
-message ListCustomerData {
-    repeated CustomerData CustomerData = 1;
+message ListCustomerDataGrpc {
+    repeated CustomerDataGrpc CustomerDataGrpc = 1;
 }
 
-message CustomerData {
+message CustomerDataGrpc {
     string CustomerCode = 1;
     string Customer = 2;
     string CustomerGroup = 3;
@@ -158,12 +191,16 @@ message GetColourCodeGrpcRequest {
     int32 takeAmount = 2;
 }
 
-message ListColourCode {
-    repeated ColourCode ColourCode = 1;
+message GetColourCodeByPARTMSGrpcRequest {
+    string ColorCode = 1;
 }
 
-message ColourCode {
-    string Clmk = 1;
+message ListColourCodeData {
+    repeated ColourCodeData ColourCodeData = 1;
+}
+
+message ColourCodeData {
+    string ClMk = 1;
     string ClCode = 2;
     string ColorName = 3;
     int32 WireUnitsFlag = 4;
@@ -175,11 +212,15 @@ message GetMaterialGroupsGrpcRequest {
     int32 takeAmount = 2;
 }
 
-message ListMaterialGroups {
-    repeated MaterialGroups MaterialGroups = 1;
+message GetMaterialGroupsByPARTMSGrpcRequest {
+    string MaterialGroup = 1;
 }
 
-message MaterialGroups {
+message ListMaterialGroupsData {
+    repeated MaterialGroupsData MaterialGroupsData = 1;
+}
+
+message MaterialGroupsData {
     string MaterialGroup = 1;
     string GroupDescription = 2;
 }
@@ -188,12 +229,16 @@ message GetMaterialTypesGrpcRequest {
     int32 position = 1;
     int32 takeAmount = 2;
 }
-
-message ListMaterialTypes {
-    repeated MaterialTypes MaterialType = 1;
+message GetMaterialTypesByPARTMSGrpcRequest {
+    string MaterialGroup = 1;
+    string MaterialType = 2;
 }
 
-message MaterialTypes {
+message ListMaterialTypesData {
+    repeated MaterialTypesData MaterialTypesData = 1;
+}
+
+message MaterialTypesData {
     string MaterialGroup = 1;
     string MaterialType = 2;
     string TypeDescription = 3;
@@ -204,11 +249,11 @@ message GetNPACustomerGrpcRequest {
     int32 takeAmount = 2;
 }
 
-message ListNPACustomer {
-    repeated NPACustomer NPACustomer = 1;
+message ListNPACustomerData {
+    repeated NPACustomerData NPACustomerData = 1;
 }
 
-message NPACustomer {
+message NPACustomerData {
     int64 Id = 1;
     string Code = 2;
     string Name = 3;
@@ -227,11 +272,11 @@ message GetNPASupplierGrpcRequest {
     int32 takeAmount = 2;
 }
 
-message ListNPASupplier {
-    repeated NPASupplier NPASupplier = 1;
+message ListNPASupplierData {
+    repeated NPASupplierData NPASupplierData = 1;
 }
 
-message NPASupplier {
+message NPASupplierData {
     int64 Id = 1;
     string Code = 2;
     string Name = 3;
@@ -251,11 +296,152 @@ message GetSuppliersGrpcRequest {
     int32 takeAmount = 2;
 }
 
-message ListSuppliers {
-    repeated Suppliers Suppliers = 1;
+message ListSuppliersData {
+    repeated SuppliersData SuppliersData = 1;
 }
 
-message Suppliers {
+message SuppliersData {
     int32 SupplierCode = 1;
     string SupplierName = 2;
+}
+
+message GetEmacsRFIViewGrpcRequest {
+    int32 position = 1;
+    int32 takeAmount = 2;
+}
+
+message ListEmacsRFIViewData {
+    repeated EmacsRFIViewData EmacsRFIViewData = 1;
+}
+
+message EmacsRFIViewData {
+    google.protobuf.StringValue SumitomoNumber = 1;
+    google.protobuf.StringValue SumitomoDescription = 2;
+    google.protobuf.StringValue SumitomoDescriptionEnglish = 3;
+    google.protobuf.StringValue PartGroup = 4; // 
+    google.protobuf.StringValue GroupDescription = 5;
+    google.protobuf.StringValue Class1 = 6;
+    google.protobuf.StringValue Class1Name = 7;
+    google.protobuf.DoubleValue Class2 = 8;
+    google.protobuf.StringValue Class2Name = 9;
+    google.protobuf.StringValue ColourCode = 10;
+    google.protobuf.StringValue ColorName = 11;
+    google.protobuf.StringValue MaterialGroup = 12;
+    google.protobuf.StringValue Expr1 = 13;
+    google.protobuf.StringValue MaterialType = 14;
+    google.protobuf.StringValue TypeDescription = 15;
+    google.protobuf.StringValue CategoryCode2 = 16;
+    google.protobuf.DoubleValue DetailedCategoryCode = 17;
+    google.protobuf.StringValue CategoryName = 18;
+    google.protobuf.StringValue PartGroupCode = 19;
+    google.protobuf.StringValue Description = 20; //
+    google.protobuf.StringValue OldPartClass = 21;
+    google.protobuf.StringValue OldMaterial = 22;
+    google.protobuf.StringValue ClassDetailGroupCode = 23;
+    google.protobuf.StringValue ClassDetailId = 24;
+    google.protobuf.StringValue MaterialGroupId = 25;
+    google.protobuf.StringValue MaterialTypeId = 26;
+    google.protobuf.StringValue ColorCode = 27;
+    google.protobuf.Int32Value NumberOfCavity = 28;
+    google.protobuf.DoubleValue  InsideDiameter = 29;
+    google.protobuf.DoubleValue  OutsideDiameter = 30;
+    google.protobuf.DoubleValue  WallThickness = 31;
+    google.protobuf.DoubleValue  Length = 32;
+    google.protobuf.DoubleValue  WidthOrOutsideDiameter = 33;
+    google.protobuf.Int32Value HoleDiameter = 34;
+    google.protobuf.Int32Value ShrinkRateLength = 35;
+    google.protobuf.Int32Value NumberOfTapingSpots = 36;
+    google.protobuf.DoubleValue  MassOrWeight = 37;
+    google.protobuf.DoubleValue  Quantity = 38;
+    google.protobuf.StringValue UoM = 39;
+    google.protobuf.StringValue Group1 = 40;
+    google.protobuf.StringValue Group2 = 41;
+    google.protobuf.StringValue Group3 = 42;
+    google.protobuf.StringValue Group4 = 43;
+    google.protobuf.StringValue CavityCount = 44;
+    google.protobuf.StringValue Group6 = 45;
+    google.protobuf.StringValue Group7 = 46;
+    google.protobuf.StringValue Group8 = 47;
+    google.protobuf.StringValue CustomerId = 48;
+    google.protobuf.DoubleValue  MassOrWeight2 = 49;
+    google.protobuf.Int32Value L1 = 50;
+    google.protobuf.Int32Value L2 = 51;
+    google.protobuf.Int32Value L3 = 52;
+    google.protobuf.DoubleValue  PitchWidth = 53;
+    google.protobuf.Int32Value Tilt = 54;
+    google.protobuf.Int32Value Grease = 55;
+    google.protobuf.StringValue CategoryCode = 56;
+}
+
+message GetPARTMSGrpcRequest {
+    int32 position = 1;
+    int32 takeAmount = 2;
+}
+message GetPARTMSByClassGrpcRequest {
+    string Class1 = 1;
+    double Class2 = 2;
+}
+message GetPARTMSByColorCodeGrpcRequest {
+    string ColorCode = 1;
+}
+message GetPARTMSByMaterialGrpcRequest {
+    string MaterialGroup = 1;
+    string MaterialType = 2;
+}
+message GetPARTMSByMaterialGroupGrpcRequest {
+    string MaterialGroup = 1;
+}
+message GetPARTMSByPartGroupGrpcRequest {
+    string PartGroup = 1;
+}
+message GetPARTMSByCatogoryCodeGrpcRequest {
+    string CatogoryCode = 1;
+}
+message GetPARTMSByPartGroupsConstCodeGrpcRequest {
+    string PartGroupsConstCode = 1;
+}
+
+message ListPARTMS {
+    repeated PARTMSData PARTMSData = 1;
+}
+message PARTMSData {
+    google.protobuf.StringValue SumitomoNumber = 1;
+    google.protobuf.StringValue SumitomoDescription = 2;
+    google.protobuf.StringValue SumitomoDescriptionEnglish = 3;
+    google.protobuf.StringValue OldPartClass = 4;
+    google.protobuf.StringValue OldMaterial = 5;
+    google.protobuf.StringValue ClassDetailGroupCode = 6;
+    google.protobuf.StringValue ClassDetailId = 7;
+    google.protobuf.StringValue MaterialGroupId = 8;
+    google.protobuf.StringValue MaterialTypeId = 9;
+    google.protobuf.StringValue ColorCode = 10;
+    google.protobuf.Int32Value NumberOfCavity = 11;
+    google.protobuf.DoubleValue InsideDiameter = 12;
+    google.protobuf.DoubleValue WallThickness = 13;
+    google.protobuf.DoubleValue Length = 14;
+    google.protobuf.DoubleValue WidthOrOutsideDiameter = 15;
+    google.protobuf.Int32Value HoleDiameter = 16;
+    google.protobuf.Int32Value ShrinkRateLength = 17;
+    google.protobuf.Int32Value NumberOfTapingSpots = 18;
+    google.protobuf.DoubleValue MassOrWeight = 19;
+    google.protobuf.DoubleValue Quantity = 20;
+    google.protobuf.StringValue UoM = 21;
+    google.protobuf.StringValue Group1 = 22;
+    google.protobuf.StringValue Group2 = 23;
+    google.protobuf.StringValue Group3 = 24;
+    google.protobuf.StringValue Group4 = 25;
+    google.protobuf.StringValue CavityCount = 26;
+    google.protobuf.StringValue Group6 = 27;
+    google.protobuf.StringValue Group7 = 28;
+    google.protobuf.StringValue Group8 = 29;
+    google.protobuf.StringValue CustomerId = 30;
+    google.protobuf.DoubleValue MassOrWeight2 = 31;
+    google.protobuf.Int32Value L1 = 32;
+    google.protobuf.Int32Value L2 = 33;
+    google.protobuf.Int32Value L3 = 34;
+    google.protobuf.DoubleValue PitchWidth = 35;
+    google.protobuf.Int32Value Tilt = 36;
+    google.protobuf.Int32Value Grease = 37;
+    google.protobuf.StringValue CategoryCode = 38;
+
 }

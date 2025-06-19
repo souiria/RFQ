@@ -1,6 +1,6 @@
 ﻿namespace Emacs.Data.CQRS.Query
 {
-    public class GetNPASupplierQuery : IQuery<List<NPASupplierDto>>
+    public class GetNPASupplierQuery : IQuery<List<NPASupplierData>>
     {
         public int? Position
         { get; set; }
