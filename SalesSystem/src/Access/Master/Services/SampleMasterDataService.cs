@@ -1,6 +1,4 @@
-﻿using SharedKernel;
-
-namespace Master.Services
+﻿namespace Master.Services
 {
     public static class SampleMasterDataService
     {

@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace Emacs.Services
+﻿namespace Emacs.Services
 {
     public class EMACSAccessService : IEMACSAccessService
     {
@@ -93,8 +91,8 @@ namespace Emacs.Services
 
         #region PARTMS
 
-        ListPARTMS _ListPARTMS;
-        ListPARTMS _FilteredListPARTMS;
+        ListPARTMSData _ListPARTMS;
+        ListPARTMSData _FilteredListPARTMS;
 
         #endregion
 
@@ -204,7 +202,7 @@ namespace Emacs.Services
         #endregion
 
         #region Constructor
-        public EMACSAccessService(IServiceProvider serviceProvider)
+        public EMACSAccessService(IServiceProvider serviceProvider, bool testing = false)
         {
             #region CombinedParts
 
@@ -307,13 +305,18 @@ namespace Emacs.Services
             #region PARTMS
 
             //_PARTMSData = [];
-            _ListPARTMS = new ListPARTMS();
-            _FilteredListPARTMS = new ListPARTMS();
+            _ListPARTMS = new ListPARTMSData();
+            _FilteredListPARTMS = new ListPARTMSData();
             _PARTMSRefreshInProgress = false;
 
             #endregion
 
             _ServiceProvider = serviceProvider;
+
+            if (testing)
+            {
+                PopulateSampleData();
+            }
         }
         #endregion
 
@@ -365,7 +368,7 @@ namespace Emacs.Services
             }
         }
 
-        public async Task<ListPartCategoryDetailData> GetPartCategoryDetailByPARTMS(string categoryCode , CancellationToken cancellationToken)
+        public async Task<ListPartCategoryDetailData> GetPartCategoryDetailByCategoryCode(string categoryCode , CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListPartCatogoryDetail.PartCategoryDetailData.Any())
@@ -397,7 +400,7 @@ namespace Emacs.Services
                 return _ListPartClassDetail;
             }
         }
-        public async Task<ListPartClassDetailData> GetPartClassDetailByPARTMS(string class1, double class2, CancellationToken cancellationToken)
+        public async Task<ListPartClassDetailData> GetPartClassDetailByClasses(string class1, double class2, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListPartClassDetail.PartClassDetailData.Any())
@@ -430,7 +433,7 @@ namespace Emacs.Services
             }
         }
 
-        public async Task<ListPartGroupsData> GetPartGroupsByPARTMS(string partGroup, CancellationToken cancellationToken)
+        public async Task<ListPartGroupsData> GetPartGroupsByPartGroup(string partGroup, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListPartGroups.PartGroupsData.Any())
@@ -463,7 +466,7 @@ namespace Emacs.Services
             }
         }
 
-        public async Task<ListPartGroupsConstData> GetAllPartGroupsConstByPARTMS(string group3 ,CancellationToken cancellationToken)
+        public async Task<ListPartGroupsConstData> GetAllPartGroupsConstByGroup3(string group3 ,CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListPartGroupsConst.PartGroupsConstData.Any())
@@ -511,7 +514,7 @@ namespace Emacs.Services
             }
         }
 
-        public async Task<ListColourCodeData> GetColourCodeByPARTMS(string colorCode, CancellationToken cancellationToken)
+        public async Task<ListColourCodeData> GetColourCodeByColorCode(string colorCode, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListColourCode.ColourCodeData.Any())
@@ -542,7 +545,7 @@ namespace Emacs.Services
                 return _ListMaterialGroups;
             }
         }
-        public async Task<ListMaterialGroupsData> GetMaterialGroupsByPARTMS(string materialGroupId, CancellationToken cancellationToken)
+        public async Task<ListMaterialGroupsData> GetMaterialGroupsByMaterialGroupId(string materialGroupId, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListMaterialGroups.MaterialGroupsData.Any())
@@ -573,7 +576,7 @@ namespace Emacs.Services
                 return _ListMaterialTypes;
             }
         }
-        public async Task<ListMaterialTypesData> GetMaterialTypesByPARTMS(string materialGroup, string materialType ,CancellationToken cancellationToken)
+        public async Task<ListMaterialTypesData> GetMaterialTypesByMaterials(string materialGroup, string materialType ,CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListMaterialTypes.MaterialTypesData.Any())
@@ -655,7 +658,7 @@ namespace Emacs.Services
         #endregion
 
         #region PARTMS
-        public async Task<ListPARTMS> GetAllPARTMS(CancellationToken cancellationToken)
+        public async Task<ListPARTMSData> GetAllPARTMSData(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListPARTMS.PARTMSData.Any())
@@ -669,13 +672,13 @@ namespace Emacs.Services
             }
         }
 
-        public async Task<ListPARTMS> GetPARTMSByClass(string class1, double class2, CancellationToken cancellationToken)
+        public async Task<ListPARTMSData> GetPARTMSDataByClass(string class1, double class2, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListPARTMS.PARTMSData.Any())
             {
                 _FilteredListPARTMS.PARTMSData.Clear();
-                CultureInfo cultureInfo = CultureInfo.GetCultureInfo(class1);
+                CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("en-GB");
                 string class2String = class2.ToString(cultureInfo);
                 List<PARTMSData> filteredList = _ListPARTMS.PARTMSData.Where(x => x.ClassDetailGroupCode == class1 && x.ClassDetailId == class2String).ToList();
                 _FilteredListPARTMS.PARTMSData.AddRange(filteredList);
@@ -688,7 +691,7 @@ namespace Emacs.Services
             }
         }
 
-        public async Task<ListPARTMS> GetPARTMSByColorCode(string colorCode, CancellationToken cancellationToken)
+        public async Task<ListPARTMSData> GetPARTMSDataByColorCode(string colorCode, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListPARTMS.PARTMSData.Any())
@@ -704,7 +707,7 @@ namespace Emacs.Services
                 return _FilteredListPARTMS;
             }
         }
-        public async Task<ListPARTMS> GetPARTMSByMaterial(string materialGroup, string materialType, CancellationToken cancellationToken)
+        public async Task<ListPARTMSData> GetPARTMSDataByMaterial(string materialGroup, string materialType, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListPARTMS.PARTMSData.Any())
@@ -720,7 +723,7 @@ namespace Emacs.Services
                 return _FilteredListPARTMS;
             }
         }
-        public async Task<ListPARTMS> GetPARTMSByMaterialGroup(string materialGroup, CancellationToken cancellationToken)
+        public async Task<ListPARTMSData> GetPARTMSDataByMaterialGroup(string materialGroup, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListPARTMS.PARTMSData.Any())
@@ -736,7 +739,7 @@ namespace Emacs.Services
                 return _FilteredListPARTMS;
             }
         }
-        public async Task<ListPARTMS> GetPARTMSByPartGroup(string partGroup, CancellationToken cancellationToken)
+        public async Task<ListPARTMSData> GetPARTMSDataByPartGroup(string partGroup, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListPARTMS.PARTMSData.Any())
@@ -752,7 +755,7 @@ namespace Emacs.Services
                 return _FilteredListPARTMS;
             }
         }
-        public async Task<ListPARTMS> GetPARTMSByCatogoryCode(string catogoryCode, CancellationToken cancellationToken)
+        public async Task<ListPARTMSData> GetPARTMSDataByCategoryCode(string catogoryCode, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListPARTMS.PARTMSData.Any())
@@ -768,7 +771,7 @@ namespace Emacs.Services
                 return _FilteredListPARTMS;
             }
         }
-        public async Task<ListPARTMS> GetPARTMSByPartGroupsConstCode(string partGroupsConstCode, CancellationToken cancellationToken)
+        public async Task<ListPARTMSData> GetPARTMSDataByPartGroupsConstCode(string partGroupsConstCode, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListPARTMS.PARTMSData.Any())
@@ -1225,5 +1228,22 @@ namespace Emacs.Services
         #endregion
 
         #endregion
+
+        void PopulateSampleData()
+        {
+            _ListCombinedParts = SampleEmacsDataService.PopulateCombinedParts();
+            _ListPartCatogoryDetail = SampleEmacsDataService.PopulatePartCategoryDetail();
+            _ListPartClassDetail = SampleEmacsDataService.PopulatePartClassDetail();
+            _ListPartGroups = SampleEmacsDataService.PopulatePartGroups();
+            _ListPartGroupsConst = SampleEmacsDataService.PopulatePartGroupsConst();
+            _ListCustomerData = SampleEmacsDataService.PopulateCustomerDataGrps();
+            _ListColourCode = SampleEmacsDataService.PopulateColourCode();
+            _ListMaterialGroups = SampleEmacsDataService.PopulateMaterialGroups();
+            _ListMaterialTypes = SampleEmacsDataService.PopulateMaterialTypes();
+            _ListNPACustomer = SampleEmacsDataService.PopulateNPACustomer();
+            _ListNPASupplier = SampleEmacsDataService.PopulateNPASupplier();
+            _ListSuppliers = SampleEmacsDataService.PopulateSuppliers();
+            _ListPARTMS = SampleEmacsDataService.PopulatePARTMS();
+        }
     }
 }

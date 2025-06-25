@@ -18,27 +18,27 @@ service Emacs {
   rpc GetCombinedPartsDataCount (CombinedPartsCountGrpcRequest) returns (CombinedPartsCountData);
 
   rpc GetPartCategoryDetailData (PartCategoryDetailGrpcRequest) returns (ListPartCategoryDetailData);
-  rpc GetPartCategoryDetailDataByPARTMS (PartCategoryDetailByPARTMSGrpcRequest) returns (ListPartCategoryDetailData);
+  rpc GetPartCategoryDetailDataByCategoryCode (PartCategoryDetailByCategoryCodeGrpcRequest) returns (ListPartCategoryDetailData);
 
   rpc GetPartClassDetailData (PartClassDetailGrpcRequest) returns (ListPartClassDetailData);
-  rpc GetPartClassDetailDataByPARTMS (PartClassDetailByPARTMSGrpcRequest) returns (ListPartClassDetailData);
+  rpc GetPartClassDetailDataByClasses (PartClassDetailByClassesGrpcRequest) returns (ListPartClassDetailData);
 
   rpc GetPartGroupsData (PartGroupsGrpcRequest) returns (ListPartGroupsData);
-  rpc GetPartGroupsDataByPARTMS (PartGroupsByPARTMSGrpcRequest) returns (ListPartGroupsData);
+  rpc GetPartGroupsDataByPartGroup (PartGroupsByPartGroupGrpcRequest) returns (ListPartGroupsData);
 
   rpc GetPartGroupsConstData (PartGroupsConstGrpcRequest) returns (ListPartGroupsConstData);
-  rpc GetPartGroupsConstDataByPARTMS (PartGroupsConstByPARTMSGrpcRequest) returns (ListPartGroupsConstData);
+  rpc GetPartGroupsConstDataByGroup3 (PartGroupsConstByGroup3GrpcRequest) returns (ListPartGroupsConstData);
 
   rpc GetCustomerData (GetCustomerDataGrpcRequest) returns (ListCustomerDataGrpc);
 
   rpc GetColourCodeData (GetColourCodeGrpcRequest) returns (ListColourCodeData);
-  rpc GetColourCodeDataByPARTMS (GetColourCodeByPARTMSGrpcRequest) returns (ListColourCodeData);
+  rpc GetColourCodeDataByColorCode (GetColourCodeByColorCodeGrpcRequest) returns (ListColourCodeData);
 
   rpc GetMaterialGroupsData (GetMaterialGroupsGrpcRequest) returns (ListMaterialGroupsData);
-  rpc GetMaterialGroupsDataByPARTMS (GetMaterialGroupsByPARTMSGrpcRequest) returns (ListMaterialGroupsData);
+  rpc GetMaterialGroupsDataByMaterialGroupId (GetMaterialGroupsByMaterialGroupIdGrpcRequest) returns (ListMaterialGroupsData);
 
   rpc GetMaterialTypesData (GetMaterialTypesGrpcRequest) returns (ListMaterialTypesData);
-  rpc GetMaterialTypesDataByPARTMS (GetMaterialTypesByPARTMSGrpcRequest) returns (ListMaterialTypesData);
+  rpc GetMaterialTypesDataByMaterials (GetMaterialTypesByMaterialsGrpcRequest) returns (ListMaterialTypesData);
 
   rpc GetNPACustomerData (GetNPACustomerGrpcRequest) returns (ListNPACustomerData);
 
@@ -48,14 +48,14 @@ service Emacs {
 
   rpc GetEmacsRFIViewData (GetEmacsRFIViewGrpcRequest) returns (ListEmacsRFIViewData);
 
-  rpc GetPARTMS (GetPARTMSGrpcRequest) returns (ListPARTMS);
-  rpc GetPARTMSByClass (GetPARTMSByClassGrpcRequest) returns (ListPARTMS);
-  rpc GetPARTMSByColorCode (GetPARTMSByColorCodeGrpcRequest) returns (ListPARTMS);
-  rpc GetPARTMSByMaterial (GetPARTMSByMaterialGrpcRequest) returns (ListPARTMS);
-  rpc GetPARTMSByMaterialGroup (GetPARTMSByMaterialGroupGrpcRequest) returns (ListPARTMS);
-  rpc GetPARTMSByPartGroup(GetPARTMSByPartGroupGrpcRequest) returns (ListPARTMS);
-  rpc GetPARTMSByCatogoryCode(GetPARTMSByCatogoryCodeGrpcRequest) returns (ListPARTMS);
-  rpc GetPARTMSByPartGroupsConstCode(GetPARTMSByPartGroupsConstCodeGrpcRequest) returns (ListPARTMS);
+  rpc GetPARTMSData (GetPARTMSDataGrpcRequest) returns (ListPARTMSData);
+  rpc GetPARTMSDataByClass (GetPARTMSDataByClassGrpcRequest) returns (ListPARTMSData);
+  rpc GetPARTMSDataByColorCode (GetPARTMSDataByColorCodeGrpcRequest) returns (ListPARTMSData);
+  rpc GetPARTMSDataByMaterial (GetPARTMSDataByMaterialGrpcRequest) returns (ListPARTMSData);
+  rpc GetPARTMSDataByMaterialGroup (GetPARTMSDataByMaterialGroupGrpcRequest) returns (ListPARTMSData);
+  rpc GetPARTMSDataByPartGroup(GetPARTMSDataByPartGroupGrpcRequest) returns (ListPARTMSData);
+  rpc GetPARTMSDataByCategoryCode(GetPARTMSDataByCategoryCodeGrpcRequest) returns (ListPARTMSData);
+  rpc GetPARTMSDataByPartGroupsConstCode(GetPARTMSDataByPartGroupsConstCodeGrpcRequest) returns (ListPARTMSData);
 }
 
 // The request message containing the user's name.
@@ -98,7 +98,7 @@ message PartCategoryDetailGrpcRequest  {
     int32 position = 1;
     int32 takeAmount = 2;
 }
-message PartCategoryDetailByPARTMSGrpcRequest  {
+message PartCategoryDetailByCategoryCodeGrpcRequest  {
     string CategoryCode = 1;
 }
 
@@ -116,7 +116,7 @@ message PartClassDetailGrpcRequest {
     int32 position = 1;
     int32 takeAmount = 2;
 }
-message PartClassDetailByPARTMSGrpcRequest {
+message PartClassDetailByClassesGrpcRequest {
     string Class1 = 1;
     double Class2 = 2;
 }
@@ -137,7 +137,7 @@ message PartGroupsGrpcRequest {
     int32 takeAmount = 2;
 }
 
-message PartGroupsByPARTMSGrpcRequest {
+message PartGroupsByPartGroupGrpcRequest {
     string PartGroup = 1;
 }
 
@@ -154,7 +154,7 @@ message PartGroupsConstGrpcRequest {
     int32 position = 1;
     int32 takeAmount = 2;
 }
-message PartGroupsConstByPARTMSGrpcRequest {
+message PartGroupsConstByGroup3GrpcRequest {
     string Group3 = 1;
 }
 
@@ -191,7 +191,7 @@ message GetColourCodeGrpcRequest {
     int32 takeAmount = 2;
 }
 
-message GetColourCodeByPARTMSGrpcRequest {
+message GetColourCodeByColorCodeGrpcRequest {
     string ColorCode = 1;
 }
 
@@ -212,7 +212,7 @@ message GetMaterialGroupsGrpcRequest {
     int32 takeAmount = 2;
 }
 
-message GetMaterialGroupsByPARTMSGrpcRequest {
+message GetMaterialGroupsByMaterialGroupIdGrpcRequest {
     string MaterialGroup = 1;
 }
 
@@ -229,7 +229,7 @@ message GetMaterialTypesGrpcRequest {
     int32 position = 1;
     int32 takeAmount = 2;
 }
-message GetMaterialTypesByPARTMSGrpcRequest {
+message GetMaterialTypesByMaterialsGrpcRequest {
     string MaterialGroup = 1;
     string MaterialType = 2;
 }
@@ -373,35 +373,35 @@ message EmacsRFIViewData {
     google.protobuf.StringValue CategoryCode = 56;
 }
 
-message GetPARTMSGrpcRequest {
+message GetPARTMSDataGrpcRequest {
     int32 position = 1;
     int32 takeAmount = 2;
 }
-message GetPARTMSByClassGrpcRequest {
+message GetPARTMSDataByClassGrpcRequest {
     string Class1 = 1;
     double Class2 = 2;
 }
-message GetPARTMSByColorCodeGrpcRequest {
+message GetPARTMSDataByColorCodeGrpcRequest {
     string ColorCode = 1;
 }
-message GetPARTMSByMaterialGrpcRequest {
+message GetPARTMSDataByMaterialGrpcRequest {
     string MaterialGroup = 1;
     string MaterialType = 2;
 }
-message GetPARTMSByMaterialGroupGrpcRequest {
+message GetPARTMSDataByMaterialGroupGrpcRequest {
     string MaterialGroup = 1;
 }
-message GetPARTMSByPartGroupGrpcRequest {
+message GetPARTMSDataByPartGroupGrpcRequest {
     string PartGroup = 1;
 }
-message GetPARTMSByCatogoryCodeGrpcRequest {
+message GetPARTMSDataByCategoryCodeGrpcRequest {
     string CatogoryCode = 1;
 }
-message GetPARTMSByPartGroupsConstCodeGrpcRequest {
+message GetPARTMSDataByPartGroupsConstCodeGrpcRequest {
     string PartGroupsConstCode = 1;
 }
 
-message ListPARTMS {
+message ListPARTMSData {
     repeated PARTMSData PARTMSData = 1;
 }
 message PARTMSData {
