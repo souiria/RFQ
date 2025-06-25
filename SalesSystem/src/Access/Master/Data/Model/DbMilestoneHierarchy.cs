@@ -6,9 +6,9 @@ namespace Master.Data.Model
     {
         public string? MilestoneEventName
         { get; set; }
-        public DateTime? EventStartDate
+        public DateTime EventStartDate
         { get; set; }
-        public DateTime? EventEndDate
+        public DateTime EventEndDate
         { get; set; }
         public Guid? ProjectHierarchyGuid
         { get; set; }

@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
 
 option csharp_namespace = "Master";
 
@@ -58,7 +59,7 @@ message HelloRequest {
 
 // The response message containing the greetings.
 message HelloReply {
-  string message = 1;
+  google.protobuf.StringValue message = 1;
 }
 
 message CurrencyGrpcRequest {
@@ -71,11 +72,11 @@ message CurrencyByIdGrpcRequest {
 }
 
 message CurrencyData {
-    string Id = 1;
-    string CurrencyCode = 2;
-    string CurrencyName = 3;
-    string EuroRate = 4;
-    bool IsActive = 5;
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue CurrencyCode = 2;
+    google.protobuf.StringValue CurrencyName = 3;
+    google.protobuf.StringValue EuroRate = 4;
+    google.protobuf.BoolValue IsActive = 5;
 }
 
 message ListCurrencyData {
@@ -92,11 +93,11 @@ message CustomerByIdGrpcRequest {
 }
 
 message CustomerData {
-    string Id = 1;
-    string CustomerBusinessGroupCode = 2;
-    string CustomerBusinessGroupName = 3;   
-    string SEWSEBusinessTeam = 4;
-    bool IsActive = 5;
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue CustomerBusinessGroupCode = 2;
+    google.protobuf.StringValue CustomerBusinessGroupName = 3;   
+    google.protobuf.StringValue SEWSEBusinessTeam = 4;
+    google.protobuf.BoolValue IsActive = 5;
 }
 
 message ListCustomerData {
@@ -117,10 +118,11 @@ message CustomerLocationByUserIdGrpcRequest {
 }
 
 message CustomerLocationData {
-    string Id = 1;
-    string CustomerCode = 2;
-    string CustomerName = 3;   
-    bool IsActive = 4;
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue CustomerCode = 2;
+    google.protobuf.StringValue CustomerBusinessHierarchyGuid = 3;
+    google.protobuf.StringValue CustomerName = 4;   
+    google.protobuf.BoolValue IsActive = 5;
 }
 
 message ListCustomerLocationData {
@@ -137,11 +139,12 @@ message CustomerSalesEntityByUserIdGrpcRequest {
 }
 
 message CustomerSalesEntityData {
-    string Id = 1;
-    string CustomerSalesEntityCode = 2;
-    string CustomerSalesEntityName = 3;   
-    string FinanceCode = 4;  
-    bool IsActive = 5;
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue CustomerSalesEntityCode = 2;
+    google.protobuf.StringValue CustomerSalesEntityName = 3;   
+    google.protobuf.StringValue FinanceCode = 4;  
+    google.protobuf.StringValue CustomerHierarchyGuid = 5;  
+    google.protobuf.BoolValue IsActive = 6;
 }
 
 message ListCustomerSalesEntityData {
@@ -197,12 +200,12 @@ message MilestoneByIdGrpcRequest {
 }
 
 message MilestoneData {
-    string Id = 1;
-    string MilestoneEventName = 2;
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue MilestoneEventName = 2;
     google.protobuf.Timestamp EventStartDate = 3;    
     google.protobuf.Timestamp EventEndDate = 4;  
-    string ProjectHierarchyGuid = 5;
-    bool IsActive = 6;
+    google.protobuf.StringValue ProjectHierarchyGuid = 5;
+    google.protobuf.BoolValue IsActive = 6;
 }
 
 message ListMilestoneData {
@@ -219,11 +222,11 @@ message PlatformByIdGrpcRequest {
 }
 
 message PlatformData {
-    string Id = 1;
-    string PlatformName = 2;
-    string PlatformManagerName = 3;    
-    string CustomerHierarchyGuid = 4;
-    bool IsActive = 5;
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue PlatformName = 2;
+    google.protobuf.StringValue PlatformManagerName = 3;    
+    google.protobuf.StringValue CustomerHierarchyGuid = 4;
+    google.protobuf.BoolValue IsActive = 5;
 }
 
 message ListPlatformData {
@@ -240,10 +243,10 @@ message ProgramByIdGrpcRequest {
 }
 
 message ProgramData {
-    string Id = 1;
-    string ProgramName = 2;   
-    string PlatformHierarchyGuid = 3;
-    bool IsActive = 4;
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue ProgramName = 2;   
+    google.protobuf.StringValue PlatformHierarchyGuid = 3;
+    google.protobuf.BoolValue IsActive = 4;
 }
 
 message ListProgramData {
@@ -259,14 +262,14 @@ message ProjectByIdGrpcRequest {
 }
 
 message ProjectData {
-    string Id = 1;
-    string ProjectCode = 2;   
-    string ProjectName = 3;
-    string CustomerProjectCode = 4;
-    string ProjectDescription = 5;
-    int32 ProjectAnnualVolume = 6;
-    string ProgramHierarchyGuid = 7;
-    bool IsActive = 8;
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue ProjectCode = 2;   
+    google.protobuf.StringValue ProjectName = 3;
+    google.protobuf.StringValue CustomerProjectCode = 4;
+    google.protobuf.StringValue ProjectDescription = 5;
+    google.protobuf.Int32Value ProjectAnnualVolume = 6;
+    google.protobuf.StringValue ProgramHierarchyGuid = 7;
+    google.protobuf.BoolValue IsActive = 8;
 }
 
 message ListProjectData {
@@ -287,11 +290,11 @@ message VehicleByDisplayGrpcRequest {
 }
 
 message VehicleData {
-    string Id = 1;
-    string VehicleName = 2;   
-    string ProjectReference = 3;
-    string VehicleDisplay = 4;
-    bool IsActive = 5;
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue VehicleName = 2;   
+    google.protobuf.StringValue ProjectReference = 3;
+    google.protobuf.StringValue VehicleDisplay = 4;
+    google.protobuf.BoolValue IsActive = 5;
 }
 
 message ListVehicleData {

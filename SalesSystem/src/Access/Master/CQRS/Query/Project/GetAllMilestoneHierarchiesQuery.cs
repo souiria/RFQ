@@ -1,6 +1,6 @@
 ﻿namespace Master.CQRS.Query.Project
 {
-    public class GetAllMilestoneHierarchiesQuery : IQuery<List<MilestoneHierarchyDto>>
+    public class GetAllMilestoneHierarchiesQuery : IQuery<List<MilestoneData>>
     {
         public int? Position
         { get; set; }

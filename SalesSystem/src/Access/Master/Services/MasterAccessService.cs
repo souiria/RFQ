@@ -1,9 +1,4 @@
-﻿
-using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
-
-namespace Master.Services
+﻿namespace Master.Services
 {
     /// <summary>
     /// This class is used to make calls to the database queries and to hold the data dictionaries.
@@ -15,43 +10,43 @@ namespace Master.Services
 
         #region Currency
 
-        List<CurrencyDto> _Currencies;
-        List<CurrencyDto> _FilteredCurrencies;
+        ListCurrencyData _Currencies;
+        ListCurrencyData _FilteredCurrencies;
 
         #endregion
 
         #region Customer
 
-        List<CustomerBusinessHierarchyDto> _Customers;
-        List<CustomerBusinessHierarchyDto> _FilteredCustomers;
-        List<CustomerHierarchyDto> _CustomerLocations;
-        List<CustomerHierarchyDto> _FilteredLocations;
-        List<CustomerSalesEntityDto> _CustomerSalesEntities;
-        List<CustomerSalesEntityDto> _FilteredCustomerSalesEntities;
-        List<CustomerProjectAssociationDto> _CustomerProjectAssociations;
-        List<CustomerProjectAssociationDto> _FilteredCustomerProjectAssociations;
-        List<CustomerBusinessUserAssociationDto> _CustomerBusinessUserAssociations;
-        List<CustomerBusinessUserAssociationDto> _FilteredCustomerBusinessUserAssociations;
+        ListCustomerData _Customers;
+        ListCustomerData _FilteredCustomers;
+        ListCustomerLocationData _CustomerLocations;
+        ListCustomerLocationData _FilteredLocations;
+        ListCustomerSalesEntityData _CustomerSalesEntities;
+        ListCustomerSalesEntityData _FilteredCustomerSalesEntities;
+        ListCustomerProjectAssociationData _CustomerProjectAssociations;
+        ListCustomerProjectAssociationData _FilteredCustomerProjectAssociations;
+        ListCustomerBusinessUserAssociationData _CustomerBusinessUserAssociations;
+        ListCustomerBusinessUserAssociationData _FilteredCustomerBusinessUserAssociations;
 
         #endregion
 
         #region Project
 
-        List<PlatformHierarchyDto> _Platforms;
-        List<PlatformHierarchyDto> _FilteredPlatforms;
-        List<ProgramHierarchyDto> _Programs;
-        List<ProgramHierarchyDto> _FilteredPrograms;
-        List<ProjectHierarchyDto> _Projects;
-        List<ProjectHierarchyDto> _FilteredProjects;
-        List<MilestoneHierarchyDto> _Milestones;
-        List<MilestoneHierarchyDto> _FilteredMilestones;
+        ListPlatformData _Platforms;
+        ListPlatformData _FilteredPlatforms;
+        ListProgramData _Programs;
+        ListProgramData _FilteredPrograms;
+        ListProjectData _Projects;
+        ListProjectData _FilteredProjects;
+        ListMilestoneData _Milestones;
+        ListMilestoneData _FilteredMilestones;
 
         #endregion
 
         #region Vehicle
 
-        List<VehicleDto> _Vehicles;
-        List<VehicleDto> _FilteredVehicles;
+        ListVehicleData _Vehicles;
+        ListVehicleData _FilteredVehicles;
 
         #endregion
 
@@ -61,18 +56,18 @@ namespace Master.Services
 
         #region Currency
 
-        IQueryHandler<GetCurrenciesQuery, List<CurrencyDto>>? _CurrencyHandler;
+        IQueryHandler<GetCurrenciesQuery, List<CurrencyData>>? _CurrencyHandler;
         bool _CurrencyRefreshInProgress;
 
         #endregion
 
         #region Customer
 
-        IQueryHandler<GetAllCustomerBusinessUnitsQuery, List<CustomerBusinessHierarchyDto>>? _CustomerHandler;
-        IQueryHandler<GetAllCustomerLocationsQuery, List<CustomerHierarchyDto>>? _CustomerLocationHandler;
-        IQueryHandler<GetAllCustomerProjectAssociationsQuery, List<CustomerProjectAssociationDto>>? _CustomerProjectAssociationsHandler;
-        IQueryHandler<GetAllCustomerSalesEntitiesQuery, List<CustomerSalesEntityDto>>? _CustomerSalesEntitiesHandler;
-        IQueryHandler<GetCustomerBusinessUserAssociationsQuery, List<CustomerBusinessUserAssociationDto>>? _CustomerBusinessUserAssociationsHandler;
+        IQueryHandler<GetAllCustomerBusinessUnitsQuery, List<CustomerData>>? _CustomerHandler;
+        IQueryHandler<GetAllCustomerLocationsQuery, List<CustomerLocationData>>? _CustomerLocationHandler;
+        IQueryHandler<GetAllCustomerProjectAssociationsQuery, List<CustomerProjectAssociationData>>? _CustomerProjectAssociationsHandler;
+        IQueryHandler<GetAllCustomerSalesEntitiesQuery, List<CustomerSalesEntityData>>? _CustomerSalesEntitiesHandler;
+        IQueryHandler<GetCustomerBusinessUserAssociationsQuery, List<CustomerBusinessUserAssociationData>>? _CustomerBusinessUserAssociationsHandler;
         bool _CustomerRefreshInProgress;
         bool _CustomerLocationRefreshInProgress;
         bool _CustomerProjectAssociationsRefreshInProgress;
@@ -83,10 +78,10 @@ namespace Master.Services
 
         #region Project
 
-        IQueryHandler<GetAllPlatformHierarchiesQuery, List<PlatformHierarchyDto>>? _PlatformHandler;
-        IQueryHandler<GetAllProgramHierarchiesQuery, List<ProgramHierarchyDto>>? _ProgramHandler;
-        IQueryHandler<GetAllProjectHierarchiesQuery, List<ProjectHierarchyDto>>? _ProjectHandler;
-        IQueryHandler<GetAllMilestoneHierarchiesQuery, List<MilestoneHierarchyDto>>? _MilestoneHandler;
+        IQueryHandler<GetAllPlatformHierarchiesQuery, List<PlatformData>>? _PlatformHandler;
+        IQueryHandler<GetAllProgramHierarchiesQuery, List<ProgramData>>? _ProgramHandler;
+        IQueryHandler<GetAllProjectHierarchiesQuery, List<ProjectData>>? _ProjectHandler;
+        IQueryHandler<GetAllMilestoneHierarchiesQuery, List<MilestoneData>>? _MilestoneHandler;
         bool _PlatformRefreshInProgress;
         bool _ProgramRefreshInProgress;
         bool _ProjectRefreshInProgress;
@@ -96,7 +91,7 @@ namespace Master.Services
 
         #region Vehicle
 
-        IQueryHandler<GetAllVehiclesQuery, List<VehicleDto>>? _VehicleHandler;
+        IQueryHandler<GetAllVehiclesQuery, List<VehicleData>>? _VehicleHandler;
         bool _VehicleRefreshInProgress;
 
         #endregion
@@ -111,24 +106,24 @@ namespace Master.Services
 
             #region Currency
 
-            _Currencies = [];
-            _FilteredCurrencies = [];
+            _Currencies = new ListCurrencyData();
+            _FilteredCurrencies = new ListCurrencyData();
             _CurrencyRefreshInProgress = false;
 
             #endregion
 
             #region Customer
 
-            _Customers = [];
-            _FilteredCustomers = [];
-            _CustomerLocations = [];
-            _FilteredLocations = [];
-            _CustomerSalesEntities = [];
-            _FilteredCustomerSalesEntities = [];
-            _CustomerProjectAssociations = [];
-            _FilteredCustomerProjectAssociations = [];
-            _CustomerBusinessUserAssociations = [];
-            _FilteredCustomerBusinessUserAssociations = [];
+            _Customers = new ListCustomerData();
+            _FilteredCustomers = new ListCustomerData();
+            _CustomerLocations = new ListCustomerLocationData();
+            _FilteredLocations = new ListCustomerLocationData();
+            _CustomerSalesEntities = new ListCustomerSalesEntityData();
+            _FilteredCustomerSalesEntities = new ListCustomerSalesEntityData();
+            _CustomerProjectAssociations = new ListCustomerProjectAssociationData();
+            _FilteredCustomerProjectAssociations = new ListCustomerProjectAssociationData();
+            _CustomerBusinessUserAssociations = new ListCustomerBusinessUserAssociationData();
+            _FilteredCustomerBusinessUserAssociations = new ListCustomerBusinessUserAssociationData();
             _CustomerRefreshInProgress = false;
             _CustomerLocationRefreshInProgress = false;
             _CustomerProjectAssociationsRefreshInProgress = false;
@@ -139,14 +134,14 @@ namespace Master.Services
 
             #region Project
 
-            _Platforms = [];
-            _FilteredPlatforms = [];
-            _Programs = [];
-            _FilteredPrograms = [];
-            _Projects = [];
-            _FilteredProjects = [];
-            _Milestones = [];
-            _FilteredMilestones = [];
+            _Platforms = new ListPlatformData();
+            _FilteredPlatforms = new ListPlatformData();
+            _Programs = new ListProgramData();
+            _FilteredPrograms = new ListProgramData();
+            _Projects = new ListProjectData();
+            _FilteredProjects = new ListProjectData();
+            _Milestones = new ListMilestoneData();
+            _FilteredMilestones = new ListMilestoneData();
 
             _PlatformRefreshInProgress = false;
             _ProgramRefreshInProgress = false;
@@ -157,8 +152,8 @@ namespace Master.Services
 
             #region Vehicle
 
-            _Vehicles = [];
-            _FilteredVehicles = [];
+            _Vehicles = new ListVehicleData();
+            _FilteredVehicles = new ListVehicleData();
             _VehicleRefreshInProgress = false;
 
             #endregion
@@ -176,10 +171,10 @@ namespace Master.Services
 
         #region Currency
 
-        public async Task<Result<List<CurrencyDto>>> GetAllCurrencies(CancellationToken cancellationToken)
+        public async Task<ListCurrencyData> GetAllCurrencies(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Currencies.Any())
+            if (_Currencies.CurrencyData.Any())
             {
                 return _Currencies;
             }
@@ -190,13 +185,14 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<CurrencyDto>>> GetCurrenciesById(Guid id ,CancellationToken cancellationToken)
+        public async Task<ListCurrencyData> GetCurrenciesById(string id ,CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Currencies.Any())
+            if (_Currencies.CurrencyData.Any())
             {
-                _FilteredCurrencies.Clear();
-                _FilteredCurrencies = _Currencies.Where(x => x.Id == id).ToList();
+                _FilteredCurrencies.CurrencyData.Clear();
+                List<CurrencyData> filteredList = _Currencies.CurrencyData.Where(x => x.Id == id).ToList();
+                _FilteredCurrencies.CurrencyData.AddRange(filteredList);
                 return _FilteredCurrencies;
             }
             else
@@ -210,10 +206,10 @@ namespace Master.Services
 
         #region Customer
 
-        public async Task<Result<List<CustomerBusinessHierarchyDto>>> GetAllCustomerBusinessUnits(CancellationToken cancellationToken)
+        public async Task<ListCustomerData> GetAllCustomerBusinessUnits(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Customers.Any())
+            if (_Customers.CustomerData.Any())
             {
                 return _Customers;
             }
@@ -224,13 +220,14 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<CustomerBusinessHierarchyDto>>> GetCustomerBusinessUnitsById(Guid id, CancellationToken cancellationToken)
+        public async Task<ListCustomerData> GetCustomerBusinessUnitsById(string id, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            _FilteredCustomers.Clear();
-            if (_Customers.Any())
+            _FilteredCustomers.CustomerData.Clear();
+            if (_Customers.CustomerData.Any())
             {
-                _FilteredCustomers = _Customers.Where(x => x.Id == id).ToList();
+                List<CustomerData> filteredCustomers = _Customers.CustomerData.Where(x => x.Id == id).ToList();
+                _FilteredCustomers.CustomerData.AddRange(filteredCustomers);
                 return _FilteredCustomers;
             }
             else
@@ -240,10 +237,10 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<CustomerHierarchyDto>>> GetAllCustomerLocations(CancellationToken cancellationToken)
+        public async Task<ListCustomerLocationData> GetAllCustomerLocations(CancellationToken cancellationToken)
         {
             await Task.Delay(0, cancellationToken);
-            if (_CustomerLocations.Any())
+            if (_CustomerLocations.CustomerLocationData.Any())
             {
                 return _CustomerLocations;
             }
@@ -254,13 +251,14 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<CustomerHierarchyDto>>> GetCustomerLocationsById(Guid id ,CancellationToken cancellationToken)
+        public async Task<ListCustomerLocationData> GetCustomerLocationsById(string id ,CancellationToken cancellationToken)
         {
             await Task.Delay(0, cancellationToken);
-            _FilteredLocations.Clear();
-            if (_CustomerLocations.Any())
+            _FilteredLocations.CustomerLocationData.Clear();
+            if (_CustomerLocations.CustomerLocationData.Any())
             {
-                _FilteredLocations = _CustomerLocations.Where(x => x.Id == id).ToList();
+                List<CustomerLocationData> filteredLocations = _CustomerLocations.CustomerLocationData.Where(x => x.Id == id).ToList();
+                _FilteredLocations.CustomerLocationData.AddRange(filteredLocations);
                 return _FilteredLocations;
             }
             else
@@ -270,25 +268,26 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<CustomerHierarchyDto>>> GetCustomerLocationsByUserId(Guid userId ,CancellationToken cancellationToken)
+        public async Task<ListCustomerLocationData> GetCustomerLocationsByUserId(string userId ,CancellationToken cancellationToken)
         {
             await Task.Delay(0, cancellationToken);
-            _FilteredLocations.Clear();
-            if (_CustomerLocations.Any() && _CustomerBusinessUserAssociations.Any())
+            _FilteredLocations.CustomerLocationData.Clear();
+            if (_CustomerLocations.CustomerLocationData.Any() && _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationData.Any())
             {
-                CustomerBusinessUserAssociationDto? user = _CustomerBusinessUserAssociations.Where(x => x.UserGuid == userId).FirstOrDefault();
+                CustomerBusinessUserAssociationData? user = _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationData.Where(x => x.UserGuid == userId).FirstOrDefault();
                 if (user != null)
                 {
                     if (user.CustomerBusinessHierarchyList != null)
                     {
-                        List<CustomerHierarchyDto>? userLocations = JsonConvert.DeserializeObject<List<CustomerHierarchyDto>>(user.CustomerBusinessHierarchyList);
+                        List<CustomerLocationData>? userLocations = JsonConvert.DeserializeObject<List<CustomerLocationData>>(user.CustomerBusinessHierarchyList);
                         if (userLocations != null)
                         {
-                            foreach (CustomerHierarchyDto location in userLocations)
+                            foreach (CustomerLocationData location in userLocations)
                             {
                                 if (location.IsActive == true)
                                 {
-                                    _FilteredLocations = _CustomerLocations.Where(x => x.CustomerBusinessHierarchyGuid == location.CustomerBusinessHierarchyGuid).ToList();
+                                    List<CustomerLocationData> filteredLocations = _CustomerLocations.CustomerLocationData.Where(x => x.CustomerBusinessHierarchyGuid == location.CustomerBusinessHierarchyGuid).ToList();
+                                    _FilteredLocations.CustomerLocationData.AddRange(filteredLocations);
                                 }
                             }
                         }
@@ -305,10 +304,10 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<CustomerProjectAssociationDto>>> GetAllCustomerProjectAssociations(CancellationToken cancellationToken)
+        public async Task<ListCustomerProjectAssociationData> GetAllCustomerProjectAssociations(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_CustomerProjectAssociations.Any())
+            if (_CustomerProjectAssociations.CustomerProjectAssociationData.Any())
             {
                 return _CustomerProjectAssociations;
             }
@@ -319,31 +318,32 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<CustomerProjectAssociationDto>>> GetAllCustomerProjectAssociationsByUserId(Guid userId ,CancellationToken cancellationToken)
+        public async Task<ListCustomerProjectAssociationData> GetAllCustomerProjectAssociationsByUserId(string userId ,CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            _FilteredLocations.Clear();
-            if (_CustomerProjectAssociations.Any() && _CustomerBusinessUserAssociations.Any())
+            _FilteredLocations.CustomerLocationData.Clear();
+            if (_CustomerProjectAssociations.CustomerProjectAssociationData.Any() && _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationData.Any())
             {
-                CustomerBusinessUserAssociationDto? user = GetCustomerBusinessUserAssociationsByUserId(userId, cancellationToken).Result.Value.FirstOrDefault();
+                CustomerBusinessUserAssociationData? user = GetCustomerBusinessUserAssociationsByUserId(userId, cancellationToken).Result.CustomerBusinessUserAssociationData.FirstOrDefault();
                 if (user != null)
                 {
                     if (user.CustomerBusinessHierarchyList != null)
                     {
-                        List<CustomerHierarchyDto>? customers = JsonConvert.DeserializeObject<List<CustomerHierarchyDto>>(user.CustomerBusinessHierarchyList);
+                        List<CustomerLocationData>? customers = JsonConvert.DeserializeObject<List<CustomerLocationData>>(user.CustomerBusinessHierarchyList);
                         if (customers != null)
                         {
-                            foreach (CustomerHierarchyDto customer in customers)
+                            foreach (CustomerLocationData customer in customers)
                             {
                                 if (customer.IsActive == true)
                                 {
                                     if (customer.CustomerBusinessHierarchyGuid != null)
                                     {
-                                        _FilteredLocations = _CustomerLocations.Where(x => x.CustomerBusinessHierarchyGuid == customer.CustomerBusinessHierarchyGuid).ToList();
-                                        foreach (CustomerHierarchyDto customerLocation in _FilteredLocations)
+                                        List<CustomerLocationData> filteredLocations = _CustomerLocations.CustomerLocationData.Where(x => x.CustomerBusinessHierarchyGuid == customer.CustomerBusinessHierarchyGuid).ToList();
+                                        _FilteredLocations.CustomerLocationData.AddRange(filteredLocations);
+                                        foreach (CustomerLocationData customerLocation in _FilteredLocations.CustomerLocationData)
                                         {
-                                            List<CustomerProjectAssociationDto> customerProjects = _CustomerProjectAssociations.Where(x => x.CustomerLocationGuid == customerLocation.Id).ToList();
-                                            _FilteredCustomerProjectAssociations.AddRange(customerProjects);
+                                            List<CustomerProjectAssociationData> customerProjects = _CustomerProjectAssociations.CustomerProjectAssociationData.Where(x => x.CustomerLocationGuid == customerLocation.Id).ToList();
+                                            _FilteredCustomerProjectAssociations.CustomerProjectAssociationData.AddRange(customerProjects);
                                         }
                                     }
                                 }
@@ -361,10 +361,10 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<CustomerSalesEntityDto>>> GetAllCustomerSalesEntities(CancellationToken cancellationToken)
+        public async Task<ListCustomerSalesEntityData> GetAllCustomerSalesEntities(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_CustomerSalesEntities.Any())
+            if (_CustomerSalesEntities.CustomerSalesEntityData.Any())
             {
                 return _CustomerSalesEntities;
             }
@@ -375,17 +375,17 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<CustomerSalesEntityDto>>> GetAllCustomerSalesByUserIdEntities(Guid userId ,CancellationToken cancellationToken)
+        public async Task<ListCustomerSalesEntityData> GetAllCustomerSalesByUserIdEntities(string userId ,CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            _FilteredCustomerSalesEntities.Clear();
-            if (_CustomerSalesEntities.Any())
+            _FilteredCustomerSalesEntities.CustomerSalesEntityData.Clear();
+            if (_CustomerSalesEntities.CustomerSalesEntityData.Any())
             {
-                Result<List<CustomerHierarchyDto>> locations = await GetCustomerLocationsByUserId(userId, cancellationToken);
-                foreach(CustomerHierarchyDto location in locations.Value)
+                ListCustomerLocationData locations = await GetCustomerLocationsByUserId(userId, cancellationToken);
+                foreach(CustomerLocationData location in locations.CustomerLocationData)
                 {
-                    List<CustomerSalesEntityDto> salesByLocation = _CustomerSalesEntities.Where(x => x.CustomerHierarchyGuid == location.Id).ToList();
-                    _FilteredCustomerSalesEntities.AddRange(salesByLocation);
+                    List<CustomerSalesEntityData> salesByLocation = _CustomerSalesEntities.CustomerSalesEntityData.Where(x => x.CustomerHierarchyGuid == location.Id).ToList();
+                    _FilteredCustomerSalesEntities.CustomerSalesEntityData.AddRange(salesByLocation);
                 }
 
                 return _FilteredCustomerSalesEntities;
@@ -397,10 +397,10 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<CustomerBusinessUserAssociationDto>>> GetCustomerBusinessUserAssociations(CancellationToken cancellationToken)
+        public async Task<ListCustomerBusinessUserAssociationData> GetCustomerBusinessUserAssociations(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_CustomerBusinessUserAssociations.Any())
+            if (_CustomerBusinessUserAssociations.CustomerBusinessUserAssociationData.Any())
             {
                 return _CustomerBusinessUserAssociations;
             }
@@ -410,13 +410,14 @@ namespace Master.Services
                 return _CustomerBusinessUserAssociations;
             }
         }
-        public async Task<Result<List<CustomerBusinessUserAssociationDto>>> GetCustomerBusinessUserAssociationsByUserId(Guid userId, CancellationToken cancellationToken)
+        public async Task<ListCustomerBusinessUserAssociationData> GetCustomerBusinessUserAssociationsByUserId(string userId, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            _FilteredCustomerBusinessUserAssociations.Clear();
-            if (_CustomerBusinessUserAssociations.Any())
+            _FilteredCustomerBusinessUserAssociations.CustomerBusinessUserAssociationData.Clear();
+            if (_CustomerBusinessUserAssociations.CustomerBusinessUserAssociationData.Any())
             {
-                _FilteredCustomerBusinessUserAssociations = _CustomerBusinessUserAssociations.Where(x => x.UserGuid == userId).ToList();
+                List<CustomerBusinessUserAssociationData> filteredCustomerBusinessUserAssociationData = _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationData.Where(x => x.UserGuid == userId).ToList();
+                _FilteredCustomerBusinessUserAssociations.CustomerBusinessUserAssociationData.AddRange(filteredCustomerBusinessUserAssociationData);
                 return _FilteredCustomerBusinessUserAssociations;
             }
             else
@@ -430,10 +431,10 @@ namespace Master.Services
 
         #region Project
 
-        public async Task<Result<List<PlatformHierarchyDto>>> GetAllPlatforms(CancellationToken cancellationToken)
+        public async Task<ListPlatformData> GetAllPlatforms(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Platforms.Any())
+            if (_Platforms.PlatformData.Any())
             {
                 return _Platforms;
             }
@@ -443,13 +444,14 @@ namespace Master.Services
                 return _Platforms;
             }
         }
-        public async Task<Result<List<PlatformHierarchyDto>>> GetPlatformsById(Guid id ,CancellationToken cancellationToken)
+        public async Task<ListPlatformData> GetPlatformsById(string id ,CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Platforms.Any())
+            if (_Platforms.PlatformData.Any())
             {
-                _FilteredPlatforms.Clear();
-                _FilteredPlatforms = _Platforms.Where(x => x.Id == id).ToList();
+                _FilteredPlatforms.PlatformData.Clear();
+                List<PlatformData> filteredPlatforms = _Platforms.PlatformData.Where(x => x.Id == id).ToList();
+                _FilteredPlatforms.PlatformData.AddRange(filteredPlatforms);
                 return _FilteredPlatforms;
             }
             else
@@ -459,10 +461,10 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<ProgramHierarchyDto>>> GetAllPrograms(CancellationToken cancellationToken)
+        public async Task<ListProgramData> GetAllPrograms(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Programs.Any())
+            if (_Programs.ProgramData.Any())
             {
                 return _Programs;
             }
@@ -472,13 +474,14 @@ namespace Master.Services
                 return _Programs;
             }
         }
-        public async Task<Result<List<ProgramHierarchyDto>>> GetProgramsById(Guid id,CancellationToken cancellationToken)
+        public async Task<ListProgramData> GetProgramsById(string id,CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Programs.Any())
+            if (_Programs.ProgramData.Any())
             {
-                _FilteredPrograms.Clear();
-                _FilteredPrograms = _Programs.Where(x => x.Id == id).ToList();
+                _FilteredPrograms.ProgramData.Clear();
+                List<ProgramData> filteredPrograms = _Programs.ProgramData.Where(x => x.Id == id).ToList();
+                _FilteredPrograms.ProgramData.AddRange(filteredPrograms);
                 return _FilteredPrograms;
             }
             else
@@ -488,10 +491,10 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<ProjectHierarchyDto>>> GetAllProjects(CancellationToken cancellationToken)
+        public async Task<ListProjectData> GetAllProjects(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Projects.Any())
+            if (_Projects.ProjectData.Any())
             {
                 return _Projects;
             }
@@ -502,13 +505,14 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<ProjectHierarchyDto>>> GetProjectsById(Guid id, CancellationToken cancellationToken)
+        public async Task<ListProjectData> GetProjectsById(string id, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Projects.Any())
+            if (_Projects.ProjectData.Any())
             {
-                _FilteredProjects.Clear();
-                _FilteredProjects = _Projects.Where(x => x.Id == id).ToList();
+                _FilteredProjects.ProjectData.Clear();
+                List<ProjectData> filteredProjects = _Projects.ProjectData.Where(x => x.Id == id).ToList();
+                _FilteredProjects.ProjectData.AddRange(filteredProjects);
                 return _FilteredProjects;
             }
             else
@@ -518,10 +522,10 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<MilestoneHierarchyDto>>> GetAllMilestones(CancellationToken cancellationToken)
+        public async Task<ListMilestoneData> GetAllMilestones(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Milestones.Any())
+            if (_Milestones.MilestoneData.Any())
             {
                 return _Milestones;
             }
@@ -532,13 +536,14 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<MilestoneHierarchyDto>>> GetMilestonesById(Guid id ,CancellationToken cancellationToken)
+        public async Task<ListMilestoneData> GetMilestonesById(string id ,CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Milestones.Any())
+            if (_Milestones.MilestoneData.Any())
             {
-                _FilteredMilestones.Clear();
-                _FilteredMilestones = _Milestones.Where(x => x.Id == id).ToList();
+                _FilteredMilestones.MilestoneData.Clear();
+                List<MilestoneData> filteredMilestones = _Milestones.MilestoneData.Where(x => x.Id == id).ToList();
+                _FilteredMilestones.MilestoneData.AddRange(filteredMilestones);
                 return _FilteredMilestones;
             }
             else
@@ -552,10 +557,10 @@ namespace Master.Services
 
         #region Vehicle
 
-        public async Task<Result<List<VehicleDto>>> GetAllVehicles(CancellationToken cancellationToken)
+        public async Task<ListVehicleData> GetAllVehicles(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Vehicles.Any())
+            if (_Vehicles.VehicleData.Any())
             {
                 return _Vehicles;
             }
@@ -566,13 +571,14 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<VehicleDto>>> GetVehiclesById(Guid id, CancellationToken cancellationToken)
+        public async Task<ListVehicleData> GetVehiclesById(string id, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Vehicles.Any())
+            if (_Vehicles.VehicleData.Any())
             {
-                _FilteredVehicles.Clear();
-                _FilteredVehicles = _Vehicles.Where(x => x.Id == id).ToList();
+                _FilteredVehicles.VehicleData.Clear();
+                List<VehicleData> filteredVehicles = _Vehicles.VehicleData.Where(x => x.Id == id).ToList();
+                _FilteredVehicles.VehicleData.AddRange(filteredVehicles);
                 return _FilteredVehicles;
             }
             else
@@ -582,13 +588,14 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<VehicleDto>>> GetVehiclesByDisplay(string vehicleDisplay , CancellationToken cancellationToken)
+        public async Task<ListVehicleData> GetVehiclesByDisplay(string vehicleDisplay , CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Vehicles.Any())
+            if (_Vehicles.VehicleData.Any())
             {
-                _FilteredVehicles.Clear();
-                _FilteredVehicles = _Vehicles.Where(x => x.VehicleDisplay == vehicleDisplay).ToList();
+                _FilteredVehicles.VehicleData.Clear();
+                List<VehicleData> filteredVehicles = _Vehicles.VehicleData.Where(x => x.VehicleDisplay == vehicleDisplay).ToList();
+                _FilteredVehicles.VehicleData.AddRange(filteredVehicles);
                 return _FilteredVehicles;
             }
             else
@@ -617,18 +624,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _CurrencyHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCurrenciesQuery, List<CurrencyDto>>>();
+                    _CurrencyHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCurrenciesQuery, List<CurrencyData>>>();
                     _CurrencyRefreshInProgress = true;
                     GetCurrenciesQuery query = new GetCurrenciesQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<CurrencyDto>> results = await _CurrencyHandler.Handle(query, cancellationToken);
+                    Result<List<CurrencyData>> results = await _CurrencyHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _Currencies.Clear();
-                        _Currencies = results.Value;
+                        _Currencies.CurrencyData.Clear();
+                        _Currencies.CurrencyData.AddRange(results.Value);
                     }
 
                     _CurrencyRefreshInProgress = false;
@@ -648,18 +655,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _CustomerHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllCustomerBusinessUnitsQuery, List<CustomerBusinessHierarchyDto>>>();
+                    _CustomerHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllCustomerBusinessUnitsQuery, List<CustomerData>>>();
                     _CustomerRefreshInProgress = true;
                     GetAllCustomerBusinessUnitsQuery query = new GetAllCustomerBusinessUnitsQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<CustomerBusinessHierarchyDto>> results = await _CustomerHandler.Handle(query, cancellationToken);
+                    Result<List<CustomerData>> results = await _CustomerHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _Customers.Clear();
-                        _Customers = results.Value;
+                        _Customers.CustomerData.Clear();
+                        _Customers.CustomerData.AddRange(results.Value);
                     }
 
                     _CustomerRefreshInProgress = false;
@@ -676,18 +683,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _CustomerLocationHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllCustomerLocationsQuery, List<CustomerHierarchyDto>>>();
+                    _CustomerLocationHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllCustomerLocationsQuery, List<CustomerLocationData>>>();
                     _CustomerLocationRefreshInProgress = true;
                     GetAllCustomerLocationsQuery query = new GetAllCustomerLocationsQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<CustomerHierarchyDto>> results = await _CustomerLocationHandler.Handle(query, cancellationToken);
+                    Result<List<CustomerLocationData>> results = await _CustomerLocationHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _CustomerLocations.Clear();
-                        _CustomerLocations = results.Value;
+                        _CustomerLocations.CustomerLocationData.Clear();
+                        _CustomerLocations.CustomerLocationData.AddRange(results.Value);
                     }
 
                     _CustomerLocationRefreshInProgress = false;
@@ -704,18 +711,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _CustomerProjectAssociationsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllCustomerProjectAssociationsQuery, List<CustomerProjectAssociationDto>>>();
+                    _CustomerProjectAssociationsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllCustomerProjectAssociationsQuery, List<CustomerProjectAssociationData>>>();
                     _CustomerProjectAssociationsRefreshInProgress = true;
                     GetAllCustomerProjectAssociationsQuery query = new GetAllCustomerProjectAssociationsQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<CustomerProjectAssociationDto>> results = await _CustomerProjectAssociationsHandler.Handle(query, cancellationToken);
+                    Result<List<CustomerProjectAssociationData>> results = await _CustomerProjectAssociationsHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _CustomerProjectAssociations.Clear();
-                        _CustomerProjectAssociations = results.Value;
+                        _CustomerProjectAssociations.CustomerProjectAssociationData.Clear();
+                        _CustomerProjectAssociations.CustomerProjectAssociationData.AddRange(results.Value);
                     }
 
                     _CustomerProjectAssociationsRefreshInProgress = false;
@@ -732,18 +739,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _CustomerSalesEntitiesHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllCustomerSalesEntitiesQuery, List <CustomerSalesEntityDto>>>();
+                    _CustomerSalesEntitiesHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllCustomerSalesEntitiesQuery, List <CustomerSalesEntityData>>>();
                     _CustomerSalesEntitiesRefreshInProgress = true;
                     GetAllCustomerSalesEntitiesQuery query = new GetAllCustomerSalesEntitiesQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<CustomerSalesEntityDto>> results = await _CustomerSalesEntitiesHandler.Handle(query, cancellationToken);
+                    Result<List<CustomerSalesEntityData>> results = await _CustomerSalesEntitiesHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _CustomerSalesEntities.Clear();
-                        _CustomerSalesEntities = results.Value;
+                        _CustomerSalesEntities.CustomerSalesEntityData.Clear();
+                        _CustomerSalesEntities.CustomerSalesEntityData.AddRange(results.Value);
                     }
 
                     _CustomerSalesEntitiesRefreshInProgress = false;
@@ -760,18 +767,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _CustomerBusinessUserAssociationsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCustomerBusinessUserAssociationsQuery, List<CustomerBusinessUserAssociationDto>>>();
+                    _CustomerBusinessUserAssociationsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCustomerBusinessUserAssociationsQuery, List<CustomerBusinessUserAssociationData>>>();
                     _CustomerBusinessUserAssociationsRefreshInProgress = true;
                     GetCustomerBusinessUserAssociationsQuery query = new GetCustomerBusinessUserAssociationsQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<CustomerBusinessUserAssociationDto>> results = await _CustomerBusinessUserAssociationsHandler.Handle(query, cancellationToken);
+                    Result<List<CustomerBusinessUserAssociationData>> results = await _CustomerBusinessUserAssociationsHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _CustomerBusinessUserAssociations.Clear();
-                        _CustomerBusinessUserAssociations = results.Value;
+                        _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationData.Clear();
+                        _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationData.AddRange(results.Value);
                     }
 
                     _CustomerBusinessUserAssociationsRefreshInProgress = false;
@@ -792,18 +799,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _PlatformHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllPlatformHierarchiesQuery, List<PlatformHierarchyDto>>>();
+                    _PlatformHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllPlatformHierarchiesQuery, List<PlatformData>>>();
                     _PlatformRefreshInProgress = true;
                     GetAllPlatformHierarchiesQuery query = new GetAllPlatformHierarchiesQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<PlatformHierarchyDto>> results = await _PlatformHandler.Handle(query, cancellationToken);
+                    Result<List<PlatformData>> results = await _PlatformHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _Platforms.Clear();
-                        _Platforms = results.Value;
+                        _Platforms.PlatformData.Clear();
+                        _Platforms.PlatformData.AddRange(results.Value);
                     }
 
                     _PlatformRefreshInProgress = false;
@@ -820,18 +827,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _ProgramHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllProgramHierarchiesQuery, List<ProgramHierarchyDto>>>();
+                    _ProgramHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllProgramHierarchiesQuery, List<ProgramData>>>();
                     _ProgramRefreshInProgress = true;
                     GetAllProgramHierarchiesQuery query = new GetAllProgramHierarchiesQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<ProgramHierarchyDto>> results = await _ProgramHandler.Handle(query, cancellationToken);
+                    Result<List<ProgramData>> results = await _ProgramHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _Programs.Clear();
-                        _Programs = results.Value;
+                        _Programs.ProgramData.Clear();
+                        _Programs.ProgramData.AddRange(results.Value);
                     }
 
                     _ProgramRefreshInProgress = false;
@@ -848,18 +855,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _ProjectHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllProjectHierarchiesQuery, List<ProjectHierarchyDto>>>();
+                    _ProjectHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllProjectHierarchiesQuery, List<ProjectData>>>();
                     _ProjectRefreshInProgress = true;
                     GetAllProjectHierarchiesQuery query = new GetAllProjectHierarchiesQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<ProjectHierarchyDto>> results = await _ProjectHandler.Handle(query, cancellationToken);
+                    Result<List<ProjectData>> results = await _ProjectHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _Projects.Clear();
-                        _Projects = results.Value;
+                        _Projects.ProjectData.Clear();
+                        _Projects.ProjectData.AddRange(results.Value);
                     }
 
                     _ProjectRefreshInProgress = false;
@@ -876,18 +883,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _MilestoneHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllMilestoneHierarchiesQuery, List<MilestoneHierarchyDto>>>();
+                    _MilestoneHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllMilestoneHierarchiesQuery, List<MilestoneData>>>();
                     _MilestoneRefreshInProgress = true;
                     GetAllMilestoneHierarchiesQuery query = new GetAllMilestoneHierarchiesQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<MilestoneHierarchyDto>> results = await _MilestoneHandler.Handle(query, cancellationToken);
+                    Result<List<MilestoneData>> results = await _MilestoneHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _Milestones.Clear();
-                        _Milestones = results.Value;
+                        _Milestones.MilestoneData.Clear();
+                        _Milestones.MilestoneData.AddRange(results.Value);
                     }
 
                     _MilestoneRefreshInProgress = false;
@@ -908,18 +915,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _VehicleHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllVehiclesQuery, List<VehicleDto>>>();
+                    _VehicleHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllVehiclesQuery, List<VehicleData>>>();
                     _VehicleRefreshInProgress = true;
                     GetAllVehiclesQuery query = new GetAllVehiclesQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<VehicleDto>> results = await _VehicleHandler.Handle(query, cancellationToken);
+                    Result<List<VehicleData>> results = await _VehicleHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _Vehicles.Clear();
-                        _Vehicles = results.Value;
+                        _Vehicles.VehicleData.Clear();
+                        _Vehicles.VehicleData.AddRange(results.Value);
                     }
 
                     _VehicleRefreshInProgress = false;
@@ -936,17 +943,17 @@ namespace Master.Services
 
         void PopulateSampleData()
         {
-            _Currencies = (List<CurrencyDto>)SampleMasterDataService.PopulateCurrencyData();
-            _Customers = (List<CustomerBusinessHierarchyDto>)SampleMasterDataService.PopulateCustomerData();
-            _CustomerLocations = (List<CustomerHierarchyDto>)SampleMasterDataService.PopulateCustomerLocationsData();
-            _CustomerSalesEntities = (List<CustomerSalesEntityDto>)SampleMasterDataService.PopulateCustomerSalesEntityData();
-            _CustomerProjectAssociations = (List<CustomerProjectAssociationDto>)SampleMasterDataService.PopulateCustomerProjectAssociationData();
-            _CustomerBusinessUserAssociations = (List<CustomerBusinessUserAssociationDto>)SampleMasterDataService.PopulateCustomerBusinessUserAssociationData();
-            _Platforms = (List<PlatformHierarchyDto>)SampleMasterDataService.PopulatePlatformData();
-            _Programs = (List<ProgramHierarchyDto>)SampleMasterDataService.PopulateProgramData();
-            _Projects = (List<ProjectHierarchyDto>)SampleMasterDataService.PopulateProjectData();
-            _Milestones = (List<MilestoneHierarchyDto>)SampleMasterDataService.PopulateMilestoneData();
-            _Vehicles = (List<VehicleDto>)SampleMasterDataService.PopulateVehicleData();
+            _Currencies = SampleMasterDataService.PopulateCurrencyData();
+            _Customers = SampleMasterDataService.PopulateCustomerData();
+            _CustomerLocations = SampleMasterDataService.PopulateCustomerLocationsData();
+            _CustomerSalesEntities = SampleMasterDataService.PopulateCustomerSalesEntityData();
+            _CustomerProjectAssociations = SampleMasterDataService.PopulateCustomerProjectAssociationData();
+            _CustomerBusinessUserAssociations = SampleMasterDataService.PopulateCustomerBusinessUserAssociationData();
+            _Platforms = SampleMasterDataService.PopulatePlatformData();
+            _Programs = SampleMasterDataService.PopulateProgramData();
+            _Projects = SampleMasterDataService.PopulateProjectData();
+            _Milestones = SampleMasterDataService.PopulateMilestoneData();
+            _Vehicles = SampleMasterDataService.PopulateVehicleData();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Master.CQRS.Query.Customer
 {
-    public class GetAllCustomerProjectAssociationsQuery : IQuery<List<CustomerProjectAssociationDto>>
+    public class GetAllCustomerProjectAssociationsQuery : IQuery<List<CustomerProjectAssociationData>>
     {
         public int? Position
         { get; set; }

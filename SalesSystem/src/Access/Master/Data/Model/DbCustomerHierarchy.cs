@@ -36,7 +36,7 @@ namespace Master.Data.Model
         { get; set; }
         public Guid? ModifiedBy
         { get; set; }
-        public bool? IsActive
+        public bool IsActive
         { get; set; }
         public short? SyncToCPD
         { get; set; }
