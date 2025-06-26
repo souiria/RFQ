@@ -12,44 +12,44 @@ package master;
 service Master {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply);
-  rpc GetCurrencyData (CurrencyGrpcRequest) returns (ListCurrencyData);
-  rpc GetCurrencyDataStream (CurrencyGrpcRequest) returns (stream CurrencyData);
-  rpc GetCurrencyDataById (CurrencyByIdGrpcRequest) returns (ListCurrencyData);
+  rpc GetCurrencyGrpc (CurrencyGrpcRequest) returns (ListCurrencyData);
+  rpc GetCurrencyGrpcStream (CurrencyGrpcRequest) returns (stream CurrencyData);
+  rpc GetCurrencyGrpcById (CurrencyByIdGrpcRequest) returns (ListCurrencyData);
 
-  rpc GetCustomerData (CustomerGrpcRequest) returns (ListCustomerData);
-  rpc GetCustomerDataStream (CustomerGrpcRequest) returns (stream CustomerData);
-  rpc GetCustomerDataById (CustomerByIdGrpcRequest) returns (ListCustomerData);
-  rpc GetCustomerLocationData (CustomerLocationGrpcRequest) returns (ListCustomerLocationData);
-  rpc GetCustomerLocationDataStream (CustomerLocationGrpcRequest) returns (stream CustomerLocationData);
-  rpc GetCustomerLocationDataById (CustomerLocationByIdGrpcRequest) returns (ListCustomerLocationData);
-  rpc GetCustomerLocationDataByUserId (CustomerLocationByUserIdGrpcRequest) returns (ListCustomerLocationData);
-  rpc GetCustomerSalesEntityData (CustomerSalesEntityGrpcRequest) returns (ListCustomerSalesEntityData);
-  rpc GetCustomerSalesEntityDataStream (CustomerSalesEntityGrpcRequest) returns (stream CustomerSalesEntityData);
-  rpc GetCustomerSalesEntityDataByUserId (CustomerSalesEntityByUserIdGrpcRequest) returns (ListCustomerSalesEntityData);
-  rpc GetCustomerProjectAssociationData (CustomerProjectAssociationGrpcRequest) returns (ListCustomerProjectAssociationData);
-  rpc GetCustomerProjectAssociationDataStream (CustomerProjectAssociationGrpcRequest) returns (stream CustomerProjectAssociationData);
-  rpc GetCustomerProjectAssociationDataByUserId (CustomerProjectAssociationByUserIdGrpcRequest) returns (ListCustomerProjectAssociationData);
-  rpc GetCustomerBusinessUserAssociationData (CustomerBusinessUserAssociationGrpcRequest) returns (ListCustomerBusinessUserAssociationData);
-  rpc GetCustomerBusinessUserAssociationDataStream (CustomerBusinessUserAssociationGrpcRequest) returns (stream CustomerBusinessUserAssociationData);
-  rpc GetCustomerBusinessUserAssociationDataByUserId (CustomerBusinessUserAssociationByUserIdGrpcRequest) returns (ListCustomerBusinessUserAssociationData);
+  rpc GetCustomerGrpc (CustomerGrpcRequest) returns (ListCustomerData);
+  rpc GetCustomerGrpcStream (CustomerGrpcRequest) returns (stream CustomerData);
+  rpc GetCustomerGrpcById (CustomerByIdGrpcRequest) returns (ListCustomerData);
+  rpc GetCustomerLocationGrpc (CustomerLocationGrpcRequest) returns (ListCustomerLocationData);
+  rpc GetCustomerLocationGrpcStream (CustomerLocationGrpcRequest) returns (stream CustomerLocationData);
+  rpc GetCustomerLocationGrpcById (CustomerLocationByIdGrpcRequest) returns (ListCustomerLocationData);
+  rpc GetCustomerLocationGrpcByUserId (CustomerLocationByUserIdGrpcRequest) returns (ListCustomerLocationData);
+  rpc GetCustomerSalesEntityGrpc (CustomerSalesEntityGrpcRequest) returns (ListCustomerSalesEntityData);
+  rpc GetCustomerSalesEntityGrpcStream (CustomerSalesEntityGrpcRequest) returns (stream CustomerSalesEntityData);
+  rpc GetCustomerSalesEntityGrpcByUserId (CustomerSalesEntityByUserIdGrpcRequest) returns (ListCustomerSalesEntityData);
+  rpc GetCustomerProjectAssociationGrpc (CustomerProjectAssociationGrpcRequest) returns (ListCustomerProjectAssociationData);
+  rpc GetCustomerProjectAssociationGrpcStream (CustomerProjectAssociationGrpcRequest) returns (stream CustomerProjectAssociationData);
+  rpc GetCustomerProjectAssociationGrpcByUserId (CustomerProjectAssociationByUserIdGrpcRequest) returns (ListCustomerProjectAssociationData);
+  rpc GetCustomerBusinessUserAssociationGrpc (CustomerBusinessUserAssociationGrpcRequest) returns (ListCustomerBusinessUserAssociationData);
+  rpc GetCustomerBusinessUserAssociationGrpcStream (CustomerBusinessUserAssociationGrpcRequest) returns (stream CustomerBusinessUserAssociationData);
+  rpc GetCustomerBusinessUserAssociationGrpcByUserId (CustomerBusinessUserAssociationByUserIdGrpcRequest) returns (ListCustomerBusinessUserAssociationData);
 
-  rpc GetMilestoneData (MilestoneGrpcRequest) returns (ListMilestoneData);
-  rpc GetMilestoneDataStream (MilestoneGrpcRequest) returns (stream MilestoneData);
-  rpc GetMilestoneDataById (MilestoneByIdGrpcRequest) returns (ListMilestoneData);
-  rpc GetPlatformData (PlatformGrpcRequest) returns (ListPlatformData);
-  rpc GetPlatformDataStream (PlatformGrpcRequest) returns (stream PlatformData);
-  rpc GetPlatformDataById (PlatformByIdGrpcRequest) returns (ListPlatformData);
-  rpc GetProgramData (ProgramGrpcRequest) returns (ListProgramData);
-  rpc GetProgramDataStream (ProgramGrpcRequest) returns (stream ProgramData);
-  rpc GetProgramDataById (ProgramByIdGrpcRequest) returns (ListProgramData);
-  rpc GetProjectData (ProjectGrpcRequest) returns (ListProjectData);
-  rpc GetProjectDataStream (ProjectGrpcRequest) returns (stream ProjectData);
-  rpc GetProjectDataById (ProjectByIdGrpcRequest) returns (ListProjectData);
+  rpc GetMilestoneGrpc (MilestoneGrpcRequest) returns (ListMilestoneData);
+  rpc GetMilestoneGrpcStream (MilestoneGrpcRequest) returns (stream MilestoneData);
+  rpc GetMilestoneGrpcById (MilestoneByIdGrpcRequest) returns (ListMilestoneData);
+  rpc GetPlatformGrpc (PlatformGrpcRequest) returns (ListPlatformData);
+  rpc GetPlatformGrpcStream (PlatformGrpcRequest) returns (stream PlatformData);
+  rpc GetPlatformGrpcById (PlatformByIdGrpcRequest) returns (ListPlatformData);
+  rpc GetProgramGrpc (ProgramGrpcRequest) returns (ListProgramData);
+  rpc GetProgramGrpcStream (ProgramGrpcRequest) returns (stream ProgramData);
+  rpc GetProgramGrpcById (ProgramByIdGrpcRequest) returns (ListProgramData);
+  rpc GetProjectGrpc (ProjectGrpcRequest) returns (ListProjectData);
+  rpc GetProjectGrpcStream (ProjectGrpcRequest) returns (stream ProjectData);
+  rpc GetProjectGrpcById (ProjectByIdGrpcRequest) returns (ListProjectData);
 
-  rpc GetVehicleData (VehicleGrpcRequest) returns (ListVehicleData);
-  rpc GetVehicleDataStream (VehicleGrpcRequest) returns (stream VehicleData);
-  rpc GetVehicleDataById (VehicleByIdGrpcRequest) returns (ListVehicleData);
-  rpc GetVehicleDataByDisplay (VehicleByDisplayGrpcRequest) returns (ListVehicleData);
+  rpc GetVehicleGrpc (VehicleGrpcRequest) returns (ListVehicleData);
+  rpc GetVehicleGrpcStream (VehicleGrpcRequest) returns (stream VehicleData);
+  rpc GetVehicleGrpcById (VehicleByIdGrpcRequest) returns (ListVehicleData);
+  rpc GetVehicleGrpcByDisplay (VehicleByDisplayGrpcRequest) returns (ListVehicleData);
 }
 
 // The request message containing the user's name.

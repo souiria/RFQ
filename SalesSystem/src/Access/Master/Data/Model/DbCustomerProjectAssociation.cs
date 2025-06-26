@@ -1,6 +1,4 @@
-﻿using SharedKernel;
-
-namespace Master.Data.Model
+﻿namespace Master.Data.Model
 {
     public class DbCustomerProjectAssociation : IAggregateRoot
     {
@@ -18,7 +16,7 @@ namespace Master.Data.Model
         { get; set; }
         public DateTime? ModifiedDate
         { get; set; }
-        public bool IsActive
+        public bool? IsActive
         { get; set; }
     }
 }

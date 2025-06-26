@@ -1,6 +1,6 @@
 ﻿namespace Emacs.Data.CQRS.Query
 {
-    public class GetPartGroupsQuery : IQuery<List<PartGroupsData>>
+    public class GetPartGroupsQuery : IQuery<List<PartGroupsGrpc>>
     {
         public int? Position
         { get; set; }

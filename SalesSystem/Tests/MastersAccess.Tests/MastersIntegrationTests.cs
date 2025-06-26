@@ -28,22 +28,8 @@ namespace MastersAccess.Tests
         {
             HelloRequest request = new HelloRequest();
             request.Name = "TestName";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.SayHello));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.SayHello)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
             Task<HelloReply> helloReply = _GrpcService.SayHello(request, serverCallContext);
 
             string replyString = "Hello TestName";
@@ -54,524 +40,256 @@ namespace MastersAccess.Tests
         #region Currency
 
         [Test]
-        public void GetCurrencyDataTest_Success()
+        public void GetCurrencyGrpcTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             CurrencyGrpcRequest currencyGrpcRequest = new CurrencyGrpcRequest();
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCurrencyData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCurrencyData> getCurrencyDataReply = _GrpcService.GetCurrencyData(currencyGrpcRequest, serverCallContext);
-            Assert.That(getCurrencyDataReply.Result.CurrencyData, Is.Not.Null);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCurrencyGrpc));
+
+            Task<ListCurrencyData> getCurrencyGrpcReply = _GrpcService.GetCurrencyGrpc(currencyGrpcRequest, serverCallContext);
+            Assert.That(getCurrencyGrpcReply.Result.CurrencyData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getCurrencyDataReply.Result.CurrencyData.Count, countConstraint);
+            Assert.That(getCurrencyGrpcReply.Result.CurrencyData.Count, countConstraint);
 
         }
 
         [Test]
-        public void GetCurrencyDataByIdTest_Success()
+        public void GetCurrencyGrpcByIdTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             CurrencyByIdGrpcRequest currencyGrpcRequest = new CurrencyByIdGrpcRequest();
             currencyGrpcRequest.Id = "ec44e5cd-5832-48dd-b5a3-440b5cb49450";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCurrencyGrpcById));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCurrencyDataById)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCurrencyData> getCurrencyDataByIdReply = _GrpcService.GetCurrencyDataById(currencyGrpcRequest, serverCallContext);
+            Task<ListCurrencyData> getCurrencyGrpcByIdReply = _GrpcService.GetCurrencyGrpcById(currencyGrpcRequest, serverCallContext);
 
-            Assert.That(getCurrencyDataByIdReply.Result.CurrencyData, Is.Not.Null);
+            Assert.That(getCurrencyGrpcByIdReply.Result.CurrencyData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCurrencyDataByIdReply.Result.CurrencyData.Count, countConstraint);
+            Assert.That(getCurrencyGrpcByIdReply.Result.CurrencyData.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestName");
-            Assert.That(getCurrencyDataByIdReply.Result.CurrencyData.First().CurrencyName, nameConstraint);
+            Assert.That(getCurrencyGrpcByIdReply.Result.CurrencyData.First().CurrencyName, nameConstraint);
         }
 
         [Test]
-        public void GetCurrencyDataByIdTest_Fails()
+        public void GetCurrencyGrpcByIdTest_Fails()
         {
-            CancellationToken token = CancellationToken.None;
             CurrencyByIdGrpcRequest currencyGrpcRequest = new CurrencyByIdGrpcRequest();
             currencyGrpcRequest.Id = Guid.NewGuid().ToString();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCurrencyGrpcById));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCurrencyDataById)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCurrencyData> getCurrencyDataByIdReply = _GrpcService.GetCurrencyDataById(currencyGrpcRequest, serverCallContext);
+            Task<ListCurrencyData> getCurrencyGrpcByIdReply = _GrpcService.GetCurrencyGrpcById(currencyGrpcRequest, serverCallContext);
 
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getCurrencyDataByIdReply.Result.CurrencyData.Count, countConstraint);
+            Assert.That(getCurrencyGrpcByIdReply.Result.CurrencyData.Count, countConstraint);
         }
 
         #endregion
+
         #region Customer
 
         [Test]
-        public void GetCustomerDataTest_Success()
+        public void GetCustomerGrpcTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             CustomerGrpcRequest customerGrpcRequest = new CustomerGrpcRequest();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerGrpc));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCustomerData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCustomerData> getCustomerData = _GrpcService.GetCustomerData(customerGrpcRequest, serverCallContext);
+            Task<ListCustomerData> getCustomerGrpc = _GrpcService.GetCustomerGrpc(customerGrpcRequest, serverCallContext);
             
-            Assert.That(getCustomerData.Result.CustomerData, Is.Not.Null);
+            Assert.That(getCustomerGrpc.Result.CustomerData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getCustomerData.Result.CustomerData.Count, countConstraint);
+            Assert.That(getCustomerGrpc.Result.CustomerData.Count, countConstraint);
         }
 
-        public void GetCustomerDataByIdTest_Success()
+        public void GetCustomerGrpcByIdTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             CustomerByIdGrpcRequest customerByIdGrpcRequest = new CustomerByIdGrpcRequest();
             customerByIdGrpcRequest.Id = "46711693-0ea4-4f9a-86c1-4973308bf795";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerGrpcById));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCustomerDataById)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCustomerData> getCustomerDataByIdReply = _GrpcService.GetCustomerDataById(customerByIdGrpcRequest, serverCallContext);
+            Task<ListCustomerData> getCustomerGrpcByIdReply = _GrpcService.GetCustomerGrpcById(customerByIdGrpcRequest, serverCallContext);
 
-            Assert.That(getCustomerDataByIdReply.Result.CustomerData, Is.Not.Null);
+            Assert.That(getCustomerGrpcByIdReply.Result.CustomerData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCustomerDataByIdReply.Result.CustomerData.Count, countConstraint);
+            Assert.That(getCustomerGrpcByIdReply.Result.CustomerData.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestGroupName");
-            Assert.That(getCustomerDataByIdReply.Result.CustomerData.First().CustomerBusinessGroupName, nameConstraint);
+            Assert.That(getCustomerGrpcByIdReply.Result.CustomerData.First().CustomerBusinessGroupName, nameConstraint);
         }
         [Test]
-        public void GetCustomerDataByIdTest_Fail()
+        public void GetCustomerGrpcByIdTest_Fail()
         {
-            CancellationToken token = CancellationToken.None;
             CustomerByIdGrpcRequest customerByIdGrpcRequest = new CustomerByIdGrpcRequest();
             customerByIdGrpcRequest.Id = Guid.NewGuid().ToString();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerGrpcById));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCustomerDataById)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCustomerData> getCustomerDataByIdReply = _GrpcService.GetCustomerDataById(customerByIdGrpcRequest, serverCallContext);
+            Task<ListCustomerData> getCustomerGrpcByIdReply = _GrpcService.GetCustomerGrpcById(customerByIdGrpcRequest, serverCallContext);
 
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getCustomerDataByIdReply.Result.CustomerData.Count, countConstraint);
+            Assert.That(getCustomerGrpcByIdReply.Result.CustomerData.Count, countConstraint);
         }
 
         [Test]
         public void GetCustomerLocationTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             CustomerLocationGrpcRequest customerGrpcRequest = new CustomerLocationGrpcRequest();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerLocationGrpc));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCustomerLocationData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCustomerLocationData> getCustomerLocationData = _GrpcService.GetCustomerLocationData(customerGrpcRequest, serverCallContext);
+            Task<ListCustomerLocationData> getCustomerLocationGrpc = _GrpcService.GetCustomerLocationGrpc(customerGrpcRequest, serverCallContext);
 
-            Assert.That(getCustomerLocationData.Result.CustomerLocationData, Is.Not.Null);
+            Assert.That(getCustomerLocationGrpc.Result.CustomerLocationData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getCustomerLocationData.Result.CustomerLocationData.Count, countConstraint);
+            Assert.That(getCustomerLocationGrpc.Result.CustomerLocationData.Count, countConstraint);
         }
 
         [Test]
-        public void GetCustomerLocationDataByIdTest_Success()
+        public void GetCustomerLocationGrpcByIdTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             CustomerLocationByIdGrpcRequest customerLocationByIdGrpcRequest = new CustomerLocationByIdGrpcRequest();
             customerLocationByIdGrpcRequest.Id = "3759c3b6-aceb-475e-9ba3-74f13e441e2d";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerLocationGrpcById));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCustomerLocationDataById)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCustomerLocationData> getCustomerLocationDataByIdReply = _GrpcService.GetCustomerLocationDataById(customerLocationByIdGrpcRequest, serverCallContext);
+            Task<ListCustomerLocationData> getCustomerLocationGrpcByIdReply = _GrpcService.GetCustomerLocationGrpcById(customerLocationByIdGrpcRequest, serverCallContext);
 
-            Assert.That(getCustomerLocationDataByIdReply.Result.CustomerLocationData, Is.Not.Null);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerLocationData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCustomerLocationDataByIdReply.Result.CustomerLocationData.Count, countConstraint);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerLocationData.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestCustomerName");
-            Assert.That(getCustomerLocationDataByIdReply.Result.CustomerLocationData.First().CustomerName, nameConstraint);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerLocationData.First().CustomerName, nameConstraint);
         }
 
         [Test]
-        public void GetCustomerLocationDataByIdTest_Fail()
+        public void GetCustomerLocationGrpcByIdTest_Fail()
         {
-            CancellationToken token = CancellationToken.None;
             CustomerLocationByIdGrpcRequest customerLocationByIdGrpcRequest = new CustomerLocationByIdGrpcRequest();
             customerLocationByIdGrpcRequest.Id = Guid.NewGuid().ToString();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerLocationGrpcById));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCustomerLocationDataById)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCustomerLocationData> getCustomerLocationDataByIdReply = _GrpcService.GetCustomerLocationDataById(customerLocationByIdGrpcRequest, serverCallContext);
+            Task<ListCustomerLocationData> getCustomerLocationGrpcByIdReply = _GrpcService.GetCustomerLocationGrpcById(customerLocationByIdGrpcRequest, serverCallContext);
 
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getCustomerLocationDataByIdReply.Result.CustomerLocationData.Count, countConstraint);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerLocationData.Count, countConstraint);
         }
 
         [Test]
-        public void GetCustomerLocationDataByUserIdTest_Success()
+        public void GetCustomerLocationGrpcByUserIdTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             CustomerLocationByUserIdGrpcRequest customerLocationByUserIdGrpcRequest = new CustomerLocationByUserIdGrpcRequest();
             customerLocationByUserIdGrpcRequest.UserId = "83853662-6d20-41b0-b6ac-fd3271406b6b";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerLocationGrpcByUserId));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCustomerLocationDataByUserId)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCustomerLocationData> getCustomerLocationDataByUserIdReply = _GrpcService.GetCustomerLocationDataByUserId(customerLocationByUserIdGrpcRequest, serverCallContext);
+            Task<ListCustomerLocationData> getCustomerLocationGrpcByUserIdReply = _GrpcService.GetCustomerLocationGrpcByUserId(customerLocationByUserIdGrpcRequest, serverCallContext);
 
-            Assert.That(getCustomerLocationDataByUserIdReply.Result.CustomerLocationData, Is.Not.Null);
+            Assert.That(getCustomerLocationGrpcByUserIdReply.Result.CustomerLocationData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCustomerLocationDataByUserIdReply.Result.CustomerLocationData.Count, countConstraint);
+            Assert.That(getCustomerLocationGrpcByUserIdReply.Result.CustomerLocationData.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestCustomerName");
-            Assert.That(getCustomerLocationDataByUserIdReply.Result.CustomerLocationData.First().CustomerName, nameConstraint);
+            Assert.That(getCustomerLocationGrpcByUserIdReply.Result.CustomerLocationData.First().CustomerName, nameConstraint);
             NUnit.Framework.Constraints.EqualConstraint idConstraint = Is.EqualTo("3759c3b6-aceb-475e-9ba3-74f13e441e2d");
-            Assert.That(getCustomerLocationDataByUserIdReply.Result.CustomerLocationData.First().Id, idConstraint);
+            Assert.That(getCustomerLocationGrpcByUserIdReply.Result.CustomerLocationData.First().Id, idConstraint);
         }
         [Test]
-        public void GetCustomerLocationDataByUserIdTest_Fails()
+        public void GetCustomerLocationGrpcByUserIdTest_Fails()
         {
-            CancellationToken token = CancellationToken.None;
             CustomerLocationByUserIdGrpcRequest customerLocationByUserIdGrpcRequest = new CustomerLocationByUserIdGrpcRequest();
             customerLocationByUserIdGrpcRequest.UserId = Guid.NewGuid().ToString();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerLocationGrpcByUserId));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCustomerLocationDataByUserId)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCustomerLocationData> getCustomerLocationDataByUserIdReply = _GrpcService.GetCustomerLocationDataByUserId(customerLocationByUserIdGrpcRequest, serverCallContext);
+            Task<ListCustomerLocationData> getCustomerLocationGrpcByUserIdReply = _GrpcService.GetCustomerLocationGrpcByUserId(customerLocationByUserIdGrpcRequest, serverCallContext);
 
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getCustomerLocationDataByUserIdReply.Result.CustomerLocationData.Count, countConstraint);
+            Assert.That(getCustomerLocationGrpcByUserIdReply.Result.CustomerLocationData.Count, countConstraint);
         }
 
         [Test]
-        public void GetCustomerSalesEntityDataTest_Success()
+        public void GetCustomerSalesEntityGrpcTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             CustomerSalesEntityGrpcRequest customerSalesEntityGrpcRequest = new CustomerSalesEntityGrpcRequest();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerSalesEntityGrpc));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCustomerSalesEntityData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCustomerSalesEntityData> getCustomerSalesEntityData = _GrpcService.GetCustomerSalesEntityData(customerSalesEntityGrpcRequest, serverCallContext);
+            Task<ListCustomerSalesEntityData> getCustomerSalesEntityGrpc = _GrpcService.GetCustomerSalesEntityGrpc(customerSalesEntityGrpcRequest, serverCallContext);
 
-            Assert.That(getCustomerSalesEntityData.Result.CustomerSalesEntityData, Is.Not.Null);
+            Assert.That(getCustomerSalesEntityGrpc.Result.CustomerSalesEntityData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getCustomerSalesEntityData.Result.CustomerSalesEntityData.Count, countConstraint);
+            Assert.That(getCustomerSalesEntityGrpc.Result.CustomerSalesEntityData.Count, countConstraint);
         }
 
         [Test]
         public void GetCustomerSalesEmntityDataByUserIdTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             CustomerSalesEntityByUserIdGrpcRequest customerLocationByIdGrpcRequest = new CustomerSalesEntityByUserIdGrpcRequest();
             customerLocationByIdGrpcRequest.UserId = "83853662-6d20-41b0-b6ac-fd3271406b6b";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerSalesEntityGrpcByUserId));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCustomerSalesEntityDataByUserId)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCustomerSalesEntityData> getCustomerLocationDataByIdReply = _GrpcService.GetCustomerSalesEntityDataByUserId(customerLocationByIdGrpcRequest, serverCallContext);
+            Task<ListCustomerSalesEntityData> getCustomerLocationGrpcByIdReply = _GrpcService.GetCustomerSalesEntityGrpcByUserId(customerLocationByIdGrpcRequest, serverCallContext);
 
-            Assert.That(getCustomerLocationDataByIdReply.Result.CustomerSalesEntityData, Is.Not.Null);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerSalesEntityData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCustomerLocationDataByIdReply.Result.CustomerSalesEntityData.Count, countConstraint);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerSalesEntityData.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestfixedCustomerSalesEntityName");
-            Assert.That(getCustomerLocationDataByIdReply.Result.CustomerSalesEntityData.First().CustomerSalesEntityName, nameConstraint);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerSalesEntityData.First().CustomerSalesEntityName, nameConstraint);
             NUnit.Framework.Constraints.EqualConstraint idConstraint = Is.EqualTo("84e51c97-4da5-460e-b918-3d70edd87d88");
-            Assert.That(getCustomerLocationDataByIdReply.Result.CustomerSalesEntityData.First().Id, idConstraint);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerSalesEntityData.First().Id, idConstraint);
         }
 
         [Test]
         public void GetCustomerSalesEmntityDataByUserIdTest_Fails()
         {
-            CancellationToken token = CancellationToken.None;
             CustomerSalesEntityByUserIdGrpcRequest customerLocationByIdGrpcRequest = new CustomerSalesEntityByUserIdGrpcRequest();
             customerLocationByIdGrpcRequest.UserId = Guid.NewGuid().ToString();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerSalesEntityGrpcByUserId));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCustomerSalesEntityDataByUserId)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCustomerSalesEntityData> getCustomerLocationDataByIdReply = _GrpcService.GetCustomerSalesEntityDataByUserId(customerLocationByIdGrpcRequest, serverCallContext);
+            Task<ListCustomerSalesEntityData> getCustomerLocationGrpcByIdReply = _GrpcService.GetCustomerSalesEntityGrpcByUserId(customerLocationByIdGrpcRequest, serverCallContext);
 
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getCustomerLocationDataByIdReply.Result.CustomerSalesEntityData.Count, countConstraint);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerSalesEntityData.Count, countConstraint);
         }
 
         [Test]
-        public void GetCustomerProjectAssociationDataTest_Success()
+        public void GetCustomerProjectAssociationGrpcTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             CustomerProjectAssociationGrpcRequest customerProjectAssociationGrpcRequest = new CustomerProjectAssociationGrpcRequest();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerSalesEntityGrpcByUserId));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCustomerProjectAssociationData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCustomerProjectAssociationData> getcustomerProjectAssociationData = _GrpcService.GetCustomerProjectAssociationData(customerProjectAssociationGrpcRequest, serverCallContext);
+            Task<ListCustomerProjectAssociationData> getCustomerProjectAssociationGrpc = _GrpcService.GetCustomerProjectAssociationGrpc(customerProjectAssociationGrpcRequest, serverCallContext);
 
-            Assert.That(getcustomerProjectAssociationData.Result.CustomerProjectAssociationData, Is.Not.Null);
+            Assert.That(getCustomerProjectAssociationGrpc.Result.CustomerProjectAssociationData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getcustomerProjectAssociationData.Result.CustomerProjectAssociationData.Count, countConstraint);
+            Assert.That(getCustomerProjectAssociationGrpc.Result.CustomerProjectAssociationData.Count, countConstraint);
         }
 
         [Test]
-        public void GetCustomerProjectAssociationDataByUserIdTest_Success()
+        public void GetCustomerProjectAssociationGrpcByUserIdTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             CustomerProjectAssociationByUserIdGrpcRequest customerLocationByIdGrpcRequest = new CustomerProjectAssociationByUserIdGrpcRequest();
             customerLocationByIdGrpcRequest.UserId = "83853662-6d20-41b0-b6ac-fd3271406b6b";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerProjectAssociationGrpcByUserId));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCustomerProjectAssociationDataByUserId)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCustomerProjectAssociationData> getCustomerLocationDataByIdReply = _GrpcService.GetCustomerProjectAssociationDataByUserId(customerLocationByIdGrpcRequest, serverCallContext);
+            Task<ListCustomerProjectAssociationData> getCustomerLocationGrpcByIdReply = _GrpcService.GetCustomerProjectAssociationGrpcByUserId(customerLocationByIdGrpcRequest, serverCallContext);
 
-            Assert.That(getCustomerLocationDataByIdReply.Result.CustomerProjectAssociationData, Is.Not.Null);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerProjectAssociationData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCustomerLocationDataByIdReply.Result.CustomerProjectAssociationData.Count, countConstraint);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerProjectAssociationData.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint idConstraint = Is.EqualTo("fd994af4-57a3-4d95-b75d-b8d502e6a023");
-            Assert.That(getCustomerLocationDataByIdReply.Result.CustomerProjectAssociationData.First().Id, idConstraint);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerProjectAssociationData.First().Id, idConstraint);
         }
 
         [Test]
-        public void GetCustomerProjectAssociationDataByUserIdTest_Fails()
+        public void GetCustomerProjectAssociationGrpcByUserIdTest_Fails()
         {
-            CancellationToken token = CancellationToken.None;
             CustomerProjectAssociationByUserIdGrpcRequest customerLocationByIdGrpcRequest = new CustomerProjectAssociationByUserIdGrpcRequest();
             customerLocationByIdGrpcRequest.UserId = Guid.NewGuid().ToString();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerProjectAssociationGrpcByUserId));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCustomerProjectAssociationDataByUserId)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCustomerProjectAssociationData> getCustomerLocationDataByIdReply = _GrpcService.GetCustomerProjectAssociationDataByUserId(customerLocationByIdGrpcRequest, serverCallContext);
+            Task<ListCustomerProjectAssociationData> getCustomerLocationGrpcByIdReply = _GrpcService.GetCustomerProjectAssociationGrpcByUserId(customerLocationByIdGrpcRequest, serverCallContext);
 
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getCustomerLocationDataByIdReply.Result.CustomerProjectAssociationData.Count, countConstraint);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerProjectAssociationData.Count, countConstraint);
         }
 
         [Test]
-        public void GetCustomerBusinessUserAssociationDataTest_Success()
+        public void GetCustomerBusinessUserAssociationGrpcTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             CustomerBusinessUserAssociationGrpcRequest customerBuisnessUserAssociationGrpcRequest = new CustomerBusinessUserAssociationGrpcRequest();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerBusinessUserAssociationGrpc));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCustomerBusinessUserAssociationData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCustomerBusinessUserAssociationData> getcustomerBuisnessUserAssociationData = _GrpcService.GetCustomerBusinessUserAssociationData(customerBuisnessUserAssociationGrpcRequest, serverCallContext);
+            Task<ListCustomerBusinessUserAssociationData> getcustomerBuisnessUserAssociationData = _GrpcService.GetCustomerBusinessUserAssociationGrpc(customerBuisnessUserAssociationGrpcRequest, serverCallContext);
 
             Assert.That(getcustomerBuisnessUserAssociationData.Result.CustomerBusinessUserAssociationData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
@@ -579,28 +297,13 @@ namespace MastersAccess.Tests
         }
 
         [Test]
-        public void GetCustomerBusinessUserAssociationDataByUserIdTest_Success()
+        public void GetCustomerBusinessUserAssociationGrpcByUserIdTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             CustomerBusinessUserAssociationByUserIdGrpcRequest customerLocationByUserIdGrpcRequest = new CustomerBusinessUserAssociationByUserIdGrpcRequest();
             customerLocationByUserIdGrpcRequest.UserId = "83853662-6d20-41b0-b6ac-fd3271406b6b";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerBusinessUserAssociationGrpcByUserId));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCustomerBusinessUserAssociationDataByUserId)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCustomerBusinessUserAssociationData> getcustomerBuisnessUserAssociationByUserIdData = _GrpcService.GetCustomerBusinessUserAssociationDataByUserId(customerLocationByUserIdGrpcRequest, serverCallContext);
+            Task<ListCustomerBusinessUserAssociationData> getcustomerBuisnessUserAssociationByUserIdData = _GrpcService.GetCustomerBusinessUserAssociationGrpcByUserId(customerLocationByUserIdGrpcRequest, serverCallContext);
 
             Assert.That(getcustomerBuisnessUserAssociationByUserIdData.Result.CustomerBusinessUserAssociationData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
@@ -608,87 +311,43 @@ namespace MastersAccess.Tests
         }
 
         [Test]
-        public void GetCustomerBusinessUserAssociationDataByUserIdTest_Fails()
+        public void GetCustomerBusinessUserAssociationGrpcByUserIdTest_Fails()
         {
-            CancellationToken token = CancellationToken.None;
             CustomerBusinessUserAssociationByUserIdGrpcRequest customerLocationByUserIdGrpcRequest = new CustomerBusinessUserAssociationByUserIdGrpcRequest();
             customerLocationByUserIdGrpcRequest.UserId = Guid.NewGuid().ToString();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerBusinessUserAssociationGrpcByUserId));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCustomerBusinessUserAssociationDataByUserId)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCustomerBusinessUserAssociationData> getcustomerBuisnessUserAssociationByUserIdData = _GrpcService.GetCustomerBusinessUserAssociationDataByUserId(customerLocationByUserIdGrpcRequest, serverCallContext);
+            Task<ListCustomerBusinessUserAssociationData> getcustomerBuisnessUserAssociationByUserIdData = _GrpcService.GetCustomerBusinessUserAssociationGrpcByUserId(customerLocationByUserIdGrpcRequest, serverCallContext);
 
             Assert.That(getcustomerBuisnessUserAssociationByUserIdData.Result.CustomerBusinessUserAssociationData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(getcustomerBuisnessUserAssociationByUserIdData.Result.CustomerBusinessUserAssociationData.Count, countConstraint);
         }
         #endregion
+
         #region Project
 
         [Test]
-        public void GetMilestoneDataTest_Success()
+        public void GetMilestoneGrpcTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             MilestoneGrpcRequest milestoneGrpcRequest = new MilestoneGrpcRequest();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetMilestoneGrpc));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCustomerBusinessUserAssociationData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListMilestoneData> getMilestoneData = _GrpcService.GetMilestoneData(milestoneGrpcRequest, serverCallContext);
+            Task<ListMilestoneData> getMilestoneGrpc = _GrpcService.GetMilestoneGrpc(milestoneGrpcRequest, serverCallContext);
 
-            Assert.That(getMilestoneData.Result.MilestoneData, Is.Not.Null);
+            Assert.That(getMilestoneGrpc.Result.MilestoneData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getMilestoneData.Result.MilestoneData.Count, countConstraint);
+            Assert.That(getMilestoneGrpc.Result.MilestoneData.Count, countConstraint);
         }
 
         [Test]
         public void GetMilestoneByIdDataTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             MilestoneByIdGrpcRequest milestoneByIdGrpcRequest = new MilestoneByIdGrpcRequest();
             milestoneByIdGrpcRequest.Id = "50365c14-734c-406a-b18e-9a3eff9e2d17";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetMilestoneGrpcById));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetMilestoneDataById)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListMilestoneData> getMilestoneByIdReply = _GrpcService.GetMilestoneDataById(milestoneByIdGrpcRequest, serverCallContext);
+            Task<ListMilestoneData> getMilestoneByIdReply = _GrpcService.GetMilestoneGrpcById(milestoneByIdGrpcRequest, serverCallContext);
 
             Assert.That(getMilestoneByIdReply.Result.MilestoneData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
@@ -700,82 +359,37 @@ namespace MastersAccess.Tests
         [Test]
         public void GetMilestoneByIdDataTest_Fails()
         {
-            CancellationToken token = CancellationToken.None;
             MilestoneByIdGrpcRequest milestoneByIdGrpcRequest = new MilestoneByIdGrpcRequest();
             milestoneByIdGrpcRequest.Id = Guid.NewGuid().ToString();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetMilestoneGrpcById));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetMilestoneDataById)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListMilestoneData> getMilestoneByIdReply = _GrpcService.GetMilestoneDataById(milestoneByIdGrpcRequest, serverCallContext);
+            Task<ListMilestoneData> getMilestoneByIdReply = _GrpcService.GetMilestoneGrpcById(milestoneByIdGrpcRequest, serverCallContext);
 
             Assert.That(getMilestoneByIdReply.Result.MilestoneData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
         }
 
         [Test]
-        public void GetPlatformDataTest_Success()
+        public void GetPlatformGrpcTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             PlatformGrpcRequest platformGrpcRequest = new PlatformGrpcRequest();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPlatformGrpc));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetPlatformData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListPlatformData> getMilestoneData = _GrpcService.GetPlatformData(platformGrpcRequest, serverCallContext);
+            Task<ListPlatformData> getMilestoneGrpc = _GrpcService.GetPlatformGrpc(platformGrpcRequest, serverCallContext);
 
-            Assert.That(getMilestoneData.Result.PlatformData, Is.Not.Null);
+            Assert.That(getMilestoneGrpc.Result.PlatformData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getMilestoneData.Result.PlatformData.Count, countConstraint);
+            Assert.That(getMilestoneGrpc.Result.PlatformData.Count, countConstraint);
         }
 
         [Test]
         public void GetPlatformByIdDataTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             PlatformByIdGrpcRequest platformByIdGrpcRequest = new PlatformByIdGrpcRequest();
             platformByIdGrpcRequest.Id = "46711693-0ea4-4f9a-86c1-4973308bf795";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPlatformGrpcById));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetPlatformDataById)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListPlatformData> getPlatformByIdReply = _GrpcService.GetPlatformDataById(platformByIdGrpcRequest, serverCallContext);
+            Task<ListPlatformData> getPlatformByIdReply = _GrpcService.GetPlatformGrpcById(platformByIdGrpcRequest, serverCallContext);
 
             Assert.That(getPlatformByIdReply.Result.PlatformData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
@@ -787,82 +401,37 @@ namespace MastersAccess.Tests
         [Test]
         public void GetPlatformByIdDataTest_False()
         {
-            CancellationToken token = CancellationToken.None;
             PlatformByIdGrpcRequest platformByIdGrpcRequest = new PlatformByIdGrpcRequest();
             platformByIdGrpcRequest.Id = Guid.NewGuid().ToString();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPlatformGrpcById));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetPlatformDataById)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListPlatformData> getPlatformByIdReply = _GrpcService.GetPlatformDataById(platformByIdGrpcRequest, serverCallContext);
+            Task<ListPlatformData> getPlatformByIdReply = _GrpcService.GetPlatformGrpcById(platformByIdGrpcRequest, serverCallContext);
 
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(getPlatformByIdReply.Result.PlatformData.Count, countConstraint);
         }
 
         [Test]
-        public void GetProgramDataTest_Success()
+        public void GetProgramGrpcTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             ProgramGrpcRequest programGrpcRequest = new ProgramGrpcRequest();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetProgramGrpc));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetProgramData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListProgramData> getProgramData = _GrpcService.GetProgramData(programGrpcRequest, serverCallContext);
+            Task<ListProgramData> getProgramGrpc = _GrpcService.GetProgramGrpc(programGrpcRequest, serverCallContext);
 
-            Assert.That(getProgramData.Result.ProgramData, Is.Not.Null);
+            Assert.That(getProgramGrpc.Result.ProgramData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getProgramData.Result.ProgramData.Count, countConstraint);
+            Assert.That(getProgramGrpc.Result.ProgramData.Count, countConstraint);
         }
 
         [Test]
         public void GetProgramByIdDataTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             ProgramByIdGrpcRequest programByIdGrpcRequest = new ProgramByIdGrpcRequest();
             programByIdGrpcRequest.Id = "aea9e204-0353-4297-a9ff-bbe75f9b4a93";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetProgramGrpcById));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetProgramDataById)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListProgramData> getProgramByIdReply = _GrpcService.GetProgramDataById(programByIdGrpcRequest, serverCallContext);
+            Task<ListProgramData> getProgramByIdReply = _GrpcService.GetProgramGrpcById(programByIdGrpcRequest, serverCallContext);
 
             Assert.That(getProgramByIdReply.Result.ProgramData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
@@ -874,26 +443,11 @@ namespace MastersAccess.Tests
         [Test]
         public void GetProgramByIdDataTest_Fails()
         {
-            CancellationToken token = CancellationToken.None;
             ProgramByIdGrpcRequest programByIdGrpcRequest = new ProgramByIdGrpcRequest();
             programByIdGrpcRequest.Id = Guid.NewGuid().ToString();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetProgramGrpcById));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetProgramDataById)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListProgramData> getProgramByIdReply = _GrpcService.GetProgramDataById(programByIdGrpcRequest, serverCallContext);
+            Task<ListProgramData> getProgramByIdReply = _GrpcService.GetProgramGrpcById(programByIdGrpcRequest, serverCallContext);
 
             Assert.That(getProgramByIdReply.Result.ProgramData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
@@ -901,56 +455,26 @@ namespace MastersAccess.Tests
         }
 
         [Test]
-        public void GetProjectDataTest_Success()
+        public void GetProjectGrpcTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             ProjectGrpcRequest projectGrpcRequest = new ProjectGrpcRequest();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetProjectGrpc));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetProjectData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListProjectData> getProjectData = _GrpcService.GetProjectData(projectGrpcRequest, serverCallContext);
+            Task<ListProjectData> getProjectGrpc = _GrpcService.GetProjectGrpc(projectGrpcRequest, serverCallContext);
 
-            Assert.That(getProjectData.Result.ProjectData, Is.Not.Null);
+            Assert.That(getProjectGrpc.Result.ProjectData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getProjectData.Result.ProjectData.Count, countConstraint);
+            Assert.That(getProjectGrpc.Result.ProjectData.Count, countConstraint);
         }
 
         [Test]
         public void GetProjectByIdDataTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             ProjectByIdGrpcRequest projectByIdGrpcRequest = new ProjectByIdGrpcRequest();
             projectByIdGrpcRequest.Id = "461616e5-fd7b-491c-9592-8453182e7e72";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetProjectGrpcById));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetProjectDataById)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListProjectData> getProjectByIdReply = _GrpcService.GetProjectDataById(projectByIdGrpcRequest, serverCallContext);
+            Task<ListProjectData> getProjectByIdReply = _GrpcService.GetProjectGrpcById(projectByIdGrpcRequest, serverCallContext);
 
             Assert.That(getProjectByIdReply.Result.ProjectData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
@@ -962,85 +486,41 @@ namespace MastersAccess.Tests
         [Test]
         public void GetProjectByIdDataTest_Fails()
         {
-            CancellationToken token = CancellationToken.None;
             ProjectByIdGrpcRequest projectByIdGrpcRequest = new ProjectByIdGrpcRequest();
             projectByIdGrpcRequest.Id = Guid.NewGuid().ToString();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetProjectGrpcById));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetProjectDataById)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListProjectData> getProjectByIdReply = _GrpcService.GetProjectDataById(projectByIdGrpcRequest, serverCallContext);
+            Task<ListProjectData> getProjectByIdReply = _GrpcService.GetProjectGrpcById(projectByIdGrpcRequest, serverCallContext);
 
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(getProjectByIdReply.Result.ProjectData.Count, countConstraint);
         }
 
         #endregion
+
         #region Vehicle
 
         [Test]
-        public void GetVehicleDataTest_Success()
+        public void GetVehicleGrpcTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             VehicleGrpcRequest vehicleGrpcRequest = new VehicleGrpcRequest();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetVehicleGrpc));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetVehicleData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListVehicleData> getVehicleData = _GrpcService.GetVehicleData(vehicleGrpcRequest, serverCallContext);
+            Task<ListVehicleData> getVehicleGrpc = _GrpcService.GetVehicleGrpc(vehicleGrpcRequest, serverCallContext);
 
-            Assert.That(getVehicleData.Result.VehicleData, Is.Not.Null);
+            Assert.That(getVehicleGrpc.Result.VehicleData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getVehicleData.Result.VehicleData.Count, countConstraint);
+            Assert.That(getVehicleGrpc.Result.VehicleData.Count, countConstraint);
         }
 
         [Test]
         public void GetVehicleByIdDataTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             VehicleByIdGrpcRequest vehicleByIdGrpcRequest = new VehicleByIdGrpcRequest();
             vehicleByIdGrpcRequest.Id = "766612a1-5c65-4d17-950d-2841e1888f0b";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetVehicleGrpcById));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetVehicleDataById)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListVehicleData> getVehicleByIdData = _GrpcService.GetVehicleDataById(vehicleByIdGrpcRequest, serverCallContext);
+            Task<ListVehicleData> getVehicleByIdData = _GrpcService.GetVehicleGrpcById(vehicleByIdGrpcRequest, serverCallContext);
 
             Assert.That(getVehicleByIdData.Result.VehicleData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
@@ -1052,26 +532,11 @@ namespace MastersAccess.Tests
         [Test]
         public void GetVehicleByIdDataTest_False()
         {
-            CancellationToken token = CancellationToken.None;
             VehicleByIdGrpcRequest vehicleByIdGrpcRequest = new VehicleByIdGrpcRequest();
             vehicleByIdGrpcRequest.Id = Guid.NewGuid().ToString();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetVehicleGrpcById));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetVehicleDataById)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListVehicleData> getVehicleByIdData = _GrpcService.GetVehicleDataById(vehicleByIdGrpcRequest, serverCallContext);
+            Task<ListVehicleData> getVehicleByIdData = _GrpcService.GetVehicleGrpcById(vehicleByIdGrpcRequest, serverCallContext);
 
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(getVehicleByIdData.Result.VehicleData.Count, countConstraint);
@@ -1080,26 +545,11 @@ namespace MastersAccess.Tests
         [Test]
         public void GetVehicleByDisplayDataTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             VehicleByDisplayGrpcRequest vehicleByIdGrpcRequest = new VehicleByDisplayGrpcRequest();
             vehicleByIdGrpcRequest.VehicleDisplay = "TestVehicleDisplay";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetVehicleGrpcByDisplay));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetVehicleDataByDisplay)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListVehicleData> getVehicleByIdData = _GrpcService.GetVehicleDataByDisplay(vehicleByIdGrpcRequest, serverCallContext);
+            Task<ListVehicleData> getVehicleByIdData = _GrpcService.GetVehicleGrpcByDisplay(vehicleByIdGrpcRequest, serverCallContext);
 
             Assert.That(getVehicleByIdData.Result.VehicleData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
@@ -1113,14 +563,23 @@ namespace MastersAccess.Tests
         [Test]
         public void GetVehicleByDisplayDataTest_Fails()
         {
-            CancellationToken token = CancellationToken.None;
             VehicleByDisplayGrpcRequest vehicleByIdGrpcRequest = new VehicleByDisplayGrpcRequest();
             vehicleByIdGrpcRequest.VehicleDisplay = "";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetVehicleGrpcByDisplay));
 
+            Task<ListVehicleData> getVehicleByIdData = _GrpcService.GetVehicleGrpcByDisplay(vehicleByIdGrpcRequest, serverCallContext);
+
+            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            Assert.That(getVehicleByIdData.Result.VehicleData.Count, countConstraint);
+        }
+        #endregion
+
+        ServerCallContext CreateServerContext(string methodName)
+        {
             DateTime deadline = DateTime.Now.AddMinutes(30);
             Metadata metadata = new Metadata();
             ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetVehicleDataByDisplay)
+                                             method: methodName
                                             , host: "localhost"
                                             , deadline: deadline
                                             , requestHeaders: metadata
@@ -1132,11 +591,7 @@ namespace MastersAccess.Tests
                                             , writeOptionsGetter: () => new WriteOptions()
                                             , writeOptionsSetter: (writeOptions) => { }
                                             );
-            Task<ListVehicleData> getVehicleByIdData = _GrpcService.GetVehicleDataByDisplay(vehicleByIdGrpcRequest, serverCallContext);
-
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getVehicleByIdData.Result.VehicleData.Count, countConstraint);
+            return serverCallContext;
         }
-        #endregion
     }
 }

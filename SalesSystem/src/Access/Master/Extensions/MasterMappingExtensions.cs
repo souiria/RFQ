@@ -61,7 +61,7 @@ namespace Master.Extensions
             data.Id = entity.Id.ToString();
             data.CustomerLocationGuid = entity.CustomerGuid.ToString();
             data.ProjectGuid = entity.ProjectGuid.ToString();
-            data.IsActive = entity.IsActive;
+            data.IsActive = entity.IsActive ?? false;
             return data;
         }
 
@@ -71,7 +71,7 @@ namespace Master.Extensions
             data.Id = entity.Id.ToString();
             data.CustomerBusinessHierarchyList = entity.CustomerBusinessHierarchyList;
             data.UserGuid = entity.UserGuid.ToString();
-            data.IsActive = entity.IsActive;
+            data.IsActive = entity.IsActive ?? false;
             return data;
         }
 
@@ -84,8 +84,8 @@ namespace Master.Extensions
             MilestoneData data = new MilestoneData();
             data.Id = entity.Id.ToString();
             data.MilestoneEventName = entity.MilestoneEventName;
-            data.EventStartDate = entity.EventStartDate.ToUniversalTime().ToTimestamp();
-            data.EventEndDate = entity.EventEndDate.ToUniversalTime().ToTimestamp();
+            data.EventStartDate = entity.EventStartDate?.ToUniversalTime().ToTimestamp();
+            data.EventEndDate = entity.EventEndDate?.ToUniversalTime().ToTimestamp();
             data.ProjectHierarchyGuid = entity.ProjectHierarchyGuid.ToString();
             data.IsActive = entity.IsActive;
             return data;

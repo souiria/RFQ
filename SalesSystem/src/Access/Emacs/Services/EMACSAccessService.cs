@@ -6,14 +6,14 @@
 
         #region CombinedParts
 
-        ListCombinedPartsData _ListCombinedParts;
+        ListCombinedPartsGrpc _ListCombinedParts;
 
         #endregion
 
         #region PartCategoryDetail
 
-        ListPartCategoryDetailData _ListPartCatogoryDetail;
-        ListPartCategoryDetailData _FilteredListPartCatogoryDetail;
+        ListPartCategoryDetailGrpc _ListPartCatogoryDetail;
+        ListPartCategoryDetailGrpc _FilteredListPartCatogoryDetail;
 
         #endregion
 
@@ -26,15 +26,15 @@
 
         #region PartGroups
 
-        ListPartGroupsData _ListPartGroups;
-        ListPartGroupsData _FilteredListPartGroups;
+        ListPartGroupsGrpc _ListPartGroups;
+        ListPartGroupsGrpc _FilteredListPartGroups;
 
         #endregion
 
         #region PartGroupsConst
 
-        ListPartGroupsConstData _ListPartGroupsConst;
-        ListPartGroupsConstData _FilteredListPartGroupsConst;
+        ListPartGroupsConstGrpc _ListPartGroupsConst;
+        ListPartGroupsConstGrpc _FilteredListPartGroupsConst;
 
         #endregion
 
@@ -46,53 +46,53 @@
 
         #region ColourCode
 
-        ListColourCodeData _ListColourCode;
-        ListColourCodeData _FilteredListColourCode;
+        ListColourCodeGrpc _ListColourCode;
+        ListColourCodeGrpc _FilteredListColourCode;
 
         #endregion
 
         #region MaterialGroups
 
-        ListMaterialGroupsData _ListMaterialGroups;
-        ListMaterialGroupsData _FilteredListMaterialGroups;
+        ListMaterialGroupsGrpc _ListMaterialGroups;
+        ListMaterialGroupsGrpc _FilteredListMaterialGroups;
 
         #endregion
 
         #region MaterialTypes
 
-        ListMaterialTypesData _ListMaterialTypes;
-        ListMaterialTypesData _FilteredListMaterialTypes;
+        ListMaterialTypesGrpc _ListMaterialTypes;
+        ListMaterialTypesGrpc _FilteredListMaterialTypes;
 
         #endregion
 
         #region NPACustomer
 
-        ListNPACustomerData _ListNPACustomer;
+        ListNPACustomerGrpc _ListNPACustomer;
 
         #endregion
 
         #region NPASupplier
 
-        ListNPASupplierData _ListNPASupplier;
+        ListNPASupplierGrpc _ListNPASupplier;
 
         #endregion
 
         #region Suppliers
 
-        ListSuppliersData _ListSuppliers;
+        ListSuppliersGrpc _ListSuppliers;
 
         #endregion
 
         #region EmacsRFIView
 
-        ListEmacsRFIViewData _ListEmacsRFIView;
+        ListEmacsRFIViewGrpc _ListEmacsRFIView;
 
         #endregion
 
         #region PARTMS
 
-        ListPARTMSData _ListPARTMS;
-        ListPARTMSData _FilteredListPARTMS;
+        ListPARTMSGrpc _ListPARTMS;
+        ListPARTMSGrpc _FilteredListPARTMS;
 
         #endregion
 
@@ -102,14 +102,14 @@
 
         #region CombinedParts
 
-        IQueryHandler<GetCombinedPartsQuery, List<CombinedPartsData>>? _CombinedPartsHandler;
+        IQueryHandler<GetCombinedPartsQuery, List<CombinedPartsGrpc>>? _CombinedPartsHandler;
         bool _CombinedPartsRefreshInProgress;
 
         #endregion
 
         #region PartCatogoryDetail
 
-        IQueryHandler<GetPartCatogoryDetailQuery, List<PartCategoryDetailData>>? _PartCatogoryDetailHandler;
+        IQueryHandler<GetPartCatogoryDetailQuery, List<PartCategoryDetailGrpc>>? _PartCatogoryDetailHandler;
         bool _PartCatogoryDetailRefreshInProgress;
 
         #endregion
@@ -123,77 +123,77 @@
 
         #region PartGroups
 
-        IQueryHandler<GetPartGroupsQuery, List<PartGroupsData>>? _PartGroupsHandler;
+        IQueryHandler<GetPartGroupsQuery, List<PartGroupsGrpc>>? _PartGroupsHandler;
         bool _PartGroupsRefreshInProgress;
 
         #endregion
 
         #region PartGroupsConst
 
-        IQueryHandler<GetPartGroupsConstQuery, List<PartGroupsConstData>>? _PartGroupsConstHandler;
+        IQueryHandler<GetPartGroupsConstQuery, List<PartGroupsConstGrpc>>? _PartGroupsConstHandler;
         bool _PartGroupsConstRefreshInProgress;
 
         #endregion
 
         #region CustomerData
 
-        IQueryHandler<GetCustomerDataQuery, List<CustomerDataGrpc>>? _CustomerDataHandler;
+        IQueryHandler<GetCustomerDataGrpcQuery, List<CustomerDataGrpc>>? _CustomerDataHandler;
         bool _CustomerDataRefreshInProgress;
 
         #endregion
 
         #region ColourCode
 
-        IQueryHandler<GetColourCodeQuery, List<ColourCodeData>>? _ColourCodeHandler;
+        IQueryHandler<GetColourCodeQuery, List<ColourCodeGrpc>>? _ColourCodeHandler;
         bool _ColourCodeRefreshInProgress;
 
         #endregion
 
         #region MaterialGroups
 
-        IQueryHandler<GetMaterialGroupsQuery, List<MaterialGroupsData>>? _MaterialGroupsHandler;
+        IQueryHandler<GetMaterialGroupsQuery, List<MaterialGroupsGrpc>>? _MaterialGroupsHandler;
         bool _MaterialGroupsRefreshInProgress;
 
         #endregion
 
         #region MaterialTypes
 
-        IQueryHandler<GetMaterialTypesQuery, List<MaterialTypesData>>? _MaterialTypesHandler;
+        IQueryHandler<GetMaterialTypesQuery, List<MaterialTypesGrpc>>? _MaterialTypesHandler;
         bool _MaterialTypesRefreshInProgress;
 
         #endregion
 
         #region NPACustomer
 
-        IQueryHandler<GetNPACustomerQuery, List<NPACustomerData>>? _NPACustomerHandler;
+        IQueryHandler<GetNPACustomerQuery, List<NPACustomerGrpc>>? _NPACustomerHandler;
         bool _NPACustomerRefreshInProgress;
 
         #endregion
 
         #region NPASupplier
 
-        IQueryHandler<GetNPASupplierQuery, List<NPASupplierData>>? _NPASupplierHandler;
+        IQueryHandler<GetNPASupplierQuery, List<NPASupplierGrpc>>? _NPASupplierHandler;
         bool _NPASupplierRefreshInProgress;
 
         #endregion
 
         #region Suppliers
 
-        IQueryHandler<GetSuppliersQuery, List<SuppliersData>>? _SuppliersHandler;
+        IQueryHandler<GetSuppliersQuery, List<SuppliersGrpc>>? _SuppliersHandler;
         bool _SuppliersRefreshInProgress;
 
         #endregion
 
         #region EmacsRFIView
 
-        IQueryHandler<GetEmacsRFIViewQuery, List<EmacsRFIViewData>>? _EmacsRFIViewHandler;
+        IQueryHandler<GetEmacsRFIViewQuery, List<EmacsRFIViewGrpc>>? _EmacsRFIViewHandler;
         bool _EmacsRFIViewRefreshInProgress;
 
         #endregion
 
         #region PARTMS
 
-        IQueryHandler<GetPARTMSQuery, List<PARTMSData>>? _PARTMSHandler;
+        IQueryHandler<GetPARTMSQuery, List<PARTMSGrpc>>? _PARTMSHandler;
         bool _PARTMSRefreshInProgress;
 
         #endregion
@@ -206,15 +206,15 @@
         {
             #region CombinedParts
 
-            _ListCombinedParts = new ListCombinedPartsData();
+            _ListCombinedParts = new ListCombinedPartsGrpc();
             _CombinedPartsRefreshInProgress = false;
 
             #endregion
 
             #region PartCatogoryDetail
 
-            _ListPartCatogoryDetail = new ListPartCategoryDetailData();
-            _FilteredListPartCatogoryDetail = new ListPartCategoryDetailData();
+            _ListPartCatogoryDetail = new ListPartCategoryDetailGrpc();
+            _FilteredListPartCatogoryDetail = new ListPartCategoryDetailGrpc();
             _PartCatogoryDetailRefreshInProgress = false;
 
             #endregion
@@ -229,16 +229,16 @@
 
             #region PartGroups
 
-            _ListPartGroups = new ListPartGroupsData();
-            _FilteredListPartGroups = new ListPartGroupsData();
+            _ListPartGroups = new ListPartGroupsGrpc();
+            _FilteredListPartGroups = new ListPartGroupsGrpc();
             _PartGroupsRefreshInProgress = false;
 
             #endregion
 
             #region PartGroupsConst
 
-            _ListPartGroupsConst = new ListPartGroupsConstData();
-            _FilteredListPartGroupsConst = new ListPartGroupsConstData();
+            _ListPartGroupsConst = new ListPartGroupsConstGrpc();
+            _FilteredListPartGroupsConst = new ListPartGroupsConstGrpc();
             _PartGroupsConstRefreshInProgress = false;
 
             #endregion
@@ -252,61 +252,61 @@
 
             #region ColourCode
 
-            _ListColourCode = new ListColourCodeData();
-            _FilteredListColourCode = new ListColourCodeData();
+            _ListColourCode = new ListColourCodeGrpc();
+            _FilteredListColourCode = new ListColourCodeGrpc();
             _ColourCodeRefreshInProgress = false;
 
             #endregion
 
             #region MaterialGroups
 
-            _ListMaterialGroups = new ListMaterialGroupsData();
-            _FilteredListMaterialGroups = new ListMaterialGroupsData();
+            _ListMaterialGroups = new ListMaterialGroupsGrpc();
+            _FilteredListMaterialGroups = new ListMaterialGroupsGrpc();
             _MaterialGroupsRefreshInProgress = false;
 
             #endregion
 
             #region MaterialTypes
 
-            _ListMaterialTypes = new ListMaterialTypesData();
-            _FilteredListMaterialTypes = new ListMaterialTypesData();
+            _ListMaterialTypes = new ListMaterialTypesGrpc();
+            _FilteredListMaterialTypes = new ListMaterialTypesGrpc();
             _MaterialTypesRefreshInProgress = false;
 
             #endregion
 
             #region NPACustomer
 
-            _ListNPACustomer = new ListNPACustomerData();
+            _ListNPACustomer = new ListNPACustomerGrpc();
             _NPACustomerRefreshInProgress = false;
 
             #endregion
 
             #region NPASupplier
 
-            _ListNPASupplier = new ListNPASupplierData();
+            _ListNPASupplier = new ListNPASupplierGrpc();
             _NPASupplierRefreshInProgress = false;
 
             #endregion
 
             #region Suppliers
 
-            _ListSuppliers = new ListSuppliersData();
+            _ListSuppliers = new ListSuppliersGrpc();
             _SuppliersRefreshInProgress = false;
 
             #endregion
 
             #region EmacsRFIView
 
-            _ListEmacsRFIView = new ListEmacsRFIViewData();
+            _ListEmacsRFIView = new ListEmacsRFIViewGrpc();
             _EmacsRFIViewRefreshInProgress = false;
 
             #endregion
 
             #region PARTMS
 
-            //_PARTMSData = [];
-            _ListPARTMS = new ListPARTMSData();
-            _FilteredListPARTMS = new ListPARTMSData();
+            //_PARTMSGrpc = [];
+            _ListPARTMS = new ListPARTMSGrpc();
+            _FilteredListPARTMS = new ListPARTMSGrpc();
             _PARTMSRefreshInProgress = false;
 
             #endregion
@@ -323,10 +323,10 @@
         #region Handlers
 
         #region CombinedParts
-        public async Task<ListCombinedPartsData> GetAllCombinedParts(CancellationToken cancellationToken)
+        public async Task<ListCombinedPartsGrpc> GetAllCombinedParts(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListCombinedParts.CombinedPartsData.Any())
+            if (_ListCombinedParts.CombinedPartsGrpc.Any())
             {
                 return _ListCombinedParts;
             }
@@ -337,16 +337,16 @@
             }
         }
 
-        public async Task<Result<int>> GetCombinedPartsDataCount(CancellationToken cancellationToken)
+        public async Task<Result<int>> GetCombinedPartsGrpcCount(CancellationToken cancellationToken)
         {
-            if (_ListCombinedParts.CombinedPartsData.Any())
+            if (_ListCombinedParts.CombinedPartsGrpc.Any())
             {
-                return _ListCombinedParts.CombinedPartsData.Count;
+                return _ListCombinedParts.CombinedPartsGrpc.Count;
             }
             else
             {
                 await PopulateCombinedPartsAsync(cancellationToken);
-                return _ListCombinedParts.CombinedPartsData.Count;
+                return _ListCombinedParts.CombinedPartsGrpc.Count;
             }
         }
 
@@ -354,10 +354,10 @@
 
         #region PartCategoryDetail
 
-        public async Task<ListPartCategoryDetailData> GetAllPartCategoryDetail(CancellationToken cancellationToken)
+        public async Task<ListPartCategoryDetailGrpc> GetAllPartCategoryDetail(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListPartCatogoryDetail.PartCategoryDetailData.Any())
+            if (_ListPartCatogoryDetail.PartCategoryDetailGrpc.Any())
             {
                 return _ListPartCatogoryDetail;
             }
@@ -368,13 +368,13 @@
             }
         }
 
-        public async Task<ListPartCategoryDetailData> GetPartCategoryDetailByCategoryCode(string categoryCode , CancellationToken cancellationToken)
+        public async Task<ListPartCategoryDetailGrpc> GetPartCategoryDetailByCategoryCode(string categoryCode , CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListPartCatogoryDetail.PartCategoryDetailData.Any())
+            if (_ListPartCatogoryDetail.PartCategoryDetailGrpc.Any())
             {
-                List<PartCategoryDetailData> filteredList = _ListPartCatogoryDetail.PartCategoryDetailData.Where(x => x.CategoryCode == categoryCode).ToList();
-                _FilteredListPartCatogoryDetail.PartCategoryDetailData.AddRange(filteredList);
+                List<PartCategoryDetailGrpc> filteredList = _ListPartCatogoryDetail.PartCategoryDetailGrpc.Where(x => x.CategoryCode == categoryCode).ToList();
+                _FilteredListPartCatogoryDetail.PartCategoryDetailGrpc.AddRange(filteredList);
                 return _FilteredListPartCatogoryDetail;
             }
             else
@@ -419,10 +419,10 @@
 
         #region PartGroups
 
-        public async Task<ListPartGroupsData> GetAllPartGroups(CancellationToken cancellationToken)
+        public async Task<ListPartGroupsGrpc> GetAllPartGroups(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListPartGroups.PartGroupsData.Any())
+            if (_ListPartGroups.PartGroupsGrpc.Any())
             {
                 return _ListPartGroups;
             }
@@ -433,13 +433,13 @@
             }
         }
 
-        public async Task<ListPartGroupsData> GetPartGroupsByPartGroup(string partGroup, CancellationToken cancellationToken)
+        public async Task<ListPartGroupsGrpc> GetPartGroupsByPartGroup(string partGroup, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListPartGroups.PartGroupsData.Any())
+            if (_ListPartGroups.PartGroupsGrpc.Any())
             {
-                List<PartGroupsData> filteredList = _ListPartGroups.PartGroupsData.Where(x => x.PartGroup == partGroup).ToList();
-                _FilteredListPartGroups.PartGroupsData.AddRange(filteredList);
+                List<PartGroupsGrpc> filteredList = _ListPartGroups.PartGroupsGrpc.Where(x => x.PartGroup == partGroup).ToList();
+                _FilteredListPartGroups.PartGroupsGrpc.AddRange(filteredList);
                 return _FilteredListPartGroups;
             }
             else
@@ -452,10 +452,10 @@
 
         #region PartGroupsConst
 
-        public async Task<ListPartGroupsConstData> GetAllPartGroupsConst(CancellationToken cancellationToken)
+        public async Task<ListPartGroupsConstGrpc> GetAllPartGroupsConst(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListPartGroupsConst.PartGroupsConstData.Any())
+            if (_ListPartGroupsConst.PartGroupsConstGrpc.Any())
             {
                 return _ListPartGroupsConst;
             }
@@ -466,13 +466,13 @@
             }
         }
 
-        public async Task<ListPartGroupsConstData> GetAllPartGroupsConstByGroup3(string group3 ,CancellationToken cancellationToken)
+        public async Task<ListPartGroupsConstGrpc> GetAllPartGroupsConstByGroup3(string group3 ,CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListPartGroupsConst.PartGroupsConstData.Any())
+            if (_ListPartGroupsConst.PartGroupsConstGrpc.Any())
             {
-                List<PartGroupsConstData> filteredList = _ListPartGroupsConst.PartGroupsConstData.Where(x => x.Code == group3).ToList();
-                _FilteredListPartGroupsConst.PartGroupsConstData.AddRange(filteredList);
+                List<PartGroupsConstGrpc> filteredList = _ListPartGroupsConst.PartGroupsConstGrpc.Where(x => x.Code == group3).ToList();
+                _FilteredListPartGroupsConst.PartGroupsConstGrpc.AddRange(filteredList);
                 return _FilteredListPartGroupsConst;
             }
             else
@@ -500,10 +500,10 @@
         #endregion
 
         #region ColourCode
-        public async Task<ListColourCodeData> GetAllColourCode(CancellationToken cancellationToken)
+        public async Task<ListColourCodeGrpc> GetAllColourCode(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListColourCode.ColourCodeData.Any())
+            if (_ListColourCode.ColourCodeGrpc.Any())
             {
                 return _ListColourCode;
             }
@@ -514,13 +514,13 @@
             }
         }
 
-        public async Task<ListColourCodeData> GetColourCodeByColorCode(string colorCode, CancellationToken cancellationToken)
+        public async Task<ListColourCodeGrpc> GetColourCodeByColorCode(string colorCode, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListColourCode.ColourCodeData.Any())
+            if (_ListColourCode.ColourCodeGrpc.Any())
             {
-                List<ColourCodeData> filteredList = _ListColourCode.ColourCodeData.Where(x => x.ClMk == colorCode).ToList();
-                _FilteredListColourCode.ColourCodeData.AddRange(filteredList);
+                List<ColourCodeGrpc> filteredList = _ListColourCode.ColourCodeGrpc.Where(x => x.ClMk == colorCode).ToList();
+                _FilteredListColourCode.ColourCodeGrpc.AddRange(filteredList);
                 return _FilteredListColourCode;
             }
             else
@@ -532,10 +532,10 @@
         #endregion
 
         #region MaterialGroups
-        public async Task<ListMaterialGroupsData> GetAllMaterialGroups(CancellationToken cancellationToken)
+        public async Task<ListMaterialGroupsGrpc> GetAllMaterialGroups(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListMaterialGroups.MaterialGroupsData.Any())
+            if (_ListMaterialGroups.MaterialGroupsGrpc.Any())
             {
                 return _ListMaterialGroups;
             }
@@ -545,13 +545,13 @@
                 return _ListMaterialGroups;
             }
         }
-        public async Task<ListMaterialGroupsData> GetMaterialGroupsByMaterialGroupId(string materialGroupId, CancellationToken cancellationToken)
+        public async Task<ListMaterialGroupsGrpc> GetMaterialGroupsByMaterialGroupId(string materialGroupId, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListMaterialGroups.MaterialGroupsData.Any())
+            if (_ListMaterialGroups.MaterialGroupsGrpc.Any())
             {
-                List<MaterialGroupsData> filteredList = _ListMaterialGroups.MaterialGroupsData.Where(x => x.MaterialGroup == materialGroupId).ToList();
-                _FilteredListMaterialGroups.MaterialGroupsData.AddRange(filteredList);
+                List<MaterialGroupsGrpc> filteredList = _ListMaterialGroups.MaterialGroupsGrpc.Where(x => x.MaterialGroup == materialGroupId).ToList();
+                _FilteredListMaterialGroups.MaterialGroupsGrpc.AddRange(filteredList);
                 return _FilteredListMaterialGroups;
             }
             else
@@ -563,10 +563,10 @@
         #endregion
 
         #region MaterialTypes
-        public async Task<ListMaterialTypesData> GetAllMaterialTypes(CancellationToken cancellationToken)
+        public async Task<ListMaterialTypesGrpc> GetAllMaterialTypes(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListMaterialTypes.MaterialTypesData.Any())
+            if (_ListMaterialTypes.MaterialTypesGrpc.Any())
             {
                 return _ListMaterialTypes;
             }
@@ -576,13 +576,13 @@
                 return _ListMaterialTypes;
             }
         }
-        public async Task<ListMaterialTypesData> GetMaterialTypesByMaterials(string materialGroup, string materialType ,CancellationToken cancellationToken)
+        public async Task<ListMaterialTypesGrpc> GetMaterialTypesByMaterials(string materialGroup, string materialType ,CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListMaterialTypes.MaterialTypesData.Any())
+            if (_ListMaterialTypes.MaterialTypesGrpc.Any())
             {
-                List<MaterialTypesData> filteredList = _ListMaterialTypes.MaterialTypesData.Where(x => x.MaterialGroup == materialGroup && x.MaterialType == materialType).ToList();
-                _FilteredListMaterialTypes.MaterialTypesData.AddRange(filteredList);
+                List<MaterialTypesGrpc> filteredList = _ListMaterialTypes.MaterialTypesGrpc.Where(x => x.MaterialGroup == materialGroup && x.MaterialType == materialType).ToList();
+                _FilteredListMaterialTypes.MaterialTypesGrpc.AddRange(filteredList);
                 return _FilteredListMaterialTypes;
             }
             else
@@ -594,10 +594,10 @@
         #endregion
 
         #region NPACustomer
-        public async Task<ListNPACustomerData> GetAllNPACustomer(CancellationToken cancellationToken)
+        public async Task<ListNPACustomerGrpc> GetAllNPACustomer(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListNPACustomer.NPACustomerData.Any())
+            if (_ListNPACustomer.NPACustomerGrpc.Any())
             {
                 return _ListNPACustomer;
             }
@@ -610,10 +610,10 @@
         #endregion
 
         #region NPASupplier
-        public async Task<ListNPASupplierData> GetAllNPASupplier(CancellationToken cancellationToken)
+        public async Task<ListNPASupplierGrpc> GetAllNPASupplier(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListNPASupplier.NPASupplierData.Any())
+            if (_ListNPASupplier.NPASupplierGrpc.Any())
             {
                 return _ListNPASupplier;
             }
@@ -626,10 +626,10 @@
         #endregion
 
         #region Suppliers
-        public async Task<ListSuppliersData> GetAllSuppliers(CancellationToken cancellationToken)
+        public async Task<ListSuppliersGrpc> GetAllSuppliers(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListSuppliers.SuppliersData.Any())
+            if (_ListSuppliers.SuppliersGrpc.Any())
             {
                 return _ListSuppliers;
             }
@@ -642,10 +642,10 @@
         #endregion
 
         #region EmacsRFIView
-        public async Task<ListEmacsRFIViewData> GetAllEmacsRFIView(CancellationToken cancellationToken)
+        public async Task<ListEmacsRFIViewGrpc> GetAllEmacsRFIView(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListEmacsRFIView.EmacsRFIViewData.Any())
+            if (_ListEmacsRFIView.EmacsRFIViewGrpc.Any())
             {
                 return _ListEmacsRFIView;
             }
@@ -658,10 +658,10 @@
         #endregion
 
         #region PARTMS
-        public async Task<ListPARTMSData> GetAllPARTMSData(CancellationToken cancellationToken)
+        public async Task<ListPARTMSGrpc> GetAllPARTMSGrpc(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListPARTMS.PARTMSData.Any())
+            if (_ListPARTMS.PARTMSGrpc.Any())
             {
                 return _ListPARTMS;
             }
@@ -672,16 +672,16 @@
             }
         }
 
-        public async Task<ListPARTMSData> GetPARTMSDataByClass(string class1, double class2, CancellationToken cancellationToken)
+        public async Task<ListPARTMSGrpc> GetPARTMSGrpcByClass(string class1, double class2, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListPARTMS.PARTMSData.Any())
+            if (_ListPARTMS.PARTMSGrpc.Any())
             {
-                _FilteredListPARTMS.PARTMSData.Clear();
+                _FilteredListPARTMS.PARTMSGrpc.Clear();
                 CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("en-GB");
                 string class2String = class2.ToString(cultureInfo);
-                List<PARTMSData> filteredList = _ListPARTMS.PARTMSData.Where(x => x.ClassDetailGroupCode == class1 && x.ClassDetailId == class2String).ToList();
-                _FilteredListPARTMS.PARTMSData.AddRange(filteredList);
+                List<PARTMSGrpc> filteredList = _ListPARTMS.PARTMSGrpc.Where(x => x.ClassDetailGroupCode == class1 && x.ClassDetailId == class2String).ToList();
+                _FilteredListPARTMS.PARTMSGrpc.AddRange(filteredList);
                 return _FilteredListPARTMS;
             }
             else
@@ -691,14 +691,14 @@
             }
         }
 
-        public async Task<ListPARTMSData> GetPARTMSDataByColorCode(string colorCode, CancellationToken cancellationToken)
+        public async Task<ListPARTMSGrpc> GetPARTMSGrpcByColorCode(string colorCode, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListPARTMS.PARTMSData.Any())
+            if (_ListPARTMS.PARTMSGrpc.Any())
             {
-                _FilteredListPARTMS.PARTMSData.Clear();
-                List<PARTMSData> filteredList = _ListPARTMS.PARTMSData.Where(x => x.ColorCode == colorCode).ToList();
-                _FilteredListPARTMS.PARTMSData.AddRange(filteredList);
+                _FilteredListPARTMS.PARTMSGrpc.Clear();
+                List<PARTMSGrpc> filteredList = _ListPARTMS.PARTMSGrpc.Where(x => x.ColorCode == colorCode).ToList();
+                _FilteredListPARTMS.PARTMSGrpc.AddRange(filteredList);
                 return _FilteredListPARTMS;
             }
             else
@@ -707,14 +707,14 @@
                 return _FilteredListPARTMS;
             }
         }
-        public async Task<ListPARTMSData> GetPARTMSDataByMaterial(string materialGroup, string materialType, CancellationToken cancellationToken)
+        public async Task<ListPARTMSGrpc> GetPARTMSGrpcByMaterial(string materialGroup, string materialType, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListPARTMS.PARTMSData.Any())
+            if (_ListPARTMS.PARTMSGrpc.Any())
             {
-                _FilteredListPARTMS.PARTMSData.Clear();
-                List<PARTMSData> filteredList = _ListPARTMS.PARTMSData.Where(x => x.MaterialGroupId == materialGroup && x.MaterialTypeId == materialType).ToList();
-                _FilteredListPARTMS.PARTMSData.AddRange(filteredList);
+                _FilteredListPARTMS.PARTMSGrpc.Clear();
+                List<PARTMSGrpc> filteredList = _ListPARTMS.PARTMSGrpc.Where(x => x.MaterialGroupId == materialGroup && x.MaterialTypeId == materialType).ToList();
+                _FilteredListPARTMS.PARTMSGrpc.AddRange(filteredList);
                 return _FilteredListPARTMS;
             }
             else
@@ -723,14 +723,14 @@
                 return _FilteredListPARTMS;
             }
         }
-        public async Task<ListPARTMSData> GetPARTMSDataByMaterialGroup(string materialGroup, CancellationToken cancellationToken)
+        public async Task<ListPARTMSGrpc> GetPARTMSGrpcByMaterialGroup(string materialGroup, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListPARTMS.PARTMSData.Any())
+            if (_ListPARTMS.PARTMSGrpc.Any())
             {
-                _FilteredListPARTMS.PARTMSData.Clear();
-                List<PARTMSData> filteredList = _ListPARTMS.PARTMSData.Where(x => x.MaterialGroupId == materialGroup).ToList();
-                _FilteredListPARTMS.PARTMSData.AddRange(filteredList);
+                _FilteredListPARTMS.PARTMSGrpc.Clear();
+                List<PARTMSGrpc> filteredList = _ListPARTMS.PARTMSGrpc.Where(x => x.MaterialGroupId == materialGroup).ToList();
+                _FilteredListPARTMS.PARTMSGrpc.AddRange(filteredList);
                 return _FilteredListPARTMS;
             }
             else
@@ -739,14 +739,14 @@
                 return _FilteredListPARTMS;
             }
         }
-        public async Task<ListPARTMSData> GetPARTMSDataByPartGroup(string partGroup, CancellationToken cancellationToken)
+        public async Task<ListPARTMSGrpc> GetPARTMSGrpcByPartGroup(string partGroup, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListPARTMS.PARTMSData.Any())
+            if (_ListPARTMS.PARTMSGrpc.Any())
             {
-                _FilteredListPARTMS.PARTMSData.Clear();
-                List<PARTMSData> filteredList = _ListPARTMS.PARTMSData.Where(x => x.ClassDetailGroupCode == partGroup).ToList();
-                _FilteredListPARTMS.PARTMSData.AddRange(filteredList);
+                _FilteredListPARTMS.PARTMSGrpc.Clear();
+                List<PARTMSGrpc> filteredList = _ListPARTMS.PARTMSGrpc.Where(x => x.ClassDetailGroupCode == partGroup).ToList();
+                _FilteredListPARTMS.PARTMSGrpc.AddRange(filteredList);
                 return _FilteredListPARTMS;
             }
             else
@@ -755,14 +755,14 @@
                 return _FilteredListPARTMS;
             }
         }
-        public async Task<ListPARTMSData> GetPARTMSDataByCategoryCode(string catogoryCode, CancellationToken cancellationToken)
+        public async Task<ListPARTMSGrpc> GetPARTMSGrpcByCategoryCode(string catogoryCode, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListPARTMS.PARTMSData.Any())
+            if (_ListPARTMS.PARTMSGrpc.Any())
             {
-                _FilteredListPARTMS.PARTMSData.Clear();
-                List<PARTMSData> filteredList = _ListPARTMS.PARTMSData.Where(x => x.CategoryCode == catogoryCode).ToList();
-                _FilteredListPARTMS.PARTMSData.AddRange(filteredList);
+                _FilteredListPARTMS.PARTMSGrpc.Clear();
+                List<PARTMSGrpc> filteredList = _ListPARTMS.PARTMSGrpc.Where(x => x.CategoryCode == catogoryCode).ToList();
+                _FilteredListPARTMS.PARTMSGrpc.AddRange(filteredList);
                 return _FilteredListPARTMS;
             }
             else
@@ -771,14 +771,14 @@
                 return _FilteredListPARTMS;
             }
         }
-        public async Task<ListPARTMSData> GetPARTMSDataByPartGroupsConstCode(string partGroupsConstCode, CancellationToken cancellationToken)
+        public async Task<ListPARTMSGrpc> GetPARTMSGrpcByPartGroupsConstCode(string partGroupsConstCode, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListPARTMS.PARTMSData.Any())
+            if (_ListPARTMS.PARTMSGrpc.Any())
             {
-                _FilteredListPARTMS.PARTMSData.Clear();
-                List<PARTMSData> filteredList = _ListPARTMS.PARTMSData.Where(x => x.Group3 == partGroupsConstCode).ToList();
-                _FilteredListPARTMS.PARTMSData.AddRange(filteredList);
+                _FilteredListPARTMS.PARTMSGrpc.Clear();
+                List<PARTMSGrpc> filteredList = _ListPARTMS.PARTMSGrpc.Where(x => x.Group3 == partGroupsConstCode).ToList();
+                _FilteredListPARTMS.PARTMSGrpc.AddRange(filteredList);
                 return _FilteredListPARTMS;
             }
             else
@@ -800,18 +800,18 @@
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _CombinedPartsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCombinedPartsQuery, List<CombinedPartsData>>>();
+                    _CombinedPartsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCombinedPartsQuery, List<CombinedPartsGrpc>>>();
                     _CombinedPartsRefreshInProgress = true;
                     GetCombinedPartsQuery query = new GetCombinedPartsQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<CombinedPartsData>> results = await _CombinedPartsHandler.Handle(query, cancellationToken);
+                    Result<List<CombinedPartsGrpc>> results = await _CombinedPartsHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _ListCombinedParts.CombinedPartsData.Clear();
-                        _ListCombinedParts.CombinedPartsData.AddRange(results.Value);
+                        _ListCombinedParts.CombinedPartsGrpc.Clear();
+                        _ListCombinedParts.CombinedPartsGrpc.AddRange(results.Value);
                     }
 
                     _CombinedPartsRefreshInProgress = false;
@@ -831,18 +831,18 @@
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _PartCatogoryDetailHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartCatogoryDetailQuery, List<PartCategoryDetailData>>>();
+                    _PartCatogoryDetailHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartCatogoryDetailQuery, List<PartCategoryDetailGrpc>>>();
                     _PartCatogoryDetailRefreshInProgress = true;
                     GetPartCatogoryDetailQuery query = new GetPartCatogoryDetailQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<PartCategoryDetailData>> results = await _PartCatogoryDetailHandler.Handle(query, cancellationToken);
+                    Result<List<PartCategoryDetailGrpc>> results = await _PartCatogoryDetailHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _ListPartCatogoryDetail.PartCategoryDetailData.Clear();
-                        _ListPartCatogoryDetail.PartCategoryDetailData.AddRange(results.Value);
+                        _ListPartCatogoryDetail.PartCategoryDetailGrpc.Clear();
+                        _ListPartCatogoryDetail.PartCategoryDetailGrpc.AddRange(results.Value);
                     }
 
                     _PartCatogoryDetailRefreshInProgress = false;
@@ -894,18 +894,18 @@
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _PartGroupsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartGroupsQuery, List<PartGroupsData>>>();
+                    _PartGroupsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartGroupsQuery, List<PartGroupsGrpc>>>();
                     _PartGroupsRefreshInProgress = true;
                     GetPartGroupsQuery query = new GetPartGroupsQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<PartGroupsData>> results = await _PartGroupsHandler.Handle(query, cancellationToken);
+                    Result<List<PartGroupsGrpc>> results = await _PartGroupsHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _ListPartGroups.PartGroupsData.Clear();
-                        _ListPartGroups.PartGroupsData.AddRange(results.Value);
+                        _ListPartGroups.PartGroupsGrpc.Clear();
+                        _ListPartGroups.PartGroupsGrpc.AddRange(results.Value);
                     }
 
                     _PartGroupsRefreshInProgress = false;
@@ -925,18 +925,18 @@
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _PartGroupsConstHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartGroupsConstQuery, List<PartGroupsConstData>>>();
+                    _PartGroupsConstHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartGroupsConstQuery, List<PartGroupsConstGrpc>>>();
                     _PartGroupsConstRefreshInProgress = true;
                     GetPartGroupsConstQuery query = new GetPartGroupsConstQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<PartGroupsConstData>> results = await _PartGroupsConstHandler.Handle(query, cancellationToken);
+                    Result<List<PartGroupsConstGrpc>> results = await _PartGroupsConstHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _ListPartGroupsConst.PartGroupsConstData.Clear();
-                        _ListPartGroupsConst.PartGroupsConstData.AddRange(results.Value);
+                        _ListPartGroupsConst.PartGroupsConstGrpc.Clear();
+                        _ListPartGroupsConst.PartGroupsConstGrpc.AddRange(results.Value);
                     }
 
                     _PartGroupsConstRefreshInProgress = false;
@@ -956,9 +956,9 @@
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _CustomerDataHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCustomerDataQuery, List<CustomerDataGrpc>>>();
+                    _CustomerDataHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCustomerDataGrpcQuery, List<CustomerDataGrpc>>>();
                     _CustomerDataRefreshInProgress = true;
-                    GetCustomerDataQuery query = new GetCustomerDataQuery();
+                    GetCustomerDataGrpcQuery query = new GetCustomerDataGrpcQuery();
                     await Task.Delay(1, cancellationToken);
                     Result<List<CustomerDataGrpc>> results = await _CustomerDataHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
@@ -987,18 +987,18 @@
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _ColourCodeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetColourCodeQuery, List<ColourCodeData>>>();
+                    _ColourCodeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetColourCodeQuery, List<ColourCodeGrpc>>>();
                     _ColourCodeRefreshInProgress = true;
                     GetColourCodeQuery query = new GetColourCodeQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<ColourCodeData>> results = await _ColourCodeHandler.Handle(query, cancellationToken);
+                    Result<List<ColourCodeGrpc>> results = await _ColourCodeHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _ListColourCode.ColourCodeData.Clear();
-                        _ListColourCode.ColourCodeData.AddRange(results.Value);
+                        _ListColourCode.ColourCodeGrpc.Clear();
+                        _ListColourCode.ColourCodeGrpc.AddRange(results.Value);
                     }
 
                     _ColourCodeRefreshInProgress = false;
@@ -1018,18 +1018,18 @@
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _MaterialGroupsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetMaterialGroupsQuery, List<MaterialGroupsData>>>();
+                    _MaterialGroupsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetMaterialGroupsQuery, List<MaterialGroupsGrpc>>>();
                     _MaterialGroupsRefreshInProgress = true;
                     GetMaterialGroupsQuery query = new GetMaterialGroupsQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<MaterialGroupsData>> results = await _MaterialGroupsHandler.Handle(query, cancellationToken);
+                    Result<List<MaterialGroupsGrpc>> results = await _MaterialGroupsHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _ListMaterialGroups.MaterialGroupsData.Clear();
-                        _ListMaterialGroups.MaterialGroupsData.AddRange(results.Value);
+                        _ListMaterialGroups.MaterialGroupsGrpc.Clear();
+                        _ListMaterialGroups.MaterialGroupsGrpc.AddRange(results.Value);
                     }
 
                     _MaterialGroupsRefreshInProgress = false;
@@ -1049,18 +1049,18 @@
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _MaterialTypesHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetMaterialTypesQuery, List<MaterialTypesData>>>();
+                    _MaterialTypesHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetMaterialTypesQuery, List<MaterialTypesGrpc>>>();
                     _MaterialTypesRefreshInProgress = true;
                     GetMaterialTypesQuery query = new GetMaterialTypesQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<MaterialTypesData>> results = await _MaterialTypesHandler.Handle(query, cancellationToken);
+                    Result<List<MaterialTypesGrpc>> results = await _MaterialTypesHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _ListMaterialTypes.MaterialTypesData.Clear();
-                        _ListMaterialTypes.MaterialTypesData.AddRange(results.Value);
+                        _ListMaterialTypes.MaterialTypesGrpc.Clear();
+                        _ListMaterialTypes.MaterialTypesGrpc.AddRange(results.Value);
                     }
 
                     _MaterialTypesRefreshInProgress = false;
@@ -1080,18 +1080,18 @@
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _NPACustomerHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetNPACustomerQuery, List<NPACustomerData>>>();
+                    _NPACustomerHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetNPACustomerQuery, List<NPACustomerGrpc>>>();
                     _NPACustomerRefreshInProgress = true;
                     GetNPACustomerQuery query = new GetNPACustomerQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<NPACustomerData>> results = await _NPACustomerHandler.Handle(query, cancellationToken);
+                    Result<List<NPACustomerGrpc>> results = await _NPACustomerHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _ListNPACustomer.NPACustomerData.Clear();
-                        _ListNPACustomer.NPACustomerData.AddRange(results.Value);
+                        _ListNPACustomer.NPACustomerGrpc.Clear();
+                        _ListNPACustomer.NPACustomerGrpc.AddRange(results.Value);
                     }
 
                     _NPACustomerRefreshInProgress = false;
@@ -1111,18 +1111,18 @@
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _NPASupplierHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetNPASupplierQuery, List<NPASupplierData>>>();
+                    _NPASupplierHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetNPASupplierQuery, List<NPASupplierGrpc>>>();
                     _NPASupplierRefreshInProgress = true;
                     GetNPASupplierQuery query = new GetNPASupplierQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<NPASupplierData>> results = await _NPASupplierHandler.Handle(query, cancellationToken);
+                    Result<List<NPASupplierGrpc>> results = await _NPASupplierHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _ListNPASupplier.NPASupplierData.Clear();
-                        _ListNPASupplier.NPASupplierData.AddRange(results.Value);
+                        _ListNPASupplier.NPASupplierGrpc.Clear();
+                        _ListNPASupplier.NPASupplierGrpc.AddRange(results.Value);
                     }
 
                     _NPASupplierRefreshInProgress = false;
@@ -1142,18 +1142,18 @@
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _SuppliersHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetSuppliersQuery, List<SuppliersData>>>();
+                    _SuppliersHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetSuppliersQuery, List<SuppliersGrpc>>>();
                     _SuppliersRefreshInProgress = true;
                     GetSuppliersQuery query = new GetSuppliersQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<SuppliersData>> results = await _SuppliersHandler.Handle(query, cancellationToken);
+                    Result<List<SuppliersGrpc>> results = await _SuppliersHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _ListSuppliers.SuppliersData.Clear();
-                        _ListSuppliers.SuppliersData.AddRange(results.Value);
+                        _ListSuppliers.SuppliersGrpc.Clear();
+                        _ListSuppliers.SuppliersGrpc.AddRange(results.Value);
                     }
 
                     _SuppliersRefreshInProgress = false;
@@ -1173,18 +1173,18 @@
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _EmacsRFIViewHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetEmacsRFIViewQuery, List<EmacsRFIViewData>>>();
+                    _EmacsRFIViewHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetEmacsRFIViewQuery, List<EmacsRFIViewGrpc>>>();
                     _EmacsRFIViewRefreshInProgress = true;
                     GetEmacsRFIViewQuery query = new GetEmacsRFIViewQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<EmacsRFIViewData>> results = await _EmacsRFIViewHandler.Handle(query, cancellationToken);
+                    Result<List<EmacsRFIViewGrpc>> results = await _EmacsRFIViewHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _ListEmacsRFIView.EmacsRFIViewData.Clear();
-                        _ListEmacsRFIView.EmacsRFIViewData.AddRange(results.Value);
+                        _ListEmacsRFIView.EmacsRFIViewGrpc.Clear();
+                        _ListEmacsRFIView.EmacsRFIViewGrpc.AddRange(results.Value);
                     }
 
                     _EmacsRFIViewRefreshInProgress = false;
@@ -1204,18 +1204,18 @@
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _PARTMSHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPARTMSQuery, List<PARTMSData>>>();
+                    _PARTMSHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPARTMSQuery, List<PARTMSGrpc>>>();
                     _PARTMSRefreshInProgress = true;
                     GetPARTMSQuery query = new GetPARTMSQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<PARTMSData>> results = await _PARTMSHandler.Handle(query, cancellationToken);
+                    Result<List<PARTMSGrpc>> results = await _PARTMSHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _ListPARTMS.PARTMSData.Clear();
-                        _ListPARTMS.PARTMSData.AddRange(results.Value);
+                        _ListPARTMS.PARTMSGrpc.Clear();
+                        _ListPARTMS.PARTMSGrpc.AddRange(results.Value);
                     }
 
                     _PARTMSRefreshInProgress = false;

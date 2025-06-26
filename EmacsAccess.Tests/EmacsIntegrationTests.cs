@@ -29,22 +29,8 @@ namespace EmacsAccess.Tests
         {
             HelloRequest request = new HelloRequest();
             request.Name = "TestName";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.SayHello));
 
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.SayHello)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
             Task<HelloReply> helloReply = _GrpcService.SayHello(request, serverCallContext);
 
             string replyString = "Hello TestName";
@@ -57,53 +43,26 @@ namespace EmacsAccess.Tests
         [Test]
         public void GetCombinedPartsTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             CombinedPartsGrpcRequest request = new CombinedPartsGrpcRequest();
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCombinedPartsData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCombinedPartsData> getCombinedPartsDataReply = _GrpcService.GetCombinedPartsData(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCombinedPartsGrpc));
 
-            Assert.That(getCombinedPartsDataReply.Result.CombinedPartsData, Is.Not.Null);
+            Task<ListCombinedPartsGrpc> getCombinedPartsGrpcReply = _GrpcService.GetCombinedPartsGrpc(request, serverCallContext);
+
+            Assert.That(getCombinedPartsGrpcReply.Result.CombinedPartsGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getCombinedPartsDataReply.Result.CombinedPartsData.Count, countConstraint);
+            Assert.That(getCombinedPartsGrpcReply.Result.CombinedPartsGrpc.Count, countConstraint);
         }
 
         [Test]
-        public void GetCombinedPartsDataCountTest_Success()
+        public void GetCombinedPartsGrpcCountTest_Success()
         {
-            CancellationToken token = CancellationToken.None;
             CombinedPartsCountGrpcRequest request = new CombinedPartsCountGrpcRequest();
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCombinedPartsDataCount)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<CombinedPartsCountData> getCombinedPartsDataReply = _GrpcService.GetCombinedPartsDataCount(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCombinedPartsGrpcCount));
+
+            Task<CombinedPartsCountGrpc> getCombinedPartsGrpcReply = _GrpcService.GetCombinedPartsGrpcCount(request, serverCallContext);
+
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getCombinedPartsDataReply.Result.Count, countConstraint);
+            Assert.That(getCombinedPartsGrpcReply.Result.Count, countConstraint);
         }
         #endregion
 
@@ -111,58 +70,30 @@ namespace EmacsAccess.Tests
         [Test]
         public void GetAllPartCatogoryDetail_Success()
         {
-            CancellationToken token = CancellationToken.None;
             PartCategoryDetailGrpcRequest request = new PartCategoryDetailGrpcRequest();
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetPartCategoryDetailData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListPartCategoryDetailData> getCombinedPartsDataReply = _GrpcService.GetPartCategoryDetailData(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.SayHello));
 
-            Assert.That(getCombinedPartsDataReply.Result.PartCategoryDetailData, Is.Not.Null);
+            Task<ListPartCategoryDetailGrpc> getCombinedPartsGrpcReply = _GrpcService.GetPartCategoryDetailGrpc(request, serverCallContext);
+
+            Assert.That(getCombinedPartsGrpcReply.Result.PartCategoryDetailGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getCombinedPartsDataReply.Result.PartCategoryDetailData.Count, countConstraint);
+            Assert.That(getCombinedPartsGrpcReply.Result.PartCategoryDetailGrpc.Count, countConstraint);
         }
 
         [Test]
         public void GetPartCategoryDetailByCategoryCode_Success()
         {
-            CancellationToken token = CancellationToken.None;
             PartCategoryDetailByCategoryCodeGrpcRequest request = new PartCategoryDetailByCategoryCodeGrpcRequest();
             request.CategoryCode = "TestCategoryCode";
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetPartCategoryDetailDataByCategoryCode)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListPartCategoryDetailData> getCombinedPartsDataReply = _GrpcService.GetPartCategoryDetailDataByCategoryCode(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPartCategoryDetailGrpcByCategoryCode));
+
+            Task<ListPartCategoryDetailGrpc> getCombinedPartsGrpcReply = _GrpcService.GetPartCategoryDetailGrpcByCategoryCode(request, serverCallContext);
            
-            Assert.That(getCombinedPartsDataReply.Result.PartCategoryDetailData, Is.Not.Null);
+            Assert.That(getCombinedPartsGrpcReply.Result.PartCategoryDetailGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCombinedPartsDataReply.Result.PartCategoryDetailData.Count, countConstraint);
+            Assert.That(getCombinedPartsGrpcReply.Result.PartCategoryDetailGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint categoryCodeConstraint = Is.EqualTo("TestCategoryCode");
-            Assert.That(getCombinedPartsDataReply.Result.PartCategoryDetailData.First().CategoryCode, categoryCodeConstraint);
+            Assert.That(getCombinedPartsGrpcReply.Result.PartCategoryDetailGrpc.First().CategoryCode, categoryCodeConstraint);
         }
         #endregion
 
@@ -170,61 +101,33 @@ namespace EmacsAccess.Tests
         [Test]
         public void GetAllPartClassDetail_Success()
         {
-            CancellationToken token = CancellationToken.None;
             PartClassDetailGrpcRequest request = new PartClassDetailGrpcRequest();
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetPartClassDetailData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListPartClassDetailData> getPartClassDetailDataReply = _GrpcService.GetPartClassDetailData(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPartClassDetailGrpc));
 
-            Assert.That(getPartClassDetailDataReply.Result.PartClassDetailData, Is.Not.Null);
+            Task<ListPartClassDetailData> getPartClassDetailGrpcReply = _GrpcService.GetPartClassDetailGrpc(request, serverCallContext);
+
+            Assert.That(getPartClassDetailGrpcReply.Result.PartClassDetailData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getPartClassDetailDataReply.Result.PartClassDetailData.Count, countConstraint);
+            Assert.That(getPartClassDetailGrpcReply.Result.PartClassDetailData.Count, countConstraint);
         }
 
         [Test]
         public void GetPartClassDetailByClasses_Success()
         {
-            CancellationToken token = CancellationToken.None;
             PartClassDetailByClassesGrpcRequest request = new PartClassDetailByClassesGrpcRequest();
             request.Class1 = "TestClass1";
             request.Class2 = 0;
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetPartClassDetailDataByClasses)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListPartClassDetailData> getCombinedPartsDataReply = _GrpcService.GetPartClassDetailDataByClasses(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPartClassDetailGrpcByClasses));
 
-            Assert.That(getCombinedPartsDataReply.Result.PartClassDetailData, Is.Not.Null);
+            Task<ListPartClassDetailData> getCombinedPartsGrpcReply = _GrpcService.GetPartClassDetailGrpcByClasses(request, serverCallContext);
+
+            Assert.That(getCombinedPartsGrpcReply.Result.PartClassDetailData, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCombinedPartsDataReply.Result.PartClassDetailData.Count, countConstraint);
+            Assert.That(getCombinedPartsGrpcReply.Result.PartClassDetailData.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint class1Constraint = Is.EqualTo("TestClass1");
             NUnit.Framework.Constraints.EqualConstraint class2Constraint = Is.EqualTo(0);
-            Assert.That(getCombinedPartsDataReply.Result.PartClassDetailData.First().Class1, class1Constraint);
-            Assert.That(getCombinedPartsDataReply.Result.PartClassDetailData.First().Class2, class2Constraint);
+            Assert.That(getCombinedPartsGrpcReply.Result.PartClassDetailData.First().Class1, class1Constraint);
+            Assert.That(getCombinedPartsGrpcReply.Result.PartClassDetailData.First().Class2, class2Constraint);
         }
 
         #endregion
@@ -233,58 +136,31 @@ namespace EmacsAccess.Tests
         [Test]
         public void GetAllPartGroups_Success()
         {
-            CancellationToken token = CancellationToken.None;
             PartGroupsGrpcRequest request = new PartGroupsGrpcRequest();
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetPartGroupsData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListPartGroupsData> getPartGroupsDataReply = _GrpcService.GetPartGroupsData(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPartGroupsGrpc));
 
-            Assert.That(getPartGroupsDataReply.Result.PartGroupsData, Is.Not.Null);
+            Task<ListPartGroupsGrpc> getPartGroupsGrpcReply = _GrpcService.GetPartGroupsGrpc(request, serverCallContext);
+
+            Assert.That(getPartGroupsGrpcReply.Result.PartGroupsGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getPartGroupsDataReply.Result.PartGroupsData.Count, countConstraint);
+            Assert.That(getPartGroupsGrpcReply.Result.PartGroupsGrpc.Count, countConstraint);
         }
 
         [Test]
-        public void GetPartGroupsDataByPartGroup_Success()
+        public void GetPartGroupsGrpcByPartGroup_Success()
         {
             CancellationToken token = CancellationToken.None;
             PartGroupsByPartGroupGrpcRequest request = new PartGroupsByPartGroupGrpcRequest();
             request.PartGroup = "TestPartGroup";
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetPartGroupsDataByPartGroup)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListPartGroupsData> getCombinedPartsDataReply = _GrpcService.GetPartGroupsDataByPartGroup(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPartGroupsGrpcByPartGroup));
 
-            Assert.That(getCombinedPartsDataReply.Result.PartGroupsData, Is.Not.Null);
+            Task<ListPartGroupsGrpc> getCombinedPartsGrpcReply = _GrpcService.GetPartGroupsGrpcByPartGroup(request, serverCallContext);
+
+            Assert.That(getCombinedPartsGrpcReply.Result.PartGroupsGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCombinedPartsDataReply.Result.PartGroupsData.Count, countConstraint);
+            Assert.That(getCombinedPartsGrpcReply.Result.PartGroupsGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint partGroupsConstraint = Is.EqualTo("TestPartGroup");
-            Assert.That(getCombinedPartsDataReply.Result.PartGroupsData.First().PartGroup, partGroupsConstraint);
+            Assert.That(getCombinedPartsGrpcReply.Result.PartGroupsGrpc.First().PartGroup, partGroupsConstraint);
         }
         #endregion
 
@@ -292,58 +168,30 @@ namespace EmacsAccess.Tests
         [Test]
         public void GetAllPartGroupsConst_Success()
         {
-            CancellationToken token = CancellationToken.None;
             PartGroupsConstGrpcRequest request = new PartGroupsConstGrpcRequest();
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetPartGroupsConstData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListPartGroupsConstData> getPartGroupsConstDataReply = _GrpcService.GetPartGroupsConstData(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPartGroupsConstGrpc));
 
-            Assert.That(getPartGroupsConstDataReply.Result.PartGroupsConstData, Is.Not.Null);
+            Task<ListPartGroupsConstGrpc> getPartGroupsConstGrpcReply = _GrpcService.GetPartGroupsConstGrpc(request, serverCallContext);
+
+            Assert.That(getPartGroupsConstGrpcReply.Result.PartGroupsConstGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getPartGroupsConstDataReply.Result.PartGroupsConstData.Count, countConstraint);
+            Assert.That(getPartGroupsConstGrpcReply.Result.PartGroupsConstGrpc.Count, countConstraint);
         }
 
         [Test]
         public void GetPartGroupsConstByGroup3_Success()
         {
-            CancellationToken token = CancellationToken.None;
             PartGroupsConstByGroup3GrpcRequest request = new PartGroupsConstByGroup3GrpcRequest();
             request.Group3 = "TestCode";
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetPartGroupsConstDataByGroup3)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListPartGroupsConstData> getCombinedPartsDataReply = _GrpcService.GetPartGroupsConstDataByGroup3(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPartGroupsConstGrpcByGroup3));
 
-            Assert.That(getCombinedPartsDataReply.Result.PartGroupsConstData, Is.Not.Null);
+            Task<ListPartGroupsConstGrpc> getCombinedPartsGrpcReply = _GrpcService.GetPartGroupsConstGrpcByGroup3(request, serverCallContext);
+
+            Assert.That(getCombinedPartsGrpcReply.Result.PartGroupsConstGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCombinedPartsDataReply.Result.PartGroupsConstData.Count, countConstraint);
+            Assert.That(getCombinedPartsGrpcReply.Result.PartGroupsConstGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint partGroupsConstraint = Is.EqualTo("TestCode");
-            Assert.That(getCombinedPartsDataReply.Result.PartGroupsConstData.First().Code, partGroupsConstraint);
+            Assert.That(getCombinedPartsGrpcReply.Result.PartGroupsConstGrpc.First().Code, partGroupsConstraint);
         }
         #endregion
 
@@ -351,24 +199,10 @@ namespace EmacsAccess.Tests
         [Test]
         public void GetAllCustomerData_Success()
         {
-            CancellationToken token = CancellationToken.None;
             GetCustomerDataGrpcRequest request = new GetCustomerDataGrpcRequest();
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetCustomerData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListCustomerDataGrpc> getAllCustomerDataReply = _GrpcService.GetCustomerData(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerDataGrpc));
+
+            Task<ListCustomerDataGrpc> getAllCustomerDataReply = _GrpcService.GetCustomerDataGrpc(request, serverCallContext);
 
             Assert.That(getAllCustomerDataReply.Result.CustomerDataGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
@@ -380,58 +214,30 @@ namespace EmacsAccess.Tests
         [Test]
         public void GetAllColourCode_Success()
         {
-            CancellationToken token = CancellationToken.None;
             GetColourCodeGrpcRequest request = new GetColourCodeGrpcRequest();
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetColourCodeData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListColourCodeData> getAllCustomerDataReply = _GrpcService.GetColourCodeData(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetColourCodeGrpc));
 
-            Assert.That(getAllCustomerDataReply.Result.ColourCodeData, Is.Not.Null);
+            Task<ListColourCodeGrpc> getAllCustomerDataReply = _GrpcService.GetColourCodeGrpc(request, serverCallContext);
+
+            Assert.That(getAllCustomerDataReply.Result.ColourCodeGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getAllCustomerDataReply.Result.ColourCodeData.Count, countConstraint);
+            Assert.That(getAllCustomerDataReply.Result.ColourCodeGrpc.Count, countConstraint);
         }
 
         [Test]
-        public void GetColourCodeDataByColorCode_Success()
+        public void GetColourCodeGrpcByColorCode_Success()
         {
-            CancellationToken token = CancellationToken.None;
             GetColourCodeByColorCodeGrpcRequest request = new GetColourCodeByColorCodeGrpcRequest();
             request.ColorCode = "TestClMk";
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetColourCodeDataByColorCode)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListColourCodeData> getColourCodeDataReply = _GrpcService.GetColourCodeDataByColorCode(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetColourCodeGrpcByColorCode));
 
-            Assert.That(getColourCodeDataReply.Result.ColourCodeData, Is.Not.Null);
+            Task<ListColourCodeGrpc> getColourCodeGrpcReply = _GrpcService.GetColourCodeGrpcByColorCode(request, serverCallContext);
+
+            Assert.That(getColourCodeGrpcReply.Result.ColourCodeGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getColourCodeDataReply.Result.ColourCodeData.Count, countConstraint);
+            Assert.That(getColourCodeGrpcReply.Result.ColourCodeGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint colorCodeConstraint = Is.EqualTo("TestClMk");
-            Assert.That(getColourCodeDataReply.Result.ColourCodeData.First().ClMk, colorCodeConstraint);
+            Assert.That(getColourCodeGrpcReply.Result.ColourCodeGrpc.First().ClMk, colorCodeConstraint);
         }
         #endregion
 
@@ -439,58 +245,30 @@ namespace EmacsAccess.Tests
         [Test]
         public void GetAllMaterialGroups_Success()
         {
-            CancellationToken token = CancellationToken.None;
             GetMaterialGroupsGrpcRequest request = new GetMaterialGroupsGrpcRequest();
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetMaterialGroupsData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListMaterialGroupsData> getAllCustomerDataReply = _GrpcService.GetMaterialGroupsData(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetMaterialGroupsGrpc));
 
-            Assert.That(getAllCustomerDataReply.Result.MaterialGroupsData, Is.Not.Null);
+            Task<ListMaterialGroupsGrpc> getAllCustomerDataReply = _GrpcService.GetMaterialGroupsGrpc(request, serverCallContext);
+
+            Assert.That(getAllCustomerDataReply.Result.MaterialGroupsGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getAllCustomerDataReply.Result.MaterialGroupsData.Count, countConstraint);
+            Assert.That(getAllCustomerDataReply.Result.MaterialGroupsGrpc.Count, countConstraint);
         }
 
         [Test]
         public void GetMaterialGroupsByMaterialGroupId_Success()
         {
-            CancellationToken token = CancellationToken.None;
             GetMaterialGroupsByMaterialGroupIdGrpcRequest request = new GetMaterialGroupsByMaterialGroupIdGrpcRequest();
             request.MaterialGroup = "TestMaterialGroup";
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetMaterialGroupsDataByMaterialGroupId)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListMaterialGroupsData> getMaterialGroupDataReply = _GrpcService.GetMaterialGroupsDataByMaterialGroupId(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetMaterialGroupsGrpcByMaterialGroupId));
 
-            Assert.That(getMaterialGroupDataReply.Result.MaterialGroupsData, Is.Not.Null);
+            Task<ListMaterialGroupsGrpc> getMaterialGroupDataReply = _GrpcService.GetMaterialGroupsGrpcByMaterialGroupId(request, serverCallContext);
+
+            Assert.That(getMaterialGroupDataReply.Result.MaterialGroupsGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getMaterialGroupDataReply.Result.MaterialGroupsData.Count, countConstraint);
+            Assert.That(getMaterialGroupDataReply.Result.MaterialGroupsGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint materialGroupConstraint = Is.EqualTo("TestMaterialGroup");
-            Assert.That(getMaterialGroupDataReply.Result.MaterialGroupsData.First().MaterialGroup, materialGroupConstraint);
+            Assert.That(getMaterialGroupDataReply.Result.MaterialGroupsGrpc.First().MaterialGroup, materialGroupConstraint);
         }
         #endregion
 
@@ -498,61 +276,33 @@ namespace EmacsAccess.Tests
         [Test]
         public void GetAllMaterialTypes_Success()
         {
-            CancellationToken token = CancellationToken.None;
             GetMaterialTypesGrpcRequest request = new GetMaterialTypesGrpcRequest();
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetMaterialTypesData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListMaterialTypesData> getMaterialTypesReply = _GrpcService.GetMaterialTypesData(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetMaterialTypesGrpc));
 
-            Assert.That(getMaterialTypesReply.Result.MaterialTypesData, Is.Not.Null);
+            Task<ListMaterialTypesGrpc> getMaterialTypesReply = _GrpcService.GetMaterialTypesGrpc(request, serverCallContext);
+
+            Assert.That(getMaterialTypesReply.Result.MaterialTypesGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getMaterialTypesReply.Result.MaterialTypesData.Count, countConstraint);
+            Assert.That(getMaterialTypesReply.Result.MaterialTypesGrpc.Count, countConstraint);
         }
 
         [Test]
         public void GetMaterialTypesByMaterials_Success()
         {
-            CancellationToken token = CancellationToken.None;
             GetMaterialTypesByMaterialsGrpcRequest request = new GetMaterialTypesByMaterialsGrpcRequest();
             request.MaterialType = "TestMaterialType";
             request.MaterialGroup = "TestMaterialGroup";
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetMaterialTypesDataByMaterials)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListMaterialTypesData> getMaterialTypeDataReply = _GrpcService.GetMaterialTypesDataByMaterials(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetMaterialTypesGrpcByMaterials));
 
-            Assert.That(getMaterialTypeDataReply.Result.MaterialTypesData, Is.Not.Null);
+            Task<ListMaterialTypesGrpc> getMaterialTypeDataReply = _GrpcService.GetMaterialTypesGrpcByMaterials(request, serverCallContext);
+
+            Assert.That(getMaterialTypeDataReply.Result.MaterialTypesGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getMaterialTypeDataReply.Result.MaterialTypesData.Count, countConstraint);
+            Assert.That(getMaterialTypeDataReply.Result.MaterialTypesGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint materialTypeConstraint = Is.EqualTo("TestMaterialType");
             NUnit.Framework.Constraints.EqualConstraint materialGroupConstraint = Is.EqualTo("TestMaterialGroup");
-            Assert.That(getMaterialTypeDataReply.Result.MaterialTypesData.First().MaterialType, materialTypeConstraint);
-            Assert.That(getMaterialTypeDataReply.Result.MaterialTypesData.First().MaterialGroup, materialGroupConstraint);
+            Assert.That(getMaterialTypeDataReply.Result.MaterialTypesGrpc.First().MaterialType, materialTypeConstraint);
+            Assert.That(getMaterialTypeDataReply.Result.MaterialTypesGrpc.First().MaterialGroup, materialGroupConstraint);
         }
         #endregion
 
@@ -560,28 +310,14 @@ namespace EmacsAccess.Tests
         [Test]
         public void GetAllNPACustomer_Success()
         {
-            CancellationToken token = CancellationToken.None;
             GetNPACustomerGrpcRequest request = new GetNPACustomerGrpcRequest();
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetNPACustomerData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListNPACustomerData> getNPACustomerReply = _GrpcService.GetNPACustomerData(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetNPACustomerGrpc));
 
-            Assert.That(getNPACustomerReply.Result.NPACustomerData, Is.Not.Null);
+            Task<ListNPACustomerGrpc> getNPACustomerReply = _GrpcService.GetNPACustomerGrpc(request, serverCallContext);
+
+            Assert.That(getNPACustomerReply.Result.NPACustomerGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getNPACustomerReply.Result.NPACustomerData.Count, countConstraint);
+            Assert.That(getNPACustomerReply.Result.NPACustomerGrpc.Count, countConstraint);
         }
         #endregion
 
@@ -589,28 +325,14 @@ namespace EmacsAccess.Tests
         [Test]
         public void GetAllNPASupplier_Success()
         {
-            CancellationToken token = CancellationToken.None;
             GetNPASupplierGrpcRequest request = new GetNPASupplierGrpcRequest();
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetNPASupplierData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListNPASupplierData> getNPASupplierReply = _GrpcService.GetNPASupplierData(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetNPASupplierGrpc));
 
-            Assert.That(getNPASupplierReply.Result.NPASupplierData, Is.Not.Null);
+            Task<ListNPASupplierGrpc> getNPASupplierReply = _GrpcService.GetNPASupplierGrpc(request, serverCallContext);
+
+            Assert.That(getNPASupplierReply.Result.NPASupplierGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getNPASupplierReply.Result.NPASupplierData.Count, countConstraint);
+            Assert.That(getNPASupplierReply.Result.NPASupplierGrpc.Count, countConstraint);
         }
         #endregion
 
@@ -618,271 +340,165 @@ namespace EmacsAccess.Tests
         [Test]
         public void GetAllSupplier_Success()
         {
-            CancellationToken token = CancellationToken.None;
             GetSuppliersGrpcRequest request = new GetSuppliersGrpcRequest();
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetSuppliersData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListSuppliersData> getSupplierReply = _GrpcService.GetSuppliersData(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetSuppliersGrpc));
 
-            Assert.That(getSupplierReply.Result.SuppliersData, Is.Not.Null);
+            Task<ListSuppliersGrpc> getSupplierReply = _GrpcService.GetSuppliersGrpc(request, serverCallContext);
+
+            Assert.That(getSupplierReply.Result.SuppliersGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getSupplierReply.Result.SuppliersData.Count, countConstraint);
+            Assert.That(getSupplierReply.Result.SuppliersGrpc.Count, countConstraint);
         }
         #endregion
 
         #region PARTMS
         [Test]
-        public void GetAllPARTMSData_Success()
+        public void GetAllPARTMSGrpc_Success()
         {
-            CancellationToken token = CancellationToken.None;
-            GetPARTMSDataGrpcRequest request = new GetPARTMSDataGrpcRequest();
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetPARTMSData)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListPARTMSData> getPARTMSDataReply = _GrpcService.GetPARTMSData(request, serverCallContext);
+            GetPARTMSGrpcRequest request = new GetPARTMSGrpcRequest();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPARTMSGrpc));
 
-            Assert.That(getPARTMSDataReply.Result.PARTMSData, Is.Not.Null);
+            Task<ListPARTMSGrpc> getPARTMSGrpcReply = _GrpcService.GetPARTMSGrpc(request, serverCallContext);
+
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getPARTMSDataReply.Result.PARTMSData.Count, countConstraint);
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.Count, countConstraint);
         }
 
         [Test]
-        public void GetPARTMSDataByClass_Success()
+        public void GetPARTMSGrpcByClass_Success()
         {
-            CancellationToken token = CancellationToken.None;
-            GetPARTMSDataByClassGrpcRequest request = new GetPARTMSDataByClassGrpcRequest();
+            GetPARTMSGrpcByClassGrpcRequest request = new GetPARTMSGrpcByClassGrpcRequest();
             request.Class1 = "TestClassDetailGroupCode";
             request.Class2 = 0;
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetPARTMSDataByClass)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListPARTMSData> getPARTMSDataReply = _GrpcService.GetPARTMSDataByClass(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPARTMSGrpcByClass));
 
-            Assert.That(getPARTMSDataReply.Result.PARTMSData, Is.Not.Null);
+            Task<ListPARTMSGrpc> getPARTMSGrpcReply = _GrpcService.GetPARTMSGrpcByClass(request, serverCallContext);
+
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getPARTMSDataReply.Result.PARTMSData.Count, countConstraint);
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint class1Constraint = Is.EqualTo("TestClassDetailGroupCode");
             NUnit.Framework.Constraints.EqualConstraint class2Constraint = Is.EqualTo("0");
-            Assert.That(getPARTMSDataReply.Result.PARTMSData.First().ClassDetailGroupCode, class1Constraint);
-            Assert.That(getPARTMSDataReply.Result.PARTMSData.First().ClassDetailId, class2Constraint);
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.First().ClassDetailGroupCode, class1Constraint);
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.First().ClassDetailId, class2Constraint);
         }
 
         [Test]
-        public void GetPARTMSDataByColorCode_Success()
+        public void GetPARTMSGrpcByColorCode_Success()
         {
-            CancellationToken token = CancellationToken.None;
-            GetPARTMSDataByColorCodeGrpcRequest request = new GetPARTMSDataByColorCodeGrpcRequest();
+            GetPARTMSGrpcByColorCodeGrpcRequest request = new GetPARTMSGrpcByColorCodeGrpcRequest();
             request.ColorCode = "TestColorCode";
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetPARTMSDataByColorCode)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListPARTMSData> getPARTMSDataReply = _GrpcService.GetPARTMSDataByColorCode(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPARTMSGrpcByColorCode));
 
-            Assert.That(getPARTMSDataReply.Result.PARTMSData, Is.Not.Null);
+            Task<ListPARTMSGrpc> getPARTMSGrpcReply = _GrpcService.GetPARTMSGrpcByColorCode(request, serverCallContext);
+
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getPARTMSDataReply.Result.PARTMSData.Count, countConstraint);
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint colorConstraint = Is.EqualTo("TestColorCode");
-            Assert.That(getPARTMSDataReply.Result.PARTMSData.First().ColorCode, colorConstraint);
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.First().ColorCode, colorConstraint);
         }
 
         [Test]
-        public void GetPARTMSDataByMaterial_Success()
+        public void GetPARTMSGrpcByMaterial_Success()
         {
-            CancellationToken token = CancellationToken.None;
-            GetPARTMSDataByMaterialGrpcRequest request = new GetPARTMSDataByMaterialGrpcRequest();
+            GetPARTMSGrpcByMaterialGrpcRequest request = new GetPARTMSGrpcByMaterialGrpcRequest();
             request.MaterialGroup = "TestMaterialGroupId";
             request.MaterialType = "TestMaterialTypeId";
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetPARTMSDataByMaterial)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListPARTMSData> getPARTMSDataReply = _GrpcService.GetPARTMSDataByMaterial(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPARTMSGrpcByMaterial));
 
-            Assert.That(getPARTMSDataReply.Result.PARTMSData, Is.Not.Null);
+            Task<ListPARTMSGrpc> getPARTMSGrpcReply = _GrpcService.GetPARTMSGrpcByMaterial(request, serverCallContext);
+
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getPARTMSDataReply.Result.PARTMSData.Count, countConstraint);
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint materialGroupConstraint = Is.EqualTo("TestMaterialGroupId");
             NUnit.Framework.Constraints.EqualConstraint materialTypeConstraint = Is.EqualTo("TestMaterialTypeId");
-            Assert.That(getPARTMSDataReply.Result.PARTMSData.First().MaterialGroupId, materialGroupConstraint);
-            Assert.That(getPARTMSDataReply.Result.PARTMSData.First().MaterialTypeId, materialTypeConstraint);
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.First().MaterialGroupId, materialGroupConstraint);
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.First().MaterialTypeId, materialTypeConstraint);
         }
 
         [Test]
-        public void GetPARTMSDataByMaterialGroup_Success()
+        public void GetPARTMSGrpcByMaterialGroup_Success()
         {
-            CancellationToken token = CancellationToken.None;
-            GetPARTMSDataByMaterialGroupGrpcRequest request = new GetPARTMSDataByMaterialGroupGrpcRequest();
+            GetPARTMSGrpcByMaterialGroupGrpcRequest request = new GetPARTMSGrpcByMaterialGroupGrpcRequest();
             request.MaterialGroup = "TestMaterialGroupId";
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetPARTMSDataByMaterialGroup)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListPARTMSData> getPARTMSDataReply = _GrpcService.GetPARTMSDataByMaterialGroup(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPARTMSGrpcByMaterialGroup));
 
-            Assert.That(getPARTMSDataReply.Result.PARTMSData, Is.Not.Null);
+            Task<ListPARTMSGrpc> getPARTMSGrpcReply = _GrpcService.GetPARTMSGrpcByMaterialGroup(request, serverCallContext);
+
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getPARTMSDataReply.Result.PARTMSData.Count, countConstraint);
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint materialGroupConstraint = Is.EqualTo("TestMaterialGroupId");
-            Assert.That(getPARTMSDataReply.Result.PARTMSData.First().MaterialGroupId, materialGroupConstraint);
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.First().MaterialGroupId, materialGroupConstraint);
         }
         [Test]
-        public void GetPARTMSDataByPartGroup_Success()
+        public void GetPARTMSGrpcByPartGroup_Success()
         {
-            CancellationToken token = CancellationToken.None;
-            GetPARTMSDataByPartGroupGrpcRequest request = new GetPARTMSDataByPartGroupGrpcRequest();
+            GetPARTMSGrpcByPartGroupGrpcRequest request = new GetPARTMSGrpcByPartGroupGrpcRequest();
             request.PartGroup = "TestClassDetailGroupCode";
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetPARTMSDataByPartGroup)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListPARTMSData> getPARTMSDataReply = _GrpcService.GetPARTMSDataByPartGroup(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPARTMSGrpcByPartGroup));
 
-            Assert.That(getPARTMSDataReply.Result.PARTMSData, Is.Not.Null);
+            Task<ListPARTMSGrpc> getPARTMSGrpcReply = _GrpcService.GetPARTMSGrpcByPartGroup(request, serverCallContext);
+
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getPARTMSDataReply.Result.PARTMSData.Count, countConstraint);
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint partGroupConstraint = Is.EqualTo("TestClassDetailGroupCode");
-            Assert.That(getPARTMSDataReply.Result.PARTMSData.First().ClassDetailGroupCode, partGroupConstraint);
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.First().ClassDetailGroupCode, partGroupConstraint);
         }
         [Test]
-        public void GetPARTMSDataByCatogoryCode_Success()
+        public void GetPARTMSGrpcByCatogoryCode_Success()
         {
-            CancellationToken token = CancellationToken.None;
-            GetPARTMSDataByCategoryCodeGrpcRequest request = new GetPARTMSDataByCategoryCodeGrpcRequest();
+            GetPARTMSGrpcByCategoryCodeGrpcRequest request = new GetPARTMSGrpcByCategoryCodeGrpcRequest();
             request.CatogoryCode = "TestCategoryCode";
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetPARTMSDataByCategoryCode)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListPARTMSData> getPARTMSDataReply = _GrpcService.GetPARTMSDataByCategoryCode(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPARTMSGrpcByCategoryCode));
 
-            Assert.That(getPARTMSDataReply.Result.PARTMSData, Is.Not.Null);
+            Task<ListPARTMSGrpc> getPARTMSGrpcReply = _GrpcService.GetPARTMSGrpcByCategoryCode(request, serverCallContext);
+
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getPARTMSDataReply.Result.PARTMSData.Count, countConstraint);
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint catogoryCodeConstraint = Is.EqualTo("TestCategoryCode");
-            Assert.That(getPARTMSDataReply.Result.PARTMSData.First().CategoryCode, catogoryCodeConstraint);
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.First().CategoryCode, catogoryCodeConstraint);
         }
         [Test]
-        public void GetPARTMSDataByPartGroupsConstCode_Success()
+        public void GetPARTMSGrpcByPartGroupsConstCode_Success()
         {
-            CancellationToken token = CancellationToken.None;
-            GetPARTMSDataByPartGroupsConstCodeGrpcRequest request = new GetPARTMSDataByPartGroupsConstCodeGrpcRequest();
+            GetPARTMSGrpcByPartGroupsConstCodeGrpcRequest request = new GetPARTMSGrpcByPartGroupsConstCodeGrpcRequest();
             request.PartGroupsConstCode = "TestGroup3";
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                                             method: nameof(_GrpcService.GetPARTMSDataByPartGroupsConstCode)
-                                            , host: "localhost"
-                                            , deadline: deadline
-                                            , requestHeaders: metadata
-                                            , cancellationToken: CancellationToken.None
-                                            , peer: "10.0.0.25:5001"
-                                            , authContext: null
-                                            , contextPropagationToken: null
-                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
-                                            , writeOptionsGetter: () => new WriteOptions()
-                                            , writeOptionsSetter: (writeOptions) => { }
-                                            );
-            Task<ListPARTMSData> getPARTMSDataReply = _GrpcService.GetPARTMSDataByPartGroupsConstCode(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPARTMSGrpcByPartGroupsConstCode));
 
-            Assert.That(getPARTMSDataReply.Result.PARTMSData, Is.Not.Null);
+            Task<ListPARTMSGrpc> getPARTMSGrpcReply = _GrpcService.GetPARTMSGrpcByPartGroupsConstCode(request, serverCallContext);
+
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getPARTMSDataReply.Result.PARTMSData.Count, countConstraint);
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint catogoryCodeConstraint = Is.EqualTo("TestGroup3");
-            Assert.That(getPARTMSDataReply.Result.PARTMSData.First().Group3, catogoryCodeConstraint);
+            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.First().Group3, catogoryCodeConstraint);
         }
         #endregion
+
+        ServerCallContext CreateServerContext(string methodName)
+        {
+            DateTime deadline = DateTime.Now.AddMinutes(30);
+            Metadata metadata = new Metadata();
+            ServerCallContext serverCallContext = TestServerCallContext.Create(
+                                             method: methodName
+                                            , host: "localhost"
+                                            , deadline: deadline
+                                            , requestHeaders: metadata
+                                            , cancellationToken: CancellationToken.None
+                                            , peer: "10.0.0.25:5001"
+                                            , authContext: null
+                                            , contextPropagationToken: null
+                                            , writeHeadersFunc: (metadata) => Task.CompletedTask
+                                            , writeOptionsGetter: () => new WriteOptions()
+                                            , writeOptionsSetter: (writeOptions) => { }
+                                            );
+            return serverCallContext;
+        }
     }
 }

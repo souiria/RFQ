@@ -5,54 +5,54 @@ namespace Emacs.Services
     public static class SampleEmacsDataService
     {
         #region CombinedParts
-        public static ListCombinedPartsData PopulateCombinedParts()
+        public static ListCombinedPartsGrpc PopulateCombinedParts()
         {
-            ListCombinedPartsData listCombinedPartsData = new ListCombinedPartsData();
+            ListCombinedPartsGrpc listCombinedPartsGrpc = new ListCombinedPartsGrpc();
             for (int i = 0; i < 5; i++)
             {
-                CombinedPartsData combinedPartsData = new CombinedPartsData();
-                combinedPartsData.SumitomoNumber = $"TestSumitomoNumber{i}";
-                combinedPartsData.CustomerNumber = $"TestCustomerNumber{i}";
-                combinedPartsData.CustomerName = $"TestCustomerName{i}";
-                combinedPartsData.SupplierNumber = $"TestSupplierNumber{i}";
-                combinedPartsData.UniformSumitomoNumber = $"TestUniformSumitomoNumber{i}";
-                combinedPartsData.UniformCustomerNumber = $"TestUniformCustomerNumber{i}";
-                combinedPartsData.UniformSupplierNumber = $"TestUniformSupplierNumber{i}";
-                listCombinedPartsData.CombinedPartsData.Add(combinedPartsData);
+                CombinedPartsGrpc CombinedPartsGrpc = new CombinedPartsGrpc();
+                CombinedPartsGrpc.SumitomoNumber = $"TestSumitomoNumber{i}";
+                CombinedPartsGrpc.CustomerNumber = $"TestCustomerNumber{i}";
+                CombinedPartsGrpc.CustomerName = $"TestCustomerName{i}";
+                CombinedPartsGrpc.SupplierNumber = $"TestSupplierNumber{i}";
+                CombinedPartsGrpc.UniformSumitomoNumber = $"TestUniformSumitomoNumber{i}";
+                CombinedPartsGrpc.UniformCustomerNumber = $"TestUniformCustomerNumber{i}";
+                CombinedPartsGrpc.UniformSupplierNumber = $"TestUniformSupplierNumber{i}";
+                listCombinedPartsGrpc.CombinedPartsGrpc.Add(CombinedPartsGrpc);
             }
 
-            CombinedPartsData fixedCombinedPartsData = new CombinedPartsData();
-            fixedCombinedPartsData.SumitomoNumber = $"TestSumitomoNumber";
-            fixedCombinedPartsData.CustomerNumber = $"TestCustomerNumber";
-            fixedCombinedPartsData.CustomerName = $"TestCustomerName";
-            fixedCombinedPartsData.SupplierNumber = $"TestSupplierNumber";
-            fixedCombinedPartsData.UniformSumitomoNumber = $"TestUniformSumitomoNumber";
-            fixedCombinedPartsData.UniformCustomerNumber = $"TestUniformCustomerNumber";
-            fixedCombinedPartsData.UniformSupplierNumber = $"TestUniformSupplierNumber";
-            listCombinedPartsData.CombinedPartsData.Add(fixedCombinedPartsData);
-            return listCombinedPartsData;
+            CombinedPartsGrpc fixedCombinedPartsGrpc = new CombinedPartsGrpc();
+            fixedCombinedPartsGrpc.SumitomoNumber = $"TestSumitomoNumber";
+            fixedCombinedPartsGrpc.CustomerNumber = $"TestCustomerNumber";
+            fixedCombinedPartsGrpc.CustomerName = $"TestCustomerName";
+            fixedCombinedPartsGrpc.SupplierNumber = $"TestSupplierNumber";
+            fixedCombinedPartsGrpc.UniformSumitomoNumber = $"TestUniformSumitomoNumber";
+            fixedCombinedPartsGrpc.UniformCustomerNumber = $"TestUniformCustomerNumber";
+            fixedCombinedPartsGrpc.UniformSupplierNumber = $"TestUniformSupplierNumber";
+            listCombinedPartsGrpc.CombinedPartsGrpc.Add(fixedCombinedPartsGrpc);
+            return listCombinedPartsGrpc;
         }
         #endregion
 
         #region PartCategoryDetail
-        public static ListPartCategoryDetailData PopulatePartCategoryDetail()
+        public static ListPartCategoryDetailGrpc PopulatePartCategoryDetail()
         {
-            ListPartCategoryDetailData listPartCategoryDetailData = new ListPartCategoryDetailData();
+            ListPartCategoryDetailGrpc listPartCategoryDetailGrpc = new ListPartCategoryDetailGrpc();
             for (int i = 0; i < 5; i++)
             {
-                PartCategoryDetailData partCategoryDetailData = new PartCategoryDetailData();
-                partCategoryDetailData.CategoryCode = $"TestCategoryCode{i}";
-                partCategoryDetailData.DetailedCategoryCode = i;
-                partCategoryDetailData.CategoryName = $"TestCategoryName{i}";
-                listPartCategoryDetailData.PartCategoryDetailData.Add(partCategoryDetailData);
+                PartCategoryDetailGrpc PartCategoryDetailGrpc = new PartCategoryDetailGrpc();
+                PartCategoryDetailGrpc.CategoryCode = $"TestCategoryCode{i}";
+                PartCategoryDetailGrpc.DetailedCategoryCode = i;
+                PartCategoryDetailGrpc.CategoryName = $"TestCategoryName{i}";
+                listPartCategoryDetailGrpc.PartCategoryDetailGrpc.Add(PartCategoryDetailGrpc);
             }
 
-            PartCategoryDetailData fixedPartCategoryDetailData = new PartCategoryDetailData();
-            fixedPartCategoryDetailData.CategoryCode = $"TestCategoryCode";
-            fixedPartCategoryDetailData.DetailedCategoryCode = 0;
-            fixedPartCategoryDetailData.CategoryName = $"TestCategoryName";
-            listPartCategoryDetailData.PartCategoryDetailData.Add(fixedPartCategoryDetailData);
-            return listPartCategoryDetailData;
+            PartCategoryDetailGrpc fixedPartCategoryDetailGrpc = new PartCategoryDetailGrpc();
+            fixedPartCategoryDetailGrpc.CategoryCode = $"TestCategoryCode";
+            fixedPartCategoryDetailGrpc.DetailedCategoryCode = 0;
+            fixedPartCategoryDetailGrpc.CategoryName = $"TestCategoryName";
+            listPartCategoryDetailGrpc.PartCategoryDetailGrpc.Add(fixedPartCategoryDetailGrpc);
+            return listPartCategoryDetailGrpc;
         }
         #endregion
 
@@ -81,50 +81,50 @@ namespace Emacs.Services
         #endregion
 
         #region PartGroups
-        public static ListPartGroupsData PopulatePartGroups()
+        public static ListPartGroupsGrpc PopulatePartGroups()
         {
-            ListPartGroupsData listPartGroupsData = new ListPartGroupsData();
+            ListPartGroupsGrpc listPartGroupsGrpc = new ListPartGroupsGrpc();
             for (int i = 0; i < 5; i++)
             {
-                PartGroupsData partGroupsData = new PartGroupsData();
-                partGroupsData.PartGroup = $"TestPartGroup{i}";
-                partGroupsData.GroupDescription = $"TestGroupDescription{i}";
-                listPartGroupsData.PartGroupsData.Add(partGroupsData);
+                PartGroupsGrpc PartGroupsGrpc = new PartGroupsGrpc();
+                PartGroupsGrpc.PartGroup = $"TestPartGroup{i}";
+                PartGroupsGrpc.GroupDescription = $"TestGroupDescription{i}";
+                listPartGroupsGrpc.PartGroupsGrpc.Add(PartGroupsGrpc);
             }
 
-            PartGroupsData fixedPartGroupsData = new PartGroupsData();
-            fixedPartGroupsData.PartGroup = $"TestPartGroup";
-            fixedPartGroupsData.GroupDescription = $"TestGroupDescription";
-            listPartGroupsData.PartGroupsData.Add(fixedPartGroupsData);
-            return listPartGroupsData;
+            PartGroupsGrpc fixedPartGroupsGrpc = new PartGroupsGrpc();
+            fixedPartGroupsGrpc.PartGroup = $"TestPartGroup";
+            fixedPartGroupsGrpc.GroupDescription = $"TestGroupDescription";
+            listPartGroupsGrpc.PartGroupsGrpc.Add(fixedPartGroupsGrpc);
+            return listPartGroupsGrpc;
         }
         #endregion
 
         #region PartGroupsConst
-        public static ListPartGroupsConstData PopulatePartGroupsConst()
+        public static ListPartGroupsConstGrpc PopulatePartGroupsConst()
         {
-            ListPartGroupsConstData listPartGroupsConstData = new ListPartGroupsConstData();
+            ListPartGroupsConstGrpc listPartGroupsConstGrpc = new ListPartGroupsConstGrpc();
             for (int i = 0; i < 5; i++)
             {
-                PartGroupsConstData partGroupsConstData = new PartGroupsConstData();
-                partGroupsConstData.Id = i;
-                partGroupsConstData.GroupNo = i;
-                partGroupsConstData.GroupPos = i;
-                partGroupsConstData.GroupName = $"TestGroupName{i}";
-                partGroupsConstData.Code = $"TestCode{i}";
-                partGroupsConstData.Description = $"TestDescription{i}";
-                listPartGroupsConstData.PartGroupsConstData.Add(partGroupsConstData);
+                PartGroupsConstGrpc PartGroupsConstGrpc = new PartGroupsConstGrpc();
+                PartGroupsConstGrpc.Id = i;
+                PartGroupsConstGrpc.GroupNo = i;
+                PartGroupsConstGrpc.GroupPos = i;
+                PartGroupsConstGrpc.GroupName = $"TestGroupName{i}";
+                PartGroupsConstGrpc.Code = $"TestCode{i}";
+                PartGroupsConstGrpc.Description = $"TestDescription{i}";
+                listPartGroupsConstGrpc.PartGroupsConstGrpc.Add(PartGroupsConstGrpc);
             }
 
-            PartGroupsConstData fixedPartGroupsConstData = new PartGroupsConstData();
-            fixedPartGroupsConstData.Id = 0;
-            fixedPartGroupsConstData.GroupNo = 0;
-            fixedPartGroupsConstData.GroupPos = 0;
-            fixedPartGroupsConstData.GroupName = $"TestGroupName";
-            fixedPartGroupsConstData.Code = $"TestCode";
-            fixedPartGroupsConstData.Description = $"TestDescription";
-            listPartGroupsConstData.PartGroupsConstData.Add(fixedPartGroupsConstData);
-            return listPartGroupsConstData;
+            PartGroupsConstGrpc fixedPartGroupsConstGrpc = new PartGroupsConstGrpc();
+            fixedPartGroupsConstGrpc.Id = 0;
+            fixedPartGroupsConstGrpc.GroupNo = 0;
+            fixedPartGroupsConstGrpc.GroupPos = 0;
+            fixedPartGroupsConstGrpc.GroupName = $"TestGroupName";
+            fixedPartGroupsConstGrpc.Code = $"TestCode";
+            fixedPartGroupsConstGrpc.Description = $"TestDescription";
+            listPartGroupsConstGrpc.PartGroupsConstGrpc.Add(fixedPartGroupsConstGrpc);
+            return listPartGroupsConstGrpc;
         }
         #endregion
 
@@ -151,262 +151,262 @@ namespace Emacs.Services
         #endregion
 
         #region ColourCode
-        public static ListColourCodeData PopulateColourCode()
+        public static ListColourCodeGrpc PopulateColourCode()
         {
-            ListColourCodeData listColourCodeData = new ListColourCodeData();
+            ListColourCodeGrpc listColourCodeGrpc = new ListColourCodeGrpc();
             for (int i = 0; i < 5; i++)
             {
-                ColourCodeData colourCodeData = new ColourCodeData();
-                colourCodeData.ClMk = $"TestClMk{i}";
-                colourCodeData.ClCode = $"TestClCode{i}";
-                colourCodeData.ColorName = $"TestColorName{i}";
-                colourCodeData.WireUnitsFlag = 0;
-                colourCodeData.PartUnitsFlag = 0;
-                listColourCodeData.ColourCodeData.Add(colourCodeData);
+                ColourCodeGrpc ColourCodeGrpc = new ColourCodeGrpc();
+                ColourCodeGrpc.ClMk = $"TestClMk{i}";
+                ColourCodeGrpc.ClCode = $"TestClCode{i}";
+                ColourCodeGrpc.ColorName = $"TestColorName{i}";
+                ColourCodeGrpc.WireUnitsFlag = 0;
+                ColourCodeGrpc.PartUnitsFlag = 0;
+                listColourCodeGrpc.ColourCodeGrpc.Add(ColourCodeGrpc);
             }
 
-            ColourCodeData fixedColourCodeData = new ColourCodeData();
-            fixedColourCodeData.ClMk = $"TestClMk";
-            fixedColourCodeData.ClCode = $"TestClCode";
-            fixedColourCodeData.ColorName = $"TestColorName";
-            fixedColourCodeData.WireUnitsFlag = 0;
-            fixedColourCodeData.PartUnitsFlag = 0;
-            listColourCodeData.ColourCodeData.Add(fixedColourCodeData);
-            return listColourCodeData;
+            ColourCodeGrpc fixedColourCodeGrpc = new ColourCodeGrpc();
+            fixedColourCodeGrpc.ClMk = $"TestClMk";
+            fixedColourCodeGrpc.ClCode = $"TestClCode";
+            fixedColourCodeGrpc.ColorName = $"TestColorName";
+            fixedColourCodeGrpc.WireUnitsFlag = 0;
+            fixedColourCodeGrpc.PartUnitsFlag = 0;
+            listColourCodeGrpc.ColourCodeGrpc.Add(fixedColourCodeGrpc);
+            return listColourCodeGrpc;
         }
         #endregion
 
         #region MaterialGroups
-        public static ListMaterialGroupsData PopulateMaterialGroups()
+        public static ListMaterialGroupsGrpc PopulateMaterialGroups()
         {
-            ListMaterialGroupsData listMaterialGroupsData = new ListMaterialGroupsData();
+            ListMaterialGroupsGrpc listMaterialGroupsGrpc = new ListMaterialGroupsGrpc();
             for (int i = 0; i < 5; i++)
             {
-                MaterialGroupsData materialGroupsData = new MaterialGroupsData();
-                materialGroupsData.MaterialGroup = $"TestMaterialGroup{i}";
-                materialGroupsData.GroupDescription = $"TestGroupDescription{i}";
-                listMaterialGroupsData.MaterialGroupsData.Add(materialGroupsData);
+                MaterialGroupsGrpc MaterialGroupsGrpc = new MaterialGroupsGrpc();
+                MaterialGroupsGrpc.MaterialGroup = $"TestMaterialGroup{i}";
+                MaterialGroupsGrpc.GroupDescription = $"TestGroupDescription{i}";
+                listMaterialGroupsGrpc.MaterialGroupsGrpc.Add(MaterialGroupsGrpc);
             }
 
-            MaterialGroupsData fixedMaterialGroupsData = new MaterialGroupsData();
-            fixedMaterialGroupsData.MaterialGroup = $"TestMaterialGroup";
-            fixedMaterialGroupsData.GroupDescription = $"TestGroupDescription";
-            listMaterialGroupsData.MaterialGroupsData.Add(fixedMaterialGroupsData);
-            return listMaterialGroupsData;
+            MaterialGroupsGrpc fixedMaterialGroupsGrpc = new MaterialGroupsGrpc();
+            fixedMaterialGroupsGrpc.MaterialGroup = $"TestMaterialGroup";
+            fixedMaterialGroupsGrpc.GroupDescription = $"TestGroupDescription";
+            listMaterialGroupsGrpc.MaterialGroupsGrpc.Add(fixedMaterialGroupsGrpc);
+            return listMaterialGroupsGrpc;
         }
         #endregion
 
         #region MaterialTypes
-        public static ListMaterialTypesData PopulateMaterialTypes()
+        public static ListMaterialTypesGrpc PopulateMaterialTypes()
         {
-            ListMaterialTypesData listMaterialTypesData = new ListMaterialTypesData();
+            ListMaterialTypesGrpc listMaterialTypesGrpc = new ListMaterialTypesGrpc();
             for (int i = 0; i < 5; i++)
             {
-                MaterialTypesData materialTypesData = new MaterialTypesData();
-                materialTypesData.MaterialGroup = $"TestMaterialGroup{i}";
-                materialTypesData.MaterialType = $"TestMaterialType{i}";
-                materialTypesData.TypeDescription = $"TestTypeDescription{i}";
-                listMaterialTypesData.MaterialTypesData.Add(materialTypesData);
+                MaterialTypesGrpc MaterialTypesGrpc = new MaterialTypesGrpc();
+                MaterialTypesGrpc.MaterialGroup = $"TestMaterialGroup{i}";
+                MaterialTypesGrpc.MaterialType = $"TestMaterialType{i}";
+                MaterialTypesGrpc.TypeDescription = $"TestTypeDescription{i}";
+                listMaterialTypesGrpc.MaterialTypesGrpc.Add(MaterialTypesGrpc);
             }
 
-            MaterialTypesData fixedMaterialTypesData = new MaterialTypesData();
-            fixedMaterialTypesData.MaterialGroup = $"TestMaterialGroup";
-            fixedMaterialTypesData.MaterialType = $"TestMaterialType";
-            fixedMaterialTypesData.TypeDescription = $"TestTypeDescription";
-            listMaterialTypesData.MaterialTypesData.Add(fixedMaterialTypesData);
-            return listMaterialTypesData;
+            MaterialTypesGrpc fixedMaterialTypesGrpc = new MaterialTypesGrpc();
+            fixedMaterialTypesGrpc.MaterialGroup = $"TestMaterialGroup";
+            fixedMaterialTypesGrpc.MaterialType = $"TestMaterialType";
+            fixedMaterialTypesGrpc.TypeDescription = $"TestTypeDescription";
+            listMaterialTypesGrpc.MaterialTypesGrpc.Add(fixedMaterialTypesGrpc);
+            return listMaterialTypesGrpc;
         }
         #endregion
 
         #region NPACustomer
-        public static ListNPACustomerData PopulateNPACustomer()
+        public static ListNPACustomerGrpc PopulateNPACustomer()
         {
-            ListNPACustomerData listNPACustomerData = new ListNPACustomerData();
+            ListNPACustomerGrpc listNPACustomerGrpc = new ListNPACustomerGrpc();
             for (int i = 0; i < 5; i++)
             {
-                NPACustomerData nPACustomerData = new NPACustomerData();
-                nPACustomerData.Id = i;
-                nPACustomerData.Code = $"TestCode{i}";
-                nPACustomerData.Name = $"TestName{i}";
-                nPACustomerData.SubsidiaryId = i;
-                nPACustomerData.BuyerId = i;
-                nPACustomerData.Address = $"TestAddress{i}";
-                nPACustomerData.Phone = $"TestPhone{i}";
-                nPACustomerData.Email = $"TestEmail{i}";
-                nPACustomerData.Contact = $"TestContact{i}";
-                nPACustomerData.AlternateContact = $"TestAlternateContact{i}";
-                nPACustomerData.Active = true;
-                listNPACustomerData.NPACustomerData.Add(nPACustomerData);
+                NPACustomerGrpc NPACustomerGrpc = new NPACustomerGrpc();
+                NPACustomerGrpc.Id = i;
+                NPACustomerGrpc.Code = $"TestCode{i}";
+                NPACustomerGrpc.Name = $"TestName{i}";
+                NPACustomerGrpc.SubsidiaryId = i;
+                NPACustomerGrpc.BuyerId = i;
+                NPACustomerGrpc.Address = $"TestAddress{i}";
+                NPACustomerGrpc.Phone = $"TestPhone{i}";
+                NPACustomerGrpc.Email = $"TestEmail{i}";
+                NPACustomerGrpc.Contact = $"TestContact{i}";
+                NPACustomerGrpc.AlternateContact = $"TestAlternateContact{i}";
+                NPACustomerGrpc.Active = true;
+                listNPACustomerGrpc.NPACustomerGrpc.Add(NPACustomerGrpc);
             }
 
-            NPACustomerData fixedNPACustomerData = new NPACustomerData();
-            fixedNPACustomerData.Id = 0;
-            fixedNPACustomerData.Code = $"TestCode";
-            fixedNPACustomerData.Name = $"TestName";
-            fixedNPACustomerData.SubsidiaryId = 0;
-            fixedNPACustomerData.BuyerId = 0;
-            fixedNPACustomerData.Address = $"TestAddress";
-            fixedNPACustomerData.Phone = $"TestPhone";
-            fixedNPACustomerData.Email = $"TestEmail";
-            fixedNPACustomerData.Contact = $"TestContact";
-            fixedNPACustomerData.AlternateContact = $"TestAlternateContact";
-            fixedNPACustomerData.Active = true;
-            listNPACustomerData.NPACustomerData.Add(fixedNPACustomerData);
-            return listNPACustomerData;
+            NPACustomerGrpc fixedNPACustomerGrpc = new NPACustomerGrpc();
+            fixedNPACustomerGrpc.Id = 0;
+            fixedNPACustomerGrpc.Code = $"TestCode";
+            fixedNPACustomerGrpc.Name = $"TestName";
+            fixedNPACustomerGrpc.SubsidiaryId = 0;
+            fixedNPACustomerGrpc.BuyerId = 0;
+            fixedNPACustomerGrpc.Address = $"TestAddress";
+            fixedNPACustomerGrpc.Phone = $"TestPhone";
+            fixedNPACustomerGrpc.Email = $"TestEmail";
+            fixedNPACustomerGrpc.Contact = $"TestContact";
+            fixedNPACustomerGrpc.AlternateContact = $"TestAlternateContact";
+            fixedNPACustomerGrpc.Active = true;
+            listNPACustomerGrpc.NPACustomerGrpc.Add(fixedNPACustomerGrpc);
+            return listNPACustomerGrpc;
         }
         #endregion
 
         #region NPASupplier
-        public static ListNPASupplierData PopulateNPASupplier()
+        public static ListNPASupplierGrpc PopulateNPASupplier()
         {
-            ListNPASupplierData listNPASupplierData = new ListNPASupplierData();
+            ListNPASupplierGrpc listNPASupplierGrpc = new ListNPASupplierGrpc();
             for (int i = 0; i < 5; i++)
             {
-                NPASupplierData nPASupplierData = new NPASupplierData();
-                nPASupplierData.Id = i;
-                nPASupplierData.Code = $"TestCode{i}";
-                nPASupplierData.Name = $"TestName{i}";
-                nPASupplierData.SubsidiaryId = i;
-                nPASupplierData.BuyerId = i;
-                nPASupplierData.Address = $"TestAddress{i}";
-                nPASupplierData.Phone = $"TestPhone{i}";
-                nPASupplierData.Email = $"TestEmail{i}";
-                nPASupplierData.Contact = $"TestContact{i}";
-                nPASupplierData.AlternateContact = $"TestAlternateContact{i}";
-                nPASupplierData.Active = true;
-                nPASupplierData.JSupplier = true;
-                listNPASupplierData.NPASupplierData.Add(nPASupplierData);
+                NPASupplierGrpc NPASupplierGrpc = new NPASupplierGrpc();
+                NPASupplierGrpc.Id = i;
+                NPASupplierGrpc.Code = $"TestCode{i}";
+                NPASupplierGrpc.Name = $"TestName{i}";
+                NPASupplierGrpc.SubsidiaryId = i;
+                NPASupplierGrpc.BuyerId = i;
+                NPASupplierGrpc.Address = $"TestAddress{i}";
+                NPASupplierGrpc.Phone = $"TestPhone{i}";
+                NPASupplierGrpc.Email = $"TestEmail{i}";
+                NPASupplierGrpc.Contact = $"TestContact{i}";
+                NPASupplierGrpc.AlternateContact = $"TestAlternateContact{i}";
+                NPASupplierGrpc.Active = true;
+                NPASupplierGrpc.JSupplier = true;
+                listNPASupplierGrpc.NPASupplierGrpc.Add(NPASupplierGrpc);
             }
 
-            NPASupplierData fixedNPASupplierData = new NPASupplierData();
-            fixedNPASupplierData.Id = 0;
-            fixedNPASupplierData.Code = $"TestCode";
-            fixedNPASupplierData.Name = $"TestName";
-            fixedNPASupplierData.SubsidiaryId = 0;
-            fixedNPASupplierData.BuyerId = 0;
-            fixedNPASupplierData.Address = $"TestAddress";
-            fixedNPASupplierData.Phone = $"TestPhone";
-            fixedNPASupplierData.Email = $"TestEmail";
-            fixedNPASupplierData.Contact = $"TestContact";
-            fixedNPASupplierData.AlternateContact = $"TestAlternateContact";
-            fixedNPASupplierData.Active = true;
-            fixedNPASupplierData.JSupplier = true;
-            listNPASupplierData.NPASupplierData.Add(fixedNPASupplierData);
-            return listNPASupplierData;
+            NPASupplierGrpc fixedNPASupplierGrpc = new NPASupplierGrpc();
+            fixedNPASupplierGrpc.Id = 0;
+            fixedNPASupplierGrpc.Code = $"TestCode";
+            fixedNPASupplierGrpc.Name = $"TestName";
+            fixedNPASupplierGrpc.SubsidiaryId = 0;
+            fixedNPASupplierGrpc.BuyerId = 0;
+            fixedNPASupplierGrpc.Address = $"TestAddress";
+            fixedNPASupplierGrpc.Phone = $"TestPhone";
+            fixedNPASupplierGrpc.Email = $"TestEmail";
+            fixedNPASupplierGrpc.Contact = $"TestContact";
+            fixedNPASupplierGrpc.AlternateContact = $"TestAlternateContact";
+            fixedNPASupplierGrpc.Active = true;
+            fixedNPASupplierGrpc.JSupplier = true;
+            listNPASupplierGrpc.NPASupplierGrpc.Add(fixedNPASupplierGrpc);
+            return listNPASupplierGrpc;
         }
         #endregion
 
         #region Suppliers
-        public static ListSuppliersData PopulateSuppliers()
+        public static ListSuppliersGrpc PopulateSuppliers()
         {
-            ListSuppliersData listSuppliersData = new ListSuppliersData();
+            ListSuppliersGrpc listSuppliersGrpc = new ListSuppliersGrpc();
             for (int i = 0; i < 5; i++)
             {
-                SuppliersData suppliersData = new SuppliersData();
-                suppliersData.SupplierCode = i;
-                suppliersData.SupplierName = $"TestSupplierName{i}";
-                listSuppliersData.SuppliersData.Add(suppliersData);
+                SuppliersGrpc SuppliersGrpc = new SuppliersGrpc();
+                SuppliersGrpc.SupplierCode = i;
+                SuppliersGrpc.SupplierName = $"TestSupplierName{i}";
+                listSuppliersGrpc.SuppliersGrpc.Add(SuppliersGrpc);
             }
 
-            SuppliersData fixedSuppliersData = new SuppliersData();
-            fixedSuppliersData.SupplierCode = 0;
-            fixedSuppliersData.SupplierName = $"TestSupplierName";
-            listSuppliersData.SuppliersData.Add(fixedSuppliersData);
-            return listSuppliersData;
+            SuppliersGrpc fixedSuppliersGrpc = new SuppliersGrpc();
+            fixedSuppliersGrpc.SupplierCode = 0;
+            fixedSuppliersGrpc.SupplierName = $"TestSupplierName";
+            listSuppliersGrpc.SuppliersGrpc.Add(fixedSuppliersGrpc);
+            return listSuppliersGrpc;
         }
         #endregion
 
         #region PARTMS
-        public static ListPARTMSData PopulatePARTMS()
+        public static ListPARTMSGrpc PopulatePARTMS()
         {
-            ListPARTMSData listPARTMSData = new ListPARTMSData();
+            ListPARTMSGrpc listPARTMSGrpc = new ListPARTMSGrpc();
             for (int i = 0; i < 5; i++)
             {
-                PARTMSData pARTMSData = new PARTMSData();
-                pARTMSData.SumitomoNumber = $"TestSumitomoNumber{i}";
-                pARTMSData.SumitomoDescription = $"TestSumitomoDescription{i}";
-                pARTMSData.SumitomoDescriptionEnglish = $"TestSumitomoDescriptionEnglish{i}";
-                pARTMSData.OldPartClass = $"TestOldPartClass{i}";
-                pARTMSData.OldMaterial = $"TestOldMaterial{i}";
-                pARTMSData.ClassDetailGroupCode = $"TestClassDetailGroupCode{i}";
-                pARTMSData.ClassDetailId = $"TestClassDetailId{i}";
-                pARTMSData.MaterialGroupId = $"TestMaterialGroupId{i}";
-                pARTMSData.MaterialTypeId = $"TestMaterialTypeId{i}";
-                pARTMSData.ColorCode = $"TestColorCode{i}";
-                pARTMSData.NumberOfCavity = i;
-                pARTMSData.InsideDiameter = i;
-                pARTMSData.WallThickness = i;
-                pARTMSData.Length = i;
-                pARTMSData.WidthOrOutsideDiameter = i;
-                pARTMSData.WidthOrOutsideDiameter = i;
-                pARTMSData.HoleDiameter = i;
-                pARTMSData.ShrinkRateLength = i;
-                pARTMSData.NumberOfTapingSpots = i;
-                pARTMSData.MassOrWeight = i;
-                pARTMSData.Quantity = i;
-                pARTMSData.UoM = $"TestUoM{i}";
-                pARTMSData.Group1 = $"TestGroup1{i}";
-                pARTMSData.Group2 = $"TestGroup2{i}";
-                pARTMSData.Group3 = $"TestGroup3{i}";
-                pARTMSData.Group4 = $"TestGroup4{i}";
-                pARTMSData.CavityCount = $"TestCavityCount{i}";
-                pARTMSData.Group6 = $"TestGroup6{i}";
-                pARTMSData.Group7 = $"TestGroup7{i}";
-                pARTMSData.Group8 = $"TestGroup8{i}";
-                pARTMSData.CustomerId = $"TestCustomerId{i}";
-                pARTMSData.MassOrWeight2 = i;
-                pARTMSData.L1 = i;
-                pARTMSData.L2 = i;
-                pARTMSData.L3 = i;
-                pARTMSData.PitchWidth = i;
-                pARTMSData.Tilt = i;
-                pARTMSData.Grease = i;
-                pARTMSData.CategoryCode = $"TestCategoryCode{i}";
-                listPARTMSData.PARTMSData.Add(pARTMSData);
+                PARTMSGrpc PARTMSGrpc = new PARTMSGrpc();
+                PARTMSGrpc.SumitomoNumber = $"TestSumitomoNumber{i}";
+                PARTMSGrpc.SumitomoDescription = $"TestSumitomoDescription{i}";
+                PARTMSGrpc.SumitomoDescriptionEnglish = $"TestSumitomoDescriptionEnglish{i}";
+                PARTMSGrpc.OldPartClass = $"TestOldPartClass{i}";
+                PARTMSGrpc.OldMaterial = $"TestOldMaterial{i}";
+                PARTMSGrpc.ClassDetailGroupCode = $"TestClassDetailGroupCode{i}";
+                PARTMSGrpc.ClassDetailId = $"TestClassDetailId{i}";
+                PARTMSGrpc.MaterialGroupId = $"TestMaterialGroupId{i}";
+                PARTMSGrpc.MaterialTypeId = $"TestMaterialTypeId{i}";
+                PARTMSGrpc.ColorCode = $"TestColorCode{i}";
+                PARTMSGrpc.NumberOfCavity = i;
+                PARTMSGrpc.InsideDiameter = i;
+                PARTMSGrpc.WallThickness = i;
+                PARTMSGrpc.Length = i;
+                PARTMSGrpc.WidthOrOutsideDiameter = i;
+                PARTMSGrpc.WidthOrOutsideDiameter = i;
+                PARTMSGrpc.HoleDiameter = i;
+                PARTMSGrpc.ShrinkRateLength = i;
+                PARTMSGrpc.NumberOfTapingSpots = i;
+                PARTMSGrpc.MassOrWeight = i;
+                PARTMSGrpc.Quantity = i;
+                PARTMSGrpc.UoM = $"TestUoM{i}";
+                PARTMSGrpc.Group1 = $"TestGroup1{i}";
+                PARTMSGrpc.Group2 = $"TestGroup2{i}";
+                PARTMSGrpc.Group3 = $"TestGroup3{i}";
+                PARTMSGrpc.Group4 = $"TestGroup4{i}";
+                PARTMSGrpc.CavityCount = $"TestCavityCount{i}";
+                PARTMSGrpc.Group6 = $"TestGroup6{i}";
+                PARTMSGrpc.Group7 = $"TestGroup7{i}";
+                PARTMSGrpc.Group8 = $"TestGroup8{i}";
+                PARTMSGrpc.CustomerId = $"TestCustomerId{i}";
+                PARTMSGrpc.MassOrWeight2 = i;
+                PARTMSGrpc.L1 = i;
+                PARTMSGrpc.L2 = i;
+                PARTMSGrpc.L3 = i;
+                PARTMSGrpc.PitchWidth = i;
+                PARTMSGrpc.Tilt = i;
+                PARTMSGrpc.Grease = i;
+                PARTMSGrpc.CategoryCode = $"TestCategoryCode{i}";
+                listPARTMSGrpc.PARTMSGrpc.Add(PARTMSGrpc);
             }
 
-            PARTMSData fixedPARTMSData = new PARTMSData();
-            fixedPARTMSData.SumitomoNumber = $"TestSumitomoNumber";
-            fixedPARTMSData.SumitomoDescription = $"TestSumitomoDescription";
-            fixedPARTMSData.SumitomoDescriptionEnglish = $"TestSumitomoDescriptionEnglish";
-            fixedPARTMSData.OldPartClass = $"TestOldPartClass";
-            fixedPARTMSData.OldMaterial = $"TestOldMaterial";
-            fixedPARTMSData.ClassDetailGroupCode = $"TestClassDetailGroupCode";
-            fixedPARTMSData.ClassDetailId = $"0";
-            fixedPARTMSData.MaterialGroupId = $"TestMaterialGroupId";
-            fixedPARTMSData.MaterialTypeId = $"TestMaterialTypeId";
-            fixedPARTMSData.ColorCode = $"TestColorCode";
-            fixedPARTMSData.NumberOfCavity = 0;
-            fixedPARTMSData.InsideDiameter = 0;
-            fixedPARTMSData.WallThickness = 0;
-            fixedPARTMSData.Length = 0;
-            fixedPARTMSData.WidthOrOutsideDiameter = 0;
-            fixedPARTMSData.WidthOrOutsideDiameter = 0;
-            fixedPARTMSData.HoleDiameter = 0;
-            fixedPARTMSData.ShrinkRateLength = 0;
-            fixedPARTMSData.NumberOfTapingSpots = 0;
-            fixedPARTMSData.MassOrWeight = 0;
-            fixedPARTMSData.Quantity = 0;
-            fixedPARTMSData.UoM = $"TestUoM";
-            fixedPARTMSData.Group1 = $"TestGroup1";
-            fixedPARTMSData.Group2 = $"TestGroup2";
-            fixedPARTMSData.Group3 = $"TestGroup3";
-            fixedPARTMSData.Group4 = $"TestGroup4";
-            fixedPARTMSData.CavityCount = $"TestCavityCount";
-            fixedPARTMSData.Group6 = $"TestGroup6";
-            fixedPARTMSData.Group7 = $"TestGroup7";
-            fixedPARTMSData.Group8 = $"TestGroup8";
-            fixedPARTMSData.CustomerId = $"TestCustomerId";
-            fixedPARTMSData.MassOrWeight2 = 0;
-            fixedPARTMSData.L1 = 0;
-            fixedPARTMSData.L2 = 0;
-            fixedPARTMSData.L3 = 0;
-            fixedPARTMSData.PitchWidth = 0;
-            fixedPARTMSData.Tilt = 0;
-            fixedPARTMSData.Grease = 0;
-            fixedPARTMSData.CategoryCode = $"TestCategoryCode";
-            listPARTMSData.PARTMSData.Add(fixedPARTMSData);
-            return listPARTMSData;
+            PARTMSGrpc fixedPARTMSGrpc = new PARTMSGrpc();
+            fixedPARTMSGrpc.SumitomoNumber = $"TestSumitomoNumber";
+            fixedPARTMSGrpc.SumitomoDescription = $"TestSumitomoDescription";
+            fixedPARTMSGrpc.SumitomoDescriptionEnglish = $"TestSumitomoDescriptionEnglish";
+            fixedPARTMSGrpc.OldPartClass = $"TestOldPartClass";
+            fixedPARTMSGrpc.OldMaterial = $"TestOldMaterial";
+            fixedPARTMSGrpc.ClassDetailGroupCode = $"TestClassDetailGroupCode";
+            fixedPARTMSGrpc.ClassDetailId = $"0";
+            fixedPARTMSGrpc.MaterialGroupId = $"TestMaterialGroupId";
+            fixedPARTMSGrpc.MaterialTypeId = $"TestMaterialTypeId";
+            fixedPARTMSGrpc.ColorCode = $"TestColorCode";
+            fixedPARTMSGrpc.NumberOfCavity = 0;
+            fixedPARTMSGrpc.InsideDiameter = 0;
+            fixedPARTMSGrpc.WallThickness = 0;
+            fixedPARTMSGrpc.Length = 0;
+            fixedPARTMSGrpc.WidthOrOutsideDiameter = 0;
+            fixedPARTMSGrpc.WidthOrOutsideDiameter = 0;
+            fixedPARTMSGrpc.HoleDiameter = 0;
+            fixedPARTMSGrpc.ShrinkRateLength = 0;
+            fixedPARTMSGrpc.NumberOfTapingSpots = 0;
+            fixedPARTMSGrpc.MassOrWeight = 0;
+            fixedPARTMSGrpc.Quantity = 0;
+            fixedPARTMSGrpc.UoM = $"TestUoM";
+            fixedPARTMSGrpc.Group1 = $"TestGroup1";
+            fixedPARTMSGrpc.Group2 = $"TestGroup2";
+            fixedPARTMSGrpc.Group3 = $"TestGroup3";
+            fixedPARTMSGrpc.Group4 = $"TestGroup4";
+            fixedPARTMSGrpc.CavityCount = $"TestCavityCount";
+            fixedPARTMSGrpc.Group6 = $"TestGroup6";
+            fixedPARTMSGrpc.Group7 = $"TestGroup7";
+            fixedPARTMSGrpc.Group8 = $"TestGroup8";
+            fixedPARTMSGrpc.CustomerId = $"TestCustomerId";
+            fixedPARTMSGrpc.MassOrWeight2 = 0;
+            fixedPARTMSGrpc.L1 = 0;
+            fixedPARTMSGrpc.L2 = 0;
+            fixedPARTMSGrpc.L3 = 0;
+            fixedPARTMSGrpc.PitchWidth = 0;
+            fixedPARTMSGrpc.Tilt = 0;
+            fixedPARTMSGrpc.Grease = 0;
+            fixedPARTMSGrpc.CategoryCode = $"TestCategoryCode";
+            listPARTMSGrpc.PARTMSGrpc.Add(fixedPARTMSGrpc);
+            return listPARTMSGrpc;
         }
         #endregion
 

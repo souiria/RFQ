@@ -1,6 +1,6 @@
 ﻿namespace Emacs.Data.CQRS.Query
 {
-    public class GetColourCodeQuery : IQuery<List<ColourCodeData>>
+    public class GetColourCodeQuery : IQuery<List<ColourCodeGrpc>>
     {
         public int? Position
         { get; set; }
