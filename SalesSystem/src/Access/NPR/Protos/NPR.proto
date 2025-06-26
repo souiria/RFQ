@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+option csharp_namespace = "NPR";
+
+package NPR;
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply);
+  rpc GetAllH1NPRViewData (H1NPRViewRequest) returns (ListH1NPRViewData);
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings.
+message HelloReply {
+  string message = 1;
+}
+
+message H1NPRViewRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message H1NPRViewData{
+	google.protobuf.StringValue Id = 1;
+	google.protobuf.StringValue Subsidiary_Id = 2;
+	google.protobuf.StringValue Ref_No = 3;
+	google.protobuf.StringValue Ref_No = 4;
+	google.protobuf.StringValue Type = 5;
+	google.protobuf.Timestamp Raise_Date = 6;
+	google.protobuf.StringValue User_Id = 7;
+	google.protobuf.StringValue Status = 8;
+	google.protobuf.StringValue Sumitomo_No = 9;
+	google.protobuf.StringValue Description = 10;
+	google.protobuf.StringValue Project_Id = 11;
+	google.protobuf.StringValue Suggested_Supplier_Id = 12;
+	google.protobuf.StringValue Replaced_Part = 13;
+	google.protobuf.StringValue Customer_Id = 14;
+	google.protobuf.StringValue Supplier_No = 15;
+	google.protobuf.StringValue Assembly_No = 16;
+	google.protobuf.StringValue Customer_No = 17;
+	google.protobuf.StringValue UoM = 18;
+	google.protobuf.Int32Value Qty_Per_Vehicle = 19;
+	google.protobuf.StringValue Eng_Comments = 20;
+	google.protobuf.Timestamp Rfq_Required_Date = 21;
+	google.protobuf.Timestamp Order_Date = 22;
+	google.protobuf.StringValue Ordered_By = 23;
+	google.protobuf.Timestamp Delv_Promise_Date = 24;
+	google.protobuf.Timestamp Quotation_Date = 25;
+	google.protobuf.StringValue Origin_Country = 26;
+	google.protobuf.StringValue Special_Delivery = 27;
+	google.protobuf.StringValue Po_No = 28;
+	google.protobuf.Int32Value Price = 29;
+	google.protobuf.StringValue Currency = 30;
+	google.protobuf.Int32Value Std_Lead_Time = 31;
+	google.protobuf.StringValue Tariff_Code = 32;
+	google.protobuf.StringValue Purchase_UoM = 33;
+	google.protobuf.Int32Value Moq = 34;
+	google.protobuf.Int32Value Bag_Qty = 35;
+	google.protobuf.StringValue Purchasing_Comments = 36;
+
+
+}
