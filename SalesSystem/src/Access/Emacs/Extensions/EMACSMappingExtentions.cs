@@ -3,7 +3,7 @@
     public static class EMACSMappingExtentions
     {
         #region CombinedParts
-        public static CombinedPartsGrpc MapToCombinePartsData(this DbCombinedParts entity)
+        public static CombinedPartsGrpc MapToCombinePartsGrpc(this DbCombinedParts entity)
         {
             CombinedPartsGrpc data = new CombinedPartsGrpc();
             data.SumitomoNumber = entity.SumitomoNumber;
@@ -70,7 +70,7 @@
         #endregion
 
         #region CustomerData
-        public static CustomerDataGrpc MapToCustomerDataDto(this DbCustomerData entity)
+        public static CustomerDataGrpc MapToCustomerDataGrpc(this DbCustomerData entity)
         {
             CustomerDataGrpc data = new CustomerDataGrpc();
             data.CustomerCode = entity.CustomerCode;

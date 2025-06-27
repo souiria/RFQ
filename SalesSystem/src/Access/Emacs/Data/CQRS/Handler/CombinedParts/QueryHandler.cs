@@ -18,7 +18,7 @@
             List<DbCombinedParts> results = await _Repository.ListAsync(spec, cancellationToken);
             foreach (DbCombinedParts result in results)
             {
-                CombinedPartsGrpc combinedPartsGrpc = result.MapToCombinePartsData();
+                CombinedPartsGrpc combinedPartsGrpc = result.MapToCombinePartsGrpc();
                 _CombinedParts.Add(combinedPartsGrpc);
             }
 

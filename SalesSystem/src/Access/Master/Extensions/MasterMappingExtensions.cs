@@ -32,7 +32,7 @@ namespace Master.Extensions
             return data;
         }
 
-        public static CustomerLocationGrpc MapToLocationData(this DbCustomerHierarchy entity)
+        public static CustomerLocationGrpc MapToLocationGrpc(this DbCustomerHierarchy entity)
         {
             CustomerLocationGrpc data = new CustomerLocationGrpc();
 
@@ -43,7 +43,7 @@ namespace Master.Extensions
             return data;
         }
 
-        public static CustomerSalesEntityGrpc MapToCustomerSalesEntityDto(this DbCustomerSalesEntity entity)
+        public static CustomerSalesEntityGrpc MapToCustomerSalesEntityGrpc(this DbCustomerSalesEntity entity)
         {
             CustomerSalesEntityGrpc data = new CustomerSalesEntityGrpc();
             data.Id = entity.Id.ToString();
@@ -55,7 +55,7 @@ namespace Master.Extensions
             return data;
         }
 
-        public static CustomerProjectAssociationGrpc MapToCustomerProjectAssociationDto(this DbCustomerProjectAssociation entity)
+        public static CustomerProjectAssociationGrpc MapToCustomerProjectAssociationGrpc(this DbCustomerProjectAssociation entity)
         {
             CustomerProjectAssociationGrpc data = new CustomerProjectAssociationGrpc();
             data.Id = entity.Id.ToString();
@@ -65,7 +65,7 @@ namespace Master.Extensions
             return data;
         }
 
-        public static CustomerBusinessUserAssociationGrpc MapToCustomerBusinessUserAssociationDto(this DbCustomerBusinessUserAssociation entity)
+        public static CustomerBusinessUserAssociationGrpc MapToCustomerBusinessUserAssociationGrpc(this DbCustomerBusinessUserAssociation entity)
         {
             CustomerBusinessUserAssociationGrpc data = new CustomerBusinessUserAssociationGrpc();
             data.Id = entity.Id.ToString();

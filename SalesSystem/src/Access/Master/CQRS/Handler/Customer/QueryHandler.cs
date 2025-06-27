@@ -58,7 +58,7 @@
             List<DbCustomerHierarchy> results = await _CustomerHierarchyRepository.ListAsync(spec, cancellationToken);
             foreach (DbCustomerHierarchy result in results)
             {
-                CustomerLocationGrpc mapping = result.MapToLocationData();
+                CustomerLocationGrpc mapping = result.MapToLocationGrpc();
                 _CustomerLocations.Add(mapping);
             }
 
@@ -72,7 +72,7 @@
             List<DbCustomerProjectAssociation> results = await _CustomerProjectAssociationRepository.ListAsync(spec, cancellationToken);
             foreach (DbCustomerProjectAssociation result in results)
             {
-                CustomerProjectAssociationGrpc mapping = result.MapToCustomerProjectAssociationDto();
+                CustomerProjectAssociationGrpc mapping = result.MapToCustomerProjectAssociationGrpc();
                 _CustomerProjectAssociations.Add(mapping);
             }
 
@@ -86,7 +86,7 @@
             List<DbCustomerSalesEntity> results = await _CustomerSalesEntityRepository.ListAsync(spec, cancellationToken);
             foreach (DbCustomerSalesEntity result in results)
             {
-                CustomerSalesEntityGrpc mapping = result.MapToCustomerSalesEntityDto();
+                CustomerSalesEntityGrpc mapping = result.MapToCustomerSalesEntityGrpc();
                 _CustomerSalesEntities.Add(mapping);
             }
 
@@ -100,7 +100,7 @@
             List<DbCustomerBusinessUserAssociation> results = await _CustomerBusinessUserAssociationRepository.ListAsync(spec, cancellationToken);
             foreach (DbCustomerBusinessUserAssociation result in results)
             {
-                CustomerBusinessUserAssociationGrpc mapping = result.MapToCustomerBusinessUserAssociationDto();
+                CustomerBusinessUserAssociationGrpc mapping = result.MapToCustomerBusinessUserAssociationGrpc();
                 _CustomerBusinessUserAssociations.Add(mapping);
             }
 

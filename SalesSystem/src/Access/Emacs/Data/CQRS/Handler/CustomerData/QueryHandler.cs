@@ -17,7 +17,7 @@
             List<DbCustomerData> results = await _Repository.ListAsync(spec, cancellationToken);
             foreach (DbCustomerData result in results)
             {
-                CustomerDataGrpc customerDataGrpc = result.MapToCustomerDataDto();
+                CustomerDataGrpc customerDataGrpc = result.MapToCustomerDataGrpc();
                 _CustomerData.Add(customerDataGrpc);
             }
 
