@@ -19,8 +19,8 @@
 
         #region PartClassDetail
 
-        ListPartClassDetailData _ListPartClassDetail;
-        ListPartClassDetailData _FilteredListPartClassDetail;
+        ListPartClassDetailGrpc _ListPartClassDetail;
+        ListPartClassDetailGrpc _FilteredListPartClassDetail;
 
         #endregion
 
@@ -116,7 +116,7 @@
 
         #region PartClassDetail
 
-        IQueryHandler<GetPartClassDetailQuery, List<PartClassDetailData>>? _PartClassDetailHandler;
+        IQueryHandler<GetPartClassDetailQuery, List<PartClassDetailGrpc>>? _PartClassDetailHandler;
         bool _PartClassDetailRefreshInProgress;
 
         #endregion
@@ -221,8 +221,8 @@
 
             #region PartClassDetail
 
-            _ListPartClassDetail = new ListPartClassDetailData();
-            _FilteredListPartClassDetail = new ListPartClassDetailData();
+            _ListPartClassDetail = new ListPartClassDetailGrpc();
+            _FilteredListPartClassDetail = new ListPartClassDetailGrpc();
             _PartClassDetailRefreshInProgress = false;
 
             #endregion
@@ -387,10 +387,10 @@
 
         #region PartClassDetail
 
-        public async Task<ListPartClassDetailData> GetAllPartClassDetail(CancellationToken cancellationToken)
+        public async Task<ListPartClassDetailGrpc> GetAllPartClassDetail(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListPartClassDetail.PartClassDetailData.Any())
+            if (_ListPartClassDetail.PartClassDetailGrpc.Any())
             {
                 return _ListPartClassDetail;
             }
@@ -400,13 +400,13 @@
                 return _ListPartClassDetail;
             }
         }
-        public async Task<ListPartClassDetailData> GetPartClassDetailByClasses(string class1, double class2, CancellationToken cancellationToken)
+        public async Task<ListPartClassDetailGrpc> GetPartClassDetailByClasses(string class1, double class2, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListPartClassDetail.PartClassDetailData.Any())
+            if (_ListPartClassDetail.PartClassDetailGrpc.Any())
             {
-                List<PartClassDetailData> filteredList = _ListPartClassDetail.PartClassDetailData.Where(x => x.Class1 == class1 && x.Class2 == class2).ToList();
-                _FilteredListPartClassDetail.PartClassDetailData.AddRange(filteredList);
+                List<PartClassDetailGrpc> filteredList = _ListPartClassDetail.PartClassDetailGrpc.Where(x => x.Class1 == class1 && x.Class2 == class2).ToList();
+                _FilteredListPartClassDetail.PartClassDetailGrpc.AddRange(filteredList);
                 return _FilteredListPartClassDetail;
             }
             else
@@ -863,18 +863,18 @@
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _PartClassDetailHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartClassDetailQuery, List<PartClassDetailData>>>();
+                    _PartClassDetailHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartClassDetailQuery, List<PartClassDetailGrpc>>>();
                     _PartClassDetailRefreshInProgress = true;
                     GetPartClassDetailQuery query = new GetPartClassDetailQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<PartClassDetailData>> results = await _PartClassDetailHandler.Handle(query, cancellationToken);
+                    Result<List<PartClassDetailGrpc>> results = await _PartClassDetailHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _ListPartClassDetail.PartClassDetailData.Clear();
-                        _ListPartClassDetail.PartClassDetailData.AddRange(results.Value);
+                        _ListPartClassDetail.PartClassDetailGrpc.Clear();
+                        _ListPartClassDetail.PartClassDetailGrpc.AddRange(results.Value);
                     }
 
                     _PartClassDetailRefreshInProgress = false;

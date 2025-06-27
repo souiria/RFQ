@@ -104,11 +104,11 @@ namespace EmacsAccess.Tests
             PartClassDetailGrpcRequest request = new PartClassDetailGrpcRequest();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPartClassDetailGrpc));
 
-            Task<ListPartClassDetailData> getPartClassDetailGrpcReply = _GrpcService.GetPartClassDetailGrpc(request, serverCallContext);
+            Task<ListPartClassDetailGrpc> getPartClassDetailGrpcReply = _GrpcService.GetPartClassDetailGrpc(request, serverCallContext);
 
-            Assert.That(getPartClassDetailGrpcReply.Result.PartClassDetailData, Is.Not.Null);
+            Assert.That(getPartClassDetailGrpcReply.Result.PartClassDetailGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getPartClassDetailGrpcReply.Result.PartClassDetailData.Count, countConstraint);
+            Assert.That(getPartClassDetailGrpcReply.Result.PartClassDetailGrpc.Count, countConstraint);
         }
 
         [Test]
@@ -119,15 +119,15 @@ namespace EmacsAccess.Tests
             request.Class2 = 0;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPartClassDetailGrpcByClasses));
 
-            Task<ListPartClassDetailData> getCombinedPartsGrpcReply = _GrpcService.GetPartClassDetailGrpcByClasses(request, serverCallContext);
+            Task<ListPartClassDetailGrpc> getCombinedPartsGrpcReply = _GrpcService.GetPartClassDetailGrpcByClasses(request, serverCallContext);
 
-            Assert.That(getCombinedPartsGrpcReply.Result.PartClassDetailData, Is.Not.Null);
+            Assert.That(getCombinedPartsGrpcReply.Result.PartClassDetailGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCombinedPartsGrpcReply.Result.PartClassDetailData.Count, countConstraint);
+            Assert.That(getCombinedPartsGrpcReply.Result.PartClassDetailGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint class1Constraint = Is.EqualTo("TestClass1");
             NUnit.Framework.Constraints.EqualConstraint class2Constraint = Is.EqualTo(0);
-            Assert.That(getCombinedPartsGrpcReply.Result.PartClassDetailData.First().Class1, class1Constraint);
-            Assert.That(getCombinedPartsGrpcReply.Result.PartClassDetailData.First().Class2, class2Constraint);
+            Assert.That(getCombinedPartsGrpcReply.Result.PartClassDetailGrpc.First().Class1, class1Constraint);
+            Assert.That(getCombinedPartsGrpcReply.Result.PartClassDetailGrpc.First().Class2, class2Constraint);
         }
 
         #endregion

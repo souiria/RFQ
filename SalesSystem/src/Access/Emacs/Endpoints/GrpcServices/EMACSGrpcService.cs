@@ -51,12 +51,12 @@
         #endregion
 
         #region PartClassDetail
-        public override async Task<ListPartClassDetailData> GetPartClassDetailGrpc(PartClassDetailGrpcRequest request, ServerCallContext context)
+        public override async Task<ListPartClassDetailGrpc> GetPartClassDetailGrpc(PartClassDetailGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetPartClassDetailGrpc starting");
             return await _EMACSAccessService.GetAllPartClassDetail(context.CancellationToken);
         }
-        public override async Task<ListPartClassDetailData> GetPartClassDetailGrpcByClasses(PartClassDetailByClassesGrpcRequest request, ServerCallContext context)
+        public override async Task<ListPartClassDetailGrpc> GetPartClassDetailGrpcByClasses(PartClassDetailByClassesGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetPartClassDetailGrpcByClasses starting");
             return await _EMACSAccessService.GetPartClassDetailByClasses(request.Class1, request.Class2 ,context.CancellationToken);

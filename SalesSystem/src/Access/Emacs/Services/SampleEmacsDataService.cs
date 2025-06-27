@@ -57,26 +57,26 @@ namespace Emacs.Services
         #endregion
 
         #region PartClassDetail
-        public static ListPartClassDetailData PopulatePartClassDetail()
+        public static ListPartClassDetailGrpc PopulatePartClassDetail()
         {
-            ListPartClassDetailData listPartClassDetailData = new ListPartClassDetailData();
+            ListPartClassDetailGrpc listPartClassDetailGrpc = new ListPartClassDetailGrpc();
             for (int i = 0; i < 5; i++)
             {
-                PartClassDetailData partClassDetailData = new PartClassDetailData();
-                partClassDetailData.Class1 = $"TestClass1{i}";
-                partClassDetailData.Class1Name = $"TestClass2{i}";
-                partClassDetailData.Class2 = i;
-                partClassDetailData.Class2Name = $"TestClass2Name{i}";
-                listPartClassDetailData.PartClassDetailData.Add(partClassDetailData);
+                PartClassDetailGrpc PartClassDetailGrpc = new PartClassDetailGrpc();
+                PartClassDetailGrpc.Class1 = $"TestClass1{i}";
+                PartClassDetailGrpc.Class1Name = $"TestClass2{i}";
+                PartClassDetailGrpc.Class2 = i;
+                PartClassDetailGrpc.Class2Name = $"TestClass2Name{i}";
+                listPartClassDetailGrpc.PartClassDetailGrpc.Add(PartClassDetailGrpc);
             }
 
-            PartClassDetailData fixedPartClassDetailData = new PartClassDetailData();
-            fixedPartClassDetailData.Class1 = $"TestClass1";
-            fixedPartClassDetailData.Class1Name = $"TestClass1Name";
-            fixedPartClassDetailData.Class2 = 0;
-            fixedPartClassDetailData.Class2Name = $"TestClass2Name";
-            listPartClassDetailData.PartClassDetailData.Add(fixedPartClassDetailData);
-            return listPartClassDetailData;
+            PartClassDetailGrpc fixedPartClassDetailGrpc = new PartClassDetailGrpc();
+            fixedPartClassDetailGrpc.Class1 = $"TestClass1";
+            fixedPartClassDetailGrpc.Class1Name = $"TestClass1Name";
+            fixedPartClassDetailGrpc.Class2 = 0;
+            fixedPartClassDetailGrpc.Class2Name = $"TestClass2Name";
+            listPartClassDetailGrpc.PartClassDetailGrpc.Add(fixedPartClassDetailGrpc);
+            return listPartClassDetailGrpc;
         }
         #endregion
 

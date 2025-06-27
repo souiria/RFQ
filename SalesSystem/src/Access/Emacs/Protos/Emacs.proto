@@ -20,8 +20,8 @@ service Emacs {
   rpc GetPartCategoryDetailGrpc (PartCategoryDetailGrpcRequest) returns (ListPartCategoryDetailGrpc);
   rpc GetPartCategoryDetailGrpcByCategoryCode (PartCategoryDetailByCategoryCodeGrpcRequest) returns (ListPartCategoryDetailGrpc);
 
-  rpc GetPartClassDetailGrpc (PartClassDetailGrpcRequest) returns (ListPartClassDetailData);
-  rpc GetPartClassDetailGrpcByClasses (PartClassDetailByClassesGrpcRequest) returns (ListPartClassDetailData);
+  rpc GetPartClassDetailGrpc (PartClassDetailGrpcRequest) returns (ListPartClassDetailGrpc);
+  rpc GetPartClassDetailGrpcByClasses (PartClassDetailByClassesGrpcRequest) returns (ListPartClassDetailGrpc);
 
   rpc GetPartGroupsGrpc (PartGroupsGrpcRequest) returns (ListPartGroupsGrpc);
   rpc GetPartGroupsGrpcByPartGroup (PartGroupsByPartGroupGrpcRequest) returns (ListPartGroupsGrpc);
@@ -121,11 +121,11 @@ message PartClassDetailByClassesGrpcRequest {
     double Class2 = 2;
 }
 
-message ListPartClassDetailData {
-    repeated PartClassDetailData PartClassDetailData = 1;
+message ListPartClassDetailGrpc {
+    repeated PartClassDetailGrpc PartClassDetailGrpc = 1;
 }
 
-message PartClassDetailData {
+message PartClassDetailGrpc {
     string Class1 = 1;
     string Class1Name = 2;
     double Class2 = 3;

@@ -6,9 +6,9 @@ namespace Master.Extensions
     {
         #region Currency
 
-        public static CurrencyData MapToCurrencyData(this DbCurrency entity)
+        public static CurrencyGrpc MapToCurrencyGrpc(this DbCurrency entity)
         {
-            CurrencyData data = new CurrencyData();
+            CurrencyGrpc data = new CurrencyGrpc();
             data.Id = entity.Id.ToString();
             data.CurrencyCode = entity.CurrencyCode;
             data.CurrencyName = entity.CurrencyName;
@@ -21,9 +21,9 @@ namespace Master.Extensions
 
         #region Customer
 
-        public static CustomerData MapToCustomerData(this DbCustomerBusinessHierarchy entity)
+        public static CustomerGrpc MapToCustomerGrpc(this DbCustomerBusinessHierarchy entity)
         {
-            CustomerData data = new CustomerData();
+            CustomerGrpc data = new CustomerGrpc();
             data.Id = entity.Id.ToString();
             data.CustomerBusinessGroupCode = entity.CustomerBusinessGroupCode;
             data.CustomerBusinessGroupName = entity.CustomerBusinessGroupName;
@@ -32,9 +32,9 @@ namespace Master.Extensions
             return data;
         }
 
-        public static CustomerLocationData MapToLocationData(this DbCustomerHierarchy entity)
+        public static CustomerLocationGrpc MapToLocationData(this DbCustomerHierarchy entity)
         {
-            CustomerLocationData data = new CustomerLocationData();
+            CustomerLocationGrpc data = new CustomerLocationGrpc();
 
             data.Id = entity.Id.ToString();
             data.CustomerCode = entity.CustomerCode;
@@ -43,9 +43,9 @@ namespace Master.Extensions
             return data;
         }
 
-        public static CustomerSalesEntityData MapToCustomerSalesEntityDto(this DbCustomerSalesEntity entity)
+        public static CustomerSalesEntityGrpc MapToCustomerSalesEntityDto(this DbCustomerSalesEntity entity)
         {
-            CustomerSalesEntityData data = new CustomerSalesEntityData();
+            CustomerSalesEntityGrpc data = new CustomerSalesEntityGrpc();
             data.Id = entity.Id.ToString();
             data.CustomerSalesEntityCode = entity.CustomerSalesEntityCode;
             data.CustomerSalesEntityName = entity.CustomerSalesEntityName;
@@ -55,9 +55,9 @@ namespace Master.Extensions
             return data;
         }
 
-        public static CustomerProjectAssociationData MapToCustomerProjectAssociationDto(this DbCustomerProjectAssociation entity)
+        public static CustomerProjectAssociationGrpc MapToCustomerProjectAssociationDto(this DbCustomerProjectAssociation entity)
         {
-            CustomerProjectAssociationData data = new CustomerProjectAssociationData();
+            CustomerProjectAssociationGrpc data = new CustomerProjectAssociationGrpc();
             data.Id = entity.Id.ToString();
             data.CustomerLocationGuid = entity.CustomerGuid.ToString();
             data.ProjectGuid = entity.ProjectGuid.ToString();
@@ -65,9 +65,9 @@ namespace Master.Extensions
             return data;
         }
 
-        public static CustomerBusinessUserAssociationData MapToCustomerBusinessUserAssociationDto(this DbCustomerBusinessUserAssociation entity)
+        public static CustomerBusinessUserAssociationGrpc MapToCustomerBusinessUserAssociationDto(this DbCustomerBusinessUserAssociation entity)
         {
-            CustomerBusinessUserAssociationData data = new CustomerBusinessUserAssociationData();
+            CustomerBusinessUserAssociationGrpc data = new CustomerBusinessUserAssociationGrpc();
             data.Id = entity.Id.ToString();
             data.CustomerBusinessHierarchyList = entity.CustomerBusinessHierarchyList;
             data.UserGuid = entity.UserGuid.ToString();
@@ -79,9 +79,9 @@ namespace Master.Extensions
 
         #region Project
 
-        public static MilestoneData MapToMilestoneData(this DbMilestoneHierarchy entity)
+        public static MilestoneGrpc MapToMilestoneGrpc(this DbMilestoneHierarchy entity)
         {
-            MilestoneData data = new MilestoneData();
+            MilestoneGrpc data = new MilestoneGrpc();
             data.Id = entity.Id.ToString();
             data.MilestoneEventName = entity.MilestoneEventName;
             data.EventStartDate = entity.EventStartDate?.ToUniversalTime().ToTimestamp();
@@ -91,9 +91,9 @@ namespace Master.Extensions
             return data;
         }
 
-        public static PlatformData MapToPlatformData(this DbPlatformHierarchy entity)
+        public static PlatformGrpc MapToPlatformGrpc(this DbPlatformHierarchy entity)
         {
-            PlatformData data = new PlatformData();
+            PlatformGrpc data = new PlatformGrpc();
             data.Id = entity.Id.ToString();
             data.PlatformName = entity.PlatformName;
             data.CustomerHierarchyGuid = entity.CustomerHierarchyGuid.ToString();
@@ -102,9 +102,9 @@ namespace Master.Extensions
             return data;
         }
 
-        public static ProgramData MapToProgramData(this DbProgramHierarchy entity)
+        public static ProgramGrpc MapToProgramGrpc(this DbProgramHierarchy entity)
         {
-            ProgramData data = new ProgramData();
+            ProgramGrpc data = new ProgramGrpc();
             data.Id = entity.Id.ToString();
             data.ProgramName = entity.ProgramName;
             data.PlatformHierarchyGuid = entity.PlatformHierarchyGuid.ToString();
@@ -112,9 +112,9 @@ namespace Master.Extensions
             return data;
         }
 
-        public static ProjectData MapToProjectData(this DbProjectHierarchy entity)
+        public static ProjectGrpc MapToProjectGrpc(this DbProjectHierarchy entity)
         {
-            ProjectData data = new ProjectData();
+            ProjectGrpc data = new ProjectGrpc();
             data.Id = entity.Id.ToString();
             data.ProjectCode = entity.ProjectCode;
             data.ProjectName = entity.ProjectName;
@@ -130,9 +130,9 @@ namespace Master.Extensions
 
         #region Vehicle
 
-        public static VehicleData MapToVehicleData(this DbVehicle entity)
+        public static VehicleGrpc MapToVehicleGrpc(this DbVehicle entity)
         {
-            VehicleData data = new VehicleData();
+            VehicleGrpc data = new VehicleGrpc();
             data.Id = entity.Id.ToString();
             data.VehicleName = entity.VehicleName;
             data.ProjectReference = entity.ProjectReference;

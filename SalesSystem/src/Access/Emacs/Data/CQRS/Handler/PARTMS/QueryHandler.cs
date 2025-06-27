@@ -13,7 +13,7 @@
         public async Task<Result<List<PARTMSGrpc>>> Handle(GetPARTMSQuery query, CancellationToken cancellationToken)
         {
             _PARTMS.Clear();
-            GetPARTMSReadOnlySpec spec = new GetPARTMSReadOnlySpec(0, 100);
+            GetPARTMSReadOnlySpec spec = new GetPARTMSReadOnlySpec(query.Position, query.TakeAmount);
             List<DbPARTMS> results = await _Repository.ListAsync(spec, cancellationToken);
             foreach (DbPARTMS result in results)
             {

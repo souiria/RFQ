@@ -1,10 +1,10 @@
 ﻿namespace Master.CQRS.Handler.Vehicle
 {
-    sealed class QueryHandler : IQueryHandler<GetAllVehiclesQuery, List<VehicleData>>
+    sealed class QueryHandler : IQueryHandler<GetAllVehiclesQuery, List<VehicleGrpc>>
     {
         readonly IMastersReadRepository<DbVehicle> _VehicleRepository;
 
-        List<VehicleData> _Vehicles;
+        List<VehicleGrpc> _Vehicles;
 
         public QueryHandler(IMastersReadRepository<DbVehicle> vehicleRepository)
         {
@@ -12,14 +12,14 @@
             _Vehicles = [];
         }
 
-        async Task<Result<List<VehicleData>>> IQueryHandler<GetAllVehiclesQuery, List<VehicleData>>.Handle(GetAllVehiclesQuery query, CancellationToken cancellationToken)
+        async Task<Result<List<VehicleGrpc>>> IQueryHandler<GetAllVehiclesQuery, List<VehicleGrpc>>.Handle(GetAllVehiclesQuery query, CancellationToken cancellationToken)
         {
             _Vehicles.Clear();
             GetVehicleReadOnlySpec spec = new GetVehicleReadOnlySpec(query.Position, query.TakeAmount);
             List<DbVehicle> results = await _VehicleRepository.ListAsync(spec, cancellationToken);
             foreach (DbVehicle result in results)
             {
-                VehicleData mapping = result.MapToVehicleData();
+                VehicleGrpc mapping = result.MapToVehicleGrpc();
                 _Vehicles.Add(mapping);
             }
 

@@ -19,8 +19,8 @@
 
         #region PartClassDetail
 
-        Task<ListPartClassDetailData> GetAllPartClassDetail(CancellationToken cancellationToken);
-        Task<ListPartClassDetailData> GetPartClassDetailByClasses(string class1, double class2 ,CancellationToken cancellationToken);
+        Task<ListPartClassDetailGrpc> GetAllPartClassDetail(CancellationToken cancellationToken);
+        Task<ListPartClassDetailGrpc> GetPartClassDetailByClasses(string class1, double class2 ,CancellationToken cancellationToken);
 
         Task<bool> PopulatePartClassDetailAsync(CancellationToken cancellationToken);
         #endregion

@@ -45,10 +45,10 @@ namespace MastersAccess.Tests
             CurrencyGrpcRequest currencyGrpcRequest = new CurrencyGrpcRequest();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCurrencyGrpc));
 
-            Task<ListCurrencyData> getCurrencyGrpcReply = _GrpcService.GetCurrencyGrpc(currencyGrpcRequest, serverCallContext);
-            Assert.That(getCurrencyGrpcReply.Result.CurrencyData, Is.Not.Null);
+            Task<ListCurrencyGrpc> getCurrencyGrpcReply = _GrpcService.GetCurrencyGrpc(currencyGrpcRequest, serverCallContext);
+            Assert.That(getCurrencyGrpcReply.Result.CurrencyGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getCurrencyGrpcReply.Result.CurrencyData.Count, countConstraint);
+            Assert.That(getCurrencyGrpcReply.Result.CurrencyGrpc.Count, countConstraint);
 
         }
 
@@ -59,13 +59,13 @@ namespace MastersAccess.Tests
             currencyGrpcRequest.Id = "ec44e5cd-5832-48dd-b5a3-440b5cb49450";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCurrencyGrpcById));
 
-            Task<ListCurrencyData> getCurrencyGrpcByIdReply = _GrpcService.GetCurrencyGrpcById(currencyGrpcRequest, serverCallContext);
+            Task<ListCurrencyGrpc> getCurrencyGrpcByIdReply = _GrpcService.GetCurrencyGrpcById(currencyGrpcRequest, serverCallContext);
 
-            Assert.That(getCurrencyGrpcByIdReply.Result.CurrencyData, Is.Not.Null);
+            Assert.That(getCurrencyGrpcByIdReply.Result.CurrencyGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCurrencyGrpcByIdReply.Result.CurrencyData.Count, countConstraint);
+            Assert.That(getCurrencyGrpcByIdReply.Result.CurrencyGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestName");
-            Assert.That(getCurrencyGrpcByIdReply.Result.CurrencyData.First().CurrencyName, nameConstraint);
+            Assert.That(getCurrencyGrpcByIdReply.Result.CurrencyGrpc.First().CurrencyName, nameConstraint);
         }
 
         [Test]
@@ -75,10 +75,10 @@ namespace MastersAccess.Tests
             currencyGrpcRequest.Id = Guid.NewGuid().ToString();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCurrencyGrpcById));
 
-            Task<ListCurrencyData> getCurrencyGrpcByIdReply = _GrpcService.GetCurrencyGrpcById(currencyGrpcRequest, serverCallContext);
+            Task<ListCurrencyGrpc> getCurrencyGrpcByIdReply = _GrpcService.GetCurrencyGrpcById(currencyGrpcRequest, serverCallContext);
 
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getCurrencyGrpcByIdReply.Result.CurrencyData.Count, countConstraint);
+            Assert.That(getCurrencyGrpcByIdReply.Result.CurrencyGrpc.Count, countConstraint);
         }
 
         #endregion
@@ -91,11 +91,11 @@ namespace MastersAccess.Tests
             CustomerGrpcRequest customerGrpcRequest = new CustomerGrpcRequest();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerGrpc));
 
-            Task<ListCustomerData> getCustomerGrpc = _GrpcService.GetCustomerGrpc(customerGrpcRequest, serverCallContext);
+            Task<ListCustomerGrpc> getCustomerGrpc = _GrpcService.GetCustomerGrpc(customerGrpcRequest, serverCallContext);
             
-            Assert.That(getCustomerGrpc.Result.CustomerData, Is.Not.Null);
+            Assert.That(getCustomerGrpc.Result.CustomerGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getCustomerGrpc.Result.CustomerData.Count, countConstraint);
+            Assert.That(getCustomerGrpc.Result.CustomerGrpc.Count, countConstraint);
         }
 
         public void GetCustomerGrpcByIdTest_Success()
@@ -104,13 +104,13 @@ namespace MastersAccess.Tests
             customerByIdGrpcRequest.Id = "46711693-0ea4-4f9a-86c1-4973308bf795";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerGrpcById));
 
-            Task<ListCustomerData> getCustomerGrpcByIdReply = _GrpcService.GetCustomerGrpcById(customerByIdGrpcRequest, serverCallContext);
+            Task<ListCustomerGrpc> getCustomerGrpcByIdReply = _GrpcService.GetCustomerGrpcById(customerByIdGrpcRequest, serverCallContext);
 
-            Assert.That(getCustomerGrpcByIdReply.Result.CustomerData, Is.Not.Null);
+            Assert.That(getCustomerGrpcByIdReply.Result.CustomerGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCustomerGrpcByIdReply.Result.CustomerData.Count, countConstraint);
+            Assert.That(getCustomerGrpcByIdReply.Result.CustomerGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestGroupName");
-            Assert.That(getCustomerGrpcByIdReply.Result.CustomerData.First().CustomerBusinessGroupName, nameConstraint);
+            Assert.That(getCustomerGrpcByIdReply.Result.CustomerGrpc.First().CustomerBusinessGroupName, nameConstraint);
         }
         [Test]
         public void GetCustomerGrpcByIdTest_Fail()
@@ -119,10 +119,10 @@ namespace MastersAccess.Tests
             customerByIdGrpcRequest.Id = Guid.NewGuid().ToString();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerGrpcById));
 
-            Task<ListCustomerData> getCustomerGrpcByIdReply = _GrpcService.GetCustomerGrpcById(customerByIdGrpcRequest, serverCallContext);
+            Task<ListCustomerGrpc> getCustomerGrpcByIdReply = _GrpcService.GetCustomerGrpcById(customerByIdGrpcRequest, serverCallContext);
 
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getCustomerGrpcByIdReply.Result.CustomerData.Count, countConstraint);
+            Assert.That(getCustomerGrpcByIdReply.Result.CustomerGrpc.Count, countConstraint);
         }
 
         [Test]
@@ -131,11 +131,11 @@ namespace MastersAccess.Tests
             CustomerLocationGrpcRequest customerGrpcRequest = new CustomerLocationGrpcRequest();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerLocationGrpc));
 
-            Task<ListCustomerLocationData> getCustomerLocationGrpc = _GrpcService.GetCustomerLocationGrpc(customerGrpcRequest, serverCallContext);
+            Task<ListCustomerLocationGrpc> getCustomerLocationGrpc = _GrpcService.GetCustomerLocationGrpc(customerGrpcRequest, serverCallContext);
 
-            Assert.That(getCustomerLocationGrpc.Result.CustomerLocationData, Is.Not.Null);
+            Assert.That(getCustomerLocationGrpc.Result.CustomerLocationGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getCustomerLocationGrpc.Result.CustomerLocationData.Count, countConstraint);
+            Assert.That(getCustomerLocationGrpc.Result.CustomerLocationGrpc.Count, countConstraint);
         }
 
         [Test]
@@ -145,13 +145,13 @@ namespace MastersAccess.Tests
             customerLocationByIdGrpcRequest.Id = "3759c3b6-aceb-475e-9ba3-74f13e441e2d";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerLocationGrpcById));
 
-            Task<ListCustomerLocationData> getCustomerLocationGrpcByIdReply = _GrpcService.GetCustomerLocationGrpcById(customerLocationByIdGrpcRequest, serverCallContext);
+            Task<ListCustomerLocationGrpc> getCustomerLocationGrpcByIdReply = _GrpcService.GetCustomerLocationGrpcById(customerLocationByIdGrpcRequest, serverCallContext);
 
-            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerLocationData, Is.Not.Null);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerLocationGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerLocationData.Count, countConstraint);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerLocationGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestCustomerName");
-            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerLocationData.First().CustomerName, nameConstraint);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerLocationGrpc.First().CustomerName, nameConstraint);
         }
 
         [Test]
@@ -161,10 +161,10 @@ namespace MastersAccess.Tests
             customerLocationByIdGrpcRequest.Id = Guid.NewGuid().ToString();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerLocationGrpcById));
 
-            Task<ListCustomerLocationData> getCustomerLocationGrpcByIdReply = _GrpcService.GetCustomerLocationGrpcById(customerLocationByIdGrpcRequest, serverCallContext);
+            Task<ListCustomerLocationGrpc> getCustomerLocationGrpcByIdReply = _GrpcService.GetCustomerLocationGrpcById(customerLocationByIdGrpcRequest, serverCallContext);
 
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerLocationData.Count, countConstraint);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerLocationGrpc.Count, countConstraint);
         }
 
         [Test]
@@ -174,15 +174,15 @@ namespace MastersAccess.Tests
             customerLocationByUserIdGrpcRequest.UserId = "83853662-6d20-41b0-b6ac-fd3271406b6b";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerLocationGrpcByUserId));
 
-            Task<ListCustomerLocationData> getCustomerLocationGrpcByUserIdReply = _GrpcService.GetCustomerLocationGrpcByUserId(customerLocationByUserIdGrpcRequest, serverCallContext);
+            Task<ListCustomerLocationGrpc> getCustomerLocationGrpcByUserIdReply = _GrpcService.GetCustomerLocationGrpcByUserId(customerLocationByUserIdGrpcRequest, serverCallContext);
 
-            Assert.That(getCustomerLocationGrpcByUserIdReply.Result.CustomerLocationData, Is.Not.Null);
+            Assert.That(getCustomerLocationGrpcByUserIdReply.Result.CustomerLocationGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCustomerLocationGrpcByUserIdReply.Result.CustomerLocationData.Count, countConstraint);
+            Assert.That(getCustomerLocationGrpcByUserIdReply.Result.CustomerLocationGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestCustomerName");
-            Assert.That(getCustomerLocationGrpcByUserIdReply.Result.CustomerLocationData.First().CustomerName, nameConstraint);
+            Assert.That(getCustomerLocationGrpcByUserIdReply.Result.CustomerLocationGrpc.First().CustomerName, nameConstraint);
             NUnit.Framework.Constraints.EqualConstraint idConstraint = Is.EqualTo("3759c3b6-aceb-475e-9ba3-74f13e441e2d");
-            Assert.That(getCustomerLocationGrpcByUserIdReply.Result.CustomerLocationData.First().Id, idConstraint);
+            Assert.That(getCustomerLocationGrpcByUserIdReply.Result.CustomerLocationGrpc.First().Id, idConstraint);
         }
         [Test]
         public void GetCustomerLocationGrpcByUserIdTest_Fails()
@@ -191,10 +191,10 @@ namespace MastersAccess.Tests
             customerLocationByUserIdGrpcRequest.UserId = Guid.NewGuid().ToString();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerLocationGrpcByUserId));
 
-            Task<ListCustomerLocationData> getCustomerLocationGrpcByUserIdReply = _GrpcService.GetCustomerLocationGrpcByUserId(customerLocationByUserIdGrpcRequest, serverCallContext);
+            Task<ListCustomerLocationGrpc> getCustomerLocationGrpcByUserIdReply = _GrpcService.GetCustomerLocationGrpcByUserId(customerLocationByUserIdGrpcRequest, serverCallContext);
 
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getCustomerLocationGrpcByUserIdReply.Result.CustomerLocationData.Count, countConstraint);
+            Assert.That(getCustomerLocationGrpcByUserIdReply.Result.CustomerLocationGrpc.Count, countConstraint);
         }
 
         [Test]
@@ -203,11 +203,11 @@ namespace MastersAccess.Tests
             CustomerSalesEntityGrpcRequest customerSalesEntityGrpcRequest = new CustomerSalesEntityGrpcRequest();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerSalesEntityGrpc));
 
-            Task<ListCustomerSalesEntityData> getCustomerSalesEntityGrpc = _GrpcService.GetCustomerSalesEntityGrpc(customerSalesEntityGrpcRequest, serverCallContext);
+            Task<ListCustomerSalesEntityGrpc> getCustomerSalesEntityGrpc = _GrpcService.GetCustomerSalesEntityGrpc(customerSalesEntityGrpcRequest, serverCallContext);
 
-            Assert.That(getCustomerSalesEntityGrpc.Result.CustomerSalesEntityData, Is.Not.Null);
+            Assert.That(getCustomerSalesEntityGrpc.Result.CustomerSalesEntityGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getCustomerSalesEntityGrpc.Result.CustomerSalesEntityData.Count, countConstraint);
+            Assert.That(getCustomerSalesEntityGrpc.Result.CustomerSalesEntityGrpc.Count, countConstraint);
         }
 
         [Test]
@@ -217,15 +217,15 @@ namespace MastersAccess.Tests
             customerLocationByIdGrpcRequest.UserId = "83853662-6d20-41b0-b6ac-fd3271406b6b";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerSalesEntityGrpcByUserId));
 
-            Task<ListCustomerSalesEntityData> getCustomerLocationGrpcByIdReply = _GrpcService.GetCustomerSalesEntityGrpcByUserId(customerLocationByIdGrpcRequest, serverCallContext);
+            Task<ListCustomerSalesEntityGrpc> getCustomerLocationGrpcByIdReply = _GrpcService.GetCustomerSalesEntityGrpcByUserId(customerLocationByIdGrpcRequest, serverCallContext);
 
-            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerSalesEntityData, Is.Not.Null);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerSalesEntityGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerSalesEntityData.Count, countConstraint);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerSalesEntityGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestfixedCustomerSalesEntityName");
-            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerSalesEntityData.First().CustomerSalesEntityName, nameConstraint);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerSalesEntityGrpc.First().CustomerSalesEntityName, nameConstraint);
             NUnit.Framework.Constraints.EqualConstraint idConstraint = Is.EqualTo("84e51c97-4da5-460e-b918-3d70edd87d88");
-            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerSalesEntityData.First().Id, idConstraint);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerSalesEntityGrpc.First().Id, idConstraint);
         }
 
         [Test]
@@ -235,10 +235,10 @@ namespace MastersAccess.Tests
             customerLocationByIdGrpcRequest.UserId = Guid.NewGuid().ToString();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerSalesEntityGrpcByUserId));
 
-            Task<ListCustomerSalesEntityData> getCustomerLocationGrpcByIdReply = _GrpcService.GetCustomerSalesEntityGrpcByUserId(customerLocationByIdGrpcRequest, serverCallContext);
+            Task<ListCustomerSalesEntityGrpc> getCustomerLocationGrpcByIdReply = _GrpcService.GetCustomerSalesEntityGrpcByUserId(customerLocationByIdGrpcRequest, serverCallContext);
 
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerSalesEntityData.Count, countConstraint);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerSalesEntityGrpc.Count, countConstraint);
         }
 
         [Test]
@@ -247,11 +247,11 @@ namespace MastersAccess.Tests
             CustomerProjectAssociationGrpcRequest customerProjectAssociationGrpcRequest = new CustomerProjectAssociationGrpcRequest();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerSalesEntityGrpcByUserId));
 
-            Task<ListCustomerProjectAssociationData> getCustomerProjectAssociationGrpc = _GrpcService.GetCustomerProjectAssociationGrpc(customerProjectAssociationGrpcRequest, serverCallContext);
+            Task<ListCustomerProjectAssociationGrpc> getCustomerProjectAssociationGrpc = _GrpcService.GetCustomerProjectAssociationGrpc(customerProjectAssociationGrpcRequest, serverCallContext);
 
-            Assert.That(getCustomerProjectAssociationGrpc.Result.CustomerProjectAssociationData, Is.Not.Null);
+            Assert.That(getCustomerProjectAssociationGrpc.Result.CustomerProjectAssociationGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getCustomerProjectAssociationGrpc.Result.CustomerProjectAssociationData.Count, countConstraint);
+            Assert.That(getCustomerProjectAssociationGrpc.Result.CustomerProjectAssociationGrpc.Count, countConstraint);
         }
 
         [Test]
@@ -261,13 +261,13 @@ namespace MastersAccess.Tests
             customerLocationByIdGrpcRequest.UserId = "83853662-6d20-41b0-b6ac-fd3271406b6b";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerProjectAssociationGrpcByUserId));
 
-            Task<ListCustomerProjectAssociationData> getCustomerLocationGrpcByIdReply = _GrpcService.GetCustomerProjectAssociationGrpcByUserId(customerLocationByIdGrpcRequest, serverCallContext);
+            Task<ListCustomerProjectAssociationGrpc> getCustomerLocationGrpcByIdReply = _GrpcService.GetCustomerProjectAssociationGrpcByUserId(customerLocationByIdGrpcRequest, serverCallContext);
 
-            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerProjectAssociationData, Is.Not.Null);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerProjectAssociationGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerProjectAssociationData.Count, countConstraint);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerProjectAssociationGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint idConstraint = Is.EqualTo("fd994af4-57a3-4d95-b75d-b8d502e6a023");
-            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerProjectAssociationData.First().Id, idConstraint);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerProjectAssociationGrpc.First().Id, idConstraint);
         }
 
         [Test]
@@ -277,10 +277,10 @@ namespace MastersAccess.Tests
             customerLocationByIdGrpcRequest.UserId = Guid.NewGuid().ToString();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerProjectAssociationGrpcByUserId));
 
-            Task<ListCustomerProjectAssociationData> getCustomerLocationGrpcByIdReply = _GrpcService.GetCustomerProjectAssociationGrpcByUserId(customerLocationByIdGrpcRequest, serverCallContext);
+            Task<ListCustomerProjectAssociationGrpc> getCustomerLocationGrpcByIdReply = _GrpcService.GetCustomerProjectAssociationGrpcByUserId(customerLocationByIdGrpcRequest, serverCallContext);
 
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerProjectAssociationData.Count, countConstraint);
+            Assert.That(getCustomerLocationGrpcByIdReply.Result.CustomerProjectAssociationGrpc.Count, countConstraint);
         }
 
         [Test]
@@ -289,11 +289,11 @@ namespace MastersAccess.Tests
             CustomerBusinessUserAssociationGrpcRequest customerBuisnessUserAssociationGrpcRequest = new CustomerBusinessUserAssociationGrpcRequest();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerBusinessUserAssociationGrpc));
 
-            Task<ListCustomerBusinessUserAssociationData> getcustomerBuisnessUserAssociationData = _GrpcService.GetCustomerBusinessUserAssociationGrpc(customerBuisnessUserAssociationGrpcRequest, serverCallContext);
+            Task<ListCustomerBusinessUserAssociationGrpc> getcustomerBuisnessUserAssociationData = _GrpcService.GetCustomerBusinessUserAssociationGrpc(customerBuisnessUserAssociationGrpcRequest, serverCallContext);
 
-            Assert.That(getcustomerBuisnessUserAssociationData.Result.CustomerBusinessUserAssociationData, Is.Not.Null);
+            Assert.That(getcustomerBuisnessUserAssociationData.Result.CustomerBusinessUserAssociationGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getcustomerBuisnessUserAssociationData.Result.CustomerBusinessUserAssociationData.Count, countConstraint);
+            Assert.That(getcustomerBuisnessUserAssociationData.Result.CustomerBusinessUserAssociationGrpc.Count, countConstraint);
         }
 
         [Test]
@@ -303,11 +303,11 @@ namespace MastersAccess.Tests
             customerLocationByUserIdGrpcRequest.UserId = "83853662-6d20-41b0-b6ac-fd3271406b6b";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerBusinessUserAssociationGrpcByUserId));
 
-            Task<ListCustomerBusinessUserAssociationData> getcustomerBuisnessUserAssociationByUserIdData = _GrpcService.GetCustomerBusinessUserAssociationGrpcByUserId(customerLocationByUserIdGrpcRequest, serverCallContext);
+            Task<ListCustomerBusinessUserAssociationGrpc> getcustomerBuisnessUserAssociationByUserIdData = _GrpcService.GetCustomerBusinessUserAssociationGrpcByUserId(customerLocationByUserIdGrpcRequest, serverCallContext);
 
-            Assert.That(getcustomerBuisnessUserAssociationByUserIdData.Result.CustomerBusinessUserAssociationData, Is.Not.Null);
+            Assert.That(getcustomerBuisnessUserAssociationByUserIdData.Result.CustomerBusinessUserAssociationGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getcustomerBuisnessUserAssociationByUserIdData.Result.CustomerBusinessUserAssociationData.Count, countConstraint);
+            Assert.That(getcustomerBuisnessUserAssociationByUserIdData.Result.CustomerBusinessUserAssociationGrpc.Count, countConstraint);
         }
 
         [Test]
@@ -317,11 +317,11 @@ namespace MastersAccess.Tests
             customerLocationByUserIdGrpcRequest.UserId = Guid.NewGuid().ToString();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerBusinessUserAssociationGrpcByUserId));
 
-            Task<ListCustomerBusinessUserAssociationData> getcustomerBuisnessUserAssociationByUserIdData = _GrpcService.GetCustomerBusinessUserAssociationGrpcByUserId(customerLocationByUserIdGrpcRequest, serverCallContext);
+            Task<ListCustomerBusinessUserAssociationGrpc> getcustomerBuisnessUserAssociationByUserIdData = _GrpcService.GetCustomerBusinessUserAssociationGrpcByUserId(customerLocationByUserIdGrpcRequest, serverCallContext);
 
-            Assert.That(getcustomerBuisnessUserAssociationByUserIdData.Result.CustomerBusinessUserAssociationData, Is.Not.Null);
+            Assert.That(getcustomerBuisnessUserAssociationByUserIdData.Result.CustomerBusinessUserAssociationGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getcustomerBuisnessUserAssociationByUserIdData.Result.CustomerBusinessUserAssociationData.Count, countConstraint);
+            Assert.That(getcustomerBuisnessUserAssociationByUserIdData.Result.CustomerBusinessUserAssociationGrpc.Count, countConstraint);
         }
         #endregion
 
@@ -333,11 +333,11 @@ namespace MastersAccess.Tests
             MilestoneGrpcRequest milestoneGrpcRequest = new MilestoneGrpcRequest();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetMilestoneGrpc));
 
-            Task<ListMilestoneData> getMilestoneGrpc = _GrpcService.GetMilestoneGrpc(milestoneGrpcRequest, serverCallContext);
+            Task<ListMilestoneGrpc> getMilestoneGrpc = _GrpcService.GetMilestoneGrpc(milestoneGrpcRequest, serverCallContext);
 
-            Assert.That(getMilestoneGrpc.Result.MilestoneData, Is.Not.Null);
+            Assert.That(getMilestoneGrpc.Result.MilestoneGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getMilestoneGrpc.Result.MilestoneData.Count, countConstraint);
+            Assert.That(getMilestoneGrpc.Result.MilestoneGrpc.Count, countConstraint);
         }
 
         [Test]
@@ -347,13 +347,13 @@ namespace MastersAccess.Tests
             milestoneByIdGrpcRequest.Id = "50365c14-734c-406a-b18e-9a3eff9e2d17";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetMilestoneGrpcById));
 
-            Task<ListMilestoneData> getMilestoneByIdReply = _GrpcService.GetMilestoneGrpcById(milestoneByIdGrpcRequest, serverCallContext);
+            Task<ListMilestoneGrpc> getMilestoneByIdReply = _GrpcService.GetMilestoneGrpcById(milestoneByIdGrpcRequest, serverCallContext);
 
-            Assert.That(getMilestoneByIdReply.Result.MilestoneData, Is.Not.Null);
+            Assert.That(getMilestoneByIdReply.Result.MilestoneGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getMilestoneByIdReply.Result.MilestoneData.Count, countConstraint);
+            Assert.That(getMilestoneByIdReply.Result.MilestoneGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestMilestoneEventName");
-            Assert.That(getMilestoneByIdReply.Result.MilestoneData.First().MilestoneEventName, nameConstraint);
+            Assert.That(getMilestoneByIdReply.Result.MilestoneGrpc.First().MilestoneEventName, nameConstraint);
         }
 
         [Test]
@@ -363,9 +363,9 @@ namespace MastersAccess.Tests
             milestoneByIdGrpcRequest.Id = Guid.NewGuid().ToString();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetMilestoneGrpcById));
 
-            Task<ListMilestoneData> getMilestoneByIdReply = _GrpcService.GetMilestoneGrpcById(milestoneByIdGrpcRequest, serverCallContext);
+            Task<ListMilestoneGrpc> getMilestoneByIdReply = _GrpcService.GetMilestoneGrpcById(milestoneByIdGrpcRequest, serverCallContext);
 
-            Assert.That(getMilestoneByIdReply.Result.MilestoneData, Is.Not.Null);
+            Assert.That(getMilestoneByIdReply.Result.MilestoneGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
         }
 
@@ -375,11 +375,11 @@ namespace MastersAccess.Tests
             PlatformGrpcRequest platformGrpcRequest = new PlatformGrpcRequest();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPlatformGrpc));
 
-            Task<ListPlatformData> getMilestoneGrpc = _GrpcService.GetPlatformGrpc(platformGrpcRequest, serverCallContext);
+            Task<ListPlatformGrpc> getMilestoneGrpc = _GrpcService.GetPlatformGrpc(platformGrpcRequest, serverCallContext);
 
-            Assert.That(getMilestoneGrpc.Result.PlatformData, Is.Not.Null);
+            Assert.That(getMilestoneGrpc.Result.PlatformGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getMilestoneGrpc.Result.PlatformData.Count, countConstraint);
+            Assert.That(getMilestoneGrpc.Result.PlatformGrpc.Count, countConstraint);
         }
 
         [Test]
@@ -389,13 +389,13 @@ namespace MastersAccess.Tests
             platformByIdGrpcRequest.Id = "46711693-0ea4-4f9a-86c1-4973308bf795";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPlatformGrpcById));
 
-            Task<ListPlatformData> getPlatformByIdReply = _GrpcService.GetPlatformGrpcById(platformByIdGrpcRequest, serverCallContext);
+            Task<ListPlatformGrpc> getPlatformByIdReply = _GrpcService.GetPlatformGrpcById(platformByIdGrpcRequest, serverCallContext);
 
-            Assert.That(getPlatformByIdReply.Result.PlatformData, Is.Not.Null);
+            Assert.That(getPlatformByIdReply.Result.PlatformGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getPlatformByIdReply.Result.PlatformData.Count, countConstraint);
+            Assert.That(getPlatformByIdReply.Result.PlatformGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestPlatformName");
-            Assert.That(getPlatformByIdReply.Result.PlatformData.First().PlatformName, nameConstraint);
+            Assert.That(getPlatformByIdReply.Result.PlatformGrpc.First().PlatformName, nameConstraint);
         }
 
         [Test]
@@ -405,10 +405,10 @@ namespace MastersAccess.Tests
             platformByIdGrpcRequest.Id = Guid.NewGuid().ToString();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPlatformGrpcById));
 
-            Task<ListPlatformData> getPlatformByIdReply = _GrpcService.GetPlatformGrpcById(platformByIdGrpcRequest, serverCallContext);
+            Task<ListPlatformGrpc> getPlatformByIdReply = _GrpcService.GetPlatformGrpcById(platformByIdGrpcRequest, serverCallContext);
 
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getPlatformByIdReply.Result.PlatformData.Count, countConstraint);
+            Assert.That(getPlatformByIdReply.Result.PlatformGrpc.Count, countConstraint);
         }
 
         [Test]
@@ -417,11 +417,11 @@ namespace MastersAccess.Tests
             ProgramGrpcRequest programGrpcRequest = new ProgramGrpcRequest();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetProgramGrpc));
 
-            Task<ListProgramData> getProgramGrpc = _GrpcService.GetProgramGrpc(programGrpcRequest, serverCallContext);
+            Task<ListProgramGrpc> getProgramGrpc = _GrpcService.GetProgramGrpc(programGrpcRequest, serverCallContext);
 
-            Assert.That(getProgramGrpc.Result.ProgramData, Is.Not.Null);
+            Assert.That(getProgramGrpc.Result.ProgramGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getProgramGrpc.Result.ProgramData.Count, countConstraint);
+            Assert.That(getProgramGrpc.Result.ProgramGrpc.Count, countConstraint);
         }
 
         [Test]
@@ -431,13 +431,13 @@ namespace MastersAccess.Tests
             programByIdGrpcRequest.Id = "aea9e204-0353-4297-a9ff-bbe75f9b4a93";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetProgramGrpcById));
 
-            Task<ListProgramData> getProgramByIdReply = _GrpcService.GetProgramGrpcById(programByIdGrpcRequest, serverCallContext);
+            Task<ListProgramGrpc> getProgramByIdReply = _GrpcService.GetProgramGrpcById(programByIdGrpcRequest, serverCallContext);
 
-            Assert.That(getProgramByIdReply.Result.ProgramData, Is.Not.Null);
+            Assert.That(getProgramByIdReply.Result.ProgramGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getProgramByIdReply.Result.ProgramData.Count, countConstraint);
+            Assert.That(getProgramByIdReply.Result.ProgramGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestProgramName");
-            Assert.That(getProgramByIdReply.Result.ProgramData.First().ProgramName, nameConstraint);
+            Assert.That(getProgramByIdReply.Result.ProgramGrpc.First().ProgramName, nameConstraint);
         }
 
         [Test]
@@ -447,11 +447,11 @@ namespace MastersAccess.Tests
             programByIdGrpcRequest.Id = Guid.NewGuid().ToString();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetProgramGrpcById));
 
-            Task<ListProgramData> getProgramByIdReply = _GrpcService.GetProgramGrpcById(programByIdGrpcRequest, serverCallContext);
+            Task<ListProgramGrpc> getProgramByIdReply = _GrpcService.GetProgramGrpcById(programByIdGrpcRequest, serverCallContext);
 
-            Assert.That(getProgramByIdReply.Result.ProgramData, Is.Not.Null);
+            Assert.That(getProgramByIdReply.Result.ProgramGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getProgramByIdReply.Result.ProgramData.Count, countConstraint);
+            Assert.That(getProgramByIdReply.Result.ProgramGrpc.Count, countConstraint);
         }
 
         [Test]
@@ -460,11 +460,11 @@ namespace MastersAccess.Tests
             ProjectGrpcRequest projectGrpcRequest = new ProjectGrpcRequest();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetProjectGrpc));
 
-            Task<ListProjectData> getProjectGrpc = _GrpcService.GetProjectGrpc(projectGrpcRequest, serverCallContext);
+            Task<ListProjectGrpc> getProjectGrpc = _GrpcService.GetProjectGrpc(projectGrpcRequest, serverCallContext);
 
-            Assert.That(getProjectGrpc.Result.ProjectData, Is.Not.Null);
+            Assert.That(getProjectGrpc.Result.ProjectGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getProjectGrpc.Result.ProjectData.Count, countConstraint);
+            Assert.That(getProjectGrpc.Result.ProjectGrpc.Count, countConstraint);
         }
 
         [Test]
@@ -474,13 +474,13 @@ namespace MastersAccess.Tests
             projectByIdGrpcRequest.Id = "461616e5-fd7b-491c-9592-8453182e7e72";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetProjectGrpcById));
 
-            Task<ListProjectData> getProjectByIdReply = _GrpcService.GetProjectGrpcById(projectByIdGrpcRequest, serverCallContext);
+            Task<ListProjectGrpc> getProjectByIdReply = _GrpcService.GetProjectGrpcById(projectByIdGrpcRequest, serverCallContext);
 
-            Assert.That(getProjectByIdReply.Result.ProjectData, Is.Not.Null);
+            Assert.That(getProjectByIdReply.Result.ProjectGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getProjectByIdReply.Result.ProjectData.Count, countConstraint);
+            Assert.That(getProjectByIdReply.Result.ProjectGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestProjectName");
-            Assert.That(getProjectByIdReply.Result.ProjectData.First().ProjectName, nameConstraint);
+            Assert.That(getProjectByIdReply.Result.ProjectGrpc.First().ProjectName, nameConstraint);
         }
 
         [Test]
@@ -490,10 +490,10 @@ namespace MastersAccess.Tests
             projectByIdGrpcRequest.Id = Guid.NewGuid().ToString();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetProjectGrpcById));
 
-            Task<ListProjectData> getProjectByIdReply = _GrpcService.GetProjectGrpcById(projectByIdGrpcRequest, serverCallContext);
+            Task<ListProjectGrpc> getProjectByIdReply = _GrpcService.GetProjectGrpcById(projectByIdGrpcRequest, serverCallContext);
 
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getProjectByIdReply.Result.ProjectData.Count, countConstraint);
+            Assert.That(getProjectByIdReply.Result.ProjectGrpc.Count, countConstraint);
         }
 
         #endregion
@@ -506,11 +506,11 @@ namespace MastersAccess.Tests
             VehicleGrpcRequest vehicleGrpcRequest = new VehicleGrpcRequest();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetVehicleGrpc));
 
-            Task<ListVehicleData> getVehicleGrpc = _GrpcService.GetVehicleGrpc(vehicleGrpcRequest, serverCallContext);
+            Task<ListVehicleGrpc> getVehicleGrpc = _GrpcService.GetVehicleGrpc(vehicleGrpcRequest, serverCallContext);
 
-            Assert.That(getVehicleGrpc.Result.VehicleData, Is.Not.Null);
+            Assert.That(getVehicleGrpc.Result.VehicleGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getVehicleGrpc.Result.VehicleData.Count, countConstraint);
+            Assert.That(getVehicleGrpc.Result.VehicleGrpc.Count, countConstraint);
         }
 
         [Test]
@@ -520,13 +520,13 @@ namespace MastersAccess.Tests
             vehicleByIdGrpcRequest.Id = "766612a1-5c65-4d17-950d-2841e1888f0b";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetVehicleGrpcById));
 
-            Task<ListVehicleData> getVehicleByIdData = _GrpcService.GetVehicleGrpcById(vehicleByIdGrpcRequest, serverCallContext);
+            Task<ListVehicleGrpc> getVehicleByIdData = _GrpcService.GetVehicleGrpcById(vehicleByIdGrpcRequest, serverCallContext);
 
-            Assert.That(getVehicleByIdData.Result.VehicleData, Is.Not.Null);
+            Assert.That(getVehicleByIdData.Result.VehicleGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getVehicleByIdData.Result.VehicleData.Count, countConstraint);
+            Assert.That(getVehicleByIdData.Result.VehicleGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestVehicleName");
-            Assert.That(getVehicleByIdData.Result.VehicleData.First().VehicleName, nameConstraint);
+            Assert.That(getVehicleByIdData.Result.VehicleGrpc.First().VehicleName, nameConstraint);
         }
 
         [Test]
@@ -536,10 +536,10 @@ namespace MastersAccess.Tests
             vehicleByIdGrpcRequest.Id = Guid.NewGuid().ToString();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetVehicleGrpcById));
 
-            Task<ListVehicleData> getVehicleByIdData = _GrpcService.GetVehicleGrpcById(vehicleByIdGrpcRequest, serverCallContext);
+            Task<ListVehicleGrpc> getVehicleByIdData = _GrpcService.GetVehicleGrpcById(vehicleByIdGrpcRequest, serverCallContext);
 
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getVehicleByIdData.Result.VehicleData.Count, countConstraint);
+            Assert.That(getVehicleByIdData.Result.VehicleGrpc.Count, countConstraint);
         }
 
         [Test]
@@ -549,15 +549,15 @@ namespace MastersAccess.Tests
             vehicleByIdGrpcRequest.VehicleDisplay = "TestVehicleDisplay";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetVehicleGrpcByDisplay));
 
-            Task<ListVehicleData> getVehicleByIdData = _GrpcService.GetVehicleGrpcByDisplay(vehicleByIdGrpcRequest, serverCallContext);
+            Task<ListVehicleGrpc> getVehicleByIdData = _GrpcService.GetVehicleGrpcByDisplay(vehicleByIdGrpcRequest, serverCallContext);
 
-            Assert.That(getVehicleByIdData.Result.VehicleData, Is.Not.Null);
+            Assert.That(getVehicleByIdData.Result.VehicleGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getVehicleByIdData.Result.VehicleData.Count, countConstraint);
+            Assert.That(getVehicleByIdData.Result.VehicleGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestVehicleName");
-            Assert.That(getVehicleByIdData.Result.VehicleData.First().VehicleName, nameConstraint);
+            Assert.That(getVehicleByIdData.Result.VehicleGrpc.First().VehicleName, nameConstraint);
             NUnit.Framework.Constraints.EqualConstraint idConstraint = Is.EqualTo("766612a1-5c65-4d17-950d-2841e1888f0b");
-            Assert.That(getVehicleByIdData.Result.VehicleData.First().Id, idConstraint);
+            Assert.That(getVehicleByIdData.Result.VehicleGrpc.First().Id, idConstraint);
         }
 
         [Test]
@@ -567,10 +567,10 @@ namespace MastersAccess.Tests
             vehicleByIdGrpcRequest.VehicleDisplay = "";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetVehicleGrpcByDisplay));
 
-            Task<ListVehicleData> getVehicleByIdData = _GrpcService.GetVehicleGrpcByDisplay(vehicleByIdGrpcRequest, serverCallContext);
+            Task<ListVehicleGrpc> getVehicleByIdData = _GrpcService.GetVehicleGrpcByDisplay(vehicleByIdGrpcRequest, serverCallContext);
 
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getVehicleByIdData.Result.VehicleData.Count, countConstraint);
+            Assert.That(getVehicleByIdData.Result.VehicleGrpc.Count, countConstraint);
         }
         #endregion
 

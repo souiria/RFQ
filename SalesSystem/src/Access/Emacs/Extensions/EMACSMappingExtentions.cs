@@ -31,9 +31,9 @@
         #endregion
 
         #region PartClassDetail
-        public static PartClassDetailData MapToPartClassDetailData(this DbPartClassDetail entity)
+        public static PartClassDetailGrpc MapToPartClassDetailGrpc(this DbPartClassDetail entity)
         {
-            PartClassDetailData data = new PartClassDetailData();
+            PartClassDetailGrpc data = new PartClassDetailGrpc();
             data.Class1 = entity.Class1;
             data.Class1Name = entity.Class1Name;
             data.Class2 = entity.Class2;

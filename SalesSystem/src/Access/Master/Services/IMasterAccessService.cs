@@ -3,55 +3,55 @@
     public interface IMasterAccessService
     {
         #region Currency
-        Task<ListCurrencyData> GetAllCurrencies(CancellationToken cancellationToken);
-        Task<ListCurrencyData> GetCurrenciesById(string id ,CancellationToken cancellationToken);
+        Task<ListCurrencyGrpc> GetAllCurrencies(CancellationToken cancellationToken);
+        Task<ListCurrencyGrpc> GetCurrenciesById(string id ,CancellationToken cancellationToken);
         Task<bool> PopulateCurrenciesAsync(CancellationToken cancellationToken);
         #endregion
 
         #region Customer
 
-        Task<ListCustomerData> GetAllCustomerBusinessUnits(CancellationToken cancellationToken);
-        Task<ListCustomerData> GetCustomerBusinessUnitsById(string id ,CancellationToken cancellationToken);
+        Task<ListCustomerGrpc> GetAllCustomerBusinessUnits(CancellationToken cancellationToken);
+        Task<ListCustomerGrpc> GetCustomerBusinessUnitsById(string id ,CancellationToken cancellationToken);
         Task<bool> PopulateCustomersAsync(CancellationToken cancellationToken);
-        Task<ListCustomerLocationData> GetAllCustomerLocations(CancellationToken cancellationToken);
-        Task<ListCustomerLocationData> GetCustomerLocationsById(string id, CancellationToken cancellationToken);
-        Task<ListCustomerLocationData> GetCustomerLocationsByUserId(string userId, CancellationToken cancellationToken);
+        Task<ListCustomerLocationGrpc> GetAllCustomerLocations(CancellationToken cancellationToken);
+        Task<ListCustomerLocationGrpc> GetCustomerLocationsById(string id, CancellationToken cancellationToken);
+        Task<ListCustomerLocationGrpc> GetCustomerLocationsByUserId(string userId, CancellationToken cancellationToken);
         Task<bool> PopulateCustomerLocationsAsync(CancellationToken cancellationToken);
-        Task<ListCustomerProjectAssociationData> GetAllCustomerProjectAssociations(CancellationToken cancellationToken);
-        Task<ListCustomerProjectAssociationData> GetAllCustomerProjectAssociationsByUserId(string userId,CancellationToken cancellationToken);
+        Task<ListCustomerProjectAssociationGrpc> GetAllCustomerProjectAssociations(CancellationToken cancellationToken);
+        Task<ListCustomerProjectAssociationGrpc> GetAllCustomerProjectAssociationsByUserId(string userId,CancellationToken cancellationToken);
         Task<bool> PopulateCustomerProjectAssociationsAsync(CancellationToken cancellationToken);
-        Task<ListCustomerSalesEntityData> GetAllCustomerSalesEntities(CancellationToken cancellationToken);
-        Task<ListCustomerSalesEntityData> GetAllCustomerSalesByUserIdEntities(string userId, CancellationToken cancellationToken);
+        Task<ListCustomerSalesEntityGrpc> GetAllCustomerSalesEntities(CancellationToken cancellationToken);
+        Task<ListCustomerSalesEntityGrpc> GetAllCustomerSalesByUserIdEntities(string userId, CancellationToken cancellationToken);
         Task<bool> PopulateCustomerSalesEntitiesAsync(CancellationToken cancellationToken);
-        Task<ListCustomerBusinessUserAssociationData> GetCustomerBusinessUserAssociations(CancellationToken cancellationToken);
-        Task<ListCustomerBusinessUserAssociationData> GetCustomerBusinessUserAssociationsByUserId(string userId, CancellationToken cancellationToken);
+        Task<ListCustomerBusinessUserAssociationGrpc> GetCustomerBusinessUserAssociations(CancellationToken cancellationToken);
+        Task<ListCustomerBusinessUserAssociationGrpc> GetCustomerBusinessUserAssociationsByUserId(string userId, CancellationToken cancellationToken);
         Task<bool> PopulateCustomerBusinessUserAssociationsAsync(CancellationToken cancellationToken);
 
         #endregion
 
         #region Project
 
-        Task<ListPlatformData> GetAllPlatforms(CancellationToken cancellationToken);
-        Task<ListPlatformData> GetPlatformsById(string id,CancellationToken cancellationToken);
+        Task<ListPlatformGrpc> GetAllPlatforms(CancellationToken cancellationToken);
+        Task<ListPlatformGrpc> GetPlatformsById(string id,CancellationToken cancellationToken);
         Task<bool> PopulatePlatformsAsync(CancellationToken cancellationToken);
-        Task<ListProgramData> GetAllPrograms(CancellationToken cancellationToken);
-        Task<ListProgramData> GetProgramsById(string id, CancellationToken cancellationToken);
+        Task<ListProgramGrpc> GetAllPrograms(CancellationToken cancellationToken);
+        Task<ListProgramGrpc> GetProgramsById(string id, CancellationToken cancellationToken);
         Task<bool> PopulateProgramsAsync(CancellationToken cancellationToken);
-        Task<ListProjectData> GetAllProjects(CancellationToken cancellationToken);
-        Task<ListProjectData> GetProjectsById(string id, CancellationToken cancellationToken);
+        Task<ListProjectGrpc> GetAllProjects(CancellationToken cancellationToken);
+        Task<ListProjectGrpc> GetProjectsById(string id, CancellationToken cancellationToken);
         Task<bool> PopulateProjectsAsync(CancellationToken cancellationToken);
-        Task<ListMilestoneData> GetAllMilestones(CancellationToken cancellationToken);
-        Task<ListMilestoneData> GetMilestonesById(string id, CancellationToken cancellationToken);
+        Task<ListMilestoneGrpc> GetAllMilestones(CancellationToken cancellationToken);
+        Task<ListMilestoneGrpc> GetMilestonesById(string id, CancellationToken cancellationToken);
         Task<bool> PopulateMilestonesAsync(CancellationToken cancellationToken);
 
         #endregion
 
         #region Vehicle
 
-        Task<ListVehicleData> GetAllVehicles(CancellationToken cancellationToken);
+        Task<ListVehicleGrpc> GetAllVehicles(CancellationToken cancellationToken);
         Task<bool> PopulateVehiclesAsync(CancellationToken cancellationToken);
-        Task<ListVehicleData> GetVehiclesById(string id, CancellationToken cancellationToken);
-        Task<ListVehicleData> GetVehiclesByDisplay(string vehicleDisplay, CancellationToken cancellationToken);
+        Task<ListVehicleGrpc> GetVehiclesById(string id, CancellationToken cancellationToken);
+        Task<ListVehicleGrpc> GetVehiclesByDisplay(string vehicleDisplay, CancellationToken cancellationToken);
 
         #endregion
     }

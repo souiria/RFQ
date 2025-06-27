@@ -1,6 +1,6 @@
 ﻿namespace Master.CQRS.Query.Customer
 {
-    public class GetAllCustomerBusinessUnitsQuery : IQuery<List<CustomerData>>
+    public class GetAllCustomerBusinessUnitsQuery : IQuery<List<CustomerGrpc>>
     {
         public int? Position
         { get; set; }
