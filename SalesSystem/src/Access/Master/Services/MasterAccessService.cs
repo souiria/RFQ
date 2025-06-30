@@ -1,9 +1,4 @@
-﻿
-using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
-
-namespace Master.Services
+﻿namespace Master.Services
 {
     /// <summary>
     /// This class is used to make calls to the database queries and to hold the data dictionaries.
@@ -15,43 +10,43 @@ namespace Master.Services
 
         #region Currency
 
-        List<CurrencyDto> _Currencies;
-        List<CurrencyDto> _FilteredCurrencies;
+        ListCurrencyGrpc _Currencies;
+        ListCurrencyGrpc _FilteredCurrencies;
 
         #endregion
 
         #region Customer
 
-        List<CustomerBusinessHierarchyDto> _Customers;
-        List<CustomerBusinessHierarchyDto> _FilteredCustomers;
-        List<CustomerHierarchyDto> _CustomerLocations;
-        List<CustomerHierarchyDto> _FilteredLocations;
-        List<CustomerSalesEntityDto> _CustomerSalesEntities;
-        List<CustomerSalesEntityDto> _FilteredCustomerSalesEntities;
-        List<CustomerProjectAssociationDto> _CustomerProjectAssociations;
-        List<CustomerProjectAssociationDto> _FilteredCustomerProjectAssociations;
-        List<CustomerBusinessUserAssociationDto> _CustomerBusinessUserAssociations;
-        List<CustomerBusinessUserAssociationDto> _FilteredCustomerBusinessUserAssociations;
+        ListCustomerGrpc _Customers;
+        ListCustomerGrpc _FilteredCustomers;
+        ListCustomerLocationGrpc _CustomerLocations;
+        ListCustomerLocationGrpc _FilteredLocations;
+        ListCustomerSalesEntityGrpc _CustomerSalesEntities;
+        ListCustomerSalesEntityGrpc _FilteredCustomerSalesEntities;
+        ListCustomerProjectAssociationGrpc _CustomerProjectAssociations;
+        ListCustomerProjectAssociationGrpc _FilteredCustomerProjectAssociations;
+        ListCustomerBusinessUserAssociationGrpc _CustomerBusinessUserAssociations;
+        ListCustomerBusinessUserAssociationGrpc _FilteredCustomerBusinessUserAssociations;
 
         #endregion
 
         #region Project
 
-        List<PlatformHierarchyDto> _Platforms;
-        List<PlatformHierarchyDto> _FilteredPlatforms;
-        List<ProgramHierarchyDto> _Programs;
-        List<ProgramHierarchyDto> _FilteredPrograms;
-        List<ProjectHierarchyDto> _Projects;
-        List<ProjectHierarchyDto> _FilteredProjects;
-        List<MilestoneHierarchyDto> _Milestones;
-        List<MilestoneHierarchyDto> _FilteredMilestones;
+        ListPlatformGrpc _Platforms;
+        ListPlatformGrpc _FilteredPlatforms;
+        ListProgramGrpc _Programs;
+        ListProgramGrpc _FilteredPrograms;
+        ListProjectGrpc _Projects;
+        ListProjectGrpc _FilteredProjects;
+        ListMilestoneGrpc _Milestones;
+        ListMilestoneGrpc _FilteredMilestones;
 
         #endregion
 
         #region Vehicle
 
-        List<VehicleDto> _Vehicles;
-        List<VehicleDto> _FilteredVehicles;
+        ListVehicleGrpc _Vehicles;
+        ListVehicleGrpc _FilteredVehicles;
 
         #endregion
 
@@ -61,18 +56,18 @@ namespace Master.Services
 
         #region Currency
 
-        IQueryHandler<GetCurrenciesQuery, List<CurrencyDto>>? _CurrencyHandler;
+        IQueryHandler<GetCurrenciesQuery, List<CurrencyGrpc>>? _CurrencyHandler;
         bool _CurrencyRefreshInProgress;
 
         #endregion
 
         #region Customer
 
-        IQueryHandler<GetAllCustomerBusinessUnitsQuery, List<CustomerBusinessHierarchyDto>>? _CustomerHandler;
-        IQueryHandler<GetAllCustomerLocationsQuery, List<CustomerHierarchyDto>>? _CustomerLocationHandler;
-        IQueryHandler<GetAllCustomerProjectAssociationsQuery, List<CustomerProjectAssociationDto>>? _CustomerProjectAssociationsHandler;
-        IQueryHandler<GetAllCustomerSalesEntitiesQuery, List<CustomerSalesEntityDto>>? _CustomerSalesEntitiesHandler;
-        IQueryHandler<GetCustomerBusinessUserAssociationsQuery, List<CustomerBusinessUserAssociationDto>>? _CustomerBusinessUserAssociationsHandler;
+        IQueryHandler<GetAllCustomerBusinessUnitsQuery, List<CustomerGrpc>>? _CustomerHandler;
+        IQueryHandler<GetAllCustomerLocationsQuery, List<CustomerLocationGrpc>>? _CustomerLocationHandler;
+        IQueryHandler<GetAllCustomerProjectAssociationsQuery, List<CustomerProjectAssociationGrpc>>? _CustomerProjectAssociationsHandler;
+        IQueryHandler<GetAllCustomerSalesEntitiesQuery, List<CustomerSalesEntityGrpc>>? _CustomerSalesEntitiesHandler;
+        IQueryHandler<GetCustomerBusinessUserAssociationsQuery, List<CustomerBusinessUserAssociationGrpc>>? _CustomerBusinessUserAssociationsHandler;
         bool _CustomerRefreshInProgress;
         bool _CustomerLocationRefreshInProgress;
         bool _CustomerProjectAssociationsRefreshInProgress;
@@ -83,10 +78,10 @@ namespace Master.Services
 
         #region Project
 
-        IQueryHandler<GetAllPlatformHierarchiesQuery, List<PlatformHierarchyDto>>? _PlatformHandler;
-        IQueryHandler<GetAllProgramHierarchiesQuery, List<ProgramHierarchyDto>>? _ProgramHandler;
-        IQueryHandler<GetAllProjectHierarchiesQuery, List<ProjectHierarchyDto>>? _ProjectHandler;
-        IQueryHandler<GetAllMilestoneHierarchiesQuery, List<MilestoneHierarchyDto>>? _MilestoneHandler;
+        IQueryHandler<GetAllPlatformHierarchiesQuery, List<PlatformGrpc>>? _PlatformHandler;
+        IQueryHandler<GetAllProgramHierarchiesQuery, List<ProgramGrpc>>? _ProgramHandler;
+        IQueryHandler<GetAllProjectHierarchiesQuery, List<ProjectGrpc>>? _ProjectHandler;
+        IQueryHandler<GetAllMilestoneHierarchiesQuery, List<MilestoneGrpc>>? _MilestoneHandler;
         bool _PlatformRefreshInProgress;
         bool _ProgramRefreshInProgress;
         bool _ProjectRefreshInProgress;
@@ -96,7 +91,7 @@ namespace Master.Services
 
         #region Vehicle
 
-        IQueryHandler<GetAllVehiclesQuery, List<VehicleDto>>? _VehicleHandler;
+        IQueryHandler<GetAllVehiclesQuery, List<VehicleGrpc>>? _VehicleHandler;
         bool _VehicleRefreshInProgress;
 
         #endregion
@@ -111,24 +106,24 @@ namespace Master.Services
 
             #region Currency
 
-            _Currencies = [];
-            _FilteredCurrencies = [];
+            _Currencies = new ListCurrencyGrpc();
+            _FilteredCurrencies = new ListCurrencyGrpc();
             _CurrencyRefreshInProgress = false;
 
             #endregion
 
             #region Customer
 
-            _Customers = [];
-            _FilteredCustomers = [];
-            _CustomerLocations = [];
-            _FilteredLocations = [];
-            _CustomerSalesEntities = [];
-            _FilteredCustomerSalesEntities = [];
-            _CustomerProjectAssociations = [];
-            _FilteredCustomerProjectAssociations = [];
-            _CustomerBusinessUserAssociations = [];
-            _FilteredCustomerBusinessUserAssociations = [];
+            _Customers = new ListCustomerGrpc();
+            _FilteredCustomers = new ListCustomerGrpc();
+            _CustomerLocations = new ListCustomerLocationGrpc();
+            _FilteredLocations = new ListCustomerLocationGrpc();
+            _CustomerSalesEntities = new ListCustomerSalesEntityGrpc();
+            _FilteredCustomerSalesEntities = new ListCustomerSalesEntityGrpc();
+            _CustomerProjectAssociations = new ListCustomerProjectAssociationGrpc();
+            _FilteredCustomerProjectAssociations = new ListCustomerProjectAssociationGrpc();
+            _CustomerBusinessUserAssociations = new ListCustomerBusinessUserAssociationGrpc();
+            _FilteredCustomerBusinessUserAssociations = new ListCustomerBusinessUserAssociationGrpc();
             _CustomerRefreshInProgress = false;
             _CustomerLocationRefreshInProgress = false;
             _CustomerProjectAssociationsRefreshInProgress = false;
@@ -139,14 +134,14 @@ namespace Master.Services
 
             #region Project
 
-            _Platforms = [];
-            _FilteredPlatforms = [];
-            _Programs = [];
-            _FilteredPrograms = [];
-            _Projects = [];
-            _FilteredProjects = [];
-            _Milestones = [];
-            _FilteredMilestones = [];
+            _Platforms = new ListPlatformGrpc();
+            _FilteredPlatforms = new ListPlatformGrpc();
+            _Programs = new ListProgramGrpc();
+            _FilteredPrograms = new ListProgramGrpc();
+            _Projects = new ListProjectGrpc();
+            _FilteredProjects = new ListProjectGrpc();
+            _Milestones = new ListMilestoneGrpc();
+            _FilteredMilestones = new ListMilestoneGrpc();
 
             _PlatformRefreshInProgress = false;
             _ProgramRefreshInProgress = false;
@@ -157,8 +152,8 @@ namespace Master.Services
 
             #region Vehicle
 
-            _Vehicles = [];
-            _FilteredVehicles = [];
+            _Vehicles = new ListVehicleGrpc();
+            _FilteredVehicles = new ListVehicleGrpc();
             _VehicleRefreshInProgress = false;
 
             #endregion
@@ -176,10 +171,10 @@ namespace Master.Services
 
         #region Currency
 
-        public async Task<Result<List<CurrencyDto>>> GetAllCurrencies(CancellationToken cancellationToken)
+        public async Task<ListCurrencyGrpc> GetAllCurrencies(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Currencies.Any())
+            if (_Currencies.CurrencyGrpc.Any())
             {
                 return _Currencies;
             }
@@ -190,13 +185,14 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<CurrencyDto>>> GetCurrenciesById(Guid id ,CancellationToken cancellationToken)
+        public async Task<ListCurrencyGrpc> GetCurrenciesById(string id ,CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Currencies.Any())
+            if (_Currencies.CurrencyGrpc.Any())
             {
-                _FilteredCurrencies.Clear();
-                _FilteredCurrencies = _Currencies.Where(x => x.Id == id).ToList();
+                _FilteredCurrencies.CurrencyGrpc.Clear();
+                List<CurrencyGrpc> filteredList = _Currencies.CurrencyGrpc.Where(x => x.Id == id).ToList();
+                _FilteredCurrencies.CurrencyGrpc.AddRange(filteredList);
                 return _FilteredCurrencies;
             }
             else
@@ -210,10 +206,10 @@ namespace Master.Services
 
         #region Customer
 
-        public async Task<Result<List<CustomerBusinessHierarchyDto>>> GetAllCustomerBusinessUnits(CancellationToken cancellationToken)
+        public async Task<ListCustomerGrpc> GetAllCustomerBusinessUnits(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Customers.Any())
+            if (_Customers.CustomerGrpc.Any())
             {
                 return _Customers;
             }
@@ -224,13 +220,14 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<CustomerBusinessHierarchyDto>>> GetCustomerBusinessUnitsById(Guid id, CancellationToken cancellationToken)
+        public async Task<ListCustomerGrpc> GetCustomerBusinessUnitsById(string id, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            _FilteredCustomers.Clear();
-            if (_Customers.Any())
+            _FilteredCustomers.CustomerGrpc.Clear();
+            if (_Customers.CustomerGrpc.Any())
             {
-                _FilteredCustomers = _Customers.Where(x => x.Id == id).ToList();
+                List<CustomerGrpc> filteredCustomers = _Customers.CustomerGrpc.Where(x => x.Id == id).ToList();
+                _FilteredCustomers.CustomerGrpc.AddRange(filteredCustomers);
                 return _FilteredCustomers;
             }
             else
@@ -240,10 +237,10 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<CustomerHierarchyDto>>> GetAllCustomerLocations(CancellationToken cancellationToken)
+        public async Task<ListCustomerLocationGrpc> GetAllCustomerLocations(CancellationToken cancellationToken)
         {
             await Task.Delay(0, cancellationToken);
-            if (_CustomerLocations.Any())
+            if (_CustomerLocations.CustomerLocationGrpc.Any())
             {
                 return _CustomerLocations;
             }
@@ -254,13 +251,14 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<CustomerHierarchyDto>>> GetCustomerLocationsById(Guid id ,CancellationToken cancellationToken)
+        public async Task<ListCustomerLocationGrpc> GetCustomerLocationsById(string id ,CancellationToken cancellationToken)
         {
             await Task.Delay(0, cancellationToken);
-            _FilteredLocations.Clear();
-            if (_CustomerLocations.Any())
+            _FilteredLocations.CustomerLocationGrpc.Clear();
+            if (_CustomerLocations.CustomerLocationGrpc.Any())
             {
-                _FilteredLocations = _CustomerLocations.Where(x => x.Id == id).ToList();
+                List<CustomerLocationGrpc> filteredLocations = _CustomerLocations.CustomerLocationGrpc.Where(x => x.Id == id).ToList();
+                _FilteredLocations.CustomerLocationGrpc.AddRange(filteredLocations);
                 return _FilteredLocations;
             }
             else
@@ -270,25 +268,26 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<CustomerHierarchyDto>>> GetCustomerLocationsByUserId(Guid userId ,CancellationToken cancellationToken)
+        public async Task<ListCustomerLocationGrpc> GetCustomerLocationsByUserId(string userId ,CancellationToken cancellationToken)
         {
             await Task.Delay(0, cancellationToken);
-            _FilteredLocations.Clear();
-            if (_CustomerLocations.Any() && _CustomerBusinessUserAssociations.Any())
+            _FilteredLocations.CustomerLocationGrpc.Clear();
+            if (_CustomerLocations.CustomerLocationGrpc.Any() && _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Any())
             {
-                CustomerBusinessUserAssociationDto? user = _CustomerBusinessUserAssociations.Where(x => x.UserGuid == userId).FirstOrDefault();
+                CustomerBusinessUserAssociationGrpc? user = _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Where(x => x.UserGuid == userId).FirstOrDefault();
                 if (user != null)
                 {
                     if (user.CustomerBusinessHierarchyList != null)
                     {
-                        List<CustomerHierarchyDto>? userLocations = JsonConvert.DeserializeObject<List<CustomerHierarchyDto>>(user.CustomerBusinessHierarchyList);
+                        List<CustomerLocationGrpc>? userLocations = JsonConvert.DeserializeObject<List<CustomerLocationGrpc>>(user.CustomerBusinessHierarchyList);
                         if (userLocations != null)
                         {
-                            foreach (CustomerHierarchyDto location in userLocations)
+                            foreach (CustomerLocationGrpc location in userLocations)
                             {
                                 if (location.IsActive == true)
                                 {
-                                    _FilteredLocations = _CustomerLocations.Where(x => x.CustomerBusinessHierarchyGuid == location.CustomerBusinessHierarchyGuid).ToList();
+                                    List<CustomerLocationGrpc> filteredLocations = _CustomerLocations.CustomerLocationGrpc.Where(x => x.CustomerBusinessHierarchyGuid == location.CustomerBusinessHierarchyGuid).ToList();
+                                    _FilteredLocations.CustomerLocationGrpc.AddRange(filteredLocations);
                                 }
                             }
                         }
@@ -305,10 +304,10 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<CustomerProjectAssociationDto>>> GetAllCustomerProjectAssociations(CancellationToken cancellationToken)
+        public async Task<ListCustomerProjectAssociationGrpc> GetAllCustomerProjectAssociations(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_CustomerProjectAssociations.Any())
+            if (_CustomerProjectAssociations.CustomerProjectAssociationGrpc.Any())
             {
                 return _CustomerProjectAssociations;
             }
@@ -319,31 +318,32 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<CustomerProjectAssociationDto>>> GetAllCustomerProjectAssociationsByUserId(Guid userId ,CancellationToken cancellationToken)
+        public async Task<ListCustomerProjectAssociationGrpc> GetAllCustomerProjectAssociationsByUserId(string userId ,CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            _FilteredLocations.Clear();
-            if (_CustomerProjectAssociations.Any() && _CustomerBusinessUserAssociations.Any())
+            _FilteredLocations.CustomerLocationGrpc.Clear();
+            if (_CustomerProjectAssociations.CustomerProjectAssociationGrpc.Any() && _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Any())
             {
-                CustomerBusinessUserAssociationDto? user = GetCustomerBusinessUserAssociationsByUserId(userId, cancellationToken).Result.Value.FirstOrDefault();
+                CustomerBusinessUserAssociationGrpc? user = GetCustomerBusinessUserAssociationsByUserId(userId, cancellationToken).Result.CustomerBusinessUserAssociationGrpc.FirstOrDefault();
                 if (user != null)
                 {
                     if (user.CustomerBusinessHierarchyList != null)
                     {
-                        List<CustomerHierarchyDto>? customers = JsonConvert.DeserializeObject<List<CustomerHierarchyDto>>(user.CustomerBusinessHierarchyList);
+                        List<CustomerLocationGrpc>? customers = JsonConvert.DeserializeObject<List<CustomerLocationGrpc>>(user.CustomerBusinessHierarchyList);
                         if (customers != null)
                         {
-                            foreach (CustomerHierarchyDto customer in customers)
+                            foreach (CustomerLocationGrpc customer in customers)
                             {
                                 if (customer.IsActive == true)
                                 {
                                     if (customer.CustomerBusinessHierarchyGuid != null)
                                     {
-                                        _FilteredLocations = _CustomerLocations.Where(x => x.CustomerBusinessHierarchyGuid == customer.CustomerBusinessHierarchyGuid).ToList();
-                                        foreach (CustomerHierarchyDto customerLocation in _FilteredLocations)
+                                        List<CustomerLocationGrpc> filteredLocations = _CustomerLocations.CustomerLocationGrpc.Where(x => x.CustomerBusinessHierarchyGuid == customer.CustomerBusinessHierarchyGuid).ToList();
+                                        _FilteredLocations.CustomerLocationGrpc.AddRange(filteredLocations);
+                                        foreach (CustomerLocationGrpc customerLocation in _FilteredLocations.CustomerLocationGrpc)
                                         {
-                                            List<CustomerProjectAssociationDto> customerProjects = _CustomerProjectAssociations.Where(x => x.CustomerLocationGuid == customerLocation.Id).ToList();
-                                            _FilteredCustomerProjectAssociations.AddRange(customerProjects);
+                                            List<CustomerProjectAssociationGrpc> customerProjects = _CustomerProjectAssociations.CustomerProjectAssociationGrpc.Where(x => x.CustomerLocationGuid == customerLocation.Id).ToList();
+                                            _FilteredCustomerProjectAssociations.CustomerProjectAssociationGrpc.AddRange(customerProjects);
                                         }
                                     }
                                 }
@@ -361,10 +361,10 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<CustomerSalesEntityDto>>> GetAllCustomerSalesEntities(CancellationToken cancellationToken)
+        public async Task<ListCustomerSalesEntityGrpc> GetAllCustomerSalesEntities(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_CustomerSalesEntities.Any())
+            if (_CustomerSalesEntities.CustomerSalesEntityGrpc.Any())
             {
                 return _CustomerSalesEntities;
             }
@@ -375,17 +375,17 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<CustomerSalesEntityDto>>> GetAllCustomerSalesByUserIdEntities(Guid userId ,CancellationToken cancellationToken)
+        public async Task<ListCustomerSalesEntityGrpc> GetAllCustomerSalesByUserIdEntities(string userId ,CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            _FilteredCustomerSalesEntities.Clear();
-            if (_CustomerSalesEntities.Any())
+            _FilteredCustomerSalesEntities.CustomerSalesEntityGrpc.Clear();
+            if (_CustomerSalesEntities.CustomerSalesEntityGrpc.Any())
             {
-                Result<List<CustomerHierarchyDto>> locations = await GetCustomerLocationsByUserId(userId, cancellationToken);
-                foreach(CustomerHierarchyDto location in locations.Value)
+                ListCustomerLocationGrpc locations = await GetCustomerLocationsByUserId(userId, cancellationToken);
+                foreach(CustomerLocationGrpc location in locations.CustomerLocationGrpc)
                 {
-                    List<CustomerSalesEntityDto> salesByLocation = _CustomerSalesEntities.Where(x => x.CustomerHierarchyGuid == location.Id).ToList();
-                    _FilteredCustomerSalesEntities.AddRange(salesByLocation);
+                    List<CustomerSalesEntityGrpc> salesByLocation = _CustomerSalesEntities.CustomerSalesEntityGrpc.Where(x => x.CustomerHierarchyGuid == location.Id).ToList();
+                    _FilteredCustomerSalesEntities.CustomerSalesEntityGrpc.AddRange(salesByLocation);
                 }
 
                 return _FilteredCustomerSalesEntities;
@@ -397,10 +397,10 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<CustomerBusinessUserAssociationDto>>> GetCustomerBusinessUserAssociations(CancellationToken cancellationToken)
+        public async Task<ListCustomerBusinessUserAssociationGrpc> GetCustomerBusinessUserAssociations(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_CustomerBusinessUserAssociations.Any())
+            if (_CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Any())
             {
                 return _CustomerBusinessUserAssociations;
             }
@@ -410,13 +410,14 @@ namespace Master.Services
                 return _CustomerBusinessUserAssociations;
             }
         }
-        public async Task<Result<List<CustomerBusinessUserAssociationDto>>> GetCustomerBusinessUserAssociationsByUserId(Guid userId, CancellationToken cancellationToken)
+        public async Task<ListCustomerBusinessUserAssociationGrpc> GetCustomerBusinessUserAssociationsByUserId(string userId, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            _FilteredCustomerBusinessUserAssociations.Clear();
-            if (_CustomerBusinessUserAssociations.Any())
+            _FilteredCustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Clear();
+            if (_CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Any())
             {
-                _FilteredCustomerBusinessUserAssociations = _CustomerBusinessUserAssociations.Where(x => x.UserGuid == userId).ToList();
+                List<CustomerBusinessUserAssociationGrpc> filteredCustomerBusinessUserAssociationGrpc = _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Where(x => x.UserGuid == userId).ToList();
+                _FilteredCustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.AddRange(filteredCustomerBusinessUserAssociationGrpc);
                 return _FilteredCustomerBusinessUserAssociations;
             }
             else
@@ -430,10 +431,10 @@ namespace Master.Services
 
         #region Project
 
-        public async Task<Result<List<PlatformHierarchyDto>>> GetAllPlatforms(CancellationToken cancellationToken)
+        public async Task<ListPlatformGrpc> GetAllPlatforms(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Platforms.Any())
+            if (_Platforms.PlatformGrpc.Any())
             {
                 return _Platforms;
             }
@@ -443,13 +444,14 @@ namespace Master.Services
                 return _Platforms;
             }
         }
-        public async Task<Result<List<PlatformHierarchyDto>>> GetPlatformsById(Guid id ,CancellationToken cancellationToken)
+        public async Task<ListPlatformGrpc> GetPlatformsById(string id ,CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Platforms.Any())
+            if (_Platforms.PlatformGrpc.Any())
             {
-                _FilteredPlatforms.Clear();
-                _FilteredPlatforms = _Platforms.Where(x => x.Id == id).ToList();
+                _FilteredPlatforms.PlatformGrpc.Clear();
+                List<PlatformGrpc> filteredPlatforms = _Platforms.PlatformGrpc.Where(x => x.Id == id).ToList();
+                _FilteredPlatforms.PlatformGrpc.AddRange(filteredPlatforms);
                 return _FilteredPlatforms;
             }
             else
@@ -459,10 +461,10 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<ProgramHierarchyDto>>> GetAllPrograms(CancellationToken cancellationToken)
+        public async Task<ListProgramGrpc> GetAllPrograms(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Programs.Any())
+            if (_Programs.ProgramGrpc.Any())
             {
                 return _Programs;
             }
@@ -472,13 +474,14 @@ namespace Master.Services
                 return _Programs;
             }
         }
-        public async Task<Result<List<ProgramHierarchyDto>>> GetProgramsById(Guid id,CancellationToken cancellationToken)
+        public async Task<ListProgramGrpc> GetProgramsById(string id,CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Programs.Any())
+            if (_Programs.ProgramGrpc.Any())
             {
-                _FilteredPrograms.Clear();
-                _FilteredPrograms = _Programs.Where(x => x.Id == id).ToList();
+                _FilteredPrograms.ProgramGrpc.Clear();
+                List<ProgramGrpc> filteredPrograms = _Programs.ProgramGrpc.Where(x => x.Id == id).ToList();
+                _FilteredPrograms.ProgramGrpc.AddRange(filteredPrograms);
                 return _FilteredPrograms;
             }
             else
@@ -488,10 +491,10 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<ProjectHierarchyDto>>> GetAllProjects(CancellationToken cancellationToken)
+        public async Task<ListProjectGrpc> GetAllProjects(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Projects.Any())
+            if (_Projects.ProjectGrpc.Any())
             {
                 return _Projects;
             }
@@ -502,13 +505,14 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<ProjectHierarchyDto>>> GetProjectsById(Guid id, CancellationToken cancellationToken)
+        public async Task<ListProjectGrpc> GetProjectsById(string id, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Projects.Any())
+            if (_Projects.ProjectGrpc.Any())
             {
-                _FilteredProjects.Clear();
-                _FilteredProjects = _Projects.Where(x => x.Id == id).ToList();
+                _FilteredProjects.ProjectGrpc.Clear();
+                List<ProjectGrpc> filteredProjects = _Projects.ProjectGrpc.Where(x => x.Id == id).ToList();
+                _FilteredProjects.ProjectGrpc.AddRange(filteredProjects);
                 return _FilteredProjects;
             }
             else
@@ -518,10 +522,10 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<MilestoneHierarchyDto>>> GetAllMilestones(CancellationToken cancellationToken)
+        public async Task<ListMilestoneGrpc> GetAllMilestones(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Milestones.Any())
+            if (_Milestones.MilestoneGrpc.Any())
             {
                 return _Milestones;
             }
@@ -532,13 +536,14 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<MilestoneHierarchyDto>>> GetMilestonesById(Guid id ,CancellationToken cancellationToken)
+        public async Task<ListMilestoneGrpc> GetMilestonesById(string id ,CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Milestones.Any())
+            if (_Milestones.MilestoneGrpc.Any())
             {
-                _FilteredMilestones.Clear();
-                _FilteredMilestones = _Milestones.Where(x => x.Id == id).ToList();
+                _FilteredMilestones.MilestoneGrpc.Clear();
+                List<MilestoneGrpc> filteredMilestones = _Milestones.MilestoneGrpc.Where(x => x.Id == id).ToList();
+                _FilteredMilestones.MilestoneGrpc.AddRange(filteredMilestones);
                 return _FilteredMilestones;
             }
             else
@@ -552,10 +557,10 @@ namespace Master.Services
 
         #region Vehicle
 
-        public async Task<Result<List<VehicleDto>>> GetAllVehicles(CancellationToken cancellationToken)
+        public async Task<ListVehicleGrpc> GetAllVehicles(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Vehicles.Any())
+            if (_Vehicles.VehicleGrpc.Any())
             {
                 return _Vehicles;
             }
@@ -566,13 +571,14 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<VehicleDto>>> GetVehiclesById(Guid id, CancellationToken cancellationToken)
+        public async Task<ListVehicleGrpc> GetVehiclesById(string id, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Vehicles.Any())
+            if (_Vehicles.VehicleGrpc.Any())
             {
-                _FilteredVehicles.Clear();
-                _FilteredVehicles = _Vehicles.Where(x => x.Id == id).ToList();
+                _FilteredVehicles.VehicleGrpc.Clear();
+                List<VehicleGrpc> filteredVehicles = _Vehicles.VehicleGrpc.Where(x => x.Id == id).ToList();
+                _FilteredVehicles.VehicleGrpc.AddRange(filteredVehicles);
                 return _FilteredVehicles;
             }
             else
@@ -582,13 +588,14 @@ namespace Master.Services
             }
         }
 
-        public async Task<Result<List<VehicleDto>>> GetVehiclesByDisplay(string vehicleDisplay , CancellationToken cancellationToken)
+        public async Task<ListVehicleGrpc> GetVehiclesByDisplay(string vehicleDisplay , CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Vehicles.Any())
+            if (_Vehicles.VehicleGrpc.Any())
             {
-                _FilteredVehicles.Clear();
-                _FilteredVehicles = _Vehicles.Where(x => x.VehicleDisplay == vehicleDisplay).ToList();
+                _FilteredVehicles.VehicleGrpc.Clear();
+                List<VehicleGrpc> filteredVehicles = _Vehicles.VehicleGrpc.Where(x => x.VehicleDisplay == vehicleDisplay).ToList();
+                _FilteredVehicles.VehicleGrpc.AddRange(filteredVehicles);
                 return _FilteredVehicles;
             }
             else
@@ -617,18 +624,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _CurrencyHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCurrenciesQuery, List<CurrencyDto>>>();
+                    _CurrencyHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCurrenciesQuery, List<CurrencyGrpc>>>();
                     _CurrencyRefreshInProgress = true;
                     GetCurrenciesQuery query = new GetCurrenciesQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<CurrencyDto>> results = await _CurrencyHandler.Handle(query, cancellationToken);
+                    Result<List<CurrencyGrpc>> results = await _CurrencyHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _Currencies.Clear();
-                        _Currencies = results.Value;
+                        _Currencies.CurrencyGrpc.Clear();
+                        _Currencies.CurrencyGrpc.AddRange(results.Value);
                     }
 
                     _CurrencyRefreshInProgress = false;
@@ -648,18 +655,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _CustomerHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllCustomerBusinessUnitsQuery, List<CustomerBusinessHierarchyDto>>>();
+                    _CustomerHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllCustomerBusinessUnitsQuery, List<CustomerGrpc>>>();
                     _CustomerRefreshInProgress = true;
                     GetAllCustomerBusinessUnitsQuery query = new GetAllCustomerBusinessUnitsQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<CustomerBusinessHierarchyDto>> results = await _CustomerHandler.Handle(query, cancellationToken);
+                    Result<List<CustomerGrpc>> results = await _CustomerHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _Customers.Clear();
-                        _Customers = results.Value;
+                        _Customers.CustomerGrpc.Clear();
+                        _Customers.CustomerGrpc.AddRange(results.Value);
                     }
 
                     _CustomerRefreshInProgress = false;
@@ -676,18 +683,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _CustomerLocationHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllCustomerLocationsQuery, List<CustomerHierarchyDto>>>();
+                    _CustomerLocationHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllCustomerLocationsQuery, List<CustomerLocationGrpc>>>();
                     _CustomerLocationRefreshInProgress = true;
                     GetAllCustomerLocationsQuery query = new GetAllCustomerLocationsQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<CustomerHierarchyDto>> results = await _CustomerLocationHandler.Handle(query, cancellationToken);
+                    Result<List<CustomerLocationGrpc>> results = await _CustomerLocationHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _CustomerLocations.Clear();
-                        _CustomerLocations = results.Value;
+                        _CustomerLocations.CustomerLocationGrpc.Clear();
+                        _CustomerLocations.CustomerLocationGrpc.AddRange(results.Value);
                     }
 
                     _CustomerLocationRefreshInProgress = false;
@@ -704,18 +711,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _CustomerProjectAssociationsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllCustomerProjectAssociationsQuery, List<CustomerProjectAssociationDto>>>();
+                    _CustomerProjectAssociationsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllCustomerProjectAssociationsQuery, List<CustomerProjectAssociationGrpc>>>();
                     _CustomerProjectAssociationsRefreshInProgress = true;
                     GetAllCustomerProjectAssociationsQuery query = new GetAllCustomerProjectAssociationsQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<CustomerProjectAssociationDto>> results = await _CustomerProjectAssociationsHandler.Handle(query, cancellationToken);
+                    Result<List<CustomerProjectAssociationGrpc>> results = await _CustomerProjectAssociationsHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _CustomerProjectAssociations.Clear();
-                        _CustomerProjectAssociations = results.Value;
+                        _CustomerProjectAssociations.CustomerProjectAssociationGrpc.Clear();
+                        _CustomerProjectAssociations.CustomerProjectAssociationGrpc.AddRange(results.Value);
                     }
 
                     _CustomerProjectAssociationsRefreshInProgress = false;
@@ -732,18 +739,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _CustomerSalesEntitiesHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllCustomerSalesEntitiesQuery, List <CustomerSalesEntityDto>>>();
+                    _CustomerSalesEntitiesHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllCustomerSalesEntitiesQuery, List <CustomerSalesEntityGrpc>>>();
                     _CustomerSalesEntitiesRefreshInProgress = true;
                     GetAllCustomerSalesEntitiesQuery query = new GetAllCustomerSalesEntitiesQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<CustomerSalesEntityDto>> results = await _CustomerSalesEntitiesHandler.Handle(query, cancellationToken);
+                    Result<List<CustomerSalesEntityGrpc>> results = await _CustomerSalesEntitiesHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _CustomerSalesEntities.Clear();
-                        _CustomerSalesEntities = results.Value;
+                        _CustomerSalesEntities.CustomerSalesEntityGrpc.Clear();
+                        _CustomerSalesEntities.CustomerSalesEntityGrpc.AddRange(results.Value);
                     }
 
                     _CustomerSalesEntitiesRefreshInProgress = false;
@@ -760,18 +767,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _CustomerBusinessUserAssociationsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCustomerBusinessUserAssociationsQuery, List<CustomerBusinessUserAssociationDto>>>();
+                    _CustomerBusinessUserAssociationsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCustomerBusinessUserAssociationsQuery, List<CustomerBusinessUserAssociationGrpc>>>();
                     _CustomerBusinessUserAssociationsRefreshInProgress = true;
                     GetCustomerBusinessUserAssociationsQuery query = new GetCustomerBusinessUserAssociationsQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<CustomerBusinessUserAssociationDto>> results = await _CustomerBusinessUserAssociationsHandler.Handle(query, cancellationToken);
+                    Result<List<CustomerBusinessUserAssociationGrpc>> results = await _CustomerBusinessUserAssociationsHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _CustomerBusinessUserAssociations.Clear();
-                        _CustomerBusinessUserAssociations = results.Value;
+                        _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Clear();
+                        _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.AddRange(results.Value);
                     }
 
                     _CustomerBusinessUserAssociationsRefreshInProgress = false;
@@ -792,18 +799,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _PlatformHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllPlatformHierarchiesQuery, List<PlatformHierarchyDto>>>();
+                    _PlatformHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllPlatformHierarchiesQuery, List<PlatformGrpc>>>();
                     _PlatformRefreshInProgress = true;
                     GetAllPlatformHierarchiesQuery query = new GetAllPlatformHierarchiesQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<PlatformHierarchyDto>> results = await _PlatformHandler.Handle(query, cancellationToken);
+                    Result<List<PlatformGrpc>> results = await _PlatformHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _Platforms.Clear();
-                        _Platforms = results.Value;
+                        _Platforms.PlatformGrpc.Clear();
+                        _Platforms.PlatformGrpc.AddRange(results.Value);
                     }
 
                     _PlatformRefreshInProgress = false;
@@ -820,18 +827,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _ProgramHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllProgramHierarchiesQuery, List<ProgramHierarchyDto>>>();
+                    _ProgramHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllProgramHierarchiesQuery, List<ProgramGrpc>>>();
                     _ProgramRefreshInProgress = true;
                     GetAllProgramHierarchiesQuery query = new GetAllProgramHierarchiesQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<ProgramHierarchyDto>> results = await _ProgramHandler.Handle(query, cancellationToken);
+                    Result<List<ProgramGrpc>> results = await _ProgramHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _Programs.Clear();
-                        _Programs = results.Value;
+                        _Programs.ProgramGrpc.Clear();
+                        _Programs.ProgramGrpc.AddRange(results.Value);
                     }
 
                     _ProgramRefreshInProgress = false;
@@ -848,18 +855,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _ProjectHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllProjectHierarchiesQuery, List<ProjectHierarchyDto>>>();
+                    _ProjectHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllProjectHierarchiesQuery, List<ProjectGrpc>>>();
                     _ProjectRefreshInProgress = true;
                     GetAllProjectHierarchiesQuery query = new GetAllProjectHierarchiesQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<ProjectHierarchyDto>> results = await _ProjectHandler.Handle(query, cancellationToken);
+                    Result<List<ProjectGrpc>> results = await _ProjectHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _Projects.Clear();
-                        _Projects = results.Value;
+                        _Projects.ProjectGrpc.Clear();
+                        _Projects.ProjectGrpc.AddRange(results.Value);
                     }
 
                     _ProjectRefreshInProgress = false;
@@ -876,18 +883,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _MilestoneHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllMilestoneHierarchiesQuery, List<MilestoneHierarchyDto>>>();
+                    _MilestoneHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllMilestoneHierarchiesQuery, List<MilestoneGrpc>>>();
                     _MilestoneRefreshInProgress = true;
                     GetAllMilestoneHierarchiesQuery query = new GetAllMilestoneHierarchiesQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<MilestoneHierarchyDto>> results = await _MilestoneHandler.Handle(query, cancellationToken);
+                    Result<List<MilestoneGrpc>> results = await _MilestoneHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _Milestones.Clear();
-                        _Milestones = results.Value;
+                        _Milestones.MilestoneGrpc.Clear();
+                        _Milestones.MilestoneGrpc.AddRange(results.Value);
                     }
 
                     _MilestoneRefreshInProgress = false;
@@ -908,18 +915,18 @@ namespace Master.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _VehicleHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllVehiclesQuery, List<VehicleDto>>>();
+                    _VehicleHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllVehiclesQuery, List<VehicleGrpc>>>();
                     _VehicleRefreshInProgress = true;
                     GetAllVehiclesQuery query = new GetAllVehiclesQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<VehicleDto>> results = await _VehicleHandler.Handle(query, cancellationToken);
+                    Result<List<VehicleGrpc>> results = await _VehicleHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _Vehicles.Clear();
-                        _Vehicles = results.Value;
+                        _Vehicles.VehicleGrpc.Clear();
+                        _Vehicles.VehicleGrpc.AddRange(results.Value);
                     }
 
                     _VehicleRefreshInProgress = false;
@@ -936,17 +943,17 @@ namespace Master.Services
 
         void PopulateSampleData()
         {
-            _Currencies = (List<CurrencyDto>)SampleMasterDataService.PopulateCurrencyData();
-            _Customers = (List<CustomerBusinessHierarchyDto>)SampleMasterDataService.PopulateCustomerData();
-            _CustomerLocations = (List<CustomerHierarchyDto>)SampleMasterDataService.PopulateCustomerLocationsData();
-            _CustomerSalesEntities = (List<CustomerSalesEntityDto>)SampleMasterDataService.PopulateCustomerSalesEntityData();
-            _CustomerProjectAssociations = (List<CustomerProjectAssociationDto>)SampleMasterDataService.PopulateCustomerProjectAssociationData();
-            _CustomerBusinessUserAssociations = (List<CustomerBusinessUserAssociationDto>)SampleMasterDataService.PopulateCustomerBusinessUserAssociationData();
-            _Platforms = (List<PlatformHierarchyDto>)SampleMasterDataService.PopulatePlatformData();
-            _Programs = (List<ProgramHierarchyDto>)SampleMasterDataService.PopulateProgramData();
-            _Projects = (List<ProjectHierarchyDto>)SampleMasterDataService.PopulateProjectData();
-            _Milestones = (List<MilestoneHierarchyDto>)SampleMasterDataService.PopulateMilestoneData();
-            _Vehicles = (List<VehicleDto>)SampleMasterDataService.PopulateVehicleData();
+            _Currencies = SampleMasterDataService.PopulateCurrencyGrpc();
+            _Customers = SampleMasterDataService.PopulateCustomerGrpc();
+            _CustomerLocations = SampleMasterDataService.PopulateCustomerLocationsData();
+            _CustomerSalesEntities = SampleMasterDataService.PopulateCustomerSalesEntityGrpc();
+            _CustomerProjectAssociations = SampleMasterDataService.PopulateCustomerProjectAssociationGrpc();
+            _CustomerBusinessUserAssociations = SampleMasterDataService.PopulateCustomerBusinessUserAssociationGrpc();
+            _Platforms = SampleMasterDataService.PopulatePlatformGrpc();
+            _Programs = SampleMasterDataService.PopulateProgramGrpc();
+            _Projects = SampleMasterDataService.PopulateProjectGrpc();
+            _Milestones = SampleMasterDataService.PopulateMilestoneGrpc();
+            _Vehicles = SampleMasterDataService.PopulateVehicleGrpc();
         }
     }
 }

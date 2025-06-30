@@ -26,6 +26,10 @@
         { get; }
         DbSet<DbSuppliers> Suppliers
         { get; }
+        DbSet<DbEmacsRFIView> EmacsRFIViews
+        { get; }
+        DbSet<DbPARTMS> DbPARTMS
+        { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

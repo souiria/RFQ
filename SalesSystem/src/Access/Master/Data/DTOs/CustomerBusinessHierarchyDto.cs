@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Master.Data.DTOs
+﻿namespace Master.Data.DTOs
 {
     public class CustomerBusinessHierarchyDto
     {

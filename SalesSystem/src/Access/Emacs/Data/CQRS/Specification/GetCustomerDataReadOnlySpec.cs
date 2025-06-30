@@ -1,8 +1,8 @@
 ﻿namespace Emacs.Data.CQRS.Specification
 {
-    public class GetCustomerDataReadOnlySpec : Specification<DbCustomerData>
+    public class GetCustomerDataGrpcReadOnlySpec : Specification<DbCustomerData>
     {
-        public GetCustomerDataReadOnlySpec(int? position, int? take)
+        public GetCustomerDataGrpcReadOnlySpec(int? position, int? take)
         {
             if (position != null && take != null)
             {

@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
 
 option csharp_namespace = "Master";
 
@@ -11,44 +12,44 @@ package master;
 service Master {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply);
-  rpc GetCurrencyData (CurrencyGrpcRequest) returns (ListCurrencyData);
-  rpc GetCurrencyDataStream (CurrencyGrpcRequest) returns (stream CurrencyData);
-  rpc GetCurrencyDataById (CurrencyByIdGrpcRequest) returns (ListCurrencyData);
+  rpc GetCurrencyGrpc (CurrencyGrpcRequest) returns (ListCurrencyGrpc);
+  rpc GetCurrencyGrpcStream (CurrencyGrpcRequest) returns (stream CurrencyGrpc);
+  rpc GetCurrencyGrpcById (CurrencyByIdGrpcRequest) returns (ListCurrencyGrpc);
 
-  rpc GetCustomerData (CustomerGrpcRequest) returns (ListCustomerData);
-  rpc GetCustomerDataStream (CustomerGrpcRequest) returns (stream CustomerData);
-  rpc GetCustomerDataById (CustomerByIdGrpcRequest) returns (ListCustomerData);
-  rpc GetCustomerLocationData (CustomerLocationGrpcRequest) returns (ListCustomerLocationData);
-  rpc GetCustomerLocationDataStream (CustomerLocationGrpcRequest) returns (stream CustomerLocationData);
-  rpc GetCustomerLocationDataById (CustomerLocationByIdGrpcRequest) returns (ListCustomerLocationData);
-  rpc GetCustomerLocationDataByUserId (CustomerLocationByUserIdGrpcRequest) returns (ListCustomerLocationData);
-  rpc GetCustomerSalesEntityData (CustomerSalesEntityGrpcRequest) returns (ListCustomerSalesEntityData);
-  rpc GetCustomerSalesEntityDataStream (CustomerSalesEntityGrpcRequest) returns (stream CustomerSalesEntityData);
-  rpc GetCustomerSalesEntityDataByUserId (CustomerSalesEntityByUserIdGrpcRequest) returns (ListCustomerSalesEntityData);
-  rpc GetCustomerProjectAssociationData (CustomerProjectAssociationGrpcRequest) returns (ListCustomerProjectAssociationData);
-  rpc GetCustomerProjectAssociationDataStream (CustomerProjectAssociationGrpcRequest) returns (stream CustomerProjectAssociationData);
-  rpc GetCustomerProjectAssociationDataByUserId (CustomerProjectAssociationByUserIdGrpcRequest) returns (ListCustomerProjectAssociationData);
-  rpc GetCustomerBusinessUserAssociationData (CustomerBusinessUserAssociationGrpcRequest) returns (ListCustomerBusinessUserAssociationData);
-  rpc GetCustomerBusinessUserAssociationDataStream (CustomerBusinessUserAssociationGrpcRequest) returns (stream CustomerBusinessUserAssociationData);
-  rpc GetCustomerBusinessUserAssociationDataByUserId (CustomerBusinessUserAssociationByUserIdGrpcRequest) returns (ListCustomerBusinessUserAssociationData);
+  rpc GetCustomerGrpc (CustomerGrpcRequest) returns (ListCustomerGrpc);
+  rpc GetCustomerGrpcStream (CustomerGrpcRequest) returns (stream CustomerGrpc);
+  rpc GetCustomerGrpcById (CustomerByIdGrpcRequest) returns (ListCustomerGrpc);
+  rpc GetCustomerLocationGrpc (CustomerLocationGrpcRequest) returns (ListCustomerLocationGrpc);
+  rpc GetCustomerLocationGrpcStream (CustomerLocationGrpcRequest) returns (stream CustomerLocationGrpc);
+  rpc GetCustomerLocationGrpcById (CustomerLocationByIdGrpcRequest) returns (ListCustomerLocationGrpc);
+  rpc GetCustomerLocationGrpcByUserId (CustomerLocationByUserIdGrpcRequest) returns (ListCustomerLocationGrpc);
+  rpc GetCustomerSalesEntityGrpc (CustomerSalesEntityGrpcRequest) returns (ListCustomerSalesEntityGrpc);
+  rpc GetCustomerSalesEntityGrpcStream (CustomerSalesEntityGrpcRequest) returns (stream CustomerSalesEntityGrpc);
+  rpc GetCustomerSalesEntityGrpcByUserId (CustomerSalesEntityByUserIdGrpcRequest) returns (ListCustomerSalesEntityGrpc);
+  rpc GetCustomerProjectAssociationGrpc (CustomerProjectAssociationGrpcRequest) returns (ListCustomerProjectAssociationGrpc);
+  rpc GetCustomerProjectAssociationGrpcStream (CustomerProjectAssociationGrpcRequest) returns (stream CustomerProjectAssociationGrpc);
+  rpc GetCustomerProjectAssociationGrpcByUserId (CustomerProjectAssociationByUserIdGrpcRequest) returns (ListCustomerProjectAssociationGrpc);
+  rpc GetCustomerBusinessUserAssociationGrpc (CustomerBusinessUserAssociationGrpcRequest) returns (ListCustomerBusinessUserAssociationGrpc);
+  rpc GetCustomerBusinessUserAssociationGrpcStream (CustomerBusinessUserAssociationGrpcRequest) returns (stream CustomerBusinessUserAssociationGrpc);
+  rpc GetCustomerBusinessUserAssociationGrpcByUserId (CustomerBusinessUserAssociationByUserIdGrpcRequest) returns (ListCustomerBusinessUserAssociationGrpc);
 
-  rpc GetMilestoneData (MilestoneGrpcRequest) returns (ListMilestoneData);
-  rpc GetMilestoneDataStream (MilestoneGrpcRequest) returns (stream MilestoneData);
-  rpc GetMilestoneDataById (MilestoneByIdGrpcRequest) returns (ListMilestoneData);
-  rpc GetPlatformData (PlatformGrpcRequest) returns (ListPlatformData);
-  rpc GetPlatformDataStream (PlatformGrpcRequest) returns (stream PlatformData);
-  rpc GetPlatformDataById (PlatformByIdGrpcRequest) returns (ListPlatformData);
-  rpc GetProgramData (ProgramGrpcRequest) returns (ListProgramData);
-  rpc GetProgramDataStream (ProgramGrpcRequest) returns (stream ProgramData);
-  rpc GetProgramDataById (ProgramByIdGrpcRequest) returns (ListProgramData);
-  rpc GetProjectData (ProjectGrpcRequest) returns (ListProjectData);
-  rpc GetProjectDataStream (ProjectGrpcRequest) returns (stream ProjectData);
-  rpc GetProjectDataById (ProjectByIdGrpcRequest) returns (ListProjectData);
+  rpc GetMilestoneGrpc (MilestoneGrpcRequest) returns (ListMilestoneGrpc);
+  rpc GetMilestoneGrpcStream (MilestoneGrpcRequest) returns (stream MilestoneGrpc);
+  rpc GetMilestoneGrpcById (MilestoneByIdGrpcRequest) returns (ListMilestoneGrpc);
+  rpc GetPlatformGrpc (PlatformGrpcRequest) returns (ListPlatformGrpc);
+  rpc GetPlatformGrpcStream (PlatformGrpcRequest) returns (stream PlatformGrpc);
+  rpc GetPlatformGrpcById (PlatformByIdGrpcRequest) returns (ListPlatformGrpc);
+  rpc GetProgramGrpc (ProgramGrpcRequest) returns (ListProgramGrpc);
+  rpc GetProgramGrpcStream (ProgramGrpcRequest) returns (stream ProgramGrpc);
+  rpc GetProgramGrpcById (ProgramByIdGrpcRequest) returns (ListProgramGrpc);
+  rpc GetProjectGrpc (ProjectGrpcRequest) returns (ListProjectGrpc);
+  rpc GetProjectGrpcStream (ProjectGrpcRequest) returns (stream ProjectGrpc);
+  rpc GetProjectGrpcById (ProjectByIdGrpcRequest) returns (ListProjectGrpc);
 
-  rpc GetVehicleData (VehicleGrpcRequest) returns (ListVehicleData);
-  rpc GetVehicleDataStream (VehicleGrpcRequest) returns (stream VehicleData);
-  rpc GetVehicleDataById (VehicleByIdGrpcRequest) returns (ListVehicleData);
-  rpc GetVehicleDataByDisplay (VehicleByDisplayGrpcRequest) returns (ListVehicleData);
+  rpc GetVehicleGrpc (VehicleGrpcRequest) returns (ListVehicleGrpc);
+  rpc GetVehicleGrpcStream (VehicleGrpcRequest) returns (stream VehicleGrpc);
+  rpc GetVehicleGrpcById (VehicleByIdGrpcRequest) returns (ListVehicleGrpc);
+  rpc GetVehicleGrpcByDisplay (VehicleByDisplayGrpcRequest) returns (ListVehicleGrpc);
 }
 
 // The request message containing the user's name.
@@ -58,7 +59,7 @@ message HelloRequest {
 
 // The response message containing the greetings.
 message HelloReply {
-  string message = 1;
+  google.protobuf.StringValue message = 1;
 }
 
 message CurrencyGrpcRequest {
@@ -70,16 +71,16 @@ message CurrencyByIdGrpcRequest {
     string Id = 1;
 }
 
-message CurrencyData {
-    string Id = 1;
-    string CurrencyCode = 2;
-    string CurrencyName = 3;
-    string EuroRate = 4;
-    bool IsActive = 5;
+message CurrencyGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue CurrencyCode = 2;
+    google.protobuf.StringValue CurrencyName = 3;
+    google.protobuf.StringValue EuroRate = 4;
+    google.protobuf.BoolValue IsActive = 5;
 }
 
-message ListCurrencyData {
-    repeated CurrencyData CurrencyData = 1;
+message ListCurrencyGrpc {
+    repeated CurrencyGrpc CurrencyGrpc = 1;
 }
 
 message CustomerGrpcRequest {
@@ -91,16 +92,16 @@ message CustomerByIdGrpcRequest {
     string Id = 1;
 }
 
-message CustomerData {
-    string Id = 1;
-    string CustomerBusinessGroupCode = 2;
-    string CustomerBusinessGroupName = 3;   
-    string SEWSEBusinessTeam = 4;
-    bool IsActive = 5;
+message CustomerGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue CustomerBusinessGroupCode = 2;
+    google.protobuf.StringValue CustomerBusinessGroupName = 3;   
+    google.protobuf.StringValue SEWSEBusinessTeam = 4;
+    google.protobuf.BoolValue IsActive = 5;
 }
 
-message ListCustomerData {
-    repeated CustomerData CustomerData = 1;
+message ListCustomerGrpc {
+    repeated CustomerGrpc CustomerGrpc = 1;
 }
 
 message CustomerLocationGrpcRequest {
@@ -116,15 +117,16 @@ message CustomerLocationByUserIdGrpcRequest {
     string UserId = 1;
 }
 
-message CustomerLocationData {
-    string Id = 1;
-    string CustomerCode = 2;
-    string CustomerName = 3;   
-    bool IsActive = 4;
+message CustomerLocationGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue CustomerCode = 2;
+    google.protobuf.StringValue CustomerBusinessHierarchyGuid = 3;
+    google.protobuf.StringValue CustomerName = 4;   
+    google.protobuf.BoolValue IsActive = 5;
 }
 
-message ListCustomerLocationData {
-    repeated CustomerLocationData CustomerLocationData = 1;
+message ListCustomerLocationGrpc {
+    repeated CustomerLocationGrpc CustomerLocationGrpc = 1;
 }
 
 message CustomerSalesEntityGrpcRequest {
@@ -136,16 +138,17 @@ message CustomerSalesEntityByUserIdGrpcRequest {
   string UserId = 1;
 }
 
-message CustomerSalesEntityData {
-    string Id = 1;
-    string CustomerSalesEntityCode = 2;
-    string CustomerSalesEntityName = 3;   
-    string FinanceCode = 4;  
-    bool IsActive = 5;
+message CustomerSalesEntityGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue CustomerSalesEntityCode = 2;
+    google.protobuf.StringValue CustomerSalesEntityName = 3;   
+    google.protobuf.StringValue FinanceCode = 4;  
+    google.protobuf.StringValue CustomerHierarchyGuid = 5;  
+    google.protobuf.BoolValue IsActive = 6;
 }
 
-message ListCustomerSalesEntityData {
-    repeated CustomerSalesEntityData CustomerSalesEntityData = 1;
+message ListCustomerSalesEntityGrpc {
+    repeated CustomerSalesEntityGrpc CustomerSalesEntityGrpc = 1;
 }
 
 message CustomerProjectAssociationGrpcRequest {
@@ -157,15 +160,15 @@ message CustomerProjectAssociationByUserIdGrpcRequest {
     string UserId = 1;
 }
 
-message CustomerProjectAssociationData {
+message CustomerProjectAssociationGrpc {
     string Id = 1;
     string CustomerLocationGuid = 2;
     string ProjectGuid = 3;    
     bool IsActive = 4;
 }
 
-message ListCustomerProjectAssociationData {
-    repeated CustomerProjectAssociationData CustomerProjectAssociationData = 1;
+message ListCustomerProjectAssociationGrpc {
+    repeated CustomerProjectAssociationGrpc CustomerProjectAssociationGrpc = 1;
 }
 
 message CustomerBusinessUserAssociationGrpcRequest {
@@ -177,15 +180,15 @@ message CustomerBusinessUserAssociationByUserIdGrpcRequest {
   string UserId = 1;
 }
 
-message CustomerBusinessUserAssociationData {
+message CustomerBusinessUserAssociationGrpc {
     string Id = 1;
     string CustomerBusinessHierarchyList = 2;
     string UserGuid = 3;    
     bool IsActive = 4;
 }
 
-message ListCustomerBusinessUserAssociationData {
-    repeated CustomerBusinessUserAssociationData CustomerBusinessUserAssociationData = 1;
+message ListCustomerBusinessUserAssociationGrpc {
+    repeated CustomerBusinessUserAssociationGrpc CustomerBusinessUserAssociationGrpc = 1;
 }
 
 message MilestoneGrpcRequest {
@@ -196,17 +199,17 @@ message MilestoneByIdGrpcRequest {
     string Id = 1;
 }
 
-message MilestoneData {
-    string Id = 1;
-    string MilestoneEventName = 2;
+message MilestoneGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue MilestoneEventName = 2;
     google.protobuf.Timestamp EventStartDate = 3;    
     google.protobuf.Timestamp EventEndDate = 4;  
-    string ProjectHierarchyGuid = 5;
-    bool IsActive = 6;
+    google.protobuf.StringValue ProjectHierarchyGuid = 5;
+    google.protobuf.BoolValue IsActive = 6;
 }
 
-message ListMilestoneData {
-    repeated MilestoneData MilestoneData = 1;
+message ListMilestoneGrpc {
+    repeated MilestoneGrpc MilestoneGrpc = 1;
 }
 
 message PlatformGrpcRequest {
@@ -218,16 +221,16 @@ message PlatformByIdGrpcRequest {
     string Id = 1;
 }
 
-message PlatformData {
-    string Id = 1;
-    string PlatformName = 2;
-    string PlatformManagerName = 3;    
-    string CustomerHierarchyGuid = 4;
-    bool IsActive = 5;
+message PlatformGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue PlatformName = 2;
+    google.protobuf.StringValue PlatformManagerName = 3;    
+    google.protobuf.StringValue CustomerHierarchyGuid = 4;
+    google.protobuf.BoolValue IsActive = 5;
 }
 
-message ListPlatformData {
-    repeated PlatformData PlatformData = 1;
+message ListPlatformGrpc {
+    repeated PlatformGrpc PlatformGrpc = 1;
 }
 
 message ProgramGrpcRequest {
@@ -239,15 +242,15 @@ message ProgramByIdGrpcRequest {
     string Id = 1;
 }
 
-message ProgramData {
-    string Id = 1;
-    string ProgramName = 2;   
-    string PlatformHierarchyGuid = 3;
-    bool IsActive = 4;
+message ProgramGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue ProgramName = 2;   
+    google.protobuf.StringValue PlatformHierarchyGuid = 3;
+    google.protobuf.BoolValue IsActive = 4;
 }
 
-message ListProgramData {
-    repeated ProgramData ProgramData = 1;
+message ListProgramGrpc {
+    repeated ProgramGrpc ProgramGrpc = 1;
 }
 
 message ProjectGrpcRequest {
@@ -258,19 +261,19 @@ message ProjectByIdGrpcRequest {
     string Id = 1;
 }
 
-message ProjectData {
-    string Id = 1;
-    string ProjectCode = 2;   
-    string ProjectName = 3;
-    string CustomerProjectCode = 4;
-    string ProjectDescription = 5;
-    int32 ProjectAnnualVolume = 6;
-    string ProgramHierarchyGuid = 7;
-    bool IsActive = 8;
+message ProjectGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue ProjectCode = 2;   
+    google.protobuf.StringValue ProjectName = 3;
+    google.protobuf.StringValue CustomerProjectCode = 4;
+    google.protobuf.StringValue ProjectDescription = 5;
+    google.protobuf.Int32Value ProjectAnnualVolume = 6;
+    google.protobuf.StringValue ProgramHierarchyGuid = 7;
+    google.protobuf.BoolValue IsActive = 8;
 }
 
-message ListProjectData {
-    repeated ProjectData ProjectData = 1;
+message ListProjectGrpc {
+    repeated ProjectGrpc ProjectGrpc = 1;
 }
 
 message VehicleGrpcRequest {
@@ -286,14 +289,14 @@ message VehicleByDisplayGrpcRequest {
     string VehicleDisplay = 1;
 }
 
-message VehicleData {
-    string Id = 1;
-    string VehicleName = 2;   
-    string ProjectReference = 3;
-    string VehicleDisplay = 4;
-    bool IsActive = 5;
+message VehicleGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue VehicleName = 2;   
+    google.protobuf.StringValue ProjectReference = 3;
+    google.protobuf.StringValue VehicleDisplay = 4;
+    google.protobuf.BoolValue IsActive = 5;
 }
 
-message ListVehicleData {
-    repeated VehicleData VehicleData = 1;
+message ListVehicleGrpc {
+    repeated VehicleGrpc VehicleGrpc = 1;
 }

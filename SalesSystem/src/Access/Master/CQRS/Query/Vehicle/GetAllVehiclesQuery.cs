@@ -1,6 +1,6 @@
 ﻿namespace Master.CQRS.Query.Vehicle
 {
-    public class GetAllVehiclesQuery : IQuery<List<VehicleDto>>
+    public class GetAllVehiclesQuery : IQuery<List<VehicleGrpc>>
     {
         public int? Position
         { get; set; }

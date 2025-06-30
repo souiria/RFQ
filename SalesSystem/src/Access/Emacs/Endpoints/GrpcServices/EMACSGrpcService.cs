@@ -20,202 +20,203 @@
         }
 
         #region CombinedParts
-        public override async Task<ListCombinedPartsData> GetCombinedPartsData(CombinedPartsGrpcRequest request, ServerCallContext context)
+        public override async Task<ListCombinedPartsGrpc> GetCombinedPartsGrpc(CombinedPartsGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("GetCombinedPartsData starting");
-            ListCombinedPartsData listCombinedPartsData = new();
-            Result<List<CombinedPartsDto>> results = await _EMACSAccessService.GetAllCombinedParts(context.CancellationToken);
-            foreach (CombinedPartsDto result in results.Value)
-            {
-                CombinedPartsData combinedPartsData = result.MapToCombinePartsData();
-                listCombinedPartsData.CombinedPartsData.Add(combinedPartsData);
-            }
+            _Logger.GenericLogInformation("GetCombinedPartsGrpc starting");
+            return await _EMACSAccessService.GetAllCombinedParts(context.CancellationToken);
 
-            return listCombinedPartsData;
         }
 
-        public override async Task<CombinedPartsCountData> GetCombinedPartsDataCount(CombinedPartsCountGrpcRequest request, ServerCallContext context)
+        public override async Task<CombinedPartsCountGrpc> GetCombinedPartsGrpcCount(CombinedPartsCountGrpcRequest request, ServerCallContext context)
         {
-            CombinedPartsCountData combinedPartsCountData = new();
-            Result<int> results = await _EMACSAccessService.GetCombinedPartsDataCount(context.CancellationToken);
-            combinedPartsCountData.Count = results.Value;
-            return combinedPartsCountData;
+            CombinedPartsCountGrpc CombinedPartsCountGrpc = new();
+            Result<int> results = await _EMACSAccessService.GetCombinedPartsGrpcCount(context.CancellationToken);
+            CombinedPartsCountGrpc.Count = results.Value;
+            return CombinedPartsCountGrpc;
         }
         #endregion
 
         #region PartCatogoryDetail
-        public override async Task<ListPartCategoryDetail> GetPartCategoryDetailData(PartCategoryDetailGrpcRequest request, ServerCallContext context)
+        public override async Task<ListPartCategoryDetailGrpc> GetPartCategoryDetailGrpc(PartCategoryDetailGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("GetPartCategoryDetailData starting");
-            ListPartCategoryDetail listPartCatogoryDetailData = new();
-            Result<List<PartCategoryDetailDto>> results = await _EMACSAccessService.GetAllPartCategoryDetail(context.CancellationToken);
-            foreach (PartCategoryDetailDto result in results.Value)
-            {
-                PartCategoryDetail combinedPartsData = result.MapToPartCategoryDetailData();
-                listPartCatogoryDetailData.PartCategoryDetail.Add(combinedPartsData);
-            }
+            _Logger.GenericLogInformation("GetPartCategoryDetailGrpc starting");
+            return await _EMACSAccessService.GetAllPartCategoryDetail(context.CancellationToken);
+        }
 
-            return listPartCatogoryDetailData;
+        public override async Task<ListPartCategoryDetailGrpc> GetPartCategoryDetailGrpcByCategoryCode(PartCategoryDetailByCategoryCodeGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetPartCategoryDetailGrpcByCategoryCode starting");
+            return await _EMACSAccessService.GetPartCategoryDetailByCategoryCode(request.CategoryCode ,context.CancellationToken);
         }
         #endregion
 
         #region PartClassDetail
-        public override async Task<ListPartClassDetail> GetPartClassDetailData(PartClassDetailGrpcRequest request, ServerCallContext context)
+        public override async Task<ListPartClassDetailGrpc> GetPartClassDetailGrpc(PartClassDetailGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("GetPartClassDetailData starting");
-            ListPartClassDetail listPartClassDetailData = new();
-            Result<List<PartClassDetailDto>> results = await _EMACSAccessService.GetAllPartClassDetail(context.CancellationToken);
-            foreach (PartClassDetailDto result in results.Value)
-            {
-                PartClassDetail combinedPartsData = result.MapToPartClassDetailData();
-                listPartClassDetailData.PartClassDetail.Add(combinedPartsData);
-            }
-
-            return listPartClassDetailData;
+            _Logger.GenericLogInformation("GetPartClassDetailGrpc starting");
+            return await _EMACSAccessService.GetAllPartClassDetail(context.CancellationToken);
+        }
+        public override async Task<ListPartClassDetailGrpc> GetPartClassDetailGrpcByClasses(PartClassDetailByClassesGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetPartClassDetailGrpcByClasses starting");
+            return await _EMACSAccessService.GetPartClassDetailByClasses(request.Class1, request.Class2 ,context.CancellationToken);
         }
         #endregion
 
         #region PartGroups
-        public override async Task<ListPartGroups> GetPartGroupsData(PartGroupsGrpcRequest request, ServerCallContext context)
+        public override async Task<ListPartGroupsGrpc> GetPartGroupsGrpc(PartGroupsGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("GetPartGroupsData starting");
-            ListPartGroups listPartGroupsData = new();
-            Result<List<PartGroupsDto>> results = await _EMACSAccessService.GetAllPartGroups(context.CancellationToken);
-            foreach (PartGroupsDto result in results.Value)
-            {
-                PartGroups combinedPartsData = result.MapToPartGroupsData();
-                listPartGroupsData.PartGroups.Add(combinedPartsData);
-            }
-
-            return listPartGroupsData;
+            _Logger.GenericLogInformation("GetPartGroupsGrpc starting");
+            return await _EMACSAccessService.GetAllPartGroups(context.CancellationToken);
+        }
+        public override async Task<ListPartGroupsGrpc> GetPartGroupsGrpcByPartGroup(PartGroupsByPartGroupGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetPartGroupsGrpcByPartGroup starting");
+            return await _EMACSAccessService.GetPartGroupsByPartGroup(request.PartGroup, context.CancellationToken);
         }
         #endregion
 
         #region PartGroupsConst
-        public override async Task<ListPartGroupsConst> GetPartGroupsConstData(PartGroupsConstGrpcRequest request, ServerCallContext context)
+        public override async Task<ListPartGroupsConstGrpc> GetPartGroupsConstGrpc(PartGroupsConstGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("GetPartGroupsConstData starting");
-            ListPartGroupsConst listPartGroupsConstData = new();
-            Result<List<PartGroupsConstDto>> results = await _EMACSAccessService.GetAllPartGroupsConst(context.CancellationToken);
-            foreach (PartGroupsConstDto result in results.Value)
-            {
-                PartGroupsConst combinedPartsData = result.MapToPartGroupsConstData();
-                listPartGroupsConstData.PartGroupsConst.Add(combinedPartsData);
-            }
-
-            return listPartGroupsConstData;
+            _Logger.GenericLogInformation("GetPartGroupsConstGrpc starting");
+            return await _EMACSAccessService.GetAllPartGroupsConst(context.CancellationToken);
+        }
+        public override async Task<ListPartGroupsConstGrpc> GetPartGroupsConstGrpcByGroup3(PartGroupsConstByGroup3GrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetPartGroupsConstGrpc starting");
+            return await _EMACSAccessService.GetAllPartGroupsConstByGroup3(request.Group3,context.CancellationToken);
         }
         #endregion
 
         #region CustomerData
-        public override async Task<ListCustomerData> GetCustomerData(GetCustomerDataGrpcRequest request, ServerCallContext context)
+        public override async Task<ListCustomerDataGrpc> GetCustomerDataGrpc(GetCustomerDataGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("GetCustomerData starting");
-            ListCustomerData listCustomerDataData = new();
-            Result<List<CustomerDataDto>> results = await _EMACSAccessService.GetAllCustomerData(context.CancellationToken);
-            foreach (CustomerDataDto result in results.Value)
-            {
-                CustomerData combinedPartsData = result.MapToCustomerData();
-                listCustomerDataData.CustomerData.Add(combinedPartsData);
-            }
-
-            return listCustomerDataData;
+            _Logger.GenericLogInformation("GetCustomerDataGrpc starting");
+            return await _EMACSAccessService.GetAllCustomerData(context.CancellationToken);
         }
         #endregion
 
         #region ColourCode
-        public override async Task<ListColourCode> GetColourCodeData(GetColourCodeGrpcRequest request, ServerCallContext context)
+        public override async Task<ListColourCodeGrpc> GetColourCodeGrpc(GetColourCodeGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetColourCode starting");
-            ListColourCode listColourCodeData = new();
-            Result<List<ColourCodeDto>> results = await _EMACSAccessService.GetAllColourCode(context.CancellationToken);
-            foreach (ColourCodeDto result in results.Value)
-            {
-                ColourCode combinedPartsData = result.MapToColourCode();
-                listColourCodeData.ColourCode.Add(combinedPartsData);
-            }
-
-            return listColourCodeData;
+            return await _EMACSAccessService.GetAllColourCode(context.CancellationToken);
+        }
+        public override async Task<ListColourCodeGrpc> GetColourCodeGrpcByColorCode(GetColourCodeByColorCodeGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetColourCodeGrpcByColorCode starting");
+            return await _EMACSAccessService.GetColourCodeByColorCode(request.ColorCode ,context.CancellationToken);
         }
         #endregion
 
         #region MaterialGroups
-        public override async Task<ListMaterialGroups> GetMaterialGroupsData(GetMaterialGroupsGrpcRequest request, ServerCallContext context)
+        public override async Task<ListMaterialGroupsGrpc> GetMaterialGroupsGrpc(GetMaterialGroupsGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetMaterialGroups starting");
-            ListMaterialGroups listMaterialGroupsData = new();
-            Result<List<MaterialGroupsDto>> results = await _EMACSAccessService.GetAllMaterialGroups(context.CancellationToken);
-            foreach (MaterialGroupsDto result in results.Value)
-            {
-                MaterialGroups combinedPartsData = result.MapToMaterialGroups();
-                listMaterialGroupsData.MaterialGroups.Add(combinedPartsData);
-            }
-
-            return listMaterialGroupsData;
+            return await _EMACSAccessService.GetAllMaterialGroups(context.CancellationToken);
+        }
+        public override async Task<ListMaterialGroupsGrpc> GetMaterialGroupsGrpcByMaterialGroupId(GetMaterialGroupsByMaterialGroupIdGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetMaterialGroupsGrpcByMaterialGroupId starting");
+            return await _EMACSAccessService.GetMaterialGroupsByMaterialGroupId(request.MaterialGroup, context.CancellationToken);
         }
         #endregion
 
         #region MaterialTypes
-        public override async Task<ListMaterialTypes> GetMaterialTypesData(GetMaterialTypesGrpcRequest request, ServerCallContext context)
+        public override async Task<ListMaterialTypesGrpc> GetMaterialTypesGrpc(GetMaterialTypesGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetMaterialTypes starting");
-            ListMaterialTypes listMaterialTypesData = new();
-            Result<List<MaterialTypesDto>> results = await _EMACSAccessService.GetAllMaterialTypes(context.CancellationToken);
-            foreach (MaterialTypesDto result in results.Value)
-            {
-                MaterialTypes combinedPartsData = result.MapToMaterialTypes();
-                listMaterialTypesData.MaterialType.Add(combinedPartsData);
-            }
-
-            return listMaterialTypesData;
+            return await _EMACSAccessService.GetAllMaterialTypes(context.CancellationToken);
+        }
+        public override async Task<ListMaterialTypesGrpc> GetMaterialTypesGrpcByMaterials(GetMaterialTypesByMaterialsGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetMaterialTypesGrpcByMaterials starting");
+            return await _EMACSAccessService.GetMaterialTypesByMaterials(request.MaterialGroup, request.MaterialType,context.CancellationToken);
         }
         #endregion
 
         #region NPACustomer
-        public override async Task<ListNPACustomer> GetNPACustomerData(GetNPACustomerGrpcRequest request, ServerCallContext context)
+        public override async Task<ListNPACustomerGrpc> GetNPACustomerGrpc(GetNPACustomerGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetNPACustomer starting");
-            ListNPACustomer listNPACustomerData = new();
-            Result<List<NPACustomerDto>> results = await _EMACSAccessService.GetAllNPACustomer(context.CancellationToken);
-            foreach (NPACustomerDto result in results.Value)
-            {
-                NPACustomer combinedPartsData = result.MapToNPACustomer();
-                listNPACustomerData.NPACustomer.Add(combinedPartsData);
-            }
-
-            return listNPACustomerData;
+            return await _EMACSAccessService.GetAllNPACustomer(context.CancellationToken);
         }
         #endregion
 
         #region NPASupplier
-        public override async Task<ListNPASupplier> GetNPASupplierData(GetNPASupplierGrpcRequest request, ServerCallContext context)
+        public override async Task<ListNPASupplierGrpc> GetNPASupplierGrpc(GetNPASupplierGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetNPASupplier starting");
-            ListNPASupplier listNPASupplierData = new();
-            Result<List<NPASupplierDto>> results = await _EMACSAccessService.GetAllNPASupplier(context.CancellationToken);
-            foreach (NPASupplierDto result in results.Value)
-            {
-                NPASupplier combinedPartsData = result.MapToNPASupplier();
-                listNPASupplierData.NPASupplier.Add(combinedPartsData);
-            }
-
-            return listNPASupplierData;
+            return await _EMACSAccessService.GetAllNPASupplier(context.CancellationToken);
         }
         #endregion
 
         #region Suppliers
-        public override async Task<ListSuppliers> GetSuppliersData(GetSuppliersGrpcRequest request, ServerCallContext context)
+        public override async Task<ListSuppliersGrpc> GetSuppliersGrpc(GetSuppliersGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetSuppliers starting");
-            ListSuppliers listSuppliersData = new();
-            Result<List<SuppliersDto>> results = await _EMACSAccessService.GetAllSuppliers(context.CancellationToken);
-            foreach (SuppliersDto result in results.Value)
-            {
-                Suppliers combinedPartsData = result.MapToSuppliers();
-                listSuppliersData.Suppliers.Add(combinedPartsData);
-            }
+            return await _EMACSAccessService.GetAllSuppliers(context.CancellationToken);
+        }
+        #endregion
 
-            return listSuppliersData;
+        #region EmacsRFIView
+        public override async Task<ListEmacsRFIViewGrpc> GetEmacsRFIViewGrpc(GetEmacsRFIViewGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetEmacsRFIView starting");
+            return await _EMACSAccessService.GetAllEmacsRFIView(context.CancellationToken);
+        }
+        #endregion
+
+        #region PARTMS
+        public override async Task<ListPARTMSGrpc> GetPARTMSGrpc(GetPARTMSGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetPARTMSGrpcData starting");
+
+            return await _EMACSAccessService.GetAllPARTMSGrpc(context.CancellationToken);
+        }
+
+        public override async Task<ListPARTMSGrpc> GetPARTMSGrpcByClass(GetPARTMSGrpcByClassGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetPARTMSGrpcByClass starting");
+            
+            return await _EMACSAccessService.GetPARTMSGrpcByClass(request.Class1, request.Class2, context.CancellationToken);
+        }
+        public override async Task<ListPARTMSGrpc> GetPARTMSGrpcByColorCode(GetPARTMSGrpcByColorCodeGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetPARTMSGrpcByColorCode starting");
+            
+            return await _EMACSAccessService.GetPARTMSGrpcByColorCode(request.ColorCode, context.CancellationToken);
+        }
+        public override async Task<ListPARTMSGrpc> GetPARTMSGrpcByMaterial(GetPARTMSGrpcByMaterialGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetPARTMSGrpcByMaterial starting");
+            
+            return await _EMACSAccessService.GetPARTMSGrpcByMaterial(request.MaterialGroup, request.MaterialType, context.CancellationToken);
+        }
+        public override async Task<ListPARTMSGrpc> GetPARTMSGrpcByMaterialGroup(GetPARTMSGrpcByMaterialGroupGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetPARTMSGrpcByMaterialGroup starting");
+
+            return await _EMACSAccessService.GetPARTMSGrpcByMaterialGroup(request.MaterialGroup, context.CancellationToken);
+        }
+        public override async Task<ListPARTMSGrpc> GetPARTMSGrpcByPartGroup(GetPARTMSGrpcByPartGroupGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetPARTMSGrpcByPartGroup starting");
+
+            return await _EMACSAccessService.GetPARTMSGrpcByPartGroup(request.PartGroup, context.CancellationToken);
+        }
+        public override async Task<ListPARTMSGrpc> GetPARTMSGrpcByCategoryCode(GetPARTMSGrpcByCategoryCodeGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetPARTMSGrpcByCatogoryCode starting");
+
+            return await _EMACSAccessService.GetPARTMSGrpcByCategoryCode(request.CatogoryCode, context.CancellationToken);
+        }
+        public override async Task<ListPARTMSGrpc> GetPARTMSGrpcByPartGroupsConstCode(GetPARTMSGrpcByPartGroupsConstCodeGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetPARTMSGrpcByPartGroupsConstCode starting");
+
+            return await _EMACSAccessService.GetPARTMSGrpcByPartGroupsConstCode(request.PartGroupsConstCode, context.CancellationToken);
         }
         #endregion
     }

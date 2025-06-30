@@ -1,6 +1,6 @@
 ﻿namespace Master.CQRS.Query.Project
 {
-    public class GetAllPlatformHierarchiesQuery : IQuery<List<PlatformHierarchyDto>>
+    public class GetAllPlatformHierarchiesQuery : IQuery<List<PlatformGrpc>>
     {
         public int? Position
         { get; set; }

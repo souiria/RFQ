@@ -1,316 +1,281 @@
-﻿using Master.Data.Model;
-
-namespace Master.Services
+﻿namespace Master.Services
 {
     public static class SampleMasterDataService
     {
 
         #region Currency
-        public static IEnumerable<CurrencyDto> PopulateCurrencyData()
+        public static ListCurrencyGrpc PopulateCurrencyGrpc()
         {
-            List<CurrencyDto> currencyList = new List<CurrencyDto>();
+            ListCurrencyGrpc listCurrencyGrpc = new ListCurrencyGrpc();
             for (int i = 0; i < 5; i++)
             {
-                CurrencyDto currencyDto = new CurrencyDto();
-                currencyDto.CurrencyName = $"TestName{i}";
-                currencyDto.CurrencyCode = $"TestCode{i}";
-                currencyDto.Id = Guid.NewGuid();
-                currencyDto.IsActive = true;
-                currencyDto.EuroRate = $"TestEuroRate{i}";
-                currencyList.Add(currencyDto);
+                CurrencyGrpc CurrencyGrpc = new CurrencyGrpc();
+                CurrencyGrpc.CurrencyName = $"TestName{i}";
+                CurrencyGrpc.CurrencyCode = $"TestCode{i}";
+                CurrencyGrpc.Id = Guid.NewGuid().ToString();
+                CurrencyGrpc.IsActive = true;
+                CurrencyGrpc.EuroRate = $"TestEuroRate{i}";
+                listCurrencyGrpc.CurrencyGrpc.Add(CurrencyGrpc);
             }
 
-            CurrencyDto fixedCurrencyDto = new CurrencyDto();
-            fixedCurrencyDto.CurrencyName = $"TestName";
-            fixedCurrencyDto.CurrencyCode = $"TestCode";
-            fixedCurrencyDto.Id = Guid.Parse("ec44e5cd-5832-48dd-b5a3-440b5cb49450");
-            fixedCurrencyDto.IsActive = true;
-            fixedCurrencyDto.EuroRate = $"TestEuroRate";
-            currencyList.Add(fixedCurrencyDto);
-            return currencyList;
+            CurrencyGrpc fixedCurrencyGrpc = new CurrencyGrpc();
+            fixedCurrencyGrpc.CurrencyName = $"TestName";
+            fixedCurrencyGrpc.CurrencyCode = $"TestCode";
+            fixedCurrencyGrpc.Id = "ec44e5cd-5832-48dd-b5a3-440b5cb49450";
+            fixedCurrencyGrpc.IsActive = true;
+            fixedCurrencyGrpc.EuroRate = $"TestEuroRate";
+            listCurrencyGrpc.CurrencyGrpc.Add(fixedCurrencyGrpc);
+            return listCurrencyGrpc;
         }
         #endregion
+
         #region Customer
-        public static IEnumerable<CustomerBusinessHierarchyDto> PopulateCustomerData()
+        public static ListCustomerGrpc PopulateCustomerGrpc()
         {
-            List<CustomerBusinessHierarchyDto> currencyList = new List<CustomerBusinessHierarchyDto>();
+            ListCustomerGrpc currencyList = new ListCustomerGrpc();
             for (int i = 0; i < 5; i++)
             {
-                CustomerBusinessHierarchyDto currency = new CustomerBusinessHierarchyDto();
-                currency.Id = Guid.NewGuid();
+                CustomerGrpc currency = new CustomerGrpc();
+                currency.Id = Guid.NewGuid().ToString();
                 currency.CustomerBusinessGroupCode = $"TestGroupCode{i}";
                 currency.CustomerBusinessGroupName = $"TestGroupName{i}";
                 currency.SEWSEBusinessTeam = $"TestSEWSETeam{i}";
                 currency.IsActive = true;
-                currencyList.Add(currency);
+                currencyList.CustomerGrpc.Add(currency);
             }
 
-            CustomerBusinessHierarchyDto fixedCustomerDto = new CustomerBusinessHierarchyDto();
-            fixedCustomerDto.Id = Guid.Parse("46711693-0ea4-4f9a-86c1-4973308bf795");
+            CustomerGrpc fixedCustomerDto = new CustomerGrpc();
+            fixedCustomerDto.Id = "46711693-0ea4-4f9a-86c1-4973308bf795";
             fixedCustomerDto.CustomerBusinessGroupCode = "TestGroupCode";
             fixedCustomerDto.CustomerBusinessGroupName = "TestGroupName";
             fixedCustomerDto.SEWSEBusinessTeam = "TestSEWSETeam";
             fixedCustomerDto.IsActive = true;
-            currencyList.Add(fixedCustomerDto);
+            currencyList.CustomerGrpc.Add(fixedCustomerDto);
             return currencyList;
         }
 
-        public static IEnumerable<CustomerHierarchyDto> PopulateCustomerLocationsData()
+        public static ListCustomerLocationGrpc PopulateCustomerLocationsData()
         {
-            List<CustomerHierarchyDto> locationList = new List<CustomerHierarchyDto>();
+            ListCustomerLocationGrpc locationList = new ListCustomerLocationGrpc();
             for (int i = 0; i < 5; i++)
             {
-                CustomerHierarchyDto customerLocation = new CustomerHierarchyDto();
-                customerLocation.Id = Guid.NewGuid();
+                CustomerLocationGrpc customerLocation = new CustomerLocationGrpc();
+                customerLocation.Id = Guid.NewGuid().ToString();
                 customerLocation.CustomerCode = $"TestCustomerCode{i}";
                 customerLocation.CustomerName = $"TestCustomerName{i}";
-                customerLocation.StreetNumber = $"TestStreetNumber{i}";
-                customerLocation.StreetName = $"TestStreetName{i}";
-                customerLocation.City = $"TestCity{i}";
-                customerLocation.Region = $"TestRegion{i}";
-                customerLocation.ZipCode = $"TestZipCode{i}";
-                customerLocation.Country = $"TestCountry{i}";
-                customerLocation.CustomerBusinessType = $"TestCustomerBusinessType{i}";
-                customerLocation.IndexedMaterial = $"TestIndexedMaterial{i}";
-                customerLocation.CustomerBusinessHierarchyGuid = Guid.NewGuid();
-                customerLocation.CustomerBusinessQualityManagerName = $"TestCustomerBusinessQualityManagerName{i}";
-                customerLocation.CustomerCountryGuid = Guid.NewGuid();
-                customerLocation.IndexedMaterial = $"TestIndexedMaterial{i}";
+                customerLocation.CustomerBusinessHierarchyGuid = Guid.NewGuid().ToString();
                 customerLocation.IsActive = true;
-                locationList.Add(customerLocation);
+                locationList.CustomerLocationGrpc.Add(customerLocation);
             }
 
-            CustomerHierarchyDto fixedCustomerLocationDto = new CustomerHierarchyDto();
-            fixedCustomerLocationDto.Id = Guid.Parse("3759c3b6-aceb-475e-9ba3-74f13e441e2d");
-            fixedCustomerLocationDto.CustomerCode = "TestCustomerCode";
-            fixedCustomerLocationDto.CustomerName = "TestCustomerName";
-            fixedCustomerLocationDto.StreetNumber = "TestStreetNumber";
-            fixedCustomerLocationDto.StreetName = "TestStreetName";
-            fixedCustomerLocationDto.City = "TestCit";
-            fixedCustomerLocationDto.Region = "TestRegion";
-            fixedCustomerLocationDto.ZipCode = "TestZipCode";
-            fixedCustomerLocationDto.Country = "TestCountry";
-            fixedCustomerLocationDto.CustomerBusinessType = "TestCustomerBusinessType";
-            fixedCustomerLocationDto.IndexedMaterial = "TestIndexedMaterial";
-            fixedCustomerLocationDto.CustomerBusinessHierarchyGuid = Guid.Parse("04707931-2cff-4b2c-8fbd-bef614c6a99a");
-            fixedCustomerLocationDto.CustomerBusinessQualityManagerName = "TestCustomerBusinessQualityManagerName";
-            fixedCustomerLocationDto.CustomerCountryGuid = Guid.NewGuid();
-            fixedCustomerLocationDto.IndexedMaterial = "TestIndexedMaterial";
-            fixedCustomerLocationDto.IsActive = true;
-            locationList.Add(fixedCustomerLocationDto);
+            CustomerLocationGrpc fixedCustomerLocationGrpc = new CustomerLocationGrpc();
+            fixedCustomerLocationGrpc.Id = "3759c3b6-aceb-475e-9ba3-74f13e441e2d";
+            fixedCustomerLocationGrpc.CustomerCode = "TestCustomerCode";
+            fixedCustomerLocationGrpc.CustomerName = "TestCustomerName";
+            fixedCustomerLocationGrpc.CustomerBusinessHierarchyGuid = "04707931-2cff-4b2c-8fbd-bef614c6a99a";
+            fixedCustomerLocationGrpc.IsActive = true;
+            locationList.CustomerLocationGrpc.Add(fixedCustomerLocationGrpc);
             return locationList;
         }
 
-        public static IEnumerable<CustomerSalesEntityDto> PopulateCustomerSalesEntityData()
+        public static ListCustomerSalesEntityGrpc PopulateCustomerSalesEntityGrpc()
         {
-            List<CustomerSalesEntityDto> customerSalesEntityList = new List<CustomerSalesEntityDto>();
+            ListCustomerSalesEntityGrpc customerSalesEntityList = new ListCustomerSalesEntityGrpc();
             for (int i = 0; i < 5; i++)
             {
-                CustomerSalesEntityDto customerSalesEntity = new CustomerSalesEntityDto();
-                customerSalesEntity.Id = Guid.NewGuid();
+                CustomerSalesEntityGrpc customerSalesEntity = new CustomerSalesEntityGrpc();
+                customerSalesEntity.Id = Guid.NewGuid().ToString();
                 customerSalesEntity.CustomerSalesEntityCode = $"TestCustomerSalesEntityCode{i}";
                 customerSalesEntity.CustomerSalesEntityName = $"TestCustomerSalesEntityName{i}";
                 customerSalesEntity.FinanceCode = $"TestFinanceCode{i}";
-                customerSalesEntity.StreetNumber = $"TestStreetNumber{i}";
-                customerSalesEntity.StreetName = $"TestStreetName{i}";
-                customerSalesEntity.City = $"TestCity{i}";
-                customerSalesEntity.Region = $"TestRegion{i}";
-                customerSalesEntity.ZipCode = $"TestZipCode{i}";
-                customerSalesEntity.Country = $"TestCountry{i}";
-                customerSalesEntity.CustomerHierarchyGuid = Guid.NewGuid();
-                customerSalesEntity.CustomerSalesCountryGuid = Guid.NewGuid();
+                customerSalesEntity.CustomerHierarchyGuid = Guid.NewGuid().ToString();
                 customerSalesEntity.IsActive = true;
-                customerSalesEntityList.Add(customerSalesEntity);
+                customerSalesEntityList.CustomerSalesEntityGrpc.Add(customerSalesEntity);
             }
 
-            CustomerSalesEntityDto fixedCustomerSalesEntityDto = new CustomerSalesEntityDto();
-            fixedCustomerSalesEntityDto.Id = Guid.Parse("84e51c97-4da5-460e-b918-3d70edd87d88");
-            fixedCustomerSalesEntityDto.CustomerSalesEntityCode = "TestfixedCustomerSalesEntityCode";
-            fixedCustomerSalesEntityDto.CustomerSalesEntityName = "TestfixedCustomerSalesEntityName";
-            fixedCustomerSalesEntityDto.FinanceCode = "TestFinanceCode";
-            fixedCustomerSalesEntityDto.StreetNumber = "TestStreetNumber";
-            fixedCustomerSalesEntityDto.StreetName = "TestStreetName";
-            fixedCustomerSalesEntityDto.City = "TestCity";
-            fixedCustomerSalesEntityDto.Region = "TestRegion";
-            fixedCustomerSalesEntityDto.ZipCode = "TestZipCode";
-            fixedCustomerSalesEntityDto.Country = "TestCountry";
-            fixedCustomerSalesEntityDto.CustomerHierarchyGuid = Guid.Parse("3759c3b6-aceb-475e-9ba3-74f13e441e2d");
-            fixedCustomerSalesEntityDto.CustomerSalesCountryGuid = Guid.NewGuid();
-            fixedCustomerSalesEntityDto.IsActive = true;
-            customerSalesEntityList.Add(fixedCustomerSalesEntityDto);
+            CustomerSalesEntityGrpc fixedCustomerSalesEntityGrpc = new CustomerSalesEntityGrpc();
+            fixedCustomerSalesEntityGrpc.Id = "84e51c97-4da5-460e-b918-3d70edd87d88";
+            fixedCustomerSalesEntityGrpc.CustomerSalesEntityCode = "TestfixedCustomerSalesEntityCode";
+            fixedCustomerSalesEntityGrpc.CustomerSalesEntityName = "TestfixedCustomerSalesEntityName";
+            fixedCustomerSalesEntityGrpc.FinanceCode = "TestFinanceCode";
+            fixedCustomerSalesEntityGrpc.CustomerHierarchyGuid = "3759c3b6-aceb-475e-9ba3-74f13e441e2d";
+            fixedCustomerSalesEntityGrpc.IsActive = true;
+            customerSalesEntityList.CustomerSalesEntityGrpc.Add(fixedCustomerSalesEntityGrpc);
             return customerSalesEntityList;
         }
 
-        public static IEnumerable<CustomerProjectAssociationDto> PopulateCustomerProjectAssociationData()
+        public static ListCustomerProjectAssociationGrpc PopulateCustomerProjectAssociationGrpc()
         {
-            List<CustomerProjectAssociationDto> customerProjectAssociationList = new List<CustomerProjectAssociationDto>();
+            ListCustomerProjectAssociationGrpc customerProjectAssociationList = new ListCustomerProjectAssociationGrpc();
             for (int i = 0; i < 5; i++)
             {
-                CustomerProjectAssociationDto customerProjectAssociation = new CustomerProjectAssociationDto();
-                customerProjectAssociation.Id = Guid.NewGuid();
-                customerProjectAssociation.ProjectGuid = Guid.NewGuid();
-                customerProjectAssociation.CustomerLocationGuid = Guid.NewGuid();
+                CustomerProjectAssociationGrpc customerProjectAssociation = new CustomerProjectAssociationGrpc();
+                customerProjectAssociation.Id = Guid.NewGuid().ToString();
+                customerProjectAssociation.ProjectGuid = Guid.NewGuid().ToString();
+                customerProjectAssociation.CustomerLocationGuid = Guid.NewGuid().ToString();
                 customerProjectAssociation.IsActive = true;
-                customerProjectAssociationList.Add(customerProjectAssociation);
+                customerProjectAssociationList.CustomerProjectAssociationGrpc.Add(customerProjectAssociation);
             }
 
-            CustomerProjectAssociationDto fixedCustomerProjectAssociationDto = new CustomerProjectAssociationDto();
-            fixedCustomerProjectAssociationDto.Id = Guid.Parse("fd994af4-57a3-4d95-b75d-b8d502e6a023");
-            fixedCustomerProjectAssociationDto.ProjectGuid = Guid.NewGuid();
-            fixedCustomerProjectAssociationDto.CustomerLocationGuid = Guid.Parse("3759c3b6-aceb-475e-9ba3-74f13e441e2d");
-            fixedCustomerProjectAssociationDto.IsActive = true;
-            customerProjectAssociationList.Add(fixedCustomerProjectAssociationDto);
+            CustomerProjectAssociationGrpc fixedCustomerProjectAssociationGrpc = new CustomerProjectAssociationGrpc();
+            fixedCustomerProjectAssociationGrpc.Id = "fd994af4-57a3-4d95-b75d-b8d502e6a023";
+            fixedCustomerProjectAssociationGrpc.ProjectGuid = Guid.NewGuid().ToString();
+            fixedCustomerProjectAssociationGrpc.CustomerLocationGuid = "3759c3b6-aceb-475e-9ba3-74f13e441e2d";
+            fixedCustomerProjectAssociationGrpc.IsActive = true;
+            customerProjectAssociationList.CustomerProjectAssociationGrpc.Add(fixedCustomerProjectAssociationGrpc);
             return customerProjectAssociationList;
         }
 
-        public static IEnumerable<CustomerBusinessUserAssociationDto> PopulateCustomerBusinessUserAssociationData()
+        public static ListCustomerBusinessUserAssociationGrpc PopulateCustomerBusinessUserAssociationGrpc()
         {
-            List<CustomerBusinessUserAssociationDto> customerBusinessUserAssociationList = new List<CustomerBusinessUserAssociationDto>();
+            ListCustomerBusinessUserAssociationGrpc customerBusinessUserAssociationList = new ListCustomerBusinessUserAssociationGrpc();
             for (int i = 0; i < 5; i++)
             {
-                CustomerBusinessUserAssociationDto customerBusinessUserAssociation = new CustomerBusinessUserAssociationDto();
-                customerBusinessUserAssociation.Id = Guid.NewGuid();
-                customerBusinessUserAssociation.UserGuid = Guid.NewGuid();
+                CustomerBusinessUserAssociationGrpc customerBusinessUserAssociation = new CustomerBusinessUserAssociationGrpc();
+                customerBusinessUserAssociation.Id = Guid.NewGuid().ToString();
+                customerBusinessUserAssociation.UserGuid = Guid.NewGuid().ToString();
                 customerBusinessUserAssociation.CustomerBusinessHierarchyList = $"TestCustomerBusinessHierarchyList{i}";
                 customerBusinessUserAssociation.IsActive = true;
-                customerBusinessUserAssociationList.Add(customerBusinessUserAssociation);
+                customerBusinessUserAssociationList.CustomerBusinessUserAssociationGrpc.Add(customerBusinessUserAssociation);
             }
 
-            CustomerBusinessUserAssociationDto fixedCustomerBusinessUserAssociationDto = new CustomerBusinessUserAssociationDto();
-            fixedCustomerBusinessUserAssociationDto.Id = Guid.Parse("fb54307a-2d16-4ebc-9f70-ed55a5b6e326");
-            fixedCustomerBusinessUserAssociationDto.UserGuid = Guid.Parse("83853662-6d20-41b0-b6ac-fd3271406b6b");
-            fixedCustomerBusinessUserAssociationDto.CustomerBusinessHierarchyList = "[{\"CustomerBusinessHierarchyGuid\":\"04707931-2cff-4b2c-8fbd-bef614c6a99a\",\"IsActive\":true}]";
-            fixedCustomerBusinessUserAssociationDto.IsActive = true;
-            customerBusinessUserAssociationList.Add(fixedCustomerBusinessUserAssociationDto);
+            CustomerBusinessUserAssociationGrpc fixedCustomerBusinessUserAssociationGrpc = new CustomerBusinessUserAssociationGrpc();
+            fixedCustomerBusinessUserAssociationGrpc.Id = "fb54307a-2d16-4ebc-9f70-ed55a5b6e326";
+            fixedCustomerBusinessUserAssociationGrpc.UserGuid = "83853662-6d20-41b0-b6ac-fd3271406b6b";
+            fixedCustomerBusinessUserAssociationGrpc.CustomerBusinessHierarchyList = "[{\"CustomerBusinessHierarchyGuid\":\"04707931-2cff-4b2c-8fbd-bef614c6a99a\",\"IsActive\":true}]";
+            fixedCustomerBusinessUserAssociationGrpc.IsActive = true;
+            customerBusinessUserAssociationList.CustomerBusinessUserAssociationGrpc.Add(fixedCustomerBusinessUserAssociationGrpc);
             return customerBusinessUserAssociationList;
         }
 
         #endregion
+
         #region Project
 
-        public static IEnumerable<PlatformHierarchyDto> PopulatePlatformData()
+        public static ListPlatformGrpc PopulatePlatformGrpc()
         {
-            List<PlatformHierarchyDto> platformList = new List<PlatformHierarchyDto>();
+            ListPlatformGrpc platformList = new ListPlatformGrpc();
             for (int i = 0; i < 5; i++)
             {
-                PlatformHierarchyDto platform = new PlatformHierarchyDto();
-                platform.Id = Guid.NewGuid();
+                PlatformGrpc platform = new PlatformGrpc();
+                platform.Id = Guid.NewGuid().ToString();
                 platform.PlatformName = $"TestPlatformName{i}";
-                platform.CustomerHierarchyGuid = Guid.NewGuid();
+                platform.CustomerHierarchyGuid = Guid.NewGuid().ToString();
                 platform.PlatformManagerName = $"TestPlatformManagerName{i}";
                 platform.IsActive = true;
-                platformList.Add(platform);
+                platformList.PlatformGrpc.Add(platform);
             }
 
-            PlatformHierarchyDto fixedPlatformDto = new PlatformHierarchyDto();
-            fixedPlatformDto.Id = Guid.Parse("46711693-0ea4-4f9a-86c1-4973308bf795");
+            PlatformGrpc fixedPlatformDto = new PlatformGrpc();
+            fixedPlatformDto.Id = "46711693-0ea4-4f9a-86c1-4973308bf795";
             fixedPlatformDto.PlatformName = "TestPlatformName";
-            fixedPlatformDto.CustomerHierarchyGuid = Guid.NewGuid();
+            fixedPlatformDto.CustomerHierarchyGuid = Guid.NewGuid().ToString();
             fixedPlatformDto.PlatformManagerName = "TestPlatformManagerName";
             fixedPlatformDto.IsActive = true;
-            platformList.Add(fixedPlatformDto);
+            platformList.PlatformGrpc.Add(fixedPlatformDto);
             return platformList;
         }
 
-        public static IEnumerable<ProgramHierarchyDto> PopulateProgramData()
+        public static ListProgramGrpc PopulateProgramGrpc()
         {
-            List<ProgramHierarchyDto> programList = new List<ProgramHierarchyDto>();
+            ListProgramGrpc programList = new ListProgramGrpc();
             for (int i = 0; i < 5; i++)
             {
-                ProgramHierarchyDto program = new ProgramHierarchyDto();
-                program.Id = Guid.NewGuid();
+                ProgramGrpc program = new ProgramGrpc();
+                program.Id = Guid.NewGuid().ToString();
                 program.ProgramName = $"TestProgramName{i}";
-                program.PlatformHierarchyGuid = Guid.NewGuid();
+                program.PlatformHierarchyGuid = Guid.NewGuid().ToString();
                 program.IsActive = true;
-                programList.Add(program);
+                programList.ProgramGrpc.Add(program);
             }
 
-            ProgramHierarchyDto fixedProgramDto = new ProgramHierarchyDto();
-            fixedProgramDto.Id = Guid.Parse("aea9e204-0353-4297-a9ff-bbe75f9b4a93");
+            ProgramGrpc fixedProgramDto = new ProgramGrpc();
+            fixedProgramDto.Id = "aea9e204-0353-4297-a9ff-bbe75f9b4a93";
             fixedProgramDto.ProgramName = "TestProgramName";
-            fixedProgramDto.PlatformHierarchyGuid = Guid.NewGuid();
+            fixedProgramDto.PlatformHierarchyGuid = Guid.NewGuid().ToString();
             fixedProgramDto.IsActive = true;
-            programList.Add(fixedProgramDto);
+            programList.ProgramGrpc.Add(fixedProgramDto);
             return programList;
         }
 
-        public static IEnumerable<ProjectHierarchyDto> PopulateProjectData()
+        public static ListProjectGrpc PopulateProjectGrpc()
         {
-            List<ProjectHierarchyDto> projectList = new List<ProjectHierarchyDto>();
+            ListProjectGrpc projectList = new ListProjectGrpc();
             for (int i = 0; i < 5; i++)
             {
-                ProjectHierarchyDto project = new ProjectHierarchyDto();
-                project.Id = Guid.NewGuid();
+                ProjectGrpc project = new ProjectGrpc();
+                project.Id = Guid.NewGuid().ToString();
                 project.ProjectCode = $"TestProjectCode{i}";
                 project.ProjectName = $"TestProjectName{i}";
                 project.CustomerProjectCode = $"TestCustomerProjectCode{i}";
                 project.ProjectDescription = $"TestProjectDescription{i}";
                 project.ProjectAnnualVolume = i;
-                project.ProgramHierarchyGuid = Guid.NewGuid();
+                project.ProgramHierarchyGuid = Guid.NewGuid().ToString();
                 project.IsActive = true;
-                projectList.Add(project);
+                projectList.ProjectGrpc.Add(project);
             }
 
-            ProjectHierarchyDto fixedProjectDto = new ProjectHierarchyDto();
-            fixedProjectDto.Id = Guid.Parse("461616e5-fd7b-491c-9592-8453182e7e72");
+            ProjectGrpc fixedProjectDto = new ProjectGrpc();
+            fixedProjectDto.Id = "461616e5-fd7b-491c-9592-8453182e7e72";
             fixedProjectDto.ProjectCode = "TestProjectCode";
             fixedProjectDto.ProjectName = "TestProjectName";
             fixedProjectDto.CustomerProjectCode = "TestCustomerProjectCode";
             fixedProjectDto.ProjectDescription = "TestProjectDescription";
             fixedProjectDto.ProjectAnnualVolume = 0;
-            fixedProjectDto.ProgramHierarchyGuid = Guid.NewGuid();
+            fixedProjectDto.ProgramHierarchyGuid = Guid.NewGuid().ToString();
             fixedProjectDto.IsActive = true;
-            projectList.Add(fixedProjectDto);
+            projectList.ProjectGrpc.Add(fixedProjectDto);
             return projectList;
         }
 
-        public static IEnumerable<MilestoneHierarchyDto> PopulateMilestoneData()
+        public static ListMilestoneGrpc PopulateMilestoneGrpc()
         {
-            List<MilestoneHierarchyDto> milestoneList = new List<MilestoneHierarchyDto>();
+            ListMilestoneGrpc milestoneList = new ListMilestoneGrpc();
             for (int i = 0; i < 5; i++)
             {
-                MilestoneHierarchyDto project = new MilestoneHierarchyDto();
-                project.Id = Guid.NewGuid();
-                project.EventStartDate = DateTime.Now;
-                project.EventEndDate = DateTime.Now;
-                project.ProjectHierarchyGuid = Guid.NewGuid();
+                MilestoneGrpc project = new MilestoneGrpc();
+                project.Id = Guid.NewGuid().ToString();
+                project.EventStartDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                project.EventEndDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                project.ProjectHierarchyGuid = Guid.NewGuid().ToString();
                 project.IsActive = true;
-                milestoneList.Add(project);
+                milestoneList.MilestoneGrpc.Add(project);
             }
 
-            MilestoneHierarchyDto fixedProjectDto = new MilestoneHierarchyDto();
-            fixedProjectDto.Id = Guid.Parse("50365c14-734c-406a-b18e-9a3eff9e2d17");
+            MilestoneGrpc fixedProjectDto = new MilestoneGrpc();
+            fixedProjectDto.Id = "50365c14-734c-406a-b18e-9a3eff9e2d17";
             fixedProjectDto.MilestoneEventName = "TestMilestoneEventName";
-            fixedProjectDto.EventStartDate = DateTime.Now;
-            fixedProjectDto.EventEndDate = DateTime.Now;
-            fixedProjectDto.ProjectHierarchyGuid = Guid.NewGuid();
+            fixedProjectDto.EventStartDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+            fixedProjectDto.EventEndDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+            fixedProjectDto.ProjectHierarchyGuid = Guid.NewGuid().ToString();
             fixedProjectDto.IsActive = true;
-            milestoneList.Add(fixedProjectDto);
+            milestoneList.MilestoneGrpc.Add(fixedProjectDto);
             return milestoneList;
         }
         #endregion
+
         #region Vehicle
-        public static IEnumerable<VehicleDto> PopulateVehicleData()
+        public static ListVehicleGrpc PopulateVehicleGrpc()
         {
-            List<VehicleDto> platformList = new List<VehicleDto>();
+            ListVehicleGrpc platformList = new ListVehicleGrpc();
             for (int i = 0; i < 5; i++)
             {
-                VehicleDto platform = new VehicleDto();
-                platform.Id = Guid.NewGuid();
+                VehicleGrpc platform = new VehicleGrpc();
+                platform.Id = Guid.NewGuid().ToString();
                 platform.VehicleName = $"TestVehicleName{i}";
                 platform.ProjectReference = $"TestProjectReference{i}";
                 platform.VehicleDisplay = $"TestVehicleDisplay{i}";
                 platform.IsActive = true;
-                platformList.Add(platform);
+                platformList.VehicleGrpc.Add(platform);
             }
 
-            VehicleDto fixedPlatformDto = new VehicleDto();
-            fixedPlatformDto.Id = Guid.Parse("766612a1-5c65-4d17-950d-2841e1888f0b");
+            VehicleGrpc fixedPlatformDto = new VehicleGrpc();
+            fixedPlatformDto.Id = "766612a1-5c65-4d17-950d-2841e1888f0b";
             fixedPlatformDto.VehicleName = "TestVehicleName";
             fixedPlatformDto.ProjectReference = "TestProjectReference";
             fixedPlatformDto.VehicleDisplay = "TestVehicleDisplay";
             fixedPlatformDto.IsActive = true;
-            platformList.Add(fixedPlatformDto);
+            platformList.VehicleGrpc.Add(fixedPlatformDto);
             return platformList;
         }
         #endregion

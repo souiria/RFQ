@@ -1,6 +1,6 @@
 namespace Master.CQRS.Query.Project
 {
-    public class GetAllProjectHierarchiesQuery : IQuery<List<ProjectHierarchyDto>>
+    public class GetAllProjectHierarchiesQuery : IQuery<List<ProjectGrpc>>
     {
         public int? Position
         { get; set; }

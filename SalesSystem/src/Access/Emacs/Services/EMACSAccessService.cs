@@ -1,6 +1,4 @@
-﻿using Emacs.Data.Model;
-
-namespace Emacs.Services
+﻿namespace Emacs.Services
 {
     public class EMACSAccessService : IEMACSAccessService
     {
@@ -8,73 +6,93 @@ namespace Emacs.Services
 
         #region CombinedParts
 
-        List<CombinedPartsDto> _CombinedParts;
+        ListCombinedPartsGrpc _ListCombinedParts;
 
         #endregion
 
         #region PartCategoryDetail
 
-        List<PartCategoryDetailDto> _PartCatogoryDetail;
+        ListPartCategoryDetailGrpc _ListPartCatogoryDetail;
+        ListPartCategoryDetailGrpc _FilteredListPartCatogoryDetail;
 
         #endregion
 
         #region PartClassDetail
 
-        List<PartClassDetailDto> _PartClassDetail;
+        ListPartClassDetailGrpc _ListPartClassDetail;
+        ListPartClassDetailGrpc _FilteredListPartClassDetail;
 
         #endregion
 
         #region PartGroups
 
-        List<PartGroupsDto> _PartGroups;
+        ListPartGroupsGrpc _ListPartGroups;
+        ListPartGroupsGrpc _FilteredListPartGroups;
 
         #endregion
 
         #region PartGroupsConst
 
-        List<PartGroupsConstDto> _PartGroupsConst;
+        ListPartGroupsConstGrpc _ListPartGroupsConst;
+        ListPartGroupsConstGrpc _FilteredListPartGroupsConst;
 
         #endregion
 
         #region CustomerData
 
-        List<CustomerDataDto> _CustomerData;
+        ListCustomerDataGrpc _ListCustomerData;
 
         #endregion
 
         #region ColourCode
 
-        List<ColourCodeDto> _ColourCode;
+        ListColourCodeGrpc _ListColourCode;
+        ListColourCodeGrpc _FilteredListColourCode;
 
         #endregion
 
         #region MaterialGroups
 
-        List<MaterialGroupsDto> _MaterialGroups;
+        ListMaterialGroupsGrpc _ListMaterialGroups;
+        ListMaterialGroupsGrpc _FilteredListMaterialGroups;
 
         #endregion
 
         #region MaterialTypes
 
-        List<MaterialTypesDto> _MaterialTypes;
+        ListMaterialTypesGrpc _ListMaterialTypes;
+        ListMaterialTypesGrpc _FilteredListMaterialTypes;
 
         #endregion
 
         #region NPACustomer
 
-        List<NPACustomerDto> _NPACustomer;
+        ListNPACustomerGrpc _ListNPACustomer;
 
         #endregion
 
         #region NPASupplier
 
-        List<NPASupplierDto> _NPASupplier;
+        ListNPASupplierGrpc _ListNPASupplier;
 
         #endregion
 
         #region Suppliers
 
-        List<SuppliersDto> _Suppliers;
+        ListSuppliersGrpc _ListSuppliers;
+
+        #endregion
+
+        #region EmacsRFIView
+
+        ListEmacsRFIViewGrpc _ListEmacsRFIView;
+
+        #endregion
+
+        #region PARTMS
+
+        ListPARTMSGrpc _ListPARTMS;
+        ListPARTMSGrpc _FilteredListPARTMS;
 
         #endregion
 
@@ -84,85 +102,99 @@ namespace Emacs.Services
 
         #region CombinedParts
 
-        IQueryHandler<GetCombinedPartsQuery, List<CombinedPartsDto>>? _CombinedPartsHandler;
+        IQueryHandler<GetCombinedPartsQuery, List<CombinedPartsGrpc>>? _CombinedPartsHandler;
         bool _CombinedPartsRefreshInProgress;
 
         #endregion
 
         #region PartCatogoryDetail
 
-        IQueryHandler<GetPartCatogoryDetailQuery, List<PartCategoryDetailDto>>? _PartCatogoryDetailHandler;
+        IQueryHandler<GetPartCatogoryDetailQuery, List<PartCategoryDetailGrpc>>? _PartCatogoryDetailHandler;
         bool _PartCatogoryDetailRefreshInProgress;
 
         #endregion
 
         #region PartClassDetail
 
-        IQueryHandler<GetPartClassDetailQuery, List<PartClassDetailDto>>? _PartClassDetailHandler;
+        IQueryHandler<GetPartClassDetailQuery, List<PartClassDetailGrpc>>? _PartClassDetailHandler;
         bool _PartClassDetailRefreshInProgress;
 
         #endregion
 
         #region PartGroups
 
-        IQueryHandler<GetPartGroupsQuery, List<PartGroupsDto>>? _PartGroupsHandler;
+        IQueryHandler<GetPartGroupsQuery, List<PartGroupsGrpc>>? _PartGroupsHandler;
         bool _PartGroupsRefreshInProgress;
 
         #endregion
 
         #region PartGroupsConst
 
-        IQueryHandler<GetPartGroupsConstQuery, List<PartGroupsConstDto>>? _PartGroupsConstHandler;
+        IQueryHandler<GetPartGroupsConstQuery, List<PartGroupsConstGrpc>>? _PartGroupsConstHandler;
         bool _PartGroupsConstRefreshInProgress;
 
         #endregion
 
         #region CustomerData
 
-        IQueryHandler<GetCustomerDataQuery, List<CustomerDataDto>>? _CustomerDataHandler;
+        IQueryHandler<GetCustomerDataGrpcQuery, List<CustomerDataGrpc>>? _CustomerDataHandler;
         bool _CustomerDataRefreshInProgress;
 
         #endregion
 
         #region ColourCode
 
-        IQueryHandler<GetColourCodeQuery, List<ColourCodeDto>>? _ColourCodeHandler;
+        IQueryHandler<GetColourCodeQuery, List<ColourCodeGrpc>>? _ColourCodeHandler;
         bool _ColourCodeRefreshInProgress;
 
         #endregion
 
         #region MaterialGroups
 
-        IQueryHandler<GetMaterialGroupsQuery, List<MaterialGroupsDto>>? _MaterialGroupsHandler;
+        IQueryHandler<GetMaterialGroupsQuery, List<MaterialGroupsGrpc>>? _MaterialGroupsHandler;
         bool _MaterialGroupsRefreshInProgress;
 
         #endregion
 
         #region MaterialTypes
 
-        IQueryHandler<GetMaterialTypesQuery, List<MaterialTypesDto>>? _MaterialTypesHandler;
+        IQueryHandler<GetMaterialTypesQuery, List<MaterialTypesGrpc>>? _MaterialTypesHandler;
         bool _MaterialTypesRefreshInProgress;
 
         #endregion
 
         #region NPACustomer
 
-        IQueryHandler<GetNPACustomerQuery, List<NPACustomerDto>>? _NPACustomerHandler;
+        IQueryHandler<GetNPACustomerQuery, List<NPACustomerGrpc>>? _NPACustomerHandler;
         bool _NPACustomerRefreshInProgress;
 
         #endregion
 
         #region NPASupplier
 
-        IQueryHandler<GetNPASupplierQuery, List<NPASupplierDto>>? _NPASupplierHandler;
+        IQueryHandler<GetNPASupplierQuery, List<NPASupplierGrpc>>? _NPASupplierHandler;
         bool _NPASupplierRefreshInProgress;
 
         #endregion
 
         #region Suppliers
 
-        IQueryHandler<GetSuppliersQuery, List<SuppliersDto>>? _SuppliersHandler;
+        IQueryHandler<GetSuppliersQuery, List<SuppliersGrpc>>? _SuppliersHandler;
         bool _SuppliersRefreshInProgress;
+
+        #endregion
+
+        #region EmacsRFIView
+
+        IQueryHandler<GetEmacsRFIViewQuery, List<EmacsRFIViewGrpc>>? _EmacsRFIViewHandler;
+        bool _EmacsRFIViewRefreshInProgress;
+
+        #endregion
+
+        #region PARTMS
+
+        IQueryHandler<GetPARTMSQuery, List<PARTMSGrpc>>? _PARTMSHandler;
+        bool _PARTMSRefreshInProgress;
 
         #endregion
 
@@ -170,123 +202,151 @@ namespace Emacs.Services
         #endregion
 
         #region Constructor
-        public EMACSAccessService(IServiceProvider serviceProvider)
+        public EMACSAccessService(IServiceProvider serviceProvider, bool testing = false)
         {
             #region CombinedParts
 
-            _CombinedParts = [];
+            _ListCombinedParts = new ListCombinedPartsGrpc();
             _CombinedPartsRefreshInProgress = false;
 
             #endregion
 
             #region PartCatogoryDetail
 
-            _PartCatogoryDetail = [];
+            _ListPartCatogoryDetail = new ListPartCategoryDetailGrpc();
+            _FilteredListPartCatogoryDetail = new ListPartCategoryDetailGrpc();
             _PartCatogoryDetailRefreshInProgress = false;
 
             #endregion
 
             #region PartClassDetail
 
-            _PartClassDetail = [];
+            _ListPartClassDetail = new ListPartClassDetailGrpc();
+            _FilteredListPartClassDetail = new ListPartClassDetailGrpc();
             _PartClassDetailRefreshInProgress = false;
 
             #endregion
 
             #region PartGroups
 
-            _PartGroups = [];
+            _ListPartGroups = new ListPartGroupsGrpc();
+            _FilteredListPartGroups = new ListPartGroupsGrpc();
             _PartGroupsRefreshInProgress = false;
 
             #endregion
 
             #region PartGroupsConst
 
-            _PartGroupsConst = [];
+            _ListPartGroupsConst = new ListPartGroupsConstGrpc();
+            _FilteredListPartGroupsConst = new ListPartGroupsConstGrpc();
             _PartGroupsConstRefreshInProgress = false;
 
             #endregion
 
             #region CustomerData
 
-            _CustomerData = [];
+            _ListCustomerData = new ListCustomerDataGrpc();
             _CustomerDataRefreshInProgress = false;
 
             #endregion
 
             #region ColourCode
 
-            _ColourCode = [];
+            _ListColourCode = new ListColourCodeGrpc();
+            _FilteredListColourCode = new ListColourCodeGrpc();
             _ColourCodeRefreshInProgress = false;
 
             #endregion
 
             #region MaterialGroups
 
-            _MaterialGroups = [];
+            _ListMaterialGroups = new ListMaterialGroupsGrpc();
+            _FilteredListMaterialGroups = new ListMaterialGroupsGrpc();
             _MaterialGroupsRefreshInProgress = false;
 
             #endregion
 
             #region MaterialTypes
 
-            _MaterialTypes = [];
+            _ListMaterialTypes = new ListMaterialTypesGrpc();
+            _FilteredListMaterialTypes = new ListMaterialTypesGrpc();
             _MaterialTypesRefreshInProgress = false;
 
             #endregion
 
             #region NPACustomer
 
-            _NPACustomer = [];
+            _ListNPACustomer = new ListNPACustomerGrpc();
             _NPACustomerRefreshInProgress = false;
 
             #endregion
 
             #region NPASupplier
 
-            _NPASupplier = [];
+            _ListNPASupplier = new ListNPASupplierGrpc();
             _NPASupplierRefreshInProgress = false;
 
             #endregion
 
             #region Suppliers
 
-            _Suppliers = [];
+            _ListSuppliers = new ListSuppliersGrpc();
             _SuppliersRefreshInProgress = false;
 
             #endregion
 
+            #region EmacsRFIView
+
+            _ListEmacsRFIView = new ListEmacsRFIViewGrpc();
+            _EmacsRFIViewRefreshInProgress = false;
+
+            #endregion
+
+            #region PARTMS
+
+            //_PARTMSGrpc = [];
+            _ListPARTMS = new ListPARTMSGrpc();
+            _FilteredListPARTMS = new ListPARTMSGrpc();
+            _PARTMSRefreshInProgress = false;
+
+            #endregion
+
             _ServiceProvider = serviceProvider;
+
+            if (testing)
+            {
+                PopulateSampleData();
+            }
         }
         #endregion
 
         #region Handlers
 
         #region CombinedParts
-        public async Task<Result<List<CombinedPartsDto>>> GetAllCombinedParts(CancellationToken cancellationToken)
+        public async Task<ListCombinedPartsGrpc> GetAllCombinedParts(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_CombinedParts.Any())
+            if (_ListCombinedParts.CombinedPartsGrpc.Any())
             {
-                return _CombinedParts;
+                return _ListCombinedParts;
             }
             else
             {
                 await PopulateCombinedPartsAsync(cancellationToken);
-                return _CombinedParts;
+                return _ListCombinedParts;
             }
         }
 
-        public async Task<Result<int>> GetCombinedPartsDataCount(CancellationToken cancellationToken)
+        public async Task<Result<int>> GetCombinedPartsGrpcCount(CancellationToken cancellationToken)
         {
-            if (_CombinedParts.Any())
+            if (_ListCombinedParts.CombinedPartsGrpc.Any())
             {
-                return _CombinedParts.Count;
+                return _ListCombinedParts.CombinedPartsGrpc.Count;
             }
             else
             {
                 await PopulateCombinedPartsAsync(cancellationToken);
-                return _CombinedParts.Count;
+                return _ListCombinedParts.CombinedPartsGrpc.Count;
             }
         }
 
@@ -294,180 +354,437 @@ namespace Emacs.Services
 
         #region PartCategoryDetail
 
-        public async Task<Result<List<PartCategoryDetailDto>>> GetAllPartCategoryDetail(CancellationToken cancellationToken)
+        public async Task<ListPartCategoryDetailGrpc> GetAllPartCategoryDetail(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_PartCatogoryDetail.Any())
+            if (_ListPartCatogoryDetail.PartCategoryDetailGrpc.Any())
             {
-                return _PartCatogoryDetail;
+                return _ListPartCatogoryDetail;
             }
             else
             {
                 await PopulatePartCategoryDetailAsync(cancellationToken);
-                return _PartCatogoryDetail;
+                return _ListPartCatogoryDetail;
+            }
+        }
+
+        public async Task<ListPartCategoryDetailGrpc> GetPartCategoryDetailByCategoryCode(string categoryCode , CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListPartCatogoryDetail.PartCategoryDetailGrpc.Any())
+            {
+                List<PartCategoryDetailGrpc> filteredList = _ListPartCatogoryDetail.PartCategoryDetailGrpc.Where(x => x.CategoryCode == categoryCode).ToList();
+                _FilteredListPartCatogoryDetail.PartCategoryDetailGrpc.AddRange(filteredList);
+                return _FilteredListPartCatogoryDetail;
+            }
+            else
+            {
+                await PopulatePartCategoryDetailAsync(cancellationToken);
+                return _FilteredListPartCatogoryDetail;
             }
         }
         #endregion
 
         #region PartClassDetail
 
-        public async Task<Result<List<PartClassDetailDto>>> GetAllPartClassDetail(CancellationToken cancellationToken)
+        public async Task<ListPartClassDetailGrpc> GetAllPartClassDetail(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_PartClassDetail.Any())
+            if (_ListPartClassDetail.PartClassDetailGrpc.Any())
             {
-                return _PartClassDetail;
+                return _ListPartClassDetail;
             }
             else
             {
                 await PopulatePartClassDetailAsync(cancellationToken);
-                return _PartClassDetail;
+                return _ListPartClassDetail;
+            }
+        }
+        public async Task<ListPartClassDetailGrpc> GetPartClassDetailByClasses(string class1, double class2, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListPartClassDetail.PartClassDetailGrpc.Any())
+            {
+                List<PartClassDetailGrpc> filteredList = _ListPartClassDetail.PartClassDetailGrpc.Where(x => x.Class1 == class1 && x.Class2 == class2).ToList();
+                _FilteredListPartClassDetail.PartClassDetailGrpc.AddRange(filteredList);
+                return _FilteredListPartClassDetail;
+            }
+            else
+            {
+                await PopulatePartClassDetailAsync(cancellationToken);
+                return _FilteredListPartClassDetail;
             }
         }
         #endregion
 
         #region PartGroups
 
-        public async Task<Result<List<PartGroupsDto>>> GetAllPartGroups(CancellationToken cancellationToken)
+        public async Task<ListPartGroupsGrpc> GetAllPartGroups(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_PartGroups.Any())
+            if (_ListPartGroups.PartGroupsGrpc.Any())
             {
-                return _PartGroups;
+                return _ListPartGroups;
             }
             else
             {
                 await PopulatePartGroupsAsync(cancellationToken);
-                return _PartGroups;
+                return _ListPartGroups;
+            }
+        }
+
+        public async Task<ListPartGroupsGrpc> GetPartGroupsByPartGroup(string partGroup, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListPartGroups.PartGroupsGrpc.Any())
+            {
+                List<PartGroupsGrpc> filteredList = _ListPartGroups.PartGroupsGrpc.Where(x => x.PartGroup == partGroup).ToList();
+                _FilteredListPartGroups.PartGroupsGrpc.AddRange(filteredList);
+                return _FilteredListPartGroups;
+            }
+            else
+            {
+                await PopulatePartGroupsAsync(cancellationToken);
+                return _FilteredListPartGroups;
             }
         }
         #endregion
 
         #region PartGroupsConst
 
-        public async Task<Result<List<PartGroupsConstDto>>> GetAllPartGroupsConst(CancellationToken cancellationToken)
+        public async Task<ListPartGroupsConstGrpc> GetAllPartGroupsConst(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_PartGroupsConst.Any())
+            if (_ListPartGroupsConst.PartGroupsConstGrpc.Any())
             {
-                return _PartGroupsConst;
+                return _ListPartGroupsConst;
             }
             else
             {
                 await PopulatePartGroupsConstAsync(cancellationToken);
-                return _PartGroupsConst;
+                return _ListPartGroupsConst;
+            }
+        }
+
+        public async Task<ListPartGroupsConstGrpc> GetAllPartGroupsConstByGroup3(string group3 ,CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListPartGroupsConst.PartGroupsConstGrpc.Any())
+            {
+                List<PartGroupsConstGrpc> filteredList = _ListPartGroupsConst.PartGroupsConstGrpc.Where(x => x.Code == group3).ToList();
+                _FilteredListPartGroupsConst.PartGroupsConstGrpc.AddRange(filteredList);
+                return _FilteredListPartGroupsConst;
+            }
+            else
+            {
+                await PopulatePartGroupsConstAsync(cancellationToken);
+                return _FilteredListPartGroupsConst;
             }
         }
         #endregion
 
         #region CustomerData
-        public async Task<Result<List<CustomerDataDto>>> GetAllCustomerData(CancellationToken cancellationToken)
+        public async Task<ListCustomerDataGrpc> GetAllCustomerData(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_CustomerData.Any())
+            if (_ListCustomerData.CustomerDataGrpc.Any())
             {
-                return _CustomerData;
+                return _ListCustomerData;
             }
             else
             {
                 await PopulateCustomerDataAsync(cancellationToken);
-                return _CustomerData;
+                return _ListCustomerData;
             }
         }
         #endregion
 
         #region ColourCode
-        public async Task<Result<List<ColourCodeDto>>> GetAllColourCode(CancellationToken cancellationToken)
+        public async Task<ListColourCodeGrpc> GetAllColourCode(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ColourCode.Any())
+            if (_ListColourCode.ColourCodeGrpc.Any())
             {
-                return _ColourCode;
+                return _ListColourCode;
             }
             else
             {
                 await PopulateColourCodeAsync(cancellationToken);
-                return _ColourCode;
+                return _ListColourCode;
+            }
+        }
+
+        public async Task<ListColourCodeGrpc> GetColourCodeByColorCode(string colorCode, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListColourCode.ColourCodeGrpc.Any())
+            {
+                List<ColourCodeGrpc> filteredList = _ListColourCode.ColourCodeGrpc.Where(x => x.ClMk == colorCode).ToList();
+                _FilteredListColourCode.ColourCodeGrpc.AddRange(filteredList);
+                return _FilteredListColourCode;
+            }
+            else
+            {
+                await PopulateColourCodeAsync(cancellationToken);
+                return _FilteredListColourCode;
             }
         }
         #endregion
 
         #region MaterialGroups
-        public async Task<Result<List<MaterialGroupsDto>>> GetAllMaterialGroups(CancellationToken cancellationToken)
+        public async Task<ListMaterialGroupsGrpc> GetAllMaterialGroups(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_MaterialGroups.Any())
+            if (_ListMaterialGroups.MaterialGroupsGrpc.Any())
             {
-                return _MaterialGroups;
+                return _ListMaterialGroups;
             }
             else
             {
                 await PopulateMaterialGroupsAsync(cancellationToken);
-                return _MaterialGroups;
+                return _ListMaterialGroups;
+            }
+        }
+        public async Task<ListMaterialGroupsGrpc> GetMaterialGroupsByMaterialGroupId(string materialGroupId, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListMaterialGroups.MaterialGroupsGrpc.Any())
+            {
+                List<MaterialGroupsGrpc> filteredList = _ListMaterialGroups.MaterialGroupsGrpc.Where(x => x.MaterialGroup == materialGroupId).ToList();
+                _FilteredListMaterialGroups.MaterialGroupsGrpc.AddRange(filteredList);
+                return _FilteredListMaterialGroups;
+            }
+            else
+            {
+                await PopulateMaterialGroupsAsync(cancellationToken);
+                return _FilteredListMaterialGroups;
             }
         }
         #endregion
 
         #region MaterialTypes
-        public async Task<Result<List<MaterialTypesDto>>> GetAllMaterialTypes(CancellationToken cancellationToken)
+        public async Task<ListMaterialTypesGrpc> GetAllMaterialTypes(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_MaterialTypes.Any())
+            if (_ListMaterialTypes.MaterialTypesGrpc.Any())
             {
-                return _MaterialTypes;
+                return _ListMaterialTypes;
             }
             else
             {
                 await PopulateMaterialTypesAsync(cancellationToken);
-                return _MaterialTypes;
+                return _ListMaterialTypes;
+            }
+        }
+        public async Task<ListMaterialTypesGrpc> GetMaterialTypesByMaterials(string materialGroup, string materialType ,CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListMaterialTypes.MaterialTypesGrpc.Any())
+            {
+                List<MaterialTypesGrpc> filteredList = _ListMaterialTypes.MaterialTypesGrpc.Where(x => x.MaterialGroup == materialGroup && x.MaterialType == materialType).ToList();
+                _FilteredListMaterialTypes.MaterialTypesGrpc.AddRange(filteredList);
+                return _FilteredListMaterialTypes;
+            }
+            else
+            {
+                await PopulateMaterialTypesAsync(cancellationToken);
+                return _FilteredListMaterialTypes;
             }
         }
         #endregion
 
         #region NPACustomer
-        public async Task<Result<List<NPACustomerDto>>> GetAllNPACustomer(CancellationToken cancellationToken)
+        public async Task<ListNPACustomerGrpc> GetAllNPACustomer(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_NPACustomer.Any())
+            if (_ListNPACustomer.NPACustomerGrpc.Any())
             {
-                return _NPACustomer;
+                return _ListNPACustomer;
             }
             else
             {
                 await PopulateNPACustomerAsync(cancellationToken);
-                return _NPACustomer;
+                return _ListNPACustomer;
             }
         }
         #endregion
 
         #region NPASupplier
-        public async Task<Result<List<NPASupplierDto>>> GetAllNPASupplier(CancellationToken cancellationToken)
+        public async Task<ListNPASupplierGrpc> GetAllNPASupplier(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_NPASupplier.Any())
+            if (_ListNPASupplier.NPASupplierGrpc.Any())
             {
-                return _NPASupplier;
+                return _ListNPASupplier;
             }
             else
             {
                 await PopulateNPASupplierAsync(cancellationToken);
-                return _NPASupplier;
+                return _ListNPASupplier;
             }
         }
         #endregion
 
         #region Suppliers
-        public async Task<Result<List<SuppliersDto>>> GetAllSuppliers(CancellationToken cancellationToken)
+        public async Task<ListSuppliersGrpc> GetAllSuppliers(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_Suppliers.Any())
+            if (_ListSuppliers.SuppliersGrpc.Any())
             {
-                return _Suppliers;
+                return _ListSuppliers;
             }
             else
             {
                 await PopulateSuppliersAsync(cancellationToken);
-                return _Suppliers;
+                return _ListSuppliers;
+            }
+        }
+        #endregion
+
+        #region EmacsRFIView
+        public async Task<ListEmacsRFIViewGrpc> GetAllEmacsRFIView(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListEmacsRFIView.EmacsRFIViewGrpc.Any())
+            {
+                return _ListEmacsRFIView;
+            }
+            else
+            {
+                await PopulateEmacsRFIViewAsync(cancellationToken);
+                return _ListEmacsRFIView;
+            }
+        }
+        #endregion
+
+        #region PARTMS
+        public async Task<ListPARTMSGrpc> GetAllPARTMSGrpc(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListPARTMS.PARTMSGrpc.Any())
+            {
+                return _ListPARTMS;
+            }
+            else
+            {
+                await PopulatePARTMSAsync(cancellationToken);
+                return _ListPARTMS;
+            }
+        }
+
+        public async Task<ListPARTMSGrpc> GetPARTMSGrpcByClass(string class1, double class2, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListPARTMS.PARTMSGrpc.Any())
+            {
+                _FilteredListPARTMS.PARTMSGrpc.Clear();
+                CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("en-GB");
+                string class2String = class2.ToString(cultureInfo);
+                List<PARTMSGrpc> filteredList = _ListPARTMS.PARTMSGrpc.Where(x => x.ClassDetailGroupCode == class1 && x.ClassDetailId == class2String).ToList();
+                _FilteredListPARTMS.PARTMSGrpc.AddRange(filteredList);
+                return _FilteredListPARTMS;
+            }
+            else
+            {
+                await PopulatePARTMSAsync(cancellationToken);
+                return _FilteredListPARTMS;
+            }
+        }
+
+        public async Task<ListPARTMSGrpc> GetPARTMSGrpcByColorCode(string colorCode, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListPARTMS.PARTMSGrpc.Any())
+            {
+                _FilteredListPARTMS.PARTMSGrpc.Clear();
+                List<PARTMSGrpc> filteredList = _ListPARTMS.PARTMSGrpc.Where(x => x.ColorCode == colorCode).ToList();
+                _FilteredListPARTMS.PARTMSGrpc.AddRange(filteredList);
+                return _FilteredListPARTMS;
+            }
+            else
+            {
+                await PopulatePARTMSAsync(cancellationToken);
+                return _FilteredListPARTMS;
+            }
+        }
+        public async Task<ListPARTMSGrpc> GetPARTMSGrpcByMaterial(string materialGroup, string materialType, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListPARTMS.PARTMSGrpc.Any())
+            {
+                _FilteredListPARTMS.PARTMSGrpc.Clear();
+                List<PARTMSGrpc> filteredList = _ListPARTMS.PARTMSGrpc.Where(x => x.MaterialGroupId == materialGroup && x.MaterialTypeId == materialType).ToList();
+                _FilteredListPARTMS.PARTMSGrpc.AddRange(filteredList);
+                return _FilteredListPARTMS;
+            }
+            else
+            {
+                await PopulatePARTMSAsync(cancellationToken);
+                return _FilteredListPARTMS;
+            }
+        }
+        public async Task<ListPARTMSGrpc> GetPARTMSGrpcByMaterialGroup(string materialGroup, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListPARTMS.PARTMSGrpc.Any())
+            {
+                _FilteredListPARTMS.PARTMSGrpc.Clear();
+                List<PARTMSGrpc> filteredList = _ListPARTMS.PARTMSGrpc.Where(x => x.MaterialGroupId == materialGroup).ToList();
+                _FilteredListPARTMS.PARTMSGrpc.AddRange(filteredList);
+                return _FilteredListPARTMS;
+            }
+            else
+            {
+                await PopulatePARTMSAsync(cancellationToken);
+                return _FilteredListPARTMS;
+            }
+        }
+        public async Task<ListPARTMSGrpc> GetPARTMSGrpcByPartGroup(string partGroup, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListPARTMS.PARTMSGrpc.Any())
+            {
+                _FilteredListPARTMS.PARTMSGrpc.Clear();
+                List<PARTMSGrpc> filteredList = _ListPARTMS.PARTMSGrpc.Where(x => x.ClassDetailGroupCode == partGroup).ToList();
+                _FilteredListPARTMS.PARTMSGrpc.AddRange(filteredList);
+                return _FilteredListPARTMS;
+            }
+            else
+            {
+                await PopulatePARTMSAsync(cancellationToken);
+                return _FilteredListPARTMS;
+            }
+        }
+        public async Task<ListPARTMSGrpc> GetPARTMSGrpcByCategoryCode(string catogoryCode, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListPARTMS.PARTMSGrpc.Any())
+            {
+                _FilteredListPARTMS.PARTMSGrpc.Clear();
+                List<PARTMSGrpc> filteredList = _ListPARTMS.PARTMSGrpc.Where(x => x.CategoryCode == catogoryCode).ToList();
+                _FilteredListPARTMS.PARTMSGrpc.AddRange(filteredList);
+                return _FilteredListPARTMS;
+            }
+            else
+            {
+                await PopulatePARTMSAsync(cancellationToken);
+                return _FilteredListPARTMS;
+            }
+        }
+        public async Task<ListPARTMSGrpc> GetPARTMSGrpcByPartGroupsConstCode(string partGroupsConstCode, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListPARTMS.PARTMSGrpc.Any())
+            {
+                _FilteredListPARTMS.PARTMSGrpc.Clear();
+                List<PARTMSGrpc> filteredList = _ListPARTMS.PARTMSGrpc.Where(x => x.Group3 == partGroupsConstCode).ToList();
+                _FilteredListPARTMS.PARTMSGrpc.AddRange(filteredList);
+                return _FilteredListPARTMS;
+            }
+            else
+            {
+                await PopulatePARTMSAsync(cancellationToken);
+                return _FilteredListPARTMS;
             }
         }
         #endregion
@@ -483,18 +800,18 @@ namespace Emacs.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _CombinedPartsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCombinedPartsQuery, List<CombinedPartsDto>>>();
+                    _CombinedPartsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCombinedPartsQuery, List<CombinedPartsGrpc>>>();
                     _CombinedPartsRefreshInProgress = true;
                     GetCombinedPartsQuery query = new GetCombinedPartsQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<CombinedPartsDto>> results = await _CombinedPartsHandler.Handle(query, cancellationToken);
+                    Result<List<CombinedPartsGrpc>> results = await _CombinedPartsHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _CombinedParts.Clear();
-                        _CombinedParts = results.Value;
+                        _ListCombinedParts.CombinedPartsGrpc.Clear();
+                        _ListCombinedParts.CombinedPartsGrpc.AddRange(results.Value);
                     }
 
                     _CombinedPartsRefreshInProgress = false;
@@ -514,18 +831,18 @@ namespace Emacs.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _PartCatogoryDetailHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartCatogoryDetailQuery, List<PartCategoryDetailDto>>>();
+                    _PartCatogoryDetailHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartCatogoryDetailQuery, List<PartCategoryDetailGrpc>>>();
                     _PartCatogoryDetailRefreshInProgress = true;
                     GetPartCatogoryDetailQuery query = new GetPartCatogoryDetailQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<PartCategoryDetailDto>> results = await _PartCatogoryDetailHandler.Handle(query, cancellationToken);
+                    Result<List<PartCategoryDetailGrpc>> results = await _PartCatogoryDetailHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _PartCatogoryDetail.Clear();
-                        _PartCatogoryDetail = results.Value;
+                        _ListPartCatogoryDetail.PartCategoryDetailGrpc.Clear();
+                        _ListPartCatogoryDetail.PartCategoryDetailGrpc.AddRange(results.Value);
                     }
 
                     _PartCatogoryDetailRefreshInProgress = false;
@@ -546,18 +863,18 @@ namespace Emacs.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _PartClassDetailHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartClassDetailQuery, List<PartClassDetailDto>>>();
+                    _PartClassDetailHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartClassDetailQuery, List<PartClassDetailGrpc>>>();
                     _PartClassDetailRefreshInProgress = true;
                     GetPartClassDetailQuery query = new GetPartClassDetailQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<PartClassDetailDto>> results = await _PartClassDetailHandler.Handle(query, cancellationToken);
+                    Result<List<PartClassDetailGrpc>> results = await _PartClassDetailHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _PartClassDetail.Clear();
-                        _PartClassDetail = results.Value;
+                        _ListPartClassDetail.PartClassDetailGrpc.Clear();
+                        _ListPartClassDetail.PartClassDetailGrpc.AddRange(results.Value);
                     }
 
                     _PartClassDetailRefreshInProgress = false;
@@ -577,18 +894,18 @@ namespace Emacs.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _PartGroupsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartGroupsQuery, List<PartGroupsDto>>>();
+                    _PartGroupsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartGroupsQuery, List<PartGroupsGrpc>>>();
                     _PartGroupsRefreshInProgress = true;
                     GetPartGroupsQuery query = new GetPartGroupsQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<PartGroupsDto>> results = await _PartGroupsHandler.Handle(query, cancellationToken);
+                    Result<List<PartGroupsGrpc>> results = await _PartGroupsHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _PartGroups.Clear();
-                        _PartGroups = results.Value;
+                        _ListPartGroups.PartGroupsGrpc.Clear();
+                        _ListPartGroups.PartGroupsGrpc.AddRange(results.Value);
                     }
 
                     _PartGroupsRefreshInProgress = false;
@@ -608,18 +925,18 @@ namespace Emacs.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _PartGroupsConstHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartGroupsConstQuery, List<PartGroupsConstDto>>>();
+                    _PartGroupsConstHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartGroupsConstQuery, List<PartGroupsConstGrpc>>>();
                     _PartGroupsConstRefreshInProgress = true;
                     GetPartGroupsConstQuery query = new GetPartGroupsConstQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<PartGroupsConstDto>> results = await _PartGroupsConstHandler.Handle(query, cancellationToken);
+                    Result<List<PartGroupsConstGrpc>> results = await _PartGroupsConstHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _PartGroupsConst.Clear();
-                        _PartGroupsConst = results.Value;
+                        _ListPartGroupsConst.PartGroupsConstGrpc.Clear();
+                        _ListPartGroupsConst.PartGroupsConstGrpc.AddRange(results.Value);
                     }
 
                     _PartGroupsConstRefreshInProgress = false;
@@ -639,18 +956,18 @@ namespace Emacs.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _CustomerDataHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCustomerDataQuery, List<CustomerDataDto>>>();
+                    _CustomerDataHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCustomerDataGrpcQuery, List<CustomerDataGrpc>>>();
                     _CustomerDataRefreshInProgress = true;
-                    GetCustomerDataQuery query = new GetCustomerDataQuery();
+                    GetCustomerDataGrpcQuery query = new GetCustomerDataGrpcQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<CustomerDataDto>> results = await _CustomerDataHandler.Handle(query, cancellationToken);
+                    Result<List<CustomerDataGrpc>> results = await _CustomerDataHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _CustomerData.Clear();
-                        _CustomerData = results.Value;
+                        _ListCustomerData.CustomerDataGrpc.Clear();
+                        _ListCustomerData.CustomerDataGrpc.AddRange(results.Value);
                     }
 
                     _CustomerDataRefreshInProgress = false;
@@ -670,18 +987,18 @@ namespace Emacs.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _ColourCodeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetColourCodeQuery, List<ColourCodeDto>>>();
+                    _ColourCodeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetColourCodeQuery, List<ColourCodeGrpc>>>();
                     _ColourCodeRefreshInProgress = true;
                     GetColourCodeQuery query = new GetColourCodeQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<ColourCodeDto>> results = await _ColourCodeHandler.Handle(query, cancellationToken);
+                    Result<List<ColourCodeGrpc>> results = await _ColourCodeHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _ColourCode.Clear();
-                        _ColourCode = results.Value;
+                        _ListColourCode.ColourCodeGrpc.Clear();
+                        _ListColourCode.ColourCodeGrpc.AddRange(results.Value);
                     }
 
                     _ColourCodeRefreshInProgress = false;
@@ -701,18 +1018,18 @@ namespace Emacs.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _MaterialGroupsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetMaterialGroupsQuery, List<MaterialGroupsDto>>>();
+                    _MaterialGroupsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetMaterialGroupsQuery, List<MaterialGroupsGrpc>>>();
                     _MaterialGroupsRefreshInProgress = true;
                     GetMaterialGroupsQuery query = new GetMaterialGroupsQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<MaterialGroupsDto>> results = await _MaterialGroupsHandler.Handle(query, cancellationToken);
+                    Result<List<MaterialGroupsGrpc>> results = await _MaterialGroupsHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _MaterialGroups.Clear();
-                        _MaterialGroups = results.Value;
+                        _ListMaterialGroups.MaterialGroupsGrpc.Clear();
+                        _ListMaterialGroups.MaterialGroupsGrpc.AddRange(results.Value);
                     }
 
                     _MaterialGroupsRefreshInProgress = false;
@@ -732,18 +1049,18 @@ namespace Emacs.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _MaterialTypesHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetMaterialTypesQuery, List<MaterialTypesDto>>>();
+                    _MaterialTypesHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetMaterialTypesQuery, List<MaterialTypesGrpc>>>();
                     _MaterialTypesRefreshInProgress = true;
                     GetMaterialTypesQuery query = new GetMaterialTypesQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<MaterialTypesDto>> results = await _MaterialTypesHandler.Handle(query, cancellationToken);
+                    Result<List<MaterialTypesGrpc>> results = await _MaterialTypesHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _MaterialTypes.Clear();
-                        _MaterialTypes = results.Value;
+                        _ListMaterialTypes.MaterialTypesGrpc.Clear();
+                        _ListMaterialTypes.MaterialTypesGrpc.AddRange(results.Value);
                     }
 
                     _MaterialTypesRefreshInProgress = false;
@@ -763,18 +1080,18 @@ namespace Emacs.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _NPACustomerHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetNPACustomerQuery, List<NPACustomerDto>>>();
+                    _NPACustomerHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetNPACustomerQuery, List<NPACustomerGrpc>>>();
                     _NPACustomerRefreshInProgress = true;
                     GetNPACustomerQuery query = new GetNPACustomerQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<NPACustomerDto>> results = await _NPACustomerHandler.Handle(query, cancellationToken);
+                    Result<List<NPACustomerGrpc>> results = await _NPACustomerHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _NPACustomer.Clear();
-                        _NPACustomer = results.Value;
+                        _ListNPACustomer.NPACustomerGrpc.Clear();
+                        _ListNPACustomer.NPACustomerGrpc.AddRange(results.Value);
                     }
 
                     _NPACustomerRefreshInProgress = false;
@@ -794,18 +1111,18 @@ namespace Emacs.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _NPASupplierHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetNPASupplierQuery, List<NPASupplierDto>>>();
+                    _NPASupplierHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetNPASupplierQuery, List<NPASupplierGrpc>>>();
                     _NPASupplierRefreshInProgress = true;
                     GetNPASupplierQuery query = new GetNPASupplierQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<NPASupplierDto>> results = await _NPASupplierHandler.Handle(query, cancellationToken);
+                    Result<List<NPASupplierGrpc>> results = await _NPASupplierHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _NPASupplier.Clear();
-                        _NPASupplier = results.Value;
+                        _ListNPASupplier.NPASupplierGrpc.Clear();
+                        _ListNPASupplier.NPASupplierGrpc.AddRange(results.Value);
                     }
 
                     _NPASupplierRefreshInProgress = false;
@@ -825,18 +1142,18 @@ namespace Emacs.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _SuppliersHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetSuppliersQuery, List<SuppliersDto>>>();
+                    _SuppliersHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetSuppliersQuery, List<SuppliersGrpc>>>();
                     _SuppliersRefreshInProgress = true;
                     GetSuppliersQuery query = new GetSuppliersQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<SuppliersDto>> results = await _SuppliersHandler.Handle(query, cancellationToken);
+                    Result<List<SuppliersGrpc>> results = await _SuppliersHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _Suppliers.Clear();
-                        _Suppliers = results.Value;
+                        _ListSuppliers.SuppliersGrpc.Clear();
+                        _ListSuppliers.SuppliersGrpc.AddRange(results.Value);
                     }
 
                     _SuppliersRefreshInProgress = false;
@@ -848,6 +1165,85 @@ namespace Emacs.Services
         }
         #endregion
 
+        #region EmacsRFIView
+
+        public async Task<bool> PopulateEmacsRFIViewAsync(CancellationToken cancellationToken)
+        {
+            if (!_EmacsRFIViewRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _EmacsRFIViewHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetEmacsRFIViewQuery, List<EmacsRFIViewGrpc>>>();
+                    _EmacsRFIViewRefreshInProgress = true;
+                    GetEmacsRFIViewQuery query = new GetEmacsRFIViewQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<EmacsRFIViewGrpc>> results = await _EmacsRFIViewHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _ListEmacsRFIView.EmacsRFIViewGrpc.Clear();
+                        _ListEmacsRFIView.EmacsRFIViewGrpc.AddRange(results.Value);
+                    }
+
+                    _EmacsRFIViewRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
         #endregion
+
+        #region PARTMS
+
+        public async Task<bool> PopulatePARTMSAsync(CancellationToken cancellationToken)
+        {
+            if (!_PARTMSRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _PARTMSHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPARTMSQuery, List<PARTMSGrpc>>>();
+                    _PARTMSRefreshInProgress = true;
+                    GetPARTMSQuery query = new GetPARTMSQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<PARTMSGrpc>> results = await _PARTMSHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _ListPARTMS.PARTMSGrpc.Clear();
+                        _ListPARTMS.PARTMSGrpc.AddRange(results.Value);
+                    }
+
+                    _PARTMSRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
+        #endregion
+
+        void PopulateSampleData()
+        {
+            _ListCombinedParts = SampleEmacsDataService.PopulateCombinedParts();
+            _ListPartCatogoryDetail = SampleEmacsDataService.PopulatePartCategoryDetail();
+            _ListPartClassDetail = SampleEmacsDataService.PopulatePartClassDetail();
+            _ListPartGroups = SampleEmacsDataService.PopulatePartGroups();
+            _ListPartGroupsConst = SampleEmacsDataService.PopulatePartGroupsConst();
+            _ListCustomerData = SampleEmacsDataService.PopulateCustomerDataGrps();
+            _ListColourCode = SampleEmacsDataService.PopulateColourCode();
+            _ListMaterialGroups = SampleEmacsDataService.PopulateMaterialGroups();
+            _ListMaterialTypes = SampleEmacsDataService.PopulateMaterialTypes();
+            _ListNPACustomer = SampleEmacsDataService.PopulateNPACustomer();
+            _ListNPASupplier = SampleEmacsDataService.PopulateNPASupplier();
+            _ListSuppliers = SampleEmacsDataService.PopulateSuppliers();
+            _ListPARTMS = SampleEmacsDataService.PopulatePARTMS();
+        }
     }
 }

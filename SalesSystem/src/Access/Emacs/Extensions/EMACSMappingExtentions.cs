@@ -3,315 +3,324 @@
     public static class EMACSMappingExtentions
     {
         #region CombinedParts
-        public static CombinedPartsDto MapToCombinePartsDto(this DbCombinedParts entity)
+        public static CombinedPartsGrpc MapToCombinePartsGrpc(this DbCombinedParts entity)
         {
-            CombinedPartsDto dto = new CombinedPartsDto();
-            dto.SumitomoNumber = entity.SumitomoNumber;
-            dto.CustomerNumber = entity.CustomerNumber;
-            dto.CustomerName = entity.CustomerName;
-            dto.SupplierNumber = entity.SupplierNumber;
-            dto.UniformSumitomoNumber = entity.UniformSumitomoNumber;
-            dto.UniformCustomerNumber = entity.UniformCustomerNumber;
-            dto.UniformSupplierNumber = entity.UniformSupplierNumber;
+            CombinedPartsGrpc data = new CombinedPartsGrpc();
+            data.SumitomoNumber = entity.SumitomoNumber;
+            data.CustomerNumber = entity.CustomerNumber;
+            data.CustomerName = entity.CustomerName;
+            data.SupplierNumber = entity.SupplierNumber;
+            data.UniformSumitomoNumber = entity.UniformSumitomoNumber;
+            data.UniformCustomerNumber = entity.UniformCustomerNumber;
+            data.UniformSupplierNumber = entity.UniformSupplierNumber;
             
-            return dto;
-        }
-
-        public static CombinedPartsData MapToCombinePartsData(this CombinedPartsDto dto)
-        {
-            CombinedPartsData combinePartsData = new CombinedPartsData();
-            combinePartsData.SumitomoNumber = dto.SumitomoNumber;
-            combinePartsData.CustomerNumber = dto.CustomerNumber;
-            combinePartsData.CustomerName = dto.CustomerName;
-            combinePartsData.SupplierNumber = dto.SupplierNumber;
-            combinePartsData.UniformSumitomoNumber = dto.UniformSumitomoNumber;
-            combinePartsData.UniformCustomerNumber = dto.UniformSumitomoNumber;
-            combinePartsData.UniformSupplierNumber = dto.UniformSupplierNumber;
-
-            return combinePartsData;
+            return data;
         }
         #endregion
 
         #region PartCatogoryDetail
-        public static PartCategoryDetailDto MapToPartCategoryDetailDto(this DbPartCategoryDetail entity)
+        public static PartCategoryDetailGrpc MapToPartCategoryDetailGrpc(this DbPartCategoryDetail entity)
         {
-            PartCategoryDetailDto dto = new PartCategoryDetailDto();
-            dto.CategoryCode = entity.CategoryCode;
-            dto.DetailedCategoryCode = entity.DetailedCategoryCode;
-            dto.CategoryName = entity.CategoryName;
+            PartCategoryDetailGrpc data = new PartCategoryDetailGrpc();
+            data.CategoryCode = entity.CategoryCode;
+            data.DetailedCategoryCode = entity.DetailedCategoryCode;
+            data.CategoryName = entity.CategoryName;
 
-            return dto;
-        }
-
-        public static PartCategoryDetail MapToPartCategoryDetailData(this PartCategoryDetailDto dto)
-        {
-            PartCategoryDetail entity = new PartCategoryDetail();
-            entity.CategoryCode = dto.CategoryCode;
-            entity.DetailedCategoryCode = dto.DetailedCategoryCode;
-            entity.CategoryName = dto.CategoryName;
-
-            return entity;
+            return data;
         }
         #endregion
 
         #region PartClassDetail
-        public static PartClassDetailDto MapToPartClassDetailDto(this DbPartClassDetail entity)
+        public static PartClassDetailGrpc MapToPartClassDetailGrpc(this DbPartClassDetail entity)
         {
-            PartClassDetailDto dto = new PartClassDetailDto();
-            dto.Class1 = entity.Class1;
-            dto.Class1Name = entity.Class1Name;
-            dto.Class2 = entity.Class2;
-            dto.Class2Name = entity.Class2Name;
+            PartClassDetailGrpc data = new PartClassDetailGrpc();
+            data.Class1 = entity.Class1;
+            data.Class1Name = entity.Class1Name;
+            data.Class2 = entity.Class2;
+            data.Class2Name = entity.Class2Name;
 
-            return dto;
-        }
-
-        public static PartClassDetail MapToPartClassDetailData(this PartClassDetailDto dto)
-        {
-            PartClassDetail entity = new PartClassDetail();
-            entity.Class1 = dto.Class1;
-            entity.Class1Name = dto.Class1Name;
-            entity.Class2 = dto.Class2;
-            entity.Class2Name = dto.Class2Name;
-
-            return entity;
+            return data;
         }
         #endregion
 
         #region PartGroups
-        public static PartGroupsDto MapToPartGroupsDto(this DbPartGroups entity)
+        public static PartGroupsGrpc MapToPartGroupsGrpc(this DbPartGroups entity)
         {
-            PartGroupsDto dto = new PartGroupsDto();
-            dto.PartGroup = entity.PartGroup;
-            dto.GroupDescription = entity.GroupDescription;
+            PartGroupsGrpc data = new PartGroupsGrpc();
+            data.PartGroup = entity.PartGroup;
+            data.GroupDescription = entity.GroupDescription;
 
-            return dto;
-        }
-
-        public static PartGroups MapToPartGroupsData(this PartGroupsDto dto)
-        {
-            PartGroups entity = new PartGroups();
-            entity.PartGroup = dto.PartGroup;
-            entity.GroupDescription = dto.GroupDescription;
-
-            return entity;
+            return data;
         }
         #endregion
 
         #region PartGroupsConst
-        public static PartGroupsConstDto MapToPartGroupsConstDto(this DbPartGroupsConst entity)
+        public static PartGroupsConstGrpc MapToPartGroupsConstGrpc(this DbPartGroupsConst entity)
         {
-            PartGroupsConstDto dto = new PartGroupsConstDto();
-            dto.Id = entity.Id;
-            dto.GroupNo = entity.GroupNo;
-            dto.GroupPos = entity.GroupPos;
-            dto.GroupName = entity.GroupName;
-            dto.Code = entity.Code;
-            dto.Description = entity.Description;
+            PartGroupsConstGrpc data = new PartGroupsConstGrpc();
+            data.Id = entity.Id;
+            data.GroupNo = entity.GroupNo;
+            data.GroupPos = entity.GroupPos;
+            data.GroupName = entity.GroupName;
+            data.Code = entity.Code;
+            data.Description = entity.Description;
 
-            return dto;
-        }
-
-        public static PartGroupsConst MapToPartGroupsConstData(this PartGroupsConstDto dto)
-        {
-            PartGroupsConst entity = new PartGroupsConst();
-            entity.Id = dto.Id;
-            entity.GroupNo = dto.GroupNo;
-            entity.GroupPos = dto.GroupPos;
-            entity.GroupName = dto.GroupName;
-            entity.Code = dto.Code;
-            entity.Description = dto.Description;
-
-            return entity;
+            return data;
         }
         #endregion
 
         #region CustomerData
-        public static CustomerDataDto MapToCustomerDataDto(this DbCustomerData entity)
+        public static CustomerDataGrpc MapToCustomerDataGrpc(this DbCustomerData entity)
         {
-            CustomerDataDto dto = new CustomerDataDto();
-            dto.CustomerCode = entity.CustomerCode;
-            dto.Customer = entity.Customer;
-            dto.CustomerGroup = entity.CustomerGroup;
+            CustomerDataGrpc data = new CustomerDataGrpc();
+            data.CustomerCode = entity.CustomerCode;
+            data.Customer = entity.Customer;
+            data.CustomerGroup = entity.CustomerGroup;
 
-            return dto;
-        }
-
-        public static CustomerData MapToCustomerData(this CustomerDataDto dto)
-        {
-            CustomerData entity = new CustomerData();
-            entity.CustomerCode = dto.CustomerCode;
-            entity.Customer = dto.Customer;
-            entity.CustomerGroup = dto.CustomerGroup;
-
-            return entity;
+            return data;
         }
         #endregion
 
         #region ColourCode
-        public static ColourCodeDto MapToColourCodeDto(this DbColourCode entity)
+        public static ColourCodeGrpc MapToColourCodeGrpc(this DbColourCode entity)
         {
-            ColourCodeDto dto = new ColourCodeDto();
-            dto.ClMk = entity.ClMk;
-            dto.ClCode = entity.ClCode;
-            dto.ColorName = entity.ColorName;
-            dto.WireUnitsFlag = entity.WireUnitsFlag;
-            dto.PartUnitsFlag = entity.PartUnitsFlag;
+            ColourCodeGrpc data = new ColourCodeGrpc();
+            data.ClMk = entity.ClMk;
+            data.ClCode = entity.ClCode;
+            data.ColorName = entity.ColorName;
+            data.WireUnitsFlag = entity.WireUnitsFlag;
+            data.PartUnitsFlag = entity.PartUnitsFlag;
 
-            return dto;
-        }
-
-        public static ColourCode MapToColourCode(this ColourCodeDto dto)
-        {
-            ColourCode entity = new ColourCode();
-            entity.Clmk = dto.ClMk;
-            entity.ClCode = dto.ClCode;
-            entity.ColorName = dto.ColorName;
-            entity.WireUnitsFlag = dto.WireUnitsFlag;
-            entity.PartUnitsFlag = dto.PartUnitsFlag;
-
-            return entity;
+            return data;
         }
         #endregion
 
         #region MaterialGroups
-        public static MaterialGroupsDto MapToMaterialGroupsDto(this DbMaterialGroups entity)
+        public static MaterialGroupsGrpc MapToMaterialGroupsGrpc(this DbMaterialGroups entity)
         {
-            MaterialGroupsDto dto = new MaterialGroupsDto();
-            dto.MaterialGroup = entity.MaterialGroup;
-            dto.GroupDescription = entity.GroupDescription;
+            MaterialGroupsGrpc data = new MaterialGroupsGrpc();
+            data.MaterialGroup = entity.MaterialGroup;
+            data.GroupDescription = entity.GroupDescription;
 
-            return dto;
-        }
-
-        public static MaterialGroups MapToMaterialGroups(this MaterialGroupsDto dto)
-        {
-            MaterialGroups entity = new MaterialGroups();
-            entity.MaterialGroup = dto.MaterialGroup;
-            entity.GroupDescription = dto.GroupDescription;
-
-            return entity;
+            return data;
         }
         #endregion
 
         #region MaterialTypes
-        public static MaterialTypesDto MapToMaterialTypesDto(this DbMaterialTypes entity)
+        public static MaterialTypesGrpc MapToMaterialTypesGrpc(this DbMaterialTypes entity)
         {
-            MaterialTypesDto dto = new MaterialTypesDto();
-            dto.MaterialGroup = entity.MaterialGroup;
-            dto.MaterialType = entity.MaterialType;
-            dto.TypeDescription = entity.TypeDescription;
+            MaterialTypesGrpc data = new MaterialTypesGrpc();
+            data.MaterialGroup = entity.MaterialGroup;
+            data.MaterialType = entity.MaterialType;
+            data.TypeDescription = entity.TypeDescription;
 
-            return dto;
-        }
-
-        public static MaterialTypes MapToMaterialTypes(this MaterialTypesDto dto)
-        {
-            MaterialTypes entity = new MaterialTypes();
-            entity.MaterialGroup = dto.MaterialGroup;
-            entity.MaterialType = dto.MaterialType;
-            entity.TypeDescription = dto.TypeDescription;
-
-            return entity;
+            return data;
         }
         #endregion
 
         #region NPACustomer
-        public static NPACustomerDto MapToNPACustomerDto(this DbNPACustomer entity)
+        public static NPACustomerGrpc MapToNPACustomerGrpc(this DbNPACustomer entity)
         {
-            NPACustomerDto dto = new NPACustomerDto();
-            dto.Id = entity.Id;
-            dto.Code = entity.Code;
-            dto.Name = entity.Name;
-            dto.Subsidiary_id = entity.Subsidiary_id;
-            dto.Buyer_id = entity.Buyer_id;
-            dto.Address = entity.Address;
-            dto.Phone = entity.Phone;
-            dto.Email = entity.Email;
-            dto.Contact = entity.Contact;
-            dto.Alternate_contact = entity.Alternate_contact;
-            dto.Active = entity.Active;
+            NPACustomerGrpc data = new NPACustomerGrpc();
+            data.Id = entity.Id;
+            data.Code = entity.Code;
+            data.Name = entity.Name;
+            data.SubsidiaryId = entity.Subsidiary_id;
+            data.BuyerId = entity.Buyer_id;
+            data.Address = entity.Address;
+            data.Phone = entity.Phone;
+            data.Email = entity.Email;
+            data.Contact = entity.Contact;
+            data.AlternateContact = entity.Alternate_contact;
+            data.Active = entity.Active;
 
-            return dto;
-        }
-
-        public static NPACustomer MapToNPACustomer(this NPACustomerDto dto)
-        {
-            NPACustomer entity = new NPACustomer();
-            entity.Id = dto.Id;
-            entity.Code = dto.Code;
-            entity.Name = dto.Name;
-            entity.SubsidiaryId = dto.Subsidiary_id;
-            entity.BuyerId = dto.Buyer_id;
-            entity.Address = dto.Address;
-            entity.Phone = dto.Phone;
-            entity.Email = dto.Email;
-            entity.Contact = dto.Contact;
-            entity.AlternateContact = dto.Alternate_contact;
-            entity.Active = dto.Active;
-
-            return entity;
+            return data;
         }
         #endregion
 
         #region NPASupplier
-        public static NPASupplierDto MapToNPASupplierDto(this DbNPASupplier entity)
+        public static NPASupplierGrpc MapToNPASupplierGrpc(this DbNPASupplier entity)
         {
-            NPASupplierDto dto = new NPASupplierDto();
-            dto.Id = entity.Id;
-            dto.Code = entity.Code;
-            dto.Name = entity.Name;
-            dto.Subsidiary_id = entity.Subsidiary_id;
-            dto.Buyer_id = entity.Buyer_id;
-            dto.Address = entity.Address;
-            dto.Phone = entity.Phone;
-            dto.Email = entity.Email;
-            dto.Contact = entity.Contact;
-            dto.Alternate_contact = entity.Alternate_contact;
-            dto.Active = entity.Active;
-            dto.J_Supplier = entity.J_Supplier;
+            NPASupplierGrpc data = new NPASupplierGrpc();
+            data.Id = entity.Id;
+            data.Code = entity.Code;
+            data.Name = entity.Name;
+            data.SubsidiaryId = entity.Subsidiary_id;
+            data.BuyerId = entity.Buyer_id;
+            data.Address = entity.Address;
+            data.Phone = entity.Phone;
+            data.Email = entity.Email;
+            data.Contact = entity.Contact;
+            data.AlternateContact = entity.Alternate_contact;
+            data.Active = entity.Active;
+            data.JSupplier = entity.J_Supplier;
 
-            return dto;
-        }
-
-        public static NPASupplier MapToNPASupplier(this NPASupplierDto dto)
-        {
-            NPASupplier entity = new NPASupplier();
-            entity.Id = dto.Id;
-            entity.Code = dto.Code;
-            entity.Name = dto.Name;
-            entity.SubsidiaryId = dto.Subsidiary_id;
-            entity.BuyerId = dto.Buyer_id;
-            entity.Address = dto.Address;
-            entity.Phone = dto.Phone;
-            entity.Email = dto.Email;
-            entity.Contact = dto.Contact;
-            entity.AlternateContact = dto.Alternate_contact;
-            entity.Active = dto.Active;
-            entity.JSupplier = dto.J_Supplier;
-
-            return entity;
+            return data;
         }
         #endregion
 
         #region Suppliers
-        public static SuppliersDto MapToSuppliersDto(this DbSuppliers entity)
+        public static SuppliersGrpc MapToSuppliersGrpc(this DbSuppliers entity)
         {
-            SuppliersDto dto = new SuppliersDto();
-            dto.SupplierCode = entity.SupplierCode;
-            dto.SupplierName = entity.SupplierName;
+            SuppliersGrpc data = new SuppliersGrpc();
+            data.SupplierCode = entity.SupplierCode;
+            data.SupplierName = entity.SupplierName;
 
-            return dto;
+            return data;
+        }
+        #endregion
+
+        #region EmacsRFIView
+        public static EmacsRFIViewGrpc MapToEmacsRFIViewGrpc(this DbEmacsRFIView entity)
+        {
+            EmacsRFIViewGrpc data = new EmacsRFIViewGrpc();
+            data.SumitomoNumber = entity.SumitomoNumber;
+            data.SumitomoDescription = entity.SumitomoDescription;
+            data.SumitomoDescriptionEnglish = entity.SumitomoDescriptionEnglish;
+            data.PartGroup = entity.PartGroup;
+            data.GroupDescription = entity.GroupDescription;
+            data.Class1 = entity.Class1;
+            data.Class1Name = entity.Class1Name;
+            data.Class2 = entity.Class2;
+            data.Class2Name = entity.Class2Name;
+            data.ColourCode = entity.ColourCode;
+            data.ColorName = entity.ColorName;
+            data.MaterialGroup = entity.MaterialGroup;
+            data.Expr1 = entity.Expr1;
+            data.MaterialType = entity.MaterialType;
+            data.TypeDescription = entity.TypeDescription;
+            data.CategoryCode = entity.CategoryCode;
+            data.Description = entity.Description;
+            data.OldPartClass = entity.OldPartClass;
+            data.OldMaterial = entity.OldMaterial;
+            data.ClassDetailGroupCode = entity.ClassDetailGroupCode;
+            data.ClassDetailId = entity.ClassDetailId;
+            data.MaterialGroupId = entity.MaterialGroupId;
+            data.MaterialTypeId = entity.MaterialTypeId;
+            data.ColorCode = entity.ColorCode;
+            data.NumberOfCavity = entity.NumberOfCavity;
+            data.InsideDiameter = (double?)entity.InsideDiameter;
+            data.WallThickness = (double?)entity.WallThickness;
+            data.Length = (double?)entity.Length;
+            data.WidthOrOutsideDiameter = (double?)entity.WidthOrOutsideDiameter;
+            data.HoleDiameter = entity.HoleDiameter;
+            data.ShrinkRateLength = entity.ShrinkRateLength;
+            data.NumberOfTapingSpots = entity.NumberOfTapingSpots;
+            data.MassOrWeight = (double?)entity.MassOrWeight;
+            data.Quantity = (double?)entity.Quantity;
+            data.UoM = entity.UoM;
+            data.Group1 = entity.Group1;
+            data.Group2 = entity.Group2;
+            data.Group3 = entity.Group3;
+            data.Group4 = entity.Group4;
+            data.CavityCount = entity.CavityCount;
+            data.Group6 = entity.Group6;
+            data.Group7 = entity.Group7;
+            data.Group8 = entity.Group8;
+            data.CustomerId = entity.CustomerId;
+            data.MassOrWeight2 = (double?)entity.MassOrWeight2;
+            data.L1 = entity.L1;
+            data.L2 = entity.L2;
+            data.L3 = entity.L3;
+            data.PitchWidth = (double?)entity.PitchWidth;
+            data.Tilt = entity.Tilt;
+            data.Grease = entity.Grease;
+            data.CategoryCode = entity.CategoryCode;
+
+            return data;
+        }
+        #endregion
+
+        #region PARTMS
+        public static PARTMSGrpc MapToPARTMSGrpc(this DbPARTMS entity)
+        {
+            PARTMSGrpc data = new PARTMSGrpc();
+            data.SumitomoNumber = entity.SumitomoNumber;
+            data.SumitomoDescription = entity.SumitomoDescription;
+            data.SumitomoDescriptionEnglish = entity.SumitomoDescriptionEnglish;
+            data.OldPartClass = entity.OldPartClass;
+            data.OldMaterial = entity.OldMaterial;
+            data.ClassDetailGroupCode = entity.ClassDetailGroupCode;
+            data.ClassDetailId = entity.ClassDetailId;
+            data.MaterialGroupId = entity.MaterialGroupId;
+            data.MaterialTypeId = entity.MaterialTypeId;
+            data.ColorCode = entity.ColorCode;
+            data.NumberOfCavity = entity.NumberOfCavity;
+            data.InsideDiameter = (double?)entity.InsideDiameter;
+            data.WallThickness = (double?)entity.WallThickness;
+            data.Length = (double?)entity.Length;
+            data.WidthOrOutsideDiameter = (double?)entity.WidthOrOutsideDiameter;
+            data.HoleDiameter = entity.HoleDiameter;
+            data.ShrinkRateLength = entity.ShrinkRateLength;
+            data.NumberOfTapingSpots = entity.NumberOfTapingSpots;
+            data.MassOrWeight = (double?)entity.MassOrWeight;
+            data.Quantity = (double?)entity.Quantity;
+            data.UoM = entity.UoM;
+            data.Group1 = entity.Group1;
+            data.Group2 = entity.Group2;
+            data.Group3 = entity.Group3;
+            data.Group4 = entity.Group4;
+            data.CavityCount = entity.CavityCount;
+            data.Group6 = entity.Group6;
+            data.Group7 = entity.Group7;
+            data.Group8 = entity.Group8;
+            data.CustomerId = entity.CustomerId;
+            data.MassOrWeight2 = (double?)entity.MassOrWeight2;
+            data.L1 = entity.L1;
+            data.L2 = entity.L2;
+            data.L3 = entity.L3;
+            data.PitchWidth = (double?)entity.PitchWidth;
+            data.Tilt = entity.Tilt;
+            data.Grease = entity.Grease;
+            data.CategoryCode = entity.CategoryCode;
+
+            return data;
         }
 
-        public static Suppliers MapToSuppliers(this SuppliersDto dto)
-        {
-            Suppliers entity = new Suppliers();
-            entity.SupplierCode = dto.SupplierCode;
-            entity.SupplierName = dto.SupplierName;
+        //public static PARTMS MapToPARTMS(this PARTMSDto dto)
+        //{
+        //    PARTMS entity = new PARTMS();
+        //    entity.CPBUHINC = dto.SumitomoNumber;
+        //    entity.CPBUHINNM = dto.SumitomoDescription;
+        //    entity.CPBUHINENM = dto.SumitomoDescriptionEnglish;
+        //    entity.CPOLDSYUBETU = dto.OldPartClass;
+        //    entity.CPOLDZAISITU = dto.OldMaterial;
+        //    entity.CPSYUBETU1 = dto.ClassDetailGroupCode;
+        //    entity.CPSYUBETU2 = dto.ClassDetailId;
+        //    entity.CPZAISITU1 = dto.MaterialGroupId;
+        //    entity.CPZAISITU2 = dto.MaterialTypeId;
+        //    entity.CPIRO = dto.ColorCode;
+        //    entity.CPKYOKUSU = dto.NumberOfCavity;
+        //    entity.CPSIZE1 = dto.InsideDiameter;
+        //    entity.CPSIZE2 = dto.WallThickness;
+        //    entity.CPSIZE3 = dto.Length;
+        //    entity.CPSIZE4 = dto.WidthOrOutsideDiameter;
+        //    entity.CPLAANAKEI = dto.HoleDiameter;
+        //    entity.CPTPNOBIRITU = dto.ShrinkRateLength;
+        //    entity.CPTPDOMESU = dto.NumberOfTapingSpots;
+        //    entity.CPZYURYO = dto.MassOrWeight;
+        //    entity.CPSURYO = dto.Quantity;
+        //    entity.CPTANI = dto.UoM;
+        //    entity.CPSOBETUK1 = dto.Group1;
+        //    entity.CPSOBETUK2 = dto.Group2;
+        //    entity.CPSOBETUK3 = dto.Group3;
+        //    entity.CPSOBETUK4 = dto.Group4;
+        //    entity.CPSOBETUK5 = dto.CavityCount;
+        //    entity.CPSOBETUK6 = dto.Group6;
+        //    entity.CPSOBETUK7 = dto.Group7;
+        //    entity.CPSOBETUK8 = dto.Group8;
+        //    entity.CPSINKIMAKER = dto.CustomerId;
+        //    entity.CPSEKKEIZYURYO = dto.MassOrWeight2;
+        //    entity.CPL1 = dto.L1;
+        //    entity.CPL2 = dto.L2;
+        //    entity.CPL3 = dto.L3;
+        //    entity.CPPITCHHABA = dto.PitchWidth;
+        //    entity.CPKATAMUKI = dto.Tilt;
+        //    entity.CPGURISUA = dto.Grease;
+        //    entity.CPHINMOKUC = dto.CategoryCode;
 
-            return entity;
-        }
+        //    return entity;
+        //}
         #endregion
     }
 }
