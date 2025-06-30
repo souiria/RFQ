@@ -1,6 +1,4 @@
-﻿using SharedKernel;
-
-namespace Master.Data.Model
+﻿namespace Master.Data.Model
 {
     public class DbCustomerSalesEntity : IAggregateRoot
     {
@@ -34,7 +32,7 @@ namespace Master.Data.Model
         { get; set; }
         public Guid? ModifiedBy
         { get; set; }
-        public bool IsActive
+        public bool? IsActive
         { get; set; }
         public short? SyncToCPD
         { get; set; }

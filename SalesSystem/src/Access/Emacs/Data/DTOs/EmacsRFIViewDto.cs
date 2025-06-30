@@ -33,16 +33,12 @@
         { get; set; }
         public string? TypeDescription
         { get; set; }
-        [Column("Category Code")]
         public string? CategoryCode2
         { get; set; }
-        [Column("Detailed Category Code")]
         public double? DetailedCategoryCode
         { get; set; }
-        [Column("Category Name")]
         public string? CategoryName
         { get; set; }
-        [Column("Part Group Code")]
         public string? PartGroupCode
         { get; set; }
         public string? Description

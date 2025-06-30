@@ -1,6 +1,6 @@
 ﻿namespace Emacs.Data.CQRS.Handler.CustomerData
 {
-    public class QueryHandler : IQueryHandler<GetCustomerDataQuery, List<CustomerDataGrpc>>
+    public class QueryHandler : IQueryHandler<GetCustomerDataGrpcQuery, List<CustomerDataGrpc>>
     {
         readonly IEMACSReadRepository<DbCustomerData> _Repository;
         List<CustomerDataGrpc> _CustomerData;
@@ -10,14 +10,14 @@
             _Repository = repository;
             _CustomerData = [];
         }
-        public async Task<Result<List<CustomerDataGrpc>>> Handle(GetCustomerDataQuery query, CancellationToken cancellationToken)
+        public async Task<Result<List<CustomerDataGrpc>>> Handle(GetCustomerDataGrpcQuery query, CancellationToken cancellationToken)
         {
             _CustomerData.Clear();
-            GetCustomerDataReadOnlySpec spec = new GetCustomerDataReadOnlySpec(query.Position, query.TakeAmount);
+            GetCustomerDataGrpcReadOnlySpec spec = new GetCustomerDataGrpcReadOnlySpec(query.Position, query.TakeAmount);
             List<DbCustomerData> results = await _Repository.ListAsync(spec, cancellationToken);
             foreach (DbCustomerData result in results)
             {
-                CustomerDataGrpc customerDataGrpc = result.MapToCustomerDataDto();
+                CustomerDataGrpc customerDataGrpc = result.MapToCustomerDataGrpc();
                 _CustomerData.Add(customerDataGrpc);
             }
 

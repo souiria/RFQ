@@ -10,7 +10,7 @@ namespace Master.Data.Model
         { get; set; }
         public string? EuroRate
         { get; set; }
-        public bool IsActive
+        public bool? IsActive
         { get; set; }
         public Guid? Id
         { get; set; }

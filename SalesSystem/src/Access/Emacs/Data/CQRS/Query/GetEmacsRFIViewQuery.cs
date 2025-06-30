@@ -1,6 +1,6 @@
 ﻿namespace Emacs.Data.CQRS.Query
 {
-    public class GetEmacsRFIViewQuery : IQuery<List<EmacsRFIViewData>>
+    public class GetEmacsRFIViewQuery : IQuery<List<EmacsRFIViewGrpc>>
     {
         public int? Position
         { get; set; }

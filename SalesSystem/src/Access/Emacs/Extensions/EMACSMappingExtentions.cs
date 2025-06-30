@@ -3,9 +3,9 @@
     public static class EMACSMappingExtentions
     {
         #region CombinedParts
-        public static CombinedPartsData MapToCombinePartsData(this DbCombinedParts entity)
+        public static CombinedPartsGrpc MapToCombinePartsGrpc(this DbCombinedParts entity)
         {
-            CombinedPartsData data = new CombinedPartsData();
+            CombinedPartsGrpc data = new CombinedPartsGrpc();
             data.SumitomoNumber = entity.SumitomoNumber;
             data.CustomerNumber = entity.CustomerNumber;
             data.CustomerName = entity.CustomerName;
@@ -19,9 +19,9 @@
         #endregion
 
         #region PartCatogoryDetail
-        public static PartCategoryDetailData MapToPartCategoryDetailData(this DbPartCategoryDetail entity)
+        public static PartCategoryDetailGrpc MapToPartCategoryDetailGrpc(this DbPartCategoryDetail entity)
         {
-            PartCategoryDetailData data = new PartCategoryDetailData();
+            PartCategoryDetailGrpc data = new PartCategoryDetailGrpc();
             data.CategoryCode = entity.CategoryCode;
             data.DetailedCategoryCode = entity.DetailedCategoryCode;
             data.CategoryName = entity.CategoryName;
@@ -31,9 +31,9 @@
         #endregion
 
         #region PartClassDetail
-        public static PartClassDetailData MapToPartClassDetailData(this DbPartClassDetail entity)
+        public static PartClassDetailGrpc MapToPartClassDetailGrpc(this DbPartClassDetail entity)
         {
-            PartClassDetailData data = new PartClassDetailData();
+            PartClassDetailGrpc data = new PartClassDetailGrpc();
             data.Class1 = entity.Class1;
             data.Class1Name = entity.Class1Name;
             data.Class2 = entity.Class2;
@@ -44,9 +44,9 @@
         #endregion
 
         #region PartGroups
-        public static PartGroupsData MapToPartGroupsData(this DbPartGroups entity)
+        public static PartGroupsGrpc MapToPartGroupsGrpc(this DbPartGroups entity)
         {
-            PartGroupsData data = new PartGroupsData();
+            PartGroupsGrpc data = new PartGroupsGrpc();
             data.PartGroup = entity.PartGroup;
             data.GroupDescription = entity.GroupDescription;
 
@@ -55,9 +55,9 @@
         #endregion
 
         #region PartGroupsConst
-        public static PartGroupsConstData MapToPartGroupsConstData(this DbPartGroupsConst entity)
+        public static PartGroupsConstGrpc MapToPartGroupsConstGrpc(this DbPartGroupsConst entity)
         {
-            PartGroupsConstData data = new PartGroupsConstData();
+            PartGroupsConstGrpc data = new PartGroupsConstGrpc();
             data.Id = entity.Id;
             data.GroupNo = entity.GroupNo;
             data.GroupPos = entity.GroupPos;
@@ -70,7 +70,7 @@
         #endregion
 
         #region CustomerData
-        public static CustomerDataGrpc MapToCustomerDataDto(this DbCustomerData entity)
+        public static CustomerDataGrpc MapToCustomerDataGrpc(this DbCustomerData entity)
         {
             CustomerDataGrpc data = new CustomerDataGrpc();
             data.CustomerCode = entity.CustomerCode;
@@ -82,9 +82,9 @@
         #endregion
 
         #region ColourCode
-        public static ColourCodeData MapToColourCodeData(this DbColourCode entity)
+        public static ColourCodeGrpc MapToColourCodeGrpc(this DbColourCode entity)
         {
-            ColourCodeData data = new ColourCodeData();
+            ColourCodeGrpc data = new ColourCodeGrpc();
             data.ClMk = entity.ClMk;
             data.ClCode = entity.ClCode;
             data.ColorName = entity.ColorName;
@@ -96,9 +96,9 @@
         #endregion
 
         #region MaterialGroups
-        public static MaterialGroupsData MapToMaterialGroupsData(this DbMaterialGroups entity)
+        public static MaterialGroupsGrpc MapToMaterialGroupsGrpc(this DbMaterialGroups entity)
         {
-            MaterialGroupsData data = new MaterialGroupsData();
+            MaterialGroupsGrpc data = new MaterialGroupsGrpc();
             data.MaterialGroup = entity.MaterialGroup;
             data.GroupDescription = entity.GroupDescription;
 
@@ -107,9 +107,9 @@
         #endregion
 
         #region MaterialTypes
-        public static MaterialTypesData MapToMaterialTypesData(this DbMaterialTypes entity)
+        public static MaterialTypesGrpc MapToMaterialTypesGrpc(this DbMaterialTypes entity)
         {
-            MaterialTypesData data = new MaterialTypesData();
+            MaterialTypesGrpc data = new MaterialTypesGrpc();
             data.MaterialGroup = entity.MaterialGroup;
             data.MaterialType = entity.MaterialType;
             data.TypeDescription = entity.TypeDescription;
@@ -119,9 +119,9 @@
         #endregion
 
         #region NPACustomer
-        public static NPACustomerData MapToNPACustomerData(this DbNPACustomer entity)
+        public static NPACustomerGrpc MapToNPACustomerGrpc(this DbNPACustomer entity)
         {
-            NPACustomerData data = new NPACustomerData();
+            NPACustomerGrpc data = new NPACustomerGrpc();
             data.Id = entity.Id;
             data.Code = entity.Code;
             data.Name = entity.Name;
@@ -139,9 +139,9 @@
         #endregion
 
         #region NPASupplier
-        public static NPASupplierData MapToNPASupplierData(this DbNPASupplier entity)
+        public static NPASupplierGrpc MapToNPASupplierGrpc(this DbNPASupplier entity)
         {
-            NPASupplierData data = new NPASupplierData();
+            NPASupplierGrpc data = new NPASupplierGrpc();
             data.Id = entity.Id;
             data.Code = entity.Code;
             data.Name = entity.Name;
@@ -160,9 +160,9 @@
         #endregion
 
         #region Suppliers
-        public static SuppliersData MapToSuppliersData(this DbSuppliers entity)
+        public static SuppliersGrpc MapToSuppliersGrpc(this DbSuppliers entity)
         {
-            SuppliersData data = new SuppliersData();
+            SuppliersGrpc data = new SuppliersGrpc();
             data.SupplierCode = entity.SupplierCode;
             data.SupplierName = entity.SupplierName;
 
@@ -171,9 +171,9 @@
         #endregion
 
         #region EmacsRFIView
-        public static EmacsRFIViewData MapToEmacsRFIViewData(this DbEmacsRFIView entity)
+        public static EmacsRFIViewGrpc MapToEmacsRFIViewGrpc(this DbEmacsRFIView entity)
         {
-            EmacsRFIViewData data = new EmacsRFIViewData();
+            EmacsRFIViewGrpc data = new EmacsRFIViewGrpc();
             data.SumitomoNumber = entity.SumitomoNumber;
             data.SumitomoDescription = entity.SumitomoDescription;
             data.SumitomoDescriptionEnglish = entity.SumitomoDescriptionEnglish;
@@ -232,9 +232,9 @@
         #endregion
 
         #region PARTMS
-        public static PARTMSData MapToPARTMSData(this DbPARTMS entity)
+        public static PARTMSGrpc MapToPARTMSGrpc(this DbPARTMS entity)
         {
-            PARTMSData data = new PARTMSData();
+            PARTMSGrpc data = new PARTMSGrpc();
             data.SumitomoNumber = entity.SumitomoNumber;
             data.SumitomoDescription = entity.SumitomoDescription;
             data.SumitomoDescriptionEnglish = entity.SumitomoDescriptionEnglish;
