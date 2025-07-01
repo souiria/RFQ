@@ -1,6 +1,4 @@
-﻿using System.Reflection.Emit;
-
-namespace Master.Extensions
+﻿namespace Master.Extensions
 {
     public static class MasterMappingExtensions
     {

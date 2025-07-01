@@ -9,13 +9,13 @@
             ListCurrencyGrpc listCurrencyGrpc = new ListCurrencyGrpc();
             for (int i = 0; i < 5; i++)
             {
-                CurrencyGrpc CurrencyGrpc = new CurrencyGrpc();
-                CurrencyGrpc.CurrencyName = $"TestName{i}";
-                CurrencyGrpc.CurrencyCode = $"TestCode{i}";
-                CurrencyGrpc.Id = Guid.NewGuid().ToString();
-                CurrencyGrpc.IsActive = true;
-                CurrencyGrpc.EuroRate = $"TestEuroRate{i}";
-                listCurrencyGrpc.CurrencyGrpc.Add(CurrencyGrpc);
+                CurrencyGrpc currencyGrpc = new CurrencyGrpc();
+                currencyGrpc.CurrencyName = $"TestName{i}";
+                currencyGrpc.CurrencyCode = $"TestCode{i}";
+                currencyGrpc.Id = Guid.NewGuid().ToString();
+                currencyGrpc.IsActive = true;
+                currencyGrpc.EuroRate = $"TestEuroRate{i}";
+                listCurrencyGrpc.CurrencyGrpc.Add(currencyGrpc);
             }
 
             CurrencyGrpc fixedCurrencyGrpc = new CurrencyGrpc();

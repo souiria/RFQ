@@ -8,6 +8,8 @@
 
         IResourceBuilder<ProjectResource> emacsAccessService = builder.AddProject<Projects.Emacs>("emacs-access-service");
 
+        IResourceBuilder<ProjectResource> nPRAccessService = builder.AddProject<Projects.NPR>("npr-access-service");
+
         IResourceBuilder<ProjectResource> apiService = builder.AddProject<Projects.SalesSystem_ApiService>("api-service");
 
         IResourceBuilder<ProjectResource> rfqManager = builder.AddProject<Projects.RfqManager>("RfqManager");

@@ -91,6 +91,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MastersAccess.Tests", "Sale
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmacsAccess.Tests", "EmacsAccess.Tests\EmacsAccess.Tests.csproj", "{DDC65F99-3EB5-4C56-8F56-1702E7BE9D65}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPRAccess.Tests", "NPRAccess.Tests\NPRAccess.Tests.csproj", "{48B41B9E-A1FE-49F8-8AED-57116080B74A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -255,6 +257,14 @@ Global
 		{DDC65F99-3EB5-4C56-8F56-1702E7BE9D65}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DDC65F99-3EB5-4C56-8F56-1702E7BE9D65}.Release|x64.ActiveCfg = Release|Any CPU
 		{DDC65F99-3EB5-4C56-8F56-1702E7BE9D65}.Release|x64.Build.0 = Release|Any CPU
+		{48B41B9E-A1FE-49F8-8AED-57116080B74A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48B41B9E-A1FE-49F8-8AED-57116080B74A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48B41B9E-A1FE-49F8-8AED-57116080B74A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{48B41B9E-A1FE-49F8-8AED-57116080B74A}.Debug|x64.Build.0 = Debug|Any CPU
+		{48B41B9E-A1FE-49F8-8AED-57116080B74A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48B41B9E-A1FE-49F8-8AED-57116080B74A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48B41B9E-A1FE-49F8-8AED-57116080B74A}.Release|x64.ActiveCfg = Release|Any CPU
+		{48B41B9E-A1FE-49F8-8AED-57116080B74A}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -290,6 +300,7 @@ Global
 		{0A0492AA-F879-4DF8-B461-695797D8EF54} = {89B6A227-43EB-4F2A-957C-AB70DC0ABF04}
 		{E3DBFAD9-3E30-4993-91B3-FF77DCD5C792} = {2193328D-16FA-4D41-9977-48C550461D4A}
 		{DDC65F99-3EB5-4C56-8F56-1702E7BE9D65} = {2193328D-16FA-4D41-9977-48C550461D4A}
+		{48B41B9E-A1FE-49F8-8AED-57116080B74A} = {2193328D-16FA-4D41-9977-48C550461D4A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {45532623-50AD-4761-959C-8E565670BB49}

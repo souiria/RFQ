@@ -1,6 +1,4 @@
-﻿using Emacs.Data.DTOs;
-
-namespace Emacs.Services
+﻿namespace Emacs.Services
 {
     public static class SampleEmacsDataService
     {
@@ -10,15 +8,15 @@ namespace Emacs.Services
             ListCombinedPartsGrpc listCombinedPartsGrpc = new ListCombinedPartsGrpc();
             for (int i = 0; i < 5; i++)
             {
-                CombinedPartsGrpc CombinedPartsGrpc = new CombinedPartsGrpc();
-                CombinedPartsGrpc.SumitomoNumber = $"TestSumitomoNumber{i}";
-                CombinedPartsGrpc.CustomerNumber = $"TestCustomerNumber{i}";
-                CombinedPartsGrpc.CustomerName = $"TestCustomerName{i}";
-                CombinedPartsGrpc.SupplierNumber = $"TestSupplierNumber{i}";
-                CombinedPartsGrpc.UniformSumitomoNumber = $"TestUniformSumitomoNumber{i}";
-                CombinedPartsGrpc.UniformCustomerNumber = $"TestUniformCustomerNumber{i}";
-                CombinedPartsGrpc.UniformSupplierNumber = $"TestUniformSupplierNumber{i}";
-                listCombinedPartsGrpc.CombinedPartsGrpc.Add(CombinedPartsGrpc);
+                CombinedPartsGrpc combinedPartsGrpc = new CombinedPartsGrpc();
+                combinedPartsGrpc.SumitomoNumber = $"TestSumitomoNumber{i}";
+                combinedPartsGrpc.CustomerNumber = $"TestCustomerNumber{i}";
+                combinedPartsGrpc.CustomerName = $"TestCustomerName{i}";
+                combinedPartsGrpc.SupplierNumber = $"TestSupplierNumber{i}";
+                combinedPartsGrpc.UniformSumitomoNumber = $"TestUniformSumitomoNumber{i}";
+                combinedPartsGrpc.UniformCustomerNumber = $"TestUniformCustomerNumber{i}";
+                combinedPartsGrpc.UniformSupplierNumber = $"TestUniformSupplierNumber{i}";
+                listCombinedPartsGrpc.CombinedPartsGrpc.Add(combinedPartsGrpc);
             }
 
             CombinedPartsGrpc fixedCombinedPartsGrpc = new CombinedPartsGrpc();
@@ -40,11 +38,11 @@ namespace Emacs.Services
             ListPartCategoryDetailGrpc listPartCategoryDetailGrpc = new ListPartCategoryDetailGrpc();
             for (int i = 0; i < 5; i++)
             {
-                PartCategoryDetailGrpc PartCategoryDetailGrpc = new PartCategoryDetailGrpc();
-                PartCategoryDetailGrpc.CategoryCode = $"TestCategoryCode{i}";
-                PartCategoryDetailGrpc.DetailedCategoryCode = i;
-                PartCategoryDetailGrpc.CategoryName = $"TestCategoryName{i}";
-                listPartCategoryDetailGrpc.PartCategoryDetailGrpc.Add(PartCategoryDetailGrpc);
+                PartCategoryDetailGrpc partCategoryDetailGrpc = new PartCategoryDetailGrpc();
+                partCategoryDetailGrpc.CategoryCode = $"TestCategoryCode{i}";
+                partCategoryDetailGrpc.DetailedCategoryCode = i;
+                partCategoryDetailGrpc.CategoryName = $"TestCategoryName{i}";
+                listPartCategoryDetailGrpc.PartCategoryDetailGrpc.Add(partCategoryDetailGrpc);
             }
 
             PartCategoryDetailGrpc fixedPartCategoryDetailGrpc = new PartCategoryDetailGrpc();
@@ -62,12 +60,12 @@ namespace Emacs.Services
             ListPartClassDetailGrpc listPartClassDetailGrpc = new ListPartClassDetailGrpc();
             for (int i = 0; i < 5; i++)
             {
-                PartClassDetailGrpc PartClassDetailGrpc = new PartClassDetailGrpc();
-                PartClassDetailGrpc.Class1 = $"TestClass1{i}";
-                PartClassDetailGrpc.Class1Name = $"TestClass2{i}";
-                PartClassDetailGrpc.Class2 = i;
-                PartClassDetailGrpc.Class2Name = $"TestClass2Name{i}";
-                listPartClassDetailGrpc.PartClassDetailGrpc.Add(PartClassDetailGrpc);
+                PartClassDetailGrpc partClassDetailGrpc = new PartClassDetailGrpc();
+                partClassDetailGrpc.Class1 = $"TestClass1{i}";
+                partClassDetailGrpc.Class1Name = $"TestClass2{i}";
+                partClassDetailGrpc.Class2 = i;
+                partClassDetailGrpc.Class2Name = $"TestClass2Name{i}";
+                listPartClassDetailGrpc.PartClassDetailGrpc.Add(partClassDetailGrpc);
             }
 
             PartClassDetailGrpc fixedPartClassDetailGrpc = new PartClassDetailGrpc();
@@ -86,10 +84,10 @@ namespace Emacs.Services
             ListPartGroupsGrpc listPartGroupsGrpc = new ListPartGroupsGrpc();
             for (int i = 0; i < 5; i++)
             {
-                PartGroupsGrpc PartGroupsGrpc = new PartGroupsGrpc();
-                PartGroupsGrpc.PartGroup = $"TestPartGroup{i}";
-                PartGroupsGrpc.GroupDescription = $"TestGroupDescription{i}";
-                listPartGroupsGrpc.PartGroupsGrpc.Add(PartGroupsGrpc);
+                PartGroupsGrpc partGroupsGrpc = new PartGroupsGrpc();
+                partGroupsGrpc.PartGroup = $"TestPartGroup{i}";
+                partGroupsGrpc.GroupDescription = $"TestGroupDescription{i}";
+                listPartGroupsGrpc.PartGroupsGrpc.Add(partGroupsGrpc);
             }
 
             PartGroupsGrpc fixedPartGroupsGrpc = new PartGroupsGrpc();
@@ -106,14 +104,14 @@ namespace Emacs.Services
             ListPartGroupsConstGrpc listPartGroupsConstGrpc = new ListPartGroupsConstGrpc();
             for (int i = 0; i < 5; i++)
             {
-                PartGroupsConstGrpc PartGroupsConstGrpc = new PartGroupsConstGrpc();
-                PartGroupsConstGrpc.Id = i;
-                PartGroupsConstGrpc.GroupNo = i;
-                PartGroupsConstGrpc.GroupPos = i;
-                PartGroupsConstGrpc.GroupName = $"TestGroupName{i}";
-                PartGroupsConstGrpc.Code = $"TestCode{i}";
-                PartGroupsConstGrpc.Description = $"TestDescription{i}";
-                listPartGroupsConstGrpc.PartGroupsConstGrpc.Add(PartGroupsConstGrpc);
+                PartGroupsConstGrpc partGroupsConstGrpc = new PartGroupsConstGrpc();
+                partGroupsConstGrpc.Id = i;
+                partGroupsConstGrpc.GroupNo = i;
+                partGroupsConstGrpc.GroupPos = i;
+                partGroupsConstGrpc.GroupName = $"TestGroupName{i}";
+                partGroupsConstGrpc.Code = $"TestCode{i}";
+                partGroupsConstGrpc.Description = $"TestDescription{i}";
+                listPartGroupsConstGrpc.PartGroupsConstGrpc.Add(partGroupsConstGrpc);
             }
 
             PartGroupsConstGrpc fixedPartGroupsConstGrpc = new PartGroupsConstGrpc();
@@ -156,13 +154,13 @@ namespace Emacs.Services
             ListColourCodeGrpc listColourCodeGrpc = new ListColourCodeGrpc();
             for (int i = 0; i < 5; i++)
             {
-                ColourCodeGrpc ColourCodeGrpc = new ColourCodeGrpc();
-                ColourCodeGrpc.ClMk = $"TestClMk{i}";
-                ColourCodeGrpc.ClCode = $"TestClCode{i}";
-                ColourCodeGrpc.ColorName = $"TestColorName{i}";
-                ColourCodeGrpc.WireUnitsFlag = 0;
-                ColourCodeGrpc.PartUnitsFlag = 0;
-                listColourCodeGrpc.ColourCodeGrpc.Add(ColourCodeGrpc);
+                ColourCodeGrpc colourCodeGrpc = new ColourCodeGrpc();
+                colourCodeGrpc.ClMk = $"TestClMk{i}";
+                colourCodeGrpc.ClCode = $"TestClCode{i}";
+                colourCodeGrpc.ColorName = $"TestColorName{i}";
+                colourCodeGrpc.WireUnitsFlag = 0;
+                colourCodeGrpc.PartUnitsFlag = 0;
+                listColourCodeGrpc.ColourCodeGrpc.Add(colourCodeGrpc);
             }
 
             ColourCodeGrpc fixedColourCodeGrpc = new ColourCodeGrpc();
@@ -182,10 +180,10 @@ namespace Emacs.Services
             ListMaterialGroupsGrpc listMaterialGroupsGrpc = new ListMaterialGroupsGrpc();
             for (int i = 0; i < 5; i++)
             {
-                MaterialGroupsGrpc MaterialGroupsGrpc = new MaterialGroupsGrpc();
-                MaterialGroupsGrpc.MaterialGroup = $"TestMaterialGroup{i}";
-                MaterialGroupsGrpc.GroupDescription = $"TestGroupDescription{i}";
-                listMaterialGroupsGrpc.MaterialGroupsGrpc.Add(MaterialGroupsGrpc);
+                MaterialGroupsGrpc materialGroupsGrpc = new MaterialGroupsGrpc();
+                materialGroupsGrpc.MaterialGroup = $"TestMaterialGroup{i}";
+                materialGroupsGrpc.GroupDescription = $"TestGroupDescription{i}";
+                listMaterialGroupsGrpc.MaterialGroupsGrpc.Add(materialGroupsGrpc);
             }
 
             MaterialGroupsGrpc fixedMaterialGroupsGrpc = new MaterialGroupsGrpc();
@@ -202,11 +200,11 @@ namespace Emacs.Services
             ListMaterialTypesGrpc listMaterialTypesGrpc = new ListMaterialTypesGrpc();
             for (int i = 0; i < 5; i++)
             {
-                MaterialTypesGrpc MaterialTypesGrpc = new MaterialTypesGrpc();
-                MaterialTypesGrpc.MaterialGroup = $"TestMaterialGroup{i}";
-                MaterialTypesGrpc.MaterialType = $"TestMaterialType{i}";
-                MaterialTypesGrpc.TypeDescription = $"TestTypeDescription{i}";
-                listMaterialTypesGrpc.MaterialTypesGrpc.Add(MaterialTypesGrpc);
+                MaterialTypesGrpc materialTypesGrpc = new MaterialTypesGrpc();
+                materialTypesGrpc.MaterialGroup = $"TestMaterialGroup{i}";
+                materialTypesGrpc.MaterialType = $"TestMaterialType{i}";
+                materialTypesGrpc.TypeDescription = $"TestTypeDescription{i}";
+                listMaterialTypesGrpc.MaterialTypesGrpc.Add(materialTypesGrpc);
             }
 
             MaterialTypesGrpc fixedMaterialTypesGrpc = new MaterialTypesGrpc();
@@ -224,19 +222,19 @@ namespace Emacs.Services
             ListNPACustomerGrpc listNPACustomerGrpc = new ListNPACustomerGrpc();
             for (int i = 0; i < 5; i++)
             {
-                NPACustomerGrpc NPACustomerGrpc = new NPACustomerGrpc();
-                NPACustomerGrpc.Id = i;
-                NPACustomerGrpc.Code = $"TestCode{i}";
-                NPACustomerGrpc.Name = $"TestName{i}";
-                NPACustomerGrpc.SubsidiaryId = i;
-                NPACustomerGrpc.BuyerId = i;
-                NPACustomerGrpc.Address = $"TestAddress{i}";
-                NPACustomerGrpc.Phone = $"TestPhone{i}";
-                NPACustomerGrpc.Email = $"TestEmail{i}";
-                NPACustomerGrpc.Contact = $"TestContact{i}";
-                NPACustomerGrpc.AlternateContact = $"TestAlternateContact{i}";
-                NPACustomerGrpc.Active = true;
-                listNPACustomerGrpc.NPACustomerGrpc.Add(NPACustomerGrpc);
+                NPACustomerGrpc nPACustomerGrpc = new NPACustomerGrpc();
+                nPACustomerGrpc.Id = i;
+                nPACustomerGrpc.Code = $"TestCode{i}";
+                nPACustomerGrpc.Name = $"TestName{i}";
+                nPACustomerGrpc.SubsidiaryId = i;
+                nPACustomerGrpc.BuyerId = i;
+                nPACustomerGrpc.Address = $"TestAddress{i}";
+                nPACustomerGrpc.Phone = $"TestPhone{i}";
+                nPACustomerGrpc.Email = $"TestEmail{i}";
+                nPACustomerGrpc.Contact = $"TestContact{i}";
+                nPACustomerGrpc.AlternateContact = $"TestAlternateContact{i}";
+                nPACustomerGrpc.Active = true;
+                listNPACustomerGrpc.NPACustomerGrpc.Add(nPACustomerGrpc);
             }
 
             NPACustomerGrpc fixedNPACustomerGrpc = new NPACustomerGrpc();
@@ -262,20 +260,20 @@ namespace Emacs.Services
             ListNPASupplierGrpc listNPASupplierGrpc = new ListNPASupplierGrpc();
             for (int i = 0; i < 5; i++)
             {
-                NPASupplierGrpc NPASupplierGrpc = new NPASupplierGrpc();
-                NPASupplierGrpc.Id = i;
-                NPASupplierGrpc.Code = $"TestCode{i}";
-                NPASupplierGrpc.Name = $"TestName{i}";
-                NPASupplierGrpc.SubsidiaryId = i;
-                NPASupplierGrpc.BuyerId = i;
-                NPASupplierGrpc.Address = $"TestAddress{i}";
-                NPASupplierGrpc.Phone = $"TestPhone{i}";
-                NPASupplierGrpc.Email = $"TestEmail{i}";
-                NPASupplierGrpc.Contact = $"TestContact{i}";
-                NPASupplierGrpc.AlternateContact = $"TestAlternateContact{i}";
-                NPASupplierGrpc.Active = true;
-                NPASupplierGrpc.JSupplier = true;
-                listNPASupplierGrpc.NPASupplierGrpc.Add(NPASupplierGrpc);
+                NPASupplierGrpc nPASupplierGrpc = new NPASupplierGrpc();
+                nPASupplierGrpc.Id = i;
+                nPASupplierGrpc.Code = $"TestCode{i}";
+                nPASupplierGrpc.Name = $"TestName{i}";
+                nPASupplierGrpc.SubsidiaryId = i;
+                nPASupplierGrpc.BuyerId = i;
+                nPASupplierGrpc.Address = $"TestAddress{i}";
+                nPASupplierGrpc.Phone = $"TestPhone{i}";
+                nPASupplierGrpc.Email = $"TestEmail{i}";
+                nPASupplierGrpc.Contact = $"TestContact{i}";
+                nPASupplierGrpc.AlternateContact = $"TestAlternateContact{i}";
+                nPASupplierGrpc.Active = true;
+                nPASupplierGrpc.JSupplier = true;
+                listNPASupplierGrpc.NPASupplierGrpc.Add(nPASupplierGrpc);
             }
 
             NPASupplierGrpc fixedNPASupplierGrpc = new NPASupplierGrpc();
@@ -302,10 +300,10 @@ namespace Emacs.Services
             ListSuppliersGrpc listSuppliersGrpc = new ListSuppliersGrpc();
             for (int i = 0; i < 5; i++)
             {
-                SuppliersGrpc SuppliersGrpc = new SuppliersGrpc();
-                SuppliersGrpc.SupplierCode = i;
-                SuppliersGrpc.SupplierName = $"TestSupplierName{i}";
-                listSuppliersGrpc.SuppliersGrpc.Add(SuppliersGrpc);
+                SuppliersGrpc suppliersGrpc = new SuppliersGrpc();
+                suppliersGrpc.SupplierCode = i;
+                suppliersGrpc.SupplierName = $"TestSupplierName{i}";
+                listSuppliersGrpc.SuppliersGrpc.Add(suppliersGrpc);
             }
 
             SuppliersGrpc fixedSuppliersGrpc = new SuppliersGrpc();
@@ -322,47 +320,47 @@ namespace Emacs.Services
             ListPARTMSGrpc listPARTMSGrpc = new ListPARTMSGrpc();
             for (int i = 0; i < 5; i++)
             {
-                PARTMSGrpc PARTMSGrpc = new PARTMSGrpc();
-                PARTMSGrpc.SumitomoNumber = $"TestSumitomoNumber{i}";
-                PARTMSGrpc.SumitomoDescription = $"TestSumitomoDescription{i}";
-                PARTMSGrpc.SumitomoDescriptionEnglish = $"TestSumitomoDescriptionEnglish{i}";
-                PARTMSGrpc.OldPartClass = $"TestOldPartClass{i}";
-                PARTMSGrpc.OldMaterial = $"TestOldMaterial{i}";
-                PARTMSGrpc.ClassDetailGroupCode = $"TestClassDetailGroupCode{i}";
-                PARTMSGrpc.ClassDetailId = $"TestClassDetailId{i}";
-                PARTMSGrpc.MaterialGroupId = $"TestMaterialGroupId{i}";
-                PARTMSGrpc.MaterialTypeId = $"TestMaterialTypeId{i}";
-                PARTMSGrpc.ColorCode = $"TestColorCode{i}";
-                PARTMSGrpc.NumberOfCavity = i;
-                PARTMSGrpc.InsideDiameter = i;
-                PARTMSGrpc.WallThickness = i;
-                PARTMSGrpc.Length = i;
-                PARTMSGrpc.WidthOrOutsideDiameter = i;
-                PARTMSGrpc.WidthOrOutsideDiameter = i;
-                PARTMSGrpc.HoleDiameter = i;
-                PARTMSGrpc.ShrinkRateLength = i;
-                PARTMSGrpc.NumberOfTapingSpots = i;
-                PARTMSGrpc.MassOrWeight = i;
-                PARTMSGrpc.Quantity = i;
-                PARTMSGrpc.UoM = $"TestUoM{i}";
-                PARTMSGrpc.Group1 = $"TestGroup1{i}";
-                PARTMSGrpc.Group2 = $"TestGroup2{i}";
-                PARTMSGrpc.Group3 = $"TestGroup3{i}";
-                PARTMSGrpc.Group4 = $"TestGroup4{i}";
-                PARTMSGrpc.CavityCount = $"TestCavityCount{i}";
-                PARTMSGrpc.Group6 = $"TestGroup6{i}";
-                PARTMSGrpc.Group7 = $"TestGroup7{i}";
-                PARTMSGrpc.Group8 = $"TestGroup8{i}";
-                PARTMSGrpc.CustomerId = $"TestCustomerId{i}";
-                PARTMSGrpc.MassOrWeight2 = i;
-                PARTMSGrpc.L1 = i;
-                PARTMSGrpc.L2 = i;
-                PARTMSGrpc.L3 = i;
-                PARTMSGrpc.PitchWidth = i;
-                PARTMSGrpc.Tilt = i;
-                PARTMSGrpc.Grease = i;
-                PARTMSGrpc.CategoryCode = $"TestCategoryCode{i}";
-                listPARTMSGrpc.PARTMSGrpc.Add(PARTMSGrpc);
+                PARTMSGrpc pARTMSGrpc = new PARTMSGrpc();
+                pARTMSGrpc.SumitomoNumber = $"TestSumitomoNumber{i}";
+                pARTMSGrpc.SumitomoDescription = $"TestSumitomoDescription{i}";
+                pARTMSGrpc.SumitomoDescriptionEnglish = $"TestSumitomoDescriptionEnglish{i}";
+                pARTMSGrpc.OldPartClass = $"TestOldPartClass{i}";
+                pARTMSGrpc.OldMaterial = $"TestOldMaterial{i}";
+                pARTMSGrpc.ClassDetailGroupCode = $"TestClassDetailGroupCode{i}";
+                pARTMSGrpc.ClassDetailId = $"TestClassDetailId{i}";
+                pARTMSGrpc.MaterialGroupId = $"TestMaterialGroupId{i}";
+                pARTMSGrpc.MaterialTypeId = $"TestMaterialTypeId{i}";
+                pARTMSGrpc.ColorCode = $"TestColorCode{i}";
+                pARTMSGrpc.NumberOfCavity = i;
+                pARTMSGrpc.InsideDiameter = i;
+                pARTMSGrpc.WallThickness = i;
+                pARTMSGrpc.Length = i;
+                pARTMSGrpc.WidthOrOutsideDiameter = i;
+                pARTMSGrpc.WidthOrOutsideDiameter = i;
+                pARTMSGrpc.HoleDiameter = i;
+                pARTMSGrpc.ShrinkRateLength = i;
+                pARTMSGrpc.NumberOfTapingSpots = i;
+                pARTMSGrpc.MassOrWeight = i;
+                pARTMSGrpc.Quantity = i;
+                pARTMSGrpc.UoM = $"TestUoM{i}";
+                pARTMSGrpc.Group1 = $"TestGroup1{i}";
+                pARTMSGrpc.Group2 = $"TestGroup2{i}";
+                pARTMSGrpc.Group3 = $"TestGroup3{i}";
+                pARTMSGrpc.Group4 = $"TestGroup4{i}";
+                pARTMSGrpc.CavityCount = $"TestCavityCount{i}";
+                pARTMSGrpc.Group6 = $"TestGroup6{i}";
+                pARTMSGrpc.Group7 = $"TestGroup7{i}";
+                pARTMSGrpc.Group8 = $"TestGroup8{i}";
+                pARTMSGrpc.CustomerId = $"TestCustomerId{i}";
+                pARTMSGrpc.MassOrWeight2 = i;
+                pARTMSGrpc.L1 = i;
+                pARTMSGrpc.L2 = i;
+                pARTMSGrpc.L3 = i;
+                pARTMSGrpc.PitchWidth = i;
+                pARTMSGrpc.Tilt = i;
+                pARTMSGrpc.Grease = i;
+                pARTMSGrpc.CategoryCode = $"TestCategoryCode{i}";
+                listPARTMSGrpc.PARTMSGrpc.Add(pARTMSGrpc);
             }
 
             PARTMSGrpc fixedPARTMSGrpc = new PARTMSGrpc();
