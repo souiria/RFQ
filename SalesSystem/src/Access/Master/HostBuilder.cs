@@ -1,7 +1,4 @@
-﻿using Master.Endpoints.GrpcServices;
-using Master.Services;
-
-namespace Master
+﻿namespace Master
 {
     public static class HostBuilder
     {

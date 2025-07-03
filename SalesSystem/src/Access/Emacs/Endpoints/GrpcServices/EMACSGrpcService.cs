@@ -29,10 +29,10 @@
 
         public override async Task<CombinedPartsCountGrpc> GetCombinedPartsGrpcCount(CombinedPartsCountGrpcRequest request, ServerCallContext context)
         {
-            CombinedPartsCountGrpc CombinedPartsCountGrpc = new();
+            CombinedPartsCountGrpc combinedPartsCountGrpc = new();
             Result<int> results = await _EMACSAccessService.GetCombinedPartsGrpcCount(context.CancellationToken);
-            CombinedPartsCountGrpc.Count = results.Value;
-            return CombinedPartsCountGrpc;
+            combinedPartsCountGrpc.Count = results.Value;
+            return combinedPartsCountGrpc;
         }
         #endregion
 

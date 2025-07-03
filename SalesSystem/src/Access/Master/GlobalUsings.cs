@@ -17,6 +17,7 @@ global using Master.Data.Interface;
 global using Master.Data.Model;
 global using Master.Data.Repository;
 global using Master.Data.Time;
+global using Master.Endpoints.GrpcServices;
 global using Master.Extensions;
 global using Master.Services;
 global using Microsoft.EntityFrameworkCore;
