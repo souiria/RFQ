@@ -7,11 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\greet.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\CPD.proto" GrpcServices="Server" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
+    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.71.0" />
+    <PackageReference Include="IDesign.Analyzers" Version="1.0.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.6" />
+    <PackageReference Include="Scrutor" Version="6.1.0" />
+    <PackageReference Include="Seq.Extensions.Logging" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Debug\SalesSystem.ServiceDefaults\SalesSystem.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\Utilities\SharedKernal\SharedKernel.csproj" />
   </ItemGroup>
 
 </Project>
