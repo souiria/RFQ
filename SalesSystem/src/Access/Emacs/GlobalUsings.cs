@@ -1,12 +1,10 @@
-﻿global using System.ComponentModel.DataAnnotations.Schema;
-global using System.Globalization;
+﻿global using System.Globalization;
 global using System.Reflection;
 global using Ardalis.Specification;
 global using Ardalis.Specification.EntityFrameworkCore;
+global using Emacs.CQRS.Query;
+global using Emacs.CQRS.Specification;
 global using Emacs.Data.Context;
-global using Emacs.Data.CQRS.Query;
-global using Emacs.Data.CQRS.Specification;
-global using Emacs.Data.DTOs;
 global using Emacs.Data.Interface;
 global using Emacs.Data.Model;
 global using Emacs.Data.Repository;

@@ -1,0 +1,19 @@
+﻿global using System.Reflection;
+global using Ardalis.Specification;
+global using Ardalis.Specification.EntityFrameworkCore;
+global using CPD.CQRS.Query.MatSuppMstView;
+global using CPD.CQRS.Specification.MatSuppMstView;
+global using CPD.Data.Context;
+global using CPD.Data.Interface;
+global using CPD.Data.Models;
+global using CPD.Data.Repository;
+global using CPD.Data.Time;
+global using CPD.Endpoints.GrpcServices;
+global using CPD.Extentions;
+global using CPD.Services;
+global using Google.Protobuf.WellKnownTypes;
+global using Grpc.Core;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using SharedKernel;
+
