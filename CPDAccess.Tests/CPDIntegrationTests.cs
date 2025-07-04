@@ -53,6 +53,20 @@ namespace CPDAccess.Tests
             Assert.That(getMattSuppMstViewGrpcReply.Result.MatSuppMstViewGrpc.Count, countConstraint);
         }
         #endregion
+        #region HarnessCostingCalculationData
+        [Test]
+        public void GetHarnessCostingCalculationDataViewTest_Success()
+        {
+            HarnessCostingCalculationDataViewGrpcRequest request = new HarnessCostingCalculationDataViewGrpcRequest();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetAllHarnessCostingCalculationDataView));
+
+            Task<ListHarnessCostingCalculationDataGrpc> getHarnessCostingCalculationDataViewGrpcReply = _GrpcService.GetAllHarnessCostingCalculationDataView(request, serverCallContext);
+
+            Assert.That(getHarnessCostingCalculationDataViewGrpcReply.Result.HarnessCostingCalculationDataGrpc, Is.Not.Null);
+            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            Assert.That(getHarnessCostingCalculationDataViewGrpcReply.Result.HarnessCostingCalculationDataGrpc.Count, countConstraint);
+        }
+        #endregion
 
         ServerCallContext CreateServerContext(string methodName)
         {

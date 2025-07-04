@@ -8,6 +8,12 @@
 
         ListMatSuppMstGrpc _ListMatSuppMstView;
         #endregion
+
+        #region HarnessCostingCalculationData
+
+        ListHarnessCostingCalculationDataGrpc _ListHarnessCostingCalculationDataView;
+        #endregion
+
         #endregion
 
         #region Fields and Properties
@@ -16,6 +22,12 @@
 
         IQueryHandler<GetMattSuppMstViewQuery, List<MatSuppMstViewGrpc>>? _MatSuppMstViewHandler;
         bool _MatSuppMstViewRefreshInProgress;
+        #endregion
+
+        #region HarnessCostingCalculationData
+
+        IQueryHandler<GetHarnessCostingCalculationDataViewQuery, List<HarnessCostingCalculationDataGrpc>>? _HarnessCostingCalculationDataViewHandler;
+        bool _HarnessCostingCalculationDataViewRefreshInProgress;
         #endregion
 
         readonly IServiceProvider _ServiceProvider;
@@ -27,6 +39,11 @@
             #region MatSuppMst
             _ListMatSuppMstView = new ListMatSuppMstGrpc();
             _MatSuppMstViewRefreshInProgress = false;
+            #endregion
+
+            #region HarnessCostingCalculationData
+            _ListHarnessCostingCalculationDataView = new ListHarnessCostingCalculationDataGrpc();
+            _HarnessCostingCalculationDataViewRefreshInProgress = false;
             #endregion
 
             _ServiceProvider = serviceProvider;
@@ -52,6 +69,22 @@
             {
                 await PopulateMatSuppMstView(cancellationToken);
                 return _ListMatSuppMstView;
+            }
+        }
+        #endregion
+
+        #region HarnessCostingCalculationData
+        public async Task<ListHarnessCostingCalculationDataGrpc> GetHarnessCostingCalculationDataView(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if(_ListHarnessCostingCalculationDataView.HarnessCostingCalculationDataGrpc.Any())
+            {
+                return _ListHarnessCostingCalculationDataView;
+            }
+            else
+            {
+                await PopulateHarnessCostingCalculationDataView(cancellationToken);
+                return _ListHarnessCostingCalculationDataView;
             }
         }
         #endregion
@@ -88,11 +121,42 @@
         }
         #endregion
 
+        #region HarnessCostingCalculationData
+        public async Task<bool> PopulateHarnessCostingCalculationDataView(CancellationToken cancellationToken)
+        {
+            if (!_HarnessCostingCalculationDataViewRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _HarnessCostingCalculationDataViewHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetHarnessCostingCalculationDataViewQuery, List<HarnessCostingCalculationDataGrpc>>>();
+                    _MatSuppMstViewRefreshInProgress = true;
+                    GetHarnessCostingCalculationDataViewQuery query = new GetHarnessCostingCalculationDataViewQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<HarnessCostingCalculationDataGrpc>> results = await _HarnessCostingCalculationDataViewHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _ListHarnessCostingCalculationDataView.HarnessCostingCalculationDataGrpc.Clear();
+                        _ListHarnessCostingCalculationDataView.HarnessCostingCalculationDataGrpc.AddRange(results.Value);
+                    }
+
+                    _HarnessCostingCalculationDataViewRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
         #endregion
 
         void PopulateSampleData()
         {
-            _ListMatSuppMstView = SampleCPDDataService.PopulatetMatSuppMstView();
+            _ListMatSuppMstView = SampleCPDDataService.PopulateMatSuppMstView();
+            _ListHarnessCostingCalculationDataView = SampleCPDDataService.PopulateHarnessCostingCalculationDataView();
         }
     }
 }

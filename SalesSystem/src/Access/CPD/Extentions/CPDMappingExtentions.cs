@@ -43,5 +43,25 @@
             return data;
         }
         #endregion
+
+        #region HarnessCostingCalculationData
+        public static HarnessCostingCalculationDataGrpc MapToHarnessCostingCalculationDataGrpc(this DbHarnessCostingCalculationDataView entity)
+        {
+            HarnessCostingCalculationDataGrpc data = new HarnessCostingCalculationDataGrpc();
+            data.MaterialNo = entity.Material_No;
+            data.SupplierC = entity.Supplier_C;
+            data.PoUnit = entity.Po_Unit;
+            data.IssueUnit = entity.Issue_Unit;
+            data.BomUnit = entity.Bom_Unit;
+            data.UnitConfacPo = entity.Unit_Confac_Po;
+            data.UnitConfacIssue = entity.Unit_Confac_Issue;
+            data.PoPrice = (double?)entity.Po_Price;
+            data.CurrC = entity.Curr_C;
+            data.PoRatio = entity.Po_Ratio;
+            data.ExchangeRate = (double?)entity.ExchangeRate;
+            data.ExchangeRateUpdDt = entity.ExchangeRate_Upd_Dt?.ToUniversalTime().ToTimestamp();
+            return data;
+        }
+        #endregion
     }
 }

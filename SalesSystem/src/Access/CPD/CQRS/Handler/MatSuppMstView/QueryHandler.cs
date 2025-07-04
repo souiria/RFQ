@@ -18,8 +18,8 @@
             List<DbMattSuppMstView> results = await _Repository.ListAsync(spec, cancellationToken);
             foreach (DbMattSuppMstView result in results)
             {
-                MatSuppMstViewGrpc h1NPRViewGrpc = result.MapToMatSuppMstViewGrpc();
-                _MatSuppMstViews.Add(h1NPRViewGrpc);
+                MatSuppMstViewGrpc matSuppMstViewGrpc = result.MapToMatSuppMstViewGrpc();
+                _MatSuppMstViews.Add(matSuppMstViewGrpc);
             }
 
             return _MatSuppMstViews;

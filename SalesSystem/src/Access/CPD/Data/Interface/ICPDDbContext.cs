@@ -4,5 +4,7 @@
     {
         DbSet<DbMattSuppMstView> MattSuppMstView
         { get; }
+        DbSet<DbHarnessCostingCalculationDataView> DbHarnessCostingCalculationDataView
+        { get; }
     }
 }

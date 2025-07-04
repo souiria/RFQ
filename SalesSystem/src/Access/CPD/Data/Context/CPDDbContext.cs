@@ -9,6 +9,7 @@
             _Dispatcher = dispatcher;
         }
         public DbSet<DbMattSuppMstView> MattSuppMstView => Set<DbMattSuppMstView>();
+        public DbSet<DbHarnessCostingCalculationDataView> DbHarnessCostingCalculationDataView => Set<DbHarnessCostingCalculationDataView>();
 
         #region OnModelCreating
 

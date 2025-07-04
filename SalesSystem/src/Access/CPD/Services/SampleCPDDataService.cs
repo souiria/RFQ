@@ -3,7 +3,7 @@
     public static class SampleCPDDataService
     {
         #region MattSuppMst
-        public static ListMatSuppMstGrpc PopulatetMatSuppMstView()
+        public static ListMatSuppMstGrpc PopulateMatSuppMstView()
         {
             ListMatSuppMstGrpc listMatSuppMstViewGrpc = new ListMatSuppMstGrpc();
             for (int i = 0; i < 5; i++)
@@ -81,6 +81,46 @@
             fixedMatSuppMstView.ExchangeRateUpdDt = DateTime.Now.ToUniversalTime().ToTimestamp();
             listMatSuppMstViewGrpc.MatSuppMstViewGrpc.Add(fixedMatSuppMstView);
             return listMatSuppMstViewGrpc;
+        }
+        #endregion
+
+        #region HarnessCostingCalculationData
+        public static ListHarnessCostingCalculationDataGrpc PopulateHarnessCostingCalculationDataView()
+        {
+            ListHarnessCostingCalculationDataGrpc listHarnessCostingCalculationDataGrpc = new ListHarnessCostingCalculationDataGrpc();
+            for (int i = 0; i < 5; i++)
+            {
+                HarnessCostingCalculationDataGrpc harnessCostingCalculationDataGrpc = new HarnessCostingCalculationDataGrpc();
+                harnessCostingCalculationDataGrpc.MaterialNo = $"TestMaterialNo{i}";
+                harnessCostingCalculationDataGrpc.SupplierC = $"TestSupplierC{i}";
+                harnessCostingCalculationDataGrpc.PoUnit = $"TestPoUnit{i}";
+                harnessCostingCalculationDataGrpc.IssueUnit = $"TestIssueUnit{i}";
+                harnessCostingCalculationDataGrpc.BomUnit = $"TestBomUnit{i}";
+                harnessCostingCalculationDataGrpc.UnitConfacPo = i;
+                harnessCostingCalculationDataGrpc.UnitConfacIssue = i;
+                harnessCostingCalculationDataGrpc.PoPrice = i;
+                harnessCostingCalculationDataGrpc.CurrC = $"TestCurrC{i}";
+                harnessCostingCalculationDataGrpc.PoRatio = i;
+                harnessCostingCalculationDataGrpc.ExchangeRate = i;
+                harnessCostingCalculationDataGrpc.ExchangeRateUpdDt = DateTime.Now.ToUniversalTime().ToTimestamp();
+                listHarnessCostingCalculationDataGrpc.HarnessCostingCalculationDataGrpc.Add(harnessCostingCalculationDataGrpc);
+            }
+
+            HarnessCostingCalculationDataGrpc fixedHarnessCostingCalculationDataGrpc = new HarnessCostingCalculationDataGrpc();
+            fixedHarnessCostingCalculationDataGrpc.MaterialNo = $"TestMaterialNo";
+            fixedHarnessCostingCalculationDataGrpc.SupplierC = $"TestSupplierC";
+            fixedHarnessCostingCalculationDataGrpc.PoUnit = $"TestPoUnit";
+            fixedHarnessCostingCalculationDataGrpc.IssueUnit = $"TestIssueUnit";
+            fixedHarnessCostingCalculationDataGrpc.BomUnit = $"TestBomUnit";
+            fixedHarnessCostingCalculationDataGrpc.UnitConfacPo = 0;
+            fixedHarnessCostingCalculationDataGrpc.UnitConfacIssue = 0;
+            fixedHarnessCostingCalculationDataGrpc.PoPrice = 0;
+            fixedHarnessCostingCalculationDataGrpc.CurrC = $"TestCurrC";
+            fixedHarnessCostingCalculationDataGrpc.PoRatio = 0;
+            fixedHarnessCostingCalculationDataGrpc.ExchangeRate = 0;
+            fixedHarnessCostingCalculationDataGrpc.ExchangeRateUpdDt = DateTime.Now.ToUniversalTime().ToTimestamp();
+            listHarnessCostingCalculationDataGrpc.HarnessCostingCalculationDataGrpc.Add(fixedHarnessCostingCalculationDataGrpc);
+            return listHarnessCostingCalculationDataGrpc;
         }
         #endregion
     }
