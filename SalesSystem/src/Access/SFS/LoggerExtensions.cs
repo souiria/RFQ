@@ -1,7 +1,4 @@
-﻿
- 
-
-namespace SFS
+﻿namespace SFS
 {
     static class LoggerExtensions
     {

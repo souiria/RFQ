@@ -1,7 +1,4 @@
-﻿
-using SFS.Data.Model;
-
-namespace SFS.Data.Interface
+﻿namespace SFS.Data.Interface
 {
    public interface ISFSDbContext
     {
