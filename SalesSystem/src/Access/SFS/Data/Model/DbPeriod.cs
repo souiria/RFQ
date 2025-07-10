@@ -1,5 +1,4 @@
 ﻿
-
 namespace SFS.Data.Model
 {
  public class DbPeriod : IAggregateRoot

@@ -1,7 +1,7 @@
 ﻿
 namespace SFS.Data.Model
 {
-   public class DbForcast : IAggregateRoot
+   public class DbForecast : IAggregateRoot
     {
         public int Period 
         { get; set; }

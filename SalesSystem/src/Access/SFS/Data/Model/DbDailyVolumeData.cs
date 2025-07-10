@@ -1,7 +1,7 @@
 ﻿
 namespace SFS.Data.Model
 {
-    class DbDailyVolumeData : IAggregateRoot
+    public class DbDailyVolumeData : IAggregateRoot
     {
         public int Id
         { get; set; }
