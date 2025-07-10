@@ -1,8 +1,7 @@
 ﻿
-
 namespace SFS.Data.DTOs
 {
-   public class ForcastDto
+   public class ForecastDto
     {
         public int Period
         { get; set; }
