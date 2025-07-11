@@ -3,7 +3,7 @@ namespace SFS.Data.Model
 {
     public class DbCarModel : IAggregateRoot
     {
-        public Guid? Id
+        public int? Id
         { get; set; }
         public string? ModelCode 
         { get; set; }
