@@ -1,0 +1,47 @@
+﻿using CDb.Data.Model.Components;
+using CDb.Enums;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace CDb.Data.Configuration.Components
+{
+    public class DbSubAssemblyConfiguration : IEntityTypeConfiguration<DbSubAssembly>
+    {
+        public void Configure(EntityTypeBuilder<DbSubAssembly> builder)
+        {
+            builder.ToTable("SubAssemblies");
+
+            builder
+                .Property(c => c.Content)
+                .IsRequired()
+                .HasMaxLength(32);
+
+            builder
+                .Property(c => c.Function)
+                .IsRequired()
+                .HasMaxLength(32);
+
+            builder
+                .Property(c => c.AdditionalInfo)
+                .IsRequired()
+                .HasMaxLength(32);
+
+            builder
+                .HasOne(c => c.TerminalFamily)
+                .WithMany()
+                .HasForeignKey(c => c.TerminalFamilyId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+                .HasOne(c => c.TerminalSize)
+                .WithMany()
+                .HasForeignKey(c => c.TerminalSizeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+                .Property(c => c.Color)
+                .IsRequired()
+                .HasDefaultValue(ColorType.X);
+        }
+    }
+}
