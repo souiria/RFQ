@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SalesSystem\src\Access\Emacs\Emacs.csproj" />
+    <ProjectReference Include="..\..\src\Access\CPD\CPD.csproj" />
   </ItemGroup>
 
   <ItemGroup>
