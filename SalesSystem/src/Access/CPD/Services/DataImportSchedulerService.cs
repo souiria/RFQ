@@ -27,6 +27,9 @@
                 check = await _CPDAccessService.PopulateMatSuppMstView(stoppingToken);
                 await LogDataPopulationSuccess("MatSuppMstView", check);
 
+                check = await _CPDAccessService.PopulateHarnessCostingCalculationDataView(stoppingToken);
+                await LogDataPopulationSuccess("HarnessCostingCalculationDataView", check);
+
             }
 
             return true;

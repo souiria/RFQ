@@ -13,6 +13,7 @@ service CPD {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply);
   rpc GetAllMatSuppMstView (MatSuppMstViewGrpcRequest) returns (ListMatSuppMstGrpc);
+  rpc GetAllHarnessCostingCalculationDataView (HarnessCostingCalculationDataViewGrpcRequest) returns (ListHarnessCostingCalculationDataGrpc);
 }
 
 // The request message containing the user's name.
@@ -69,4 +70,28 @@ message MatSuppMstViewGrpc {
 
 message ListMatSuppMstGrpc {
 	repeated MatSuppMstViewGrpc MatSuppMstViewGrpc = 1;
+}
+
+message HarnessCostingCalculationDataViewGrpcRequest {
+	int32 position = 1;
+	int32 takeAmount = 2;
+}
+
+message HarnessCostingCalculationDataGrpc {
+	google.protobuf.StringValue Material_No = 1;
+	google.protobuf.StringValue Supplier_C = 2;
+	google.protobuf.StringValue Po_Unit = 3;
+	google.protobuf.StringValue Issue_Unit = 4;
+	google.protobuf.StringValue Bom_Unit = 5;
+	google.protobuf.Int32Value Unit_Confac_Po = 6;
+	google.protobuf.Int32Value Unit_Confac_Issue = 7;
+	google.protobuf.DoubleValue Po_Price = 8;
+	google.protobuf.StringValue Curr_C = 9;
+	google.protobuf.Int32Value Po_Ratio = 10;
+	google.protobuf.DoubleValue ExchangeRate = 11;
+	google.protobuf.Timestamp ExchangeRate_Upd_Dt = 12;
+}
+
+message ListHarnessCostingCalculationDataGrpc {
+	repeated HarnessCostingCalculationDataGrpc HarnessCostingCalculationDataGrpc = 1;
 }

@@ -1,7 +1,9 @@
 ﻿global using System.Reflection;
 global using Ardalis.Specification;
 global using Ardalis.Specification.EntityFrameworkCore;
+global using CPD.CQRS.Query.HarnessCostingCalculationDataView;
 global using CPD.CQRS.Query.MatSuppMstView;
+global using CPD.CQRS.Specification.HarnessCostingCalculationDataView;
 global using CPD.CQRS.Specification.MatSuppMstView;
 global using CPD.Data.Context;
 global using CPD.Data.Interface;
@@ -16,4 +18,3 @@ global using Grpc.Core;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using SharedKernel;
-
