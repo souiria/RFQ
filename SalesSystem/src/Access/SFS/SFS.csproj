@@ -8,18 +8,6 @@
 	<ItemGroup>
 	  <Protobuf Include="Protos\SFS.proto" GrpcServices="Both" />
 	</ItemGroup>
-  <ItemGroup>
-    <Folder Include="CQRS\Handler\CalculationType\" />
-    <Folder Include="CQRS\Handler\CarModel\" />
-    <Folder Include="CQRS\Handler\Customer\" />
-    <Folder Include="CQRS\Handler\CustomerNonWorkingDays\" />
-    <Folder Include="CQRS\Handler\Forecast\" />
-    <Folder Include="CQRS\Handler\DailyVolumeData\" />
-    <Folder Include="CQRS\Handler\MonthlyVolumeData\" />
-    <Folder Include="CQRS\Handler\Site\" />
-    <Folder Include="CQRS\Handler\Profile\" />
-    <Folder Include="CQRS\Handler\Period\" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
