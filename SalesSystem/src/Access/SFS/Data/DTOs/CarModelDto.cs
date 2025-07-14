@@ -3,7 +3,7 @@ namespace SFS.Data.DTOs
 {
     public class CarModelDto
     {
-        public Guid? Id
+        public int? Id
         { get; set; }
         public string? ModelCode
         { get; set; }
