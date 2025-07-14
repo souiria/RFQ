@@ -1,6 +1,4 @@
-﻿using CDb.Enums;
-
-namespace CDb.Data.Model.Components
+﻿namespace CDb.Data.Model.Components
 {
     public class DbSupport : DbComponent
     {

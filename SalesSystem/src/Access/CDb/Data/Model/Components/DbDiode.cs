@@ -1,19 +1,17 @@
-﻿using CDb.Enums;
-
-namespace CDb.Data.Model.Components
+﻿namespace CDb.Data.Model.Components
 {
     public class DbDiode : DbComponent
     {
-        public decimal Amperage 
+        public decimal Amperage
         { get; set; }
-        public string Description 
+        public string Description
         { get; set; }
-        public string AdditionalInformation 
+        public string AdditionalInformation
         { get; set; }
-        public ColorType Color 
+        public ColorType Color
         { get; set; }
 
-        public DbDiode() 
+        public DbDiode()
         {
             Amperage = 0;
             Description = string.Empty;

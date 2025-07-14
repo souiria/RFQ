@@ -1,9 +1,4 @@
-﻿using CDb.Data.Model.Components;
-using CDb.Enums;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace CDb.Data.Configuration.Components
+﻿namespace CDb.Data.Configuration.Components
 {
     public class DbWireProtectionConfiguration : IEntityTypeConfiguration<DbWireProtection>
     {
@@ -37,7 +32,7 @@ namespace CDb.Data.Configuration.Components
 
             builder.Property(c => c.AdditionalInformation)
                 .IsRequired()
-                .HasMaxLength(32);  
+                .HasMaxLength(32);
 
             builder
                 .Property(c => c.Color)

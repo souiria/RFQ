@@ -1,25 +1,24 @@
 ﻿using CDb.Data.Model.Masters;
-using CDb.Enums;
 
 namespace CDb.Data.Model.Components
 {
     public class DbSubAssembly : DbComponent
     {
-        public string Content 
+        public string Content
         { get; set; }
-        public string Function 
+        public string Function
         { get; set; }
-        public string AdditionalInfo 
+        public string AdditionalInfo
         { get; set; }
-        public Guid? TerminalFamilyId 
+        public Guid? TerminalFamilyId
         { get; set; }
-        public DbTerminalFamily TerminalFamily 
+        public DbTerminalFamily TerminalFamily
         { get; set; }
-        public Guid? TerminalSizeId 
+        public Guid? TerminalSizeId
         { get; set; }
-        public DbTerminalSize TerminalSize 
+        public DbTerminalSize TerminalSize
         { get; set; }
-        public ColorType Color 
+        public ColorType Color
         { get; set; }
 
         public DbSubAssembly()

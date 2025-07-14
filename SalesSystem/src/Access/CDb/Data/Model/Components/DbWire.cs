@@ -1,27 +1,26 @@
 ﻿using CDb.Data.Model.Masters;
-using CDb.Enums;
 
 namespace CDb.Data.Model.Components
 {
     public class DbWire : DbComponent
     {
-        public Guid WireTypeId 
+        public Guid WireTypeId
         { get; set; }
-        public DbWireType WireType 
-        { get; set; } 
-        public decimal WireSection 
+        public DbWireType WireType
         { get; set; }
-        public int WireCount 
+        public decimal WireSection
         { get; set; }
-        public string Flexibility 
+        public int WireCount
         { get; set; }
-        public decimal InsulationThickness 
+        public string Flexibility
         { get; set; }
-        public decimal BendingDiameter 
+        public decimal InsulationThickness
         { get; set; }
-        public ColorType Color 
+        public decimal BendingDiameter
         { get; set; }
-        public PlatingType PlatingType 
+        public ColorType Color
+        { get; set; }
+        public PlatingType PlatingType
         { get; set; }
 
         public DbWire()

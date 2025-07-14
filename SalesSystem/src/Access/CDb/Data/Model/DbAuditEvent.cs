@@ -1,22 +1,18 @@
-﻿using CDb.Enums;
-using Master.Data.Time;
-using SharedKernel;
-
-namespace CDb.Data.Model
+﻿namespace CDb.Data.Model
 {
     public class DbAuditEvent
     {
-        public Guid Id 
+        public Guid Id
         { get; set; }
-        public AuditEvent EventType 
+        public AuditEvent EventType
         { get; set; }
-        public string Table 
+        public string Table
         { get; set; }
-        public Guid UserId 
+        public Guid UserId
         { get; set; }
-        public Guid TableId 
+        public Guid TableId
         { get; set; }
-        public DateTime Date 
+        public DateTime Date
         { get; set; }
         public DbAuditEvent()
         {

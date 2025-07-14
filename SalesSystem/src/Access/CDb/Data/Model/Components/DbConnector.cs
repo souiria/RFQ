@@ -1,33 +1,32 @@
 ﻿using CDb.Data.Model.Masters;
-using CDb.Enums;
 
 namespace CDb.Data.Model.Components
 {
     public class DbConnector : DbComponent
     {
-        public Guid? WaterproofTypeId 
+        public Guid? WaterproofTypeId
         { get; set; }
-        public DbWaterproofType? WaterproofType 
+        public DbWaterproofType? WaterproofType
         { get; set; }
-        public MatingType MatingType 
+        public MatingType MatingType
         { get; set; }
-        public decimal SizeOfCavity 
+        public decimal SizeOfCavity
         { get; set; }
-        public int NumberOfCavities 
+        public int NumberOfCavities
         { get; set; }
-        public bool IsHybrid 
+        public bool IsHybrid
         { get; set; }
-        public bool IsModule 
+        public bool IsModule
         { get; set; }
-        public Guid? TerminalFamilyId 
+        public Guid? TerminalFamilyId
         { get; set; }
-        public DbTerminalFamily? TerminalFamily 
+        public DbTerminalFamily? TerminalFamily
         { get; set; }
-        public Guid? TerminalSizeId 
+        public Guid? TerminalSizeId
         { get; set; }
-        public DbTerminalSize? TerminalSize 
+        public DbTerminalSize? TerminalSize
         { get; set; }
-        public string? AdditionalInfo 
+        public string? AdditionalInfo
         { get; set; }
         public ColorType Color
         { get; set; }

@@ -1,20 +1,18 @@
-﻿using CDb.Enums;
-
-namespace CDb.Data.Model
+﻿namespace CDb.Data.Model
 {
     public class DbDrawingNumber
     {
-        public Guid Id 
+        public Guid Id
         { get; set; }
-        public string Number 
+        public string Number
         { get; set; }
-        public Guid ComponentId 
+        public Guid ComponentId
         { get; set; } = Guid.Empty;
-        public DbComponent Component 
+        public DbComponent Component
         { get; set; }
-        public DrawingNumberType DrawingNumberType 
+        public DrawingNumberType DrawingNumberType
         { get; set; }
-        public bool IsDeleted 
+        public bool IsDeleted
         { get; set; }
 
         public DbDrawingNumber()

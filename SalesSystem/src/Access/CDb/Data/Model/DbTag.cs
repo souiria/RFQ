@@ -1,23 +1,21 @@
-﻿using CDb.Enums;
-
-namespace CDb.Data.Model
+﻿namespace CDb.Data.Model
 {
     public class DbTag
     {
-        public Guid Id 
+        public Guid Id
         { get; set; }
-        public TagType TagType 
+        public TagType TagType
         { get; set; }
-        public string Name 
+        public string Name
         { get; set; }
-        public string Description 
+        public string Description
         { get; set; }
-        public ICollection<DbComponent> Components 
+        public ICollection<DbComponent> Components
         { get; init; }
-        public bool IsDeleted 
+        public bool IsDeleted
         { get; set; }
 
-        public DbTag() 
+        public DbTag()
         {
             Id = Guid.NewGuid();
             TagType = TagType.Project;

@@ -1,12 +1,10 @@
-﻿using CDb.Enums;
-
-namespace CDb.Data.Model
+﻿namespace CDb.Data.Model
 {
     public class DbPartNumber
     {
-        public Guid Id 
+        public Guid Id
         { get; set; }
-        public string Name 
+        public string Name
         { get; set; }
         public string? Description
         { get; set; }
@@ -16,7 +14,7 @@ namespace CDb.Data.Model
         { get; set; }
         public PartNumberType PartNumberType
         { get; set; }
-        public bool IsDeleted 
+        public bool IsDeleted
         { get; set; }
 
         public DbPartNumber()

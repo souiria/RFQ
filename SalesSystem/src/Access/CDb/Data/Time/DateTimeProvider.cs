@@ -1,6 +1,4 @@
-﻿using SharedKernel;
-
-namespace Master.Data.Time
+﻿namespace Master.Data.Time
 {
     sealed class DateTimeProvider : IDateTimeProvider
     {

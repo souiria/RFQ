@@ -1,6 +1,4 @@
 ﻿using CDb.Data.Model.Masters;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CDb.Data.Configuration.Masters
 {
@@ -14,7 +12,7 @@ namespace CDb.Data.Configuration.Masters
             builder.Property(x => x.Name)
                 .IsRequired()
                 .HasMaxLength(32);
-            
+
             builder.Property(x => x.Description)
                 .HasMaxLength(256);
 

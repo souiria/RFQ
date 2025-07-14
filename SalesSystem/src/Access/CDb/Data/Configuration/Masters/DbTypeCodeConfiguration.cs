@@ -1,6 +1,4 @@
 ﻿using ComponentDB.Infrastructure.DataMaster;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CDb.Data.Configuration.Masters
 {
@@ -47,7 +45,7 @@ namespace CDb.Data.Configuration.Masters
             DbTypeCode hood = new DbTypeCode("HOOD");
             DbTypeCode hssl = new DbTypeCode("HSSL");
             DbTypeCode jun1 = new DbTypeCode("JUN1");
-            DbTypeCode lock_  = new DbTypeCode("LOCK");
+            DbTypeCode lock_ = new DbTypeCode("LOCK");
             DbTypeCode mnwp = new DbTypeCode("MNWP");
             DbTypeCode nowp = new DbTypeCode("NOWP");
             DbTypeCode nsls = new DbTypeCode("NSLS");

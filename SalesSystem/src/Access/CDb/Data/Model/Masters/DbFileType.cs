@@ -1,5 +1,3 @@
-using System;
-
 namespace CDb.Data.Model.Masters
 {
     public class DbFileType

@@ -1,26 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using CDb.Data.Model.Masters;
-using CDb.Enums;
-
-namespace CDb.Data.Model.Components
+﻿namespace CDb.Data.Model.Components
 {
     public class DbEyelet : DbComponent
     {
-        public int StudSize 
+        public int StudSize
         { get; set; }
-        public decimal Thickness 
+        public decimal Thickness
         { get; set; }
-        public int Angle 
+        public int Angle
         { get; set; }
-        public bool IsWaterproof 
+        public bool IsWaterproof
         { get; set; }
-        public bool IsCr6Free 
+        public bool IsCr6Free
         { get; set; }
-        public string Family 
+        public string Family
         { get; set; }
-        public string AdditionalInfo 
+        public string AdditionalInfo
         { get; set; }
-        public PlatingType PlatingType 
+        public PlatingType PlatingType
         { get; set; }
 
         public DbEyelet()

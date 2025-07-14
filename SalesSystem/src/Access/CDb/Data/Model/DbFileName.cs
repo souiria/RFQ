@@ -1,23 +1,22 @@
 ﻿using CDb.Data.Model.Masters;
-using CDb.Enums;
 
 namespace CDb.Data.Model
 {
     public class DbFileName
     {
-        public Guid Id 
+        public Guid Id
         { get; set; }
-        public DateTime LastModified 
+        public DateTime LastModified
         { get; set; }
-        public Guid FileTypeId 
+        public Guid FileTypeId
         { get; set; }
-        public DbFileType FileType 
+        public DbFileType FileType
         { get; set; }
-        public string Name 
+        public string Name
         { get; set; }
-        public string Description 
+        public string Description
         { get; set; }
-        public ICollection<DbComponent> Components 
+        public ICollection<DbComponent> Components
         { get; init; }
         public DbFileName()
         {

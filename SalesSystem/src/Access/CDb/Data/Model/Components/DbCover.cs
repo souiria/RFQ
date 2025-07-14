@@ -1,31 +1,30 @@
 ﻿using CDb.Data.Model.Masters;
-using CDb.Enums;
 
 namespace CDb.Data.Model.Components
 {
     public class DbCover : DbComponent
     {
-        public decimal Diameter 
+        public decimal Diameter
         { get; set; }
-        public string Function 
+        public string Function
         { get; set; }
-        public string AdditionalInformation 
+        public string AdditionalInformation
         { get; set; }
         public Guid? CoverTypeId
         { get; set; }
-        public DbCoverType? CoverType 
+        public DbCoverType? CoverType
         { get; set; }
-        public decimal Length 
+        public decimal Length
         { get; set; }
-        public decimal Width 
+        public decimal Width
         { get; set; }
-        public bool IsNoiseDampening 
+        public bool IsNoiseDampening
         { get; set; }
-        public bool IsTearable 
+        public bool IsTearable
         { get; set; }
-        public bool IsPreCut 
+        public bool IsPreCut
         { get; set; }
-        public ColorType Color 
+        public ColorType Color
         { get; set; }
 
         public DbCover()

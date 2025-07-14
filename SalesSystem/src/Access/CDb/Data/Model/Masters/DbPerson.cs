@@ -1,29 +1,25 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using CDb.Enums;
-
-namespace CDb.Data.Model.Masters
+﻿namespace CDb.Data.Model.Masters
 {
     public class DbPerson
     {
-        public Guid Id 
+        public Guid Id
         { get; set; }
-        public PersonType PersonType 
+        public PersonType PersonType
         { get; set; }
 
-        public string Name 
+        public string Name
         { get; set; }
-        public string? Description 
+        public string? Description
         { get; set; }
-        public string Phone 
+        public string Phone
         { get; set; }
-        public string Email 
+        public string Email
         { get; set; }
-        public string? Address 
+        public string? Address
         { get; set; }
-        public bool IsDeleted 
+        public bool IsDeleted
         { get; set; }
-        public ICollection<DbComponent> Components 
+        public ICollection<DbComponent> Components
         { get; init; }
 
         public DbPerson()

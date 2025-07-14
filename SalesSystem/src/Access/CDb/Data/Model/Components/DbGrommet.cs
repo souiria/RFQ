@@ -1,14 +1,12 @@
-﻿using CDb.Enums;
-
-namespace CDb.Data.Model.Components
+﻿namespace CDb.Data.Model.Components
 {
     public class DbGrommet : DbComponent
     {
-        public string Location 
+        public string Location
         { get; set; }
-        public string AdditionalInformation 
+        public string AdditionalInformation
         { get; set; }
-        public ColorType Color 
+        public ColorType Color
         { get; set; }
 
         public DbGrommet()

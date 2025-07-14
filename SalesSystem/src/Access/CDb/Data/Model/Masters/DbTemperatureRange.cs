@@ -2,18 +2,18 @@
 {
     public class DbTemperatureRange
     {
-        public Guid Id 
+        public Guid Id
         { get; set; }
-        public string TemperatureRange 
+        public string TemperatureRange
         { get; set; }
-        public int TemperatureLow 
+        public int TemperatureLow
         { get; set; }
-        public int TemperatureHigh 
+        public int TemperatureHigh
         { get; set; }
-        public bool IsCustom 
+        public bool IsCustom
         { get; set; }
 
-        public ICollection<DbComponent> Components 
+        public ICollection<DbComponent> Components
         { get; init; }
 
         public DbTemperatureRange()

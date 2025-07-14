@@ -1,24 +1,21 @@
-﻿using CDb.Data.Model.Components;
-using Microsoft.EntityFrameworkCore;
-
-namespace CDb.Data.Model.Masters
+﻿namespace CDb.Data.Model.Masters
 {
     [Index(nameof(Name), IsUnique = true)]
     public class DbTerminalFamily
     {
         public Guid Id
         { get; set; }
-        public string Name 
+        public string Name
         { get; set; }
-        public string Description 
+        public string Description
         { get; set; }
-        public ICollection<DbTerminalSize> Sizes 
+        public ICollection<DbTerminalSize> Sizes
         { get; init; }
-        public ICollection<DbTerminal> Terminals 
+        public ICollection<DbTerminal> Terminals
         { get; init; }
-        public ICollection<DbConnector> Connectors 
+        public ICollection<DbConnector> Connectors
         { get; init; }
-        public bool IsDeleted 
+        public bool IsDeleted
         { get; set; }
 
         public DbTerminalFamily()

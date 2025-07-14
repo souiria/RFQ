@@ -1,17 +1,14 @@
-﻿using System.Collections.ObjectModel;
-using CDb.Data.Model.Masters;
-using CDb.Enums;
-using SharedKernel;
+﻿using CDb.Data.Model.Masters;
 
 namespace CDb.Data.Model
 {
     public abstract class DbComponent : IAggregateRoot
     {
-        public Guid Id 
+        public Guid Id
         { get; set; }
         public int SheetNumber
         { get; set; }
-        public string Name 
+        public string Name
         { get; set; }
         public string? Issue
         { get; set; }
@@ -50,19 +47,19 @@ namespace CDb.Data.Model
         { get; set; }
 
         // audit properties
-        public DateTime Created 
+        public DateTime Created
         { get; set; }
-        public Guid CreatedById 
+        public Guid CreatedById
         { get; set; }
-        public DateTime? Updated 
+        public DateTime? Updated
         { get; set; }
-        public Guid? UpdatedById 
+        public Guid? UpdatedById
         { get; set; }
-        public DateTime? Validated 
+        public DateTime? Validated
         { get; set; }
-        public Guid ValidatedById 
+        public Guid ValidatedById
         { get; set; }
-        public string? GroupName 
+        public string? GroupName
         { get; set; }
 
         // relationship properties 
@@ -86,7 +83,7 @@ namespace CDb.Data.Model
         public ICollection<DbFileName> FileNames
         { get; init; }
         // many-to-many relationship with DbPerson - buyer, responsible and customer/supplier contacts
-        public ICollection<DbPerson> Contacts 
+        public ICollection<DbPerson> Contacts
         { get; init; }
         // many-to-many relationship with DbPartner - suppliers, customers, manufacturers, etc.
         public ICollection<DbPartner> Partners
@@ -95,15 +92,15 @@ namespace CDb.Data.Model
         public ICollection<DbPartNumber> PartNumbers
         { get; init; }
         // many-to-many relationship with DbTag - tags associated with the component (GC5 Project field goes here as a Project type tag
-        public ICollection<DbTag> Tags 
+        public ICollection<DbTag> Tags
         { get; init; }
 
-        public Guid? UnitOfMeasureId 
+        public Guid? UnitOfMeasureId
         { get; set; }
         //self aggregation
-        public ICollection<DbComponent> Children 
+        public ICollection<DbComponent> Children
         { get; init; }
-        public ICollection<DbComponent> Parents 
+        public ICollection<DbComponent> Parents
         { get; init; }
 
         protected DbComponent()
@@ -116,7 +113,7 @@ namespace CDb.Data.Model
             Weight = 0.0m;
             Comment = null;
             TypeCode = null;
-            UserField4 = null;  
+            UserField4 = null;
             UserField5 = null;
             GraphicSymbol = null;
             InDb = null;

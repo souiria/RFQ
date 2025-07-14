@@ -1,8 +1,4 @@
-﻿using CDb.Data.Model.Components;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace CDb.Data.Configuration.Components
+﻿namespace CDb.Data.Configuration.Components
 {
     public class DbCableConfiguration : IEntityTypeConfiguration<DbCable>
     {

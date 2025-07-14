@@ -1,14 +1,12 @@
-﻿using CDb.Enums;
-
-namespace CDb.Data.Model.Components
+﻿namespace CDb.Data.Model.Components
 {
     public class DbPlug : DbComponent
     {
-        public string Description 
+        public string Description
         { get; set; }
-        public decimal Diameter 
+        public decimal Diameter
         { get; set; }
-        public ColorType Color 
+        public ColorType Color
         { get; set; }
 
         public DbPlug()

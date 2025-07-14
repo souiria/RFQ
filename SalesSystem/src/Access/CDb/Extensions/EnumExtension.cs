@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace CDb.Extensions
+﻿namespace CDb.Extensions
 {
     public static class EnumExtension
     {

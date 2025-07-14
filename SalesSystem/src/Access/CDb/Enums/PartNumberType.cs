@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace CDb.Enums
+﻿namespace CDb.Enums
 {
     public enum PartNumberType
     {

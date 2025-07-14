@@ -2,11 +2,11 @@
 {
     public class DbTypeCode
     {
-        public Guid Id 
+        public Guid Id
         { get; set; }
-        public string Code 
+        public string Code
         { get; set; }
-        public bool IsActive 
+        public bool IsActive
         { get; set; }
 
         public DbTypeCode()

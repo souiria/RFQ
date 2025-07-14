@@ -2,7 +2,7 @@
 {
     public enum UserType
     {
-        GuestUser,      
+        GuestUser,
         SalesStdUser,
         QualityUser,
         AppApproverUser,

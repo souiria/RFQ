@@ -1,20 +1,17 @@
-using System;
-using System.ComponentModel.DataAnnotations;
-
 namespace CDb.Data.Model.Masters
 {
     public class DbClipType
     {
-        public Guid Id 
+        public Guid Id
         { get; set; }
 
-        public string Code 
+        public string Code
         { get; set; }
 
-        public string Description 
+        public string Description
         { get; set; }
 
-        public bool IsActive 
+        public bool IsActive
         { get; set; }
         public DbClipType()
         {

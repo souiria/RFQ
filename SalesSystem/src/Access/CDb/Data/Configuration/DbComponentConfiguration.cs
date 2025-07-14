@@ -1,6 +1,4 @@
 ﻿using CDb.Data.Model;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CDb.Data.Configuration
 {

@@ -1,32 +1,30 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using CDb.Data.Model.Masters;
-using CDb.Enums;
+﻿using CDb.Data.Model.Masters;
 
 namespace CDb.Data.Model.Components
 {
-    public class DbTerminal :DbComponent
+    public class DbTerminal : DbComponent
     {
-        public Guid TerminalFamilyId 
+        public Guid TerminalFamilyId
         { get; set; }
-        public DbTerminalFamily TerminalFamily 
+        public DbTerminalFamily TerminalFamily
         { get; set; }
-        public Guid TerminalSizeId 
+        public Guid TerminalSizeId
         { get; set; }
-        public DbTerminalSize TerminalSize 
+        public DbTerminalSize TerminalSize
         { get; set; }
-        public Guid WireTypeId 
-        { get; set; }   
-        public DbWireType WireType 
+        public Guid WireTypeId
         { get; set; }
-        public string CrimpingIssues 
+        public DbWireType WireType
         { get; set; }
-        public DbWaterproofType WaterproofType 
+        public string CrimpingIssues
         { get; set; }
-        public MatingType MatingType 
+        public DbWaterproofType WaterproofType
         { get; set; }
-        public string AdditionalInformation 
+        public MatingType MatingType
         { get; set; }
-        public PlatingType PlatingType 
+        public string AdditionalInformation
+        { get; set; }
+        public PlatingType PlatingType
         { get; set; }
 
         public DbTerminal()

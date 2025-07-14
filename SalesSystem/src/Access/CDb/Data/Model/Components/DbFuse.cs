@@ -1,21 +1,20 @@
 ﻿using CDb.Data.Model.Masters;
-using CDb.Enums;
 
 namespace CDb.Data.Model.Components
 {
     public class DbFuse : DbComponent
     {
-        public Guid? FuseTypeId 
+        public Guid? FuseTypeId
         { get; set; }
-        public DbFuseType? FuseType 
+        public DbFuseType? FuseType
         { get; set; }
-        public decimal Amperage 
+        public decimal Amperage
         { get; set; }
-        public string Description 
+        public string Description
         { get; set; }
-        public string AdditionalInfo 
+        public string AdditionalInfo
         { get; set; }
-        public ColorType Color 
+        public ColorType Color
         { get; set; }
 
         public DbFuse()

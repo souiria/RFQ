@@ -1,19 +1,18 @@
 ﻿using CDb.Data.Model.Masters;
-using CDb.Enums;
 
 namespace CDb.Data.Model.Components
 {
-    public class DbMiscComponent :DbComponent
+    public class DbMiscComponent : DbComponent
     {
-        public Guid ComponentTypeId 
+        public Guid ComponentTypeId
         { get; set; }
-        public DbMiscComponentType ComponentType 
+        public DbMiscComponentType ComponentType
         { get; set; }
         public string? Dimension
         { get; set; }
-        public string? AdditionaInfo 
+        public string? AdditionaInfo
         { get; set; }
-        public ColorType Color 
+        public ColorType Color
         { get; set; }
 
         public DbMiscComponent()
@@ -25,5 +24,5 @@ namespace CDb.Data.Model.Components
             AdditionaInfo = null;
             Color = ColorType.X; // Default value
         }
-    }   
+    }
 }

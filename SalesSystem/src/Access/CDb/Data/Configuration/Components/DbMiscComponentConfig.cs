@@ -1,9 +1,4 @@
-﻿using CDb.Data.Model.Components;
-using CDb.Enums;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace CDb.Data.Configuration.Components
+﻿namespace CDb.Data.Configuration.Components
 {
     public class DbMiscComponentConfig : IEntityTypeConfiguration<DbMiscComponent>
     {

@@ -1,5 +1,4 @@
 ﻿using CDb.Data.Model.Masters;
-using CDb.Enums;
 
 namespace CDb.Data.Model.Components
 {
@@ -9,17 +8,17 @@ namespace CDb.Data.Model.Components
         { get; set; }
         public DbWireProtectionType WireProtectionType
         { get; set; }
-        public string Description 
+        public string Description
         { get; set; }
-        public decimal TapeWidth 
+        public decimal TapeWidth
         { get; set; }
-        public decimal TubeDiameter 
+        public decimal TubeDiameter
         { get; set; }
-        public string Specification 
+        public string Specification
         { get; set; }
-        public string AdditionalInformation 
+        public string AdditionalInformation
         { get; set; }
-        public ColorType Color 
+        public ColorType Color
         { get; set; }
 
         public DbWireProtection()

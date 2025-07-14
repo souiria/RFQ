@@ -1,8 +1,4 @@
-﻿using CDb.Data.Model.Components;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace CDb.Data.Configuration.Components
+﻿namespace CDb.Data.Configuration.Components
 {
     public class DbClipConfiguration : IEntityTypeConfiguration<DbClip>
     {
@@ -21,7 +17,7 @@ namespace CDb.Data.Configuration.Components
             builder.Property(c => c.DimensionCode)
                 .IsRequired()
                 .HasMaxLength(32);
-            
+
             builder.Property(c => c.ClipOrientationStart)
                 .IsRequired();
 

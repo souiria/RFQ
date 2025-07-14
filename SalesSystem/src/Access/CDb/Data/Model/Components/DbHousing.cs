@@ -1,12 +1,10 @@
-﻿using CDb.Enums;
-
-namespace CDb.Data.Model.Components
+﻿namespace CDb.Data.Model.Components
 {
     public class DbHousing : DbComponent
-    {   
-        public string Description 
+    {
+        public string Description
         { get; set; }
-        public int RowCount 
+        public int RowCount
         { get; set; }
 
         public DbHousing()

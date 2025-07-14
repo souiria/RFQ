@@ -1,21 +1,20 @@
 ﻿using CDb.Data.Model.Masters;
-using CDb.Enums;
 
 namespace CDb.Data.Model.Components
 {
     public class DbSleeve : DbComponent
     {
-        public string Description 
+        public string Description
         { get; set; }
-        public decimal Diameter 
+        public decimal Diameter
         { get; set; }
-        public decimal Length 
+        public decimal Length
         { get; set; }
-        public Guid WaterproofTypeId 
+        public Guid WaterproofTypeId
         { get; set; }
-        public DbWaterproofType WaterproofType 
+        public DbWaterproofType WaterproofType
         { get; set; }
-        public ColorType Color 
+        public ColorType Color
         { get; set; }
 
         public DbSleeve()
