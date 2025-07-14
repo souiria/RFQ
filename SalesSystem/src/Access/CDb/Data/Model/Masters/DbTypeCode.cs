@@ -1,4 +1,4 @@
-﻿namespace ComponentDB.Infrastructure.DataMaster
+﻿namespace CDb.Data.Model.Masters
 {
     public class DbTypeCode
     {

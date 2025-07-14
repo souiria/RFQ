@@ -3,7 +3,6 @@ global using CDb.Data.Model;
 global using CDb.Data.Model.Components;
 global using CDb.Data.Model.Masters;
 global using CDb.Enums;
-global using ComponentDB.Infrastructure.DataMaster;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using SharedKernel;
