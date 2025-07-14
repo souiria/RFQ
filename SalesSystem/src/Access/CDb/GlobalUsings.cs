@@ -2,6 +2,7 @@
 global using CDb.Data.Model;
 global using CDb.Data.Model.Components;
 global using CDb.Data.Model.Masters;
+global using CDb.Data.Time;
 global using CDb.Enums;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;

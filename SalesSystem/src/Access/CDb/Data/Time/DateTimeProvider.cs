@@ -1,4 +1,4 @@
-﻿namespace Master.Data.Time
+﻿namespace CDb.Data.Time
 {
     sealed class DateTimeProvider : IDateTimeProvider
     {
