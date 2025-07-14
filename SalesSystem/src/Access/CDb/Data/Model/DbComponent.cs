@@ -1,6 +1,4 @@
-﻿using CDb.Data.Model.Masters;
-
-namespace CDb.Data.Model
+﻿namespace CDb.Data.Model
 {
     public abstract class DbComponent : IAggregateRoot
     {

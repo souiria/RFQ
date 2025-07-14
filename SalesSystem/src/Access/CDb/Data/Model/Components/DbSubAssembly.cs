@@ -1,6 +1,4 @@
-﻿using CDb.Data.Model.Masters;
-
-namespace CDb.Data.Model.Components
+﻿namespace CDb.Data.Model.Components
 {
     public class DbSubAssembly : DbComponent
     {

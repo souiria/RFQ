@@ -1,6 +1,4 @@
-﻿using CDb.Data.Model.Masters;
-
-namespace CDb.Data.Configuration.Masters
+﻿namespace CDb.Data.Configuration.Masters
 {
     public class DbFuseTypeConfiguration : IEntityTypeConfiguration<DbFuseType>
     {

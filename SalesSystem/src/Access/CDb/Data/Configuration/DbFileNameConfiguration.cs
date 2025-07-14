@@ -1,6 +1,4 @@
-﻿using CDb.Data.Model;
-
-namespace CDb.Data.Configuration
+﻿namespace CDb.Data.Configuration
 {
     public class DbFileNameConfiguration : IEntityTypeConfiguration<DbFileName>
     {

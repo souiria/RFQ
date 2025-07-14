@@ -1,6 +1,4 @@
-﻿using ComponentDB.Infrastructure.DataMaster;
-
-namespace CDb.Data.Configuration.Masters
+﻿namespace CDb.Data.Configuration.Masters
 {
     public class DbTypeCodeConfiguration : IEntityTypeConfiguration<DbTypeCode>
     {

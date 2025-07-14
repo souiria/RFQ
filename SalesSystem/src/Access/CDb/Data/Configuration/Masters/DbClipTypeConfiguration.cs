@@ -1,5 +1,3 @@
-using CDb.Data.Model.Masters;
-
 namespace CDb.Data.Configuration.Masters
 {
     public class DbClipTypeConfiguration : IEntityTypeConfiguration<DbClipType>
