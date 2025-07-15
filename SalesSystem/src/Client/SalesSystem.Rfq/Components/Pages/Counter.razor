@@ -1,5 +1,10 @@
 ﻿@page "/counter"
+@using Azure.Monitor.OpenTelemetry.Exporter
+@using Microsoft.Extensions.Logging
+@using System.Diagnostics
 @rendermode InteractiveServer
+@inject ILoggerFactory loggerFactory
+@* @inject IJSRuntime JSRuntime *@
 
 <PageTitle>Counter</PageTitle>
 
@@ -7,13 +12,27 @@
 
 <p role="status">Current count: @currentCount</p>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<button id="clickMe" class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
 
 @code {
     private int currentCount = 0;
 
-    private void IncrementCount()
+
+    private  void IncrementCount()
     {
+ 
+        // var logger = loggerFactory.CreateLogger("testing");
+        // using (logger.BeginScope(new Dictionary<string, object> { { "session.Id", Guid.NewGuid() }, { "user.Id", "Williams, Darran (TDD)" }, { "enduser.id", "Williams, Darran (TDD)" } }))
+        // {
+        //     logger.LogInformation("Button clicked: Increment Count");
+           
+        // }
+
+        // logger.LogInformation("{microsoft.custom_event.name} {session.Id} {enduser.id}", "Button Click TEST: Increment Count", Guid.NewGuid(), "Williams, Darran (TDD)");
+        //JSRuntime.InvokeVoidAsync("appInsights.trackEvent({name:'IncrementCount', properties: {buttonId: 'clickMe'}})").GetAwaiter();
         currentCount++;
     }
+
+
 }

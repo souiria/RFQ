@@ -44,6 +44,15 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        // var activitySource = new System.Diagnostics.ActivitySource("SEWS-E.Commercial");
+        // var activity = activitySource.StartActivity("GetWeatherAsync");
+        // activity?.Start();
+        // activity?.SetTag("enduser.id", "Darran");
+       // string test = ClaimsPrincipalUser.Identity.Name;
+        //var UserName = httpContextAccessor.HttpContext!.User.Identity!.Name;
+
+
         forecasts = await WeatherApi.GetWeatherAsync();
-    }
+        //activity?.Stop();
+    } 
 }

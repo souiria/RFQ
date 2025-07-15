@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components.Authorization;
 using SalesSystem.Rfq;
 using SalesSystem.Rfq.Components;
 
@@ -6,14 +7,15 @@ class Program
     static void Main(string[] args)
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
+        //Add Authentication for User
+        builder.AddUserAuthentication();
         // Add service defaults & Aspire client integrations.
         builder.AddServiceDefaults();
 
         // Add services to the container.
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
-
+         
         builder.Services.AddOutputCache();
 
         builder.Services.AddHttpClient<WeatherApiClient>(client =>
@@ -42,6 +44,8 @@ class Program
 
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();
+
+        app.UseMiddleware<UserContextEnrichmentMiddleware>();
 
         app.MapDefaultEndpoints();
 

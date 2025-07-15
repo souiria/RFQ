@@ -13,21 +13,27 @@ namespace SalesSystem.ServiceDefaults
 {
     public class ActivityEnrichingProcessor : BaseProcessor<Activity>
     {
-        ICustomAuthenticationProvider _CustomAuthenticationProvider;
-        public ActivityEnrichingProcessor(ICustomAuthenticationProvider authenticationStateProvider) 
+        /// <summary>
+        /// ICustomAuthenticationProvider _CustomAuthenticationProvider;
+        /// </summary>
+        /// <param name="authenticationStateProvider"></param>
+        public ActivityEnrichingProcessor() 
         { 
-        _CustomAuthenticationProvider = authenticationStateProvider;
+       // _CustomAuthenticationProvider = authenticationStateProvider;
         }
-        public override async void OnEnd(Activity activity)
+        public override void OnEnd(Activity activity)
         {
-            // The updated activity will be available to all processors which are called after this processor.
-            //var test = context.User.Identity.Name;
-            IIdentity user = await _CustomAuthenticationProvider.GetCurrentUser();
-            string? userName = user.Name;
-            if (user != null)
-            {
-                activity?.SetTag("enduser.id", userName);
-            }
+           // if (_CustomAuthenticationProvider != null)
+           // {
+                // The updated activity will be available to all processors which are called after this processor.
+                //var test = context.User.Identity.Name;
+               // IIdentity user = await _CustomAuthenticationProvider.GetCurrentUser();
+              //  string? userName = "testUser";
+              //  if (userName != null)
+              //  {
+                   // activity?.SetTag("enduser.id", userName);
+              //  }
+            //} 
         }
     }
 }

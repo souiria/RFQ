@@ -1,5 +1,6 @@
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -7,6 +8,12 @@ using Microsoft.Extensions.Logging;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using SalesSystem.ServiceDefaults;
+using SharedKernel;
+using Microsoft.AspNetCore.Authentication.Negotiate;
+using OpenTelemetry.Resources;
+using Elastic.OpenTelemetry;
+using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Extensions.Hosting
 {
@@ -15,8 +22,25 @@ namespace Microsoft.Extensions.Hosting
     // To learn more about using this project, see https://aka.ms/dotnet/aspire/service-defaults
     public static class Extensions
     {
+
+        public static TBuilder AddUserAuthentication<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
+        {
+            builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme).AddNegotiate();
+            builder.Services.AddAuthorization(options =>
+            {
+                options.FallbackPolicy = options.DefaultPolicy;
+            });
+            builder.Services.AddCascadingAuthenticationState();
+            builder.Services.AddScoped<CustomAuthenticationStateProvider>();
+            builder.Services.AddScoped<AuthenticationStateProvider>(p => p.GetRequiredService<CustomAuthenticationStateProvider>());
+            builder.Services.AddHttpContextAccessor();
+
+            return builder;
+        }
+ 
         public static TBuilder AddServiceDefaults<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
         {
+
             builder.ConfigureOpenTelemetry();
 
             builder.AddDefaultHealthChecks();
@@ -61,8 +85,8 @@ namespace Microsoft.Extensions.Hosting
                     tracing.AddSource(builder.Environment.ApplicationName)
                         .AddAspNetCoreInstrumentation()
                         // Uncomment the following line to enable gRPC instrumentation (requires the OpenTelemetry.Instrumentation.GrpcNetClient package)
-                        //.AddGrpcClientInstrumentation()
-                        .AddHttpClientInstrumentation();
+                        .AddGrpcClientInstrumentation()
+                        .AddHttpClientInstrumentation();                                   
                 });
 
             builder.AddOpenTelemetryExporters();
@@ -73,18 +97,77 @@ namespace Microsoft.Extensions.Hosting
         static TBuilder AddOpenTelemetryExporters<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
         {
             bool useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
+            bool useAPM = !string.IsNullOrWhiteSpace(builder.Configuration["ELASTIC_OTEL_EXPORTER_OTLP_ENDPOINT"]);
 
-            if (useOtlpExporter)
+            //Use Aspire if no APM endpoint set
+            if (useOtlpExporter & !useAPM)
             {
                 builder.Services.AddOpenTelemetry().UseOtlpExporter();
             }
 
+            //Use APM if endpoint is set
+            if (useOtlpExporter & useAPM) 
+            {       
+                string test = builder.Configuration["ELASTIC_OTEL_EXPORTER_OTLP_ENDPOINT"]!;
+                //http://localhost:8200/v1/logs
+
+                builder.Services.AddElasticOpenTelemetry().ConfigureResource(
+                     resourceBuilder => resourceBuilder.AddService(builder.Environment.ApplicationName)
+                 )
+                 .WithMetrics(metrics =>
+                                    {
+                                        metrics.AddAspNetCoreInstrumentation()
+                                            .AddHttpClientInstrumentation()
+                                            .AddRuntimeInstrumentation()
+                                           // .AddMeter("Microsoft.AspNetCore.Hosting")
+                                           // .AddMeter("Microsoft.AspNetCore.Server.Kestrel")
+                                          //  .AddMeter("Microsoft.AspNetCore.Http.Connections")
+                                            //.AddMeter("Microsoft.AspNetCore.Routing")
+                                           // .AddMeter("Microsoft.AspNetCore.Diagnostics")
+                                           //  .AddMeter("Microsoft.AspNetCore.RateLimiting")
+                                            .AddOtlpExporter("metrics", opt =>
+                                               {
+                                                   opt.Protocol = OpenTelemetry
+                                                   .Exporter
+                                                   .OtlpExportProtocol
+                                                   .HttpProtobuf;
+                                                   opt.Endpoint = new Uri(
+                                                   "http://localhost:8200/v1/metrics"
+                                                    );
+                                               });
+                                    })
+                 .WithTracing(
+                     tracerProviderBuilder =>
+                         tracerProviderBuilder
+                             .AddSource(builder.Environment.ApplicationName)
+                             .AddAspNetCoreInstrumentation()
+                             .AddGrpcClientInstrumentation()
+                             .AddHttpClientInstrumentation()
+                             .AddSqlClientInstrumentation()
+                             .AddOtlpExporter("trace", opt =>
+                             {
+                                 opt.Protocol = OpenTelemetry
+                                     .Exporter
+                                     .OtlpExportProtocol
+                                     .HttpProtobuf;
+                                 opt.Endpoint = new Uri(
+                                     "http://localhost:8200/v1/traces"
+                                 );
+                             })
+                 );
+
+                //  builder.AddElasticOpenTelemetry(b => b.ConfigureResource(r => r.AddService(builder.Environment.ApplicationName))); 
+            }
+
             // Uncomment the following lines to enable the Azure Monitor exporter (requires the Azure.Monitor.OpenTelemetry.AspNetCore package)
             if (!string.IsNullOrEmpty(builder.Configuration["AzureMonitor:ConnectionString"]))
-            {
+            {                    
+               // builder.Services.ConfigureOpenTelemetryTracerProvider((sp, builder) =>  builder.AddProcessor(new ActivityEnrichingProcessor()));
                 builder.Services.AddOpenTelemetry()
                    .UseAzureMonitor();
             }
+
+  
 
             return builder;
         }
