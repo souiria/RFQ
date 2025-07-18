@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "Protos/CommonTypes.proto";
+
+option csharp_namespace = "CDb";
+package cdb;
+
+service PersonService {
+  rpc GetAllPersonGrpc (PersonRequest) returns (ListPersonGrpc);
+  rpc GetPersonGrpcById (PersonRequest) returns (PersonGrpc);
+  rpc GetPersonGrpcByIsActive (PersonRequest) returns (ListPersonGrpc);
+  rpc DoPersonCrud (PersonRequest) returns (CDbCrudGrpcResponse);
+}
+
+message PersonRequest {
+  RequestParameter RequestParameter = 1;
+  repeated PersonGrpc PersonGrpcToAdd = 2;
+  repeated PersonGrpc PersonGrpcToUpdate = 3;
+}
+
+message PersonGrpc {
+  google.protobuf.StringValue Id = 1;
+  google.protobuf.StringValue Code = 2;
+  google.protobuf.StringValue Description = 3;
+  google.protobuf.BoolValue IsActive = 4;
+}
+
+message ListPersonGrpc {
+  repeated PersonGrpc PersonGrpc = 1;
+}

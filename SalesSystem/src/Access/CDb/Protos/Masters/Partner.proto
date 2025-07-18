@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "Protos/CommonTypes.proto";
+
+option csharp_namespace = "CDb";
+package cdb;
+
+service PartnerService {
+  rpc GetAllPartnerGrpc (PartnerRequest) returns (ListPartnerGrpc);
+  rpc GetPartnerGrpcById (PartnerRequest) returns (PartnerGrpc);
+  rpc GetPartnerGrpcByIsActive (PartnerRequest) returns (ListPartnerGrpc);
+  rpc DoPartnerCrud (PartnerRequest) returns (CDbCrudGrpcResponse);
+}
+
+message PartnerRequest {
+  RequestParameter RequestParameter = 1;
+  repeated PartnerGrpc PartnerGrpcToAdd = 2;
+  repeated PartnerGrpc PartnerGrpcToUpdate = 3;
+}
+
+message PartnerGrpc {
+  google.protobuf.StringValue Id = 1;
+  google.protobuf.StringValue Code = 2;
+  google.protobuf.StringValue Description = 3;
+  google.protobuf.BoolValue IsActive = 4;
+}
+
+message ListPartnerGrpc {
+  repeated PartnerGrpc PartnerGrpc = 1;
+}
