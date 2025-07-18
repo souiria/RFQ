@@ -7,8 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Context\" />
-    <Folder Include="Data\Interface\" />
     <Folder Include="Data\Repository\" />
   </ItemGroup>
 
