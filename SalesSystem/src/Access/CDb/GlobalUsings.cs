@@ -1,4 +1,6 @@
 ﻿global using System.ComponentModel;
+global using System.Reflection;
+global using CDb.Data.Interface;
 global using CDb.Data.Model;
 global using CDb.Data.Model.Components;
 global using CDb.Data.Model.Masters;
