@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication.Negotiate;
 using OpenTelemetry.Resources;
 using Elastic.OpenTelemetry;
 using Microsoft.Extensions.Configuration;
+using OpenTelemetry.Logs;
 
 namespace Microsoft.Extensions.Hosting
 {
@@ -106,36 +107,26 @@ namespace Microsoft.Extensions.Hosting
             }
 
             //Use APM if endpoint is set
-            if (useOtlpExporter & useAPM) 
-            {       
-                string test = builder.Configuration["ELASTIC_OTEL_EXPORTER_OTLP_ENDPOINT"]!;
-                //http://localhost:8200/v1/logs
-
+            if (useOtlpExporter & useAPM)
+            {
+                string? apmEndpoint = builder.Configuration["ELASTIC_OTEL_EXPORTER_OTLP_ENDPOINT"];
                 builder.Services.AddElasticOpenTelemetry().ConfigureResource(
                      resourceBuilder => resourceBuilder.AddService(builder.Environment.ApplicationName)
                  )
                  .WithMetrics(metrics =>
-                                    {
-                                        metrics.AddAspNetCoreInstrumentation()
-                                            .AddHttpClientInstrumentation()
-                                            .AddRuntimeInstrumentation()
-                                           // .AddMeter("Microsoft.AspNetCore.Hosting")
-                                           // .AddMeter("Microsoft.AspNetCore.Server.Kestrel")
-                                          //  .AddMeter("Microsoft.AspNetCore.Http.Connections")
-                                            //.AddMeter("Microsoft.AspNetCore.Routing")
-                                           // .AddMeter("Microsoft.AspNetCore.Diagnostics")
-                                           //  .AddMeter("Microsoft.AspNetCore.RateLimiting")
-                                            .AddOtlpExporter("metrics", opt =>
-                                               {
-                                                   opt.Protocol = OpenTelemetry
-                                                   .Exporter
-                                                   .OtlpExportProtocol
-                                                   .HttpProtobuf;
-                                                   opt.Endpoint = new Uri(
-                                                   "http://localhost:8200/v1/metrics"
-                                                    );
-                                               });
-                                    })
+                       {
+                         metrics.AddAspNetCoreInstrumentation()
+                                .AddHttpClientInstrumentation()
+                                .AddRuntimeInstrumentation()
+                                .AddOtlpExporter("metrics", opt =>
+                                       {
+                                         opt.Protocol = OpenTelemetry
+                                             .Exporter
+                                             .OtlpExportProtocol
+                                             .HttpProtobuf;
+                                         opt.Endpoint = new Uri(apmEndpoint + "/v1/metrics");
+                                       });
+                         })
                  .WithTracing(
                      tracerProviderBuilder =>
                          tracerProviderBuilder
@@ -147,16 +138,23 @@ namespace Microsoft.Extensions.Hosting
                              .AddOtlpExporter("trace", opt =>
                              {
                                  opt.Protocol = OpenTelemetry
-                                     .Exporter
-                                     .OtlpExportProtocol
-                                     .HttpProtobuf;
-                                 opt.Endpoint = new Uri(
-                                     "http://localhost:8200/v1/traces"
-                                 );
+                                                     .Exporter
+                                                        .OtlpExportProtocol
+                                                            .HttpProtobuf;
+                                 opt.Endpoint = new Uri(apmEndpoint + "/v1/traces");
                              })
-                 );
-
-                //  builder.AddElasticOpenTelemetry(b => b.ConfigureResource(r => r.AddService(builder.Environment.ApplicationName))); 
+                 )
+                          .WithElasticLogging(options =>
+                                  options.AddOtlpExporter(opt =>
+                                  {
+                                      opt.Protocol = OpenTelemetry
+                                                    .Exporter
+                                                        .OtlpExportProtocol
+                                                            .HttpProtobuf;
+                                      // Configure OTLP exporter for logs
+                                      opt.Endpoint = new Uri(apmEndpoint + "/v1/logs");
+                                  })
+            );            
             }
 
             // Uncomment the following lines to enable the Azure Monitor exporter (requires the Azure.Monitor.OpenTelemetry.AspNetCore package)
