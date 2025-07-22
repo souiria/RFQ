@@ -10,6 +10,7 @@ global using CDb.Data.Model.Masters;
 global using CDb.Data.Time;
 global using CDb.Endpoints.GrpcServices;
 global using CDb.Enums;
+global using CDb.Extensions;
 global using CDb.Extensions.GrpcMapping;
 global using CDb.Extensions.GrpcMapping.Components;
 global using CDb.Services;

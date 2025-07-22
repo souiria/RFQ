@@ -67,7 +67,6 @@
 
             return responseMessage;
         }
-
         public override async Task<ListClipTypeGrpc> ReadClipTypeGrpc(ClipTypeGrpcRequest request, ServerCallContext context)
         {
             if (request == null || request.RequestParameter == null )
@@ -118,7 +117,6 @@
                 }
             }
         }
-
         public override async Task<CDbCrudGrpcResponse> UpdateClipTypeGrpc(ClipTypeGrpcRequest request, ServerCallContext context)
         {
             if (request == null || request.RequestParameter == null)
@@ -169,7 +167,7 @@
         }
         #endregion
 
-        #region CopositeCmponent
+        #region CompositeComponent
         public override async Task<CDbCrudGrpcResponse> CreateCompositeComponentGrpc(CompositeComponentGrpcRequest request, ServerCallContext context)
         {
             if (request == null || request.RequestParameter == null)
@@ -322,7 +320,6 @@
 
             return responseMessage;
         }
-
         public override async Task<CDbCrudGrpcResponse> DeleteCompositeComponentGrpc(CompositeComponentGrpcRequest request, ServerCallContext context)
         {
             if (request == null || request.RequestParameter == null)
@@ -388,7 +385,6 @@
 
             return deleteResponseMessage;
         }
-
         #endregion
     }
 }

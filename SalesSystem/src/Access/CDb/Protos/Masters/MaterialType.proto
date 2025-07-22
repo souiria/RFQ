@@ -8,19 +8,19 @@ import "Protos/CommonTypes.proto";
 option csharp_namespace = "CDb";
 package cdb;
 
-message MaterialRequest {
+message MaterialTypeRequest {
 	RequestParameter RequestParameter = 1;
-	repeated MaterialGrpc MaterialGrpcsToCreate = 2;
-	repeated MaterialGrpc MaterialGrpcsToUpdate = 3;
+	repeated MaterialTypeGrpc MaterialTypeGrpcsToCreate = 2;
+	repeated MaterialTypeGrpc MaterialTypeGrpcsToUpdate = 3;
 }
 
-message MaterialGrpc {
+message MaterialTypeGrpc {
 	google.protobuf.StringValue Id = 1;
 	google.protobuf.StringValue Code = 2;
 	google.protobuf.StringValue Description = 3;
 	google.protobuf.BoolValue IsActive = 4;
 }
 
-message ListMaterialGrpc {
-	repeated MaterialGrpc MaterialGrpcs = 1;
+message ListMaterialTypeGrpc {
+	repeated MaterialTypeGrpc MaterialTypeGrpcs = 1;
 }

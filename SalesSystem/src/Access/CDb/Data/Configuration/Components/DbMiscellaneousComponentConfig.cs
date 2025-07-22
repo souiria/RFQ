@@ -9,7 +9,7 @@
                 .IsRequired();
             builder.Property(c => c.Dimension)
                 .HasMaxLength(32);
-            builder.Property(c => c.AdditionaInfo)
+            builder.Property(c => c.AdditionalInformation)
                 .HasMaxLength(256);
             builder.Property(c => c.Color)
                 .IsRequired()

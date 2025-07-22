@@ -18,7 +18,7 @@ message HousingGrpcRequest {
 message HousingGrpc {
   google.protobuf.StringValue Id = 1;
   google.protobuf.StringValue Description = 2;
-  google.protobuf.Int32Value Color = 3;
+  google.protobuf.Int32Value RowCount = 3;
 }
 
 message ListHousingGrpc {

@@ -8,7 +8,7 @@
         { get; set; }
         public string? Dimension
         { get; set; }
-        public string? AdditionaInfo
+        public string? AdditionalInformation
         { get; set; }
         public ColorType Color
         { get; set; }
@@ -19,7 +19,7 @@
             MiscellaneousComponentType = null!;
             MiscellaneousComponentTypeId = Guid.Empty;
             Dimension = null;
-            AdditionaInfo = null;
+            AdditionalInformation = null;
             Color = ColorType.X; // Default value
         }
     }

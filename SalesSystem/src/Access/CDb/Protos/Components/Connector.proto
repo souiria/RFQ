@@ -21,7 +21,7 @@ message ConnectorGrpc {
   google.protobuf.Int32Value MatingType = 3;
   google.protobuf.DoubleValue CavitySize = 4;
   google.protobuf.Int32Value CavityCount = 5;
-  google.protobuf.BoolValue IsNybrid = 6;
+  google.protobuf.BoolValue IsHybrid = 6;
   google.protobuf.BoolValue IsModule = 7;
   google.protobuf.StringValue TerminalFamilyId = 8;
   google.protobuf.StringValue TerminalSizeId = 9;

@@ -65,7 +65,7 @@
     <Protobuf Include="Protos\Masters\CrimpingProcessType.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\Masters\FileType.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\Masters\FuseType.proto" GrpcServices="Server" />
-    <Protobuf Include="Protos\Masters\Material.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Masters\MaterialType.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\Masters\Partner.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\Masters\Person.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\Masters\TemperatureRange.proto" GrpcServices="Server" />

@@ -21,7 +21,7 @@ import "Protos/Masters/CoverType.proto";
 import "Protos/Masters/CrimpingProcessType.proto";
 import "Protos/Masters/FileType.proto";
 import "Protos/Masters/FuseType.proto";
-import "Protos/Masters/Material.proto";
+import "Protos/Masters/MaterialType.proto";
 import "Protos/Masters/MiscellaneousComponentType.proto";
 import "Protos/Masters/Partner.proto";
 import "Protos/Masters/Person.proto";
@@ -67,10 +67,10 @@ service CDbService {
 	rpc ReadFuseTypeGrpc (FuseTypeRequest) returns (ListFuseTypeGrpc);
 	rpc UpdateFuseTypeGrpc (FuseTypeRequest) returns (CDbCrudGrpcResponse);
 
-	// MaterialGrpc
-	rpc CreateMaterialGrpc (MaterialRequest) returns (CDbCrudGrpcResponse);
-	rpc ReadMaterialGrpc (MaterialRequest) returns (ListMaterialGrpc);
-	rpc UpdateMaterialGrpc (MaterialRequest) returns (CDbCrudGrpcResponse);
+	// MaterialTypeGrpc
+	rpc CreateMaterialTypeGrpc (MaterialTypeRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadMaterialTypeGrpc (MaterialTypeRequest) returns (ListMaterialTypeGrpc);
+	rpc UpdateMaterialTypeGrpc (MaterialTypeRequest) returns (CDbCrudGrpcResponse);
 
 	// MiscellaneousComponentTypeGrpc
 	rpc CreateMiscellaneousComponentTypeGrpc (MiscellaneousComponentTypeRequest) returns (CDbCrudGrpcResponse);

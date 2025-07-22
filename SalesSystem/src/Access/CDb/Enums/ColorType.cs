@@ -3,7 +3,7 @@
     public enum ColorType
     {
         [Description("N/A")]
-        X,
+        X = 0,
         [Description("Black")]
         B,
         [Description("Beige")]
