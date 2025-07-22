@@ -1,14 +1,16 @@
 ﻿namespace SFS.Endpoints.GrpcServices
 {
-    public class SFSGrpcService :SFSService.SFSServiceBase
+    public class SFSGrpcService : SFSService.SFSServiceBase
     {
-      readonly ISFSAccessService _SFSAccessService;
-      readonly ILogger<SFSGrpcService> _Logger;
-    public SFSGrpcService(ISFSAccessService sFSAccessService, ILogger<SFSGrpcService> logger)
-    {
-        _SFSAccessService = sFSAccessService;
-        _Logger = logger;
-    }
+        readonly ISFSAccessService _SFSAccessService;
+        readonly ILogger<SFSGrpcService> _Logger;
+
+        public SFSGrpcService(ISFSAccessService sFSAccessService, ILogger<SFSGrpcService> logger)
+        {
+            _SFSAccessService = sFSAccessService;
+            _Logger = logger;
+        }
+
         public override Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context)
         {
             HelloReply reply = new HelloReply();
@@ -21,10 +23,12 @@
         {
             return await _SFSAccessService.GetAllCarModel(context.CancellationToken);
         }
+
         public override async Task<ProfileListViewGrpc> GetAllProfiles(Empty request, ServerCallContext context)
         {
             return await _SFSAccessService.GetAllProfiles(context.CancellationToken);
         }
+
         public override async Task<PeriodListViewGrpc> GetAllPeriods(Empty request, ServerCallContext context)
         {
             return await _SFSAccessService.GetAllPeriods(context.CancellationToken);
@@ -54,10 +58,12 @@
         {
             return await _SFSAccessService.GetCustomerNonWorkingDay(context.CancellationToken);
         }
+
         public override async Task<DailyVolumeDataListViewGrpc> GetDailyVolumeData(Empty request, ServerCallContext context)
         {
             return await _SFSAccessService.GetDailyVolumeData(context.CancellationToken);
         }
+
         public override async Task<CalculationTypeListViewGrpc> GetCalculationType(Empty request, ServerCallContext context)
         {
             return await _SFSAccessService.GetCalculationType(context.CancellationToken);

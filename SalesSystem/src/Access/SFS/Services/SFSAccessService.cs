@@ -1,6 +1,4 @@
-﻿using SFS;
-
-namespace SFS.Services
+﻿namespace SFS.Services
 {
     public class SFSAccessService : ISFSAccessService
     {
@@ -16,12 +14,16 @@ namespace SFS.Services
         CustomerNonWorkingDayListViewGrpc _CustomerNonWorkingDayGrpcs;
         DailyVolumeDataListViewGrpc _DailyVolumeDataListViewGrpc;
         CalculationTypeListViewGrpc _CalculationTypeListViewGrpc;
+
         #endregion
 
         #region Fields and Properties
+
         bool _CarModelRefreshInProgress;
-        #endregion
         readonly IServiceProvider _ServiceProvider;
+
+        #endregion
+
         public SFSAccessService(IServiceProvider serviceProvider, bool testing = false)
         {
             _CarModelGrpcs = new CarModelListViewGrpc();
@@ -34,12 +36,13 @@ namespace SFS.Services
             _CustomerNonWorkingDayGrpcs = new CustomerNonWorkingDayListViewGrpc();
             _DailyVolumeDataListViewGrpc = new DailyVolumeDataListViewGrpc();
             _CalculationTypeListViewGrpc = new CalculationTypeListViewGrpc();
-             _CarModelRefreshInProgress = false;
+            _CarModelRefreshInProgress = false;
 
             _ServiceProvider = serviceProvider;
+
             if (testing)
             {
-                _CarModelGrpcs= new CarModelListViewGrpc();
+                _CarModelGrpcs = new CarModelListViewGrpc();
                 _ProfileGrpcs = new ProfileListViewGrpc();
                 _PeriodGrpcs = new PeriodListViewGrpc();
                 _CustomerGrpcs = new CustomerListViewGrpc();
@@ -51,9 +54,9 @@ namespace SFS.Services
                 _CalculationTypeListViewGrpc = new CalculationTypeListViewGrpc();
             }
         }
-          async Task<bool> PopulateCarModelData(CancellationToken cancellationToken)
-        {
 
+        async Task<bool> PopulateCarModelData(CancellationToken cancellationToken)
+        {
             // TBD: Implement database loading logic here.
             await Task.Delay(1, cancellationToken);
 
@@ -61,25 +64,26 @@ namespace SFS.Services
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                  _CarModelRefreshInProgress = false;
+                    _CarModelRefreshInProgress = false;
                     return true;
                 }
             }
 
             return false;
         }
+
         public async Task<CarModelListViewGrpc> GetAllCarModel(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             await PopulateCarModelData(cancellationToken);
             return _CarModelGrpcs;
         }
+
         public async Task<ProfileListViewGrpc> GetAllProfiles(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             await PopulateCarModelData(cancellationToken);
             return _ProfileGrpcs;
-
         }
 
         public async Task<PeriodListViewGrpc> GetAllPeriods(CancellationToken cancellationToken)
@@ -117,11 +121,13 @@ namespace SFS.Services
             await Task.Delay(1, cancellationToken);
             return _CustomerNonWorkingDayGrpcs;
         }
+
         public async Task<CalculationTypeListViewGrpc> GetCalculationType(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             return _CalculationTypeListViewGrpc;
         }
+
         public async Task<DailyVolumeDataListViewGrpc> GetDailyVolumeData(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -129,4 +135,3 @@ namespace SFS.Services
         }
     }
 }
- 
