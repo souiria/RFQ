@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "Protos/CommonTypes.proto";
+
+option csharp_namespace = "CDb";
+package cdb;
+
+message PlugGrpcRequest {
+  RequestParameter RequestParameter = 1;
+  repeated PlugGrpc PlugGrpcsToCreate = 2;
+  repeated PlugGrpc PlugGrpcsToUpdate = 3;
+  repeated PlugGrpc PlugGrpcsToDelete = 4;
+}
+
+message PlugGrpc {
+  google.protobuf.StringValue Id = 1;
+  google.protobuf.StringValue Description = 2;
+  google.protobuf.DoubleValue Diameter = 3;
+  google.protobuf.Int32Value Color = 4;
+}
+
+message ListPlugGrpc {
+  repeated PlugGrpc PlugGrpcs = 1;
+}

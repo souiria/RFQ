@@ -10,7 +10,7 @@ package cdb;
 
 message ClipTypeGrpcRequest {
 	RequestParameter RequestParameter = 1;
-	repeated ClipTypeGrpc ClipTypeGrpcsToAdd = 2;
+	repeated ClipTypeGrpc ClipTypeGrpcsToCreate = 2;
 	repeated ClipTypeGrpc ClipTypeGrpcsToUpdate = 3;
 }
 

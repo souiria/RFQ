@@ -8,18 +8,10 @@ import "Protos/CommonTypes.proto";
 option csharp_namespace = "CDb";
 package cdb;
 
-// Material service definition.
-service MaterialService {
-  rpc GetAllMaterialGrpc (MaterialRequest) returns (ListMaterialGrpc);
-  rpc GetMaterialGrpcById (MaterialRequest) returns (MaterialGrpc);
-  rpc GetMaterialGrpcByIsActive (MaterialRequest) returns (ListMaterialGrpc);
-  rpc DoMaterialCrud (MaterialRequest) returns (CDbCrudGrpcResponse);
-}
-
 message MaterialRequest {
 	RequestParameter RequestParameter = 1;
-	repeated MaterialGrpc MaterialGrpcToAdd = 2;
-	repeated MaterialGrpc MaterialGrpcToUpdate = 3;
+	repeated MaterialGrpc MaterialGrpcsToCreate = 2;
+	repeated MaterialGrpc MaterialGrpcsToUpdate = 3;
 }
 
 message MaterialGrpc {
@@ -30,5 +22,5 @@ message MaterialGrpc {
 }
 
 message ListMaterialGrpc {
-	repeated MaterialGrpc MaterialGrpc = 1;
+	repeated MaterialGrpc MaterialGrpcs = 1;
 }

@@ -8,17 +8,10 @@ import "Protos/CommonTypes.proto";
 option csharp_namespace = "CDb";
 package cdb;
 
-service WaterproofTypeService {
-  rpc GetAllWaterproofTypeGrpc (WaterproofTypeRequest) returns (ListWaterproofTypeGrpc);
-  rpc GetWaterproofTypeGrpcById (WaterproofTypeRequest) returns (WaterproofTypeGrpc);
-  rpc GetWaterproofTypeGrpcByIsActive (WaterproofTypeRequest) returns (ListWaterproofTypeGrpc);
-  rpc DoWaterproofTypeCrud (WaterproofTypeRequest) returns (CDbCrudGrpcResponse);
-}
-
 message WaterproofTypeRequest {
   RequestParameter RequestParameter = 1;
-  repeated WaterproofTypeGrpc WaterproofTypeGrpcToAdd = 2;
-  repeated WaterproofTypeGrpc WaterproofTypeGrpcToUpdate = 3;
+  repeated WaterproofTypeGrpc WaterproofTypeGrpcsToCreate = 2;
+  repeated WaterproofTypeGrpc WaterproofTypeGrpcsToUpdate = 3;
 }
 
 message WaterproofTypeGrpc {
@@ -29,5 +22,5 @@ message WaterproofTypeGrpc {
 }
 
 message ListWaterproofTypeGrpc {
-  repeated WaterproofTypeGrpc WaterproofTypeGrpc = 1;
+  repeated WaterproofTypeGrpc WaterproofTypeGrpcs = 1;
 }

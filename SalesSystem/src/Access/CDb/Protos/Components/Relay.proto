@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "Protos/CommonTypes.proto";
+
+option csharp_namespace = "CDb";
+package cdb;
+
+message RelayGrpcRequest {
+  RequestParameter RequestParameter = 1;
+  repeated RelayGrpc RelayGrpcsToCreate = 2;
+  repeated RelayGrpc RelayGrpcsToUpdate = 3;
+  repeated RelayGrpc RelayGrpcsToDelete = 4;
+}
+
+message RelayGrpc {
+  google.protobuf.StringValue Id = 1;
+  google.protobuf.DoubleValue Amperage = 2;
+  google.protobuf.StringValue Description = 3;
+  google.protobuf.StringValue Specification = 4;
+  google.protobuf.Int32Value Color = 5;
+}
+
+message ListRelayGrpc {
+  repeated RelayGrpc RelayGrpcs = 1;
+}

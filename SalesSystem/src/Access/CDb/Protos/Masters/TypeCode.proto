@@ -8,27 +8,18 @@ import "Protos/CommonTypes.proto";
 option csharp_namespace = "CDb";
 package cdb;
 
-// TypeCode service definition.
-service TypeCodeService {
-  rpc GetAllTypeCodeGrpc (TypeCodeRequest) returns (ListTypeCodeGrpc);
-  rpc GetTypeCodeGrpcById (TypeCodeRequest) returns (TypeCodeGrpc);
-  rpc GetTypeCodeGrpcByIsActive (TypeCodeRequest) returns (ListTypeCodeGrpc);
-  rpc DoTypeCodeCrud (TypeCodeRequest) returns (CDbCrudGrpcResponse);
-}
-
 message TypeCodeRequest {
 	RequestParameter RequestParameter = 1;
-	repeated TypeCodeGrpc TypeCodeGrpcToAdd = 2;
-	repeated TypeCodeGrpc TypeCodeGrpcToUpdate = 3;
+	repeated TypeCodeGrpc TypeCodeGrpcsToCreate = 2;
+	repeated TypeCodeGrpc TypeCodeGrpcsToUpdate = 3;
 }
 
 message TypeCodeGrpc {
 	google.protobuf.StringValue Id = 1;
 	google.protobuf.StringValue Code = 2;
-	google.protobuf.StringValue Description = 3;
-	google.protobuf.BoolValue IsActive = 4;
+	google.protobuf.BoolValue IsActive = 3;
 }
 
 message ListTypeCodeGrpc {
-	repeated TypeCodeGrpc TypeCodeGrpc = 1;
+	repeated TypeCodeGrpc TypeCodeGrpcs = 1;
 }

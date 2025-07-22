@@ -8,26 +8,19 @@ import "Protos/CommonTypes.proto";
 option csharp_namespace = "CDb";
 package cdb;
 
-service TerminalSizeService {
-  rpc GetAllTerminalSizeGrpc (TerminalSizeRequest) returns (ListTerminalSizeGrpc);
-  rpc GetTerminalSizeGrpcById (TerminalSizeRequest) returns (TerminalSizeGrpc);
-  rpc GetTerminalSizeGrpcByIsActive (TerminalSizeRequest) returns (ListTerminalSizeGrpc);
-  rpc DoTerminalSizeCrud (TerminalSizeRequest) returns (CDbCrudGrpcResponse);
-}
-
 message TerminalSizeRequest {
   RequestParameter RequestParameter = 1;
-  repeated TerminalSizeGrpc TerminalSizeGrpcToAdd = 2;
-  repeated TerminalSizeGrpc TerminalSizeGrpcToUpdate = 3;
+  repeated TerminalSizeGrpc TerminalSizeGrpcsToCreate = 2;
+  repeated TerminalSizeGrpc TerminalSizeGrpcsToUpdate = 3;
 }
 
 message TerminalSizeGrpc {
   google.protobuf.StringValue Id = 1;
-  google.protobuf.StringValue Code = 2;
+  google.protobuf.StringValue Name = 2;
   google.protobuf.StringValue Description = 3;
   google.protobuf.BoolValue IsActive = 4;
 }
 
 message ListTerminalSizeGrpc {
-  repeated TerminalSizeGrpc TerminalSizeGrpc = 1;
+  repeated TerminalSizeGrpc TerminalSizeGrpcs = 1;
 }

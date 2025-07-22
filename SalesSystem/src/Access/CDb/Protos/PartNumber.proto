@@ -10,18 +10,20 @@ package cdb;
 
 message PartNumberGrpcRequest {
   RequestParameter RequestParameter = 1;
-  repeated PartNumberGrpc PartNumbersToAdd = 2;
-  repeated PartNumberGrpc PartNumbersToUpdate = 3;
-  repeated PartNumberGrpc PartNumbersToDelete = 4;
+  repeated PartNumberGrpc PartNumberGrpcsToCreate = 2;
+  repeated PartNumberGrpc PartNumberGrpcsToUpdate = 3;
+  repeated PartNumberGrpc PartNumberGrpcsToDelete = 4;
 }
 
 message PartNumberGrpc {
   google.protobuf.StringValue Id = 1;
-  google.protobuf.StringValue Code = 2;
+  google.protobuf.StringValue Name = 2;
   google.protobuf.StringValue Description = 3;
-  google.protobuf.BoolValue IsActive = 4;
+  google.protobuf.StringValue ComponentId = 4;
+  google.protobuf.Int32Value PartNumberType = 5;
+  google.protobuf.BoolValue IsActive = 6;
 }
 
 message ListPartNumberGrpc {
-  repeated PartNumberGrpc PartNumbers = 1;
+  repeated PartNumberGrpc PartNumberGrpcs = 1;
 }

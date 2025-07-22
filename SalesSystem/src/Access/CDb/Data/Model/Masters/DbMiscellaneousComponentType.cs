@@ -1,6 +1,6 @@
 namespace CDb.Data.Model.Masters
 {
-    public class DbMiscComponentType
+    public class DbMiscellaneousComponentType
     {
         public Guid Id
         { get; set; }
@@ -14,7 +14,7 @@ namespace CDb.Data.Model.Masters
         public bool IsActive
         { get; set; }
 
-        public DbMiscComponentType()
+        public DbMiscellaneousComponentType()
         {
             Id = Guid.NewGuid();
             Code = string.Empty;
@@ -22,7 +22,7 @@ namespace CDb.Data.Model.Masters
             IsActive = false;
         }
 
-        public DbMiscComponentType(string code, string description, bool isActive)
+        public DbMiscellaneousComponentType(string code, string description, bool isActive)
         {
             Id = Guid.NewGuid();
             Code = code;

@@ -8,26 +8,19 @@ import "Protos/CommonTypes.proto";
 option csharp_namespace = "CDb";
 package cdb;
 
-service FileTypeService {
-  rpc GetAllFileTypeGrpc (FileTypeRequest) returns (ListFileTypeGrpc);
-  rpc GetFileTypeGrpcById (FileTypeRequest) returns (FileTypeGrpc);
-  rpc GetFileTypeGrpcByIsActive (FileTypeRequest) returns (ListFileTypeGrpc);
-  rpc DoFileTypeCrud (FileTypeRequest) returns (CDbCrudGrpcResponse);
-}
-
 message FileTypeRequest {
   RequestParameter RequestParameter = 1;
-  repeated FileTypeGrpc FileTypeGrpcToAdd = 2;
-  repeated FileTypeGrpc FileTypeGrpcToUpdate = 3;
+  repeated FileTypeGrpc FileTypeGrpcsToCreate = 2;
+  repeated FileTypeGrpc FileTypeGrpcsToUpdate = 3;
 }
 
 message FileTypeGrpc {
   google.protobuf.StringValue Id = 1;
-  google.protobuf.StringValue Code = 2;
+  google.protobuf.StringValue Name = 2;
   google.protobuf.StringValue Description = 3;
   google.protobuf.BoolValue IsActive = 4;
 }
 
 message ListFileTypeGrpc {
-  repeated FileTypeGrpc FileTypeGrpc = 1;
+  repeated FileTypeGrpc FileTypeGrpcs = 1;
 }

@@ -2,13 +2,16 @@
 global using System.Reflection;
 global using Ardalis.Specification.EntityFrameworkCore;
 global using CDb;
-global using CDb.Data.Context;global using CDb.Data.Interface;
+global using CDb.Data.Context;
+global using CDb.Data.Interface;
 global using CDb.Data.Model;
 global using CDb.Data.Model.Components;
 global using CDb.Data.Model.Masters;
 global using CDb.Data.Time;
 global using CDb.Endpoints.GrpcServices;
 global using CDb.Enums;
+global using CDb.Extensions.GrpcMapping;
+global using CDb.Extensions.GrpcMapping.Components;
 global using CDb.Services;
 global using Google.Protobuf.WellKnownTypes;
 global using Grpc.Core;

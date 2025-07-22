@@ -8,17 +8,10 @@ import "Protos/CommonTypes.proto";
 option csharp_namespace = "CDb";
 package cdb;
 
-service FuseTypeService {
-  rpc GetAllFuseTypeGrpc (FuseTypeRequest) returns (ListFuseTypeGrpc);
-  rpc GetFuseTypeGrpcById (FuseTypeRequest) returns (FuseTypeGrpc);
-  rpc GetFuseTypeGrpcByIsActive (FuseTypeRequest) returns (ListFuseTypeGrpc);
-  rpc DoFuseTypeCrud (FuseTypeRequest) returns (CDbCrudGrpcResponse);
-}
-
 message FuseTypeRequest {
   RequestParameter RequestParameter = 1;
-  repeated FuseTypeGrpc FuseTypeGrpcToAdd = 2;
-  repeated FuseTypeGrpc FuseTypeGrpcToUpdate = 3;
+  repeated FuseTypeGrpc FuseTypeGrpcsToCreate = 2;
+  repeated FuseTypeGrpc FuseTypeGrpcsToUpdate = 3;
 }
 
 message FuseTypeGrpc {
@@ -29,5 +22,5 @@ message FuseTypeGrpc {
 }
 
 message ListFuseTypeGrpc {
-  repeated FuseTypeGrpc FuseTypeGrpc = 1;
+  repeated FuseTypeGrpc FuseTypeGrpcs = 1;
 }

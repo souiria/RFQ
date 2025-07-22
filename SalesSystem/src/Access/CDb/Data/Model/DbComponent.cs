@@ -4,6 +4,8 @@
     {
         public Guid Id
         { get; set; }
+        public ComponentType ComponentType
+        { get; set; }
         public int SheetNumber
         { get; set; }
         public string Name
@@ -104,6 +106,7 @@
         protected DbComponent()
         {
             Id = Guid.NewGuid();
+            ComponentType = ComponentType.Unknown;
             SheetNumber = 0;
             Name = string.Empty;
             Issue = null;

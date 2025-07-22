@@ -2,7 +2,7 @@
 {
     public class DbEyelet : DbComponent
     {
-        public int StudSize
+        public decimal StudSize
         { get; set; }
         public decimal Thickness
         { get; set; }
@@ -14,7 +14,7 @@
         { get; set; }
         public string Family
         { get; set; }
-        public string AdditionalInfo
+        public string AdditionalInformation
         { get; set; }
         public PlatingType PlatingType
         { get; set; }
@@ -27,7 +27,7 @@
             IsWaterproof = false;
             IsCr6Free = false;
             Family = string.Empty;
-            AdditionalInfo = string.Empty;
+            AdditionalInformation = string.Empty;
             PlatingType = PlatingType.Undefined; // Default value
         }
     }

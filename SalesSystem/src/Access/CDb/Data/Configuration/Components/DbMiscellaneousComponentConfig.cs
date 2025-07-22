@@ -1,11 +1,11 @@
 ﻿namespace CDb.Data.Configuration.Components
 {
-    public class DbMiscComponentConfig : IEntityTypeConfiguration<DbMiscComponent>
+    public class DbMiscellaneousComponentConfig : IEntityTypeConfiguration<DbMiscellaneousComponent>
     {
-        public void Configure(EntityTypeBuilder<DbMiscComponent> builder)
+        public void Configure(EntityTypeBuilder<DbMiscellaneousComponent> builder)
         {
-            builder.ToTable("MiscComponents");
-            builder.Property(c => c.ComponentTypeId)
+            builder.ToTable("MiscellaneousComponents");
+            builder.Property(c => c.MiscellaneousComponentTypeId)
                 .IsRequired();
             builder.Property(c => c.Dimension)
                 .HasMaxLength(32);

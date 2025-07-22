@@ -8,26 +8,23 @@ import "Protos/CommonTypes.proto";
 option csharp_namespace = "CDb";
 package cdb;
 
-service PersonService {
-  rpc GetAllPersonGrpc (PersonRequest) returns (ListPersonGrpc);
-  rpc GetPersonGrpcById (PersonRequest) returns (PersonGrpc);
-  rpc GetPersonGrpcByIsActive (PersonRequest) returns (ListPersonGrpc);
-  rpc DoPersonCrud (PersonRequest) returns (CDbCrudGrpcResponse);
-}
-
 message PersonRequest {
   RequestParameter RequestParameter = 1;
-  repeated PersonGrpc PersonGrpcToAdd = 2;
-  repeated PersonGrpc PersonGrpcToUpdate = 3;
+  repeated PersonGrpc PersonGrpcsToCreate = 2;
+  repeated PersonGrpc PersonGrpcsToUpdate = 3;
 }
 
 message PersonGrpc {
   google.protobuf.StringValue Id = 1;
-  google.protobuf.StringValue Code = 2;
-  google.protobuf.StringValue Description = 3;
-  google.protobuf.BoolValue IsActive = 4;
+  google.protobuf.Int32Value PersonType= 2;
+  google.protobuf.StringValue Name = 3;
+  google.protobuf.StringValue Description = 4;
+  google.protobuf.StringValue Phone = 5;
+  google.protobuf.StringValue Email = 6;
+  google.protobuf.StringValue Address = 7;
+  google.protobuf.BoolValue IsActive = 8;
 }
 
 message ListPersonGrpc {
-  repeated PersonGrpc PersonGrpc = 1;
+  repeated PersonGrpc PersonGrpcs = 1;
 }

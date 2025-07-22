@@ -8,28 +8,21 @@ import "Protos/CommonTypes.proto";
 option csharp_namespace = "CDb";
 package cdb;
 
-// Shared request type enum
-enum TagType {
-	SYSTEM = 0;
-	PROJECT = 1;
-	VEHICLE = 2;
-}
-
 message TagGrpcRequest {
   RequestParameter RequestParameter = 1;
-  repeated TagGrpc TagsToAdd = 2;
-  repeated TagGrpc TagsToUpdate = 3;
-  repeated TagGrpc TagsToDelete = 4;
+  repeated TagGrpc TagGrpcsToCreate = 2;
+  repeated TagGrpc TagGrpcsToUpdate = 3;
+  repeated TagGrpc TagGrpcsToDelete = 4;
 }
 
 message TagGrpc {
   google.protobuf.StringValue Id = 1;
-  TagType TagType = 2;
+  google.protobuf.Int32Value TagType = 2;
   google.protobuf.StringValue Name = 3;
   google.protobuf.StringValue Description = 4;
-  google.protobuf.BoolValue IsDeleted = 5;
+  google.protobuf.BoolValue IsActive = 5;
 }
 
 message ListTagGrpc {
-  repeated TagGrpc Tags = 1;
+  repeated TagGrpc TagGrpcs = 1;
 }

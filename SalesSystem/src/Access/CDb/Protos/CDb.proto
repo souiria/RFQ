@@ -7,6 +7,14 @@ import "google/protobuf/wrappers.proto";
 // Common types
 import "Protos/CommonTypes.proto";
 
+//Main
+import "Protos/FileName.proto";
+import "Protos/PartNumber.proto";
+import "Protos/Tag.proto";
+
+// Components
+import "Protos/CompositeComponent.proto";
+
 // Masters
 import "Protos/Masters/ClipType.proto";
 import "Protos/Masters/CoverType.proto";
@@ -14,7 +22,7 @@ import "Protos/Masters/CrimpingProcessType.proto";
 import "Protos/Masters/FileType.proto";
 import "Protos/Masters/FuseType.proto";
 import "Protos/Masters/Material.proto";
-import "Protos/Masters/MiscComponentType.proto";
+import "Protos/Masters/MiscellaneousComponentType.proto";
 import "Protos/Masters/Partner.proto";
 import "Protos/Masters/Person.proto";
 import "Protos/Masters/TemperatureRange.proto";
@@ -25,17 +33,6 @@ import "Protos/Masters/WaterproofType.proto";
 import "Protos/Masters/WireProtectionType.proto";
 import "Protos/Masters/WireType.proto";
 
-//Main
-import "Protos/AuditEvent.proto";
-import "Protos/DrawingNumber.proto";
-import "Protos/FileName.proto";
-import "Protos/PartNumber.proto";
-import "Protos/Tag.proto";
-
-// Components
-
-
-
 option csharp_namespace = "CDb";
 package cdb;
 
@@ -45,11 +42,93 @@ service CDbService {
 	rpc SayHello (HelloRequest) returns (HelloReply);
 
 	// Master services
-
 	// ClipTypeGrpc
 	rpc CreateClipTypeGrpc (ClipTypeGrpcRequest) returns (CDbCrudGrpcResponse);
 	rpc ReadClipTypeGrpc (ClipTypeGrpcRequest) returns (ListClipTypeGrpc);
 	rpc UpdateClipTypeGrpc (ClipTypeGrpcRequest) returns (CDbCrudGrpcResponse);
+
+	// CoverTypeGrpc
+	rpc CreateCoverTypeGrpc (CoverTypeRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadCoverTypeGrpc (CoverTypeRequest) returns (ListCoverTypeGrpc);
+	rpc UpdateCoverTypeGrpc (CoverTypeRequest) returns (CDbCrudGrpcResponse);
+
+	// CrimpingProcessTypeGrpc
+	rpc CreateCrimpingProcessTypeGrpc (CrimpingProcessTypeRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadCrimpingProcessTypeGrpc (CrimpingProcessTypeRequest) returns (ListCrimpingProcessTypeGrpc);
+	rpc UpdateCrimpingProcessTypeGrpc (CrimpingProcessTypeRequest) returns (CDbCrudGrpcResponse);
+
+	// FileTypeGrpc
+	rpc CreateFileTypeGrpc (FileTypeRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadFileTypeGrpc (FileTypeRequest) returns (ListFileTypeGrpc);
+	rpc UpdateFileTypeGrpc (FileTypeRequest) returns (CDbCrudGrpcResponse);
+
+	// FuseTypeGrpc
+	rpc CreateFuseTypeGrpc (FuseTypeRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadFuseTypeGrpc (FuseTypeRequest) returns (ListFuseTypeGrpc);
+	rpc UpdateFuseTypeGrpc (FuseTypeRequest) returns (CDbCrudGrpcResponse);
+
+	// MaterialGrpc
+	rpc CreateMaterialGrpc (MaterialRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadMaterialGrpc (MaterialRequest) returns (ListMaterialGrpc);
+	rpc UpdateMaterialGrpc (MaterialRequest) returns (CDbCrudGrpcResponse);
+
+	// MiscellaneousComponentTypeGrpc
+	rpc CreateMiscellaneousComponentTypeGrpc (MiscellaneousComponentTypeRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadMiscellaneousComponentTypeGrpc (MiscellaneousComponentTypeRequest) returns (ListMiscellaneousComponentTypeGrpc);
+	rpc UpdateMiscellaneousComponentTypeGrpc (MiscellaneousComponentTypeRequest) returns (CDbCrudGrpcResponse);
+
+	// PartnerGrpc
+	rpc CreatePartnerGrpc (PartnerRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadPartnerGrpc (PartnerRequest) returns (ListPartnerGrpc);
+	rpc UpdatePartnerGrpc (PartnerRequest) returns (CDbCrudGrpcResponse);
+
+	// PersonGrpc
+	rpc CreatePersonGrpc (PersonRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadPersonGrpc (PersonRequest) returns (ListPersonGrpc);
+	rpc UpdatePersonGrpc (PersonRequest) returns (CDbCrudGrpcResponse);
+
+	// TemperatureRangeGrpc
+	rpc CreateTemperatureRangeGrpc (TemperatureRangeRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadTemperatureRangeGrpc (TemperatureRangeRequest) returns (ListTemperatureRangeGrpc);
+	rpc UpdateTemperatureRangeGrpc (TemperatureRangeRequest) returns (CDbCrudGrpcResponse);
+
+	// TerminalFamilyGrpc
+	rpc CreateTerminalFamilyGrpc (TerminalFamilyRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadTerminalFamilyGrpc (TerminalFamilyRequest) returns (ListTerminalFamilyGrpc);
+	rpc UpdateTerminalFamilyGrpc (TerminalFamilyRequest) returns (CDbCrudGrpcResponse);
+
+	// TerminalSizeGrpc
+	rpc CreateTerminalSizeGrpc (TerminalSizeRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadTerminalSizeGrpc (TerminalSizeRequest) returns (ListTerminalSizeGrpc);
+	rpc UpdateTerminalSizeGrpc (TerminalSizeRequest) returns (CDbCrudGrpcResponse);
+
+	// TypeCodeGrpc
+	rpc CreateTypeCodeGrpc (TypeCodeRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadTypeCodeGrpc (TypeCodeRequest) returns (ListTypeCodeGrpc);
+	rpc UpdateTypeCodeGrpc (TypeCodeRequest) returns (CDbCrudGrpcResponse);
+
+	// WaterproofTypeGrpc
+	rpc CreateWaterproofTypeGrpc (WaterproofTypeRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadWaterproofTypeGrpc (WaterproofTypeRequest) returns (ListWaterproofTypeGrpc);
+	rpc UpdateWaterproofTypeGrpc (WaterproofTypeRequest) returns (CDbCrudGrpcResponse);
+
+	// WireProtectionTypeGrpc
+	rpc CreateWireProtectionTypeGrpc (WireProtectionTypeRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadWireProtectionTypeGrpc (WireProtectionTypeRequest) returns (ListWireProtectionTypeGrpc);
+	rpc UpdateWireProtectionTypeGrpc (WireProtectionTypeRequest) returns (CDbCrudGrpcResponse);
+
+	// WireTypeGrpc
+	rpc CreateWireTypeGrpc (WireTypeRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadWireTypeGrpc (WireTypeRequest) returns (ListWireTypeGrpc);
+	rpc UpdateWireTypeGrpc (WireTypeRequest) returns (CDbCrudGrpcResponse);
+
+	// Main model
+
+	//FileName services
+	rpc CreateFileNameGrpc (FileNameGrpcRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadFileNameGrpc (FileNameGrpcRequest) returns (ListFileNameGrpc);
+	rpc UpdateFileNameGrpc (FileNameGrpcRequest) returns (CDbCrudGrpcResponse);
+	rpc DeleteFileNameGrpc (FileNameGrpcRequest) returns (CDbCrudGrpcResponse);
 
 	// PartNumberGrpc services
 	rpc CreatePartNumberGrpc (PartNumberGrpcRequest) returns (CDbCrudGrpcResponse);
@@ -62,6 +141,14 @@ service CDbService {
 	rpc ReadTagGrpc (TagGrpcRequest) returns (ListTagGrpc);
 	rpc UpdateTagGrpc (TagGrpcRequest) returns (CDbCrudGrpcResponse);
 	rpc DeleteTagGrpc (TagGrpcRequest) returns (CDbCrudGrpcResponse);
+
+	// Components
+	// CompositeComponent
+	rpc CreateCompositeComponentGrpc (CompositeComponentGrpcRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadCompositeComponentGrpc (CompositeComponentGrpcRequest) returns (ListCompositeComponentGrpc);
+	rpc UpdateCompositeComponentGrpc (CompositeComponentGrpcRequest) returns (CDbCrudGrpcResponse);
+	rpc DeleteCompositeComponentGrpc (CompositeComponentGrpcRequest) returns (CDbCrudGrpcResponse);
+
 }
 
 // The request message containing the user's name.

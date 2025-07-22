@@ -20,7 +20,7 @@
         { get; set; }
         public int ClipOrientationEnd
         { get; set; }
-        public string? AdditionalInfo
+        public string? AdditionalInformation
         { get; set; }
 
         public DbClip() : base()
@@ -34,7 +34,7 @@
             IsDoubleHarness = false;
             ClipOrientationStart = 0;
             ClipOrientationEnd = 0;
-            AdditionalInfo = string.Empty;
+            AdditionalInformation = string.Empty;
         }
     }
 }

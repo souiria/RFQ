@@ -8,9 +8,9 @@
         { get; set; }
         public MatingType MatingType
         { get; set; }
-        public decimal SizeOfCavity
+        public decimal CavitySize
         { get; set; }
-        public int NumberOfCavities
+        public int CavityCount
         { get; set; }
         public bool IsHybrid
         { get; set; }
@@ -24,7 +24,7 @@
         { get; set; }
         public DbTerminalSize? TerminalSize
         { get; set; }
-        public string? AdditionalInfo
+        public string? AdditionalInformation
         { get; set; }
         public ColorType Color
         { get; set; }
@@ -34,7 +34,7 @@
             WaterproofTypeId = null;
             TerminalFamilyId = null;
             TerminalSizeId = null;
-            AdditionalInfo = null;
+            AdditionalInformation = null;
         }
     }
 }

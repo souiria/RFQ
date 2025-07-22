@@ -8,17 +8,10 @@ import "Protos/CommonTypes.proto";
 option csharp_namespace = "CDb";
 package cdb;
 
-service WireTypeService {
-  rpc GetAllWireTypeGrpc (WireTypeRequest) returns (ListWireTypeGrpc);
-  rpc GetWireTypeGrpcById (WireTypeRequest) returns (WireTypeGrpc);
-  rpc GetWireTypeGrpcByIsActive (WireTypeRequest) returns (ListWireTypeGrpc);
-  rpc DoWireTypeCrud (WireTypeRequest) returns (CDbCrudGrpcResponse);
-}
-
 message WireTypeRequest {
   RequestParameter RequestParameter = 1;
-  repeated WireTypeGrpc WireTypeGrpcToAdd = 2;
-  repeated WireTypeGrpc WireTypeGrpcToUpdate = 3;
+  repeated WireTypeGrpc WireTypeGrpcsToCreate = 2;
+  repeated WireTypeGrpc WireTypeGrpcsToUpdate = 3;
 }
 
 message WireTypeGrpc {
@@ -29,5 +22,5 @@ message WireTypeGrpc {
 }
 
 message ListWireTypeGrpc {
-  repeated WireTypeGrpc WireTypeGrpc = 1;
+  repeated WireTypeGrpc WireTypeGrpcs = 1;
 }

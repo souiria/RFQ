@@ -1,0 +1,76 @@
+﻿syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "Protos/CommonTypes.proto";
+
+import "Protos/FileName.proto";
+import "Protos/PartNumber.proto";
+import "Protos/Tag.proto";
+
+import "Protos/Masters/FileType.proto";
+import "Protos/Masters/Partner.proto";
+import "Protos/Masters/Person.proto";
+import "Protos/Masters/TemperatureRange.proto";
+
+option csharp_namespace = "CDb";
+package cdb;
+
+message ComponentGrpcRequest {
+  RequestParameter RequestParameter = 1;
+  repeated ComponentGrpc ComponentGrpcsToCreate = 2;
+  repeated ComponentGrpc ComponentGrpcsToUpdate = 3;
+  repeated ComponentGrpc ComponentGrpcsToDelete = 4;
+}
+
+message ComponentGrpc {
+  google.protobuf.StringValue Id = 1;
+  google.protobuf.Int32Value ComponentType = 2;
+  google.protobuf.Int32Value SheetNumber = 3;
+  google.protobuf.StringValue Name = 4;
+  google.protobuf.StringValue Issue = 5;
+  google.protobuf.Int32Value ComponentStatus = 6;
+  google.protobuf.DoubleValue Weight = 7;
+  google.protobuf.StringValue Comment = 8;
+  google.protobuf.StringValue TypeCode = 9;
+  google.protobuf.StringValue UserField4 = 10;
+  google.protobuf.StringValue UserField5 = 11;
+  google.protobuf.BoolValue GraphicSymbol = 12;
+  google.protobuf.StringValue InDb = 13;
+  google.protobuf.StringValue PfReferencePsa = 14;
+  google.protobuf.BoolValue VerifiedToLatestDrawing = 15;
+  google.protobuf.BoolValue UpdateInCaphDb = 16;
+  google.protobuf.StringValue StatusPv = 17;
+  google.protobuf.Timestamp DatePv = 18;
+  google.protobuf.StringValue StatusBrut = 19;
+  google.protobuf.StringValue Pilot = 20;
+  google.protobuf.Timestamp DbUpdatedPv = 21;
+  google.protobuf.Timestamp Created = 22;
+  google.protobuf.StringValue CreatedById = 23;
+  google.protobuf.Timestamp Updated = 24;
+  google.protobuf.StringValue UpdatedById = 25;
+  google.protobuf.Timestamp Validated = 26;
+  google.protobuf.StringValue ValidatedById = 27;
+  google.protobuf.StringValue GroupName = 28;
+  google.protobuf.BoolValue IsReplacement = 29;
+  google.protobuf.StringValue ReplacedComponentId = 30;
+  google.protobuf.Int32Value  TemperatureLow = 31;
+  google.protobuf.Int32Value  TemperatureHigh = 32;
+  google.protobuf.StringValue TemperatureRangeId = 33;
+
+  repeated FileNameGrpc FileNames = 34;
+  repeated PersonGrpc Contacts = 35;
+  repeated PartnerGrpc Partners = 36;
+  repeated PartNumberGrpc PartNumbers = 37;
+  repeated TagGrpc Tags = 38;
+
+  google.protobuf.StringValue UnitOfMeasureId = 39;
+
+  repeated ComponentGrpc Children = 40;
+  repeated ComponentGrpc Parents = 41;
+}
+
+message ListComponentGrpc {
+  repeated ComponentGrpc ComponentGrpcs = 1;
+}

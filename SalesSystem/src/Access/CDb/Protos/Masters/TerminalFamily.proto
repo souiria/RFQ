@@ -8,26 +8,19 @@ import "Protos/CommonTypes.proto";
 option csharp_namespace = "CDb";
 package cdb;
 
-service TerminalFamilyService {
-  rpc GetAllTerminalFamilyGrpc (TerminalFamilyRequest) returns (ListTerminalFamilyGrpc);
-  rpc GetTerminalFamilyGrpcById (TerminalFamilyRequest) returns (TerminalFamilyGrpc);
-  rpc GetTerminalFamilyGrpcByIsActive (TerminalFamilyRequest) returns (ListTerminalFamilyGrpc);
-  rpc DoTerminalFamilyCrud (TerminalFamilyRequest) returns (CDbCrudGrpcResponse);
-}
-
 message TerminalFamilyRequest {
   RequestParameter RequestParameter = 1;
-  repeated TerminalFamilyGrpc TerminalFamilyGrpcToAdd = 2;
-  repeated TerminalFamilyGrpc TerminalFamilyGrpcToUpdate = 3;
+  repeated TerminalFamilyGrpc TerminalFamilyGrpcsToCreate = 2;
+  repeated TerminalFamilyGrpc TerminalFamilyGrpcsToUpdate = 3;
 }
 
 message TerminalFamilyGrpc {
   google.protobuf.StringValue Id = 1;
-  google.protobuf.StringValue Code = 2;
+  google.protobuf.StringValue Name = 2;
   google.protobuf.StringValue Description = 3;
   google.protobuf.BoolValue IsActive = 4;
 }
 
 message ListTerminalFamilyGrpc {
-  repeated TerminalFamilyGrpc TerminalFamilyGrpc = 1;
+  repeated TerminalFamilyGrpc TerminalFamilyGrpcs = 1;
 }

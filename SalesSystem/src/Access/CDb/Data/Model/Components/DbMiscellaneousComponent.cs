@@ -1,10 +1,10 @@
 ﻿namespace CDb.Data.Model.Components
 {
-    public class DbMiscComponent : DbComponent
+    public class DbMiscellaneousComponent : DbComponent
     {
-        public Guid ComponentTypeId
+        public Guid MiscellaneousComponentTypeId
         { get; set; }
-        public DbMiscComponentType ComponentType
+        public DbMiscellaneousComponentType MiscellaneousComponentType
         { get; set; }
         public string? Dimension
         { get; set; }
@@ -13,11 +13,11 @@
         public ColorType Color
         { get; set; }
 
-        public DbMiscComponent()
+        public DbMiscellaneousComponent()
         {
             // Initialize properties with default values
-            ComponentType = null!;
-            ComponentTypeId = Guid.Empty;
+            MiscellaneousComponentType = null!;
+            MiscellaneousComponentTypeId = Guid.Empty;
             Dimension = null;
             AdditionaInfo = null;
             Color = ColorType.X; // Default value

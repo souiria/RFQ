@@ -14,7 +14,7 @@
             builder.Property(x => x.Description)
                 .HasMaxLength(256);
 
-            builder.Property(x => x.IsDeleted)
+            builder.Property(x => x.IsActive)
                 .IsRequired()
                 .HasDefaultValue(false);
         }

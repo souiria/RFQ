@@ -7,19 +7,10 @@ import "Protos/CommonTypes.proto";
 
 option csharp_namespace = "CDb";
 package cdb;
-
-// CrimpingProcessType service definition.
-service CrimpingProcessTypeService {
-  rpc GetAllCrimpingProcessTypeGrpc (CrimpingProcessTypeRequest) returns (ListCrimpingProcessTypeGrpc);
-  rpc GetCrimpingProcessTypeGrpcById (CrimpingProcessTypeRequest) returns (CrimpingProcessTypeGrpc);
-  rpc GetCrimpingProcessTypeGrpcByIsActive (CrimpingProcessTypeRequest) returns (ListCrimpingProcessTypeGrpc);
-  rpc DoCrimpingProcessTypeCrud (CrimpingProcessTypeRequest) returns (CDbCrudGrpcResponse);
-}
-
 message CrimpingProcessTypeRequest {
 	RequestParameter RequestParameter = 1;
-	repeated CrimpingProcessTypeGrpc CrimpingProcessTypeGrpcToAdd = 2;
-	repeated CrimpingProcessTypeGrpc CrimpingProcessTypeGrpcToUpdate = 3;
+	repeated CrimpingProcessTypeGrpc CrimpingProcessTypeGrpcsToCreate = 2;
+	repeated CrimpingProcessTypeGrpc CrimpingProcessTypeGrpcsToUpdate = 3;
 }
 
 message CrimpingProcessTypeGrpc {
@@ -30,5 +21,5 @@ message CrimpingProcessTypeGrpc {
 }
 
 message ListCrimpingProcessTypeGrpc {
-	repeated CrimpingProcessTypeGrpc CrimpingProcessTypeGrpc = 1;
+	repeated CrimpingProcessTypeGrpc CrimpingProcessTypeGrpcs = 1;
 }

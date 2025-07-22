@@ -8,18 +8,10 @@ import "Protos/CommonTypes.proto";
 option csharp_namespace = "CDb";
 package cdb;
 
-// CoverType service definition.
-service CoverTypeService {
-  rpc GetAllCoverTypeGrpc (CoverTypeRequest) returns (ListCoverTypeGrpc);
-  rpc GetCoverTypeGrpcById (CoverTypeRequest) returns (CoverTypeGrpc);
-  rpc GetCoverTypeGrpcByIsActive (CoverTypeRequest) returns (ListCoverTypeGrpc);
-  rpc DoCoverTypeCrud (CoverTypeRequest) returns (CDbCrudGrpcResponse);
-}
-
 message CoverTypeRequest {
 	RequestParameter RequestParameter = 1;
-	repeated CoverTypeGrpc CoverTypeGrpcToAdd = 2;
-	repeated CoverTypeGrpc CoverTypeGrpcToUpdate = 3;
+	repeated CoverTypeGrpc CoverTypeGrpcsToCreate = 2;
+	repeated CoverTypeGrpc CoverTypeGrpcsToUpdate = 3;
 }
 
 message CoverTypeGrpc {
@@ -30,5 +22,5 @@ message CoverTypeGrpc {
 }
 
 message ListCoverTypeGrpc {
-	repeated CoverTypeGrpc CoverTypeGrpc = 1;
+	repeated CoverTypeGrpc CoverTypeGrpcs = 1;
 }

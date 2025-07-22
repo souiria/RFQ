@@ -8,27 +8,22 @@ import "Protos/CommonTypes.proto";
 option csharp_namespace = "CDb";
 package cdb;
 
-// FileName service definition.
-service FileNameService {
-  rpc GetAllFileNameGrpc (FileNameRequest) returns (ListFileNameGrpc);
-  rpc GetFileNameGrpcById (FileNameRequest) returns (FileNameGrpc);
-  rpc GetFileNameGrpcByIsActive (FileNameRequest) returns (ListFileNameGrpc);
-  rpc DoFileNameCrud (FileNameRequest) returns (CDbCrudGrpcResponse);
-}
-
-message FileNameRequest {
+message FileNameGrpcRequest {
   RequestParameter RequestParameter = 1;
-  repeated FileNameGrpc FileNameGrpcToAdd = 2;
-  repeated FileNameGrpc FileNameGrpcToUpdate = 3;
+  repeated FileNameGrpc FileNameGrpcsToCreate = 2;
+  repeated FileNameGrpc FileNameGrpcsToUpdate = 3;
+  repeated FileNameGrpc FileNameGrpcsToDelete = 4;
 }
 
 message FileNameGrpc {
   google.protobuf.StringValue Id = 1;
-  google.protobuf.StringValue Code = 2;
-  google.protobuf.StringValue Description = 3;
-  google.protobuf.BoolValue IsActive = 4;
+  google.protobuf.Timestamp LastModified = 2;
+  google.protobuf.StringValue FileTypeId = 3;
+  google.protobuf.StringValue Name = 4;
+  google.protobuf.StringValue Description = 5;
+  google.protobuf.BoolValue IsActive = 6;
 }
 
 message ListFileNameGrpc {
-  repeated FileNameGrpc FileNameGrpc = 1;
+  repeated FileNameGrpc FileNameGrpcs = 1;
 }

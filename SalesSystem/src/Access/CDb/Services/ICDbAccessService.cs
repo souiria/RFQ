@@ -6,9 +6,9 @@
 
         // Masters
         #region ClipType
-        Task<ListClipTypeGrpc> GetAllClipTypes(CancellationToken cancellationToken);
-        Task<ListClipTypeGrpc> GetManyClipTypes(ClipTypeGrpcRequest clipTypeRequest, CancellationToken cancellationToken);
-        Task<ListClipTypeGrpc> GetClipTypeById(ClipTypeGrpcRequest clipTypeRequest, CancellationToken cancellationToken);
+        Task<ListClipTypeGrpc> ReadAllClipTypes(CancellationToken cancellationToken);
+        Task<ListClipTypeGrpc> ReadManyClipTypes(ClipTypeGrpcRequest clipTypeRequest, CancellationToken cancellationToken);
+        Task<ListClipTypeGrpc> ReadClipTypeById(ClipTypeGrpcRequest clipTypeRequest, CancellationToken cancellationToken);
         Task<ListClipTypeGrpc> CreateClipTypes(ClipTypeGrpcRequest clipTypeRequest, CancellationToken cancellationToken);
         Task<ListClipTypeGrpc> UpdateClipTypes(ClipTypeGrpcRequest clipTypeRequest, CancellationToken cancellationToken);
         #endregion
@@ -31,6 +31,14 @@
         #endregion
 
         //Components
-
+        #region CompositeComponent
+        Task<ListCompositeComponentGrpc> CreateCompositeComponents(CompositeComponentGrpcRequest request, CancellationToken cancellationToken);
+        Task<ListCompositeComponentGrpc> ReadAllCompositeComponents(CancellationToken cancellationToken);
+        Task<ListCompositeComponentGrpc> ReadManyCompositeComponents(CompositeComponentGrpcRequest request, CancellationToken cancellationToken);
+        Task<ListCompositeComponentGrpc> ReadCompositeComponentsById(CompositeComponentGrpcRequest request, CancellationToken cancellationToken);
+        Task<ListCompositeComponentGrpc> ReadCompositeComponentsBySheetNumber(CompositeComponentGrpcRequest request, CancellationToken cancellationToken);
+        Task<ListCompositeComponentGrpc> UpdateCompositeComponents(CompositeComponentGrpcRequest request, CancellationToken cancellationToken);
+        Task<ListCompositeComponentGrpc> DeleteCompositeComponents(CompositeComponentGrpcRequest request, CancellationToken cancellationToken);
+        #endregion
     }
 }

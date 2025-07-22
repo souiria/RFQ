@@ -8,26 +8,20 @@ import "Protos/CommonTypes.proto";
 option csharp_namespace = "CDb";
 package cdb;
 
-service TemperatureRangeService {
-  rpc GetAllTemperatureRangeGrpc (TemperatureRangeRequest) returns (ListTemperatureRangeGrpc);
-  rpc GetTemperatureRangeGrpcById (TemperatureRangeRequest) returns (TemperatureRangeGrpc);
-  rpc GetTemperatureRangeGrpcByIsActive (TemperatureRangeRequest) returns (ListTemperatureRangeGrpc);
-  rpc DoTemperatureRangeCrud (TemperatureRangeRequest) returns (CDbCrudGrpcResponse);
-}
-
 message TemperatureRangeRequest {
   RequestParameter RequestParameter = 1;
-  repeated TemperatureRangeGrpc TemperatureRangeGrpcToAdd = 2;
-  repeated TemperatureRangeGrpc TemperatureRangeGrpcToUpdate = 3;
+  repeated TemperatureRangeGrpc TemperatureRangeGrpcsToCreate = 2;
+  repeated TemperatureRangeGrpc TemperatureRangeGrpcsToUpdate = 3;
 }
 
 message TemperatureRangeGrpc {
   google.protobuf.StringValue Id = 1;
-  google.protobuf.StringValue Code = 2;
-  google.protobuf.StringValue Description = 3;
-  google.protobuf.BoolValue IsActive = 4;
+  google.protobuf.StringValue TemperatureRange = 2;
+  google.protobuf.Int32Value TemperatureLow = 3;
+  google.protobuf.Int32Value TemperatureHigh = 4;
+  google.protobuf.BoolValue IsCustom = 5;
 }
 
 message ListTemperatureRangeGrpc {
-  repeated TemperatureRangeGrpc TemperatureRangeGrpc = 1;
+  repeated TemperatureRangeGrpc TemperatureRangeGrpcs = 1;
 }

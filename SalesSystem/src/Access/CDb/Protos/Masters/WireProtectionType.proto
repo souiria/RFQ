@@ -8,17 +8,10 @@ import "Protos/CommonTypes.proto";
 option csharp_namespace = "CDb";
 package cdb;
 
-service WireProtectionTypeService {
-  rpc GetAllWireProtectionTypeGrpc (WireProtectionTypeRequest) returns (ListWireProtectionTypeGrpc);
-  rpc GetWireProtectionTypeGrpcById (WireProtectionTypeRequest) returns (WireProtectionTypeGrpc);
-  rpc GetWireProtectionTypeGrpcByIsActive (WireProtectionTypeRequest) returns (ListWireProtectionTypeGrpc);
-  rpc DoWireProtectionTypeCrud (WireProtectionTypeRequest) returns (CDbCrudGrpcResponse);
-}
-
 message WireProtectionTypeRequest {
   RequestParameter RequestParameter = 1;
-  repeated WireProtectionTypeGrpc WireProtectionTypeGrpcToAdd = 2;
-  repeated WireProtectionTypeGrpc WireProtectionTypeGrpcToUpdate = 3;
+  repeated WireProtectionTypeGrpc WireProtectionTypeGrpcsToCreate = 2;
+  repeated WireProtectionTypeGrpc WireProtectionTypeGrpcsToUpdate = 3;
 }
 
 message WireProtectionTypeGrpc {
@@ -29,5 +22,5 @@ message WireProtectionTypeGrpc {
 }
 
 message ListWireProtectionTypeGrpc {
-  repeated WireProtectionTypeGrpc WireProtectionTypeGrpc = 1;
+  repeated WireProtectionTypeGrpc WireProtectionTypeGrpcs = 1;
 }
