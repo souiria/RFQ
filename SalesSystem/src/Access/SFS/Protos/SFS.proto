@@ -11,7 +11,7 @@ package sfs;
 //         SERVICES
 // ==========================
 
-service SFS {
+service SFSService {
   rpc SayHello (HelloRequest) returns (HelloReply);
 
   rpc GetAllCalculationTypes (google.protobuf.Empty) returns (CalculationTypeListViewGrpc);
@@ -29,6 +29,8 @@ service SFS {
 // ==========================
 //      GREETING MESSAGES
 // ==========================
+
+
 
 message HelloRequest {
   string name = 1;
