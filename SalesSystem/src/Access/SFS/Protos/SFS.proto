@@ -11,12 +11,12 @@ package sfs;
 //         SERVICES
 // ==========================
 
-service SFS {
+service SFSService {
   rpc SayHello (HelloRequest) returns (HelloReply);
 
-  rpc GetAllCalculationTypes (google.protobuf.Empty) returns (CalculationTypeListViewGrpc);
+  rpc GetCalculationType (google.protobuf.Empty) returns (CalculationTypeListViewGrpc);
   rpc GetAllCarModels (google.protobuf.Empty) returns (CarModelListViewGrpc);
-  rpc CarModelDailyVolumeDataViewGrpc (google.protobuf.Empty) returns (DailyVolumeDataListViewGrpc);
+  rpc GetDailyVolumeData (google.protobuf.Empty) returns (DailyVolumeDataListViewGrpc);
   rpc GetAllCustomers (google.protobuf.Empty) returns (CustomerListViewGrpc);
   rpc GetAllSites (google.protobuf.Empty) returns (SiteListViewGrpc);
   rpc GetAllForecasts (google.protobuf.Empty) returns (ForecastListViewGrpc);
@@ -29,6 +29,8 @@ service SFS {
 // ==========================
 //      GREETING MESSAGES
 // ==========================
+
+
 
 message HelloRequest {
   string name = 1;
@@ -135,6 +137,7 @@ message SiteViewGrpc {
   google.protobuf.Timestamp updatedDate = 6;
   string updatedBy = 7;
 }
+
 
 // ==========================
 //      LIST WRAPPERS
