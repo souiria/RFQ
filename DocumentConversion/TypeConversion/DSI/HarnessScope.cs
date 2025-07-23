@@ -22,7 +22,7 @@
                 for (int i = 5; i < split.Length; i++)
                 {
                     string s = split[i].Trim();
-                    if (string.IsNullOrEmpty(s))
+                    if (!string.IsNullOrEmpty(s))
                     {
                         scope.Add(split[i]);
                     }

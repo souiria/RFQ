@@ -100,7 +100,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentConversion", "Docum
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedModels", "SharedModels\SharedModels.csproj", "{A3794D63-9F15-49A1-83F0-221D6602CE8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentConverterEngine.Tests", "DocumentConverterEngine.Tests\DocumentConverterEngine.Tests.csproj", "{FB49CB97-839C-44F5-A329-1CD4CF6DC868}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentConversionEngine.Tests", "DocumentConverterEngine.Tests\DocumentConversionEngine.Tests.csproj", "{FB49CB97-839C-44F5-A329-1CD4CF6DC868}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

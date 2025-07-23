@@ -56,7 +56,7 @@
                 for (int i = 36; i < split.Length; i++)
                 {
                     string currentSplit = split[i].Trim();
-                    if (string.IsNullOrEmpty(currentSplit))
+                    if (!string.IsNullOrEmpty(currentSplit))
                     {
                         circuitOption.Add(split[i]);
                     }

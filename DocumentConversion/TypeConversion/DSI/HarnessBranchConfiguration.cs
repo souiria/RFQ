@@ -32,7 +32,7 @@
                 for (int i = 19; i < split.Length; i++)
                 {
                     string currentSplit = split[i].Trim();
-                    if (string.IsNullOrEmpty(currentSplit))
+                    if (!string.IsNullOrEmpty(currentSplit))
                     {
                         bend.Add(split[i]);
                     }
