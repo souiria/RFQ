@@ -54,9 +54,9 @@ namespace CdbAccess.Tests
         public void GetAllClipTypesTest()
         {
             ClipTypeGrpcRequest request = new ClipTypeGrpcRequest();
-            RequestParameter requestParameter = new RequestParameter();
-            requestParameter.RequestType = (int)RequestType.ReadAll;
-            request.RequestParameter = requestParameter;
+            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+            grpcRequestParameter.RequestType = (int)RequestType.ReadAll;
+            request.GrpcRequestParameter = grpcRequestParameter;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadClipTypeGrpc));
 
             Task<ListClipTypeGrpc> getClipTypeGrpcReply = _GrpcService.ReadClipTypeGrpc(request, serverCallContext);
@@ -69,10 +69,10 @@ namespace CdbAccess.Tests
         public void GetActiveClipTypesTest()
         {
             ClipTypeGrpcRequest request = new ClipTypeGrpcRequest();
-            RequestParameter requestParameter = new RequestParameter();
-            requestParameter.RequestType = (int)RequestType.ReadByIsActive;
-            requestParameter.BoolValue = true;
-            request.RequestParameter = requestParameter;
+            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+            grpcRequestParameter.RequestType = (int)RequestType.ReadByIsActive;
+            grpcRequestParameter.BoolValue = true;
+            request.GrpcRequestParameter = grpcRequestParameter;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadClipTypeGrpc));
 
             Task<ListClipTypeGrpc> getClipTypeGrpcReply = _GrpcService.ReadClipTypeGrpc(request, serverCallContext);
@@ -85,10 +85,10 @@ namespace CdbAccess.Tests
         public void GetNotActiveClipTypesTest()
         {
             ClipTypeGrpcRequest request = new ClipTypeGrpcRequest();
-            RequestParameter requestParameter = new RequestParameter();
-            requestParameter.RequestType = (int)RequestType.ReadByIsActive;
-            requestParameter.BoolValue = false; // Only not active clip types
-            request.RequestParameter = requestParameter;
+            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+            grpcRequestParameter.RequestType = (int)RequestType.ReadByIsActive;
+            grpcRequestParameter.BoolValue = false; // Only not active clip types
+            request.GrpcRequestParameter = grpcRequestParameter;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadClipTypeGrpc));
 
             Task<ListClipTypeGrpc> getClipTypeGrpcReply = _GrpcService.ReadClipTypeGrpc(request, serverCallContext);
@@ -101,14 +101,14 @@ namespace CdbAccess.Tests
         public void CreateClipTypeTest()
         {
             ClipTypeGrpcRequest request = new ClipTypeGrpcRequest();
-            RequestParameter requestParameter = new RequestParameter();
-            requestParameter.RequestType = (int)RequestType.Create;
+            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+            grpcRequestParameter.RequestType = (int)RequestType.Create;
             ClipTypeGrpc clip = new ClipTypeGrpc();
             clip.Code = "TESTCLIP";
             clip.Description = "Test Clip";
             clip.IsActive = true;
             request.ClipTypeGrpcsToCreate.Add(clip);
-            request.RequestParameter = requestParameter;
+            request.GrpcRequestParameter = grpcRequestParameter;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateClipTypeGrpc));
 
             Task<CDbCrudGrpcResponse> getClipTypeGrpcReply = _GrpcService.CreateClipTypeGrpc(request, serverCallContext);
@@ -121,10 +121,10 @@ namespace CdbAccess.Tests
         {
             // get the one non active clip type
             ClipTypeGrpcRequest request = new ClipTypeGrpcRequest();
-            RequestParameter requestParameter = new RequestParameter();
-            requestParameter.RequestType = (int)RequestType.ReadByIsActive;
-            requestParameter.BoolValue = false; // Only not active clip types
-            request.RequestParameter = requestParameter;
+            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+            grpcRequestParameter.RequestType = (int)RequestType.ReadByIsActive;
+            grpcRequestParameter.BoolValue = false; // Only not active clip types
+            request.GrpcRequestParameter = grpcRequestParameter;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadClipTypeGrpc));
 
             Task<ListClipTypeGrpc> getClipTypeGrpcReply = _GrpcService.ReadClipTypeGrpc(request, serverCallContext);
@@ -138,12 +138,12 @@ namespace CdbAccess.Tests
 
             // update the description of the clip type
             request = new ClipTypeGrpcRequest();
-            requestParameter = new RequestParameter();
-            requestParameter.RequestType = (int)RequestType.Update;
+            grpcRequestParameter = new GrpcRequestParameter();
+            grpcRequestParameter.RequestType = (int)RequestType.Update;
             clip.Code = "EXECUTE_ORDER_66";
             clip.Description = "Vanquish all the Jedi in the Universe!";
             request.ClipTypeGrpcsToUpdate.Add(clip);
-            request.RequestParameter = requestParameter;
+            request.GrpcRequestParameter = grpcRequestParameter;
             serverCallContext = CreateServerContext(nameof(_GrpcService.UpdateClipTypeGrpc));
 
             Task<CDbCrudGrpcResponse> updateClipTypeGrpcReply = _GrpcService.UpdateClipTypeGrpc(request, serverCallContext);
@@ -152,10 +152,10 @@ namespace CdbAccess.Tests
 
             // read the clip back from the storage, check to see the order was tored properly
             request = new ClipTypeGrpcRequest();
-            requestParameter = new RequestParameter();
-            requestParameter.RequestType = (int)RequestType.ReadById;
-            requestParameter.StringValue =clipId; // use the saved clip id
-            request.RequestParameter = requestParameter;
+            grpcRequestParameter = new GrpcRequestParameter();
+            grpcRequestParameter.RequestType = (int)RequestType.ReadById;
+            grpcRequestParameter.StringValue =clipId; // use the saved clip id
+            request.GrpcRequestParameter = grpcRequestParameter;
             serverCallContext = CreateServerContext(nameof(_GrpcService.ReadClipTypeGrpc));
              
             getClipTypeGrpcReply = _GrpcService.ReadClipTypeGrpc(request, serverCallContext);
@@ -175,9 +175,9 @@ namespace CdbAccess.Tests
         public void GetAllComponentsTest()
         {
             CompositeComponentGrpcRequest request = new CompositeComponentGrpcRequest();
-            RequestParameter requestParameter = new RequestParameter();
-            requestParameter.RequestType = (int)RequestType.ReadAll;
-            request.RequestParameter = requestParameter;
+            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+            grpcRequestParameter.RequestType = (int)RequestType.ReadAll;
+            request.GrpcRequestParameter = grpcRequestParameter;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadCompositeComponentGrpc));
 
             Task<ListCompositeComponentGrpc> getCompositeComponentGrpcReply = _GrpcService.ReadCompositeComponentGrpc(request, serverCallContext);
@@ -189,10 +189,10 @@ namespace CdbAccess.Tests
         public void GetByComponentSheetNumberCompositeComponentTest()
         {
             CompositeComponentGrpcRequest request = new CompositeComponentGrpcRequest();
-            RequestParameter requestParameter = new RequestParameter();
-            requestParameter.RequestType = (int)RequestType.ReadByComponentSheetNumber;
-            requestParameter.IntValue = 90001; // Use a known component sheet number
-            request.RequestParameter = requestParameter;
+            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+            grpcRequestParameter.RequestType = (int)RequestType.ReadByComponentSheetNumber;
+            grpcRequestParameter.IntValue = 90001; // Use a known component sheet number
+            request.GrpcRequestParameter = grpcRequestParameter;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadCompositeComponentGrpc));
 
             Task<ListCompositeComponentGrpc> getCompositeComponentGrpcReply = _GrpcService.ReadCompositeComponentGrpc(request, serverCallContext);
@@ -239,10 +239,10 @@ namespace CdbAccess.Tests
 
             // persist the component
             CompositeComponentGrpcRequest request = new CompositeComponentGrpcRequest();
-            RequestParameter requestParameter = new RequestParameter();
-            requestParameter.RequestType = (int)RequestType.Create;
+            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+            grpcRequestParameter.RequestType = (int)RequestType.Create;
             request.CompositeComponentGrpcsToCreate.Add(blueCableCompositeComponent);
-            request.RequestParameter = requestParameter;
+            request.GrpcRequestParameter = grpcRequestParameter;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateCompositeComponentGrpc));
 
             Task<CDbCrudGrpcResponse> getCompositeComponentGrpcReply = _GrpcService.CreateCompositeComponentGrpc(request, serverCallContext);
@@ -251,10 +251,10 @@ namespace CdbAccess.Tests
 
             // try to read back by id
             request = new CompositeComponentGrpcRequest();
-            requestParameter = new RequestParameter();
-            requestParameter.RequestType = (int)RequestType.ReadById;
-            requestParameter.StringValue = _CreateCompositeComponentId; // use the saved component id
-            request.RequestParameter = requestParameter;
+            grpcRequestParameter = new GrpcRequestParameter();
+            grpcRequestParameter.RequestType = (int)RequestType.ReadById;
+            grpcRequestParameter.StringValue = _CreateCompositeComponentId; // use the saved component id
+            request.GrpcRequestParameter = grpcRequestParameter;
             serverCallContext = CreateServerContext(nameof(_GrpcService.ReadCompositeComponentGrpc));
             Task<ListCompositeComponentGrpc> readCompositeComponentGrpcReply = _GrpcService.ReadCompositeComponentGrpc(request, serverCallContext);
             Assert.That(readCompositeComponentGrpcReply.Result.CompositeComponentGrpcs, Is.Not.Null);
@@ -276,10 +276,10 @@ namespace CdbAccess.Tests
         public void GetByIdCompositeComponentTest()
         {
             CompositeComponentGrpcRequest request = new CompositeComponentGrpcRequest();
-            RequestParameter requestParameter = new RequestParameter();
-            requestParameter.RequestType = (int)RequestType.ReadById;
-            requestParameter.StringValue = _ReadByIdCompositeCableComponentId; // Use a known component id, see SampleCDbAccessDataService
-            request.RequestParameter = requestParameter;
+            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+            grpcRequestParameter.RequestType = (int)RequestType.ReadById;
+            grpcRequestParameter.StringValue = _ReadByIdCompositeCableComponentId; // Use a known component id, see SampleCDbAccessDataService
+            request.GrpcRequestParameter = grpcRequestParameter;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadCompositeComponentGrpc));
 
             // try to read back by id
@@ -305,10 +305,10 @@ namespace CdbAccess.Tests
         {
             // get the one composite cable component
             CompositeComponentGrpcRequest request = new CompositeComponentGrpcRequest();
-            RequestParameter requestParameter = new RequestParameter();
-            requestParameter.RequestType = (int)RequestType.ReadById;
-            requestParameter.StringValue = _ReadByIdCompositeCableComponentId; // Use a known component id, see SampleCDbAccessDataService
-            request.RequestParameter = requestParameter;
+            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+            grpcRequestParameter.RequestType = (int)RequestType.ReadById;
+            grpcRequestParameter.StringValue = _ReadByIdCompositeCableComponentId; // Use a known component id, see SampleCDbAccessDataService
+            request.GrpcRequestParameter = grpcRequestParameter;
 
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadCompositeComponentGrpc));
             Task<ListCompositeComponentGrpc> readCompositeComponentGrpcReply = _GrpcService.ReadCompositeComponentGrpc(request, serverCallContext);
@@ -322,13 +322,13 @@ namespace CdbAccess.Tests
             
             // update the description of the component
             request = new CompositeComponentGrpcRequest();
-            requestParameter = new RequestParameter();
-            requestParameter.RequestType = (int)RequestType.Update;
+            grpcRequestParameter = new GrpcRequestParameter();
+            grpcRequestParameter.RequestType = (int)RequestType.Update;
             compositeCable.ComponentGrpc.Name = "JCAB-001-UPDATED";
             compositeCable.ComponentGrpc.Comment = "Updated comment for the cable, this cable is now brown";
             compositeCable.CableGrpc.Color = (int)ColorType.BR; // change the color to brown 
             request.CompositeComponentGrpcsToUpdate.Add(compositeCable);
-            request.RequestParameter = requestParameter;
+            request.GrpcRequestParameter = grpcRequestParameter;
             serverCallContext = CreateServerContext(nameof(_GrpcService.UpdateCompositeComponentGrpc));
             Task<CDbCrudGrpcResponse> updateCompositeComponentReply = _GrpcService.UpdateCompositeComponentGrpc(request, serverCallContext);
             Assert.That(updateCompositeComponentReply, Is.Not.Null);
@@ -336,10 +336,10 @@ namespace CdbAccess.Tests
 
             // read the component back from the storage, check to see the order was stored properly
             request = new CompositeComponentGrpcRequest();
-            requestParameter = new RequestParameter();
-            requestParameter.RequestType = (int)RequestType.ReadById;
-            requestParameter.StringValue = componentId; // use the saved component id
-            request.RequestParameter = requestParameter;
+            grpcRequestParameter = new GrpcRequestParameter();
+            grpcRequestParameter.RequestType = (int)RequestType.ReadById;
+            grpcRequestParameter.StringValue = componentId; // use the saved component id
+            request.GrpcRequestParameter = grpcRequestParameter;
             serverCallContext = CreateServerContext(nameof(_GrpcService.ReadCompositeComponentGrpc));
              
             readCompositeComponentGrpcReply = _GrpcService.ReadCompositeComponentGrpc
@@ -361,10 +361,10 @@ namespace CdbAccess.Tests
         {
             // get the one composite cable component
             CompositeComponentGrpcRequest request = new CompositeComponentGrpcRequest();
-            RequestParameter requestParameter = new RequestParameter();
-            requestParameter.RequestType = (int)RequestType.ReadById;
-            requestParameter.StringValue = _ReadByIdCompositeCableComponentId; // Use a known component id, see SampleCDbAccessDataService
-            request.RequestParameter = requestParameter;
+            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+            grpcRequestParameter.RequestType = (int)RequestType.ReadById;
+            grpcRequestParameter.StringValue = _ReadByIdCompositeCableComponentId; // Use a known component id, see SampleCDbAccessDataService
+            request.GrpcRequestParameter = grpcRequestParameter;
 
             // try to read back by id
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadCompositeComponentGrpc));
@@ -379,10 +379,10 @@ namespace CdbAccess.Tests
             
             // delete the component
             request = new CompositeComponentGrpcRequest();
-            requestParameter = new RequestParameter();
-            requestParameter.RequestType = (int)RequestType.Delete;
+            grpcRequestParameter = new GrpcRequestParameter();
+            grpcRequestParameter.RequestType = (int)RequestType.Delete;
             request.CompositeComponentGrpcsToDelete.Add(compositeCable);
-            request.RequestParameter = requestParameter;
+            request.GrpcRequestParameter = grpcRequestParameter;
             
             serverCallContext = CreateServerContext(nameof(_GrpcService.DeleteCompositeComponentGrpc));
             Task<CDbCrudGrpcResponse> deleteCompositeComponentReply = _GrpcService.DeleteCompositeComponentGrpc(request, serverCallContext);
@@ -391,10 +391,10 @@ namespace CdbAccess.Tests
             
             // try to read back by id
             request = new CompositeComponentGrpcRequest();
-            requestParameter = new RequestParameter();
-            requestParameter.RequestType = (int)RequestType.ReadById;
-            requestParameter.StringValue = componentId; // use the saved component id
-            request.RequestParameter = requestParameter;
+            grpcRequestParameter = new GrpcRequestParameter();
+            grpcRequestParameter.RequestType = (int)RequestType.ReadById;
+            grpcRequestParameter.StringValue = componentId; // use the saved component id
+            request.GrpcRequestParameter = grpcRequestParameter;
             
             serverCallContext = CreateServerContext(nameof(_GrpcService.ReadCompositeComponentGrpc));
              
