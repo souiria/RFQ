@@ -9,7 +9,7 @@ option csharp_namespace = "CDb";
 package cdb;
 
 message RelayGrpcRequest {
-  RequestParameter RequestParameter = 1;
+  GrpcRequestParameter GrpcRequestParameter = 1;
   repeated RelayGrpc RelayGrpcsToCreate = 2;
   repeated RelayGrpc RelayGrpcsToUpdate = 3;
   repeated RelayGrpc RelayGrpcsToDelete = 4;

@@ -48,79 +48,79 @@ service CDbService {
 	rpc UpdateClipTypeGrpc (ClipTypeGrpcRequest) returns (CDbCrudGrpcResponse);
 
 	// CoverTypeGrpc
-	rpc CreateCoverTypeGrpc (CoverTypeRequest) returns (CDbCrudGrpcResponse);
-	rpc ReadCoverTypeGrpc (CoverTypeRequest) returns (ListCoverTypeGrpc);
-	rpc UpdateCoverTypeGrpc (CoverTypeRequest) returns (CDbCrudGrpcResponse);
+	rpc CreateCoverTypeGrpc (CoverTypeGrpcRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadCoverTypeGrpc (CoverTypeGrpcRequest) returns (ListCoverTypeGrpc);
+	rpc UpdateCoverTypeGrpc (CoverTypeGrpcRequest) returns (CDbCrudGrpcResponse);
 
 	// CrimpingProcessTypeGrpc
-	rpc CreateCrimpingProcessTypeGrpc (CrimpingProcessTypeRequest) returns (CDbCrudGrpcResponse);
-	rpc ReadCrimpingProcessTypeGrpc (CrimpingProcessTypeRequest) returns (ListCrimpingProcessTypeGrpc);
-	rpc UpdateCrimpingProcessTypeGrpc (CrimpingProcessTypeRequest) returns (CDbCrudGrpcResponse);
+	rpc CreateCrimpingProcessTypeGrpc (CrimpingProcessTypeGrpcRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadCrimpingProcessTypeGrpc (CrimpingProcessTypeGrpcRequest) returns (ListCrimpingProcessTypeGrpc);
+	rpc UpdateCrimpingProcessTypeGrpc (CrimpingProcessTypeGrpcRequest) returns (CDbCrudGrpcResponse);
 
 	// FileTypeGrpc
-	rpc CreateFileTypeGrpc (FileTypeRequest) returns (CDbCrudGrpcResponse);
-	rpc ReadFileTypeGrpc (FileTypeRequest) returns (ListFileTypeGrpc);
-	rpc UpdateFileTypeGrpc (FileTypeRequest) returns (CDbCrudGrpcResponse);
+	rpc CreateFileTypeGrpc (FileTypeGrpcRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadFileTypeGrpc (FileTypeGrpcRequest) returns (ListFileTypeGrpc);
+	rpc UpdateFileTypeGrpc (FileTypeGrpcRequest) returns (CDbCrudGrpcResponse);
 
 	// FuseTypeGrpc
-	rpc CreateFuseTypeGrpc (FuseTypeRequest) returns (CDbCrudGrpcResponse);
-	rpc ReadFuseTypeGrpc (FuseTypeRequest) returns (ListFuseTypeGrpc);
-	rpc UpdateFuseTypeGrpc (FuseTypeRequest) returns (CDbCrudGrpcResponse);
+	rpc CreateFuseTypeGrpc (FuseTypeGrpcRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadFuseTypeGrpc (FuseTypeGrpcRequest) returns (ListFuseTypeGrpc);
+	rpc UpdateFuseTypeGrpc (FuseTypeGrpcRequest) returns (CDbCrudGrpcResponse);
 
 	// MaterialTypeGrpc
-	rpc CreateMaterialTypeGrpc (MaterialTypeRequest) returns (CDbCrudGrpcResponse);
-	rpc ReadMaterialTypeGrpc (MaterialTypeRequest) returns (ListMaterialTypeGrpc);
-	rpc UpdateMaterialTypeGrpc (MaterialTypeRequest) returns (CDbCrudGrpcResponse);
+	rpc CreateMaterialTypeGrpc (MaterialTypeGrpcRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadMaterialTypeGrpc (MaterialTypeGrpcRequest) returns (ListMaterialTypeGrpc);
+	rpc UpdateMaterialTypeGrpc (MaterialTypeGrpcRequest) returns (CDbCrudGrpcResponse);
 
 	// MiscellaneousComponentTypeGrpc
-	rpc CreateMiscellaneousComponentTypeGrpc (MiscellaneousComponentTypeRequest) returns (CDbCrudGrpcResponse);
-	rpc ReadMiscellaneousComponentTypeGrpc (MiscellaneousComponentTypeRequest) returns (ListMiscellaneousComponentTypeGrpc);
-	rpc UpdateMiscellaneousComponentTypeGrpc (MiscellaneousComponentTypeRequest) returns (CDbCrudGrpcResponse);
+	rpc CreateMiscellaneousComponentTypeGrpc (MiscellaneousComponentTypeGrpcRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadMiscellaneousComponentTypeGrpc (MiscellaneousComponentTypeGrpcRequest) returns (ListMiscellaneousComponentTypeGrpc);
+	rpc UpdateMiscellaneousComponentTypeGrpc (MiscellaneousComponentTypeGrpcRequest) returns (CDbCrudGrpcResponse);
 
 	// PartnerGrpc
-	rpc CreatePartnerGrpc (PartnerRequest) returns (CDbCrudGrpcResponse);
-	rpc ReadPartnerGrpc (PartnerRequest) returns (ListPartnerGrpc);
-	rpc UpdatePartnerGrpc (PartnerRequest) returns (CDbCrudGrpcResponse);
+	rpc CreatePartnerGrpc (PartnerGrpcRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadPartnerGrpc (PartnerGrpcRequest) returns (ListPartnerGrpc);
+	rpc UpdatePartnerGrpc (PartnerGrpcRequest) returns (CDbCrudGrpcResponse);
 
 	// PersonGrpc
-	rpc CreatePersonGrpc (PersonRequest) returns (CDbCrudGrpcResponse);
-	rpc ReadPersonGrpc (PersonRequest) returns (ListPersonGrpc);
-	rpc UpdatePersonGrpc (PersonRequest) returns (CDbCrudGrpcResponse);
+	rpc CreatePersonGrpc (PersonGrpcRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadPersonGrpc (PersonGrpcRequest) returns (ListPersonGrpc);
+	rpc UpdatePersonGrpc (PersonGrpcRequest) returns (CDbCrudGrpcResponse);
 
 	// TemperatureRangeGrpc
-	rpc CreateTemperatureRangeGrpc (TemperatureRangeRequest) returns (CDbCrudGrpcResponse);
-	rpc ReadTemperatureRangeGrpc (TemperatureRangeRequest) returns (ListTemperatureRangeGrpc);
-	rpc UpdateTemperatureRangeGrpc (TemperatureRangeRequest) returns (CDbCrudGrpcResponse);
+	rpc CreateTemperatureRangeGrpc (TemperatureRangeGrpcRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadTemperatureRangeGrpc (TemperatureRangeGrpcRequest) returns (ListTemperatureRangeGrpc);
+	rpc UpdateTemperatureRangeGrpc (TemperatureRangeGrpcRequest) returns (CDbCrudGrpcResponse);
 
 	// TerminalFamilyGrpc
-	rpc CreateTerminalFamilyGrpc (TerminalFamilyRequest) returns (CDbCrudGrpcResponse);
-	rpc ReadTerminalFamilyGrpc (TerminalFamilyRequest) returns (ListTerminalFamilyGrpc);
-	rpc UpdateTerminalFamilyGrpc (TerminalFamilyRequest) returns (CDbCrudGrpcResponse);
+	rpc CreateTerminalFamilyGrpc (TerminalFamilyGrpcRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadTerminalFamilyGrpc (TerminalFamilyGrpcRequest) returns (ListTerminalFamilyGrpc);
+	rpc UpdateTerminalFamilyGrpc (TerminalFamilyGrpcRequest) returns (CDbCrudGrpcResponse);
 
 	// TerminalSizeGrpc
-	rpc CreateTerminalSizeGrpc (TerminalSizeRequest) returns (CDbCrudGrpcResponse);
-	rpc ReadTerminalSizeGrpc (TerminalSizeRequest) returns (ListTerminalSizeGrpc);
-	rpc UpdateTerminalSizeGrpc (TerminalSizeRequest) returns (CDbCrudGrpcResponse);
+	rpc CreateTerminalSizeGrpc (TerminalSizeGrpcRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadTerminalSizeGrpc (TerminalSizeGrpcRequest) returns (ListTerminalSizeGrpc);
+	rpc UpdateTerminalSizeGrpc (TerminalSizeGrpcRequest) returns (CDbCrudGrpcResponse);
 
 	// TypeCodeGrpc
-	rpc CreateTypeCodeGrpc (TypeCodeRequest) returns (CDbCrudGrpcResponse);
-	rpc ReadTypeCodeGrpc (TypeCodeRequest) returns (ListTypeCodeGrpc);
-	rpc UpdateTypeCodeGrpc (TypeCodeRequest) returns (CDbCrudGrpcResponse);
+	rpc CreateTypeCodeGrpc (TypeCodeGrpcRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadTypeCodeGrpc (TypeCodeGrpcRequest) returns (ListTypeCodeGrpc);
+	rpc UpdateTypeCodeGrpc (TypeCodeGrpcRequest) returns (CDbCrudGrpcResponse);
 
 	// WaterproofTypeGrpc
-	rpc CreateWaterproofTypeGrpc (WaterproofTypeRequest) returns (CDbCrudGrpcResponse);
-	rpc ReadWaterproofTypeGrpc (WaterproofTypeRequest) returns (ListWaterproofTypeGrpc);
-	rpc UpdateWaterproofTypeGrpc (WaterproofTypeRequest) returns (CDbCrudGrpcResponse);
+	rpc CreateWaterproofTypeGrpc (WaterproofTypeGrpcRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadWaterproofTypeGrpc (WaterproofTypeGrpcRequest) returns (ListWaterproofTypeGrpc);
+	rpc UpdateWaterproofTypeGrpc (WaterproofTypeGrpcRequest) returns (CDbCrudGrpcResponse);
 
 	// WireProtectionTypeGrpc
-	rpc CreateWireProtectionTypeGrpc (WireProtectionTypeRequest) returns (CDbCrudGrpcResponse);
-	rpc ReadWireProtectionTypeGrpc (WireProtectionTypeRequest) returns (ListWireProtectionTypeGrpc);
-	rpc UpdateWireProtectionTypeGrpc (WireProtectionTypeRequest) returns (CDbCrudGrpcResponse);
+	rpc CreateWireProtectionTypeGrpc (WireProtectionTypeGrpcRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadWireProtectionTypeGrpc (WireProtectionTypeGrpcRequest) returns (ListWireProtectionTypeGrpc);
+	rpc UpdateWireProtectionTypeGrpc (WireProtectionTypeGrpcRequest) returns (CDbCrudGrpcResponse);
 
 	// WireTypeGrpc
-	rpc CreateWireTypeGrpc (WireTypeRequest) returns (CDbCrudGrpcResponse);
-	rpc ReadWireTypeGrpc (WireTypeRequest) returns (ListWireTypeGrpc);
-	rpc UpdateWireTypeGrpc (WireTypeRequest) returns (CDbCrudGrpcResponse);
+	rpc CreateWireTypeGrpc (WireTypeGrpcRequest) returns (CDbCrudGrpcResponse);
+	rpc ReadWireTypeGrpc (WireTypeGrpcRequest) returns (ListWireTypeGrpc);
+	rpc UpdateWireTypeGrpc (WireTypeGrpcRequest) returns (CDbCrudGrpcResponse);
 
 	// Main model
 

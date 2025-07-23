@@ -21,7 +21,7 @@
         #region ClipType
         public override async Task<CDbCrudGrpcResponse> CreateClipTypeGrpc(ClipTypeGrpcRequest request, ServerCallContext context)
         {
-            if (request == null || request.RequestParameter == null)
+            if (request == null || request.GrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
@@ -29,9 +29,9 @@
 
             RequestType requestType = RequestType.None;
 
-            if (System.Enum.IsDefined(typeof(RequestType), request.RequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.RequestParameter.RequestType;
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
             }
             else
             {
@@ -69,7 +69,7 @@
         }
         public override async Task<ListClipTypeGrpc> ReadClipTypeGrpc(ClipTypeGrpcRequest request, ServerCallContext context)
         {
-            if (request == null || request.RequestParameter == null )
+            if (request == null || request.GrpcRequestParameter == null )
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
@@ -77,9 +77,9 @@
 
             RequestType requestType = RequestType.None;
 
-            if (System.Enum.IsDefined(typeof(RequestType), request.RequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.RequestParameter.RequestType;
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
             }
             else
             {
@@ -119,16 +119,16 @@
         }
         public override async Task<CDbCrudGrpcResponse> UpdateClipTypeGrpc(ClipTypeGrpcRequest request, ServerCallContext context)
         {
-            if (request == null || request.RequestParameter == null)
+            if (request == null || request.GrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.RequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.RequestParameter.RequestType;
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
             }
             else
             {
@@ -170,7 +170,7 @@
         #region CompositeComponent
         public override async Task<CDbCrudGrpcResponse> CreateCompositeComponentGrpc(CompositeComponentGrpcRequest request, ServerCallContext context)
         {
-            if (request == null || request.RequestParameter == null)
+            if (request == null || request.GrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
@@ -178,9 +178,9 @@
 
             RequestType requestType = RequestType.None;
 
-            if (System.Enum.IsDefined(typeof(RequestType), request.RequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.RequestParameter.RequestType;
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
             }
             else
             {
@@ -218,7 +218,7 @@
         }
         public override async Task<ListCompositeComponentGrpc> ReadCompositeComponentGrpc(CompositeComponentGrpcRequest request, ServerCallContext context)
         {
-            if (request == null || request.RequestParameter == null)
+            if (request == null || request.GrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
@@ -226,9 +226,9 @@
 
             RequestType requestType = RequestType.None;
 
-            if (System.Enum.IsDefined(typeof(RequestType), request.RequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.RequestParameter.RequestType;
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
             }
             else
             {
@@ -274,16 +274,16 @@
         }
         public override async Task<CDbCrudGrpcResponse> UpdateCompositeComponentGrpc(CompositeComponentGrpcRequest request, ServerCallContext context)
         {
-            if (request == null || request.RequestParameter == null)
+            if (request == null || request.GrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.RequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.RequestParameter.RequestType;
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
             }
             else
             {
@@ -322,16 +322,16 @@
         }
         public override async Task<CDbCrudGrpcResponse> DeleteCompositeComponentGrpc(CompositeComponentGrpcRequest request, ServerCallContext context)
         {
-            if (request == null || request.RequestParameter == null)
+            if (request == null || request.GrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.RequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.RequestParameter.RequestType;
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
             }
             else
             {

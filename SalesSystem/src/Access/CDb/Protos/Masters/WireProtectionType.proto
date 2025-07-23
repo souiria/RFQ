@@ -8,8 +8,8 @@ import "Protos/CommonTypes.proto";
 option csharp_namespace = "CDb";
 package cdb;
 
-message WireProtectionTypeRequest {
-  RequestParameter RequestParameter = 1;
+message WireProtectionTypeGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
   repeated WireProtectionTypeGrpc WireProtectionTypeGrpcsToCreate = 2;
   repeated WireProtectionTypeGrpc WireProtectionTypeGrpcsToUpdate = 3;
 }

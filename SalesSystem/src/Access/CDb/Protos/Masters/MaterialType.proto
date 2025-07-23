@@ -8,8 +8,8 @@ import "Protos/CommonTypes.proto";
 option csharp_namespace = "CDb";
 package cdb;
 
-message MaterialTypeRequest {
-	RequestParameter RequestParameter = 1;
+message MaterialTypeGrpcRequest {
+	GrpcRequestParameter GrpcRequestParameter = 1;
 	repeated MaterialTypeGrpc MaterialTypeGrpcsToCreate = 2;
 	repeated MaterialTypeGrpc MaterialTypeGrpcsToUpdate = 3;
 }

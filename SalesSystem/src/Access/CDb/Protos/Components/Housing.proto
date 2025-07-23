@@ -9,7 +9,7 @@ option csharp_namespace = "CDb";
 package cdb;
 
 message HousingGrpcRequest {
-  RequestParameter RequestParameter = 1;
+  GrpcRequestParameter GrpcRequestParameter = 1;
   repeated HousingGrpc HousingGrpcsToCreate = 2;
   repeated HousingGrpc HousingGrpcsToUpdate = 3;
   repeated HousingGrpc HousingGrpcsToDelete = 4;

@@ -8,8 +8,8 @@ import "Protos/CommonTypes.proto";
 option csharp_namespace = "CDb";
 package cdb;
 
-message TypeCodeRequest {
-	RequestParameter RequestParameter = 1;
+message TypeCodeGrpcRequest {
+	GrpcRequestParameter GrpcRequestParameter = 1;
 	repeated TypeCodeGrpc TypeCodeGrpcsToCreate = 2;
 	repeated TypeCodeGrpc TypeCodeGrpcsToUpdate = 3;
 }

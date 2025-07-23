@@ -8,8 +8,8 @@ import "Protos/CommonTypes.proto";
 option csharp_namespace = "CDb";
 package cdb;
 
-message TemperatureRangeRequest {
-  RequestParameter RequestParameter = 1;
+message TemperatureRangeGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
   repeated TemperatureRangeGrpc TemperatureRangeGrpcsToCreate = 2;
   repeated TemperatureRangeGrpc TemperatureRangeGrpcsToUpdate = 3;
 }

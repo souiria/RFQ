@@ -18,7 +18,7 @@ option csharp_namespace = "CDb";
 package cdb;
 
 message ComponentGrpcRequest {
-  RequestParameter RequestParameter = 1;
+  GrpcRequestParameter GrpcRequestParameter = 1;
   repeated ComponentGrpc ComponentGrpcsToCreate = 2;
   repeated ComponentGrpc ComponentGrpcsToUpdate = 3;
   repeated ComponentGrpc ComponentGrpcsToDelete = 4;

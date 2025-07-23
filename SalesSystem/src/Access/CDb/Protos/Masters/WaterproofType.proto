@@ -8,8 +8,8 @@ import "Protos/CommonTypes.proto";
 option csharp_namespace = "CDb";
 package cdb;
 
-message WaterproofTypeRequest {
-  RequestParameter RequestParameter = 1;
+message WaterproofTypeGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
   repeated WaterproofTypeGrpc WaterproofTypeGrpcsToCreate = 2;
   repeated WaterproofTypeGrpc WaterproofTypeGrpcsToUpdate = 3;
 }

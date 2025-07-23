@@ -9,7 +9,7 @@ option csharp_namespace = "CDb";
 package cdb;
 
 message DiodeGrpcRequest {
-  RequestParameter RequestParameter = 1;
+  GrpcRequestParameter GrpcRequestParameter = 1;
   repeated DiodeGrpc DiodeGrpcsToCreate = 2;
   repeated DiodeGrpc DiodeGrpcsToUpdate = 3;
   repeated DiodeGrpc DiodeGrpcsToDelete = 4;

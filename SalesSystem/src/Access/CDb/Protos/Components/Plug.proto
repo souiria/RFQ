@@ -9,7 +9,7 @@ option csharp_namespace = "CDb";
 package cdb;
 
 message PlugGrpcRequest {
-  RequestParameter RequestParameter = 1;
+  GrpcRequestParameter GrpcRequestParameter = 1;
   repeated PlugGrpc PlugGrpcsToCreate = 2;
   repeated PlugGrpc PlugGrpcsToUpdate = 3;
   repeated PlugGrpc PlugGrpcsToDelete = 4;

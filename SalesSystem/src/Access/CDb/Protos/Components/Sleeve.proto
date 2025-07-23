@@ -9,7 +9,7 @@ option csharp_namespace = "CDb";
 package cdb;
 
 message SleeveGrpcRequest {
-  RequestParameter RequestParameter = 1;
+  GrpcRequestParameter GrpcRequestParameter = 1;
   repeated SleeveGrpc SleeveGrpcsToCreate = 2;
   repeated SleeveGrpc SleeveGrpcsToUpdate = 3;
   repeated SleeveGrpc SleeveGrpcsToDelete = 4;

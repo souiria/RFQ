@@ -42,7 +42,7 @@ option csharp_namespace = "CDb";
 package cdb;
 
 message CompositeComponentGrpcRequest {
-  RequestParameter RequestParameter = 1;
+  GrpcRequestParameter GrpcRequestParameter = 1;
   repeated CompositeComponentGrpc CompositeComponentGrpcsToCreate = 2;
   repeated CompositeComponentGrpc CompositeComponentGrpcsToUpdate = 3;
   repeated CompositeComponentGrpc CompositeComponentGrpcsToDelete = 4;

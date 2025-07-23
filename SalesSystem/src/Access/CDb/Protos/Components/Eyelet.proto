@@ -9,7 +9,7 @@ option csharp_namespace = "CDb";
 package cdb;
 
 message EyeletGrpcRequest {
-  RequestParameter RequestParameter = 1;
+  GrpcRequestParameter GrpcRequestParameter = 1;
   repeated EyeletGrpc EyeletGrpcsToCreate = 2;
   repeated EyeletGrpc EyeletGrpcsToUpdate = 3;
   repeated EyeletGrpc EyeletGrpcsToDelete = 4;

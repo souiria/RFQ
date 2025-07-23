@@ -8,8 +8,8 @@ import "Protos/CommonTypes.proto";
 option csharp_namespace = "CDb";
 package cdb;
 
-message TerminalSizeRequest {
-  RequestParameter RequestParameter = 1;
+message TerminalSizeGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
   repeated TerminalSizeGrpc TerminalSizeGrpcsToCreate = 2;
   repeated TerminalSizeGrpc TerminalSizeGrpcsToUpdate = 3;
 }

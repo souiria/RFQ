@@ -9,7 +9,7 @@ option csharp_namespace = "CDb";
 package cdb;
 
 message TerminalGrpcRequest {
-  RequestParameter RequestParameter = 1;
+  GrpcRequestParameter GrpcRequestParameter = 1;
   repeated TerminalGrpc TerminalGrpcsToCreate = 2;
   repeated TerminalGrpc TerminalGrpcsToUpdate = 3;
   repeated TerminalGrpc TerminalGrpcsToDelete = 4;

@@ -9,7 +9,7 @@ option csharp_namespace = "CDb";
 package cdb;
 
 message FuseGrpcRequest {
-  RequestParameter RequestParameter = 1;
+  GrpcRequestParameter GrpcRequestParameter = 1;
   repeated FuseGrpc FuseGrpcsToCreate = 2;
   repeated FuseGrpc FuseGrpcsToUpdate = 3;
   repeated FuseGrpc FuseGrpcsToDelete = 4;

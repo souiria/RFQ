@@ -9,7 +9,7 @@ option csharp_namespace = "CDb";
 package cdb;
 
 message WireProtectionGrpcRequest {
-  RequestParameter RequestParameter = 1;
+  GrpcRequestParameter GrpcRequestParameter = 1;
   repeated WireProtectionGrpc WireProtectionGrpcsToCreate = 2;
   repeated WireProtectionGrpc WireProtectionGrpcsToUpdate = 3;
   repeated WireProtectionGrpc WireProtectionGrpcsToDelete = 4;

@@ -7,8 +7,8 @@ import "Protos/CommonTypes.proto";
 
 option csharp_namespace = "CDb";
 package cdb;
-message CrimpingProcessTypeRequest {
-	RequestParameter RequestParameter = 1;
+message CrimpingProcessTypeGrpcRequest {
+	GrpcRequestParameter GrpcRequestParameter = 1;
 	repeated CrimpingProcessTypeGrpc CrimpingProcessTypeGrpcsToCreate = 2;
 	repeated CrimpingProcessTypeGrpc CrimpingProcessTypeGrpcsToUpdate = 3;
 }

@@ -9,7 +9,7 @@ option csharp_namespace = "CDb";
 package cdb;
 
 message GrommetGrpcRequest {
-  RequestParameter RequestParameter = 1;
+  GrpcRequestParameter GrpcRequestParameter = 1;
   repeated GrommetGrpc GrommetGrpcsToCreate = 2;
   repeated GrommetGrpc GrommetGrpcsToUpdate = 3;
   repeated GrommetGrpc GrommetGrpcsToDelete = 4;

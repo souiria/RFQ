@@ -9,7 +9,7 @@ option csharp_namespace = "CDb";
 package cdb;
 
 message ConnectorGrpcRequest {
-  RequestParameter RequestParameter = 1;
+  GrpcRequestParameter GrpcRequestParameter = 1;
   repeated ConnectorGrpc ConnectorGrpcsToCreate = 2;
   repeated ConnectorGrpc ConnectorGrpcsToUpdate = 3;
   repeated ConnectorGrpc ConnectorGrpcsToDelete = 4;

@@ -9,7 +9,7 @@ option csharp_namespace = "CDb";
 package cdb;
 
 message MiscellaneousComponentGrpcRequest {
-  RequestParameter RequestParameter = 1;
+  GrpcRequestParameter GrpcRequestParameter = 1;
   repeated MiscellaneousComponentGrpc MiscellaneousComponentGrpcsToCreate = 2;
   repeated MiscellaneousComponentGrpc MiscellaneousComponentGrpcsToUpdate = 3;
   repeated MiscellaneousComponentGrpc MiscellaneousComponentGrpcsToDelete = 4;
