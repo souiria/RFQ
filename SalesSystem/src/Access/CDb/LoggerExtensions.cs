@@ -1,5 +1,6 @@
 ﻿namespace CDb
 {
+
     static class LoggerExtensions
     {
         static Action<ILogger, string, Exception> _GenericLogInformation;
@@ -13,7 +14,7 @@
 
             _GenericLogInformation = LoggerMessage.Define<string>(
             logLevel: LogLevel.Information,
-            eventId: 1,
+            eventId: 2,
             formatString: "{String}");
         }
 
