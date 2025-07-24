@@ -12,7 +12,7 @@
         { get; set; }
         public ICollection<DbComponent> Components
         { get; init; }
-        public bool IsDeleted
+        public bool IsActive
         { get; set; }
 
         public DbTag()
@@ -22,7 +22,7 @@
             Name = string.Empty;
             Description = string.Empty;
             Components = new HashSet<DbComponent>();
-            IsDeleted = false;
+            IsActive = false;
         }
     }
 }

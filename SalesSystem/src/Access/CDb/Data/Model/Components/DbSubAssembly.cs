@@ -6,7 +6,7 @@
         { get; set; }
         public string Function
         { get; set; }
-        public string AdditionalInfo
+        public string AdditionalInformation
         { get; set; }
         public Guid? TerminalFamilyId
         { get; set; }
@@ -24,7 +24,7 @@
             // Initialize properties with default values
             Content = string.Empty;
             Function = string.Empty;
-            AdditionalInfo = string.Empty;
+            AdditionalInformation = string.Empty;
             TerminalFamily = null!;
             TerminalSize = null!;
             Color = ColorType.X; // Default value

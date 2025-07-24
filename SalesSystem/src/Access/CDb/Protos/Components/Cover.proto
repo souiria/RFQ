@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "Protos/CommonTypes.proto";
+
+option csharp_namespace = "CDb";
+package cdb;
+
+message CoverGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated CoverGrpc CoverGrpcsToCreate = 2;
+  repeated CoverGrpc CoverGrpcsToUpdate = 3;
+  repeated CoverGrpc CoverGrpcsToDelete = 4;
+}
+
+message CoverGrpc {
+  google.protobuf.StringValue Id = 1;
+  google.protobuf.StringValue CoverTypeId = 2;
+  google.protobuf.DoubleValue Diameter = 3;
+  google.protobuf.DoubleValue Length = 4;
+  google.protobuf.DoubleValue Width = 5;
+  google.protobuf.StringValue Function = 6;
+  google.protobuf.BoolValue HasNoiseDampening = 7;
+  google.protobuf.BoolValue IsTearable = 8;
+  google.protobuf.BoolValue IsPrecut = 9;
+  google.protobuf.StringValue AdditionalInformation = 10;
+  google.protobuf.Int32Value Color = 11;
+}
+
+message ListCoverGrpc {
+  repeated CoverGrpc CoverGrpcs = 1;
+}

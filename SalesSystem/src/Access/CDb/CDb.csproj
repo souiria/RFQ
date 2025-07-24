@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -7,15 +7,74 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Protos\Components\Cable.proto" />
+    <None Remove="Protos\Components\MiscellaneousComponent.proto" />
+    <None Remove="Protos\Masters\MiscellaneousComponentType.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\CompositeComponent.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Component.proto" GrpcServices="Server" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Data\Repository\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
+    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.71.0" />
     <PackageReference Include="IDesign.Analyzers" Version="1.0.18" />
+    <PackageReference Include="Seq.Extensions.Logging" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Debug\SalesSystem.ServiceDefaults\SalesSystem.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\Utilities\SharedKernal\SharedKernel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\CDb.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Components\WireProtection.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Components\Wire.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Components\Terminal.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Components\Support.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Components\SubAssembly.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Components\Sleeve.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Components\Shield.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Components\Seal.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Components\Relay.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Components\Plug.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Components\Housing.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Components\Grommet.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Components\Fuse.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Components\Eyelet.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Components\Diode.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Components\Cover.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Components\Connector.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Components\Clip.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Components\Cable.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Components\MiscellaneousComponent.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\FileName.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Masters\MiscellaneousComponentType.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\PartNumber.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Tag.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Masters\ClipType.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\CommonTypes.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Masters\CoverType.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Masters\CrimpingProcessType.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Masters\FileType.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Masters\FuseType.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Masters\MaterialType.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Masters\Partner.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Masters\Person.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Masters\TemperatureRange.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Masters\TerminalFamily.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Masters\TerminalSize.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Masters\TypeCode.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Masters\WaterproofType.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Masters\WireProtectionType.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Masters\WireType.proto" GrpcServices="Server" />
   </ItemGroup>
 
 </Project>

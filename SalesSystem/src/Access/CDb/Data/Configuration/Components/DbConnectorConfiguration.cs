@@ -27,11 +27,11 @@
                 .IsRequired()
                 .HasDefaultValue(MatingType.Unknown);
 
-            builder.Property(c => c.SizeOfCavity)
+            builder.Property(c => c.CavitySize)
                 .IsRequired()
                 .HasColumnType("decimal(8,1)");
 
-            builder.Property(c => c.NumberOfCavities)
+            builder.Property(c => c.CavityCount)
                 .IsRequired()
                 .HasDefaultValue(1);
 

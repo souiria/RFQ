@@ -10,7 +10,7 @@
         { get; set; }
         public string Description
         { get; set; }
-        public string AdditionalInfo
+        public string AdditionalInformation
         { get; set; }
         public ColorType Color
         { get; set; }
@@ -19,7 +19,7 @@
         {
             Amperage = 0.0m;
             Description = string.Empty;
-            AdditionalInfo = string.Empty;
+            AdditionalInformation = string.Empty;
             Color = ColorType.X; // Default value
         }
     }

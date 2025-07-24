@@ -22,8 +22,6 @@
         { get; set; }
         DbSet<DbDiode> Diodes
         { get; set; }
-        DbSet<DbDrawingNumber> DrawingNumbers
-        { get; set; }
         DbSet<DbEyelet> Eyelets
         { get; set; }
         DbSet<DbFileName> FileNames
@@ -40,9 +38,9 @@
         { get; set; }
         DbSet<DbMaterialType> MaterialTypes
         { get; set; }
-        DbSet<DbMiscComponent> MiscComponents
+        DbSet<DbMiscellaneousComponent> MiscellaneousComponents
         { get; set; }
-        DbSet<DbMiscComponentType> MiscComponentTypes
+        DbSet<DbMiscellaneousComponentType> MiscellaneousComponentTypes
         { get; set; }
         DbSet<DbPartner> Partners
         { get; set; }

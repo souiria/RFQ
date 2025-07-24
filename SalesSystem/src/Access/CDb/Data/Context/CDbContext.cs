@@ -23,7 +23,7 @@
         { get; set; }
         public DbSet<DbMaterialType> MaterialTypes
         { get; set; }
-        public DbSet<DbMiscComponentType> MiscComponentTypes
+        public DbSet<DbMiscellaneousComponentType> MiscellaneousComponentTypes
         { get; set; }
         public DbSet<DbPartner> Partners
         { get; set; }
@@ -49,8 +49,6 @@
         public DbSet<DbAuditEvent> AuditEvents
         { get; set; }
         public DbSet<DbComponent> Components
-        { get; set; }
-        public DbSet<DbDrawingNumber> DrawingNumbers
         { get; set; }
         public DbSet<DbFileName> FileNames
         { get; set; }
@@ -79,7 +77,7 @@
         { get; set; }
         public DbSet<DbHousing> Housings
         { get; set; }
-        public DbSet<DbMiscComponent> MiscComponents
+        public DbSet<DbMiscellaneousComponent> MiscellaneousComponents
         { get; set; }
         public DbSet<DbPlug> Plugs
         { get; set; }

@@ -2,9 +2,9 @@
 {
     public static class EnumExtension
     {
-        public static T GetEnumValueByDescription<T>(this string description) where T : Enum
+        public static T GetEnumValueByDescription<T>(this string description) where T : System.Enum
         {
-            Type t = typeof(T);
+            System.Type t = typeof(T);
             if (!t.IsEnum)
             {
                 throw new ArgumentException("Type is not an enum.", nameof(T));
@@ -15,8 +15,8 @@
                 throw new ArgumentException("Description cannot be null or empty.", nameof(description));
             }
 
-            Array values = Enum.GetValues(t);
-            foreach (Enum enumItem in values)
+            Array values = System.Enum.GetValues(t);
+            foreach (System.Enum enumItem in values)
             {
                 if (enumItem.GetEnumDescription() == description)
                 {
@@ -26,10 +26,10 @@
 
             throw new ArgumentException("Not found.", nameof(description));
         }
-        public static string GetEnumDescription(this Enum enumValue)
+        public static string GetEnumDescription(this System.Enum enumValue)
         {
             string s = enumValue.ToString();
-            System.Reflection.FieldInfo? field = enumValue.GetType().GetField(s);
+            FieldInfo? field = enumValue.GetType().GetField(s);
             if (field == null)
             {
                 throw new ArgumentException("Field not found.", nameof(enumValue));

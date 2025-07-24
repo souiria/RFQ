@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "Protos/CommonTypes.proto";
+
+option csharp_namespace = "CDb";
+package cdb;
+
+message SubAssemblyGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated SubAssemblyGrpc SubAssemblyGrpcsToCreate = 2;
+  repeated SubAssemblyGrpc SubAssemblyGrpcsToUpdate = 3;
+  repeated SubAssemblyGrpc SubAssemblyGrpcsToDelete = 4;
+}
+
+message SubAssemblyGrpc {
+  google.protobuf.StringValue Id = 1;
+  google.protobuf.StringValue Content = 2;
+  google.protobuf.StringValue Function = 3;
+  google.protobuf.StringValue AdditionalInformation = 4;
+  google.protobuf.StringValue TerminalFamilyId = 5;
+  google.protobuf.StringValue TerminalSizeId = 6;
+  google.protobuf.Int32Value Color = 7;
+}
+
+message ListSubAssemblyGrpc {
+  repeated SubAssemblyGrpc SubAssemblyGrpcs = 1;
+}

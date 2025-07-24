@@ -1,0 +1,77 @@
+﻿syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "Protos/CommonTypes.proto";
+
+import "Protos/FileName.proto";
+import "Protos/PartNumber.proto";
+import "Protos/Tag.proto";
+
+import "Protos/Masters/FileType.proto";
+import "Protos/Masters/Partner.proto";
+import "Protos/Masters/Person.proto";
+import "Protos/Masters/TemperatureRange.proto";
+
+// Components
+import "Protos/Components/Cable.proto";
+import "Protos/Components/Clip.proto";
+import "Protos/Components/Connector.proto";
+import "Protos/Components/Cover.proto";	
+import "Protos/Components/Diode.proto";
+import "Protos/Components/Eyelet.proto";
+import "Protos/Components/Fuse.proto";
+import "Protos/Components/Grommet.proto";
+import "Protos/Components/Housing.proto";
+import "Protos/Components/MiscellaneousComponent.proto";
+import "Protos/Components/Plug.proto";
+import "Protos/Components/Relay.proto";
+import "Protos/Components/Seal.proto";
+import "Protos/Components/Shield.proto";
+import "Protos/Components/Sleeve.proto";
+import "Protos/Components/SubAssembly.proto";
+import "Protos/Components/Support.proto";
+import "Protos/Components/Terminal.proto";
+import "Protos/Components/Wire.proto";
+import "Protos/Components/WireProtection.proto";
+
+import "Protos/Component.proto";
+
+option csharp_namespace = "CDb";
+package cdb;
+
+message CompositeComponentGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated CompositeComponentGrpc CompositeComponentGrpcsToCreate = 2;
+  repeated CompositeComponentGrpc CompositeComponentGrpcsToUpdate = 3;
+  repeated CompositeComponentGrpc CompositeComponentGrpcsToDelete = 4;
+}
+
+message CompositeComponentGrpc {
+	ComponentGrpc ComponentGrpc = 1;
+	CableGrpc CableGrpc = 2;
+	ClipGrpc ClipGrpc = 3;
+	ConnectorGrpc ConnectorGrpc = 4;
+	CoverGrpc CoverGrpc = 5;
+	DiodeGrpc DiodeGrpc = 6;
+	EyeletGrpc EyeletGrpc = 7;
+	FuseGrpc FuseGrpc = 8;	
+	GrommetGrpc GrommetGrpc = 9;
+	HousingGrpc HousingGrpc = 10;
+	MiscellaneousComponentGrpc MiscellaneousComponentGrpc = 11;
+	PlugGrpc PlugGrpc = 12;
+	RelayGrpc RelayGrpc = 13;
+	SealGrpc SealGrpc = 14;
+	ShieldGrpc ShieldGrpc = 15;
+	SleeveGrpc SleeveGrpc = 16;
+	SubAssemblyGrpc SubAssemblyGrpc = 17;
+	SupportGrpc SupportGrpc = 18;
+	TerminalGrpc TerminalGrpc = 19;
+	WireGrpc WireGrpc = 20;
+	WireProtectionGrpc WireProtectionGrpc = 21;
+}
+
+message ListCompositeComponentGrpc {
+  repeated CompositeComponentGrpc CompositeComponentGrpcs = 1;
+}
