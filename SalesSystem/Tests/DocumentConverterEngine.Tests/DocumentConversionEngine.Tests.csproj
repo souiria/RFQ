@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DocumentConversion\DocumentConversion.csproj" />
+    <ProjectReference Include="..\..\src\Logic\Engine\DocumentConversion\DocumentConversion.csproj" />
   </ItemGroup>
 
   <ItemGroup>
