@@ -1,9 +1,4 @@
-﻿using Master.Endpoints.GrpcServices;
-using Master.Services;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-
-namespace Master
+﻿namespace Master
 {
     public static class HostBuilder
     {

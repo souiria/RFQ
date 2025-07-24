@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using System.Diagnostics;
-using System.Security.Claims;
-using System.DirectoryServices.AccountManagement;
+﻿
 namespace SalesSystem.Rfq
 {
     public sealed class UserContextEnrichmentMiddleware(

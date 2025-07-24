@@ -1,21 +1,3 @@
-using Azure.Monitor.OpenTelemetry.AspNetCore;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Logging;
-using OpenTelemetry;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Trace;
-using SalesSystem.ServiceDefaults;
-using SharedKernel;
-using Microsoft.AspNetCore.Authentication.Negotiate;
-using OpenTelemetry.Resources;
-using Elastic.OpenTelemetry;
-using Microsoft.Extensions.Configuration;
-using OpenTelemetry.Logs;
-
 namespace Microsoft.Extensions.Hosting
 {
     // Adds common .NET Aspire services: service discovery, resilience, health checks, and OpenTelemetry.
@@ -118,6 +100,12 @@ namespace Microsoft.Extensions.Hosting
                          metrics.AddAspNetCoreInstrumentation()
                                 .AddHttpClientInstrumentation()
                                 .AddRuntimeInstrumentation()
+                                            // .AddMeter("Microsoft.AspNetCore.Hosting")
+                                            // .AddMeter("Microsoft.AspNetCore.Server.Kestrel")
+                                            //  .AddMeter("Microsoft.AspNetCore.Http.Connections")
+                                            //.AddMeter("Microsoft.AspNetCore.Routing")
+                                            // .AddMeter("Microsoft.AspNetCore.Diagnostics")
+                                            //  .AddMeter("Microsoft.AspNetCore.RateLimiting")
                                 .AddOtlpExporter("metrics", opt =>
                                        {
                                          opt.Protocol = OpenTelemetry
@@ -160,7 +148,6 @@ namespace Microsoft.Extensions.Hosting
             // Uncomment the following lines to enable the Azure Monitor exporter (requires the Azure.Monitor.OpenTelemetry.AspNetCore package)
             if (!string.IsNullOrEmpty(builder.Configuration["AzureMonitor:ConnectionString"]))
             {                    
-               // builder.Services.ConfigureOpenTelemetryTracerProvider((sp, builder) =>  builder.AddProcessor(new ActivityEnrichingProcessor()));
                 builder.Services.AddOpenTelemetry()
                    .UseAzureMonitor();
             }

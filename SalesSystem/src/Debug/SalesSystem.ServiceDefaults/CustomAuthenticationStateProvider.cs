@@ -1,10 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
-using System.Security.Claims;
-using System.Security.Principal;
-using SharedKernel;
-using Microsoft.AspNetCore.Http;
-
-namespace SalesSystem.ServiceDefaults
+﻿namespace SalesSystem.ServiceDefaults
 {
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider, ICustomAuthenticationProvider
     {

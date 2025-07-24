@@ -17,11 +17,15 @@ global using Master.Data.Interface;
 global using Master.Data.Model;
 global using Master.Data.Repository;
 global using Master.Data.Time;
+global using Master.Endpoints.GrpcServices;
 global using Master.Extensions;
 global using Master.Services;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Logging;
 global using SharedKernel;
+
 

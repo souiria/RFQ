@@ -1,7 +1,3 @@
-using Microsoft.AspNetCore.Components.Authorization;
-using SalesSystem.Rfq;
-using SalesSystem.Rfq.Components;
-
 class Program
 {
     static void Main(string[] args)
