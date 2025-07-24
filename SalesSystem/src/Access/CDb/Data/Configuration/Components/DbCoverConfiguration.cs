@@ -22,7 +22,7 @@
                 .HasColumnType("decimal(8,1)");
 
             builder
-                .Property(c => c.IsNoiseDampening)
+                .Property(c => c.HasNoiseDampening)
                 .IsRequired()
                 .HasDefaultValue(false);
 

@@ -22,7 +22,7 @@
                 .HasMaxLength(32);
 
             builder
-                .Property(c => c.AdditionalInfo)
+                .Property(c => c.AdditionalInformation)
                 .IsRequired()
                 .HasMaxLength(32);
 

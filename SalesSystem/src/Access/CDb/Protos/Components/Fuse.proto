@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "Protos/CommonTypes.proto";
+
+option csharp_namespace = "CDb";
+package cdb;
+
+message FuseGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated FuseGrpc FuseGrpcsToCreate = 2;
+  repeated FuseGrpc FuseGrpcsToUpdate = 3;
+  repeated FuseGrpc FuseGrpcsToDelete = 4;
+}
+
+message FuseGrpc {
+  google.protobuf.StringValue Id = 1;
+  google.protobuf.StringValue FuseTypeId = 2;
+  google.protobuf.DoubleValue Amperage = 3;
+  google.protobuf.StringValue Description = 4;
+  google.protobuf.StringValue AdditionalInformation = 5;
+  google.protobuf.Int32Value Color = 6;
+}
+
+message ListFuseGrpc {
+  repeated FuseGrpc FuseGrpcs = 1;
+}

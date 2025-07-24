@@ -14,7 +14,7 @@
         { get; set; }
         public PartNumberType PartNumberType
         { get; set; }
-        public bool IsDeleted
+        public bool IsActive
         { get; set; }
 
         public DbPartNumber()
@@ -24,7 +24,7 @@
             PartNumberType = PartNumberType.SUPPLIER_PN;
             Description = null;
             Component = null!;
-            IsDeleted = false;
+            IsActive = false;
         }
     }
 }

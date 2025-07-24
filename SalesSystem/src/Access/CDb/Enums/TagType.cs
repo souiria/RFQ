@@ -2,6 +2,8 @@
 {
     public enum TagType
     {
+        Unknown = 0,
+        None,
         [Description("System")]
         System,
         // Life cycle tags

@@ -16,6 +16,8 @@
         { get; set; }
         public string CrimpingIssues
         { get; set; }
+        public Guid WaterproofTypeId
+        { get; set; }
         public DbWaterproofType WaterproofType
         { get; set; }
         public MatingType MatingType

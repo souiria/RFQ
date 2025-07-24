@@ -15,7 +15,7 @@
         { get; init; }
         public ICollection<DbConnector> Connectors
         { get; init; }
-        public bool IsDeleted
+        public bool IsActive
         { get; set; }
 
         public DbTerminalSize()
@@ -23,7 +23,7 @@
             Id = Guid.NewGuid();
             Name = string.Empty;
             Description = string.Empty;
-            IsDeleted = false;
+            IsActive = false;
             Families = new HashSet<DbTerminalFamily>();
             Terminals = new HashSet<DbTerminal>();
             Connectors = new HashSet<DbConnector>();

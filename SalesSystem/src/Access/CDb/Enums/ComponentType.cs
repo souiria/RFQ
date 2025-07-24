@@ -21,7 +21,7 @@
         [Description("WIRE")]
         Wire,
         [Description("CMPT")]
-        MiscComponent,
+        MiscellaneousComponent,
         [Description("REL")]
         Relay,
         [Description("DIOD")]

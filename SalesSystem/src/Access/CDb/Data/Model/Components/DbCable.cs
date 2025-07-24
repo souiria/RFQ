@@ -4,6 +4,8 @@
     {
         public ColorType Color
         { get; set; }
+        public int WireCount
+        { get; set; }
         public string WireCountCode
         { get; set; }
         public decimal Length

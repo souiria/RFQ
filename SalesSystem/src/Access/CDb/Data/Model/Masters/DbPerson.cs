@@ -17,7 +17,7 @@
         { get; set; }
         public string? Address
         { get; set; }
-        public bool IsDeleted
+        public bool IsActive
         { get; set; }
         public ICollection<DbComponent> Components
         { get; init; }
@@ -30,7 +30,7 @@
             Phone = string.Empty;
             Email = string.Empty;
             Components = new List<DbComponent>();
-            IsDeleted = false;
+            IsActive = false;
         }
     }
 }
