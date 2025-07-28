@@ -1,4 +1,4 @@
-﻿using System.Threading;
+﻿
 
 namespace CDb.Services
 {
@@ -14,9 +14,18 @@ namespace CDb.Services
         #endregion
 
         #region Fields and Properties
+
+        #region ClipType
         bool _ClipTypeRefreshInProgress;
+        IQueryHandler<GetClipTypesQuery, List<ClipTypeGrpc>>? _QueryClipTypeHandler;
+        ICommandHandler<ClipTypeCommand>? _CommandClipTypeHandler;
+        #endregion
+
+        #region CompositeComponent
         bool _CompositeComponentRefreshInProgress;
         #endregion
+
+        #endregion // Fields and Properties
 
         readonly IServiceProvider _ServiceProvider;
 
@@ -33,34 +42,34 @@ namespace CDb.Services
             _ServiceProvider = serviceProvider;
             if (testing)
             {
-                _ClipTypeGrpcs = SampleCDbAccessDataService.PopulateClipTypeSampleData();
-                _CompositeComponentGrpcs = SampleCDbAccessDataService.PopulateCompositeComponentSampleData();
+                _ClipTypeGrpcs = SampleCDbAccessDataService.PopulateClipTypeInitData();
+                _CompositeComponentGrpcs = SampleCDbAccessDataService.PopulateCompositeComponentInitData();
             }
         }
 
         #region ClipType
         async Task<bool> PopulateClipTypeData(CancellationToken cancellationToken)
         {
-            // TBD: Implement database loading logic here.
             await Task.Delay(1, cancellationToken);
 
             if (!_ClipTypeRefreshInProgress)
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    //_ClipTypeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCurrenciesQuery, List<ClipTypeGrpc>>>();
-                    //_ClipTypeRefreshInProgress = true;
-                    //GetCurrenciesQuery query = new GetCurrenciesQuery();
-                    //await Task.Delay(1, cancellationToken);
-                    //Result<List<ClipTypeGrpc>> results = await _ClipTypeHandler.Handle(query, cancellationToken);
-                    //if (results.Value.Count <= 0)
-                    //{
-                    //}
-                    //else
-                    //{
-                    //    _Currencies.ClipTypeGrpc.Clear();
-                    //    _Currencies.ClipTypeGrpc.AddRange(results.Value);
-                    //}
+                    _QueryClipTypeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetClipTypesQuery, List<ClipTypeGrpc>>>();
+                    _ClipTypeRefreshInProgress = true;
+                    GetClipTypesQuery query = new GetClipTypesQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<ClipTypeGrpc>> results = await _QueryClipTypeHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                        
+                    }
+                    else
+                    {
+                        _ClipTypeGrpcs.ClipTypeGrpcs.Clear();
+                        _ClipTypeGrpcs.ClipTypeGrpcs.AddRange(results.Value);
+                    }
 
                     _ClipTypeRefreshInProgress = false;
                     return true;
@@ -120,6 +129,26 @@ namespace CDb.Services
                     _FilteredClipTypeGrpcs.ClipTypeGrpcs.AddRange(filteredList);
                     return _FilteredClipTypeGrpcs;
                 }
+                case RequestType.ReadByCode:
+                {
+                    string code = request.GrpcRequestParameter.StringValue;
+                    if (string.IsNullOrEmpty(code))
+                    {
+                        status = new Status(StatusCode.InvalidArgument, "Invalid StringValue parameter value.");
+                        throw new RpcException(status);
+                    }
+
+                    await Task.Delay(1, cancellationToken);
+                    if (!_ClipTypeGrpcs.ClipTypeGrpcs.Any())
+                    {
+                        await PopulateClipTypeData(cancellationToken);
+                    }
+
+                    _FilteredClipTypeGrpcs.ClipTypeGrpcs.Clear();
+                    List<ClipTypeGrpc> filteredList = _ClipTypeGrpcs.ClipTypeGrpcs.Where(x => x.Code == code).ToList();
+                    _FilteredClipTypeGrpcs.ClipTypeGrpcs.AddRange(filteredList);
+                    return _FilteredClipTypeGrpcs;
+                }
                 default:
                     status = new Status(StatusCode.InvalidArgument, "Unsupported request type.");
                     throw new RpcException(status);
@@ -173,7 +202,7 @@ namespace CDb.Services
             return _FilteredClipTypeGrpcs;
         }
 
-        public async Task<ListClipTypeGrpc> CreateClipTypes(ClipTypeGrpcRequest request, CancellationToken cancellationToken)
+        public async Task<bool> CreateClipTypes(ClipTypeGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
 
@@ -182,17 +211,30 @@ namespace CDb.Services
                 throw new ArgumentNullException(nameof(request), "ClipTypeGrpcRequest or ClipTypeGrpcsToCreate cannot be null or empty.");
             }
 
-            foreach (ClipTypeGrpc? clip in request.ClipTypeGrpcsToCreate)
+            if (!_ClipTypeRefreshInProgress)
             {
-                // for now, we just add a new compositeComponent type with a new ID into the cache
-                clip.Id = Guid.NewGuid().ToString();
-                _ClipTypeGrpcs.ClipTypeGrpcs.Add(clip);
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _CommandClipTypeHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<ClipTypeCommand>>();
+                    ClipTypeCommand command = new ClipTypeCommand(CommandType.Create, request.ClipTypeGrpcsToCreate);
+
+                    Result result = await _CommandClipTypeHandler.Handle(command, cancellationToken);
+                    if (result.IsSuccess)
+                    {
+                        // invalidate the cache
+                        _ClipTypeRefreshInProgress = true;
+                        _ClipTypeGrpcs.ClipTypeGrpcs.Clear();
+                        _ClipTypeRefreshInProgress = false;
+                    }
+
+                    return true;
+                }
             }
 
-            return _ClipTypeGrpcs;
+            return false;
         }
 
-        public async Task<ListClipTypeGrpc> UpdateClipTypes(ClipTypeGrpcRequest request, CancellationToken cancellationToken)
+        public async Task<bool> UpdateClipTypes(ClipTypeGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
 
@@ -201,22 +243,27 @@ namespace CDb.Services
                 throw new ArgumentNullException(nameof(request), "ClipTypeGrpcRequest or ClipTypeGrpcsToUpdate cannot be null or empty.");
             }
 
-            foreach (ClipTypeGrpc? clip in request.ClipTypeGrpcsToUpdate)
+            if (!_ClipTypeRefreshInProgress)
             {
-                // for now, we just add a new compositeComponent type with a new ID into the cache
-                ClipTypeGrpc? existingClip = _ClipTypeGrpcs.ClipTypeGrpcs.FirstOrDefault(x => x.Id == clip.Id);
-                if (existingClip == null)
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    throw new KeyNotFoundException($"ClipType with ID {clip.Id} not found for update.");
-                }
+                    _CommandClipTypeHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<ClipTypeCommand>>();
+                    ClipTypeCommand command = new ClipTypeCommand(CommandType.Update, request.ClipTypeGrpcsToUpdate);
 
-                // Update the existing compositeComponent type with the new values
-                existingClip.Code = clip.Code;
-                existingClip.Description = clip.Description;
-                existingClip.IsActive = clip.IsActive;
+                    Result result = await _CommandClipTypeHandler.Handle(command, cancellationToken);
+                    if (result.IsSuccess)
+                    {
+                        // invalidate the cache
+                        _ClipTypeRefreshInProgress = true;
+                        _ClipTypeGrpcs.ClipTypeGrpcs.Clear();
+                        _ClipTypeRefreshInProgress = false;
+                    }
+
+                    return true;
+                }
             }
 
-            return _ClipTypeGrpcs;
+            return false;
         }
 
         #endregion

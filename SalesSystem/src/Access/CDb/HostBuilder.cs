@@ -25,7 +25,7 @@
             builder.AddServiceDefaults();
             builder.Logging.AddSeq();
             builder.Services.AddGrpc();
-            //builder.Services.AddInfrastructure(builder.Configuration);
+            builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddSingleton<ICDbAccessService, CDbAccessService>();
             
 

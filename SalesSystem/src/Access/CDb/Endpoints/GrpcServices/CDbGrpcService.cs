@@ -19,6 +19,7 @@
         }
 
         #region ClipType
+
         public override async Task<CDbCrudGrpcResponse> CreateClipTypeGrpc(ClipTypeGrpcRequest request, ServerCallContext context)
         {
             if (request == null || request.GrpcRequestParameter == null)
@@ -53,16 +54,17 @@
 
             CDbCrudGrpcResponse responseMessage = new CDbCrudGrpcResponse();
             CancellationToken cancellationToken = context.CancellationToken;
-            ListClipTypeGrpc response = await _CDbAccessService.CreateClipTypes(request, cancellationToken);
-            if (response == null || response.ClipTypeGrpcs.Count == 0)
+            bool response = await _CDbAccessService.CreateClipTypes(request, cancellationToken);
+            if (response)
             {
-                responseMessage.Message = "No clip types created.";
-                responseMessage.SaveSuccess = false;
+                responseMessage.Message = $"{request.ClipTypeGrpcsToCreate.Count} clip types created successfully.";
+                responseMessage.SaveSuccess = true;
+
             }
             else
             {
-                responseMessage.Message = $"{response.ClipTypeGrpcs.Count} Clip types created successfully.";
-                responseMessage.SaveSuccess = true;
+                responseMessage.Message = "No/not all clip types created.";
+                responseMessage.SaveSuccess = false;
             }
 
             return responseMessage;
@@ -97,6 +99,13 @@
                 }
 
                 case RequestType.ReadByIsActive:
+                {
+                    CancellationToken cancellationToken = context.CancellationToken;
+                    ListClipTypeGrpc response = await _CDbAccessService.ReadManyClipTypes(request, cancellationToken);
+                    return response;
+                }
+
+                case RequestType.ReadByCode:
                 {
                     CancellationToken cancellationToken = context.CancellationToken;
                     ListClipTypeGrpc response = await _CDbAccessService.ReadManyClipTypes(request, cancellationToken);
@@ -150,16 +159,16 @@
 
             CDbCrudGrpcResponse responseMessage = new CDbCrudGrpcResponse();
             CancellationToken cancellationToken = context.CancellationToken;
-            ListClipTypeGrpc response = await _CDbAccessService.UpdateClipTypes(request, cancellationToken);
-     
-            if (response == null || response.ClipTypeGrpcs.Count == 0)
+            bool response = await _CDbAccessService.UpdateClipTypes(request, cancellationToken);
+
+            if (!response)
             {
                 responseMessage.Message = "No clip types updated.";
                 responseMessage.SaveSuccess = false;
             }
             else
             {
-                responseMessage.Message = $"{response.ClipTypeGrpcs.Count} Clip types updated successfully.";
+                responseMessage.Message = $"{request.ClipTypeGrpcsToUpdate.Count} Clip types updated successfully.";
                 responseMessage.SaveSuccess = true;
             }
 

@@ -41,12 +41,12 @@
 
             grpc.GroupName = entity.GroupName;
             grpc.IsReplacement = entity.IsReplacement;
-            grpc.ReplacedComponentId = entity.ReplacedComponentId?.ToString();
 
             grpc.TemperatureLow = entity.TemperatureLow;
             grpc.TemperatureHigh = entity.TemperatureHigh;
             grpc.TemperatureRangeId = entity.TemperatureRangeId?.ToString();
 
+            //grpc.ReplacedComponents = entity.ReplacedComponents?.Select(rc => rc.FromDb()).ToList() ?? new List<ComponentGrpc>();
             //grpc.FileNames = entity.FileNames?.Select(fn => fn.FromDb()).ToList() ?? new List<FileNameGrpc>();
             //grpc.Contacts = entity.Contacts?.Select(c => c.FromDb()).ToList() ?? new List<PersonGrpc>();
             //grpc.Partners = entity.Partners?.Select(p => p.FromDb()).ToList() ?? new List<PartnerGrpc>();

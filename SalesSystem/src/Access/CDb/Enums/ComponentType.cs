@@ -3,7 +3,7 @@
     public enum ComponentType
     {
         [Description("Unknown")]
-        Unknown,
+        Unknown = 0,
         [Description("CLIP")]
         Clip,
         [Description("CONN")]

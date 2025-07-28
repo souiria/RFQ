@@ -9,8 +9,8 @@
         Task<ListClipTypeGrpc> ReadAllClipTypes(CancellationToken cancellationToken);
         Task<ListClipTypeGrpc> ReadManyClipTypes(ClipTypeGrpcRequest request, CancellationToken cancellationToken);
         Task<ListClipTypeGrpc> ReadClipTypeById(ClipTypeGrpcRequest request, CancellationToken cancellationToken);
-        Task<ListClipTypeGrpc> CreateClipTypes(ClipTypeGrpcRequest request, CancellationToken cancellationToken);
-        Task<ListClipTypeGrpc> UpdateClipTypes(ClipTypeGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> CreateClipTypes(ClipTypeGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> UpdateClipTypes(ClipTypeGrpcRequest request, CancellationToken cancellationToken);
         #endregion
 
         #region CoverType

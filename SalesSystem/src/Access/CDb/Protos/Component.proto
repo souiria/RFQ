@@ -54,11 +54,11 @@ message ComponentGrpc {
   google.protobuf.StringValue ValidatedById = 27;
   google.protobuf.StringValue GroupName = 28;
   google.protobuf.BoolValue IsReplacement = 29;
-  google.protobuf.StringValue ReplacedComponentId = 30;
-  google.protobuf.Int32Value  TemperatureLow = 31;
-  google.protobuf.Int32Value  TemperatureHigh = 32;
-  google.protobuf.StringValue TemperatureRangeId = 33;
+  google.protobuf.Int32Value  TemperatureLow = 30;
+  google.protobuf.Int32Value  TemperatureHigh = 31;
+  google.protobuf.StringValue TemperatureRangeId = 32;
 
+  repeated ComponentGrpc ReplacedComponents = 33;
   repeated FileNameGrpc FileNames = 34;
   repeated PersonGrpc Contacts = 35;
   repeated PartnerGrpc Partners = 36;

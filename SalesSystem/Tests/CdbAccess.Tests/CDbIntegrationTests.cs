@@ -23,7 +23,7 @@ namespace CdbAccess.Tests
         public CDbIntegrationTests()
         {
             _CreateCompositeComponentId = "8e020bbc-7fec-4365-b622-7191c52f9dac";
-            _ReadByIdCompositeCableComponentId =  "83e2c52d-3728-4ceb-a57b-b9234995b45f";
+            _ReadByIdCompositeCableComponentId = "83e2c52d-3728-4ceb-a57b-b9234995b45e";
         }
 
         [SetUp]

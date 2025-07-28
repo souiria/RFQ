@@ -3,9 +3,8 @@
     public class CDbContext : DbContext, ICDbContext
     {
 
-        readonly IDomainEventsDispatcher _Dispatcher;
-
-        public CDbContext(DbContextOptions<CDbContext> options, IDomainEventsDispatcher dispatcher) : base(options)
+        readonly IDomainEventsDispatcher? _Dispatcher;
+        public CDbContext(DbContextOptions<CDbContext> options, IDomainEventsDispatcher? dispatcher) : base(options)
         {
             _Dispatcher = dispatcher;
         }
@@ -127,6 +126,11 @@
 
         async Task PublishDomainEventsAsync()
         {
+            if (_Dispatcher is null)
+            {
+                return;
+            }
+
             List<IDomainEvent> domainEvents = ChangeTracker
                 .Entries<Entity>()
                 .Select(entry => entry.Entity)

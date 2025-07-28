@@ -22,7 +22,7 @@ namespace CDb.Data.Configuration.Masters
 
         static void AddSeedData(EntityTypeBuilder<DbClipType> builder)
         {
-            DbClipType clipTypeUnknown = new DbClipType("Unknown", "Unknown", false);
+            DbClipType clipTypeUnknown = new DbClipType("UNKNOWN", "Unknown", false);
             DbClipType clipTypeDBL = new DbClipType("DOUBLE", "Double", false);
             DbClipType clipTypeOVALSHAPED = new DbClipType("OVALSHAPED", "Oval-Shaped", false);
             DbClipType clipTypeROUNDSHAPED = new DbClipType("ROUNDSHAPED", "Round-Shaped", false);
