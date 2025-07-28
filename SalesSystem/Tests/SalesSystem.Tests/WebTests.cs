@@ -18,6 +18,7 @@ namespace SalesSystem.Tests
 
             // Act
             using HttpClient httpClient = app.CreateHttpClient("RfqFrontEnd");
+            httpClient.Timeout = TimeSpan.FromSeconds(120); //Set Timeout to 120 seconds, to Allow test server time to catch up
             await resourceNotificationService.WaitForResourceAsync("RfqFrontEnd", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
             HttpResponseMessage response = await httpClient.GetAsync(new Uri("/", UriKind.Relative));
 
