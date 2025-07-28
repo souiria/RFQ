@@ -24,13 +24,14 @@ namespace SalesSystem.Rfq
             //string? userId = "Dazza";
             if (displayName is not null)
             {
+                string guid = Guid.NewGuid().ToString();
                 Activity.Current?.SetTag("enduser.id", displayName);
-                Activity.Current?.SetTag("enduser.pseudo.id", Guid.NewGuid().ToString());
+                Activity.Current?.SetTag("enduser.pseudo.id", guid);
 
-                Dictionary<string, object> data = new Dictionary<string, object>
-                {
-                   // ["UserId"] = displayName!
-                };
+                Dictionary<string, object> data = new Dictionary<string, object>();
+                //{
+                //   // ["UserId"] = displayName!
+                //};
 
                 using (logger.BeginScope(data))
                 {
