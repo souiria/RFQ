@@ -3,7 +3,7 @@ namespace SalesSystem.Tests
     public class WebTests
     {
         [Test]
-        public async Task GetWebResourceRootReturnsOkStatusCode()
+        public async Task GetWebResourceRootReturnsUnauthorizedStatusCode()
         {
             // Arrange
             IDistributedApplicationTestingBuilder appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.SalesSystem_AppHost>();
@@ -22,7 +22,7 @@ namespace SalesSystem.Tests
             HttpResponseMessage response = await httpClient.GetAsync(new Uri("/", UriKind.Relative));
 
             // Assert
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
         }
     }
 }
