@@ -1,11 +1,14 @@
 using System.Globalization;
 using CDb;
+using CDb.Data.Context;
+using CDb.Data.Model.Masters;
 using CDb.Endpoints.GrpcServices;
 using CDb.Enums;
 using CDb.Extensions;
 using CDb.Services;
 using Grpc.Core;
 using Grpc.Core.Testing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -126,8 +129,8 @@ namespace CdbAccess.Tests
             string clipTypeId = response.Result.ClipTypeGrpcs[0].Id.ToUpper(cultureInfo);
             Assert.That(clipTypeId, idConstraint);
             // Check if the ClipTypeGrpc has the expected Name
-            NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("UNKNOWN");
-            Assert.That(response.Result.ClipTypeGrpcs[0].Code, nameConstraint);
+            NUnit.Framework.Constraints.EqualConstraint codeConstraint = Is.EqualTo("UNKNOWN");
+            Assert.That(response.Result.ClipTypeGrpcs[0].Code, codeConstraint);
             // Check if the ClipTypeGrpc has the expected Description
             NUnit.Framework.Constraints.EqualConstraint descriptionConstraint = Is.EqualTo("Unknown");
             Assert.That(response.Result.ClipTypeGrpcs[0].Description, descriptionConstraint);
@@ -219,7 +222,6 @@ namespace CdbAccess.Tests
             Task<ListClipTypeGrpc> response = _GrpcService.ReadClipTypeGrpc(request, serverCallContext);
 
             // Assert
-            // The HasData in the DbClipType adds UNKNOWN CLIP TYPE
             Assert.That(response.Result.ClipTypeGrpcs, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(response.Result.ClipTypeGrpcs.Count, countConstraint);
@@ -235,6 +237,7 @@ namespace CdbAccess.Tests
             // Do some updates ClipTypeGrpc object to add
             theClip.Code = "DELETEME";
             theClip.Description = "DELETEME";
+            theClip.IsActive = false;
             request.ClipTypeGrpcsToUpdate.Add(theClip);
 
             serverCallContext = CreateServerContext(nameof(_GrpcService.UpdateClipTypeGrpc));
@@ -246,6 +249,33 @@ namespace CdbAccess.Tests
             Assert.That(crudResponse, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint statusConstraint = Is.EqualTo(true);
             Assert.That(crudResponse.SaveSuccess, statusConstraint);
+        }
+        [Test]
+        public async Task XDeleteClipTypeTest()
+        {
+            // there is no Grpc endpoint to delete this type of data, so we have to use the database context directly
+            CDbContext dbContext = _ServiceProvider.GetRequiredService<CDbContext>();
+            DbClipType? dbClipType = await dbContext.ClipTypes.FirstOrDefaultAsync(ct => ct.Id.ToString() == _CrudClipTypeId);
+            Assert.That(dbClipType, Is.Not.Null, "The ClipType to delete was not found in the database.");
+            dbContext.ClipTypes.Remove(dbClipType);
+            await dbContext.SaveChangesAsync();
+
+            // Check if the test clip already exists
+            ClipTypeGrpcRequest request = new ClipTypeGrpcRequest();
+            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+            grpcRequestParameter.RequestType = (int)RequestType.ReadById;
+            grpcRequestParameter.StringValue = _CrudClipTypeId; // test id  
+            request.GrpcRequestParameter = grpcRequestParameter;
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadClipTypeGrpc));
+
+            // Act
+            Task<ListClipTypeGrpc> response = _GrpcService.ReadClipTypeGrpc(request, serverCallContext);
+
+            // Assert
+            Assert.That(response.Result.ClipTypeGrpcs, Is.Not.Null);
+            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            Assert.That(response.Result.ClipTypeGrpcs.Count, countConstraint);
+
         }
 
         // Private helper method to create a mock ServerCallContext

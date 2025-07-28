@@ -14,45 +14,45 @@
         {
             List<DbClipType> clipTypes = command.ClipTypeGrpcs.Select(clipTypeGrpc => clipTypeGrpc.ToEntity()).ToList();
             List<Result<DbClipType>> results = new List<Result<DbClipType>>();
+            IEnumerable<DbClipType> repositoryActionResult;
+            int updateDeleteCount = 0;
+            bool success = false;
 
             switch (command.CommandType)
             {
                 case CommandType.Create:
-                    await Repository.AddRangeAsync(clipTypes, cancellationToken);
-                    break;
+                    repositoryActionResult = await Repository.AddRangeAsync(clipTypes, cancellationToken);
+                    success = repositoryActionResult.Count() == clipTypes.Count;
+                break;
                 case CommandType.Update:
-                    await Repository.UpdateRangeAsync(clipTypes, cancellationToken);
-                    break;
+                    updateDeleteCount = await Repository.UpdateRangeAsync(clipTypes, cancellationToken);
+                    success = updateDeleteCount == clipTypes.Count;
+                break;
                 case CommandType.Delete:
-                    await Repository.DeleteRangeAsync(clipTypes, cancellationToken);    
-                    break;
+                    updateDeleteCount = await Repository.DeleteRangeAsync(clipTypes, cancellationToken);    
+                    success = updateDeleteCount == clipTypes.Count;
+                break;
                 default:
                     {
                         Error e = new Error("InvalidCommand", "The command type is not supported.", ErrorType.Failure);
                         Result f = Result.Failure(e);
                         return f;
                     }
-            }   
-            
-            int saved = await Repository.SaveChangesAsync(cancellationToken);
+            }
+
+            // not needed, the repository methods already save changes - which is why we don't need to call SaveChangesAsync here
+            // otoh, how is one implemention the UnitOfWork pattern? 
+            // int saved = await Repository.SaveChangesAsync(cancellationToken);
 
             Result r;
-            if (saved <= 0)
+            if (success)
             {
-                Error e = new Error("Failure", "Failed to create clip types.", ErrorType.Failure);
-                r = Result.Failure(e);
+                r = Result.Success();
             }
             else
             {
-                if(clipTypes.Count == saved)
-                {
-                    r = Result.Success();
-                }
-                else
-                {
-                    Error w = new Error("Problem", $"Failed to create all clip types, commited {saved} vs. requested {clipTypes.Count}", ErrorType.Problem);
-                    r = Result.Failure(w);
-                }
+                Error w = new Error("Failure", $"Command type {command.CommandType} failed!", ErrorType.Problem);
+                r = Result.Failure(w);
             }
 
             return r;   

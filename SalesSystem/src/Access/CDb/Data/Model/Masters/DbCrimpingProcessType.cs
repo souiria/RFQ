@@ -1,6 +1,6 @@
 namespace CDb.Data.Model.Masters
 {
-    public class DbCrimpingProcessType
+    public class DbCrimpingProcessType : IAggregateRoot
     {
         public Guid Id
         { get; set; }
