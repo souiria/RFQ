@@ -25,5 +25,6 @@ global using SFS.Data.Interface;
 global using SFS.Data.Model;
 global using SFS.Data.Repository;
 global using SFS.Data.Time;
+global using SFS.Endpoints.GrpcServices;
 global using SFS.Extensions;
-global using SharedKernel;
+global using SFS.Services;global using SharedKernel;

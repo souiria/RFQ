@@ -16,13 +16,13 @@
         { get; set; }
         public DbPerson? ContactPerson
         { get; set; }
-        public Guid? RespPersonId
+        public Guid? SupervisorPersonId
         { get; set; }
-        public DbPerson? RespPerson
+        public DbPerson? SupervisorPerson
         { get; set; }
         public ICollection<DbComponent> Components
         { get; init; }
-        public bool IsDeleted
+        public bool IsActive
         { get; set; }
 
         public DbPartner()
@@ -33,7 +33,7 @@
             Name = string.Empty;
 
             Components = new HashSet<DbComponent>();
-            IsDeleted = false;
+            IsActive = false;
         }
     }
 }

@@ -15,7 +15,7 @@
         { get; init; }
         public ICollection<DbConnector> Connectors
         { get; init; }
-        public bool IsDeleted
+        public bool IsActive
         { get; set; }
 
         public DbTerminalFamily()
@@ -26,7 +26,7 @@
             Sizes = new HashSet<DbTerminalSize>();
             Terminals = new HashSet<DbTerminal>();
             Connectors = new HashSet<DbConnector>();
-            IsDeleted = false;
+            IsActive = false;
         }
     }
 }

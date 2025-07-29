@@ -6,10 +6,11 @@ namespace SalesSystem.Rfq
         {
             List<WeatherForecast>? forecasts = null;
 
-            await foreach (WeatherForecast? forecast in httpClient.GetFromJsonAsAsyncEnumerable<WeatherForecast>("/weatherforecast", cancellationToken))
+            IAsyncEnumerable<WeatherForecast?> weatherforecast = httpClient.GetFromJsonAsAsyncEnumerable<WeatherForecast>("/weatherforecast", cancellationToken);
+            await foreach (WeatherForecast? forecast in weatherforecast)
             {
-                if (forecasts?.Count >= maxItems)
-                {
+                if (maxItems <= forecasts?.Count)
+                    {
                     break;
                 }
 

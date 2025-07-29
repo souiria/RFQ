@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "Protos/CommonTypes.proto";
+
+option csharp_namespace = "CDb";
+package cdb;
+
+message CableGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated CableGrpc CableGrpcsToCreate = 2;
+  repeated CableGrpc CableGrpcsToUpdate = 3;
+  repeated CableGrpc CableGrpcsToDelete = 4;
+}
+
+message CableGrpc {
+  google.protobuf.StringValue Id = 1;
+  google.protobuf.Int32Value Color = 2;
+  google.protobuf.Int32Value WireCount = 3;
+  google.protobuf.StringValue WireCountCode = 4;
+  google.protobuf.DoubleValue Length = 5;
+  google.protobuf.BoolValue IsShielded = 6;
+}
+
+message ListCableGrpc {
+  repeated CableGrpc CableGrpcs = 1;
+}

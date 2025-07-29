@@ -1,6 +1,4 @@
-﻿
-
-namespace SFS.Data.DTOs
+﻿namespace SFS.Data.DTOs
 {
    public class DailyVolumeDataDto
     {

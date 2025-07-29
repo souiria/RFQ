@@ -4,6 +4,7 @@
     {
         public static WebApplication CreateApp(WebApplicationBuilder? builder = null, params string[] args)
         {
+
             builder ??= WebApplication.CreateBuilder(args);
 
             #region Builder
@@ -20,7 +21,7 @@
             // Add additional generic services here (anything ServiceFabric specific
             // should go in Api.cs CreateServiceInstanceListeners method)
             // *********************************************************************
-
+     
             #region Additional Services
             builder.AddServiceDefaults();
             builder.Logging.AddSeq();
