@@ -17,8 +17,8 @@
         Task<ListCoverTypeGrpc> ReadAllCoverTypes(CancellationToken cancellationToken);
         Task<ListCoverTypeGrpc> ReadManyCoverTypes(CoverTypeGrpcRequest request, CancellationToken cancellationToken);
         Task<ListCoverTypeGrpc> ReadCoverTypeById(CoverTypeGrpcRequest request, CancellationToken cancellationToken);
-        Task<ListCoverTypeGrpc> CreateCoverTypes(CoverTypeGrpcRequest request, CancellationToken cancellationToken);
-        Task<ListCoverTypeGrpc> UpdateCoverTypes(CoverTypeGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> CreateCoverTypes(CoverTypeGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> UpdateCoverTypes(CoverTypeGrpcRequest request, CancellationToken cancellationToken);
         #endregion
 
         #region CrimpingProcessType
@@ -41,8 +41,8 @@
         Task<ListFuseTypeGrpc> ReadAllFuseTypes(CancellationToken cancellationToken);
         Task<ListFuseTypeGrpc> ReadManyFuseTypes(FuseTypeGrpcRequest request, CancellationToken cancellationToken);
         Task<ListFuseTypeGrpc> ReadFuseTypeById(FuseTypeGrpcRequest request, CancellationToken cancellationToken);
-        Task<ListFuseTypeGrpc> CreateFuseTypes(FuseTypeGrpcRequest request, CancellationToken cancellationToken);
-        Task<ListFuseTypeGrpc> UpdateFuseTypes(FuseTypeGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> CreateFuseTypes(FuseTypeGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> UpdateFuseTypes(FuseTypeGrpcRequest request, CancellationToken cancellationToken);
         #endregion
 
         #region MaterialType
