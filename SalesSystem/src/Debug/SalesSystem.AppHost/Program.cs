@@ -16,7 +16,7 @@
 
         IResourceBuilder<ProjectResource> apiService = builder.AddProject<Projects.SalesSystem_ApiService>("api-service");
 
-        IResourceBuilder<ProjectResource> rfqManager = builder.AddProject<Projects.RfqManager>("RfqManager");
+        IResourceBuilder<ProjectResource> rfqManager = builder.AddProject<Projects.RfqModule>("rfq-module-service");
 
         builder.AddProject<Projects.SalesSystem_Rfq>("RfqFrontEnd")
             .WithExternalHttpEndpoints()
