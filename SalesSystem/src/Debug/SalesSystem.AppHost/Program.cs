@@ -12,6 +12,8 @@
 
         IResourceBuilder<ProjectResource> cPDAccessService = builder.AddProject<Projects.CPD>("cpd-access-service");
 
+        IResourceBuilder<ProjectResource> ediAccessService = builder.AddProject<Projects.EDI>("edi-access-service");
+
         IResourceBuilder<ProjectResource> apiService = builder.AddProject<Projects.SalesSystem_ApiService>("api-service");
 
         IResourceBuilder<ProjectResource> rfqManager = builder.AddProject<Projects.RfqManager>("RfqManager");

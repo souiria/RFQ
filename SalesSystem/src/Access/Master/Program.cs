@@ -1,5 +1,3 @@
-using Master.Endpoints.GrpcServices;
-
 namespace Master
 {
     public static class Program
