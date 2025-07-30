@@ -33,8 +33,8 @@
         Task<ListFileTypeGrpc> ReadAllFileTypes(CancellationToken cancellationToken);
         Task<ListFileTypeGrpc> ReadManyFileTypes(FileTypeGrpcRequest request, CancellationToken cancellationToken);
         Task<ListFileTypeGrpc> ReadFileTypeById(FileTypeGrpcRequest request, CancellationToken cancellationToken);
-        Task<ListFileTypeGrpc> CreateFileTypes(FileTypeGrpcRequest request, CancellationToken cancellationToken);
-        Task<ListFileTypeGrpc> UpdateFileTypes(FileTypeGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> CreateFileTypes(FileTypeGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> UpdateFileTypes(FileTypeGrpcRequest request, CancellationToken cancellationToken);
         #endregion
 
         #region FuseType
@@ -49,32 +49,32 @@
         Task<ListMaterialTypeGrpc> ReadAllMaterialTypes(CancellationToken cancellationToken);
         Task<ListMaterialTypeGrpc> ReadManyMaterialTypes(MaterialTypeGrpcRequest request, CancellationToken cancellationToken);
         Task<ListMaterialTypeGrpc> ReadMaterialTypeById(MaterialTypeGrpcRequest request, CancellationToken cancellationToken);
-        Task<ListMaterialTypeGrpc> CreateMaterialTypes(MaterialTypeGrpcRequest request, CancellationToken cancellationToken);
-        Task<ListMaterialTypeGrpc> UpdateMaterialTypes(MaterialTypeGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> CreateMaterialTypes(MaterialTypeGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> UpdateMaterialTypes(MaterialTypeGrpcRequest request, CancellationToken cancellationToken);
         #endregion
 
         #region MiscellaneousComponentType
         Task<ListMiscellaneousComponentTypeGrpc> ReadAllMiscellaneousComponentTypes(CancellationToken cancellationToken);
         Task<ListMiscellaneousComponentTypeGrpc> ReadManyMiscellaneousComponentTypes(MiscellaneousComponentTypeGrpcRequest request, CancellationToken cancellationToken);
         Task<ListMiscellaneousComponentTypeGrpc> ReadMiscellaneousComponentTypeById(MiscellaneousComponentTypeGrpcRequest request, CancellationToken cancellationToken);
-        Task<ListMiscellaneousComponentTypeGrpc> CreateMiscellaneousComponentTypes(MiscellaneousComponentTypeGrpcRequest request, CancellationToken cancellationToken);
-        Task<ListMiscellaneousComponentTypeGrpc> UpdateMiscellaneousComponentTypes(MiscellaneousComponentTypeGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> CreateMiscellaneousComponentTypes(MiscellaneousComponentTypeGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> UpdateMiscellaneousComponentTypes(MiscellaneousComponentTypeGrpcRequest request, CancellationToken cancellationToken);
         #endregion
 
         #region Partner
         Task<ListPartnerGrpc> ReadAllPartners(CancellationToken cancellationToken);
         Task<ListPartnerGrpc> ReadManyPartners(PartnerGrpcRequest request, CancellationToken cancellationToken);
         Task<ListPartnerGrpc> ReadPartnerById(PartnerGrpcRequest request, CancellationToken cancellationToken);
-        Task<ListPartnerGrpc> CreatePartners(PartnerGrpcRequest request, CancellationToken cancellationToken);
-        Task<ListPartnerGrpc> UpdatePartners(PartnerGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> CreatePartners(PartnerGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> UpdatePartners(PartnerGrpcRequest request, CancellationToken cancellationToken);
         #endregion
 
         #region Person
         Task<ListPersonGrpc> ReadAllPersons(CancellationToken cancellationToken);
         Task<ListPersonGrpc> ReadManyPersons(PersonGrpcRequest request, CancellationToken cancellationToken);
         Task<ListPersonGrpc> ReadPersonById(PersonGrpcRequest request, CancellationToken cancellationToken);
-        Task<ListPersonGrpc> CreatePersons(PersonGrpcRequest request, CancellationToken cancellationToken);
-        Task<ListPersonGrpc> UpdatePersons(PersonGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> CreatePersons(PersonGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> UpdatePersons(PersonGrpcRequest request, CancellationToken cancellationToken);
         #endregion
 
         #region TemperatureRange

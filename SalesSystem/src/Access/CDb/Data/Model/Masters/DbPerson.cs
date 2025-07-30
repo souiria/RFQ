@@ -1,6 +1,6 @@
 ﻿namespace CDb.Data.Model.Masters
 {
-    public class DbPerson
+    public class DbPerson :IAggregateRoot
     {
         public Guid Id
         { get; set; }

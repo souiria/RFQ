@@ -1,6 +1,6 @@
 namespace CDb.Data.Model.Masters
 {
-    public class DbMiscellaneousComponentType
+    public class DbMiscellaneousComponentType : IAggregateRoot
     {
         public Guid Id
         { get; set; }

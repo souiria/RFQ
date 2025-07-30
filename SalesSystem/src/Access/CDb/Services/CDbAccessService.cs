@@ -16,8 +16,32 @@
         ListCompositeComponentGrpc _CompositeComponentGrpcs;
         ListCompositeComponentGrpc _FilteredCompositeComponentGrpcs;
 
+        ListFileTypeGrpc _FileTypeGrpcs;
+        ListFileTypeGrpc _FilteredFileTypeGrpcs;
+
         ListFuseTypeGrpc _FuseTypeGrpcs;
         ListFuseTypeGrpc _FilteredFuseTypeGrpcs;
+
+        ListMaterialTypeGrpc _MaterialTypeGrpcs;
+        ListMaterialTypeGrpc _FilteredMaterialTypeGrpcs;
+
+        ListMiscellaneousComponentTypeGrpc _MiscellaneousComponentTypeGrpcs;
+        ListMiscellaneousComponentTypeGrpc _FilteredMiscellaneousComponentTypeGrpcs;
+
+        ListPartnerGrpc _PartnerGrpcs;
+        ListPartnerGrpc _FilteredPartnerGrpcs;
+
+        ListPersonGrpc _PersonGrpcs;
+        ListPersonGrpc _FilteredPersonGrpcs;
+
+        // Main
+        ListFileNameGrpc _FileNameGrpcs;
+        ListFileNameGrpc _FilteredFileNameGrpcs;
+
+        // Components
+        ListMiscellaneousComponentGrpc _MiscellaneousComponentGrpcs;
+        ListMiscellaneousComponentGrpc _FilteredMiscellaneousComponentGrpcs;
+
         #endregion
 
         #region Fields and Properties
@@ -40,10 +64,40 @@
         ICommandHandler<CrimpingProcessTypeCommand>? _CommandCrimpingProcessTypeHandler;
         #endregion
 
+        #region FileType
+        bool _FileTypeRefreshInProgress;
+        IQueryHandler<GetFileTypesQuery, List<FileTypeGrpc>>? _QueryFileTypeHandler;
+        ICommandHandler<FileTypeCommand>? _CommandFileTypeHandler;
+        #endregion
+
         #region FuseType
         bool _FuseTypeRefreshInProgress;
         IQueryHandler<GetFuseTypesQuery, List<FuseTypeGrpc>>? _QueryFuseTypeHandler;
         ICommandHandler<FuseTypeCommand>? _CommandFuseTypeHandler;
+        #endregion
+
+        #region MaterialType
+        bool _MaterialTypeRefreshInProgress;
+        IQueryHandler<GetMaterialTypesQuery, List<MaterialTypeGrpc>>? _QueryMaterialTypeHandler;
+        ICommandHandler<MaterialTypeCommand>? _CommandMaterialTypeHandler;
+        #endregion
+
+        #region MiscellaneousComponentType
+        bool _MiscellaneousComponentTypeRefreshInProgress;
+        IQueryHandler<GetMiscellaneousComponentTypesQuery, List<MiscellaneousComponentTypeGrpc>>? _QueryMiscellaneousComponentTypeHandler;
+        ICommandHandler<MiscellaneousComponentTypeCommand>? _CommandMiscellaneousComponentTypeHandler;
+        #endregion
+
+        #region Partner
+        bool _PartnerRefreshInProgress;
+        IQueryHandler<GetPartnersQuery, List<PartnerGrpc>>? _QueryPartnerHandler;
+        ICommandHandler<PartnerCommand>? _CommandPartnerHandler;
+        #endregion
+
+        #region Person
+        bool _PersonRefreshInProgress;
+        IQueryHandler<GetPersonsQuery, List<PersonGrpc>>? _QueryPersonHandler;
+        ICommandHandler<PersonCommand>? _CommandPersonHandler;
         #endregion
 
         #region CompositeComponent
@@ -68,13 +122,42 @@
             _CompositeComponentGrpcs = new ListCompositeComponentGrpc();
             _FilteredCompositeComponentGrpcs = new ListCompositeComponentGrpc();
 
+            _FileTypeGrpcs = new ListFileTypeGrpc();
+            _FilteredFileTypeGrpcs = new ListFileTypeGrpc();
+
             _FuseTypeGrpcs = new ListFuseTypeGrpc();
             _FilteredFuseTypeGrpcs = new ListFuseTypeGrpc();
+
+            _MaterialTypeGrpcs = new ListMaterialTypeGrpc();
+            _FilteredMaterialTypeGrpcs = new ListMaterialTypeGrpc();
+
+            _PartnerGrpcs = new ListPartnerGrpc();
+            _FilteredPartnerGrpcs = new ListPartnerGrpc();
+
+            _PersonGrpcs = new ListPersonGrpc();
+            _FilteredPersonGrpcs = new ListPersonGrpc();
+
+            // Components
+            _MiscellaneousComponentTypeGrpcs = new ListMiscellaneousComponentTypeGrpc();
+            _FilteredMiscellaneousComponentTypeGrpcs = new ListMiscellaneousComponentTypeGrpc();
+
+            // Main
+            _FileNameGrpcs = new ListFileNameGrpc();
+            _FilteredFileNameGrpcs = new ListFileNameGrpc();
+
+            // Components
+            _MiscellaneousComponentGrpcs = new ListMiscellaneousComponentGrpc();
+            _FilteredMiscellaneousComponentGrpcs = new ListMiscellaneousComponentGrpc();
 
             _ClipTypeRefreshInProgress = false;
             _CoverTypeRefreshInProgress = false;
             _CrimpingProcessTypeRefreshInProgress = false;
+            _FileTypeRefreshInProgress = false;
             _FuseTypeRefreshInProgress = false;
+            _MaterialTypeRefreshInProgress = false;
+            _MiscellaneousComponentTypeRefreshInProgress = false;
+            _PartnerRefreshInProgress = false;
+            _PersonRefreshInProgress = false;
             _CompositeComponentRefreshInProgress = false;
 
             _ServiceProvider = serviceProvider;
@@ -85,131 +168,6 @@
                 _CrimpingProcessTypeGrpcs = SampleCDbAccessDataService.PopulateCrimpingProcessTypeInitData();
                 _CompositeComponentGrpcs = SampleCDbAccessDataService.PopulateCompositeComponentInitData();
             }
-        }
-
-        public Task<ListFileTypeGrpc> ReadAllFileTypes(CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListFileTypeGrpc> ReadManyFileTypes(FileTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListFileTypeGrpc> ReadFileTypeById(FileTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListFileTypeGrpc> CreateFileTypes(FileTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListFileTypeGrpc> UpdateFileTypes(FileTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListMaterialTypeGrpc> ReadAllMaterialTypes(CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListMaterialTypeGrpc> ReadManyMaterialTypes(MaterialTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListMaterialTypeGrpc> ReadMaterialTypeById(MaterialTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListMaterialTypeGrpc> CreateMaterialTypes(MaterialTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListMaterialTypeGrpc> UpdateMaterialTypes(MaterialTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListMiscellaneousComponentTypeGrpc> ReadAllMiscellaneousComponentTypes(CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListMiscellaneousComponentTypeGrpc> ReadManyMiscellaneousComponentTypes(MiscellaneousComponentTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListMiscellaneousComponentTypeGrpc> ReadMiscellaneousComponentTypeById(MiscellaneousComponentTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListMiscellaneousComponentTypeGrpc> CreateMiscellaneousComponentTypes(MiscellaneousComponentTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListMiscellaneousComponentTypeGrpc> UpdateMiscellaneousComponentTypes(MiscellaneousComponentTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListPartnerGrpc> ReadAllPartners(CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListPartnerGrpc> ReadManyPartners(PartnerGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListPartnerGrpc> ReadPartnerById(PartnerGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListPartnerGrpc> CreatePartners(PartnerGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListPartnerGrpc> UpdatePartners(PartnerGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListPersonGrpc> ReadAllPersons(CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListPersonGrpc> ReadManyPersons(PersonGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListPersonGrpc> ReadPersonById(PersonGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListPersonGrpc> CreatePersons(PersonGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListPersonGrpc> UpdatePersons(PersonGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
 
         public Task<ListTemperatureRangeGrpc> ReadAllTemperatureRanges(CancellationToken cancellationToken)
