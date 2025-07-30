@@ -34,6 +34,27 @@
         ListPersonGrpc _PersonGrpcs;
         ListPersonGrpc _FilteredPersonGrpcs;
 
+        ListTemperatureRangeGrpc _TemperatureRangeGrpcs;
+        ListTemperatureRangeGrpc _FilteredTemperatureRangeGrpcs;
+
+        ListTerminalFamilyGrpc _TerminalFamilyGrpcs;
+        ListTerminalFamilyGrpc _FilteredTerminalFamilyGrpcs;
+
+        ListTerminalSizeGrpc _TerminalSizeGrpcs;
+        ListTerminalSizeGrpc _FilteredTerminalSizeGrpcs;
+
+        ListTypeCodeGrpc _TypeCodeGrpcs;
+        ListTypeCodeGrpc _FilteredTypeCodeGrpcs;
+
+        ListWaterproofTypeGrpc _WaterproofTypeGrpcs;
+        ListWaterproofTypeGrpc _FilteredWaterproofTypeGrpcs;
+
+        ListWireProtectionTypeGrpc _WireProtectionTypeGrpcs;
+        ListWireProtectionTypeGrpc _FilteredWireProtectionTypeGrpcs;
+
+        ListWireTypeGrpc _WireTypeGrpcs;
+        ListWireTypeGrpc _FilteredWireTypeGrpcs;
+
         // Main
         ListFileNameGrpc _FileNameGrpcs;
         ListFileNameGrpc _FilteredFileNameGrpcs;
@@ -100,6 +121,48 @@
         ICommandHandler<PersonCommand>? _CommandPersonHandler;
         #endregion
 
+        #region TemperatureRange
+        bool _TemperatureRangeRefreshInProgress;
+        IQueryHandler<GetTemperatureRangesQuery, List<TemperatureRangeGrpc>>? _QueryTemperatureRangeHandler;
+        ICommandHandler<TemperatureRangeCommand>? _CommandTemperatureRangeHandler;
+        #endregion
+
+        #region TerminalFamily
+        bool _TerminalFamilyRefreshInProgress;
+        IQueryHandler<GetTerminalFamilysQuery, List<TerminalFamilyGrpc>>? _QueryTerminalFamilyHandler;
+        ICommandHandler<TerminalFamilyCommand>? _CommandTerminalFamilyHandler;
+        #endregion
+
+        #region TerminalSize
+        bool _TerminalSizeRefreshInProgress;
+        IQueryHandler<GetTerminalSizesQuery, List<TerminalSizeGrpc>>? _QueryTerminalSizeHandler;
+        ICommandHandler<TerminalSizeCommand>? _CommandTerminalSizeHandler;
+        #endregion
+
+        #region TypeCode
+        bool _TypeCodeRefreshInProgress;
+        IQueryHandler<GetTypeCodesQuery, List<TypeCodeGrpc>>? _QueryTypeCodeHandler;
+        ICommandHandler<TypeCodeCommand>? _CommandTypeCodeHandler;
+        #endregion
+
+        #region WaterproofType
+        bool _WaterproofTypeRefreshInProgress;
+        IQueryHandler<GetWaterproofTypesQuery, List<WaterproofTypeGrpc>>? _QueryWaterproofTypeHandler;
+        ICommandHandler<WaterproofTypeCommand>? _CommandWaterproofTypeHandler;
+        #endregion
+
+        #region WireProtectionType
+        bool _WireProtectionTypeRefreshInProgress;
+        IQueryHandler<GetWireProtectionTypesQuery, List<WireProtectionTypeGrpc>>? _QueryWireProtectionTypeHandler;
+        ICommandHandler<WireProtectionTypeCommand>? _CommandWireProtectionTypeHandler;
+        #endregion
+
+        #region WireType
+        bool _WireTypeRefreshInProgress;
+        IQueryHandler<GetWireTypesQuery, List<WireTypeGrpc>>? _QueryWireTypeHandler;
+        ICommandHandler<WireTypeCommand>? _CommandWireTypeHandler;
+        #endregion
+
         #region CompositeComponent
         bool _CompositeComponentRefreshInProgress;
         #endregion
@@ -137,6 +200,27 @@
             _PersonGrpcs = new ListPersonGrpc();
             _FilteredPersonGrpcs = new ListPersonGrpc();
 
+            _TemperatureRangeGrpcs = new ListTemperatureRangeGrpc();
+            _FilteredTemperatureRangeGrpcs = new ListTemperatureRangeGrpc();
+
+            _TerminalFamilyGrpcs = new ListTerminalFamilyGrpc();
+            _FilteredTerminalFamilyGrpcs = new ListTerminalFamilyGrpc();
+
+            _TerminalSizeGrpcs = new ListTerminalSizeGrpc();
+            _FilteredTerminalSizeGrpcs = new ListTerminalSizeGrpc();
+
+            _TypeCodeGrpcs = new ListTypeCodeGrpc();
+            _FilteredTypeCodeGrpcs = new ListTypeCodeGrpc();
+
+            _WaterproofTypeGrpcs = new ListWaterproofTypeGrpc();
+            _FilteredWaterproofTypeGrpcs = new ListWaterproofTypeGrpc();
+
+            _WireProtectionTypeGrpcs = new ListWireProtectionTypeGrpc();
+            _FilteredWireProtectionTypeGrpcs = new ListWireProtectionTypeGrpc();
+
+            _WireTypeGrpcs = new ListWireTypeGrpc();
+            _FilteredWireTypeGrpcs = new ListWireTypeGrpc();
+
             // Components
             _MiscellaneousComponentTypeGrpcs = new ListMiscellaneousComponentTypeGrpc();
             _FilteredMiscellaneousComponentTypeGrpcs = new ListMiscellaneousComponentTypeGrpc();
@@ -158,6 +242,13 @@
             _MiscellaneousComponentTypeRefreshInProgress = false;
             _PartnerRefreshInProgress = false;
             _PersonRefreshInProgress = false;
+            _TemperatureRangeRefreshInProgress = false;
+            _TerminalFamilyRefreshInProgress = false;
+            _TerminalSizeRefreshInProgress = false;
+            _TypeCodeRefreshInProgress = false;
+            _WaterproofTypeRefreshInProgress = false;
+            _WireProtectionTypeRefreshInProgress = false;
+            _WireTypeRefreshInProgress = false;
             _CompositeComponentRefreshInProgress = false;
 
             _ServiceProvider = serviceProvider;
@@ -168,181 +259,6 @@
                 _CrimpingProcessTypeGrpcs = SampleCDbAccessDataService.PopulateCrimpingProcessTypeInitData();
                 _CompositeComponentGrpcs = SampleCDbAccessDataService.PopulateCompositeComponentInitData();
             }
-        }
-
-        public Task<ListTemperatureRangeGrpc> ReadAllTemperatureRanges(CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTemperatureRangeGrpc> ReadManyTemperatureRanges(TemperatureRangeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTemperatureRangeGrpc> ReadTemperatureRangeById(TemperatureRangeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTemperatureRangeGrpc> CreateTemperatureRanges(TemperatureRangeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTemperatureRangeGrpc> UpdateTemperatureRanges(TemperatureRangeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTerminalFamilyGrpc> ReadAllTerminalFamilys(CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTerminalFamilyGrpc> ReadManyTerminalFamilys(TerminalFamilyGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTerminalFamilyGrpc> ReadTerminalFamilyById(TerminalFamilyGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTerminalFamilyGrpc> CreateTerminalFamilys(TerminalFamilyGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTerminalFamilyGrpc> UpdateTerminalFamilys(TerminalFamilyGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTerminalSizeGrpc> ReadAllTerminalSizes(CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTerminalSizeGrpc> ReadManyTerminalSizes(TerminalSizeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTerminalSizeGrpc> ReadTerminalSizeById(TerminalSizeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTerminalSizeGrpc> CreateTerminalSizes(TerminalSizeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTerminalSizeGrpc> UpdateTerminalSizes(TerminalSizeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTypeCodeGrpc> ReadAllTypeCodes(CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTypeCodeGrpc> ReadManyTypeCodes(TypeCodeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTypeCodeGrpc> ReadTypeCodeById(TypeCodeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTypeCodeGrpc> CreateTypeCodes(TypeCodeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTypeCodeGrpc> UpdateTypeCodes(TypeCodeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListWaterproofTypeGrpc> ReadAllWaterproofTypes(CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListWaterproofTypeGrpc> ReadManyWaterproofTypes(WaterproofTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListWaterproofTypeGrpc> ReadWaterproofTypeById(WaterproofTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListWaterproofTypeGrpc> CreateWaterproofTypes(WaterproofTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListWaterproofTypeGrpc> UpdateWaterproofTypes(WaterproofTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListWireProtectionTypeGrpc> ReadAllWireProtectionTypes(CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListWireProtectionTypeGrpc> ReadManyWireProtectionTypes(WireProtectionTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListWireProtectionTypeGrpc> ReadWireProtectionTypeById(WireProtectionTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListWireProtectionTypeGrpc> CreateWireProtectionTypes(WireProtectionTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListWireProtectionTypeGrpc> UpdateWireProtectionTypes(WireProtectionTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListWireTypeGrpc> ReadAllWireTypes(CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListWireTypeGrpc> ReadManyWireTypes(WireTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListWireTypeGrpc> ReadWireTypeById(WireTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListWireTypeGrpc> CreateWireTypes(WireTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListWireTypeGrpc> UpdateWireTypes(WireTypeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
 
         public Task<ListFileNameGrpc> ReadAllFileNames(CancellationToken cancellationToken)

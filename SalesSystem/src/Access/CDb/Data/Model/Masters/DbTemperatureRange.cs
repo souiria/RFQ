@@ -1,6 +1,6 @@
 ﻿namespace CDb.Data.Model.Masters
 {
-    public class DbTemperatureRange
+    public class DbTemperatureRange : IAggregateRoot
     {
         public Guid Id
         { get; set; }

@@ -1,6 +1,6 @@
 namespace CDb.Data.Model.Masters
 {
-    public class DbWaterproofType
+    public class DbWaterproofType : IAggregateRoot
     {
         public Guid Id
         { get; set; }

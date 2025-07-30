@@ -42,7 +42,7 @@
 
             // not needed, the repository methods already save changes - which is why we don't need to call SaveChangesAsync here
             // otoh, how is one implemention the UnitOfWork pattern? 
-            // int saved = await Repository.SaveChangesAsync(cancellationToken);
+            int savedEntitiesCount = await Repository.SaveChangesAsync(cancellationToken);
 
             Result r;
             if (success)

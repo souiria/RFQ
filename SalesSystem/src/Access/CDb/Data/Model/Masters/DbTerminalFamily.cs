@@ -1,7 +1,7 @@
 ﻿namespace CDb.Data.Model.Masters
 {
     [Index(nameof(Name), IsUnique = true)]
-    public class DbTerminalFamily
+    public class DbTerminalFamily : IAggregateRoot
     {
         public Guid Id
         { get; set; }
