@@ -1,5 +1,4 @@
-﻿using Google.Protobuf;
-
+﻿
 namespace SFS.Services
 {
     public class SFSAccessService : ISFSAccessService

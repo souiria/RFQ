@@ -1,8 +1,6 @@
-﻿using Google.Protobuf;
-
-namespace SFS.Services
+﻿namespace SFS.Services
 {
-    public class TSFSAccessService : ITSFSAccessService
+    public class SFSAccessTestService : ISFSAccessTestService
     {
         #region In Memory Datasets
 
@@ -24,7 +22,7 @@ namespace SFS.Services
         readonly IServiceProvider _ServiceProvider;
         #endregion
 
-        public TSFSAccessService(
+        public SFSAccessTestService(
             IServiceProvider serviceProvider,
         bool testing = false)
         {

@@ -1,6 +1,6 @@
 ﻿namespace SFS.Services
 {
-    public interface ITSFSAccessService
+    public interface ISFSAccessTestService
     {
         Task<CarModelListViewGrpc> GetAllCarModel(CancellationToken cancellationToken);
         Task<ProfileListViewGrpc> GetAllProfiles(CancellationToken cancellationToken);

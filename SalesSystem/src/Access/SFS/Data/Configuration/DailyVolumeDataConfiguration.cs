@@ -1,8 +1,6 @@
-﻿using SFS.Data.DTOs;
-
-namespace SFS.Data.Configuration
+﻿namespace SFS.Data.Configuration
 {
-    public class DailyVolumeDataDtoConfiguration : IEntityTypeConfiguration<DbDailyVolumeData>
+    public class DailyVolumeDataConfiguration : IEntityTypeConfiguration<DbDailyVolumeData>
     {
         public void Configure(EntityTypeBuilder<DbDailyVolumeData> builder)
         {

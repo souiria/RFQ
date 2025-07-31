@@ -1,6 +1,4 @@
-﻿using SFS.Data.DTOs;
-
-namespace SFS.Data.Configuration
+﻿namespace SFS.Data.Configuration
 {
     public class DbCalculationTypeConfiguration : IEntityTypeConfiguration<DbCalculationType>
     {

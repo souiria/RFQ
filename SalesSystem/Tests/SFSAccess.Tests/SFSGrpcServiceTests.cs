@@ -29,19 +29,19 @@ namespace SFSTests
 {
     public class SFSGrpcServiceTests
     {
-        TSFSAccessService _SfsAccessService;
-        TSFSGrpcService _GrpcService;
+        SFSAccessTestService _SfsAccessService;
+        SFSTestGrpcService _GrpcService;
 
         [SetUp]
         public void Setup()
         {
             ServiceCollection serviceCollection = new ServiceCollection();
             ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
-            _SfsAccessService = new TSFSAccessService(
+            _SfsAccessService = new SFSAccessTestService(
                 serviceProvider,
                 testing: true);
-            ILogger<TSFSGrpcService> logger = new Mock<ILogger<TSFSGrpcService>>().Object;
-            _GrpcService = new TSFSGrpcService(_SfsAccessService, logger);
+            ILogger<SFSTestGrpcService> logger = new Mock<ILogger<SFSTestGrpcService>>().Object;
+            _GrpcService = new SFSTestGrpcService(_SfsAccessService, logger);
 
             // CarModel
             CarModelViewGrpc car = new CarModelViewGrpc();
@@ -148,7 +148,7 @@ namespace SFSTests
             _SfsAccessService.GetType().GetField("_CustomerNonWorkingDayGrpcs", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(_SfsAccessService, nonWorkingDayList);
 
             //Mock<ILogger<SFSGrpcService>> logger = new Mock<ILogger<SFSGrpcService>>();
-            _GrpcService = new TSFSGrpcService(_SfsAccessService, logger);
+            _GrpcService = new SFSTestGrpcService(_SfsAccessService, logger);
         }
 
         [Test]

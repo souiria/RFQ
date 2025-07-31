@@ -1,11 +1,11 @@
 ﻿namespace SFS.Endpoints.GrpcServices
 {
-    public class TSFSGrpcService : SFSService.SFSServiceBase
+    public class SFSTestGrpcService : SFSService.SFSServiceBase
     {
-        readonly ITSFSAccessService _SFSAccessService;
-        readonly ILogger<TSFSGrpcService> _Logger;
+        readonly ISFSAccessTestService _SFSAccessService;
+        readonly ILogger<SFSTestGrpcService> _Logger;
 
-        public TSFSGrpcService(ITSFSAccessService sFSAccessService, ILogger<TSFSGrpcService> logger)
+        public SFSTestGrpcService(ISFSAccessTestService sFSAccessService, ILogger<SFSTestGrpcService> logger)
         {
             _SFSAccessService = sFSAccessService;
             _Logger = logger;

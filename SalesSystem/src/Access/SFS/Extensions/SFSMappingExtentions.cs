@@ -1,7 +1,4 @@
-﻿
-using System;
-
-namespace SFS.Extensions
+﻿namespace SFS.Extensions
 {
     public static class SFSMappingExtentions
     {
