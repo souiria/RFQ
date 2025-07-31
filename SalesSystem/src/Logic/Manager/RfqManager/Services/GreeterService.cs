@@ -1,7 +1,6 @@
 using Grpc.Core;
-using RfqManager;
 
-namespace RfqManager.Services
+namespace RfqModule.Services
 {
     public class GreeterService : Greeter.GreeterBase
     {
