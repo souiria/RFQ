@@ -11,8 +11,19 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFS;
+using SFS.CQRS.Query.CalculationType;
+using SFS.CQRS.Query.CarModel;
+using SFS.CQRS.Query.Customer;
+using SFS.CQRS.Query.CustomerNonWorkingDays;
+using SFS.CQRS.Query.DailyVolumeData;
+using SFS.CQRS.Query.Forecast;
+using SFS.CQRS.Query.MonthlyVolumeData;
+using SFS.CQRS.Query.Period;
+using SFS.CQRS.Query.Profile;
+using SFS.CQRS.Query.Site;
 using SFS.Endpoints.GrpcServices;
 using SFS.Services;
+using SharedKernel;
 
 namespace SFSTests
 {
@@ -26,7 +37,32 @@ namespace SFSTests
         {
             ServiceCollection serviceCollection = new ServiceCollection();
             ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
-            _SfsAccessService = new SFSAccessService(serviceProvider, testing: true);
+            IQueryHandler<GetAllCarModelQuery, List<CarModelViewGrpc>> carModelQueryHandler = new Mock<IQueryHandler<GetAllCarModelQuery, List<CarModelViewGrpc>>>().Object;
+            IQueryHandler<GetProfileQuery, List<ProfileViewGrpc>> profileQueryHandler = new Mock<IQueryHandler<GetProfileQuery, List<ProfileViewGrpc>>>().Object;
+            IQueryHandler<GetPeriodQuery, List<PeriodViewGrpc>> periodQueryHandler = new Mock<IQueryHandler<GetPeriodQuery, List<PeriodViewGrpc>>>().Object;
+            IQueryHandler<GetAllCustomerQuery, List<CustomerViewGrpc>> customerQueryHandler = new Mock<IQueryHandler<GetAllCustomerQuery, List<CustomerViewGrpc>>>().Object;
+            IQueryHandler<GetSiteQuery, List<SiteViewGrpc>> siteQueryHandler = new Mock<IQueryHandler<GetSiteQuery, List<SiteViewGrpc>>>().Object;
+            IQueryHandler<GetForecastQuery, List<ForecastViewGrpc>> forecastQueryHandler = new Mock<IQueryHandler<GetForecastQuery, List<ForecastViewGrpc>>>().Object;
+            IQueryHandler<GetMonthlyVolumeDataQuery, List<MonthlyVolumeDataViewGrpc>> monthlyQueryHandler = new Mock<IQueryHandler<GetMonthlyVolumeDataQuery, List<MonthlyVolumeDataViewGrpc>>>().Object;
+            IQueryHandler<GetCustomerNonWorkingDaysQuery, List<CustomerNonWorkingDayViewGrpc>> customerCalendarQueryHandler = new Mock<IQueryHandler<GetCustomerNonWorkingDaysQuery, List<CustomerNonWorkingDayViewGrpc>>>().Object;
+            IQueryHandler<GetDailyVolumeDataQuery, List<DailyVolumeDataViewGrpc>> dailyQueryHandler = new Mock<IQueryHandler<GetDailyVolumeDataQuery, List<DailyVolumeDataViewGrpc>>>().Object;
+            IQueryHandler<GetCalculationTypeQuery, List<CalculationTypeViewGrpc>> calculationQueryHandler = new Mock<IQueryHandler<GetCalculationTypeQuery, List<CalculationTypeViewGrpc>>>().Object;
+          
+            _SfsAccessService = new SFSAccessService(
+                serviceProvider,
+                carModelQueryHandler,
+                profileQueryHandler,
+                periodQueryHandler,
+                customerQueryHandler,
+                siteQueryHandler,
+                forecastQueryHandler,
+                monthlyQueryHandler,
+                customerCalendarQueryHandler,
+                dailyQueryHandler,
+                calculationQueryHandler,
+                testing: true);
+            ILogger<SFSGrpcService> logger = new Mock<ILogger<SFSGrpcService>>().Object;
+            _GrpcService = new SFSGrpcService(_SfsAccessService, logger);
 
             // CarModel
             CarModelViewGrpc car = new CarModelViewGrpc();
@@ -50,7 +86,7 @@ namespace SFSTests
 
             // Setup: Profile
             ProfileViewGrpc profile = new ProfileViewGrpc();
-            profile.Id = "Base";
+            profile.Id = 1;
             profile.DisplayMember = "Base";
             ProfileListViewGrpc profileList = new ProfileListViewGrpc();
             profileList.Items.Add(profile);
@@ -127,13 +163,13 @@ namespace SFSTests
             nonWorkingDay.Year = 2024;
             nonWorkingDay.DelPoint = "Kenitra";
             DateTime nonWorkingDayDateTime = new DateTime(2025, 12, 25, 0, 0, 0, DateTimeKind.Utc);
-            nonWorkingDay.NonWorkingDay = Timestamp.FromDateTime(nonWorkingDayDateTime);
+            nonWorkingDay.NonWorkingDay = "2025-07-01";
             CustomerNonWorkingDayListViewGrpc nonWorkingDayList = new CustomerNonWorkingDayListViewGrpc();
             nonWorkingDayList.Items.Add(nonWorkingDay);
             _SfsAccessService.GetType().GetField("_CustomerNonWorkingDayGrpcs", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(_SfsAccessService, nonWorkingDayList);
 
-            Mock<ILogger<SFSGrpcService>> logger = new Mock<ILogger<SFSGrpcService>>();
-            _GrpcService = new SFSGrpcService(_SfsAccessService, logger.Object);
+            //Mock<ILogger<SFSGrpcService>> logger = new Mock<ILogger<SFSGrpcService>>();
+            _GrpcService = new SFSGrpcService(_SfsAccessService, logger);
         }
 
         [Test]
@@ -331,7 +367,7 @@ namespace SFSTests
             NUnit.Framework.Constraints.EqualConstraint nonWorkingDayDateConstraint = Is.EqualTo(expectedNonWorkingDayDate);
 
             Assert.That(item.DelPoint, delPointConstraint);
-            Assert.That(item.NonWorkingDay.ToDateTime().Date, nonWorkingDayDateConstraint);
+            Assert.That(item.NonWorkingDay, nonWorkingDayDateConstraint);
         }
 
         [Test]
