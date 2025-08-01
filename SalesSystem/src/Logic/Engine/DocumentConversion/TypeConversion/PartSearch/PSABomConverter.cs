@@ -1,6 +1,4 @@
-﻿using SharedModels.DocumentConverter.PartsSearch.DTOs;
-
-namespace DocumentConversion.TypeConversion.PartSearch
+﻿namespace DocumentConversion.TypeConversion.PartSearch
 {
     public static class PSABomConverter
     {

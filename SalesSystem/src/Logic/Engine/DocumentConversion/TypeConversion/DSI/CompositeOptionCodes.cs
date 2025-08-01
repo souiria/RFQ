@@ -1,6 +1,4 @@
-﻿using SharedModels.DocumentConverter.DSI.DTOs;
-
-namespace DocumentConversion.TypeConversion.DSI
+﻿namespace DocumentConversion.TypeConversion.DSI
 {
     class CompositeOptionCodes
     {

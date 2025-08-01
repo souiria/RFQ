@@ -1,6 +1,4 @@
-﻿using SharedModels.DocumentConverter.DSI.Aggregates;
-
-namespace DocumentConversion.TypeConversion.DSI
+﻿namespace DocumentConversion.TypeConversion.DSI
 {
     public static class DSIFileConverter
     {
