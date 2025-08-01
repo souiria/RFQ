@@ -28,5 +28,4 @@ namespace SFS.CQRS.Handler.DailyVolumeData
             return _Daily;
         }
     }
-
-}
+ }

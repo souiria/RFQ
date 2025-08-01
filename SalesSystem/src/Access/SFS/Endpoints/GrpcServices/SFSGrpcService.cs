@@ -59,14 +59,14 @@
             return await _SFSAccessService.GetCustomerNonWorkingDay(context.CancellationToken);
         }
 
-        public override async Task<DailyVolumeDataListViewGrpc> GetDailyVolumeData(Empty request, ServerCallContext context)
+        public override async Task<DailyVolumeDataListViewGrpc> GetAllDailyVolumes(Empty request, ServerCallContext context)
         {
-            return await _SFSAccessService.GetDailyVolumeData(context.CancellationToken);
+            return await _SFSAccessService.GetAllDailyVolumes(context.CancellationToken);
         }
 
-        public override async Task<CalculationTypeListViewGrpc> GetCalculationType(Empty request, ServerCallContext context)
+        public override async Task<CalculationTypeListViewGrpc> GetAllCalculationTypes(Empty request, ServerCallContext context)
         {
-            return await _SFSAccessService.GetCalculationType(context.CancellationToken);
+            return await _SFSAccessService.GetAllCalculationTypes(context.CancellationToken);
         }
     }
 }

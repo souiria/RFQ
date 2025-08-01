@@ -14,9 +14,9 @@ package sfs;
 service SFSService {
   rpc SayHello (HelloRequest) returns (HelloReply);
 
-  rpc GetCalculationType (google.protobuf.Empty) returns (CalculationTypeListViewGrpc);
+  rpc GetAllCalculationTypes (google.protobuf.Empty) returns (CalculationTypeListViewGrpc);
   rpc GetAllCarModels (google.protobuf.Empty) returns (CarModelListViewGrpc);
-  rpc GetDailyVolumeData (google.protobuf.Empty) returns (DailyVolumeDataListViewGrpc);
+  rpc GetAllDailyVolumes (google.protobuf.Empty) returns (DailyVolumeDataListViewGrpc);
   rpc GetAllCustomers (google.protobuf.Empty) returns (CustomerListViewGrpc);
   rpc GetAllSites (google.protobuf.Empty) returns (SiteListViewGrpc);
   rpc GetAllForecasts (google.protobuf.Empty) returns (ForecastListViewGrpc);
@@ -92,7 +92,7 @@ message CustomerNonWorkingDayViewGrpc {
   string profile = 1;
   int32 year = 2;
   string delPoint = 3;
-  google.protobuf.Timestamp nonWorkingDay = 4;
+  string nonWorkingDay = 4;
   google.protobuf.Timestamp updatedDate = 5;
   string updatedBy = 6;
   int32 state = 7;
@@ -124,7 +124,7 @@ message PeriodViewGrpc {
 }
 
 message ProfileViewGrpc {
-  string id = 1;
+  int32 id = 1;
   string displayMember = 2;
 }
 

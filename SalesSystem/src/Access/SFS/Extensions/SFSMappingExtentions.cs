@@ -1,7 +1,4 @@
-﻿
-using System;
-
-namespace SFS.Extensions
+﻿namespace SFS.Extensions
 {
     public static class SFSMappingExtentions
     {
@@ -26,16 +23,16 @@ namespace SFS.Extensions
             data.ModelName = entity.ModelName;
             data.VehicleName = entity.VehicleName;
             data.CustCode = entity.CustCode;
-            data.CuWtKg = entity.CuWtKg;
-            data.CuBase = entity.CuBase;
+            data.CuWtKg = (double)(entity.Cu_wt_KG ?? 0);
+            data.CuBase = (double)(entity.Cu_base ?? 0);
             data.Development = entity.Development;
             data.DeliverTo = entity.DeliverTo;
             data.DeliveryPoint = entity.DeliveryPoint;
             data.FinancialYearOffset = entity.FinancialYearOffset;
-            data.UpdatedDate = entity.UpdatedDate.ToTimestamp();
+            data.UpdatedDate = entity.UpdatedDate.ToUniversalTime().ToTimestamp();
             data.UpdatedBy = entity.UpdatedBy;
             data.Profile = entity.Profile;
-            data.H1Id = entity.H1Id.ToString();
+            data.H1Id = entity.H1Id.ToString() ?? "";
             return data;
         }
         #endregion
@@ -50,7 +47,7 @@ namespace SFS.Extensions
             data.CustName = entity.CustName;
             data.CustType = entity.CustType;
             data.ApplyCuAdj = entity.ApplyCuAdj;
-            data.UpdatedDate = entity.UpdatedDate.ToTimestamp();
+            data.UpdatedDate = entity.UpdatedDate.ToUniversalTime().ToTimestamp();
             data.UpdatedBy = entity.UpdatedBy;
             return data;
         }
@@ -60,13 +57,22 @@ namespace SFS.Extensions
         public static CustomerNonWorkingDayViewGrpc MapToCustomerNonWorkingDaysGrpc(this DbCustomerNonWorkingDays entity)
         {
             CustomerNonWorkingDayViewGrpc data = new CustomerNonWorkingDayViewGrpc();
-            data.Profile = entity.Profile;
-            data.Year = entity.Year;
+             data.Profile = entity.Profile;
+            string? dayString = entity.NonWorkingDay?.ToString();
+            if (!string.IsNullOrEmpty(dayString) && int.TryParse(dayString[^4..], out int year))
+            {
+                data.Year = year;
+            }
+            else
+            {
+                data.Year = 0;
+            }
+
             data.DelPoint = entity.DelPoint;
-            data.NonWorkingDay = entity.NonWorkingDay.ToTimestamp();
-            data.UpdatedDate = entity.UpdatedDate.ToTimestamp();
+            data.NonWorkingDay = entity.NonWorkingDay;
+            data.UpdatedDate = entity.UpdatedDate.ToUniversalTime().ToTimestamp();
             data.UpdatedBy = entity.UpdatedBy;
-            data.State = entity.State;
+            //data.State = entity.State;
             return data;
         }
         #endregion
@@ -79,8 +85,8 @@ namespace SFS.Extensions
             data.Profile = entity.Profile;
             data.ModelCode = entity.ModelCode;
             data.Volume = entity.Volume;
-            data.VolDate = entity.VolDate.ToTimestamp();
-            data.UpdatedDate = entity.UpdatedDate.ToTimestamp();
+            data.VolDate = entity.VolDate.ToUniversalTime().ToTimestamp();
+            data.UpdatedDate = entity.UpdatedDate.ToUniversalTime().ToTimestamp();
             data.UpdatedBy = entity.UpdatedBy;
             return data;
         }
@@ -91,9 +97,9 @@ namespace SFS.Extensions
         {
             ForecastViewGrpc data = new ForecastViewGrpc();
             data.Period = entity.Period;
-            data.ForecastCopperLevel = entity.ForecastCopperLevel;
-            data.ForecastCopperWeight = entity.ForecastCopperWeight;
-            data.PriceAdjustment = entity.PriceAdjustment;
+            data.ForecastCopperLevel = (double)(entity.ForecastCopperLevel ?? 0);
+            data.ForecastCopperWeight = (double)(entity.ForecastCopperWeight ?? 0);
+            data.PriceAdjustment = (double)(entity.PriceAdjustment ?? 0);
             return data;
         }
         #endregion
@@ -117,9 +123,9 @@ namespace SFS.Extensions
             PeriodViewGrpc data = new PeriodViewGrpc();
             data.Id = entity.Id;
             data.Period = entity.Period;
-            data.EffectiveFrom = entity.EffectiveFrom.ToTimestamp();
-            data.EffectiveTo = entity.EffectiveTo.ToTimestamp();
-            data.UpdatedDate = entity.UpdatedDate.ToTimestamp();
+            data.EffectiveFrom = entity.EffectiveFrom.ToUniversalTime().ToTimestamp();
+            data.EffectiveTo = entity.EffectiveTo.ToUniversalTime().ToTimestamp();
+            data.UpdatedDate = entity.UpdatedDate.ToUniversalTime().ToTimestamp();
             data.UpdatedBy = entity.UpdatedBy;
             return data;
         }
@@ -130,7 +136,7 @@ namespace SFS.Extensions
         {
             ProfileViewGrpc data = new ProfileViewGrpc();
             data.Id = entity.Id;
-            data.DisplayMember = entity.DisplayMember;
+            data.DisplayMember = entity.Profile;
             return data;
         }
         #endregion
@@ -143,7 +149,7 @@ namespace SFS.Extensions
             data.SiteCode = entity.SiteCode;
             data.SiteName = entity.SiteName;
             data.Profile = entity.Profile;
-            data.UpdatedDate = entity.UpdatedDate.ToTimestamp();
+            data.UpdatedDate = entity.UpdatedDate.ToUniversalTime().ToTimestamp();
             data.UpdatedBy = entity.UpdatedBy;
             return data;
         }

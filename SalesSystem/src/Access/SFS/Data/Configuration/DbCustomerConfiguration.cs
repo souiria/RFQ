@@ -1,5 +1,4 @@
-﻿
-namespace SFS.Data.Configuration
+﻿namespace SFS.Data.Configuration
 {
     public class DbCustomerConfiguration : IEntityTypeConfiguration<DbCustomer>
     {

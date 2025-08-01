@@ -2,7 +2,7 @@
 {
     public class ProfileDto
     {
-        public string? Id 
+        public int Id 
         { get; set; }
         public string? DisplayMember
         { get; set; }

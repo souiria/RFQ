@@ -1,6 +1,4 @@
-﻿global using System.Globalization;
-global using System.Reflection;
-global using Ardalis.Specification;
+﻿global using Ardalis.Specification;
 global using Ardalis.Specification.EntityFrameworkCore;
 global using Google.Protobuf.WellKnownTypes;
 global using Grpc.Core;
@@ -27,4 +25,5 @@ global using SFS.Data.Repository;
 global using SFS.Data.Time;
 global using SFS.Endpoints.GrpcServices;
 global using SFS.Extensions;
-global using SFS.Services;global using SharedKernel;
+global using SFS.Services;
+global using SharedKernel;

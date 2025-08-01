@@ -13,9 +13,9 @@ namespace SFS.Data.DTOs
         { get; set; }
         public string? CustCode
         { get; set; }
-        public required double CuWtKg
+        public decimal? CuWtKg
         { get; set; }
-        public required double CuBase
+        public decimal? CuBase
         { get; set; }
         public string? Development
         { get; set; }
@@ -25,13 +25,13 @@ namespace SFS.Data.DTOs
         { get; set; }
         public string? FinancialYearOffset
         { get; set; }
-        public required DateTime UpdatedDate
+        public  DateTime UpdatedDate
         { get; set; }
         public string? UpdatedBy
         { get; set; }
         public string? Profile
         { get; set; }
-        public required Guid H1Id
+        public  Guid H1Id
         { get; set; }
     }
 }
