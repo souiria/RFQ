@@ -2,11 +2,11 @@
 {
     public class DbEdiGlobalParameter : IAggregateRoot
     {
-        public required string ParameterName
+        public string? ParameterName
         { get; set; }
-        public required string ParameterDescription
+        public string? ParameterDescription
         { get; set; }
-        public required string ParameterValue
+        public string? ParameterValue
         { get; set; }
     }
 }

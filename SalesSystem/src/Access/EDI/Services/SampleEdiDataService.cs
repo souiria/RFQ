@@ -14,7 +14,7 @@
                 ediCustomerParameterGrpc.Customer = $"TestCustomerName{i}";
                 ediCustomerParameterGrpc.CustomerGuid = Guid.NewGuid().ToString();
                 ediCustomerParameterGrpc.CustomerLocation = $"TestCustomerLocationName{i}";
-                ediCustomerParameterGrpc.CustomerLocationGuId = Guid.NewGuid().ToString();
+                ediCustomerParameterGrpc.CustomerLocationGuid = Guid.NewGuid().ToString();
                 ediCustomerParameterGrpc.DimValue1 = $"TestDimValue1{i}";
                 ediCustomerParameterGrpc.DimValue2 = $"TestDimValue2{i}";
                 ediCustomerParameterGrpc.DimValue3 = $"TestDimValue3{i}";

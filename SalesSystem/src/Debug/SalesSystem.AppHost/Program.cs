@@ -18,10 +18,10 @@
 
         IResourceBuilder<ProjectResource> rfqManager = builder.AddProject<Projects.RfqModule>("rfq-module-service");
 
-        builder.AddProject<Projects.SalesSystem_Rfq>("RfqFrontEnd")
-            .WithExternalHttpEndpoints()
-            .WithReference(apiService)
-            .WaitFor(apiService);
+        builder.AddProject<Projects.SalesSystem_Rfq>("RfqFrontEnd");
+            //.WithExternalHttpEndpoints()
+            //.WithReference(apiService)
+            //.WaitFor(apiService);
 
         builder.Build().Run();
     }

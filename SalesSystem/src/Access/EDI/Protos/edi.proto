@@ -11,14 +11,8 @@ package edi;
 // The edi access service definition.
 service Edi {
     rpc SayHello (HelloRequest) returns (HelloReply);
-	rpc GetEdiCustomerParametersGrpc (google.protobuf.Empty) returns (ListEdiCustomerParameterGrpc);
-    rpc GetEdiFileDataUploadDuplicatesGrpc (google.protobuf.Empty) returns (ListEdiFileDataUploadDuplicatesGrpc);
-    rpc GetEdiFileDataUploadGrpc (google.protobuf.Empty) returns (ListEdiFileDataUploadGrpc);
-    rpc GetEdiGlobalParametersGrpc (google.protobuf.Empty) returns (ListEdiGlobalParametersGrpc);
-    rpc GetEdiInvoiceInformationGrpc (google.protobuf.Empty) returns (ListEdiInvoiceInformationGrpc);
-    rpc GetEdiInvoiceInformationDuplicatesGrpc (google.protobuf.Empty) returns (ListEdiInvoiceInformationDuplicatesGrpc);
-    rpc GetEdiInvoiceUnit4Grpc (google.protobuf.Empty) returns (ListEdiInvoiceUnit4Grpc);
-    rpc GetEdiZeroPriceExceptionsGrpc (google.protobuf.Empty) returns (ListEdiZeroPriceExceptionsGrpc);
+	rpc GetEdiDataGrpc (EdiRequest) returns (EdiResponse);
+    rpc SaveEdiDataGrpc (EdiSaveRequest) returns (EdiResponse);
 }
 
 message HelloRequest {
@@ -27,6 +21,35 @@ message HelloRequest {
 
 message HelloReply {
   google.protobuf.StringValue message = 1;
+}
+
+message EdiRequest {
+    int32 RequestType = 1;
+}
+
+message EdiSaveRequest {
+    int32 RequestType = 1;
+    ListEdiFileDataUploadGrpc ListEdiFileDataUploadGrpc = 2;
+    ListEdiFileDataUploadDuplicatesGrpc ListEdiFileDataUploadDuplicatesGrpc = 3;
+    ListEdiCustomerParameterGrpc ListEdiCustomerParameterGrpc = 4;
+    ListEdiGlobalParametersGrpc ListEdiGlobalParametersGrpc = 5;
+    ListEdiInvoiceInformationGrpc ListEdiInvoiceInformationGrpc = 6;
+    ListEdiInvoiceInformationDuplicatesGrpc ListEdiInvoiceInformationDuplicatesGrpc = 7;
+    ListEdiInvoiceUnit4Grpc ListEdiInvoiceUnit4Grpc = 8;
+    ListEdiZeroPriceExceptionsGrpc ListEdiZeroPriceExceptionsGrpc = 9;
+}
+
+message EdiResponse {
+    int32 ResponseType = 1;
+    bool Success = 2;
+    ListEdiFileDataUploadGrpc ListEdiFileDataUploadGrpc = 3;
+    ListEdiFileDataUploadDuplicatesGrpc ListEdiFileDataUploadDuplicatesGrpc = 4;
+    ListEdiCustomerParameterGrpc ListEdiCustomerParameterGrpc = 5;
+    ListEdiGlobalParametersGrpc ListEdiGlobalParametersGrpc = 6;
+    ListEdiInvoiceInformationGrpc ListEdiInvoiceInformationGrpc = 7;
+    ListEdiInvoiceInformationDuplicatesGrpc ListEdiInvoiceInformationDuplicatesGrpc = 8;
+    ListEdiInvoiceUnit4Grpc ListEdiInvoiceUnit4Grpc = 9;
+    ListEdiZeroPriceExceptionsGrpc ListEdiZeroPriceExceptionsGrpc = 10;
 }
 
 message ListEdiCustomerParameterGrpc {
@@ -49,7 +72,7 @@ message EdiCustomerParameterGrpc {
     string Unit4Client = 13;
     bool IsUsingH1SchedulingAgreement = 14;
     string CustomerGuid = 15;
-    string CustomerLocationGuId = 16;
+    string CustomerLocationGuid = 16;
     bool AllowZeroPrices = 17;
     bool CriticalPathAlert = 18;
     string Dim_Value_1 = 19;

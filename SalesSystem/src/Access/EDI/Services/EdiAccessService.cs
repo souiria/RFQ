@@ -1,4 +1,8 @@
-﻿namespace EDI.Services
+﻿using EDI.CQRS.Command;
+using EDI.Data.Model;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+
+namespace EDI.Services
 {
     public class EdiAccessService : IEdiAccessService
     {
@@ -21,6 +25,7 @@
 
         IQueryHandler<GetCustomerParameterQuery, List<EdiCustomerParameterGrpc>>? _EdiCustomerParameterHandler;
         bool _EdiCustomerParameterRefreshInProgress;
+        ICommandHandler<AddEdiCustomerParameterCommand, bool>? _EdiCustomerParameterCommandHandler;
 
         #endregion
 
@@ -30,6 +35,8 @@
         bool _EdiFileDataUploadDuplicatesRefreshInProgress;
         IQueryHandler<GetEdiFileDataUploadQuery, List<EdiFileDataUploadGrpc>>? _EdiFileDataUploadHandler;
         bool _EdiFileDataUploadRefreshInProgress;
+        ICommandHandler<AddEdiFileDuplicateDataCommand, bool>? _EdiFileDuplicateDataCommandHandler;
+        ICommandHandler<AddEdiFileDataCommand, bool>? _EdiFileDataCommandHandler;
 
         #endregion
 
@@ -37,6 +44,7 @@
 
         IQueryHandler<GetEdiGlobalParameterQuery, List<EdiGlobalParametersGrpc>>? _EdiGlobalParameterHandler;
         bool _EdiGlobalParametersRefreshInProgress;
+        ICommandHandler<AddEdiGlobalParameterCommand, bool>? _EdiGlobalParameterCommandHandler;
 
         #endregion
 
@@ -46,6 +54,8 @@
         bool _EdiInvoiceInformationDuplicatesRefreshInProgress;
         IQueryHandler<GetEdiInvoiceInformationQuery, List<EdiInvoiceInformationGrpc>>? _EdiInvoiceInformationHandler;
         bool _EdiInvoiceInformationRefreshInProgress;
+        ICommandHandler<AddEdiInvoiceInformationCommand, bool>? _EdiInvoiceInformationCommandHandler;
+        ICommandHandler<AddEdiInvoiceInformationDuplicatesCommand, bool>? _EdiInvoiceInformationDuplicatesCommandHandler;
 
         #endregion
 
@@ -55,6 +65,8 @@
         bool _EdiInvoiceUnit4RefreshInProgress;
         IQueryHandler<GetZeroPriceExceptionsQuery, List<EdiZeroPriceExceptionsGrpc>>? _ZeroPriceExceptionsHandler;
         bool _ZeroPriceExceptionsRefreshInProgress;
+        ICommandHandler<AddEdiInvoiceUnit4Command, bool>? _EdiInvoiceUnit4CommandHandler;
+        ICommandHandler<AddZeroPriceExceptionsCommand, bool>? _ZeroPriceExceptionsCommandHandler;
 
         #endregion
 
@@ -114,7 +126,7 @@
         }
         #endregion
 
-        #region Handlers
+        #region Query Handlers
 
         #region EdiCustomerParameters
         public async Task<ListEdiCustomerParameterGrpc> GetEdiCustomerParametersGrpcAsync(CancellationToken cancellationToken)
@@ -246,6 +258,170 @@
         }
 
         #endregion
+
+        #endregion
+
+        #region Command Handlers
+
+        public async Task<bool> SaveEdiCustomerParametersGrpcAsync(ListEdiCustomerParameterGrpc data, CancellationToken cancellationToken)
+        {
+            Result<bool> result;
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                _EdiCustomerParameterCommandHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<AddEdiCustomerParameterCommand, bool>>();
+                List<DbEdiCustomerParameter> dbData = new List<DbEdiCustomerParameter>();
+                foreach (EdiCustomerParameterGrpc? item in data.EdiCustomerParameterGrpc)
+                {
+                    DbEdiCustomerParameter parameter = item.MapToDbEdiCustomerParameter();
+                    dbData.Add(parameter);
+                }
+
+                AddEdiCustomerParameterCommand command = new AddEdiCustomerParameterCommand(dbData);
+                result = await _EdiCustomerParameterCommandHandler.Handle(command, cancellationToken);
+            }
+
+            return result.Value;
+        }
+
+        public async Task<bool> SaveEdiFileDataUploadDuplicatesGrpcAsync(ListEdiFileDataUploadDuplicatesGrpc data, CancellationToken cancellationToken)
+        {
+            Result<bool> result;
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                _EdiFileDuplicateDataCommandHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<AddEdiFileDuplicateDataCommand, bool>>();
+                List<DbEdiFileDataUploadDuplicate> dbData = new List<DbEdiFileDataUploadDuplicate>();
+                foreach (EdiFileDataUploadDuplicatesGrpc? item in data.EdiFileDataUploadDuplicatesGrpc)
+                {
+                    DbEdiFileDataUploadDuplicate parameter = item.MapToDbEdiFileDataUploadDuplicates();
+                    dbData.Add(parameter);
+                }
+
+                AddEdiFileDuplicateDataCommand command = new AddEdiFileDuplicateDataCommand(dbData);
+                result = await _EdiFileDuplicateDataCommandHandler.Handle(command, cancellationToken);
+            }
+
+            return result.Value;
+        }
+
+        public async Task<bool> SaveEdiFileDataUploadGrpcAsync(ListEdiFileDataUploadGrpc data, CancellationToken cancellationToken)
+        {
+            Result<bool> result;
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                _EdiFileDataCommandHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<AddEdiFileDataCommand, bool>>();
+                List<DbEdiFileDataUpload> dbData = new List<DbEdiFileDataUpload>();
+                foreach (EdiFileDataUploadGrpc? item in data.EdiFileDataUploadGrpc)
+                {
+                    DbEdiFileDataUpload parameter = item.MapToDbEdiFileDataUpload();
+                    dbData.Add(parameter);
+                }
+
+                AddEdiFileDataCommand command = new AddEdiFileDataCommand(dbData);
+                result = await _EdiFileDataCommandHandler.Handle(command, cancellationToken);
+            }
+
+            return result.Value;
+        }
+
+        public async Task<bool> SaveEdiGlobalParametersGrpcAsync(ListEdiGlobalParametersGrpc data, CancellationToken cancellationToken)
+        {
+            Result<bool> result;
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                _EdiGlobalParameterCommandHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<AddEdiGlobalParameterCommand, bool>>();
+                List<DbEdiGlobalParameter> dbData = new List<DbEdiGlobalParameter>();
+                foreach (EdiGlobalParametersGrpc? item in data.EdiGlobalParametersGrpc)
+                {
+                    DbEdiGlobalParameter parameter = item.MapToDbEdiGlobalParameters();
+                    dbData.Add(parameter);
+                }
+
+                AddEdiGlobalParameterCommand command = new AddEdiGlobalParameterCommand(dbData);
+                result = await _EdiGlobalParameterCommandHandler.Handle(command, cancellationToken);
+            }
+
+            return result.Value;
+        }
+
+        public async Task<bool> SaveEdiInvoiceInformationGrpcAsync(ListEdiInvoiceInformationGrpc data, CancellationToken cancellationToken)
+        {
+            Result<bool> result;
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                _EdiInvoiceInformationCommandHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<AddEdiInvoiceInformationCommand, bool>>();
+                List<DbEdiInvoiceInformation> dbData = new List<DbEdiInvoiceInformation>();
+                foreach (EdiInvoiceInformationGrpc? item in data.EdiInvoiceInformationGrpc)
+                {
+                    DbEdiInvoiceInformation parameter = item.MapToDbEdiInvoiceInformation();
+                    dbData.Add(parameter);
+                }
+
+                AddEdiInvoiceInformationCommand command = new AddEdiInvoiceInformationCommand(dbData);
+                result = await _EdiInvoiceInformationCommandHandler.Handle(command, cancellationToken);
+            }
+
+            return result.Value;
+        }
+
+        public async Task<bool> SaveEdiInvoiceInformationDuplicatesGrpcAsync(ListEdiInvoiceInformationDuplicatesGrpc data, CancellationToken cancellationToken)
+        {
+            Result<bool> result;
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                _EdiInvoiceInformationDuplicatesCommandHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<AddEdiInvoiceInformationDuplicatesCommand, bool>>();
+                List<DbEdiInvoiceInformationDuplicate> dbData = new List<DbEdiInvoiceInformationDuplicate>();
+                foreach (EdiInvoiceInformationDuplicateGrpc? item in data.EdiInvoiceInformationDuplicateGrpc)
+                {
+                    DbEdiInvoiceInformationDuplicate parameter = item.MapToDbEdiInvoiceInformationDuplicate();
+                    dbData.Add(parameter);
+                }
+
+                AddEdiInvoiceInformationDuplicatesCommand command = new AddEdiInvoiceInformationDuplicatesCommand(dbData);
+                result = await _EdiInvoiceInformationDuplicatesCommandHandler.Handle(command, cancellationToken);
+            }
+
+            return result.Value;
+        }
+
+        public async Task<bool> SaveEdiInvoiceUnit4GrpcAsync(ListEdiInvoiceUnit4Grpc data, CancellationToken cancellationToken)
+        {
+            Result<bool> result;
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                _EdiInvoiceUnit4CommandHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<AddEdiInvoiceUnit4Command, bool>>();
+                List<DbEdiInvoiceUnit4> dbData = new List<DbEdiInvoiceUnit4>();
+                foreach (EdiInvoiceUnit4Grpc? item in data.EdiInvoiceUnit4Grpc)
+                {
+                    DbEdiInvoiceUnit4 parameter = item.MapToDbEdiInvoiceUnit4();
+                    dbData.Add(parameter);
+                }
+
+                AddEdiInvoiceUnit4Command command = new AddEdiInvoiceUnit4Command(dbData);
+                result = await _EdiInvoiceUnit4CommandHandler.Handle(command, cancellationToken);
+            }
+
+            return result.Value;
+        }
+
+        public async Task<bool> SaveEdiZeroPriceExceptionsGrpcAsync(ListEdiZeroPriceExceptionsGrpc data, CancellationToken cancellationToken)
+        {
+            Result<bool> result;
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                _ZeroPriceExceptionsCommandHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<AddZeroPriceExceptionsCommand, bool>>();
+                List<DbZeroPriceExceptions> dbData = new List<DbZeroPriceExceptions>();
+                foreach (EdiZeroPriceExceptionsGrpc? item in data.EdiZeroPriceExceptionsGrpc)
+                {
+                    DbZeroPriceExceptions parameter = item.MapToDbEdiZeroPriceExceptions();
+                    dbData.Add(parameter);
+                }
+
+                AddZeroPriceExceptionsCommand command = new AddZeroPriceExceptionsCommand(dbData);
+                result = await _ZeroPriceExceptionsCommandHandler.Handle(command, cancellationToken);
+            }
+
+            return result.Value;
+        }
 
         #endregion
 
