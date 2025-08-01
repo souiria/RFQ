@@ -1,8 +1,6 @@
-﻿using System.Collections.ObjectModel;
-
-namespace SharedModels.DocumentConverter.DSI
+﻿namespace SharedModels.DocumentConverter.DSI.DTOs
 {
-    public class MidWireComponentModel : Collection<MidWireComponentModel>
+    public class CentreStripDto
     {
         public string? NodeName
         { get; set; }
@@ -10,11 +8,13 @@ namespace SharedModels.DocumentConverter.DSI
         { get; set; }
         public string? WireName
         { get; set; }
+        public double? StripLength
+        { get; set; }
+        public string? LengthChangeType
+        { get; set; }
+        public double? LengthChangeValue
+        { get; set; }
         public string? Option
-        { get; set; }
-        public string? MidWireOption
-        { get; set; }
-        public string? Cavity
         { get; set; }
         public double? ThroughOrder
         { get; set; }

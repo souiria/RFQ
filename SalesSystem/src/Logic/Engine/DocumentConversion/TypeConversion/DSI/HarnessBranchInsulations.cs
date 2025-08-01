@@ -2,11 +2,11 @@
 {
     public static class HarnessBranchInsulations
     {
-        public static IEnumerable<BranchInsulationModel> GetHarnessBranchInsulations(IEnumerable<string> lines, string splitter)
+        public static IEnumerable<BranchInsulationDto> GetHarnessBranchInsulations(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            BranchInsulationModel model = new BranchInsulationModel();
-            List<BranchInsulationModel> collection = new List<BranchInsulationModel>();
+            BranchInsulationDto model = new BranchInsulationDto();
+            List<BranchInsulationDto> collection = new List<BranchInsulationDto>();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);

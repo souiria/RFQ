@@ -1,6 +1,6 @@
-﻿namespace SharedModels.DocumentConverter.DSI
+﻿namespace SharedModels.DocumentConverter.DSI.DTOs
 {
-    public class WireSpecificationModel
+    public class WireSpecificationDto
     {
         public string? WireName
         { get; set; }

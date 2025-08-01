@@ -1,7 +1,11 @@
-﻿namespace SharedModels.DocumentConverter.DSI
+﻿namespace SharedModels.DocumentConverter.DSI.DTOs
 {
-    public class CompositeDetailModel
+    public class ModuleChildDetailDto
     {
+        public string? ModuleCode
+        { get; set; }
+        public bool? IsCoreModule
+        { get; set; }
         public string? HarnessName1
         { get; set; }
         public string? SimilarHarnessName1
@@ -70,13 +74,11 @@
         { get; set; }
         public bool? IsManualTerminal
         { get; set; }
-        public bool? IsAllConnectorsSealed
+        public bool? IsAllConnectorSealed
         { get; set; }
         public string? AlphaCode
         { get; set; }
-        public Guid? HarnessId
-        { get; set; }
-        public string? CircuitOption
+        public Guid? HarnessID
         { get; set; }
     }
 }

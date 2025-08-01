@@ -1,6 +1,6 @@
-﻿namespace SharedModels.DocumentConverter.DSI
+﻿namespace SharedModels.DocumentConverter.DSI.DTOs
 {
-    public class WireMulticoreMarkerModel
+    public class WireMulticoreMarkerDto
     {
         public string? ItemType
         { get; set; }

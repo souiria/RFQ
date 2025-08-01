@@ -1,6 +1,6 @@
-﻿namespace SharedModels.DocumentConverter.DSI
+﻿namespace SharedModels.DocumentConverter.DSI.DTOs
 {
-    public class BranchConfigurationModel
+    public class BranchConfigurationDto
     {
         public string? StartNode
         { get; set; }

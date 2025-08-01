@@ -1,6 +1,6 @@
-﻿namespace SharedModels.DocumentConverter.DSI
+﻿namespace SharedModels.DocumentConverter.DSI.DTOs
 {
-    public class BranchInsulationModel
+    public class BranchInsulationDto
     {
         public string? StartNode
         { get; set; }

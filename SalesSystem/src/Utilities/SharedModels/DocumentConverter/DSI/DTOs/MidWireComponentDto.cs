@@ -1,6 +1,6 @@
-﻿namespace SharedModels.DocumentConverter.DSI
+﻿namespace SharedModels.DocumentConverter.DSI.DTOs
 {
-    public class CentreStripModel
+    public class MidWireComponentDto : Collection<MidWireComponentDto>
     {
         public string? NodeName
         { get; set; }
@@ -8,13 +8,11 @@
         { get; set; }
         public string? WireName
         { get; set; }
-        public double? StripLength
-        { get; set; }
-        public string? LengthChangeType
-        { get; set; }
-        public double? LengthChangeValue
-        { get; set; }
         public string? Option
+        { get; set; }
+        public string? MidWireOption
+        { get; set; }
+        public string? Cavity
         { get; set; }
         public double? ThroughOrder
         { get; set; }

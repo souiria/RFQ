@@ -1,6 +1,6 @@
-﻿namespace SharedModels.DocumentConverter.DSI
+﻿namespace SharedModels.DocumentConverter.DSI.DTOs
 {
-    public class ModuleCompatibilityModel
+    public class ModuleCompatibilityDto
     {
         public string? ModuleCode1
         { get; set; }
