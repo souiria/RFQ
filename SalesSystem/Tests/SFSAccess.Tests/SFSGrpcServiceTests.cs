@@ -1,47 +1,25 @@
-﻿using System;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Grpc.Core.Testing;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NUnit.Framework;
 using SFS;
-using SFS.CQRS.Query.CalculationType;
-using SFS.CQRS.Query.CarModel;
-using SFS.CQRS.Query.Customer;
-using SFS.CQRS.Query.CustomerNonWorkingDays;
-using SFS.CQRS.Query.DailyVolumeData;
-using SFS.CQRS.Query.Forecast;
-using SFS.CQRS.Query.MonthlyVolumeData;
-using SFS.CQRS.Query.Period;
-using SFS.CQRS.Query.Profile;
-using SFS.CQRS.Query.Site;
 using SFS.Endpoints.GrpcServices;
-using SFS.Services;
-using SharedKernel;
-
+using SFS.Services; 
 namespace SFSTests
 {
     public class SFSGrpcServiceTests
     {
-        SFSAccessTestService _SfsAccessService;
-        SFSTestGrpcService _GrpcService;
-
+         Mock<ISFSAccessService> _MockSfsAccessService;
+         SFSGrpcService _GrpcService; 
         [SetUp]
         public void Setup()
         {
-            ServiceCollection serviceCollection = new ServiceCollection();
-            ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
-            _SfsAccessService = new SFSAccessTestService(
-                serviceProvider,
-                testing: true);
-            ILogger<SFSTestGrpcService> logger = new Mock<ILogger<SFSTestGrpcService>>().Object;
-            _GrpcService = new SFSTestGrpcService(_SfsAccessService, logger);
+            _MockSfsAccessService = new Mock<ISFSAccessService>();
+            ILogger<SFSGrpcService> logger = new Mock<ILogger<SFSGrpcService>>().Object;
+            // Pass the mock object to the GrpcService
+            _GrpcService = new SFSGrpcService(_MockSfsAccessService.Object, logger);
 
             // CarModel
             CarModelViewGrpc car = new CarModelViewGrpc();
@@ -61,43 +39,59 @@ namespace SFSTests
             car.H1Id = "H1X";
             CarModelListViewGrpc carModelList = new CarModelListViewGrpc();
             carModelList.Items.Add(car);
-            _SfsAccessService.GetType().GetField("_CarModelGrpcs", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(_SfsAccessService, carModelList);
+            CancellationToken cancellationToken = It.Is<CancellationToken>(c => true);
+            Expression<Func<ISFSAccessService, Task<CarModelListViewGrpc>>> carModelExpression =
+           s => s.GetAllCarModel(cancellationToken); 
+            Moq.Language.Flow.ISetup<ISFSAccessService, Task<CarModelListViewGrpc>> carModelSetup = _MockSfsAccessService.Setup(carModelExpression);
+            carModelSetup.ReturnsAsync(carModelList);
 
-            // Setup: Profile
+            // Profile
             ProfileViewGrpc profile = new ProfileViewGrpc();
             profile.Id = 1;
             profile.DisplayMember = "Base";
             ProfileListViewGrpc profileList = new ProfileListViewGrpc();
             profileList.Items.Add(profile);
-            _SfsAccessService.GetType().GetField("_ProfileGrpcs", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(_SfsAccessService, profileList);
+            Expression<Func<ISFSAccessService, Task<ProfileListViewGrpc>>> profileExpression =
+                s => s.GetAllProfiles(cancellationToken);
+            Moq.Language.Flow.ISetup<ISFSAccessService, Task<ProfileListViewGrpc>> profileSetup = _MockSfsAccessService.Setup(profileExpression);
+            profileSetup.ReturnsAsync(profileList);
 
-            // Setup: CalculationType
+            // CalculationType
             CalculationTypeViewGrpc type = new CalculationTypeViewGrpc();
             type.Id = "First";
             type.DisplayMember = "First";
             CalculationTypeListViewGrpc typeList = new CalculationTypeListViewGrpc();
             typeList.Items.Add(type);
-            _SfsAccessService.GetType().GetField("_CalculationTypeGrpcs", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(_SfsAccessService, typeList);
+            Expression<Func<ISFSAccessService, Task<CalculationTypeListViewGrpc>>> calculationTypeExpression =
+                s => s.GetAllCalculationTypes(cancellationToken);
+            Moq.Language.Flow.ISetup<ISFSAccessService, Task<CalculationTypeListViewGrpc>> calculationTypeSetup = _MockSfsAccessService.Setup(calculationTypeExpression);
+            calculationTypeSetup.ReturnsAsync(typeList);
 
-            // Setup: DailyVolume
+            // DailyVolume
             DailyVolumeDataViewGrpc daily = new DailyVolumeDataViewGrpc();
             daily.Profile = "Base";
             daily.Volume = 100;
             daily.ModelCode = "SUZUKI";
             DailyVolumeDataListViewGrpc dailyList = new DailyVolumeDataListViewGrpc();
             dailyList.Items.Add(daily);
-            _SfsAccessService.GetType().GetField("_DailyVolumeGrpcs", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(_SfsAccessService, dailyList); 
+            Expression<Func<ISFSAccessService, Task<DailyVolumeDataListViewGrpc>>> dailyVolumeExpression =
+                s => s.GetAllDailyVolumes(cancellationToken);
+            Moq.Language.Flow.ISetup<ISFSAccessService, Task<DailyVolumeDataListViewGrpc>> dailyVolumeSetup = _MockSfsAccessService.Setup(dailyVolumeExpression);
+            dailyVolumeSetup.ReturnsAsync(dailyList);
 
-            // Setup: Period
+            // Period
             PeriodViewGrpc period = new PeriodViewGrpc();
             period.Id = 1;
             period.Profile = "Base";
             period.Period = 202401;
             PeriodListViewGrpc periodList = new PeriodListViewGrpc();
             periodList.Items.Add(period);
-            _SfsAccessService.GetType().GetField("_PeriodGrpcs", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(_SfsAccessService, periodList);
+            Expression<Func<ISFSAccessService, Task<PeriodListViewGrpc>>> periodExpression =
+                s => s.GetAllPeriods(cancellationToken);
+            Moq.Language.Flow.ISetup<ISFSAccessService, Task<PeriodListViewGrpc>> periodSetup = _MockSfsAccessService.Setup(periodExpression);
+            periodSetup.ReturnsAsync(periodList);
 
-            // Setup: Customer
+            // Customer
             CustomerViewGrpc customer = new CustomerViewGrpc();
             customer.Id = 1;
             customer.CustCode = "C123";
@@ -105,9 +99,12 @@ namespace SFSTests
             customer.Profile = "Base";
             CustomerListViewGrpc customerList = new CustomerListViewGrpc();
             customerList.Items.Add(customer);
-            _SfsAccessService.GetType().GetField("_CustomerGrpcs", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(_SfsAccessService, customerList);
+            Expression<Func<ISFSAccessService, Task<CustomerListViewGrpc>>> customerExpression =
+                s => s.GetAllCustomers(cancellationToken);
+            Moq.Language.Flow.ISetup<ISFSAccessService, Task<CustomerListViewGrpc>> customerSetup = _MockSfsAccessService.Setup(customerExpression);
+            customerSetup.ReturnsAsync(customerList);
 
-            // Setup: Site
+            // Site
             SiteViewGrpc site = new SiteViewGrpc();
             site.Id = 1;
             site.Profile = "Base";
@@ -115,17 +112,23 @@ namespace SFSTests
             site.SiteName = "MFZ";
             SiteListViewGrpc siteList = new SiteListViewGrpc();
             siteList.Items.Add(site);
-            _SfsAccessService.GetType().GetField("_SiteGrpcs", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(_SfsAccessService, siteList);
+            Expression<Func<ISFSAccessService, Task<SiteListViewGrpc>>> siteExpression =
+                s => s.GetAllSites(cancellationToken);
+            Moq.Language.Flow.ISetup<ISFSAccessService, Task<SiteListViewGrpc>> siteSetup = _MockSfsAccessService.Setup(siteExpression);
+            siteSetup.ReturnsAsync(siteList);
 
-            // Setup: Forecast
+            // Forecast
             ForecastViewGrpc forecast = new ForecastViewGrpc();
             forecast.Period = 202507;
             forecast.ForecastCopperLevel = 150.0;
             ForecastListViewGrpc forecastList = new ForecastListViewGrpc();
             forecastList.Items.Add(forecast);
-            _SfsAccessService.GetType().GetField("_ForecastGrpcs", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(_SfsAccessService, forecastList);
+            Expression<Func<ISFSAccessService, Task<ForecastListViewGrpc>>> forecastExpression =
+                s => s.GetAllForecasts(cancellationToken);
+            Moq.Language.Flow.ISetup<ISFSAccessService, Task<ForecastListViewGrpc>> forecastSetup = _MockSfsAccessService.Setup(forecastExpression);
+            forecastSetup.ReturnsAsync(forecastList);
 
-            // Setup: MonthlyVolume
+            // MonthlyVolume
             MonthlyVolumeDataViewGrpc monthly = new MonthlyVolumeDataViewGrpc();
             monthly.Profile = "Base";
             monthly.Year = 2024;
@@ -134,21 +137,23 @@ namespace SFSTests
             monthly.CarModel = "SUZUKI";
             MonthlyVolumeDataListViewGrpc monthlyList = new MonthlyVolumeDataListViewGrpc();
             monthlyList.Items.Add(monthly);
-            _SfsAccessService.GetType().GetField("_MonthlyVolumeGrpcs", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(_SfsAccessService, monthlyList);
+            Expression<Func<ISFSAccessService, Task<MonthlyVolumeDataListViewGrpc>>> monthlyVolumeExpression =
+                s => s.GetMonthlyVolumes(cancellationToken);
+            Moq.Language.Flow.ISetup<ISFSAccessService, Task<MonthlyVolumeDataListViewGrpc>> monthlyVolumeSetup = _MockSfsAccessService.Setup(monthlyVolumeExpression);
+            monthlyVolumeSetup.ReturnsAsync(monthlyList);
 
-            // Setup: CustomerNonWorkingDay
+            // CustomerNonWorkingDay
             CustomerNonWorkingDayViewGrpc nonWorkingDay = new CustomerNonWorkingDayViewGrpc();
             nonWorkingDay.Profile = "Base";
             nonWorkingDay.Year = 2024;
             nonWorkingDay.DelPoint = "Kenitra";
-            DateTime nonWorkingDayDateTime = new DateTime(2025, 12, 25, 0, 0, 0, DateTimeKind.Utc);
             nonWorkingDay.NonWorkingDay = "2025-07-01";
             CustomerNonWorkingDayListViewGrpc nonWorkingDayList = new CustomerNonWorkingDayListViewGrpc();
             nonWorkingDayList.Items.Add(nonWorkingDay);
-            _SfsAccessService.GetType().GetField("_CustomerNonWorkingDayGrpcs", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(_SfsAccessService, nonWorkingDayList);
-
-            //Mock<ILogger<SFSGrpcService>> logger = new Mock<ILogger<SFSGrpcService>>();
-            _GrpcService = new SFSTestGrpcService(_SfsAccessService, logger);
+            Expression<Func<ISFSAccessService, Task<CustomerNonWorkingDayListViewGrpc>>> customerNonWorkingDayExpression =
+                s => s.GetCustomerNonWorkingDay(cancellationToken);
+            Moq.Language.Flow.ISetup<ISFSAccessService, Task<CustomerNonWorkingDayListViewGrpc>> customerNonWorkingDaySetup = _MockSfsAccessService.Setup(customerNonWorkingDayExpression);
+            customerNonWorkingDaySetup.ReturnsAsync(nonWorkingDayList);
         }
 
         [Test]
@@ -173,9 +178,7 @@ namespace SFSTests
             string methodName = nameof(_GrpcService.GetAllCarModels);
             ServerCallContext serverCallContext = CreateServerContext(methodName);
             Empty request = new Empty();
-
             Task<CarModelListViewGrpc> resultTask = _GrpcService.GetAllCarModels(request, serverCallContext);
-
             CarModelListViewGrpc result = resultTask.Result;
 
             Assert.That(result, Is.Not.Null);
@@ -216,13 +219,10 @@ namespace SFSTests
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(expectedCount);
             Assert.That(profileCount, countConstraint);
             ProfileViewGrpc profile = result.Items[0];
-            //string expectedId = "1";
             string expectedDisplay = "Base";
 
-            //NUnit.Framework.Constraints.EqualConstraint idConstraint = Is.EqualTo(expectedId);
             NUnit.Framework.Constraints.EqualConstraint displayConstraint = Is.EqualTo(expectedDisplay);
 
-            //Assert.That(profile.Id, idConstraint);
             Assert.That(profile.DisplayMember, displayConstraint);
         }
 
@@ -317,7 +317,7 @@ namespace SFSTests
             Assert.That(period.Period, periodValueConstraint);
             Assert.That(period.Profile, profileConstraint);
         }
-           
+
         [Test]
         public void GetAllCustomerNonWorkingDaysTest()
         {
@@ -340,26 +340,24 @@ namespace SFSTests
             CustomerNonWorkingDayViewGrpc item = result.Items[0];
 
             string expectedDelPoint = "Kenitra";
-            //DateTime expectedNonWorkingDayDate = new DateTime(2025, 12, 25).Date;
+            string expectedNonWorkingDay = "2025-07-01";
 
             NUnit.Framework.Constraints.EqualConstraint delPointConstraint = Is.EqualTo(expectedDelPoint);
-            //NUnit.Framework.Constraints.EqualConstraint nonWorkingDayDateConstraint = Is.EqualTo(expectedNonWorkingDayDate);
+            NUnit.Framework.Constraints.EqualConstraint nonWorkingDayConstraint = Is.EqualTo(expectedNonWorkingDay);
 
             Assert.That(item.DelPoint, delPointConstraint);
-            //Assert.That(item.NonWorkingDay, nonWorkingDayDateConstraint);
+            Assert.That(item.NonWorkingDay, nonWorkingDayConstraint);
         }
 
         [Test]
         public void GetAllMonthlyVolumesTest()
         {
             // Arrange
-            // FIX: Changed from GetMonthlyVolumes to GetAllMonthlyVolumes
             string methodName = nameof(_GrpcService.GetMonthlyVolumes);
             ServerCallContext context = CreateServerContext(methodName);
             Empty request = new();
 
             // Act
-            // FIX: Changed from GetMonthlyVolumes to GetAllMonthlyVolumes
             MonthlyVolumeDataListViewGrpc result = _GrpcService.GetMonthlyVolumes(request, context).Result;
 
             // Assert
@@ -389,13 +387,11 @@ namespace SFSTests
         public void GetAllDailyVolumesTest()
         {
             // Arrange
-            // FIX: Changed from GetDailyVolumeData to GetAllDailyVolumes
             string methodName = nameof(_GrpcService.GetAllDailyVolumes);
             ServerCallContext context = CreateServerContext(methodName);
             Empty request = new();
 
             // Act
-            // FIX: Changed from GetDailyVolumeData to GetAllDailyVolumes
             DailyVolumeDataListViewGrpc result = _GrpcService.GetAllDailyVolumes(request, context).Result;
 
             // Assert
