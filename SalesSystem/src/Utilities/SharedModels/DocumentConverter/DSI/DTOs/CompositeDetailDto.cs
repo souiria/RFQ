@@ -1,6 +1,6 @@
-﻿namespace SharedModels.DocumentConverter.DSI
+﻿namespace SharedModels.DocumentConverter.DSI.DTOs
 {
-    public class HarnessModel
+    public class CompositeDetailDto
     {
         public string? HarnessName1
         { get; set; }
@@ -21,8 +21,6 @@
         public string? SimilarHarnessIssue2
         { get; set; }
         public DateTime? HarnessDate2
-        { get; set; }
-        public double? FileVersion
         { get; set; }
         public string? Customer
         { get; set; }
@@ -74,17 +72,11 @@
         { get; set; }
         public bool? IsAllConnectorsSealed
         { get; set; }
-        public string? DatumNode
-        { get; set; }
-        public string? DatumRoute
-        { get; set; }
-        public bool? IsModule
-        { get; set; }
         public string? AlphaCode
         { get; set; }
-        public bool? IsPitchTableUsed
+        public Guid? HarnessId
         { get; set; }
-        public string? AdditionalComments
+        public string? CircuitOption
         { get; set; }
     }
 }

@@ -1,12 +1,14 @@
-﻿namespace DocumentConversion.TypeConversion.DSI
+﻿using SharedModels.DocumentConverter.DSI.DTOs;
+
+namespace DocumentConversion.TypeConversion.DSI
 {
     public static class HarnessScope
     {
-        public static IEnumerable<HarnessScopeModel> GetHarnessScope(IEnumerable<string> lines, string splitter)
+        public static IEnumerable<HarnessScopeDto> GetHarnessScope(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            HarnessScopeModel model = new HarnessScopeModel();
-            List<HarnessScopeModel> collection = new List<HarnessScopeModel>();
+            HarnessScopeDto model = new HarnessScopeDto();
+            List<HarnessScopeDto> collection = new List<HarnessScopeDto>();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);

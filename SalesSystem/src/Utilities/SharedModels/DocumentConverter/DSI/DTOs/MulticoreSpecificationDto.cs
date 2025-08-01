@@ -1,6 +1,6 @@
-﻿namespace SharedModels.DocumentConverter.DSI
+﻿namespace SharedModels.DocumentConverter.DSI.DTOs
 {
-    public class MulticoreSpecificationModel
+    public class MulticoreSpecificationDto
     {
         public string? MulticoreName
         { get; set; }

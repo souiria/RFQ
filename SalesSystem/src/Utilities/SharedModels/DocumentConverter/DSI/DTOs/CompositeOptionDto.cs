@@ -1,6 +1,6 @@
-﻿namespace SharedModels.DocumentConverter.DSI
+﻿namespace SharedModels.DocumentConverter.DSI.DTOs
 {
-    public class CompositeOptionModel
+    public class CompositeOptionDto
     {
         public string? OptionName
         { get; set; }

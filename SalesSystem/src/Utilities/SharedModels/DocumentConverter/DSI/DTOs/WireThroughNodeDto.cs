@@ -1,8 +1,10 @@
-﻿namespace SharedModels.DocumentConverter.DSI
+﻿namespace SharedModels.DocumentConverter.DSI.DTOs
 {
-    public class BranchInsulationThroughNodeModel
+    public class WireThroughNodeDto
     {
-        public string? PieceCode
+        public string? WireName
+        { get; set; }
+        public string? Option
         { get; set; }
         public double? ThroughOrder
         { get; set; }

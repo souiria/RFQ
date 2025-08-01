@@ -1,11 +1,7 @@
-﻿namespace SharedModels.DocumentConverter.DSI
+﻿namespace SharedModels.DocumentConverter.DSI.DTOs
 {
-    public class ModuleChildDetailModel
+    public class HarnessDto
     {
-        public string? ModuleCode
-        { get; set; }
-        public bool? IsCoreModule
-        { get; set; }
         public string? HarnessName1
         { get; set; }
         public string? SimilarHarnessName1
@@ -25,6 +21,8 @@
         public string? SimilarHarnessIssue2
         { get; set; }
         public DateTime? HarnessDate2
+        { get; set; }
+        public double? FileVersion
         { get; set; }
         public string? Customer
         { get; set; }
@@ -74,11 +72,19 @@
         { get; set; }
         public bool? IsManualTerminal
         { get; set; }
-        public bool? IsAllConnectorSealed
+        public bool? IsAllConnectorsSealed
+        { get; set; }
+        public string? DatumNode
+        { get; set; }
+        public string? DatumRoute
+        { get; set; }
+        public bool? IsModule
         { get; set; }
         public string? AlphaCode
         { get; set; }
-        public Guid? HarnessID
+        public bool? IsPitchTableUsed
+        { get; set; }
+        public string? AdditionalComments
         { get; set; }
     }
 }

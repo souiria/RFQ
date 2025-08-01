@@ -1,12 +1,14 @@
-﻿namespace DocumentConversion.TypeConversion.DSI
+﻿using SharedModels.DocumentConverter.DSI.DTOs;
+
+namespace DocumentConversion.TypeConversion.DSI
 {
     public static class HarnessWireThroughNodes
     {
-        public static IEnumerable<WireThroughNodeModel> GetHarnessWireThroughNodes(IEnumerable<string> lines, string splitter)
+        public static IEnumerable<WireThroughNodeDto> GetHarnessWireThroughNodes(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            List<WireThroughNodeModel> collection = new List<WireThroughNodeModel>();
-            WireThroughNodeModel model = new WireThroughNodeModel();
+            List<WireThroughNodeDto> collection = new List<WireThroughNodeDto>();
+            WireThroughNodeDto model = new WireThroughNodeDto();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);

@@ -1,12 +1,14 @@
-﻿namespace DocumentConversion.TypeConversion.DSI
+﻿using SharedModels.DocumentConverter.DSI.DTOs;
+
+namespace DocumentConversion.TypeConversion.DSI
 {
     public static class ModuleChildDetails
     {
-        public static IEnumerable<ModuleChildDetailModel> GetModuleChildDetails(IEnumerable<string> lines, string splitter)
+        public static IEnumerable<ModuleChildDetailDto> GetModuleChildDetails(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            ModuleChildDetailModel model = new ModuleChildDetailModel();
-            List<ModuleChildDetailModel> collection = new List<ModuleChildDetailModel>();
+            ModuleChildDetailDto model = new ModuleChildDetailDto();
+            List<ModuleChildDetailDto> collection = new List<ModuleChildDetailDto>();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);

@@ -1,6 +1,6 @@
-﻿namespace SharedModels.DocumentConverter.DSI
+﻿namespace SharedModels.DocumentConverter.DSI.DTOs
 {
-    public class ComponentModel
+    public class ComponentDto
     {
         public string? NodeName
         { get; set; }

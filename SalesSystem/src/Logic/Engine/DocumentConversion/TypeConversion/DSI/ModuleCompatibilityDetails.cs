@@ -1,12 +1,14 @@
-﻿namespace DocumentConversion.TypeConversion.DSI
+﻿using SharedModels.DocumentConverter.DSI.DTOs;
+
+namespace DocumentConversion.TypeConversion.DSI
 {
     public static class ModuleCompatibilityDetails
     {
-        public static IEnumerable<ModuleCompatibilityModel> GetModuleCompatibilityDetails(IEnumerable<string> lines, string splitter)
+        public static IEnumerable<ModuleCompatibilityDto> GetModuleCompatibilityDetails(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            ModuleCompatibilityModel model = new ModuleCompatibilityModel();
-            List<ModuleCompatibilityModel> collection = new List<ModuleCompatibilityModel>();
+            ModuleCompatibilityDto model = new ModuleCompatibilityDto();
+            List<ModuleCompatibilityDto> collection = new List<ModuleCompatibilityDto>();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);

@@ -1,11 +1,7 @@
-﻿namespace SharedModels.DocumentConverter.DSI
+﻿namespace SharedModels.DocumentConverter.DSI.DTOs
 {
-    public class PinMappingModel
+    public class HarnessScopeDto
     {
-        public string? Node1
-        { get; set; }
-        public string? Node2
-        { get; set; }
         public string? HarnessName1
         { get; set; }
         public string? HarnessIssue1
@@ -14,13 +10,11 @@
         { get; set; }
         public string? HarnessIssue2
         { get; set; }
-        public string? Separator
+        public string? ScopeCategory
         { get; set; }
         public Guid? HarnessID
         { get; set; }
-        public string? CavityMapping1
-        { get; set; }
-        public string? CavityMapping2
+        public string? Scope
         { get; set; }
     }
 }

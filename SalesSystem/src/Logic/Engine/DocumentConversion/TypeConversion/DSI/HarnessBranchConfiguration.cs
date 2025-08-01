@@ -1,12 +1,14 @@
-﻿namespace DocumentConversion.TypeConversion.DSI
+﻿using SharedModels.DocumentConverter.DSI.DTOs;
+
+namespace DocumentConversion.TypeConversion.DSI
 {
     public static class HarnessBranchConfiguration
     {
-        public static IEnumerable<BranchConfigurationModel> GetHarnessBranchConfiguration(IEnumerable<string> lines, string splitter)
+        public static IEnumerable<BranchConfigurationDto> GetHarnessBranchConfiguration(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            List<BranchConfigurationModel> collection = new List<BranchConfigurationModel>();
-            BranchConfigurationModel model = new BranchConfigurationModel();
+            List<BranchConfigurationDto> collection = new List<BranchConfigurationDto>();
+            BranchConfigurationDto model = new BranchConfigurationDto();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);

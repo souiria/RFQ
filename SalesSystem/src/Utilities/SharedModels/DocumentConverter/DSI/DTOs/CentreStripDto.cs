@@ -1,6 +1,6 @@
-﻿namespace SharedModels.DocumentConverter.DSI
+﻿namespace SharedModels.DocumentConverter.DSI.DTOs
 {
-    public class CentreStripModel
+    public class CentreStripDto
     {
         public string? NodeName
         { get; set; }

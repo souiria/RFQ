@@ -1,12 +1,14 @@
-﻿namespace DocumentConversion.TypeConversion.DSI
+﻿using SharedModels.DocumentConverter.DSI.DTOs;
+
+namespace DocumentConversion.TypeConversion.DSI
 {
     public static class HarnessPinMappings
     {
-        public static IEnumerable<PinMappingModel> GetHarnessPinMappings(IEnumerable<string> lines, string splitter)
+        public static IEnumerable<PinMappingDto> GetHarnessPinMappings(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            PinMappingModel model = new PinMappingModel();
-            List<PinMappingModel> collection = new List<PinMappingModel>();
+            PinMappingDto model = new PinMappingDto();
+            List<PinMappingDto> collection = new List<PinMappingDto>();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);

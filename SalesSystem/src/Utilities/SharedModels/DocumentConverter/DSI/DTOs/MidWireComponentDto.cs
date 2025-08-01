@@ -1,8 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace SharedModels.DocumentConverter.DSI
+namespace SharedModels.DocumentConverter.DSI.DTOs
 {
-    public class MidWireComponentModel : Collection<MidWireComponentModel>
+    public class MidWireComponentDto : Collection<MidWireComponentDto>
     {
         public string? NodeName
         { get; set; }

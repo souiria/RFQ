@@ -1,12 +1,14 @@
-﻿namespace DocumentConversion.TypeConversion.DSI
+﻿using SharedModels.DocumentConverter.DSI.DTOs;
+
+namespace DocumentConversion.TypeConversion.DSI
 {
     public static class HarnessMidWireComponents
     {
-        public static IEnumerable<MidWireComponentModel> GetHarnessMidWireComponents(IEnumerable<string> lines, string splitter)
+        public static IEnumerable<MidWireComponentDto> GetHarnessMidWireComponents(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            MidWireComponentModel model = new MidWireComponentModel();
-            List<MidWireComponentModel> collection = new List<MidWireComponentModel>();
+            MidWireComponentDto model = new MidWireComponentDto();
+            List<MidWireComponentDto> collection = new List<MidWireComponentDto>();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);

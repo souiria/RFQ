@@ -1,6 +1,6 @@
-﻿namespace SharedModels.DocumentConverter.DSI
+﻿namespace SharedModels.DocumentConverter.DSI.DTOs
 {
-    public class ManualBomQuantityModel
+    public class ManualBomQuantityDto
     {
         public string? SplitValue
         { get; set; }

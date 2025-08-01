@@ -1,10 +1,12 @@
-﻿namespace DocumentConversion.TypeConversion.DSI
+﻿using SharedModels.DocumentConverter.DSI.Aggregates;
+
+namespace DocumentConversion.TypeConversion.DSI
 {
     public static class DSIFileConverter
     {
-        public static DsiModel CreateDsiModel(byte[] file)
+        public static DsiAggregate CreateDsiModel(byte[] file)
         {
-            DsiModel dsiModel = new DsiModel();
+            DsiAggregate dsiModel = new DsiAggregate();
             List<string> lineList = new List<string>();
             CultureInfo culture = new CultureInfo("en-gb");
             char commentCharacter = '!';
@@ -18,7 +20,7 @@
                 if (b == '\n')
                 {
                     lineBytes = lineBytes.Reverse().ToArray();
-                    string newLine = System.Text.Encoding.Default.GetString(lineBytes);
+                    string newLine = Encoding.Default.GetString(lineBytes);
                     newLine = newLine.Replace("\r\n",  string.Empty, StringComparison.InvariantCulture);
                     lineList.Add(newLine);
                     lineBytes = [];
@@ -60,7 +62,7 @@
             return dsiModel;
         }
 
-        static DsiModel GetDataFromSection(int section, List<string> sectionList, DsiModel dsiModel)
+        static DsiAggregate GetDataFromSection(int section, List<string> sectionList, DsiAggregate dsiModel)
         {
             string splitter = ":";
             switch (section) 

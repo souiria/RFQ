@@ -1,12 +1,14 @@
-﻿namespace DocumentConversion.TypeConversion.DSI
+﻿using SharedModels.DocumentConverter.DSI.DTOs;
+
+namespace DocumentConversion.TypeConversion.DSI
 {
     public static class HarnessBranchInsulationThroughNodes
     {
-        public static IEnumerable<BranchInsulationThroughNodeModel> GetHarnessBranchInsulationThroughNodes(IEnumerable<string> lines, string splitter)
+        public static IEnumerable<BranchInsulationThroughNodeDto> GetHarnessBranchInsulationThroughNodes(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            BranchInsulationThroughNodeModel model = new BranchInsulationThroughNodeModel();
-            List<BranchInsulationThroughNodeModel> collection = new List<BranchInsulationThroughNodeModel>();
+            BranchInsulationThroughNodeDto model = new BranchInsulationThroughNodeDto();
+            List<BranchInsulationThroughNodeDto> collection = new List<BranchInsulationThroughNodeDto>();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);

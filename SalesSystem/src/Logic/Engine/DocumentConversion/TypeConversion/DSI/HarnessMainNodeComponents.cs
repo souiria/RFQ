@@ -1,12 +1,14 @@
-﻿namespace DocumentConversion.TypeConversion.DSI
+﻿using SharedModels.DocumentConverter.DSI.DTOs;
+
+namespace DocumentConversion.TypeConversion.DSI
 {
     public static class HarnessMainNodeComponents
     {
-        public static IEnumerable<ComponentModel> GetHarnessMainNodeComponents(IEnumerable<string> lines, string splitter)
+        public static IEnumerable<ComponentDto> GetHarnessMainNodeComponents(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            ComponentModel model = new ComponentModel();
-            List<ComponentModel> collection = new List<ComponentModel>();
+            ComponentDto model = new ComponentDto();
+            List<ComponentDto> collection = new List<ComponentDto>();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);
