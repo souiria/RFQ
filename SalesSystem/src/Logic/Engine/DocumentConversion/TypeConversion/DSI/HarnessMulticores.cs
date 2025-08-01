@@ -2,11 +2,11 @@
 {
     public static class HarnessMulticores
     {
-        public static IEnumerable<MulticoreSpecificationModel> GetHarnessMulticores(IEnumerable<string> lines, string splitter)
+        public static IEnumerable<MulticoreSpecificationDto> GetHarnessMulticores(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            MulticoreSpecificationModel model = new MulticoreSpecificationModel();
-            List<MulticoreSpecificationModel> collection = new List<MulticoreSpecificationModel>();
+            MulticoreSpecificationDto model = new MulticoreSpecificationDto();
+            List<MulticoreSpecificationDto> collection = new List<MulticoreSpecificationDto>();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);

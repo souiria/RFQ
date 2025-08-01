@@ -2,9 +2,9 @@
 {
     public class DbProfile : IAggregateRoot
     {
-        public string? Id 
+        public int Id 
         { get; set; }
-        public string? DisplayMember
+        public string? Profile
         { get; set; }
     }
 }

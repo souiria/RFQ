@@ -2,11 +2,11 @@
 {
     public static class HarnessWireSpecification
     {
-        public static IEnumerable<WireSpecificationModel> GetHarnessWireSpecification(IEnumerable<string> lines, string splitter)
+        public static IEnumerable<WireSpecificationDto> GetHarnessWireSpecification(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            WireSpecificationModel model = new WireSpecificationModel();
-            List<WireSpecificationModel> collection = new List<WireSpecificationModel>();
+            WireSpecificationDto model = new WireSpecificationDto();
+            List<WireSpecificationDto> collection = new List<WireSpecificationDto>();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);

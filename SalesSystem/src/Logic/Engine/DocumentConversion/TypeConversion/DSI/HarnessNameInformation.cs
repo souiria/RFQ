@@ -2,10 +2,10 @@
 {
     public static class HarnessNameInformation
     {
-        public static HarnessModel GetHarnessNameInformation(IEnumerable<string> sectionList, string splitter)
+        public static HarnessDto GetHarnessNameInformation(IEnumerable<string> sectionList, string splitter)
         {
             string[] separator = [splitter];
-            HarnessModel harnessModel = new HarnessModel();
+            HarnessDto harnessModel = new HarnessDto();
             foreach (string line in sectionList)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);

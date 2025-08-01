@@ -5,11 +5,11 @@ namespace SFS.Data.Model
     {
         public int Period 
         { get; set; }
-        public double ForecastCopperLevel 
+        public decimal? ForecastCopperLevel 
         { get; set; }
-        public double ForecastCopperWeight 
+        public decimal? ForecastCopperWeight 
         { get; set; }
-        public double PriceAdjustment 
+        public decimal? PriceAdjustment 
         { get; set; }
     }
 }

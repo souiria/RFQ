@@ -28,5 +28,4 @@ namespace SFS.CQRS.Handler.Profile
             return _Profile;
         }
     }
-
-}
+   }
