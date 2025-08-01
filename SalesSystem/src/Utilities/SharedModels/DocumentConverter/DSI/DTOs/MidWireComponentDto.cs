@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-namespace SharedModels.DocumentConverter.DSI.DTOs
+﻿namespace SharedModels.DocumentConverter.DSI.DTOs
 {
     public class MidWireComponentDto : Collection<MidWireComponentDto>
     {
