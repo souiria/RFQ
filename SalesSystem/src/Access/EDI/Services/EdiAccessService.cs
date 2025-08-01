@@ -1,8 +1,4 @@
-﻿using EDI.CQRS.Command;
-using EDI.Data.Model;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-
-namespace EDI.Services
+﻿namespace EDI.Services
 {
     public class EdiAccessService : IEdiAccessService
     {
