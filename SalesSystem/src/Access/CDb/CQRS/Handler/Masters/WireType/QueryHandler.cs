@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Query.Masters.WireType;
-using CDb.CQRS.Specification.Masters.WireType;
-
-namespace CDb.CQRS.Handler.Masters.WireType
+﻿namespace CDb.CQRS.Handler.Masters.WireType
 {
     sealed class QueryHandler : IQueryHandler<GetWireTypesQuery, List<WireTypeGrpc>>
     {

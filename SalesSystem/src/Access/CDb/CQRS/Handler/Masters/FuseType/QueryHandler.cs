@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Query.Masters.FuseType;
-using CDb.CQRS.Specification.Masters.FuseType;
-
-namespace CDb.CQRS.Handler.Masters.FuseType
+﻿namespace CDb.CQRS.Handler.Masters.FuseType
 {
     sealed class QueryHandler : IQueryHandler<GetFuseTypesQuery, List<FuseTypeGrpc>>
     {

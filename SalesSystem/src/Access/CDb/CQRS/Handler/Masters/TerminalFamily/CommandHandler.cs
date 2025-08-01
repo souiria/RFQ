@@ -1,6 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.TerminalFamily;
-
-namespace CDb.CQRS.Handler.Masters.TerminalFamily
+﻿namespace CDb.CQRS.Handler.Masters.TerminalFamily
 {
     public class CommandHandler : ICommandHandler<TerminalFamilyCommand>
     {

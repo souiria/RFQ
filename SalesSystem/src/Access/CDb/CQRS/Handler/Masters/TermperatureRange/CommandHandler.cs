@@ -1,6 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.TemperatureRange;
-
-namespace CDb.CQRS.Handler.Masters.TermperatureRange
+﻿namespace CDb.CQRS.Handler.Masters.TermperatureRange
 {
     public class CommandHandler : ICommandHandler<TemperatureRangeCommand>
     {

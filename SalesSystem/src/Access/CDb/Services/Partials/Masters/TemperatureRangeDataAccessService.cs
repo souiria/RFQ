@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.TemperatureRange;
-using CDb.CQRS.Query.Masters.TemperatureRange;
-
-namespace CDb.Services
+﻿namespace CDb.Services
 {
     public partial class CDbAccessService : ICDbAccessService
     {

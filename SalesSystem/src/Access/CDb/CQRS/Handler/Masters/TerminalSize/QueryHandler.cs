@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Query.Masters.TerminalSize;
-using CDb.CQRS.Specification.Masters.TerminalSize;
-
-namespace CDb.CQRS.Handler.Masters.TerminalSize
+﻿namespace CDb.CQRS.Handler.Masters.TerminalSize
 {
     sealed class QueryHandler : IQueryHandler<GetTerminalSizesQuery, List<TerminalSizeGrpc>>
     {

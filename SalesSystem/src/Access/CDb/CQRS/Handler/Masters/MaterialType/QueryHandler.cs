@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Query.Masters.MaterialType;
-using CDb.CQRS.Specification.Masters.MaterialType;
-
-namespace CDb.CQRS.Handler.Masters.MaterialType
+﻿namespace CDb.CQRS.Handler.Masters.MaterialType
 {
     sealed class QueryHandler : IQueryHandler<GetMaterialTypesQuery, List<MaterialTypeGrpc>>
     {

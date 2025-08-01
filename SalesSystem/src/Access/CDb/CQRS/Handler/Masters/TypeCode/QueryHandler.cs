@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Query.Masters.TypeCode;
-using CDb.CQRS.Specification.Masters.TypeCode;
-
-namespace CDb.CQRS.Handler.Masters.TypeCode
+﻿namespace CDb.CQRS.Handler.Masters.TypeCode
 {
     sealed class QueryHandler : IQueryHandler<GetTypeCodesQuery, List<TypeCodeGrpc>>
     {

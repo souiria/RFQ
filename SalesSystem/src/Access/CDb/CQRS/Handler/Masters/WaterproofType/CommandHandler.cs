@@ -1,6 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.WaterproofType;
-
-namespace CDb.CQRS.Handler.Masters.WaterproofType
+﻿namespace CDb.CQRS.Handler.Masters.WaterproofType
 {
     public class CommandHandler : ICommandHandler<WaterproofTypeCommand>
     {

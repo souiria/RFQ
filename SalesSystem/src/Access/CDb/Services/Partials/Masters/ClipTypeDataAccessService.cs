@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.ClipType;
-using CDb.CQRS.Query.Masters.ClipType;
-
-namespace CDb.Services
+﻿namespace CDb.Services
 {
     public partial class CDbAccessService : ICDbAccessService
     {

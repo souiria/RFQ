@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.TerminalFamily;
-using CDb.CQRS.Query.Masters.TerminalFamily;
-
-namespace CDb.Services
+﻿namespace CDb.Services
 {
     public partial class CDbAccessService : ICDbAccessService
     {

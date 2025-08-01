@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Query.Masters.MiscellaneousComponent;
-using CDb.CQRS.Specification.Masters.MiscellaneousComponent;
-
-namespace CDb.CQRS.Handler.Masters.MiscellaneousComponent
+﻿namespace CDb.CQRS.Handler.Masters.MiscellaneousComponent
 {
     sealed class QueryHandler : IQueryHandler<GetMiscellaneousComponentTypesQuery, List<MiscellaneousComponentTypeGrpc>>
     {

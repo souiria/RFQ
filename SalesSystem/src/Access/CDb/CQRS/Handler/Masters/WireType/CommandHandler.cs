@@ -1,6 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.WireType;
-
-namespace CDb.CQRS.Handler.Masters.WireType
+﻿namespace CDb.CQRS.Handler.Masters.WireType
 {
     public class CommandHandler : ICommandHandler<WireTypeCommand>
     {

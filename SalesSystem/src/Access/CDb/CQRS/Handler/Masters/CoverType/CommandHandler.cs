@@ -1,6 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.CoverType;
-
-namespace CDb.CQRS.Handler.Masters.CoverType
+﻿namespace CDb.CQRS.Handler.Masters.CoverType
 {
     public class CommandHandler : ICommandHandler<CoverTypeCommand>
     {

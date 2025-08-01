@@ -1,6 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.TypeCode;
-
-namespace CDb.CQRS.Handler.Masters.TypeCode
+﻿namespace CDb.CQRS.Handler.Masters.TypeCode
 {
     public class CommandHandler : ICommandHandler<TypeCodeCommand>
     {

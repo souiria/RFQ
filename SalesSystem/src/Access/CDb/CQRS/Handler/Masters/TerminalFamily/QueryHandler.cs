@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Query.Masters.TerminalFamily;
-using CDb.CQRS.Specification.Masters.TerminalFamily;
-
-namespace CDb.CQRS.Handler.Masters.TerminalFamily
+﻿namespace CDb.CQRS.Handler.Masters.TerminalFamily
 {
     sealed class QueryHandler : IQueryHandler<GetTerminalFamilysQuery, List<TerminalFamilyGrpc>>
     {

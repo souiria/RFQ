@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Query.Masters.TemperatureRange;
-using CDb.CQRS.Specification.Masters.TemperatureRange;
-
-namespace CDb.CQRS.Handler.Masters.TermperatureRange
+﻿namespace CDb.CQRS.Handler.Masters.TermperatureRange
 {
     sealed class QueryHandler : IQueryHandler<GetTemperatureRangesQuery, List<TemperatureRangeGrpc>>
     {

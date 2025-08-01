@@ -1,6 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.TerminalSize;
-
-namespace CDb.CQRS.Handler.Masters.TerminalSize
+﻿namespace CDb.CQRS.Handler.Masters.TerminalSize
 {
     public class CommandHandler : ICommandHandler<TerminalSizeCommand>
     {

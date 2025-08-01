@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.WireProtectionType;
-using CDb.CQRS.Query.Masters.WireProtectionType;
-
-namespace CDb.Services
+﻿namespace CDb.Services
 {
     public partial class CDbAccessService : ICDbAccessService
     {

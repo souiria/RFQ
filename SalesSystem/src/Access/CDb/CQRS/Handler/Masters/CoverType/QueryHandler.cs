@@ -1,6 +1,4 @@
-﻿using CDb.CQRS.Specification.Masters.CoverType;
-
-namespace CDb.CQRS.Handler.Masters.CoverType
+﻿namespace CDb.CQRS.Handler.Masters.CoverType
 {
     sealed class QueryHandler : IQueryHandler<GetCoverTypesQuery, List<CoverTypeGrpc>>
     {

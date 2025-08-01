@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Query.Masters.Person;
-using CDb.CQRS.Specification.Masters.Person;
-
-namespace CDb.CQRS.Handler.Masters.Person
+﻿namespace CDb.CQRS.Handler.Masters.Person
 {
     sealed class QueryHandler : IQueryHandler<GetPersonsQuery, List<PersonGrpc>>
     {

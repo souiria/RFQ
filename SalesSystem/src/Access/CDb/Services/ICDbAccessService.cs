@@ -139,24 +139,27 @@
         Task<ListFileNameGrpc> ReadAllFileNames(CancellationToken cancellationToken);
         Task<ListFileNameGrpc> ReadManyFileNames(FileNameGrpcRequest request, CancellationToken cancellationToken);
         Task<ListFileNameGrpc> ReadFileNameById(FileNameGrpcRequest request, CancellationToken cancellationToken);
-        Task<ListFileNameGrpc> CreateFileNames(FileNameGrpcRequest request, CancellationToken cancellationToken);
-        Task<ListFileNameGrpc> UpdateFileNames(FileNameGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> CreateFileNames(FileNameGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> UpdateFileNames(FileNameGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> DeleteFileNames(FileNameGrpcRequest request, CancellationToken cancellationToken);
         #endregion
 
         #region PartNumber
-        Task<ListPartNumberGrpc> GetAllPartNumbers(CancellationToken cancellationToken);
-        Task<ListPartNumberGrpc> GetManyPartNumbers(PartNumberGrpcRequest partNumberRequest, CancellationToken cancellationToken);
-        Task<PartNumberGrpc> GetPartNumberById(PartNumberGrpcRequest partNumberRequest, CancellationToken cancellationToken);
-        Task<ListPartNumberGrpc> CreatePartNumbers(PartNumberGrpcRequest partNumberRequest, CancellationToken cancellationToken);
-        Task<ListPartNumberGrpc> UpdatePartNumbers(PartNumberGrpcRequest partNumberRequest, CancellationToken cancellationToken);
+        Task<ListPartNumberGrpc> ReadAllPartNumbers(CancellationToken cancellationToken);
+        Task<ListPartNumberGrpc> ReadManyPartNumbers(PartNumberGrpcRequest request, CancellationToken cancellationToken);
+        Task<ListPartNumberGrpc> ReadPartNumberById(PartNumberGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> CreatePartNumbers(PartNumberGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> UpdatePartNumbers(PartNumberGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> DeletePartNumbers(PartNumberGrpcRequest request, CancellationToken cancellationToken);
         #endregion
 
         #region Tag
-        Task<ListTagGrpc> GetAllTags(CancellationToken cancellationToken);
-        Task<ListTagGrpc> GetManyTags(TagGrpcRequest tagRequest, CancellationToken cancellationToken);
-        Task<TagGrpc> GetTagById(TagGrpcRequest tagRequest, CancellationToken cancellationToken);
-        Task<ListTagGrpc> CreateTags(TagGrpcRequest tagRequest, CancellationToken cancellationToken);
-        Task<ListTagGrpc> UpdateTags(TagGrpcRequest tagRequest, CancellationToken cancellationToken);
+        Task<ListTagGrpc> ReadAllTags(CancellationToken cancellationToken);
+        Task<ListTagGrpc> ReadManyTags(TagGrpcRequest request, CancellationToken cancellationToken);
+        Task<ListTagGrpc> ReadTagById(TagGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> CreateTags(TagGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> UpdateTags(TagGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> DeleteTags(TagGrpcRequest request, CancellationToken cancellationToken);
         #endregion
 
         //Components

@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Diagnostics;
-
+﻿
 namespace CDb.Data.Context
 {
     public class CDbContextFactory : IDesignTimeDbContextFactory<CDbContext>

@@ -1,6 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.CrimpingProcessType;
-
-namespace CDb.CQRS.Handler.Masters.CrimpingProcessType
+﻿namespace CDb.CQRS.Handler.Masters.CrimpingProcessType
 {
     public class CommandHandler : ICommandHandler<CrimpingProcessTypeCommand>
     {

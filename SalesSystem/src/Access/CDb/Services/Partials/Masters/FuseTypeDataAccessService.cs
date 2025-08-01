@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.FuseType;
-using CDb.CQRS.Query.Masters.FuseType;
-
-namespace CDb.Services
+﻿namespace CDb.Services
 {
     public partial class CDbAccessService : ICDbAccessService
     {

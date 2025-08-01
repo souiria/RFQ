@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Query.Masters.WaterproofType;
-using CDb.CQRS.Specification.Masters.WaterproofType;
-
-namespace CDb.CQRS.Handler.Masters.WaterproofType
+﻿namespace CDb.CQRS.Handler.Masters.WaterproofType
 {
     sealed class QueryHandler : IQueryHandler<GetWaterproofTypesQuery, List<WaterproofTypeGrpc>>
     {

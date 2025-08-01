@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.MiscellaneousComponentType;
-using CDb.CQRS.Query.Masters.MiscellaneousComponent;
-
-namespace CDb.Services
+﻿namespace CDb.Services
 {
     public partial class CDbAccessService : ICDbAccessService
     {

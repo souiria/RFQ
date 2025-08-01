@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Query.Masters.WireProtectionType;
-using CDb.CQRS.Specification.Masters.WireProtectionType;
-
-namespace CDb.CQRS.Handler.Masters.WireProtectionType
+﻿namespace CDb.CQRS.Handler.Masters.WireProtectionType
 {
     sealed class QueryHandler : IQueryHandler<GetWireProtectionTypesQuery, List<WireProtectionTypeGrpc>>
     {

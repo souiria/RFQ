@@ -1,6 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.MaterialType;
-
-namespace CDb.CQRS.Handler.Masters.MaterialType
+﻿namespace CDb.CQRS.Handler.Masters.MaterialType
 {
     public class CommandHandler : ICommandHandler<MaterialTypeCommand>
     {

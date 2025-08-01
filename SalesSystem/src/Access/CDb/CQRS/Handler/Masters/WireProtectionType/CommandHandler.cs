@@ -1,6 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.WireProtectionType;
-
-namespace CDb.CQRS.Handler.Masters.WireProtectionType
+﻿namespace CDb.CQRS.Handler.Masters.WireProtectionType
 {
     public class CommandHandler : ICommandHandler<WireProtectionTypeCommand>
     {

@@ -1,6 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.FuseType;
-
-namespace CDb.CQRS.Handler.Masters.FuseType
+﻿namespace CDb.CQRS.Handler.Masters.FuseType
 {
     public class CommandHandler : ICommandHandler<FuseTypeCommand>
     {

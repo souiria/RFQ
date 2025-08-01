@@ -1,6 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.ClipType;
-
-namespace CDb.CQRS.Handler.Masters.ClipType
+﻿namespace CDb.CQRS.Handler.Masters.ClipType
 {
     public class CommandHandler : ICommandHandler<ClipTypeCommand>
     {

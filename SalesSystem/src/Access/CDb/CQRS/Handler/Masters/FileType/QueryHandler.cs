@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Query.Masters.FileType;
-using CDb.CQRS.Specification.Masters.FileType;
-
-namespace CDb.CQRS.Handler.Masters.FileType
+﻿namespace CDb.CQRS.Handler.Masters.FileType
 {
     sealed class QueryHandler : IQueryHandler<GetFileTypesQuery, List<FileTypeGrpc>>
     {

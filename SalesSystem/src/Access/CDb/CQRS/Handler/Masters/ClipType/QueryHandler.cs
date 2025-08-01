@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Query.Masters.ClipType;
-using CDb.CQRS.Specification.Masters.ClipType;
-
-namespace CDb.CQRS.Handler.Masters.ClipType
+﻿namespace CDb.CQRS.Handler.Masters.ClipType
 {
     sealed class QueryHandler : IQueryHandler<GetClipTypesQuery, List<ClipTypeGrpc>>
     {

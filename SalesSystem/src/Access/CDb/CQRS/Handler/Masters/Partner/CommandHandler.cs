@@ -1,6 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.Partner;
-
-namespace CDb.CQRS.Handler.Masters.Partner
+﻿namespace CDb.CQRS.Handler.Masters.Partner
 {
     public class CommandHandler : ICommandHandler<PartnerCommand>
     {

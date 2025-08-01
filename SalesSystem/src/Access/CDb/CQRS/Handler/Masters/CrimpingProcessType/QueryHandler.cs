@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Query.Masters.CrimpingProcessType;
-using CDb.CQRS.Specification.Masters.CrimpingProcessType;
-
-namespace CDb.CQRS.Handler.Masters.CrimpingProcessType
+﻿namespace CDb.CQRS.Handler.Masters.CrimpingProcessType
 {
     sealed class QueryHandler : IQueryHandler<GetCrimpingProcessTypesQuery, List<CrimpingProcessTypeGrpc>>
     {

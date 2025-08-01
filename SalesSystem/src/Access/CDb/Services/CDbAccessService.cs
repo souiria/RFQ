@@ -1,36 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.ClipType;
-using CDb.CQRS.Command.Masters.CoverType;
-using CDb.CQRS.Command.Masters.CrimpingProcessType;
-using CDb.CQRS.Command.Masters.FileType;
-using CDb.CQRS.Command.Masters.FuseType;
-using CDb.CQRS.Command.Masters.MaterialType;
-using CDb.CQRS.Command.Masters.MiscellaneousComponentType;
-using CDb.CQRS.Command.Masters.Partner;
-using CDb.CQRS.Command.Masters.Person;
-using CDb.CQRS.Command.Masters.TemperatureRange;
-using CDb.CQRS.Command.Masters.TerminalFamily;
-using CDb.CQRS.Command.Masters.TerminalSize;
-using CDb.CQRS.Command.Masters.TypeCode;
-using CDb.CQRS.Command.Masters.WaterproofType;
-using CDb.CQRS.Command.Masters.WireProtectionType;
-using CDb.CQRS.Command.Masters.WireType;
-using CDb.CQRS.Query.Masters.ClipType;
-using CDb.CQRS.Query.Masters.CrimpingProcessType;
-using CDb.CQRS.Query.Masters.FileType;
-using CDb.CQRS.Query.Masters.FuseType;
-using CDb.CQRS.Query.Masters.MaterialType;
-using CDb.CQRS.Query.Masters.MiscellaneousComponent;
-using CDb.CQRS.Query.Masters.Partner;
-using CDb.CQRS.Query.Masters.Person;
-using CDb.CQRS.Query.Masters.TemperatureRange;
-using CDb.CQRS.Query.Masters.TerminalFamily;
-using CDb.CQRS.Query.Masters.TerminalSize;
-using CDb.CQRS.Query.Masters.TypeCode;
-using CDb.CQRS.Query.Masters.WaterproofType;
-using CDb.CQRS.Query.Masters.WireProtectionType;
-using CDb.CQRS.Query.Masters.WireType;
-
-namespace CDb.Services
+﻿namespace CDb.Services
 {
     public partial class CDbAccessService : ICDbAccessService
     {
@@ -87,6 +55,12 @@ namespace CDb.Services
         // Main
         ListFileNameGrpc _FileNameGrpcs;
         ListFileNameGrpc _FilteredFileNameGrpcs;
+
+        ListPartNumberGrpc _PartNumberGrpcs;
+        ListPartNumberGrpc _FilteredPartNumberGrpcs;
+
+        ListTagGrpc _TagGrpcs;
+        ListTagGrpc _FilteredTagGrpcs;
 
         // Components
         ListCompositeComponentGrpc _CompositeComponentGrpcs;
@@ -195,6 +169,26 @@ namespace CDb.Services
         ICommandHandler<WireTypeCommand>? _CommandWireTypeHandler;
         #endregion
 
+        //main
+        #region FileName
+        bool _FileNameRefreshInProgress;
+        IQueryHandler<GetFileNamesQuery, List<FileNameGrpc>>? _QueryFileNameHandler;
+        ICommandHandler<FileNameCommand>? _CommandFileNameHandler;
+        #endregion
+
+        #region PartNumber
+        bool _PartNumberRefreshInProgress;
+        IQueryHandler<GetPartNumbersQuery, List<PartNumberGrpc>>? _QueryPartNumberHandler;
+        ICommandHandler<PartNumberCommand>? _CommandPartNumberHandler;
+        #endregion
+
+        #region Tag
+        bool _TagRefreshInProgress;
+        IQueryHandler<GetTagsQuery, List<TagGrpc>>? _QueryTagHandler;
+        ICommandHandler<TagCommand>? _CommandTagHandler;
+        #endregion
+
+        // components
         #region CompositeComponent
         bool _CompositeComponentRefreshInProgress;
         IQueryHandler<GetComponentsQuery, List<CompositeComponentGrpc>>? _QueryComponentHandler;
@@ -262,6 +256,12 @@ namespace CDb.Services
             _FileNameGrpcs = new ListFileNameGrpc();
             _FilteredFileNameGrpcs = new ListFileNameGrpc();
 
+            _PartNumberGrpcs = new ListPartNumberGrpc();
+            _FilteredPartNumberGrpcs = new ListPartNumberGrpc();
+
+            _TagGrpcs = new ListTagGrpc();
+            _FilteredTagGrpcs = new ListTagGrpc();
+
             // Components
             _CompositeComponentGrpcs = new ListCompositeComponentGrpc();
             _FilteredCompositeComponentGrpcs = new ListCompositeComponentGrpc();
@@ -285,6 +285,11 @@ namespace CDb.Services
             _WaterproofTypeRefreshInProgress = false;
             _WireProtectionTypeRefreshInProgress = false;
             _WireTypeRefreshInProgress = false;
+
+            _FileNameRefreshInProgress = false;
+            _PartNumberRefreshInProgress = false;
+            _TagRefreshInProgress = false;
+
             _CompositeComponentRefreshInProgress = false;
 
             _ServiceProvider = serviceProvider;
@@ -295,81 +300,6 @@ namespace CDb.Services
                 _CrimpingProcessTypeGrpcs = SampleCDbAccessDataService.PopulateCrimpingProcessTypeInitData();
                 _CompositeComponentGrpcs = SampleCDbAccessDataService.PopulateCompositeComponentInitData();
             }
-        }
-
-        public Task<ListFileNameGrpc> ReadAllFileNames(CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListFileNameGrpc> ReadManyFileNames(FileNameGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListFileNameGrpc> ReadFileNameById(FileNameGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListFileNameGrpc> CreateFileNames(FileNameGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListFileNameGrpc> UpdateFileNames(FileNameGrpcRequest request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListPartNumberGrpc> GetAllPartNumbers(CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListPartNumberGrpc> GetManyPartNumbers(PartNumberGrpcRequest partNumberRequest, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<PartNumberGrpc> GetPartNumberById(PartNumberGrpcRequest partNumberRequest, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListPartNumberGrpc> CreatePartNumbers(PartNumberGrpcRequest partNumberRequest, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListPartNumberGrpc> UpdatePartNumbers(PartNumberGrpcRequest partNumberRequest, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTagGrpc> GetAllTags(CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTagGrpc> GetManyTags(TagGrpcRequest tagRequest, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<TagGrpc> GetTagById(TagGrpcRequest tagRequest, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTagGrpc> CreateTags(TagGrpcRequest tagRequest, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ListTagGrpc> UpdateTags(TagGrpcRequest tagRequest, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.Person;
-
-namespace CDb.CQRS.Handler.Masters.Person
+﻿namespace CDb.CQRS.Handler.Masters.Person
 {
     public class CommandHandler : ICommandHandler<PersonCommand>
     {

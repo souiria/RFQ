@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.TerminalSize;
-using CDb.CQRS.Query.Masters.TerminalSize;
-
-namespace CDb.Services
+﻿namespace CDb.Services
 {
     public partial class CDbAccessService : ICDbAccessService
     {

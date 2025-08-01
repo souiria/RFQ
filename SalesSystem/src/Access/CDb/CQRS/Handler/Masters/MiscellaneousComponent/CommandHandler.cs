@@ -1,6 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.MiscellaneousComponentType;
-
-namespace CDb.CQRS.Handler.Masters.MiscellaneousComponent
+﻿namespace CDb.CQRS.Handler.Masters.MiscellaneousComponent
 {
     public class CommandHandler : ICommandHandler<MiscellaneousComponentTypeCommand>
     {

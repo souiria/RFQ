@@ -1,6 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.FileType;
-
-namespace CDb.CQRS.Handler.Masters.FileType
+﻿namespace CDb.CQRS.Handler.Masters.FileType
 {
     public class CommandHandler : ICommandHandler<FileTypeCommand>
     {

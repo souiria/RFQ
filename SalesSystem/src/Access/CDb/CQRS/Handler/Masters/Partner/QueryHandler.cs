@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Query.Masters.Partner;
-using CDb.CQRS.Specification.Masters.Partner;
-
-namespace CDb.CQRS.Handler.Masters.Partner
+﻿namespace CDb.CQRS.Handler.Masters.Partner
 {
     sealed class QueryHandler : IQueryHandler<GetPartnersQuery, List<PartnerGrpc>>
     {

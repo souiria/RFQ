@@ -1,7 +1,4 @@
-﻿using CDb.CQRS.Command.Masters.Person;
-using CDb.CQRS.Query.Masters.Person;
-
-namespace CDb.Services
+﻿namespace CDb.Services
 {
     public partial class CDbAccessService : ICDbAccessService
     {
