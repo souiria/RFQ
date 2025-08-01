@@ -1,6 +1,4 @@
-﻿
-
-namespace SFS.Data.DTOs
+﻿namespace SFS.Data.DTOs
 {
     public class CustomerNonWorkingDaysDto
     {
@@ -10,7 +8,7 @@ namespace SFS.Data.DTOs
         { get; set; }
         public string? DelPoint
         { get; set; }
-        public DateTime NonWorkingDay
+        public string? NonWorkingDay
         { get; set; }
         public DateTime UpdatedDate
         { get; set; }
