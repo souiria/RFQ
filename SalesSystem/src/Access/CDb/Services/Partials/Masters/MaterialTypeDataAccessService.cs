@@ -1,4 +1,7 @@
-﻿namespace CDb.Services
+﻿using CDb.CQRS.Command.Masters.MaterialType;
+using CDb.CQRS.Query.Masters.MaterialType;
+
+namespace CDb.Services
 {
     public partial class CDbAccessService : ICDbAccessService
     {

@@ -1,4 +1,6 @@
-﻿namespace CDb.Services
+﻿using CDb.CQRS.Command.Masters.CoverType;
+
+namespace CDb.Services
 {
     public partial class CDbAccessService : ICDbAccessService
     {

@@ -2,7 +2,7 @@
 {
     public static class ComponentExtensions
     {
-        public static ComponentGrpc FromDb(this DbComponent entity)
+        public static ComponentGrpc FromEntity(this DbComponent entity)
         {
             if (entity == null)
             {
@@ -32,7 +32,17 @@
             grpc.Pilot = entity.Pilot;
             grpc.DbUpdatedPv = entity.DbUpdatedPv is null ? null : Timestamp.FromDateTime((DateTime)entity.DbUpdatedPv);
 
-            grpc.Created = Timestamp.FromDateTime(entity.Created);
+            try
+            {
+                DateTime d = entity.Created.ToUniversalTime();
+                grpc.Created = Timestamp.FromDateTime(d);
+            }
+            catch (ArgumentException ex)
+            {
+                grpc.Created = null;
+                Console.WriteLine($"Error converting Created date: {ex.Message}");
+            }
+
             grpc.CreatedById = entity.CreatedById.ToString();
             grpc.Updated = entity.Updated is null ? null : Timestamp.FromDateTime((DateTime)entity.Updated);
             grpc.UpdatedById = entity.UpdatedById?.ToString();
@@ -46,12 +56,12 @@
             grpc.TemperatureHigh = entity.TemperatureHigh;
             grpc.TemperatureRangeId = entity.TemperatureRangeId?.ToString();
 
-            //grpc.ReplacedComponents = entity.ReplacedComponents?.Select(rc => rc.FromDb()).ToList() ?? new List<ComponentGrpc>();
-            //grpc.FileNames = entity.FileNames?.Select(fn => fn.FromDb()).ToList() ?? new List<FileNameGrpc>();
-            //grpc.Contacts = entity.Contacts?.Select(c => c.FromDb()).ToList() ?? new List<PersonGrpc>();
-            //grpc.Partners = entity.Partners?.Select(p => p.FromDb()).ToList() ?? new List<PartnerGrpc>();
-            //grpc.PartNumbers = entity.PartNumbers?.Select(pn => pn.FromDb()).ToList() ?? new List<PartNumberGrpc>();
-            //grpc.Tags = entity.Tags?.Select(t => t.FromDb()).ToList() ?? new List<TagGrpc>();
+            //grpc.ReplacedComponents = entity.ReplacedComponents?.Select(rc => rc.FromEntity()).ToList() ?? new List<ComponentGrpc>();
+            //grpc.FileNames = entity.FileNames?.Select(fn => fn.FromEntity()).ToList() ?? new List<FileNameGrpc>();
+            //grpc.Contacts = entity.Contacts?.Select(c => c.FromEntity()).ToList() ?? new List<PersonGrpc>();
+            //grpc.Partners = entity.Partners?.Select(p => p.FromEntity()).ToList() ?? new List<PartnerGrpc>();
+            //grpc.PartNumbers = entity.PartNumbers?.Select(pn => pn.FromEntity()).ToList() ?? new List<PartNumberGrpc>();
+            //grpc.Tags = entity.Tags?.Select(t => t.FromEntity()).ToList() ?? new List<TagGrpc>();
 
             grpc.UnitOfMeasureId = entity.UnitOfMeasureId?.ToString();
 

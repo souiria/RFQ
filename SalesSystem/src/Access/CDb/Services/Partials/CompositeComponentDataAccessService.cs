@@ -4,26 +4,25 @@
     {
         async Task<bool> PopulateCompositeComponentData(CancellationToken cancellationToken)
         {
-            // TBD: Implement database loading logic here.
             await Task.Delay(1, cancellationToken);
 
             if (!_CompositeComponentRefreshInProgress)
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    //_CompositeComponentHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCurrenciesQuery, List<CompositeComponentGrpc>>>();
-                    //_CompositeComponentRefreshInProgress = true;
-                    //GetCurrenciesQuery query = new GetCurrenciesQuery();
-                    //await Task.Delay(1, cancellationToken);
-                    //Result<List<CompositeComponentGrpc>> results = await _CompositeComponentHandler.Handle(query, cancellationToken);
-                    //if (results.Value.Count <= 0)
-                    //{
-                    //}
-                    //else
-                    //{
-                    //    _Currencies.CompositeComponentGrpc.Clear();
-                    //    _Currencies.CompositeComponentGrpc.AddRange(results.Value);
-                    //}
+                    _QueryComponentHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetComponentsQuery, List<CompositeComponentGrpc>>>();
+                    _CompositeComponentRefreshInProgress = true;
+                    GetComponentsQuery query = new GetComponentsQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<CompositeComponentGrpc>> results = await _QueryComponentHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _CompositeComponentGrpcs.CompositeComponentGrpcs.Clear();
+                        _CompositeComponentGrpcs.CompositeComponentGrpcs.AddRange(results.Value);
+                    }
 
                     _CompositeComponentRefreshInProgress = false;
                     return true;
@@ -32,7 +31,7 @@
 
             return false;
         }
-        public async Task<ListCompositeComponentGrpc> CreateCompositeComponents(CompositeComponentGrpcRequest request, CancellationToken cancellationToken)
+        public async Task<bool> CreateCompositeComponents(CompositeComponentGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
 
@@ -41,13 +40,27 @@
                 throw new ArgumentNullException(nameof(request), "CompositeComponentGrpcRequest or CompositeComponentGrpcsToCreate cannot be null or empty.");
             }
 
-            foreach (CompositeComponentGrpc? compositeComponent in request.CompositeComponentGrpcsToCreate)
+            if (!_CompositeComponentRefreshInProgress)
             {
-                // for now, we just add a new compositeComponent type with a new ID into the cache
-                _CompositeComponentGrpcs.CompositeComponentGrpcs.Add(compositeComponent);
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _CommandComponentHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<ComponentCommand>>();
+                    ComponentCommand command = new ComponentCommand(CommandType.Create, request.CompositeComponentGrpcsToCreate);
+
+                    Result result = await _CommandComponentHandler.Handle(command, cancellationToken);
+                    if (result.IsSuccess)
+                    {
+                        // invalidate the cache
+                        _CompositeComponentRefreshInProgress = true;
+                        _CompositeComponentGrpcs.CompositeComponentGrpcs.Clear();
+                        _CompositeComponentRefreshInProgress = false;
+                    }
+
+                    return true;
+                }
             }
 
-            return _CompositeComponentGrpcs;
+            return false;
         }
 
         public async Task<ListCompositeComponentGrpc> ReadAllCompositeComponents(CancellationToken cancellationToken)
@@ -106,8 +119,9 @@
                 await PopulateCompositeComponentData(cancellationToken);
             }
 
+            System.Globalization.CultureInfo invariantCulture = System.Globalization.CultureInfo.InvariantCulture;   
             _FilteredCompositeComponentGrpcs.CompositeComponentGrpcs.Clear();
-            List<CompositeComponentGrpc> filteredList = _CompositeComponentGrpcs.CompositeComponentGrpcs.Where(x => x.ComponentGrpc.Id == id).ToList();
+            List<CompositeComponentGrpc> filteredList = _CompositeComponentGrpcs.CompositeComponentGrpcs.Where(x => x.ComponentGrpc.Id.ToUpper(invariantCulture) == id.ToUpper(invariantCulture)).ToList();
             _FilteredCompositeComponentGrpcs.CompositeComponentGrpcs.AddRange(filteredList);
             return _FilteredCompositeComponentGrpcs;
         }
@@ -158,7 +172,7 @@
             return _FilteredCompositeComponentGrpcs;
         }
 
-        public async Task<ListCompositeComponentGrpc> UpdateCompositeComponents(CompositeComponentGrpcRequest request, CancellationToken cancellationToken)
+        public async Task<bool> UpdateCompositeComponents(CompositeComponentGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
 
@@ -167,24 +181,30 @@
                 throw new ArgumentNullException(nameof(request), "CompositeComponentGrpcRequest or CompositeComponentGrpcsToUpdate cannot be null or empty.");
             }
 
-            foreach (CompositeComponentGrpc? compositeComponent in request.CompositeComponentGrpcsToUpdate)
+            if (!_CompositeComponentRefreshInProgress)
             {
-                // for now, we just add a new compositeComponent type with a new ID into the cache
-                CompositeComponentGrpc? existingCompositeComponent = _CompositeComponentGrpcs.CompositeComponentGrpcs.FirstOrDefault(x => x.ComponentGrpc.Id == compositeComponent.ComponentGrpc.Id);
-                if (existingCompositeComponent == null)
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    throw new KeyNotFoundException($"CompositeComponent with ID {compositeComponent.ComponentGrpc.Id} not found for update.");
-                }
+                    _CommandComponentHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<ComponentCommand>>();
+                    ComponentCommand command = new ComponentCommand(CommandType.Update, request.CompositeComponentGrpcsToUpdate);
 
-                // Update the existing compositeComponent
-                _CompositeComponentGrpcs.CompositeComponentGrpcs.Remove(existingCompositeComponent);
-                _CompositeComponentGrpcs.CompositeComponentGrpcs.Add(compositeComponent);
+                    Result result = await _CommandComponentHandler.Handle(command, cancellationToken);
+                    if (result.IsSuccess)
+                    {
+                        // invalidate the cache
+                        _CompositeComponentRefreshInProgress = true;
+                        _CompositeComponentGrpcs.CompositeComponentGrpcs.Clear();
+                        _CompositeComponentRefreshInProgress = false;
+                    }
+
+                    return true;
+                }
             }
 
-            return _CompositeComponentGrpcs;
+            return false;
         }
 
-        public async Task<ListCompositeComponentGrpc> DeleteCompositeComponents(CompositeComponentGrpcRequest request, CancellationToken cancellationToken)
+        public async Task<bool> DeleteCompositeComponents(CompositeComponentGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
 
@@ -193,20 +213,27 @@
                 throw new ArgumentNullException(nameof(request), "CompositeComponentGrpcRequest or CompositeComponentGrpcsToDelete cannot be null or empty.");
             }
 
-            foreach (CompositeComponentGrpc? compositeComponent in request.CompositeComponentGrpcsToDelete)
+            if (!_CompositeComponentRefreshInProgress)
             {
-                // for now, we just remove the compositeComponent type with the specified ID from the cache
-                CompositeComponentGrpc? existingCompositeComponent = _CompositeComponentGrpcs.CompositeComponentGrpcs.FirstOrDefault(x => x.ComponentGrpc.Id == compositeComponent.ComponentGrpc.Id);
-                if (existingCompositeComponent == null)
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    throw new KeyNotFoundException($"CompositeComponent with ID {compositeComponent.ComponentGrpc.Id} not found for deletion.");
-                }
+                    _CommandComponentHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<ComponentCommand>>();
+                    ComponentCommand command = new ComponentCommand(CommandType.Delete, request.CompositeComponentGrpcsToDelete);
 
-                // Remove the existing compositeComponent
-                _CompositeComponentGrpcs.CompositeComponentGrpcs.Remove(existingCompositeComponent);
+                    Result result = await _CommandComponentHandler.Handle(command, cancellationToken);
+                    if (result.IsSuccess)
+                    {
+                        // invalidate the cache
+                        _CompositeComponentRefreshInProgress = true;
+                        _CompositeComponentGrpcs.CompositeComponentGrpcs.Clear();
+                        _CompositeComponentRefreshInProgress = false;
+                    }
+
+                    return true;
+                }
             }
 
-            return _CompositeComponentGrpcs;
+            return false;
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿namespace CDb.Services
+﻿using CDb.CQRS.Command.Masters.TypeCode;
+using CDb.CQRS.Query.Masters.TypeCode;
+
+namespace CDb.Services
 {
     public partial class CDbAccessService : ICDbAccessService
     {

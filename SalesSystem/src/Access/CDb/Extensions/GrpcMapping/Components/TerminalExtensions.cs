@@ -2,7 +2,7 @@
 {
     public static class TerminalExtensions
     {
-        public static TerminalGrpc FromDb(this DbTerminal entity)
+        public static TerminalGrpc FromEntity(this DbTerminal entity)
         {
             if (entity == null)
             {
@@ -22,14 +22,8 @@
 
             return grpc;
         }
-        public static DbTerminal ToDb(this TerminalGrpc grpc)
+        public static void ToEntity(this TerminalGrpc grpc, DbTerminal entity)
         {
-            if (grpc == null)
-            {
-                throw new ArgumentNullException(nameof(grpc), "GRPC object cannot be null.");
-            }
-
-            DbTerminal entity = new DbTerminal();
             entity.Id = Guid.Parse(grpc.Id);
             entity.TerminalFamilyId = Guid.Parse(grpc.TerminalFamilyId);
             entity.TerminalSizeId = Guid.Parse(grpc.TerminalSizeId);
@@ -39,7 +33,6 @@
             entity.MatingType = grpc.MatingType is null ? MatingType.Unknown : (MatingType)grpc.MatingType;
             entity.AdditionalInformation = grpc.AdditionalInformation;
             entity.PlatingType = (PlatingType)(grpc.PlatingType ?? 0);
-            return entity;
         }
     }
 }

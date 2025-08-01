@@ -1,4 +1,36 @@
-﻿namespace CDb.Services
+﻿using CDb.CQRS.Command.Masters.ClipType;
+using CDb.CQRS.Command.Masters.CoverType;
+using CDb.CQRS.Command.Masters.CrimpingProcessType;
+using CDb.CQRS.Command.Masters.FileType;
+using CDb.CQRS.Command.Masters.FuseType;
+using CDb.CQRS.Command.Masters.MaterialType;
+using CDb.CQRS.Command.Masters.MiscellaneousComponentType;
+using CDb.CQRS.Command.Masters.Partner;
+using CDb.CQRS.Command.Masters.Person;
+using CDb.CQRS.Command.Masters.TemperatureRange;
+using CDb.CQRS.Command.Masters.TerminalFamily;
+using CDb.CQRS.Command.Masters.TerminalSize;
+using CDb.CQRS.Command.Masters.TypeCode;
+using CDb.CQRS.Command.Masters.WaterproofType;
+using CDb.CQRS.Command.Masters.WireProtectionType;
+using CDb.CQRS.Command.Masters.WireType;
+using CDb.CQRS.Query.Masters.ClipType;
+using CDb.CQRS.Query.Masters.CrimpingProcessType;
+using CDb.CQRS.Query.Masters.FileType;
+using CDb.CQRS.Query.Masters.FuseType;
+using CDb.CQRS.Query.Masters.MaterialType;
+using CDb.CQRS.Query.Masters.MiscellaneousComponent;
+using CDb.CQRS.Query.Masters.Partner;
+using CDb.CQRS.Query.Masters.Person;
+using CDb.CQRS.Query.Masters.TemperatureRange;
+using CDb.CQRS.Query.Masters.TerminalFamily;
+using CDb.CQRS.Query.Masters.TerminalSize;
+using CDb.CQRS.Query.Masters.TypeCode;
+using CDb.CQRS.Query.Masters.WaterproofType;
+using CDb.CQRS.Query.Masters.WireProtectionType;
+using CDb.CQRS.Query.Masters.WireType;
+
+namespace CDb.Services
 {
     public partial class CDbAccessService : ICDbAccessService
     {
@@ -12,9 +44,6 @@
 
         ListCrimpingProcessTypeGrpc _CrimpingProcessTypeGrpcs;
         ListCrimpingProcessTypeGrpc _FilteredCrimpingProcessTypeGrpcs;
-
-        ListCompositeComponentGrpc _CompositeComponentGrpcs;
-        ListCompositeComponentGrpc _FilteredCompositeComponentGrpcs;
 
         ListFileTypeGrpc _FileTypeGrpcs;
         ListFileTypeGrpc _FilteredFileTypeGrpcs;
@@ -60,6 +89,9 @@
         ListFileNameGrpc _FilteredFileNameGrpcs;
 
         // Components
+        ListCompositeComponentGrpc _CompositeComponentGrpcs;
+        ListCompositeComponentGrpc _FilteredCompositeComponentGrpcs;
+
         ListMiscellaneousComponentGrpc _MiscellaneousComponentGrpcs;
         ListMiscellaneousComponentGrpc _FilteredMiscellaneousComponentGrpcs;
 
@@ -165,6 +197,8 @@
 
         #region CompositeComponent
         bool _CompositeComponentRefreshInProgress;
+        IQueryHandler<GetComponentsQuery, List<CompositeComponentGrpc>>? _QueryComponentHandler;
+        ICommandHandler<ComponentCommand>? _CommandComponentHandler;
         #endregion
 
         #endregion // Fields and Properties
@@ -194,6 +228,9 @@
             _MaterialTypeGrpcs = new ListMaterialTypeGrpc();
             _FilteredMaterialTypeGrpcs = new ListMaterialTypeGrpc();
 
+            _MiscellaneousComponentTypeGrpcs = new ListMiscellaneousComponentTypeGrpc();
+            _FilteredMiscellaneousComponentTypeGrpcs = new ListMiscellaneousComponentTypeGrpc();
+
             _PartnerGrpcs = new ListPartnerGrpc();
             _FilteredPartnerGrpcs = new ListPartnerGrpc();
 
@@ -221,15 +258,14 @@
             _WireTypeGrpcs = new ListWireTypeGrpc();
             _FilteredWireTypeGrpcs = new ListWireTypeGrpc();
 
-            // Components
-            _MiscellaneousComponentTypeGrpcs = new ListMiscellaneousComponentTypeGrpc();
-            _FilteredMiscellaneousComponentTypeGrpcs = new ListMiscellaneousComponentTypeGrpc();
-
             // Main
             _FileNameGrpcs = new ListFileNameGrpc();
             _FilteredFileNameGrpcs = new ListFileNameGrpc();
 
             // Components
+            _CompositeComponentGrpcs = new ListCompositeComponentGrpc();
+            _FilteredCompositeComponentGrpcs = new ListCompositeComponentGrpc();
+
             _MiscellaneousComponentGrpcs = new ListMiscellaneousComponentGrpc();
             _FilteredMiscellaneousComponentGrpcs = new ListMiscellaneousComponentGrpc();
 

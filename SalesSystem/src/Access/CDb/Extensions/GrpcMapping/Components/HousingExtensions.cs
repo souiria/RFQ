@@ -2,7 +2,7 @@
 {
     public static class HousingExtensions
     {
-        public static HousingGrpc FromDb(this DbHousing entity)
+        public static HousingGrpc FromEntity(this DbHousing entity)
         {
             if (entity == null)
             {
@@ -16,18 +16,11 @@
 
             return grpc;
         }
-        public static DbHousing ToDb(this HousingGrpc grpc)
+        public static void ToEntity(this HousingGrpc grpc, DbHousing entity)
         {
-            if (grpc == null)
-            {
-                throw new ArgumentNullException(nameof(grpc), "GRPC object cannot be null.");
-            }
-
-            DbHousing entity = new DbHousing();
             entity.Id = Guid.Parse(grpc.Id);
             entity.Description = grpc.Description;
             entity.RowCount = grpc.RowCount ?? 1;
-            return entity;
         }
     }
 }

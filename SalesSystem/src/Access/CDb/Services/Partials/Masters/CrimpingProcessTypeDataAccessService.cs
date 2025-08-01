@@ -1,4 +1,7 @@
-﻿namespace CDb.Services
+﻿using CDb.CQRS.Command.Masters.CrimpingProcessType;
+using CDb.CQRS.Query.Masters.CrimpingProcessType;
+
+namespace CDb.Services
 {
     public partial class CDbAccessService : ICDbAccessService
     {

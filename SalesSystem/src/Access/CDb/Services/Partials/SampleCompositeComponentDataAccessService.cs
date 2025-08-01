@@ -22,7 +22,7 @@
             greenCable.Length = 100;
             greenCable.Color = ColorType.G;
 
-            CompositeComponentGrpc greenCableGrpc = CompositeComponentExtensions.FromDb(greenCable);
+            CompositeComponentGrpc greenCableGrpc = CompositeComponentExtensions.FromEntity(greenCable);
             compositeComponent.CompositeComponentGrpcs.Add(greenCableGrpc);
 
             // A clip component
@@ -45,7 +45,7 @@
             clipComponent.ClipOrientationEnd = 180;
             clipComponent.AdditionalInformation = "This is a test clip component.";
 
-            CompositeComponentGrpc clipComponentGrpc = CompositeComponentExtensions.FromDb(clipComponent);
+            CompositeComponentGrpc clipComponentGrpc = CompositeComponentExtensions.FromEntity(clipComponent);
             compositeComponent.CompositeComponentGrpcs.Add(clipComponentGrpc);
 
             return compositeComponent;

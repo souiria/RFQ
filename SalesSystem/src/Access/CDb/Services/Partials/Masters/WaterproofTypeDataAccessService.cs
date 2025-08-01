@@ -1,4 +1,7 @@
-﻿namespace CDb.Services
+﻿using CDb.CQRS.Command.Masters.WaterproofType;
+using CDb.CQRS.Query.Masters.WaterproofType;
+
+namespace CDb.Services
 {
     public partial class CDbAccessService : ICDbAccessService
     {

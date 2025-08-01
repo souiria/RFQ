@@ -5,44 +5,44 @@
         [Description("Unknown")]
         Unknown = 0,
         [Description("CLIP")]
-        Clip,
+        Clip = 1,
         [Description("CONN")]
-        Connector,
+        Connector = 2,
         [Description("COV")]
-        Cover,
+        Cover = 3,
         [Description("EYE")]
-        Eyelet,
+        Eyelet = 4,
         [Description("FUSE")]
-        Fuse,
+        Fuse = 5,
         [Description("HSG")]
-        Housing,
+        Housing = 6,
         [Description("TERM")]
-        Terminal,
+        Terminal = 7,
         [Description("WIRE")]
-        Wire,
+        Wire = 8,
         [Description("CMPT")]
-        MiscellaneousComponent,
+        MiscellaneousComponent = 9,
         [Description("REL")]
-        Relay,
+        Relay = 10,
         [Description("DIOD")]
-        Diode,
+        Diode = 11,
         [Description("GROM")]
-        Grommet,
+        Grommet = 12,
         [Description("PLUG")]
-        Plug,
+        Plug = 13,
         [Description("CVG")]
-        WireProtection,
+        WireProtection = 14,
         [Description("SEAL")]
-        Seal,
+        Seal = 15,
         [Description("HSHS")]
-        Sleeve,
+        Sleeve = 16,
         [Description("PRT")]
-        Shield,
+        Shield = 17,
         [Description("SBAY")]
-        SubAssembly,
+        SubAssembly = 18,
         [Description("SPT")]
-        Support,
+        Support = 19,
         [Description("JCAB")]
-        Cable,
+        Cable = 20,
     }
 }

@@ -2,7 +2,7 @@
 {
     public static class ShieldExtensions
     {
-        public static ShieldGrpc FromDb(this DbShield entity)
+        public static ShieldGrpc FromEntity(this DbShield entity)
         {
             if (entity == null)
             {
@@ -17,19 +17,12 @@
 
             return grpc;
         }
-        public static DbShield ToDb(this ShieldGrpc grpc)
+        public static void ToEntity(this ShieldGrpc grpc, DbShield entity)
         {
-            if (grpc == null)
-            {
-                throw new ArgumentNullException(nameof(grpc), "GRPC object cannot be null.");
-            }
-
-            DbShield entity = new DbShield();
             entity.Id = Guid.Parse(grpc.Id);
             entity.Description = grpc.Description;
             entity.AdditionalInformation = grpc.AdditionalInformation;
             entity.Color = (ColorType)(grpc.Color ?? 0);
-            return entity;
         }
     }
 }

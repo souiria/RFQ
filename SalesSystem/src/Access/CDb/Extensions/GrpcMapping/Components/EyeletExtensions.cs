@@ -2,7 +2,7 @@
 {
     public static class EyeletExtensions
     {
-        public static EyeletGrpc FromDb(this DbEyelet entity)
+        public static EyeletGrpc FromEntity(this DbEyelet entity)
         {
             if (entity == null)
             {
@@ -22,14 +22,8 @@
 
             return grpc;
         }
-        public static DbEyelet ToDb(this EyeletGrpc grpc)
+        public static void ToEntity(this EyeletGrpc grpc, DbEyelet entity)
         {
-            if (grpc == null)
-            {
-                throw new ArgumentNullException(nameof(grpc), "GRPC object cannot be null.");
-            }
-
-            DbEyelet entity = new DbEyelet();
             entity.Id = Guid.Parse(grpc.Id);
             entity.StudSize = grpc.StudSize.ToDecimal();
             entity.Thickness = grpc.Thickness.ToDecimal();
@@ -39,7 +33,6 @@
             entity.Family = grpc.Family;
             entity.AdditionalInformation = grpc.AdditionalInformation;
             entity.PlatingType = (PlatingType)(grpc.PlatingType ?? 0);
-            return entity;
         }
     }
 }

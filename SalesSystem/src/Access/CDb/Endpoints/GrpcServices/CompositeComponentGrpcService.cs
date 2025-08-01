@@ -2,54 +2,7 @@
 {
     public partial class CDbGrpcService : CDbService.CDbServiceBase
     {
-        public override async Task<CDbCrudGrpcResponse> CreateCompositeComponentGrpc(CompositeComponentGrpcRequest request, ServerCallContext context)
-        {
-            if (request == null || request.GrpcRequestParameter == null)
-            {
-                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
-                throw new RpcException(status);
-            }
 
-            RequestType requestType = RequestType.None;
-
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
-            {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
-            }
-            else
-            {
-                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
-                throw new RpcException(status);
-            }
-
-            if (requestType != RequestType.Create)
-            {
-                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for creating clip types.");
-                throw new RpcException(status);
-            }
-
-            if (request.CompositeComponentGrpcsToCreate == null || request.CompositeComponentGrpcsToCreate.Count == 0)
-            {
-                Status status = new Status(StatusCode.InvalidArgument, "No clip types to add.");
-                throw new RpcException(status);
-            }
-
-            CDbCrudGrpcResponse responseMessage = new CDbCrudGrpcResponse();
-            CancellationToken cancellationToken = context.CancellationToken;
-            ListCompositeComponentGrpc response = await _CDbAccessService.CreateCompositeComponents(request, cancellationToken);
-            if (response == null || response.CompositeComponentGrpcs.Count == 0)
-            {
-                responseMessage.Message = "No components types created.";
-                responseMessage.SaveSuccess = false;
-            }
-            else
-            {
-                responseMessage.Message = $"{response.CompositeComponentGrpcs.Count} components types created successfully.";
-                responseMessage.SaveSuccess = true;
-            }
-
-            return responseMessage;
-        }
         public override async Task<ListCompositeComponentGrpc> ReadCompositeComponentGrpc(CompositeComponentGrpcRequest request, ServerCallContext context)
         {
             if (request == null || request.GrpcRequestParameter == null)
@@ -106,6 +59,54 @@
                 }
             }
         }
+        public override async Task<CDbCrudGrpcResponse> CreateCompositeComponentGrpc(CompositeComponentGrpcRequest request, ServerCallContext context)
+        {
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            if (requestType != RequestType.Create)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for creating clip types.");
+                throw new RpcException(status);
+            }
+
+            if (request.CompositeComponentGrpcsToCreate == null || request.CompositeComponentGrpcsToCreate.Count == 0)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "No clip types to add.");
+                throw new RpcException(status);
+            }
+
+            CDbCrudGrpcResponse responseMessage = new CDbCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            bool response = await _CDbAccessService.CreateCompositeComponents(request, cancellationToken);
+            if (response)
+            {
+                responseMessage.Message = $"{request.CompositeComponentGrpcsToCreate.Count} components types created successfully.";
+                responseMessage.SaveSuccess = true;
+            }
+            else
+            {
+                responseMessage.Message = "No components types created.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
         public override async Task<CDbCrudGrpcResponse> UpdateCompositeComponentGrpc(CompositeComponentGrpcRequest request, ServerCallContext context)
         {
             if (request == null || request.GrpcRequestParameter == null)
@@ -139,17 +140,17 @@
 
             CDbCrudGrpcResponse responseMessage = new CDbCrudGrpcResponse();
             CancellationToken cancellationToken = context.CancellationToken;
-            ListCompositeComponentGrpc response = await _CDbAccessService.UpdateCompositeComponents(request, cancellationToken);
+            bool response = await _CDbAccessService.UpdateCompositeComponents(request, cancellationToken);
 
-            if (response == null || response.CompositeComponentGrpcs.Count == 0)
+            if (response)
             {
-                responseMessage.Message = "No composite component types updated.";
-                responseMessage.SaveSuccess = false;
+                responseMessage.Message = $"{request.CompositeComponentGrpcsToUpdate.Count} composite component types updated successfully.";
+                responseMessage.SaveSuccess = true;
             }
             else
             {
-                responseMessage.Message = $"{response.CompositeComponentGrpcs.Count} composite component types updated successfully.";
-                responseMessage.SaveSuccess = true;
+                responseMessage.Message = "No composite component types updated.";
+                responseMessage.SaveSuccess = false;
             }
 
             return responseMessage;
@@ -194,14 +195,9 @@
             allCompositeComponents = await _CDbAccessService.ReadAllCompositeComponents(cancellationToken);
             int startCount = allCompositeComponents.CompositeComponentGrpcs.Count;
 
-            ListCompositeComponentGrpc response = await _CDbAccessService.DeleteCompositeComponents(request, cancellationToken);
+            bool response = await _CDbAccessService.DeleteCompositeComponents(request, cancellationToken);
 
-            if (response == null || response.CompositeComponentGrpcs.Count == 0)
-            {
-                deleteResponseMessage.Message = "No composite component types deleted.";
-                deleteResponseMessage.SaveSuccess = false;
-            }
-            else
+            if (response)
             {
                 allCompositeComponents = await _CDbAccessService.ReadAllCompositeComponents(cancellationToken);
                 int endCount = allCompositeComponents.CompositeComponentGrpcs.Count;
@@ -215,6 +211,11 @@
                     deleteResponseMessage.Message = $"{deleteCount} composite component types deleted successfully.";
                     deleteResponseMessage.SaveSuccess = true;
                 }
+            }
+            else
+            {
+                deleteResponseMessage.Message = "No composite component types deleted.";
+                deleteResponseMessage.SaveSuccess = false;
             }
 
             return deleteResponseMessage;

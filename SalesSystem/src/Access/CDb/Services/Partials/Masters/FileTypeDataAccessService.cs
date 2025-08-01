@@ -1,4 +1,7 @@
-﻿namespace CDb.Services
+﻿using CDb.CQRS.Command.Masters.FileType;
+using CDb.CQRS.Query.Masters.FileType;
+
+namespace CDb.Services
 {
     public partial class CDbAccessService : ICDbAccessService
     {

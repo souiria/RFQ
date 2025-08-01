@@ -2,7 +2,7 @@
 {
     public static class SealExtensions
     {
-        public static SealGrpc FromDb(this DbSeal entity)
+        public static SealGrpc FromEntity(this DbSeal entity)
         {
             if (entity == null)
             {
@@ -17,19 +17,12 @@
 
             return grpc;
         }
-        public static DbSeal ToDb(this SealGrpc grpc)
+        public static void ToEntity(this SealGrpc grpc, DbSeal entity)
         {
-            if (grpc == null)
-            {
-                throw new ArgumentNullException(nameof(grpc), "GRPC object cannot be null.");
-            }
-
-            DbSeal entity = new DbSeal();
             entity.Id = Guid.Parse(grpc.Id);
             entity.Description = grpc.Description;
             entity.Diameter = grpc.Diameter.ToDecimal();
             entity.Color = (ColorType)(grpc.Color ?? 0);
-            return entity;
         }
     }
 }

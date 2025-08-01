@@ -2,7 +2,7 @@
 {
     public static class DiodeExtensions
     {
-        public static DiodeGrpc FromDb(this DbDiode entity)
+        public static DiodeGrpc FromEntity(this DbDiode entity)
         {
             if (entity == null)
             {
@@ -18,20 +18,13 @@
 
             return grpc;
         }
-        public static DbDiode ToDb(this DiodeGrpc grpc)
+        public static void ToEntity(this DiodeGrpc grpc, DbDiode entity)
         {
-            if (grpc == null)
-            {
-                throw new ArgumentNullException(nameof(grpc), "GRPC object cannot be null.");
-            }
-
-            DbDiode entity = new DbDiode();
             entity.Id = Guid.Parse(grpc.Id);
             entity.Amperage = grpc.Amperage.ToDecimal();
             entity.Description = grpc.Description;
             entity.AdditionalInformation = grpc.AdditionalInformation;
             entity.Color = (ColorType)(grpc.Color ?? 0);
-            return entity;
         }
     }
 }
