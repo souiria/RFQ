@@ -1,4 +1,4 @@
-using RfqManager.Services;
+using RfqModule.Services;
 
 class Program
 {

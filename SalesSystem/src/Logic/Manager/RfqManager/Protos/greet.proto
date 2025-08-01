@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "RfqManager";
+option csharp_namespace = "RfqModule";
 
 package greet;
 

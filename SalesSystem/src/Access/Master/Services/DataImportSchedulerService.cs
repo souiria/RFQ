@@ -15,20 +15,10 @@
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-       
             _Logger.GenericLogInformation("Background service is running");
           
             await PopulateGlobalDataAsync(stoppingToken);
             await DailyWorker(23, 30, 00, async () => await PopulateGlobalDataAsync(stoppingToken), stoppingToken);
-
-            //using (PeriodicTimer timer = new PeriodicTimer(TimeSpan.FromSeconds(30)))
-            //{
-            //    while (await timer.WaitForNextTickAsync(stoppingToken))
-            //    {
-            //        // Your scheduled work here
-            //        await PopulateGlobalDataAsync(stoppingToken);
-            //    }
-            //}
         }
 
         async Task<bool> PopulateGlobalDataAsync(CancellationToken stoppingToken)
