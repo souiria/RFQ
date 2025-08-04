@@ -66,10 +66,8 @@
         // related fields
         public bool IsReplacement
         { get; set; }
-        public Guid? ReplacedComponentId
-        { get; set; }
-        public DbComponent? ReplacedComponent
-        { get; set; }
+        public ICollection<DbComponent> ReplacedComponents
+        { get; init; }
         // if no TemperatureRangeId then TemperatureLow and TemperatureHigh are used
         public int TemperatureLow
         { get; set; }
@@ -127,8 +125,6 @@
             Pilot = null;
             DbUpdatedPv = null;
             IsReplacement = false;
-            ReplacedComponentId = null;
-            ReplacedComponent = null;
             TemperatureLow = 0;
             TemperatureHigh = 0;
             TemperatureRangeId = null;
@@ -143,6 +139,7 @@
             //ValidatedById = Guid.Empty;
             //Validated = DateTime.UtcNow;
 
+            ReplacedComponents = new List<DbComponent>();
             FileNames = new List<DbFileName>();
             Contacts = new List<DbPerson>();
             Partners = new List<DbPartner>();

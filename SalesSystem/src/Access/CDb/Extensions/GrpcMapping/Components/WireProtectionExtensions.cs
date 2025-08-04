@@ -2,7 +2,7 @@
 {
     public static class WireProtectionExtensions
     {
-        public static WireProtectionGrpc FromDb(this DbWireProtection entity)
+        public static WireProtectionGrpc FromEntity(this DbWireProtection entity)
         {
             if (entity == null)
             {
@@ -21,14 +21,8 @@
 
             return grpc;
         }
-        public static DbWireProtection ToDb(this WireProtectionGrpc grpc)
+        public static void ToEntity(this WireProtectionGrpc grpc, DbWireProtection entity)
         {
-            if (grpc == null)
-            {
-                throw new ArgumentNullException(nameof(grpc), "GRPC object cannot be null.");
-            }
-
-            DbWireProtection entity = new DbWireProtection();
             entity.Id = Guid.Parse(grpc.Id);
             entity.WireProtectionTypeId = Guid.Parse(grpc.WireProtectionTypeId);
             entity.Description = grpc.Description;
@@ -37,8 +31,6 @@
             entity.Specification = grpc.Specification;
             entity.AdditionalInformation = grpc.AdditionalInformation;
             entity.Color = (ColorType)(grpc.Color ?? 0);
-
-            return entity;
         }
     }
 }

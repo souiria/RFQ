@@ -10,7 +10,7 @@
                 .HasOne(c => c.WireProtectionType)
                 .WithMany()
                 .HasForeignKey(c => c.WireProtectionTypeId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.Property(c => c.Description)
                 .IsRequired()

@@ -2,7 +2,7 @@
 {
     public static class SupportExtensions
     {
-        public static SupportGrpc FromDb(this DbSupport entity)
+        public static SupportGrpc FromEntity(this DbSupport entity)
         {
             if (entity == null)
             {
@@ -17,19 +17,12 @@
 
             return grpc;
         }
-        public static DbSupport ToDb(this SupportGrpc grpc)
+        public static void ToEntity(this SupportGrpc grpc, DbSupport entity)
         {
-            if (grpc == null)
-            {
-                throw new ArgumentNullException(nameof(grpc), "GRPC object cannot be null.");
-            }
-
-            DbSupport entity = new DbSupport();
             entity.Id = Guid.Parse(grpc.Id);
             entity.Description = grpc.Description;
             entity.AdditionalInformation = grpc.AdditionalInformation;
             entity.Color = (ColorType)(grpc.Color ?? 0);
-            return entity;
         }
     }
 }

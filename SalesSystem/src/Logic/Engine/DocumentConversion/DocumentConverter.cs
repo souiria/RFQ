@@ -1,11 +1,66 @@
 ﻿namespace DocumentConversion
 {
-    static class DocumentConverter
+    public static class DocumentConverter
     {
-        public static DsiModel ConvertDsiFile(byte[] file)
+        public static DsiAggregate ConvertDsiFile(byte[] file)
         {
-            DsiModel dsiModel = DSIFileConverter.CreateDsiModel(file);
+            DsiAggregate dsiModel = DSIFileConverter.CreateDsiModel(file);
             return dsiModel;
+        }
+
+        /// <summary>
+        /// Method to convert the Nissan and PSA excel BOM files
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns>customerNumbers in the file</returns>
+        public static IEnumerable<CrossReferenceDto> ConvertExcelFile(byte[] file)
+        {
+            IEnumerable<CrossReferenceDto> crossReferences = PartSearchConverter.ConvertExcelFile(file);
+            return crossReferences;
+        }
+
+        /// <summary>
+        /// Method to convert the Ford XML BOM files
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns>customerNumbers in the file</returns>
+        public static IEnumerable<CrossReferenceDto> ConvertFordXMLFile(byte[] file)
+        {
+            IEnumerable<CrossReferenceDto> crossReferences = PartSearchConverter.ConvertFordXMLFile(file);
+            return crossReferences;
+        }
+
+        /// <summary>
+        /// Method to convert the Toyota XML BOM files
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns>customerNumbers in the file</returns>
+        public static IEnumerable<CrossReferenceDto> ConvertToyotaXMLFile(byte[] file)
+        {
+            IEnumerable<CrossReferenceDto> crossReferences = PartSearchConverter.ConvertToyotaXMLFile(file);
+            return crossReferences;
+        }
+
+        /// <summary>
+        /// Method to convert the Renault CSV BOM files
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns>customerNumbers in the file</returns>
+        public static IEnumerable<CrossReferenceDto> ConvertRenaultCSVFile(byte[] file)
+        {
+            IEnumerable<CrossReferenceDto> crossReferences = PartSearchConverter.ConvertRenaultCSVFile(file);
+            return crossReferences;
+        }
+
+        /// <summary>
+        /// Method to convert the Ford CSV BOM files
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns>customerNumbers and quantities in the file</returns>
+        public static IEnumerable<FordCsvDto> ConvertFordCSVFile(byte[] file)
+        {
+            IEnumerable<FordCsvDto> crossReferences = PartSearchConverter.ConvertFordCSVFile(file);
+            return crossReferences;
         }
     }
 }

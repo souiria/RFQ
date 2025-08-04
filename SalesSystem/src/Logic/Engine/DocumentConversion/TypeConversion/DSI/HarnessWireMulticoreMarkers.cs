@@ -2,11 +2,11 @@
 {
     public static class HarnessWireMulticoreMarkers
     {
-        public static IEnumerable<WireMulticoreMarkerModel> GetHarnessWireMulticoreMarkers(IEnumerable<string> lines, string splitter)
+        public static IEnumerable<WireMulticoreMarkerDto> GetHarnessWireMulticoreMarkers(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            WireMulticoreMarkerModel model = new WireMulticoreMarkerModel();
-            List<WireMulticoreMarkerModel> collection = new List<WireMulticoreMarkerModel>();
+            WireMulticoreMarkerDto model = new WireMulticoreMarkerDto();
+            List<WireMulticoreMarkerDto> collection = new List<WireMulticoreMarkerDto>();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);

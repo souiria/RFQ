@@ -2,11 +2,11 @@
 {
     public static class HarnessCircuitInformation
     {
-        public static IEnumerable<CompositeDetailModel> GetHarnessCircuitInformantion(IEnumerable<string> lines, string splitter)
+        public static IEnumerable<CompositeDetailDto> GetHarnessCircuitInformantion(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            List<CompositeDetailModel> collection = new List<CompositeDetailModel>();
-            CompositeDetailModel model = new CompositeDetailModel();
+            List<CompositeDetailDto> collection = new List<CompositeDetailDto>();
+            CompositeDetailDto model = new CompositeDetailDto();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator , StringSplitOptions.None);

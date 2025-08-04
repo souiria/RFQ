@@ -1,17 +1,18 @@
-﻿using DocumentConversion.TypeConversion.DSI;
-using SharedModels.DocumentConverter.DSI;
+﻿using DocumentConversion;
+using SharedModels.DocumentConverter.DSI.Aggregates;
+using SharedModels.DocumentConverter.DSI.DTOs;
 
 namespace DocumentConverterEngine.Tests
 {
     public class DocumentConversionIntegrationTests
     {
         byte[] _File;
-        DsiModel _Model;
+        DsiAggregate _Model;
         [SetUp]
         public void Setup()
         {
             _File = File.ReadAllBytes("../../../TestData.dsi");
-            _Model = DSIFileConverter.CreateDsiModel(_File);
+            _Model = DocumentConverter.ConvertDsiFile(_File);
         }
 
         [Test]
@@ -116,7 +117,7 @@ namespace DocumentConverterEngine.Tests
 
             NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(48);
             Assert.That(_Model.CompositeDetailList.Count, equalConstraint);
-            CompositeDetailModel model = _Model.CompositeDetailList.Last();
+            CompositeDetailDto model = _Model.CompositeDetailList.Last();
             equalConstraint = Is.EqualTo(48);
             Assert.That(_Model.CompositeDetailList.Count, equalConstraint);
             equalConstraint = Is.EqualTo("T2L2-14A005-WC");
@@ -203,7 +204,7 @@ namespace DocumentConverterEngine.Tests
 
             NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(1502);
             Assert.That(_Model.BranchConfigurationList.Count, equalConstraint);
-            BranchConfigurationModel model = _Model.BranchConfigurationList.Last();
+            BranchConfigurationDto model = _Model.BranchConfigurationList.Last();
             equalConstraint = Is.EqualTo("N-350");
             Assert.That(model.StartNode, equalConstraint);
             equalConstraint = Is.EqualTo("");
@@ -241,7 +242,7 @@ namespace DocumentConverterEngine.Tests
 
             NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(1200);
             Assert.That(_Model.WireSpecificationList.Count, equalConstraint);
-            WireSpecificationModel model = _Model.WireSpecificationList.Last();
+            WireSpecificationDto model = _Model.WireSpecificationList.Last();
             equalConstraint = Is.EqualTo("CYE05B");
             Assert.That(model.WireName, equalConstraint);
             equalConstraint = Is.EqualTo("CA#WL");
@@ -315,7 +316,7 @@ namespace DocumentConverterEngine.Tests
 
             NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(5189);
             Assert.That(_Model.ComponentList.Count, equalConstraint);
-            ComponentModel model = _Model.ComponentList.Last();
+            ComponentDto model = _Model.ComponentList.Last();
             equalConstraint = Is.EqualTo("");
             Assert.That(model.NodeName, equalConstraint);
             equalConstraint = Is.EqualTo("");
@@ -387,7 +388,7 @@ namespace DocumentConverterEngine.Tests
 
             NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(1076);
             Assert.That(_Model.BranchInsulationList.Count, equalConstraint);
-            BranchInsulationModel model = _Model.BranchInsulationList.Last();
+            BranchInsulationDto model = _Model.BranchInsulationList.Last();
             equalConstraint = Is.EqualTo("N-636");
             Assert.That(model.StartNode, equalConstraint);
             equalConstraint = Is.EqualTo("");
@@ -482,7 +483,7 @@ namespace DocumentConverterEngine.Tests
 
             NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(228);
             Assert.That(_Model.MulticoreSpecificationList.Count, equalConstraint);
-            MulticoreSpecificationModel model = _Model.MulticoreSpecificationList.Last();
+            MulticoreSpecificationDto model = _Model.MulticoreSpecificationList.Last();
             equalConstraint = Is.EqualTo("T2-VDB31W");
             Assert.That(model.MulticoreName, equalConstraint);
             equalConstraint = Is.EqualTo(true);
@@ -569,7 +570,7 @@ namespace DocumentConverterEngine.Tests
 
             NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(120);
             Assert.That(_Model.CompositeOptionList.Count, equalConstraint);
-            CompositeOptionModel model = _Model.CompositeOptionList.Last();
+            CompositeOptionDto model = _Model.CompositeOptionList.Last();
             equalConstraint = Is.EqualTo("A3BAC");
             Assert.That(model.OptionName, equalConstraint);
             equalConstraint = Is.EqualTo("HEADLAMP OPERATION LHD RIGHT J");
@@ -583,7 +584,7 @@ namespace DocumentConverterEngine.Tests
 
             NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(8);
             Assert.That(_Model.WireThroughNodeList.Count, equalConstraint);
-            WireThroughNodeModel model = _Model.WireThroughNodeList.Last();
+            WireThroughNodeDto model = _Model.WireThroughNodeList.Last();
             equalConstraint = Is.EqualTo("CYE05B");
             Assert.That(model.WireName, equalConstraint);
             equalConstraint = Is.EqualTo("CA#WL");
@@ -605,7 +606,7 @@ namespace DocumentConverterEngine.Tests
 
             NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(1);
             Assert.That(_Model.BranchInsulationThroughNodeList.Count, equalConstraint);
-            BranchInsulationThroughNodeModel model = _Model.BranchInsulationThroughNodeList.Last();
+            BranchInsulationThroughNodeDto model = _Model.BranchInsulationThroughNodeList.Last();
             equalConstraint = Is.EqualTo("237");
             Assert.That(model.PieceCode, equalConstraint);
             equalConstraint = Is.EqualTo(1);
@@ -654,7 +655,7 @@ namespace DocumentConverterEngine.Tests
             {
                 NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(1);
                 Assert.That(_Model.HarnessScopeList.Count, equalConstraint);
-                HarnessScopeModel model = _Model.HarnessScopeList.Last();
+                HarnessScopeDto model = _Model.HarnessScopeList.Last();
                 equalConstraint = Is.EqualTo("T2L2-14A005-ZC");
                 Assert.That(model.HarnessName1, equalConstraint);
                 equalConstraint = Is.EqualTo("171");

@@ -17,7 +17,7 @@
             builder.HasOne(x => x.Component)
                 .WithMany(x => x.PartNumbers)
                 .HasForeignKey(x => x.ComponentId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

@@ -1,6 +1,6 @@
 namespace CDb.Data.Model.Masters
 {
-    public class DbFileType
+    public class DbFileType : IAggregateRoot
     {
         public Guid Id
         { get; set; }

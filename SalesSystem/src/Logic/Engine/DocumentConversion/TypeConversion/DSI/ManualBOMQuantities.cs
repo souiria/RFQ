@@ -2,11 +2,11 @@
 {
     public static class ManualBOMQuantities
     {
-        public static IEnumerable<ManualBomQuantityModel> GetManualBOMQuantities(IEnumerable<string> lines, string splitter)
+        public static IEnumerable<ManualBomQuantityDto> GetManualBOMQuantities(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            ManualBomQuantityModel model = new ManualBomQuantityModel();
-            List<ManualBomQuantityModel> collection = new List<ManualBomQuantityModel>();
+            ManualBomQuantityDto model = new ManualBomQuantityDto();
+            List<ManualBomQuantityDto> collection = new List<ManualBomQuantityDto>();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);

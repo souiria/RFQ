@@ -2,7 +2,7 @@
 {
     public static class PlugExtensions
     {
-        public static PlugGrpc FromDb(this DbPlug entity)
+        public static PlugGrpc FromEntity(this DbPlug entity)
         {
             if (entity == null)
             {
@@ -17,19 +17,12 @@
 
             return grpc;
         }
-        public static DbPlug ToDb(this PlugGrpc grpc)
+        public static void ToEntity(this PlugGrpc grpc, DbPlug entity)
         {
-            if (grpc == null)
-            {
-                throw new ArgumentNullException(nameof(grpc), "GRPC object cannot be null.");
-            }
-
-            DbPlug entity = new DbPlug();
             entity.Id = Guid.Parse(grpc.Id);
             entity.Description = grpc.Description;
             entity.Diameter = grpc.Diameter.ToDecimal();
             entity.Color = (ColorType)(grpc.Color ?? 0);
-            return entity;
         }
     }
 }

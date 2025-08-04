@@ -10,19 +10,19 @@
                 .HasOne(c => c.TerminalFamily)
                 .WithMany()
                 .HasForeignKey(c => c.TerminalFamilyId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder
                 .HasOne(c => c.TerminalSize)
                 .WithMany()
                 .HasForeignKey(c => c.TerminalSizeId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder
                 .HasOne(c => c.WireType)
                 .WithMany()
                 .HasForeignKey(c => c.WireTypeId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.Property(c => c.MatingType)
                 .IsRequired()

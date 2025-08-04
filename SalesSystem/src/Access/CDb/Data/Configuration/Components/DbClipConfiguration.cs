@@ -9,7 +9,13 @@
                 .HasOne(c => c.ClipType)
                 .WithMany()
                 .HasForeignKey(c => c.ClipTypeId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder
+                .Property(c => c.Length)
+                .IsRequired()
+                .HasDefaultValue(0.0m)
+                .HasColumnType("decimal(8, 1)");
 
             builder.Property(c => c.TieType)
                 .IsRequired();

@@ -8,7 +8,7 @@
             builder.HasKey(f => f.Id);
             builder.Property(f => f.Code)
                 .IsRequired()
-                .HasMaxLength(2);
+                .HasMaxLength(32);
             builder.HasIndex(f => f.Code)
                 .IsUnique();
             builder.Property(f => f.Description)

@@ -18,13 +18,24 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="CQRS\Command\Component\" />
     <Folder Include="Data\Repository\" />
+    <Folder Include="Migrations\" />
+    <Folder Include="Services\Partials\Components\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
     <PackageReference Include="Grpc.AspNetCore.Web" Version="2.71.0" />
     <PackageReference Include="IDesign.Analyzers" Version="1.0.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.7" />
+    <PackageReference Include="Scrutor" Version="6.1.0" />
     <PackageReference Include="Seq.Extensions.Logging" Version="8.0.0" />
   </ItemGroup>
 

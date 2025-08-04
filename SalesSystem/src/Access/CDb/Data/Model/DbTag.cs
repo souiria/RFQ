@@ -1,6 +1,6 @@
 ﻿namespace CDb.Data.Model
 {
-    public class DbTag
+    public class DbTag : IAggregateRoot
     {
         public Guid Id
         { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace CDb.Data.Model
 {
-    public class DbPartNumber
+    public class DbPartNumber : IAggregateRoot
     {
         public Guid Id
         { get; set; }
