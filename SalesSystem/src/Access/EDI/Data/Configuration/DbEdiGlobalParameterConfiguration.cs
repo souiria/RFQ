@@ -5,7 +5,7 @@
         public void Configure(EntityTypeBuilder<DbEdiGlobalParameter> builder)
         {
             builder.ToTable("EdiGlobalParameter", "dbo");
-            builder.HasNoKey();
+            builder.HasKey(x => x.ParameterName).HasName("PK_EdiGlobalParameter").IsClustered();
         }
     }
 }

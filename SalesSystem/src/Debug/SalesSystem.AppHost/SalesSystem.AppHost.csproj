@@ -21,6 +21,7 @@
     <ProjectReference Include="..\..\Access\Rfq\Rfq.csproj" />
     <ProjectReference Include="..\..\Client\SalesSystem.ApiService\SalesSystem.ApiService.csproj" />
     <ProjectReference Include="..\..\Client\SalesSystem.Rfq\SalesSystem.Rfq.csproj" />
+    <ProjectReference Include="..\..\Logic\Manager\EdiModule\EdiModule.csproj" />
     <ProjectReference Include="..\..\Logic\Manager\RfqManager\RfqModule.csproj" />
   </ItemGroup>
 
