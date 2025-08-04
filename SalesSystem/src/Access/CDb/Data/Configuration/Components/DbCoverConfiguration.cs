@@ -9,7 +9,13 @@
                 .HasOne(c => c.CoverType)
                 .WithMany()
                 .HasForeignKey(c => c.CoverTypeId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder
+                .Property(c => c.Diameter)
+                .IsRequired()
+                .HasDefaultValue(0.0m)
+                .HasColumnType("decimal(8, 1)");
 
             builder.Property(c => c.Width)
                 .IsRequired()

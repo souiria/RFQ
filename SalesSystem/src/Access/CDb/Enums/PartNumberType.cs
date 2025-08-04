@@ -2,6 +2,8 @@
 {
     public enum PartNumberType
     {
+        [Description("Unknown")]
+        UNKNOWN = 0,
         [Description("Supplier PN")]
         SUPPLIER_PN,
         [Description("Customer PN")]

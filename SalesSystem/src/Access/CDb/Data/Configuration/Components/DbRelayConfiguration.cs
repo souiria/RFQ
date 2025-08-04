@@ -9,7 +9,8 @@
             builder
                 .Property(c => c.Amperage)
                 .IsRequired()
-                .HasDefaultValue(0.0m);
+                .HasDefaultValue(0.0m)
+                .HasColumnType("decimal(8,1)");
 
             builder
                 .Property(c => c.Description)

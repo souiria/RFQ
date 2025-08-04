@@ -1,7 +1,7 @@
 ﻿namespace CDb.Data.Model.Masters
 {
     [Index(nameof(Name), IsUnique = true)]
-    public class DbTerminalFamily
+    public class DbTerminalFamily : IAggregateRoot
     {
         public Guid Id
         { get; set; }
@@ -9,8 +9,6 @@
         { get; set; }
         public string Description
         { get; set; }
-        public ICollection<DbTerminalSize> Sizes
-        { get; init; }
         public ICollection<DbTerminal> Terminals
         { get; init; }
         public ICollection<DbConnector> Connectors
@@ -23,7 +21,6 @@
             Id = Guid.NewGuid();
             Name = string.Empty;
             Description = string.Empty;
-            Sizes = new HashSet<DbTerminalSize>();
             Terminals = new HashSet<DbTerminal>();
             Connectors = new HashSet<DbConnector>();
             IsActive = false;

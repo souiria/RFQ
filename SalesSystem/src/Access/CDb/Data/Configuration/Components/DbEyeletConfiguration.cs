@@ -9,7 +9,8 @@
             builder
                 .Property(c => c.StudSize)
                 .IsRequired()
-                .HasDefaultValue(0);
+                .HasDefaultValue(0.0m)
+                .HasColumnType("decimal(8,1)");
 
             builder
                 .Property(c => c.Thickness)

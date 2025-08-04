@@ -1,6 +1,6 @@
 namespace CDb.Data.Model.Masters
 {
-    public class DbMaterialType
+    public class DbMaterialType : IAggregateRoot
     {
         public Guid Id
         { get; set; }

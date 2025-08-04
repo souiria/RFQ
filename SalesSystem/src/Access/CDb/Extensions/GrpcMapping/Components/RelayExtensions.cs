@@ -2,7 +2,7 @@
 {
     public static class RelayExtensions
     {
-        public static RelayGrpc FromDb(this DbRelay entity)
+        public static RelayGrpc FromEntity(this DbRelay entity)
         {
             if (entity == null)
             {
@@ -18,20 +18,13 @@
 
             return grpc;
         }
-        public static DbRelay ToDb(this RelayGrpc grpc)
+        public static void ToEntity(this RelayGrpc grpc, DbRelay entity)
         {
-            if (grpc == null)
-            {
-                throw new ArgumentNullException(nameof(grpc), "GRPC object cannot be null.");
-            }
-
-            DbRelay entity = new DbRelay();
             entity.Id = Guid.Parse(grpc.Id);
             entity.Amperage = grpc.Amperage.ToDecimal();
             entity.Description = grpc.Description;
             entity.Specification = grpc.Specification;
             entity.Color = (ColorType)(grpc.Color ?? 0);
-            return entity;
         }
     }
 }

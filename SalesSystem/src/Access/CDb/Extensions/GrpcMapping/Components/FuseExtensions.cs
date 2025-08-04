@@ -2,7 +2,7 @@
 {
     public static class FuseExtensions
     {
-        public static FuseGrpc FromDb(this DbFuse entity)
+        public static FuseGrpc FromEntity(this DbFuse entity)
         {
             if (entity == null)
             {
@@ -19,21 +19,14 @@
 
             return grpc;
         }
-        public static DbFuse ToDb(this FuseGrpc grpc)
+        public static void ToEntity(this FuseGrpc grpc, DbFuse entity)
         {
-            if (grpc == null)
-            {
-                throw new ArgumentNullException(nameof(grpc), "GRPC object cannot be null.");
-            }
-
-            DbFuse entity = new DbFuse();
             entity.Id = Guid.Parse(grpc.Id);
             entity.FuseTypeId = Guid.Parse(grpc.FuseTypeId);
             entity.Amperage = grpc.Amperage.ToDecimal();
             entity.Description = grpc.Description;
             entity.AdditionalInformation = grpc.AdditionalInformation;
             entity.Color = (ColorType)(grpc.Color ?? 0);
-            return entity;
         }
     }
 }

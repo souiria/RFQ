@@ -2,7 +2,7 @@
 {
     public static class SleeveExtensions
     {
-        public static SleeveGrpc FromDb(this DbSleeve entity)
+        public static SleeveGrpc FromEntity(this DbSleeve entity)
         {
             if (entity == null)
             {
@@ -19,21 +19,14 @@
 
             return grpc;
         }
-        public static DbSleeve ToDb(this SleeveGrpc grpc)
+        public static void ToEntity(this SleeveGrpc grpc, DbSleeve entity)
         {
-            if (grpc == null)
-            {
-                throw new ArgumentNullException(nameof(grpc), "GRPC object cannot be null.");
-            }
-
-            DbSleeve entity = new DbSleeve();
             entity.Id = Guid.Parse(grpc.Id);
             entity.Description = grpc.Description;
             entity.Diameter = grpc.Diameter.ToDecimal();
             entity.Length = grpc.Length.ToDecimal();
             entity.WaterproofTypeId = Guid.Parse(grpc.WaterproofTypeId);
             entity.Color = (ColorType)(grpc.Color ?? 0);
-            return entity;
         }
     }
 }

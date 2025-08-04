@@ -2,7 +2,7 @@
 {
     public static class CableExtensions
     {
-        public static CableGrpc FromDb(this DbCable entity)
+        public static CableGrpc FromEntity(this DbCable entity)
         {
             if (entity == null)
             {
@@ -18,6 +18,14 @@
             grpc.IsShielded = entity.IsShielded;
 
             return grpc;
+        }
+        public static void ToEntity(this CableGrpc grpc, DbCable entity)
+        {
+            entity.Color = grpc.Color is null ? ColorType.X : (ColorType)grpc.Color;
+            entity.WireCount = grpc.WireCount ?? 0;
+            entity.WireCountCode = grpc.WireCountCode ?? "";
+            entity.Length = grpc.Length is null ? 0.0m : (decimal)grpc.Length;
+            entity.IsShielded = grpc.IsShielded ?? false;
         }
     }
 }

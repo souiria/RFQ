@@ -2,7 +2,7 @@
 {
     public static class CoverExtensions
     {
-        public static CoverGrpc FromDb(this DbCover entity)
+        public static CoverGrpc FromEntity(this DbCover entity)
         {
             if (entity == null)
             {
@@ -23,14 +23,8 @@
 
             return grpc;
         }
-        public static DbCover ToDb(this CoverGrpc grpc)
+        public static void ToEntity(this CoverGrpc grpc, DbCover entity)
         {
-            if (grpc == null)
-            {
-                throw new ArgumentNullException(nameof(grpc), "GRPC object cannot be null.");
-            }
-
-            DbCover entity = new DbCover();
             entity.Id = Guid.Parse(grpc.Id);
             entity.CoverTypeId = string.IsNullOrEmpty(grpc.CoverTypeId) ? null : Guid.Parse(grpc.CoverTypeId);
             entity.Diameter = grpc.Diameter.ToDecimal();
@@ -41,7 +35,6 @@
             entity.IsPreCut = grpc.IsPrecut ?? false;
             entity.AdditionalInformation = grpc.AdditionalInformation;
             entity.Color = (ColorType)(grpc.Color ?? 0);
-            return entity;
         }
     }
 }

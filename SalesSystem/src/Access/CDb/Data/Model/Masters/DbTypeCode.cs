@@ -1,6 +1,6 @@
 ﻿namespace CDb.Data.Model.Masters
 {
-    public class DbTypeCode
+    public class DbTypeCode : IAggregateRoot
     {
         public Guid Id
         { get; set; }

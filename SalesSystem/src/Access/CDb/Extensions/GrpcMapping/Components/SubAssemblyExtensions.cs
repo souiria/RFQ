@@ -2,7 +2,7 @@
 {
     public static class SubAssemblyExtensions
     {
-        public static SubAssemblyGrpc FromDb(this DbSubAssembly entity)
+        public static SubAssemblyGrpc FromEntity(this DbSubAssembly entity)
         {
             if (entity == null)
             {
@@ -20,14 +20,8 @@
 
             return grpc;
         }
-        public static DbSubAssembly ToDb(this SubAssemblyGrpc grpc)
+        public static void ToEntity(this SubAssemblyGrpc grpc, DbSubAssembly entity)
         {
-            if (grpc == null)
-            {
-                throw new ArgumentNullException(nameof(grpc), "GRPC object cannot be null.");
-            }
-
-            DbSubAssembly entity = new DbSubAssembly();
             entity.Id = Guid.Parse(grpc.Id);
             entity.Content = grpc.Content;
             entity.Function = grpc.Function;
@@ -35,7 +29,6 @@
             entity.TerminalFamilyId = string.IsNullOrEmpty(grpc.TerminalFamilyId) ? null : Guid.Parse(grpc.TerminalFamilyId);
             entity.TerminalSizeId = string.IsNullOrEmpty(grpc.TerminalSizeId) ? null : Guid.Parse(grpc.TerminalSizeId);
             entity.Color = (ColorType)(grpc.Color ?? 0);
-            return entity;
         }
     }
 }

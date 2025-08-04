@@ -2,7 +2,7 @@
 {
     public static class ConnectorExtensions
     {
-        public static ConnectorGrpc FromDb(this DbConnector entity)
+        public static ConnectorGrpc FromEntity(this DbConnector entity)
         {
             if (entity == null)
             {
@@ -24,14 +24,8 @@
 
             return grpc;
         }
-        public static DbConnector ToDb(this ConnectorGrpc grpc)
+        public static void ToEntity(this ConnectorGrpc grpc, DbConnector entity)
         {
-            if (grpc == null)
-            {
-                throw new ArgumentNullException(nameof(grpc), "GRPC object cannot be null.");
-            }
-
-            DbConnector entity = new DbConnector();
             entity.Id = Guid.Parse(grpc.Id);
             entity.WaterproofTypeId = string.IsNullOrEmpty(grpc.WaterproofTypeId) ? null : Guid.Parse(grpc.WaterproofTypeId);
             entity.MatingType = grpc.MatingType is null ? MatingType.Unknown : (MatingType)grpc.MatingType;
@@ -43,7 +37,6 @@
             entity.TerminalSizeId = string.IsNullOrEmpty(grpc.TerminalSizeId) ? null : Guid.Parse(grpc.TerminalSizeId);
             entity.AdditionalInformation = grpc.AdditionalInformation;
             entity.Color = (ColorType)(grpc.Color ?? 0);
-            return entity;
         }
     }
 }

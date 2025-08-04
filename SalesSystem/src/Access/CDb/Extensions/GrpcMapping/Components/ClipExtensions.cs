@@ -2,7 +2,7 @@
 {
     public static class ClipExtensions
     {
-        public static ClipGrpc FromDb(this DbClip entity)
+        public static ClipGrpc FromEntity(this DbClip entity)
         {
             if (entity == null)
             {
@@ -22,6 +22,19 @@
             grpc.AdditionalInformation = entity.AdditionalInformation;
 
             return grpc;
+        }
+        public static void ToEntity(this ClipGrpc grpc, DbClip entity)
+        {
+            entity.ClipTypeId = Guid.Parse(grpc.ClipTypeId);
+            entity.TieType = grpc.TieType is null ? TieType.Unknown : (TieType)grpc.TieType;
+            entity.DimensionCode = grpc.DimensionCode;
+            entity.ThicknessCode = grpc.ThicknessCode;
+            entity.Length = grpc.Length is null ? 0.0m : (decimal)grpc.Length;
+            entity.IsDoubleHarness = grpc.IsDoubleHarness ?? false;
+            entity.ClipOrientationStart = grpc.ClipOrientationStart ?? 0;
+            entity.ClipOrientationEnd = grpc.ClipOrientationEnd ?? 0;
+            entity.AdditionalInformation = grpc.AdditionalInformation;
+
         }
     }
 }

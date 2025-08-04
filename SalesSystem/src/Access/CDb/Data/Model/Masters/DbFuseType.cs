@@ -1,6 +1,6 @@
 ﻿namespace CDb.Data.Model.Masters
 {
-    public class DbFuseType
+    public class DbFuseType : IAggregateRoot
     {
         public Guid Id
         { get; set; }

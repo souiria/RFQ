@@ -10,7 +10,7 @@
                 .HasOne(c => c.WaterproofType)
                 .WithMany()
                 .HasForeignKey(c => c.WaterproofTypeId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder
                 .Property(c => c.Description)
