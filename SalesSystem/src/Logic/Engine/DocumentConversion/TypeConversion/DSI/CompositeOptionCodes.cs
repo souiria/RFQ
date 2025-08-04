@@ -2,11 +2,11 @@
 {
     class CompositeOptionCodes
     {
-        public static IEnumerable<CompositeOptionModel> GetCompositeOptionCodes(IEnumerable<string> lines, string splitter)
+        public static IEnumerable<CompositeOptionDto> GetCompositeOptionCodes(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            CompositeOptionModel model = new CompositeOptionModel();
-            List<CompositeOptionModel> collection = new List<CompositeOptionModel>();
+            CompositeOptionDto model = new CompositeOptionDto();
+            List<CompositeOptionDto> collection = new List<CompositeOptionDto>();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);

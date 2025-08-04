@@ -1,0 +1,10 @@
+﻿namespace CDb.CQRS.Query.Masters.Partner
+{
+    public class GetPartnersQuery : IQuery<List<PartnerGrpc>>
+    {
+        public int? Position
+        { get; set; }
+        public int? TakeAmount
+        { get; set; }
+    }
+}

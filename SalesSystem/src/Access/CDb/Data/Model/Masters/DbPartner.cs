@@ -1,6 +1,6 @@
 ﻿namespace CDb.Data.Model.Masters
 {
-    public class DbPartner
+    public class DbPartner :IAggregateRoot
     {
         public Guid Id
         { get; set; }

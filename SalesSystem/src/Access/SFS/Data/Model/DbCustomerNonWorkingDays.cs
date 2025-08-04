@@ -5,17 +5,17 @@ namespace SFS.Data.Model
     {
         public string? Profile 
         { get; set; }
-        public int Year
-        { get; set; }
+        //public int Year
+        //{ get; set; }
         public string? DelPoint 
         { get; set; }
-        public DateTime NonWorkingDay 
+        public string? NonWorkingDay 
         { get; set; }
         public DateTime UpdatedDate 
         { get; set; }
         public string? UpdatedBy 
         { get; set; }
-        public int State
-        { get; set; }
+        //public int State
+        //{ get; set; }
     }
 }

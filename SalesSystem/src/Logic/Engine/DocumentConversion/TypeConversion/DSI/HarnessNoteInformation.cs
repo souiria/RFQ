@@ -2,7 +2,7 @@
 {
    public static class HarnessNoteInformation
     {
-        public static HarnessModel GetHarnessNoteInformation(HarnessModel model, IEnumerable<string> lines)
+        public static HarnessDto GetHarnessNoteInformation(HarnessDto model, IEnumerable<string> lines)
         {
             if (lines.Any())
             {

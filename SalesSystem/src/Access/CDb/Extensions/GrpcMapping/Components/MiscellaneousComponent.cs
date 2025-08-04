@@ -2,7 +2,7 @@
 {
     public static class MiscellaneousComponentExtensions
     {
-        public static MiscellaneousComponentGrpc FromDb(this DbMiscellaneousComponent entity)
+        public static MiscellaneousComponentGrpc FromEntity(this DbMiscellaneousComponent entity)
         {
             if (entity == null)
             {
@@ -18,20 +18,13 @@
 
             return grpc;
         }
-        public static DbMiscellaneousComponent ToDb(this MiscellaneousComponentGrpc grpc)
+        public static void ToEntity(this MiscellaneousComponentGrpc grpc, DbMiscellaneousComponent entity)
         {
-            if (grpc == null)
-            {
-                throw new ArgumentNullException(nameof(grpc), "GRPC object cannot be null.");
-            }
-
-            DbMiscellaneousComponent entity = new DbMiscellaneousComponent();
             entity.Id = Guid.Parse(grpc.Id);
             entity.MiscellaneousComponentTypeId = Guid.Parse(grpc.MiscellaneousComponentTypeId);
             entity.Dimension = grpc.Dimension;
             entity.AdditionalInformation = grpc.AdditionalInformation;
             entity.Color = (ColorType)(grpc.Color ?? 0);
-            return entity;
         }
     }
 }

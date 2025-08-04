@@ -30,7 +30,11 @@
         public DbSet<DbSite> SiteItems => Set<DbSite>();
 
         #endregion
-
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(SFSDbContext).Assembly);
+        }
         #region Save Changes
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

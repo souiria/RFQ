@@ -1,6 +1,6 @@
 namespace CDb.Data.Model.Masters
 {
-    public class DbCoverType
+    public class DbCoverType : IAggregateRoot
     {
         public Guid Id
         { get; set; }

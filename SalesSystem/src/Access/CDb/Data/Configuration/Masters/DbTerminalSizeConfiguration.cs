@@ -11,15 +11,12 @@
                    .HasMaxLength(100);
             builder.Property(x => x.Description)
                    .HasMaxLength(500);
-            builder.HasMany(x => x.Families)
-                   .WithOne()
-                   .OnDelete(DeleteBehavior.Cascade);
             builder.HasMany(x => x.Terminals)
                    .WithOne()
-                   .OnDelete(DeleteBehavior.Cascade);
+                   .OnDelete(DeleteBehavior.NoAction);
             builder.HasMany(x => x.Connectors)
                    .WithOne()
-                   .OnDelete(DeleteBehavior.Cascade);
+                   .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

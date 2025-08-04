@@ -4,6 +4,8 @@
     {
         public void Configure(EntityTypeBuilder<DbComponent> builder)
         {
+            builder.UseTpcMappingStrategy();
+
             builder.HasKey(x => x.Id);
             builder.HasIndex(c => c.SheetNumber)
                 .IsUnique();
@@ -19,6 +21,11 @@
 
             builder.Property(c => c.Weight)
                 .HasPrecision(8, 1);
+
+            builder
+                .HasMany(c => c.ReplacedComponents)
+                .WithMany()
+                .UsingEntity(j => j.ToTable("ComponentReplacements"));
 
             builder
                 .HasMany(c => c.FileNames)
@@ -44,6 +51,13 @@
                 .HasMany(c => c.Children)
                 .WithMany(c => c.Parents)
                 .UsingEntity(j => j.ToTable("ComponentAggregation"));
+
+            builder
+                .HasOne(c => c.TemperatureRange)
+                .WithMany()
+                .HasForeignKey(c => c.TemperatureRangeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
         }
     }
 }

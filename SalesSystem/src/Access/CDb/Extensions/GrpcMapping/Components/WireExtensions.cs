@@ -2,7 +2,7 @@
 {
     public static class WireExtensions
     {
-        public static WireGrpc FromDb(this DbWire entity)
+        public static WireGrpc FromEntity(this DbWire entity)
         {
             if (entity == null)
             {
@@ -22,14 +22,8 @@
 
             return grpc;
         }
-        public static DbWire ToDb(this WireGrpc grpc)
+        public static void ToEntity(this WireGrpc grpc, DbWire entity)
         {
-            if (grpc == null)
-            {
-                throw new ArgumentNullException(nameof(grpc), "GRPC object cannot be null.");
-            }
-
-            DbWire entity = new DbWire();
             entity.Id = Guid.Parse(grpc.Id);
             entity.WireTypeId = Guid.Parse(grpc.WireTypeId);
             entity.WireSection = grpc.WireSection.ToDecimal();
@@ -39,8 +33,6 @@
             entity.BendingDiameter = grpc.BendingDiameter.ToDecimal();
             entity.Color = (ColorType)(grpc.Color ?? 0);
             entity.PlatingType = (PlatingType)(grpc.PlatingType ?? 0);
-
-            return entity;
         }
     }
 }

@@ -1,6 +1,6 @@
 namespace CDb.Data.Model.Masters
 {
-    public class DbClipType
+    public class DbClipType : IAggregateRoot
     {
         public Guid Id
         { get; set; }

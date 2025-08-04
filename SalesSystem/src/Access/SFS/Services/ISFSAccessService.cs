@@ -10,8 +10,8 @@
         Task<ForecastListViewGrpc> GetAllForecasts(CancellationToken cancellationToken);
         Task<MonthlyVolumeDataListViewGrpc> GetMonthlyVolumes(CancellationToken cancellationToken);
         Task<CustomerNonWorkingDayListViewGrpc> GetCustomerNonWorkingDay(CancellationToken cancellationToken);
-        Task<DailyVolumeDataListViewGrpc> GetDailyVolumeData(CancellationToken cancellationToken);
-        Task<CalculationTypeListViewGrpc> GetCalculationType(CancellationToken cancellationToken);
+        Task<DailyVolumeDataListViewGrpc> GetAllDailyVolumes(CancellationToken cancellationToken);
+        Task<CalculationTypeListViewGrpc> GetAllCalculationTypes(CancellationToken cancellationToken);
     }
 }
 

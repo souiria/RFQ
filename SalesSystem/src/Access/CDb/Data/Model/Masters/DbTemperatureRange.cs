@@ -1,6 +1,6 @@
 ﻿namespace CDb.Data.Model.Masters
 {
-    public class DbTemperatureRange
+    public class DbTemperatureRange : IAggregateRoot
     {
         public Guid Id
         { get; set; }
@@ -23,6 +23,15 @@
             TemperatureLow = 0;
             TemperatureHigh = 0;
             IsCustom = false;
+            Components = new List<DbComponent>();
+        }
+        public DbTemperatureRange(string temperatureRange, int temperatureLow, int temperatureHigh, bool isCustom)
+        {
+            Id = Guid.NewGuid();
+            TemperatureRange = temperatureRange;
+            TemperatureLow = temperatureLow;
+            TemperatureHigh = temperatureHigh;
+            IsCustom = isCustom;
             Components = new List<DbComponent>();
         }
     }

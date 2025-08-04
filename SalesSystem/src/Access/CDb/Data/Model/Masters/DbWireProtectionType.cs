@@ -1,6 +1,6 @@
 namespace CDb.Data.Model.Masters
 {
-    public class DbWireProtectionType
+    public class DbWireProtectionType : IAggregateRoot
     {
         public Guid Id
         { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace CDb.Data.Model
 {
-    public class DbFileName
+    public class DbFileName : IAggregateRoot
     {
         public Guid Id
         { get; set; }
