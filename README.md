@@ -4,7 +4,7 @@
 
 1. **Migrations**:
    - Migrations are used to update the database schema.
-   - They should be created using the `Add-Migration` command in the Package Manager Console.
+   - **DO NOT** use the `Add-Migration` command in the Package Manager Console as this way build errors are hidden; use instead the terminal command `dotnet ef migrations add <migration_name>`.
    - Ensure that migrations are named appropriately to reflect the changes made.
 	- This line needs to be added:
 		`[System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "Generated file with wrong format for new object creation according to iDesign rules, even if the source code is conformant...")]`
