@@ -3,7 +3,7 @@ namespace CDb.Data.Context
 {
     public class CDbContextFactory : IDesignTimeDbContextFactory<CDbContext>
     {
-        public CDbContext CreateDbContext(string[] args)
+        public CDbContext CreateDbContext(string[]? args = null)
         {
             DbContextOptionsBuilder<CDbContext> optionsBuilder = new DbContextOptionsBuilder<CDbContext>();
             optionsBuilder.UseSqlServer("Server=rodvpc305.sews-e.com;Database=H1.Cdb2;User Id=dbdevusr;Password=Am9s4T8IbYntf6u7SX655csPwVV9hMqHSIkFG8VQWK3epsJryeScHoare9UAUlv;MultipleActiveResultSets=true;Encrypt=Yes;TrustServerCertificate=True");
