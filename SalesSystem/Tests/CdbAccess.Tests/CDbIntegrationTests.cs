@@ -1,15 +1,4 @@
-﻿using CDb;
-using CDb.Endpoints.GrpcServices;
-using CDb.Enums;
-using CDb.Extensions;
-using CDb.Services;
-using Grpc.Core;
-using Grpc.Core.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Moq;
-
-namespace CdbAccess.Tests
+﻿namespace CdbAccess.Tests
 {
     public class CDbIntegrationTests
     {

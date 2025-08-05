@@ -1,14 +1,3 @@
-using CDb.Data.Context;
-using CDb.Data.Interface;
-using CDb.Data.Model.Components;
-using CDb.Enums;
-using CDb.Extensions;
-using CDb.Services;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-
 namespace CdbAccess.Tests
 {
     [TestFixture]
