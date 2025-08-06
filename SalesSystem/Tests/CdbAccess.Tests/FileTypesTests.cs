@@ -1,19 +1,3 @@
-using System.Globalization;
-using CDb;
-using CDb.Data.Context;
-using CDb.Data.Model.Masters;
-using CDb.Endpoints.GrpcServices;
-using CDb.Enums;
-using CDb.Extensions;
-using CDb.Services;
-using Grpc.Core;
-using Grpc.Core.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Moq;
-
 namespace CdbAccess.Tests
 {
     public class FileTypesTests
