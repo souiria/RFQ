@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Protos\Components\Cable.proto" />
-    <None Remove="Protos\Components\MiscellaneousComponent.proto" />
-    <None Remove="Protos\Masters\MiscellaneousComponentType.proto" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Protobuf Include="Protos\CompositeComponent.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\Component.proto" GrpcServices="Server" />
   </ItemGroup>

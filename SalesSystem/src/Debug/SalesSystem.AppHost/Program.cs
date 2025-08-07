@@ -18,6 +18,8 @@
 
         IResourceBuilder<ProjectResource> rfqManager = builder.AddProject<Projects.RfqModule>("rfq-module-service");
 
+        IResourceBuilder<ProjectResource> cdbManager = builder.AddProject<Projects.CDb>("cdb-module-service");
+
         builder.AddProject<Projects.SalesSystem_Rfq>("RfqFrontEnd");
             //.WithExternalHttpEndpoints()
             //.WithReference(apiService)
