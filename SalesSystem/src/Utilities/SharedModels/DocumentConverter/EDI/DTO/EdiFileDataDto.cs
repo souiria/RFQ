@@ -1,4 +1,4 @@
-﻿namespace SharedModels.DocumentConverter.EDI.Aggregates
+﻿namespace SharedModels.DocumentConverter.EDI.DTO
 {
     public class EdiFileDataDto
     {
