@@ -9,6 +9,6 @@ global using DocumentConversion.TypeConversion.EDI;
 global using DocumentConversion.TypeConversion.PartSearch;
 global using SharedModels.DocumentConverter.DSI.Aggregates;
 global using SharedModels.DocumentConverter.DSI.DTOs;
-global using SharedModels.DocumentConverter.EDI.Aggregates;
+global using SharedModels.DocumentConverter.EDI.DTO;
 global using SharedModels.DocumentConverter.PartsSearch.DTOs;
 global using SpreadsheetLight;

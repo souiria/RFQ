@@ -1,5 +1,5 @@
 ﻿using DocumentConversion;
-using SharedModels.DocumentConverter.EDI.Aggregates;
+using SharedModels.DocumentConverter.EDI.DTO;
 
 namespace DocumentConversionEngine.Tests
 {
