@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Utilities\Logging\Logging.csproj" />
     <ProjectReference Include="..\..\..\Utilities\SharedModels\SharedModels.csproj" />
   </ItemGroup>
 

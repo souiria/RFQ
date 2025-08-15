@@ -62,5 +62,11 @@
             IEnumerable<FordCsvDto> crossReferences = PartSearchConverter.ConvertFordCSVFile(file);
             return crossReferences;
         }
+
+        public static IEnumerable<EdiFileDataDto> ConvertEdiCSVFile(byte[] file, string fileName)
+        {
+            IEnumerable<EdiFileDataDto> ediFileData = EdiFileConverter.ConvertEdiCSVFile(file, fileName);
+            return ediFileData;
+        }
     }
 }
