@@ -10,18 +10,24 @@
             List<CrossReferenceDto> customerNumbers2 = new List<CrossReferenceDto>();
             try 
             {
-                ExcelPackage.License.SetNonCommercialOrganization("My Noncommercial organization");
-                using (ExcelPackage package = new ExcelPackage(stream))
+                using (SLDocument sl = new SLDocument(stream))
                 {
-                    if (package.Workbook.Worksheets[0].Cells[1, 1].Value.ToString() == "Note")
+                    SLWorksheetStatistics stats = sl.GetWorksheetStatistics();
+                    string noteValue = sl.GetCellValueAsString(1, 1);
+                    bool isNote = noteValue == "Note";
+                    if (isNote)
                     {
-                        customerNumbers = PSABomConverter.ConvertPSAExcelBom(package).ToList();
+                        customerNumbers = PSABomConverter.ConvertPSAExcelBom(sl).ToList();
                     }
 
-                    if (package.Workbook.Worksheets[0].Cells[1, 1].Value.ToString() == "WIRE" &&
-                        package.Workbook.Worksheets[0].Cells[1, 2].Value.ToString() == "FROM")
+                    string wireValue = sl.GetCellValueAsString(1, 1);
+                    bool isWIRE = wireValue == "WIRE";
+
+                    string fromValue = sl.GetCellValueAsString(1, 2);
+                    bool isFROM = fromValue == "FROM";
+                    if (isWIRE && isFROM)
                     {
-                        customerNumbers = NissanBomConverter.ConvertNissanExcelBom(package).ToList();
+                        customerNumbers = NissanBomConverter.ConvertNissanExcelBom(sl).ToList();
                     }
                 }
 

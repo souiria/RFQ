@@ -2,44 +2,64 @@
 {
     class NissanBomConverter
     {
-        public static IEnumerable<CrossReferenceDto> ConvertNissanExcelBom(ExcelPackage package)
+        public static IEnumerable<CrossReferenceDto> ConvertNissanExcelBom(SLDocument sl)
         {
-            ExcelWorksheet ws = package.Workbook.Worksheets[0];
-            ExcelCellAddress start = ws.Dimension.Start;
-            ExcelCellAddress end = ws.Dimension.End;
-
+            SLWorksheetStatistics stats = sl.GetWorksheetStatistics();
             //process first parts column (nissan has several)
-            ws.InsertColumn(25, 1);
-            ws.Cells[1, 24].Copy(ws.Cells[1, 25]);
-            ws.Cells[1, 25].Value = "SWS NUMBER";
+            sl.InsertColumn(25, 1);
+            string cellValue = sl.GetCellValueAsString(1, 24);
+            sl.SetCellValue(1, 25, cellValue);
+            sl.SetCellValue(1, 25, "SWS NUMBER");
 
             IEnumerable<CrossReferenceDto> customerNumbers = new List<CrossReferenceDto>();
-            customerNumbers = ws.Cells["X4:Y" + end.Row].ToCollectionWithMappings(row =>
+            int startRow = 4;
+            int endRow = stats.EndRowIndex;
+            List<CrossReferenceDto> customerNumbersList = customerNumbers.ToList();
+            for (int row = startRow; row <= endRow; row++)
             {
                 CrossReferenceDto reference = new CrossReferenceDto();
-                reference.CustomerNumber = row.GetValue<string>("FROM");
-                return reference;
-            }, options => options.SetCustomHeaders("FROM"));
+                if (sl.GetCellValueAsString(1, 24) == "FROM")
+                {
+                    reference.CustomerNumber = sl.GetCellValueAsString(row, 24);
+                }
+                else if (sl.GetCellValueAsString(1, 25) == "FROM")
+                {
+                    reference.CustomerNumber = sl.GetCellValueAsString(row, 25);
+                }
+
+                customerNumbersList.Add(reference);
+            }
 
             //process first parts column (nissan has several)
-            ws.InsertColumn(33, 1);
-            ws.Cells[1, 32].Copy(ws.Cells[1, 33]);
-            ws.Cells[1, 33].Value = "SWS NUMBER";
+            sl.InsertColumn(33, 1);
+            cellValue = sl.GetCellValueAsString(1, 32);
+            sl.SetCellValue(1, 33, cellValue);
+            sl.SetCellValue(1, 33, "SWS NUMBER");
+
             IEnumerable<CrossReferenceDto> customerNumbers2 = new List<CrossReferenceDto>();
 
-            customerNumbers2 = ws.Cells["AF4:AG" + end.Row].ToCollectionWithMappings(row =>
+            List<CrossReferenceDto> customerNumbersList2 = customerNumbers.ToList();
+            for (int row = startRow; row <= endRow; row++)
             {
                 CrossReferenceDto reference = new CrossReferenceDto();
-                reference.CustomerNumber = row.GetValue<string>("FROM");
-                return reference;
-            }, options => options.SetCustomHeaders("FROM"));
+                if (sl.GetCellValueAsString(1, 32) == "FROM")
+                {
+                    reference.CustomerNumber = sl.GetCellValueAsString(row, 32);
+                }
+                else if (sl.GetCellValueAsString(1, 33) == "FROM")
+                {
+                    reference.CustomerNumber = sl.GetCellValueAsString(row, 33);
+                }
+
+                customerNumbersList2.Add(reference);
+            }
 
             if (customerNumbers2.Any())
             {
-                customerNumbers.ToList().AddRange(customerNumbers2);
+                customerNumbersList.AddRange(customerNumbersList2);
             }
 
-            return customerNumbers;
+            return customerNumbersList;
         }
     }
 }

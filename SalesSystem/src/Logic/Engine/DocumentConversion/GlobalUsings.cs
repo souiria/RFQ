@@ -6,7 +6,7 @@ global using CsvHelper;
 global using DocumentConversion.Helpers;
 global using DocumentConversion.TypeConversion.DSI;
 global using DocumentConversion.TypeConversion.PartSearch;
-global using OfficeOpenXml;
 global using SharedModels.DocumentConverter.DSI.Aggregates;
 global using SharedModels.DocumentConverter.DSI.DTOs;
 global using SharedModels.DocumentConverter.PartsSearch.DTOs;
+global using SpreadsheetLight;

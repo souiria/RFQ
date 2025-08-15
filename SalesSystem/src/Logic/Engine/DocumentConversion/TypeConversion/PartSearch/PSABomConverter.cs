@@ -2,26 +2,36 @@
 {
     public static class PSABomConverter
     {
-        public static IEnumerable<CrossReferenceDto> ConvertPSAExcelBom(ExcelPackage package)
+        public static IEnumerable<CrossReferenceDto> ConvertPSAExcelBom(SLDocument sl)
         {
             //PSA BOM Identified
             // Get the Worksheet created in the previous codesample. 
-            ExcelWorksheet ws = package.Workbook.Worksheets[0];
-            ExcelCellAddress start = ws.Dimension.Start;
-            ExcelCellAddress end = ws.Dimension.End;
-            //  ws.Cells[1, 3].Value = "CustomerNumber";
-            ws.InsertColumn(4, 1);
-            ws.Cells[1, 3].Copy(ws.Cells[1, 4]);
-            ws.Cells[1, 4].Value = "SWS NUMBER";
+            SLWorksheetStatistics stats = sl.GetWorksheetStatistics();
+            sl.InsertColumn(4, 1);
+            string cellValue = sl.GetCellValueAsString(1, 3);
+            sl.SetCellValue(1, 4, cellValue);
+            sl.SetCellValue(1, 4, "SWS NUMBER");
             IEnumerable<CrossReferenceDto> customerNumbers = new List<CrossReferenceDto>();
-            customerNumbers = ws.Cells["C2:D" + end.Row].ToCollectionWithMappings(row =>
+            int startRow = 2;
+            int endRow = stats.EndRowIndex;
+            List<CrossReferenceDto> customerNumbersList = customerNumbers.ToList();
+
+            for (int row = startRow; row <= endRow; row++)
             {
                 CrossReferenceDto reference = new CrossReferenceDto();
-                reference.CustomerNumber = row.GetValue<string>("N.PIECE") ?? "NO DATA";
-                return reference;
-            }, options => options.SetCustomHeaders("N.PIECE"));
+                if(sl.GetCellValueAsString(1,3) == "N.PIECE")
+                {
+                    reference.CustomerNumber = sl.GetCellValueAsString(row, 3);
+                }
+                else if(sl.GetCellValueAsString(1,4) == "N.PIECE")
+                {
+                    reference.CustomerNumber = sl.GetCellValueAsString(row, 4);
+                }
 
-            return customerNumbers;
+                customerNumbersList.Add(reference);
+            }
+
+            return customerNumbersList;
         }
     }
 }
