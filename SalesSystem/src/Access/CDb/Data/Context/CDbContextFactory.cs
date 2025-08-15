@@ -6,7 +6,7 @@ namespace CDb.Data.Context
         public CDbContext CreateDbContext(string[]? args = null)
         {
             DbContextOptionsBuilder<CDbContext> optionsBuilder = new DbContextOptionsBuilder<CDbContext>();
-            optionsBuilder.UseSqlServer("Server=rodvpc305.sews-e.com;Database=H1.Cdb2;User Id=dbdevusr;Password=Am9s4T8IbYntf6u7SX655csPwVV9hMqHSIkFG8VQWK3epsJryeScHoare9UAUlv;MultipleActiveResultSets=true;Encrypt=Yes;TrustServerCertificate=True");
+            optionsBuilder.UseSqlServer("Server=localhost;Database=H1.Cdb2;User Id=dbdevusr;Password=OwnhjKZqZMCY0vL;MultipleActiveResultSets=true;Encrypt=Yes;TrustServerCertificate=True");
             optionsBuilder.ConfigureWarnings(warnings =>
                 warnings.Ignore(RelationalEventId.PendingModelChangesWarning)
             );

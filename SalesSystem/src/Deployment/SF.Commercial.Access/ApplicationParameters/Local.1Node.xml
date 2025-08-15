@@ -2,6 +2,6 @@
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SF.Commercial.Access" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="SF.Access.Masters_ASPNETCORE_ENVIRONMENT" Value="Development" />
-    <Parameter Name="SF.Access.CDbs_CDB_DATABASE_CONNECTION" Value="Server=rodvpc305.sews-e.com;Database=H1.ComponentDB;User Id=dbdevusr;Password=Am9s4T8IbYntf6u7SX655csPwVV9hMqHSIkFG8VQWK3epsJryeScHoare9UAUlv;MultipleActiveResultSets=true;Encrypt=No" />
+    <Parameter Name="SF.Access.CDbs_CDB_DATABASE_CONNECTION" Value="Server=localhost;Database=H1.ComponentDB;User Id=dbdevusr;Password=OwnhjKZqZMCY0vL;MultipleActiveResultSets=true;Encrypt=No" />
   </Parameters>
 </Application>
