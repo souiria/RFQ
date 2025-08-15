@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-
-namespace CDb.Data.Context
+﻿namespace CDb.Data.Context
 {
     public class CDbContextFactory : IDesignTimeDbContextFactory<CDbContext>
     {
