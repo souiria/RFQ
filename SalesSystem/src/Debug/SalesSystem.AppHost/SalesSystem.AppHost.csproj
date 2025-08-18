@@ -19,6 +19,7 @@
     <ProjectReference Include="..\..\Access\Master\Master.csproj" />
     <ProjectReference Include="..\..\Access\NPR\NPR.csproj" />
     <ProjectReference Include="..\..\Access\Rfq\Rfq.csproj" />
+    <ProjectReference Include="..\..\Access\Unit4\Unit4.csproj" />
     <ProjectReference Include="..\..\Client\SalesSystem.ApiService\SalesSystem.ApiService.csproj" />
     <ProjectReference Include="..\..\Client\SalesSystem.Rfq\SalesSystem.Rfq.csproj" />
     <ProjectReference Include="..\..\Logic\Manager\EdiModule\EdiModule.csproj" />
