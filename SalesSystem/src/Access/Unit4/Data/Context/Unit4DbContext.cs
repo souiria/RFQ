@@ -17,8 +17,10 @@
 
         #region DbSet
 
-        public DbSet<DbEdiFileDataUpload> EdiFileDataUploads => Set<DbEdiFileDataUpload>();
-
+        public DbSet<DbAlgBatchInput> AlgBatchInputs => Set<DbAlgBatchInput>();
+        public DbSet<DbAlgProductInput> AlgProductInputs => Set<DbAlgProductInput>();
+        public DbSet<DbMinAlgArticle> MinAlgArticles => Set<DbMinAlgArticle>();
+        public DbSet<DbUnit4SalesOrdersView> Unit4SalesOrdersViewItems => Set<DbUnit4SalesOrdersView>();
 
         #endregion
 

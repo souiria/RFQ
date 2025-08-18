@@ -20,13 +20,6 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CQRS\Command\" />
-    <Folder Include="CQRS\Handler\" />
-    <Folder Include="CQRS\Specification\" />
-    <Folder Include="CQRS\Query\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Utilities\Logging\Logging.csproj" />
     <ProjectReference Include="..\..\Utilities\SharedKernal\SharedKernel.csproj" />
   </ItemGroup>
