@@ -17,3 +17,6 @@
    - The areas where these partial classes are user are:
 		- `namespace CDb.Endpoints.GrpcServices` for `CDbGrpcService` 
 		- `namespace CDb.Services` for `CDbAccessDataService` and `SampleCDbAccessDataService`
+
+3. **Docker containers**
+   - The sqlserver-container folder has a Docker configured image that allows the usage of a local dev SqlServerInstance

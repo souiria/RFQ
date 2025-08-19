@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Access\CAE\CAE.csproj" />
+    <ProjectReference Include="..\..\Access\CDb\CDb.csproj" />
     <ProjectReference Include="..\..\Access\CPD\CPD.csproj" />
     <ProjectReference Include="..\..\Access\EDI\EDI.csproj" />
     <ProjectReference Include="..\..\Access\Emacs\Emacs.csproj" />

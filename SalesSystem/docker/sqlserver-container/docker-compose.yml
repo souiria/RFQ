@@ -1,0 +1,24 @@
+version: '3.9'
+
+name: sqlserverdev
+
+volumes:
+  sqlserver_data:
+    driver: local
+
+services:
+  sqlserver:
+    container_name: sqlserver_service
+    image: ${MSSQL_IMAGE:-mcr.microsoft.com/mssql/server:2022-latest}
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: ${MSSQL_PRODUCT_ID:-Developer}
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:-StrongP@ssword}"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+      - ./init/init.sql:/db/init.sql
+      - ./entrypoint.sh:/entrypoint.sh
+    entrypoint: ["/bin/bash", "/entrypoint.sh"]
+    ports:
+      - "0.0.0.0:${MSSQL_PORT:-1433}:1433"
+    restart: unless-stopped
