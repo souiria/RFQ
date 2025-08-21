@@ -37,7 +37,13 @@
         - Consirm the containers are running in the terminal with the command `docker ps` or with the script dic.ps1
         - dic.ps1 should show something like this:
             ```
-            Container: python_container, IP: 172.25.0.4, Ports: 2222/tcp -> 127.0.0.1:2222
+            Container: es-kibana-apm-rabbitmq-container-kibana-1, IP: 172.25.0.11, Ports: 5601/tcp -> 0.0.0.0:5601 5601/tcp -> [::]:5601
+            Container: es-kibana-apm-rabbitmq-container-es03-1, IP: 172.25.0.9, Ports: 
+            Container: es-kibana-apm-rabbitmq-container-apm-server-1, IP: 172.25.0.10, Ports: 8200/tcp -> 0.0.0.0:8200 8200/tcp -> [::]:8200
+            Container: es-kibana-apm-rabbitmq-container-es02-1, IP: 172.25.0.8, Ports: 
+            Container: es-kibana-apm-rabbitmq-container-es01-1, IP: 172.25.0.7, Ports: 9200/tcp -> 0.0.0.0:9200 9200/tcp -> [::]:9200
+            Container: rabbitmq, IP: 172.25.0.6, Ports: 5672/tcp -> 0.0.0.0:5672 5672/tcp -> [::]:5672 15672/tcp -> 0.0.0.0:15672 15672/tcp -> [::]:15672
+            Container: python_container, IP: 172.25.0.4, Ports: 2222/tcp -> 127.0.0.1:2222 5000/tcp -> 127.0.0.1:5000
             Container: sqlserver_service, IP: 172.25.0.3, Ports: 1433/tcp -> 0.0.0.0:1433
             Container: postgresql_service, IP: 172.25.0.2, Ports: 5432/tcp -> 0.0.0.0:5432
             ```
@@ -89,4 +95,4 @@
 
             🎉 All database connections working properly!
             ```
-        - You now have aaccess setup between container
+        - You now have access setup between containers.

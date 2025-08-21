@@ -146,6 +146,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "python-container", "python-
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "webdev", "webdev", "{28B088E7-E137-4645-B329-598D40DB6CB2}"
+	ProjectSection(SolutionItems) = preProject
+		SalesSystem\docker\webdev\test_db_connection.py = SalesSystem\docker\webdev\test_db_connection.py
+		SalesSystem\docker\webdev\test_network_connectivity.py = SalesSystem\docker\webdev\test_network_connectivity.py
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "es-kibana-apm-rabbitmq-container", "es-kibana-apm-rabbitmq-container", "{AEC9721A-24D5-447D-B936-5969E0265431}"
+	ProjectSection(SolutionItems) = preProject
+		SalesSystem\docker\es-kibana-apm-rabbitmq-container\.env = SalesSystem\docker\es-kibana-apm-rabbitmq-container\.env
+		SalesSystem\docker\es-kibana-apm-rabbitmq-container\docker-compose.yml = SalesSystem\docker\es-kibana-apm-rabbitmq-container\docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -469,6 +479,7 @@ Global
 		{BFD374ED-7B4B-403B-8348-AC7310224BD1} = {324D2BA3-ABB6-4DCA-A0D1-02E78A032E26}
 		{8552815E-F2B5-4752-A20D-E93B0F4698D9} = {8DA695E2-1C9B-442B-A16A-CD0714839EC6}
 		{28B088E7-E137-4645-B329-598D40DB6CB2} = {8DA695E2-1C9B-442B-A16A-CD0714839EC6}
+		{AEC9721A-24D5-447D-B936-5969E0265431} = {8DA695E2-1C9B-442B-A16A-CD0714839EC6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {45532623-50AD-4761-959C-8E565670BB49}
