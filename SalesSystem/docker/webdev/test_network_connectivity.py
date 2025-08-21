@@ -32,6 +32,8 @@ def main():
     tests = [
         ("postgresql_service", 5432, "PostgreSQL Database"),
         ("sqlserver_service", 1433, "SQL Server Database"),
+        ("seq_service", 5341, "Seq Log Server (Ingestion)"),
+        ("seq_service", 80, "Seq Log Server (Web UI)"),
     ]
     
     all_passed = True
