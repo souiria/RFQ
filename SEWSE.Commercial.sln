@@ -110,6 +110,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SF.Access.CDbs", "SalesSystem\src\Deployment\SF.Access.CDbs\SF.Access.CDbs.csproj", "{A5BE42D0-5355-44AB-AEB0-18398A3F30C4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{8DA695E2-1C9B-442B-A16A-CD0714839EC6}"
+	ProjectSection(SolutionItems) = preProject
+		SalesSystem\docker\dic.ps1 = SalesSystem\docker\dic.ps1
+		SalesSystem\docker\setup-network.ps1 = SalesSystem\docker\setup-network.ps1
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sqlserver-container", "sqlserver-container", "{CB287E29-4D28-4465-88C8-2802E74FF9B8}"
 	ProjectSection(SolutionItems) = preProject
@@ -121,6 +125,46 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "init", "init", "{82A81794-E300-4809-9862-FA76042C5DBF}"
 	ProjectSection(SolutionItems) = preProject
 		SalesSystem\docker\sqlserver-container\init\init.sql = SalesSystem\docker\sqlserver-container\init\init.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "postgresql-container", "postgresql-container", "{324D2BA3-ABB6-4DCA-A0D1-02E78A032E26}"
+	ProjectSection(SolutionItems) = preProject
+		SalesSystem\docker\postgresql-container\.env = SalesSystem\docker\postgresql-container\.env
+		SalesSystem\docker\postgresql-container\docker-compose.yml = SalesSystem\docker\postgresql-container\docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "init", "init", "{BFD374ED-7B4B-403B-8348-AC7310224BD1}"
+	ProjectSection(SolutionItems) = preProject
+		SalesSystem\docker\postgresql-container\init\init-db.sh = SalesSystem\docker\postgresql-container\init\init-db.sh
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "python-container", "python-container", "{8552815E-F2B5-4752-A20D-E93B0F4698D9}"
+	ProjectSection(SolutionItems) = preProject
+		SalesSystem\docker\python-container\.env = SalesSystem\docker\python-container\.env
+		SalesSystem\docker\python-container\docker-compose.yml = SalesSystem\docker\python-container\docker-compose.yml
+		SalesSystem\docker\python-container\init-webdev.sh = SalesSystem\docker\python-container\init-webdev.sh
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "webdev", "webdev", "{28B088E7-E137-4645-B329-598D40DB6CB2}"
+	ProjectSection(SolutionItems) = preProject
+		SalesSystem\docker\webdev\requirements.txt = SalesSystem\docker\webdev\requirements.txt
+		SalesSystem\docker\webdev\sample_dotnet_appsettings.json = SalesSystem\docker\webdev\sample_dotnet_appsettings.json
+		SalesSystem\docker\webdev\test_db_connection.py = SalesSystem\docker\webdev\test_db_connection.py
+		SalesSystem\docker\webdev\test_network_connectivity.py = SalesSystem\docker\webdev\test_network_connectivity.py
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "es-kibana-apm-rabbitmq-container", "es-kibana-apm-rabbitmq-container", "{AEC9721A-24D5-447D-B936-5969E0265431}"
+	ProjectSection(SolutionItems) = preProject
+		SalesSystem\docker\es-kibana-apm-rabbitmq-container\.env = SalesSystem\docker\es-kibana-apm-rabbitmq-container\.env
+		SalesSystem\docker\es-kibana-apm-rabbitmq-container\docker-compose.yml = SalesSystem\docker\es-kibana-apm-rabbitmq-container\docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "seq-container", "seq-container", "{1B298804-C890-4E91-A7B0-195E4902B761}"
+	ProjectSection(SolutionItems) = preProject
+		SalesSystem\docker\seq-container\.env = SalesSystem\docker\seq-container\.env
+		SalesSystem\docker\seq-container\.env.example = SalesSystem\docker\seq-container\.env.example
+		SalesSystem\docker\seq-container\docker-compose.yml = SalesSystem\docker\seq-container\docker-compose.yml
+		SalesSystem\docker\seq-container\README.md = SalesSystem\docker\seq-container\README.md
 	EndProjectSection
 EndProject
 Global
@@ -441,6 +485,12 @@ Global
 		{8DA695E2-1C9B-442B-A16A-CD0714839EC6} = {C4574448-5F0F-4917-9605-A78F5E341C79}
 		{CB287E29-4D28-4465-88C8-2802E74FF9B8} = {8DA695E2-1C9B-442B-A16A-CD0714839EC6}
 		{82A81794-E300-4809-9862-FA76042C5DBF} = {CB287E29-4D28-4465-88C8-2802E74FF9B8}
+		{324D2BA3-ABB6-4DCA-A0D1-02E78A032E26} = {8DA695E2-1C9B-442B-A16A-CD0714839EC6}
+		{BFD374ED-7B4B-403B-8348-AC7310224BD1} = {324D2BA3-ABB6-4DCA-A0D1-02E78A032E26}
+		{8552815E-F2B5-4752-A20D-E93B0F4698D9} = {8DA695E2-1C9B-442B-A16A-CD0714839EC6}
+		{28B088E7-E137-4645-B329-598D40DB6CB2} = {8DA695E2-1C9B-442B-A16A-CD0714839EC6}
+		{AEC9721A-24D5-447D-B936-5969E0265431} = {8DA695E2-1C9B-442B-A16A-CD0714839EC6}
+		{1B298804-C890-4E91-A7B0-195E4902B761} = {8DA695E2-1C9B-442B-A16A-CD0714839EC6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {45532623-50AD-4761-959C-8E565670BB49}

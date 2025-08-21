@@ -22,3 +22,10 @@ services:
     ports:
       - "0.0.0.0:${MSSQL_PORT:-1433}:1433"
     restart: unless-stopped
+    networks:
+      - shared-network
+
+networks:
+  shared-network:
+    external: true
+    name: shared-dev-network
