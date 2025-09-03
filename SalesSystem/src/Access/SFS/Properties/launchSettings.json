@@ -4,7 +4,12 @@
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+         "Seq__ServerUrl": "http://localhost:5341",
+        "OTEL_SERVICE_NAME": "SFS",
+        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:8200",
+        "OTEL_EXPORTER_OTLP_PROTOCOL": "http/protobuf",
+        "OTEL_RESOURCE_ATTRIBUTES": "deployment.environment=Development"
       },
       "applicationUrl": "https://localhost:57821;http://localhost:57822"
     }
