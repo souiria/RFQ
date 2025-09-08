@@ -1,0 +1,515 @@
+﻿namespace Rfq.Endpoints.GrpcServices
+{
+    public class RfqGrpcService : Rfq.RfqBase
+    {
+        readonly IRfqAccessService _RfqAccessService;
+        readonly ILogger<RfqGrpcService> _Logger;
+
+        public RfqGrpcService(IRfqAccessService rfqAccessService, ILogger<RfqGrpcService> logger)
+        {
+            _RfqAccessService = rfqAccessService;
+            _Logger = logger;
+        }
+
+        public override Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context)
+        {
+            HelloReply reply = new HelloReply();
+            reply.Message = "Hello " + request.Name;
+            Task<HelloReply> result = Task.FromResult(reply);
+            return result;
+        }
+
+        #region RfqDrawingPartNumbers
+        public override async Task<ListRfqDrawingPartNumbersGrpc> ReadRfqDrawingPartNumbersGrpc(RfqDrawingPartNumbersGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("ReadRfqDrawingPartNumbersGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            switch (requestType)
+            {
+                case RequestType.Read:
+                return await _RfqAccessService.GetAllRfqDrawingPartNumbers(context.CancellationToken);
+                case RequestType.ReadByRowId:
+                return await _RfqAccessService.GetRfqDrawingPartNumbersByRowId(request, context.CancellationToken);
+                default:
+                {
+                    Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                    throw new RpcException(status);
+                }
+            }
+        }
+
+        public override async Task<RfqCrudGrpcResponse> CreateRfqDrawingPartNumbersGrpc(RfqDrawingPartNumbersGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("CreateRfqDrawingPartNumbersGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            if (requestType != RequestType.Create)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for creating rfq drawing part numbers.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            bool response = await _RfqAccessService.CreateRfqDrawingPartNumbers(request, cancellationToken);
+            if (response)
+            {
+                responseMessage.Message = $"{request.RfqDrawingPartNumbersGrpcsToCreate.Count} RfqDrawingPartNumbers types created successfully.";
+                responseMessage.SaveSuccess = true;
+
+            }
+            else
+            {
+                responseMessage.Message = "No/not all RfqDrawingPartNumbers types created.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
+
+        public override async Task<RfqCrudGrpcResponse> UpdateRfqDrawingPartNumbersGrpc(RfqDrawingPartNumbersGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("UpdateRfqDrawingPartNumbersGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            if (requestType != RequestType.Update)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for updating rfq drawing part numbers.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            bool response = await _RfqAccessService.UpdateRfqDrawingPartNumbers(request, cancellationToken);
+            if (response)
+            {
+                responseMessage.Message = $"{request.RfqDrawingPartNumbersGrpcsToUpdate.Count} RfqDrawingPartNumbers types updated successfully.";
+                responseMessage.SaveSuccess = true;
+            }
+            else
+            {
+                responseMessage.Message = "No/not all RfqDrawingPartNumbers types updated.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
+        #endregion
+
+        #region RfqProjects
+
+        public override async Task<ListRfqProjectGrpc> ReadRfqProjectGrpc(RfqProjectGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("ReadRfqProjectGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse response = new RfqCrudGrpcResponse();
+            switch (requestType)
+            {
+                case RequestType.Read:
+                    return await _RfqAccessService.GetAllRfqProjects(context.CancellationToken);
+                case RequestType.ReadByRowId:
+                    return await _RfqAccessService.GetRfqProjectByRowId(request,context.CancellationToken);
+                default:
+                    {
+                        Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                        throw new RpcException(status);
+                    }
+            }
+        }
+
+        public override async Task<RfqCrudGrpcResponse> CreateRfqProjectGrpc(RfqProjectGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("CreateRfqProjectGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            if (requestType != RequestType.Create)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for creating rfq projects.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            bool response = await _RfqAccessService.CreateRfqProjects(request, cancellationToken);
+            if (response)
+            {
+                responseMessage.Message = $"{request.RfqProjectGrpcsToCreate.Count} RfqProject types created successfully.";
+                responseMessage.SaveSuccess = true;
+            }
+            else
+            {
+                responseMessage.Message = "No/not all RfqProject types created.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
+
+        public override async Task<RfqCrudGrpcResponse> UpdateRfqProjectGrpc(RfqProjectGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("UpdateRfqProjectGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            if (requestType != RequestType.Update)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for updating rfq projects.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            bool response = await _RfqAccessService.UpdateRfqProjects(request, cancellationToken);
+            if (response)
+            {
+                responseMessage.Message = $"{request.RfqProjectGrpcsToUpdate.Count} RfqProject types updated successfully.";
+                responseMessage.SaveSuccess = true;
+            }
+            else
+            {
+                responseMessage.Message = "No/not all RfqProject types updated.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
+
+        #endregion
+
+        #region RfqNotes
+
+        public override async Task<ListRfqNotesGrpc> ReadRfqNotesGrpc(RfqNotesGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("ReadRfqNotesGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse response = new RfqCrudGrpcResponse();
+            switch (requestType)
+            {
+                case RequestType.Read:
+                    return await _RfqAccessService.GetAllRfqNotes(context.CancellationToken);
+                case RequestType.ReadByRowId:
+                    return await _RfqAccessService.GetRfqNotesByRowId(request,context.CancellationToken);
+                default:
+                    {
+                        Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                        throw new RpcException(status);
+                    }
+            }
+        }
+
+        public override async Task<RfqCrudGrpcResponse> CreateRfqNotesGrpc(RfqNotesGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("CreateRfqNotesGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            if (requestType != RequestType.Create)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for creating rfq Notes.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            bool response = await _RfqAccessService.CreateRfqNotes(request, cancellationToken);
+            if (response)
+            {
+                responseMessage.Message = $"{request.RfqNotesGrpcsToCreate.Count} RfqNotes types created successfully.";
+                responseMessage.SaveSuccess = true;
+            }
+            else
+            {
+                responseMessage.Message = "No/not all RfqNotes types created.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
+
+        public override async Task<RfqCrudGrpcResponse> UpdateRfqNotesGrpc(RfqNotesGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("UpdateRfqProjectGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            bool response = await _RfqAccessService.UpdateRfqNotes(request, cancellationToken);
+            if (response)
+            {
+                responseMessage.Message = $"{request.RfqNotesGrpcsToUpdate.Count} RfqNotes types updated successfully.";
+                responseMessage.SaveSuccess = true;
+            }
+            else
+            {
+                responseMessage.Message = "No/not all RfqNotes types updated.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
+
+        #endregion
+
+        #region RfqReason
+
+        public override async Task<ListRfqReasonGrpc> ReadRfqReasonGrpc(RfqReasonGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("ReadRfqReasonGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse response = new RfqCrudGrpcResponse();
+            switch (requestType)
+            {
+                case RequestType.Read:
+                return await _RfqAccessService.GetAllRfqReasons(context.CancellationToken);
+                case RequestType.ReadByRowId:
+                return await _RfqAccessService.GetRfqReasonsByRowId(request, context.CancellationToken);
+                default:
+                {
+                    Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                    throw new RpcException(status);
+                }
+            }
+        }
+
+        public override async Task<RfqCrudGrpcResponse> CreateRfqReasonGrpc(RfqReasonGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("CreateRfqReasonGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            if (requestType != RequestType.Create)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for creating rfq projects.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            bool response = await _RfqAccessService.CreateRfqReason(request, cancellationToken);
+            if (response)
+            {
+                responseMessage.Message = $"{request.RfqReasonGrpcsToCreate.Count} RfqReason types created successfully.";
+                responseMessage.SaveSuccess = true;
+            }
+            else
+            {
+                responseMessage.Message = "No/not all Rfq types created.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
+
+        public override async Task<RfqCrudGrpcResponse> UpdateRfqReasonGrpc(RfqReasonGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("UpdateRfqReasonGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            if (requestType != RequestType.Update)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for updating rfq reasons.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            bool response = await _RfqAccessService.UpdateRfqReasons(request, cancellationToken);
+            if (response)
+            {
+                responseMessage.Message = $"{request.RfqReasonGrpcsToUpdate.Count} RfqReason types updated successfully.";
+                responseMessage.SaveSuccess = true;
+            }
+            else
+            {
+                responseMessage.Message = "No/not all RfqProject types updated.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
+        #endregion
+    }
+}

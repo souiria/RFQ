@@ -16,7 +16,17 @@ namespace DocumentConversionEngine.Tests
         {
             string fileName = Path.GetFileNameWithoutExtension("../../../EDI/12001010_AIHX18472AW3.csv");
             byte[] file = File.ReadAllBytes("../../../EDI/12001010_AIHX18472AW3.csv");
-            _EdiFileDataAggregates = DocumentConverter.ConvertEdiCSVFile(file, fileName);
+            object result = DocumentConverter.ConvertCSV(file, fileName);
+            switch (result)
+            {
+                case IEnumerable<EdiFileDataDto> ediFileData:
+                _EdiFileDataAggregates = ediFileData;
+                break;
+                default:
+                Assert.Fail("Expected result to be of type IEnumerable<EdiFileDataDto>");
+                return;
+            }
+
             Assert.That(_EdiFileDataAggregates, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(5);
             Assert.That(_EdiFileDataAggregates.Count, countConstraint);
@@ -30,7 +40,17 @@ namespace DocumentConversionEngine.Tests
         {
             string fileName = Path.GetFileNameWithoutExtension("../../../EDI/12001010_plu_280425_58312351.csv");
             byte[] file = File.ReadAllBytes("../../../EDI/12001010_plu_280425_58312351.csv");
-            _EdiFileDataAggregates = DocumentConverter.ConvertEdiCSVFile(file, fileName);
+            object result = DocumentConverter.ConvertCSV(file, fileName);
+            switch(result)
+            {
+                case IEnumerable<EdiFileDataDto> ediFileData:
+                    _EdiFileDataAggregates = ediFileData;
+                    break;
+                default:
+                    Assert.Fail("Expected result to be of type IEnumerable<EdiFileDataDto>");
+                    return;
+            }
+
             Assert.That(_EdiFileDataAggregates, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(136);
             Assert.That(_EdiFileDataAggregates.Count, countConstraint);

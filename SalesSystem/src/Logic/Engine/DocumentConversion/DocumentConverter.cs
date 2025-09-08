@@ -52,18 +52,40 @@
             return crossReferences;
         }
 
+        public static object ConvertCSV(byte[] file, string fileName)
+        {
+            MemoryStream ms = new MemoryStream(file);
+            using StreamReader reader = new StreamReader(ms, Encoding.Default);
+            string? line = reader.ReadLine();   
+            while (line == null)
+            {
+                line = reader.ReadLine();
+            }
+
+            if (line.Contains('%', StringComparison.InvariantCulture))
+            {
+                IEnumerable<FordCsvDto> fordCsvData = ConvertFordCSVFile(file);
+                return fordCsvData;
+            }
+            else
+            {
+                IEnumerable<EdiFileDataDto> ediFileData = ConvertEdiCSVFile(file, fileName);
+                return ediFileData;
+            }
+        }
+
         /// <summary>
         /// Method to convert the Ford CSV BOM files
         /// </summary>
         /// <param name="file"></param>
         /// <returns>customerNumbers and quantities in the file</returns>
-        public static IEnumerable<FordCsvDto> ConvertFordCSVFile(byte[] file)
+        static IEnumerable<FordCsvDto> ConvertFordCSVFile(byte[] file)
         {
             IEnumerable<FordCsvDto> crossReferences = PartSearchConverter.ConvertFordCSVFile(file);
             return crossReferences;
         }
 
-        public static IEnumerable<EdiFileDataDto> ConvertEdiCSVFile(byte[] file, string fileName)
+        static IEnumerable<EdiFileDataDto> ConvertEdiCSVFile(byte[] file, string fileName)
         {
             IEnumerable<EdiFileDataDto> ediFileData = EdiFileConverter.ConvertEdiCSVFile(file, fileName);
             return ediFileData;

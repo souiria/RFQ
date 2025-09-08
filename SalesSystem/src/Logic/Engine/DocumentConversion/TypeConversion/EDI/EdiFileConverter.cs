@@ -5,6 +5,7 @@
         public static IEnumerable<EdiFileDataDto> ConvertEdiCSVFile(byte[] file, string fileName)
         {
             List<EdiFileDataDto> ediFileData = new List<EdiFileDataDto>();
+            List<EdiFileDataDto> duplicateEdiFileData = new List<EdiFileDataDto>();
 
             string fileContents = Encoding.UTF8.GetString(file);
             string[] newLineChars = { "\r\n", "\r", "\n" };
@@ -17,7 +18,15 @@
                 try
                 {
                     EdiFileDataDto data = ConvertEdiCSVRow(lineData, fileName);
-                    ediFileData.Add(data);
+
+                    if(ediFileData.Any(x => x.FileName == data.FileName && x.DispatchNumber == data.DispatchNumber && x.DispatchDate == data.DispatchDate))
+                    {
+                        // If the data already exists, add it to the duplicate list
+                        duplicateEdiFileData.Add(data);
+                        continue; // Skip adding this duplicate entry to the main list
+                    }
+
+                     ediFileData.Add(data);
                 }
                 catch (FormatException ex)
                 {
