@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SalesSystem\src\Access\Rfq\Rfq.csproj" />
+    <ProjectReference Include="..\..\src\Access\Rfq\Rfq.csproj" />
   </ItemGroup>
 
   <ItemGroup>

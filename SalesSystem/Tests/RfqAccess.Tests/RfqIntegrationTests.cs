@@ -4,14 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Rfq;
-using Rfq.CQRS.Command;
-using Rfq.Data.Interface;
-using Rfq.Data.Model;
 using Rfq.Endpoints.GrpcServices;
 using Rfq.Enums;
-using Rfq.Extensions;
 using Rfq.Services;
-using SharedKernel;
 
 namespace RfqAccess.Tests
 {
