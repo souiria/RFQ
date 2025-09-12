@@ -21,7 +21,17 @@
 
         static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
-            string? connectionString = configuration.GetConnectionString("Database");
+            string? appName = Environment.GetEnvironmentVariable("Fabric_ApplicationName");
+            string? connectionString = "";
+            if (appName == null)
+            {
+                connectionString = configuration.GetConnectionString("Database");
+            }
+            else
+            {
+                connectionString = Environment.GetEnvironmentVariable("SF.Access.CDbs_CDB_DATABASE_CONNECTION") ?? throw new InvalidOperationException("SF.Access.CDbs_CDB_DATABASE_CONNECTION is null.");
+            }
+
             TimeSpan retryDelay = TimeSpan.FromSeconds(30);
 
             services.AddScoped(typeof(ICDbReadRepository<>), typeof(CDbRepository<>));

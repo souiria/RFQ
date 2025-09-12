@@ -1,0 +1,34 @@
+name: seqdev
+
+volumes:
+  seq_data:
+    driver: local
+
+services:
+  seq:
+    image: datalust/seq:latest
+    container_name: seq_service
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_ADMINUSERNAME=${SEQ_ADMIN_USERNAME:-admin}
+      - SEQ_FIRSTRUN_ADMINPASSWORD=${SEQ_ADMIN_PASSWORD:-Seq4202!!!!}
+      - SEQ_CACHE_SYSTEMRAMTARGET=0.5
+    ports:
+      - "127.0.0.1:5341:5341"  # HTTP ingestion endpoint
+      - "127.0.0.1:80:80"      # Web UI
+    volumes:
+      - seq_data:/data
+    restart: unless-stopped
+    networks:
+      - shared-network
+    healthcheck:
+      test: ["CMD", "C:\\Users\\canachl\\bin\\curl.exe", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  shared-network:
+    external: true
+    name: shared-dev-network
