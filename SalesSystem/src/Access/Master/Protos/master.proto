@@ -22,11 +22,13 @@ service Master {
   rpc GetCustomerLocationGrpc (CustomerLocationGrpcRequest) returns (ListCustomerLocationGrpc);
   rpc GetCustomerLocationGrpcStream (CustomerLocationGrpcRequest) returns (stream CustomerLocationGrpc);
   rpc GetCustomerLocationGrpcById (CustomerLocationByIdGrpcRequest) returns (ListCustomerLocationGrpc);
+  rpc GetCustomerLocationGrpcByCustomerId (CustomerLocationByCustomerIdGrpcRequest) returns (ListCustomerLocationGrpc);
   rpc GetCustomerLocationGrpcByUserId (CustomerLocationByUserIdGrpcRequest) returns (ListCustomerLocationGrpc);
   rpc GetCustomerSalesEntityGrpc (CustomerSalesEntityGrpcRequest) returns (ListCustomerSalesEntityGrpc);
   rpc GetCustomerSalesEntityGrpcStream (CustomerSalesEntityGrpcRequest) returns (stream CustomerSalesEntityGrpc);
   rpc GetCustomerSalesEntityGrpcByUserId (CustomerSalesEntityByUserIdGrpcRequest) returns (ListCustomerSalesEntityGrpc);
   rpc GetCustomerProjectAssociationGrpc (CustomerProjectAssociationGrpcRequest) returns (ListCustomerProjectAssociationGrpc);
+  rpc GetCustomerProjectAssociationGrpcByLocationId (CustomerProjectAssociationByLocationIdGrpcRequest) returns (ListCustomerProjectAssociationGrpc);
   rpc GetCustomerProjectAssociationGrpcStream (CustomerProjectAssociationGrpcRequest) returns (stream CustomerProjectAssociationGrpc);
   rpc GetCustomerProjectAssociationGrpcByUserId (CustomerProjectAssociationByUserIdGrpcRequest) returns (ListCustomerProjectAssociationGrpc);
   rpc GetCustomerBusinessUserAssociationGrpc (CustomerBusinessUserAssociationGrpcRequest) returns (ListCustomerBusinessUserAssociationGrpc);
@@ -117,6 +119,10 @@ message CustomerLocationByUserIdGrpcRequest {
     string UserId = 1;
 }
 
+message CustomerLocationByCustomerIdGrpcRequest {
+    string CustomerId = 1;
+}
+
 message CustomerLocationGrpc {
     google.protobuf.StringValue Id = 1;
     google.protobuf.StringValue CustomerCode = 2;
@@ -158,6 +164,10 @@ message CustomerProjectAssociationGrpcRequest {
 
 message CustomerProjectAssociationByUserIdGrpcRequest {
     string UserId = 1;
+}
+
+message CustomerProjectAssociationByLocationIdGrpcRequest {
+    string LocationId = 1;
 }
 
 message CustomerProjectAssociationGrpc {

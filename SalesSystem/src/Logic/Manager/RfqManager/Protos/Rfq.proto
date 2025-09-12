@@ -1,5 +1,9 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
 option csharp_namespace = "RfqModule";
 
 package RfqModule;
@@ -11,6 +15,12 @@ service RfqModule {
 
   // Uploads a file
   rpc UploadFile (FileUploadRequest) returns (FileUploadResponse);
+  rpc GetCustomersGrpc (GetCustomersGrpcRequest) returns (GetCustomersGrpcResponse);
+  rpc GetLocationsByCustomerIdGrpc (GetLocationsByCustomerIdGrpcRequest) returns (GetLocationsByCustomerIdGrpcResponse);
+  rpc GetProjectsByLocationIdGrpc (GetProjectsByLocationIdGrpcRequest) returns (GetProjectsByLocationIdGrpcResponse);
+  rpc GetVehiclesByProjectCodeGrpc (GetVehicleByProjectCodeGrpcRequest) returns (GetVehicleByProjectCodeGrpcResponse);
+  rpc GetRfqReasonsGrpc (GetRfqReasonsGrpcRequest) returns (GetRfqReasonsGrpcResponse);
+  rpc UploadPartsGrpc (UploadPartsRequestGrpcRequest) returns (UploadPartsRequestGrpcResponse);
 }
 
 // The request message containing the user's name.
@@ -32,4 +42,119 @@ message FileUploadResponse {
   bool success = 1;
   string message = 2;
   // Additional fields for the response as needed
+}
+
+message GetCustomersGrpcRequest {
+	int32 Position = 1;
+	int32 Takeamount = 2;
+}
+
+// Shared request parameter message
+message GetCustomersGrpcResponse {
+	repeated CustomerGrpc Customers = 1;
+	int32 TotalCount = 2;
+}
+
+message CustomerGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue CustomerBusinessGroupCode = 2;
+    google.protobuf.StringValue CustomerBusinessGroupName = 3;   
+    google.protobuf.StringValue SEWSEBusinessTeam = 4;
+    google.protobuf.BoolValue IsActive = 5;
+}
+
+message GetLocationsByCustomerIdGrpcRequest {
+    google.protobuf.StringValue CustomerId = 1;
+}
+
+message GetLocationsByCustomerIdGrpcResponse {
+    repeated CustomerLocationGrpc Locations = 1;
+}
+
+message CustomerLocationGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue CustomerCode = 2;
+    google.protobuf.StringValue CustomerBusinessHierarchyGuid = 3;
+    google.protobuf.StringValue CustomerName = 4;   
+    google.protobuf.BoolValue IsActive = 5;
+}
+
+message GetProjectsByLocationIdGrpcRequest {
+    google.protobuf.StringValue LocationId = 1;
+}
+
+message GetProjectsByLocationIdGrpcResponse {
+    repeated ProjectGrpc Projects = 1;
+}
+
+message ProjectGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue ProjectCode = 2;   
+    google.protobuf.StringValue ProjectName = 3;
+    google.protobuf.StringValue CustomerProjectCode = 4;
+    google.protobuf.StringValue ProjectDescription = 5;
+    google.protobuf.Int32Value ProjectAnnualVolume = 6;
+    google.protobuf.StringValue ProgramHierarchyGuid = 7;
+    google.protobuf.BoolValue IsActive = 8;
+}
+
+message GetVehicleByProjectCodeGrpcRequest {
+    google.protobuf.StringValue ProjectCode = 1;
+}
+
+message GetVehicleByProjectCodeGrpcResponse {
+    repeated VehicleGrpc Vehicles = 1;
+}
+
+message VehicleGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue VehicleName = 2;   
+    google.protobuf.StringValue ProjectReference = 3;
+    google.protobuf.StringValue VehicleDisplay = 4;
+    google.protobuf.BoolValue IsActive = 5;
+}
+
+message GetRfqReasonsGrpcRequest {
+	int32 RequestType = 1;
+	int32 Position = 2;
+	int32 Take = 3;
+}
+
+message GetRfqReasonsGrpcResponse {
+    repeated RfqReasonGrpc RfqReasons = 1;
+}
+
+message RfqReasonGrpc {
+    google.protobuf.Int32Value RowId = 1;
+    google.protobuf.StringValue RfqReasonTitle = 2;   
+}
+
+message UploadPartsRequestGrpcRequest {
+  bytes FileData = 1;
+  string FileName = 2;
+  RfqProject Project = 3;
+}
+
+message RfqProject {
+	int64 RowId = 1;
+	string RfqNumber = 2;
+	string CustomerBusinessUnitGuid = 3;
+    string CustomerLocationGuid = 4;
+	string ProjectGuid = 5;
+	int32 RfqReasonId = 6;
+	google.protobuf.Timestamp RfqResponseDeadline = 7;
+	string CarModelGuid = 8;
+	int32 VehicleVolume = 9;
+}
+
+message UploadPartsRequestGrpcResponse {
+    bool Success = 1;
+    string Message = 2;
+    repeated CustomerParts PartNumbers = 3;
+}
+
+message CustomerParts {
+    google.protobuf.StringValue PartNumber1 = 1;
+    google.protobuf.StringValue PartNumber2 = 2;
+    google.protobuf.StringValue PartNumber3 = 3;
 }

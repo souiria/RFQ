@@ -84,12 +84,15 @@
 
             RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
             CancellationToken cancellationToken = context.CancellationToken;
-            bool response = await _RfqAccessService.CreateRfqDrawingPartNumbers(request, cancellationToken);
-            if (response)
+            ListRfqDrawingPartNumbersGrpc response = await _RfqAccessService.CreateRfqDrawingPartNumbers(request, cancellationToken);
+            if (request.RfqDrawingPartNumbersGrpcsToCreate.Count == response.RfqDrawingPartNumbers.Count)
             {
                 responseMessage.Message = $"{request.RfqDrawingPartNumbersGrpcsToCreate.Count} RfqDrawingPartNumbers types created successfully.";
                 responseMessage.SaveSuccess = true;
-
+                foreach(RfqDrawingPartNumbersGrpc drawingPartNumber in response.RfqDrawingPartNumbers)
+                {
+                    responseMessage.StringValue = drawingPartNumber.RowId.ToString(CultureInfo.InvariantCulture) + ",";
+                }
             }
             else
             {
@@ -209,11 +212,15 @@
 
             RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
             CancellationToken cancellationToken = context.CancellationToken;
-            bool response = await _RfqAccessService.CreateRfqProjects(request, cancellationToken);
-            if (response)
+            ListRfqProjectGrpc response = await _RfqAccessService.CreateRfqProjects(request, cancellationToken);
+            if (response.RfqProjects.Count == request.RfqProjectGrpcsToCreate.Count)
             {
                 responseMessage.Message = $"{request.RfqProjectGrpcsToCreate.Count} RfqProject types created successfully.";
                 responseMessage.SaveSuccess = true;
+                foreach(RfqProjectGrpc project in response.RfqProjects)
+                {
+                    responseMessage.StringValue = project.RowId.ToString(CultureInfo.InvariantCulture) + ",";
+                }
             }
             else
             {
@@ -334,11 +341,15 @@
 
             RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
             CancellationToken cancellationToken = context.CancellationToken;
-            bool response = await _RfqAccessService.CreateRfqNotes(request, cancellationToken);
-            if (response)
+            ListRfqNotesGrpc response = await _RfqAccessService.CreateRfqNotes(request, cancellationToken);
+            if (response.RfqNotes.Count == request.RfqNotesGrpcsToCreate.Count)
             {
                 responseMessage.Message = $"{request.RfqNotesGrpcsToCreate.Count} RfqNotes types created successfully.";
                 responseMessage.SaveSuccess = true;
+                foreach(RfqNotesGrpc notes in response.RfqNotes)
+                {
+                    responseMessage.StringValue = notes.RowId.ToString(CultureInfo.InvariantCulture) + ",";
+                }
             }
             else
             {
@@ -453,11 +464,15 @@
 
             RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
             CancellationToken cancellationToken = context.CancellationToken;
-            bool response = await _RfqAccessService.CreateRfqReason(request, cancellationToken);
-            if (response)
+            ListRfqReasonGrpc response = await _RfqAccessService.CreateRfqReason(request, cancellationToken);
+            if (response.RfqReasons.Count == request.RfqReasonGrpcsToCreate.Count)
             {
                 responseMessage.Message = $"{request.RfqReasonGrpcsToCreate.Count} RfqReason types created successfully.";
                 responseMessage.SaveSuccess = true;
+                foreach(RfqReasonGrpc reason in response.RfqReasons)
+                {
+                    responseMessage.StringValue = reason.RowId.ToString(CultureInfo.InvariantCulture) + ",";
+                }
             }
             else
             {

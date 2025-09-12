@@ -304,6 +304,23 @@
             }
         }
 
+        public async Task<ListCustomerLocationGrpc> GetCustomerLocationsByCustomerId(string customerId ,CancellationToken cancellationToken)
+        {
+            await Task.Delay(0, cancellationToken);
+            _FilteredLocations.CustomerLocationGrpc.Clear();
+            if (_CustomerLocations.CustomerLocationGrpc.Any())
+            {
+                List<CustomerLocationGrpc> filteredLocations = _CustomerLocations.CustomerLocationGrpc.Where(x => x.CustomerBusinessHierarchyGuid == customerId).ToList();
+                _FilteredLocations.CustomerLocationGrpc.AddRange(filteredLocations);
+                return _FilteredLocations;
+            }
+            else
+            {
+                await PopulateCustomerLocationsAsync(cancellationToken);
+                return _FilteredLocations;
+            }
+        }   
+
         public async Task<ListCustomerProjectAssociationGrpc> GetAllCustomerProjectAssociations(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -360,6 +377,23 @@
                 return _FilteredCustomerProjectAssociations;
             }
         }
+
+        public async Task<ListCustomerProjectAssociationGrpc> GetCustomerProjectAssociationsByLocationId(string locationId ,CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            _FilteredCustomerProjectAssociations.CustomerProjectAssociationGrpc.Clear();
+            if (_CustomerProjectAssociations.CustomerProjectAssociationGrpc.Any())
+            {
+                List<CustomerProjectAssociationGrpc> filteredProjects = _CustomerProjectAssociations.CustomerProjectAssociationGrpc.Where(x => x.CustomerLocationGuid == locationId).ToList();
+                _FilteredCustomerProjectAssociations.CustomerProjectAssociationGrpc.AddRange(filteredProjects);
+                return _FilteredCustomerProjectAssociations;
+            }
+            else
+            {
+                await PopulateCustomerProjectAssociationsAsync(cancellationToken);
+                return _FilteredCustomerProjectAssociations;
+            }
+        }   
 
         public async Task<ListCustomerSalesEntityGrpc> GetAllCustomerSalesEntities(CancellationToken cancellationToken)
         {

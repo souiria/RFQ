@@ -5,10 +5,10 @@
         public static IEnumerable<ComponentDto> GetHarnessMainNodeComponents(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            ComponentDto model = new ComponentDto();
             List<ComponentDto> collection = new List<ComponentDto>();
             foreach (string line in lines)
             {
+                ComponentDto model = new ComponentDto();
                 string[] split = line.Split(separator, StringSplitOptions.None);
                 ErrorCheckHelper.CheckLineLengthException(split.Length, 31, line);
 
@@ -51,6 +51,7 @@
                 collection.Add(model);
             }
 
+            List< ComponentDto > s = collection.Where(x => !string.IsNullOrWhiteSpace(x.PartNumber1)).ToList();
             return collection;
         }
     }

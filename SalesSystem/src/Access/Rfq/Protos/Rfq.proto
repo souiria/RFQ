@@ -55,6 +55,7 @@ message GrpcRequestParameter {
 message RfqCrudGrpcResponse {
     bool SaveSuccess = 1;
 	string Message = 2;
+	google.protobuf.StringValue StringValue = 3;
 }
 
 message RfqDrawingPartNumbersGrpcRequest {
@@ -92,12 +93,13 @@ message RfqProjectGrpc {
 	int64 RowId = 1;
 	string RfqNumber = 2;
 	google.protobuf.StringValue CustomerBusinessUnitGuid = 3;
-	google.protobuf.StringValue ProjectGuid = 4;
-	google.protobuf.Int32Value RfqReasonId = 5;
-	google.protobuf.Timestamp RfqResponseDeadline = 6;
-	google.protobuf.StringValue CarModelGuid = 7;
-	google.protobuf.Int32Value VehicleVolume = 8;
-	google.protobuf.Timestamp CreatedDate = 9;
+	google.protobuf.StringValue CustomerLocationGuid = 4;
+	google.protobuf.StringValue ProjectGuid = 5;
+	google.protobuf.Int32Value RfqReasonId = 6;
+	google.protobuf.Timestamp RfqResponseDeadline = 7;
+	google.protobuf.StringValue CarModelGuid = 8;
+	google.protobuf.Int32Value VehicleVolume = 9;
+	google.protobuf.Timestamp CreatedDate = 10;
 }
 
 message ListRfqProjectGrpc {

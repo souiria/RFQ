@@ -8,6 +8,8 @@
         { get; set; } = string.Empty;
         public Guid? CustomerBusinessUnitGuid
         { get; set; }
+        public Guid? CustomerLocationGuid
+        { get; set; }
         public Guid? ProjectGuid
         { get; set; }
         public int? RfqReasonId

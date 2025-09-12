@@ -19,19 +19,42 @@
             return result;
         }
 
-        public override async Task<FileUploadResponse> UploadFile(FileUploadRequest request, ServerCallContext context)
+        public override async Task<GetCustomersGrpcResponse> GetCustomersGrpc(GetCustomersGrpcRequest request, ServerCallContext context)
         {
-            FileUploadResponse uploadResponse = await _RfqManagerService.UploadFileAsync(request);
-            if(uploadResponse.Success == false)
-            {
-                _Logger.GenericLogInformation("File upload failed: " + uploadResponse.Message);
-                uploadResponse.Message = "File upload failed: " + uploadResponse.Message;
-                return uploadResponse;
-            }
+            _Logger.GenericLogInformation("GetCustomersGrpc starting");
+            GetCustomersGrpcResponse response = await _RfqManagerService.GetCustomersGrpc(request);
+            return response;
+        }
 
-            _Logger.GenericLogInformation("File " + request.FileName + " uploaded successfully.");
-            uploadResponse.Message = "File " + request.FileName + " uploaded successfully.";
-            return uploadResponse;
+        public override async Task<GetLocationsByCustomerIdGrpcResponse> GetLocationsByCustomerIdGrpc(GetLocationsByCustomerIdGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetLocationsByCustomerIdGrpc starting");
+            GetLocationsByCustomerIdGrpcResponse response = await _RfqManagerService.GetLocationsByCustomerIdGrpc(request);
+            return response;
+        }
+        public override async Task<GetProjectsByLocationIdGrpcResponse> GetProjectsByLocationIdGrpc(GetProjectsByLocationIdGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetProjectsByLocationIdGrpc starting");
+            GetProjectsByLocationIdGrpcResponse response = await _RfqManagerService.GetProjectsByLocationIdGrpc(request);
+            return response;
+        }
+        public override async Task<GetVehicleByProjectCodeGrpcResponse> GetVehiclesByProjectCodeGrpc(GetVehicleByProjectCodeGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetVehiclesByProjectCodeGrpc starting");
+            GetVehicleByProjectCodeGrpcResponse response = await _RfqManagerService.GetVehiclesByProjectCodeGrpc(request);
+            return response;
+        }
+        public override async Task<GetRfqReasonsGrpcResponse> GetRfqReasonsGrpc(GetRfqReasonsGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetRfqReasonsGrpc starting");
+            GetRfqReasonsGrpcResponse response = await _RfqManagerService.GetRfqReasonsGrpc(request);
+            return response;
+        }
+        public override async Task<UploadPartsRequestGrpcResponse> UploadPartsGrpc(UploadPartsRequestGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("UploadPartsGrpc starting");
+            UploadPartsRequestGrpcResponse response = await _RfqManagerService.UploadPartsGrpc(request);
+            return response;
         }
     }
 }

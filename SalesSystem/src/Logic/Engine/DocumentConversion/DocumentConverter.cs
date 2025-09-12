@@ -55,7 +55,7 @@
         public static object ConvertCSV(byte[] file, string fileName)
         {
             MemoryStream ms = new MemoryStream(file);
-            using StreamReader reader = new StreamReader(ms, Encoding.Default);
+            using StreamReader reader = new StreamReader(ms, Encoding.UTF8);
             string? line = reader.ReadLine();   
             while (line == null)
             {

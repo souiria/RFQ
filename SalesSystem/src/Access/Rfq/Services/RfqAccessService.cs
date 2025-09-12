@@ -136,13 +136,13 @@
             return responseList;
         }
 
-        public async Task<bool> CreateRfqDrawingPartNumbers(RfqDrawingPartNumbersGrpcRequest request, CancellationToken cancellationToken)
+        public async Task<ListRfqDrawingPartNumbersGrpc> CreateRfqDrawingPartNumbers(RfqDrawingPartNumbersGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             ListRfqDrawingPartNumbersGrpc responseList = new ListRfqDrawingPartNumbersGrpc();
             if (request == null || request.RfqDrawingPartNumbersGrpcsToCreate == null || request.RfqDrawingPartNumbersGrpcsToCreate.Count == 0)
             {
-                return false;
+                return responseList;
             }
 
             using (IServiceScope scope = _ServiceProvider.CreateScope())
@@ -155,11 +155,12 @@
                     List<DbRfqDrawingPartNumber> createdComponents = result.Value;
                     List<RfqDrawingPartNumbersGrpc> updatedGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
                     _ListRfqDrawingPartNumbers.RfqDrawingPartNumbers.AddRange(updatedGrpcComponents);
-                    return true;
+                    responseList.RfqDrawingPartNumbers.AddRange(updatedGrpcComponents);
+                    return responseList;
                 }
                 else
                 {
-                    return false;
+                    return responseList;
                 }
             }
         }
@@ -242,13 +243,13 @@
             return responseList;
         }
 
-        public async Task<bool> CreateRfqProjects(RfqProjectGrpcRequest request, CancellationToken cancellationToken)
+        public async Task<ListRfqProjectGrpc> CreateRfqProjects(RfqProjectGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             ListRfqProjectGrpc responseList = new ListRfqProjectGrpc();
             if (request == null || request.RfqProjectGrpcsToCreate == null || request.RfqProjectGrpcsToCreate.Count == 0)
             {
-                return false;
+                return responseList;
             }
 
             using (IServiceScope scope = _ServiceProvider.CreateScope())
@@ -261,11 +262,12 @@
                     List<DbRfqProject> createdProjects = result.Value;
                     List<RfqProjectGrpc> updatedGrpcProjects = createdProjects.Select(p => p.FromEntity()).ToList();
                     _ListRfqProjects.RfqProjects.AddRange(updatedGrpcProjects);
-                    return true;
+                    responseList.RfqProjects.AddRange(updatedGrpcProjects);
+                    return responseList;
                 }
                 else
                 {
-                    return false;
+                    return responseList;
                 }
             }
         }
@@ -349,13 +351,13 @@
             return responseList;
         }
 
-        public async Task<bool> CreateRfqNotes(RfqNotesGrpcRequest request, CancellationToken cancellationToken)
+        public async Task<ListRfqNotesGrpc> CreateRfqNotes(RfqNotesGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             ListRfqNotesGrpc responseList = new ListRfqNotesGrpc();
             if (request == null || request.RfqNotesGrpcsToCreate == null || request.RfqNotesGrpcsToCreate.Count == 0)
             {
-                return false;
+                return responseList;
             }
 
             using (IServiceScope scope = _ServiceProvider.CreateScope())
@@ -368,11 +370,12 @@
                     List<DbRfqNotes> createdComponents = result.Value;
                     List<RfqNotesGrpc> updatedGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
                     _ListRfqNotes.RfqNotes.AddRange(updatedGrpcComponents);
-                    return true;
+                    responseList.RfqNotes.AddRange(updatedGrpcComponents);
+                    return responseList;
                 }
                 else
                 {
-                    return false;
+                    return responseList;
                 }
             }
         }
@@ -457,13 +460,13 @@
             return responseList;
         }
 
-        public async Task<bool> CreateRfqReason(RfqReasonGrpcRequest request, CancellationToken cancellationToken)
+        public async Task<ListRfqReasonGrpc> CreateRfqReason(RfqReasonGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             ListRfqReasonGrpc responseList = new ListRfqReasonGrpc();
             if (request == null || request.RfqReasonGrpcsToCreate == null || request.RfqReasonGrpcsToCreate.Count == 0)
             {
-                return false;
+                return responseList;
             }
 
             using (IServiceScope scope = _ServiceProvider.CreateScope())
@@ -476,11 +479,12 @@
                     List<DbRfqReason> createdComponents = result.Value;
                     List<RfqReasonGrpc> updatedGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
                     _ListRfqReasons.RfqReasons.AddRange(updatedGrpcComponents);
-                    return true;
+                    responseList.RfqReasons.AddRange(updatedGrpcComponents);
+                    return responseList;
                 }
                 else
                 {
-                    return false;
+                    return responseList;
                 }
             }
         }

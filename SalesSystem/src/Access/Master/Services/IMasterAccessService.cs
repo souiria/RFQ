@@ -15,10 +15,12 @@
         Task<bool> PopulateCustomersAsync(CancellationToken cancellationToken);
         Task<ListCustomerLocationGrpc> GetAllCustomerLocations(CancellationToken cancellationToken);
         Task<ListCustomerLocationGrpc> GetCustomerLocationsById(string id, CancellationToken cancellationToken);
+        Task<ListCustomerLocationGrpc> GetCustomerLocationsByCustomerId(string customerId, CancellationToken cancellationToken);
         Task<ListCustomerLocationGrpc> GetCustomerLocationsByUserId(string userId, CancellationToken cancellationToken);
         Task<bool> PopulateCustomerLocationsAsync(CancellationToken cancellationToken);
         Task<ListCustomerProjectAssociationGrpc> GetAllCustomerProjectAssociations(CancellationToken cancellationToken);
         Task<ListCustomerProjectAssociationGrpc> GetAllCustomerProjectAssociationsByUserId(string userId,CancellationToken cancellationToken);
+        Task<ListCustomerProjectAssociationGrpc> GetCustomerProjectAssociationsByLocationId(string locationId, CancellationToken cancellationToken);
         Task<bool> PopulateCustomerProjectAssociationsAsync(CancellationToken cancellationToken);
         Task<ListCustomerSalesEntityGrpc> GetAllCustomerSalesEntities(CancellationToken cancellationToken);
         Task<ListCustomerSalesEntityGrpc> GetAllCustomerSalesByUserIdEntities(string userId, CancellationToken cancellationToken);

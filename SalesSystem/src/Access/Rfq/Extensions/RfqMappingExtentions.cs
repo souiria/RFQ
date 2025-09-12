@@ -43,6 +43,7 @@
             data.RowId = entity.RowId;
             data.RfqNumber = entity.RfqNumber;
             data.CustomerBusinessUnitGuid = entity.CustomerBusinessUnitGuid.ToString();
+            data.CustomerLocationGuid = entity.CustomerLocationGuid.ToString();
             data.ProjectGuid = entity.ProjectGuid.ToString();
             data.RfqReasonId = entity.RfqReasonId;
             data.RfqResponseDeadline = entity.RfqResponseDeadline?.ToUniversalTime().ToTimestamp();
@@ -57,6 +58,7 @@
             data.RowId = grpc.RowId;
             data.RfqNumber = grpc.RfqNumber;
             data.CustomerBusinessUnitGuid = Guid.Parse(grpc.CustomerBusinessUnitGuid);
+            data.CustomerLocationGuid = Guid.Parse(grpc.CustomerLocationGuid);
             data.ProjectGuid = Guid.Parse(grpc.ProjectGuid);
             data.RfqReasonId = grpc.RfqReasonId;
             data.RfqResponseDeadline = grpc.RfqResponseDeadline?.ToDateTime().ToLocalTime();
