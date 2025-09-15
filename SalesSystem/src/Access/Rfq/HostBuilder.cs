@@ -1,6 +1,4 @@
-﻿using Rfq.Services;
-
-namespace Rfq
+﻿namespace Rfq
 {
     public static class HostBuilder
     {

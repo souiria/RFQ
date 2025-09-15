@@ -1,5 +1,3 @@
-using Rfq.Services;
-
 namespace Rfq
 {
     public static class Program
