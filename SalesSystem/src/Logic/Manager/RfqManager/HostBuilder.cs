@@ -1,6 +1,4 @@
-﻿using Master.Endpoints.GrpcServices;
-
-namespace RfqModule
+﻿namespace RfqModule
 {
     public static class HostBuilder
     {

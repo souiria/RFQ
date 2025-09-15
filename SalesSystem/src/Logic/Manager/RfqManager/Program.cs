@@ -1,5 +1,3 @@
-using RfqModule;
-
 namespace RfqManager
 {
     class Program
