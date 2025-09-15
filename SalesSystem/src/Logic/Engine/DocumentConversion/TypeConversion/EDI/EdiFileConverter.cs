@@ -2,10 +2,11 @@
 {
     public static class EdiFileConverter
     {
-        public static IEnumerable<EdiFileDataDto> ConvertEdiCSVFile(byte[] file, string fileName)
+        public static EdiFileDataAggregate ConvertEdiCSVFile(byte[] file, string fileName)
         {
             List<EdiFileDataDto> ediFileData = new List<EdiFileDataDto>();
             List<EdiFileDataDto> duplicateEdiFileData = new List<EdiFileDataDto>();
+            EdiFileDataAggregate ediFileDataAggregate = new EdiFileDataAggregate();
 
             string fileContents = Encoding.UTF8.GetString(file);
             string[] newLineChars = { "\r\n", "\r", "\n" };
@@ -34,7 +35,9 @@
                 }
             }
 
-            return ediFileData;
+            ediFileDataAggregate.EdiFileDataDtos = ediFileData;
+            ediFileDataAggregate.DuplicateEdiFileDataDtos = duplicateEdiFileData;
+            return ediFileDataAggregate;
         }
 
         static EdiFileDataDto ConvertEdiCSVRow(string[] lineData, string fileName)

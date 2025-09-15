@@ -1,14 +1,14 @@
 ﻿using DocumentConversion;
-using SharedModels.DocumentConverter.EDI.DTO;
+using SharedModels.DocumentConverter.EDI.Aggregates;
 
 namespace DocumentConversionEngine.Tests
 {
     class EDIIntegraionTest
     {
-        IEnumerable<EdiFileDataDto> _EdiFileDataAggregates;
+        EdiFileDataAggregate _EdiFileDataAggregates;
         public EDIIntegraionTest()
         {
-            _EdiFileDataAggregates = new List<EdiFileDataDto>();
+            _EdiFileDataAggregates = new EdiFileDataAggregate();
         }
 
         [Test]
@@ -19,7 +19,7 @@ namespace DocumentConversionEngine.Tests
             object result = DocumentConverter.ConvertCSV(file, fileName);
             switch (result)
             {
-                case IEnumerable<EdiFileDataDto> ediFileData:
+                case EdiFileDataAggregate ediFileData:
                 _EdiFileDataAggregates = ediFileData;
                 break;
                 default:
@@ -28,12 +28,14 @@ namespace DocumentConversionEngine.Tests
             }
 
             Assert.That(_EdiFileDataAggregates, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(5);
-            Assert.That(_EdiFileDataAggregates.Count, countConstraint);
+            NUnit.Framework.Constraints.EqualConstraint ediCountConstraint = Is.EqualTo(1);
+            Assert.That(_EdiFileDataAggregates.EdiFileDataDtos.Count, ediCountConstraint);
+            NUnit.Framework.Constraints.EqualConstraint duplicateEdiCountConstraint = Is.EqualTo(4);
+            Assert.That(_EdiFileDataAggregates.DuplicateEdiFileDataDtos.Count, duplicateEdiCountConstraint);
             NUnit.Framework.Constraints.EqualConstraint customerNumberConstraint = Is.EqualTo("IHX18472AW");
-            Assert.That(_EdiFileDataAggregates.ElementAt(0).DispatchNumber, customerNumberConstraint);
+            Assert.That(_EdiFileDataAggregates.EdiFileDataDtos.ElementAt(0).DispatchNumber, customerNumberConstraint);
             NUnit.Framework.Constraints.EqualConstraint fileNameConstraint = Is.EqualTo("12001010_AIHX18472AW3");
-            Assert.That(_EdiFileDataAggregates.ElementAt(0).FileName, fileNameConstraint);
+            Assert.That(_EdiFileDataAggregates.EdiFileDataDtos.ElementAt(0).FileName, fileNameConstraint);
         }
         [Test]
         public void CovertEdiFile2Test()
@@ -43,7 +45,7 @@ namespace DocumentConversionEngine.Tests
             object result = DocumentConverter.ConvertCSV(file, fileName);
             switch(result)
             {
-                case IEnumerable<EdiFileDataDto> ediFileData:
+                case EdiFileDataAggregate ediFileData:
                     _EdiFileDataAggregates = ediFileData;
                     break;
                 default:
@@ -52,14 +54,16 @@ namespace DocumentConversionEngine.Tests
             }
 
             Assert.That(_EdiFileDataAggregates, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(136);
-            Assert.That(_EdiFileDataAggregates.Count, countConstraint);
+            NUnit.Framework.Constraints.EqualConstraint ediCountConstraint = Is.EqualTo(8);
+            Assert.That(_EdiFileDataAggregates.EdiFileDataDtos.Count, ediCountConstraint);
+            NUnit.Framework.Constraints.EqualConstraint duplicateEdiCountConstraint = Is.EqualTo(128);
+            Assert.That(_EdiFileDataAggregates.DuplicateEdiFileDataDtos.Count, duplicateEdiCountConstraint);
             NUnit.Framework.Constraints.EqualConstraint customerNumberConstraint = Is.EqualTo("33271");
-            Assert.That(_EdiFileDataAggregates.ElementAt(0).DispatchNumber, customerNumberConstraint);
+            Assert.That(_EdiFileDataAggregates.EdiFileDataDtos.ElementAt(0).DispatchNumber, customerNumberConstraint);
             NUnit.Framework.Constraints.EqualConstraint orderPriceConstraint = Is.EqualTo(0);
-            Assert.That(_EdiFileDataAggregates.ElementAt(0).OrderPrice, orderPriceConstraint);
+            Assert.That(_EdiFileDataAggregates.EdiFileDataDtos.ElementAt(0).OrderPrice, orderPriceConstraint);
             NUnit.Framework.Constraints.EqualConstraint fileNameConstraint = Is.EqualTo("12001010_plu_280425_58312351");
-            Assert.That(_EdiFileDataAggregates.ElementAt(0).FileName, fileNameConstraint);
+            Assert.That(_EdiFileDataAggregates.EdiFileDataDtos.ElementAt(0).FileName, fileNameConstraint);
         }
     }
 }

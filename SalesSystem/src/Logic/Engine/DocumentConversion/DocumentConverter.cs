@@ -69,7 +69,7 @@
             }
             else
             {
-                IEnumerable<EdiFileDataDto> ediFileData = ConvertEdiCSVFile(file, fileName);
+                EdiFileDataAggregate ediFileData = ConvertEdiCSVFile(file, fileName);
                 return ediFileData;
             }
         }
@@ -85,9 +85,9 @@
             return crossReferences;
         }
 
-        static IEnumerable<EdiFileDataDto> ConvertEdiCSVFile(byte[] file, string fileName)
+        static EdiFileDataAggregate ConvertEdiCSVFile(byte[] file, string fileName)
         {
-            IEnumerable<EdiFileDataDto> ediFileData = EdiFileConverter.ConvertEdiCSVFile(file, fileName);
+            EdiFileDataAggregate ediFileData = EdiFileConverter.ConvertEdiCSVFile(file, fileName);
             return ediFileData;
         }
     }
