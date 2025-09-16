@@ -1,0 +1,32 @@
+version: '3.8'
+
+name: pythondev
+
+services:
+  python-dev:
+    image: python:3.13-bookworm
+    container_name: python_container
+    working_dir: /home/webdev
+    volumes:
+      - webdev-store:/home/webdev
+      - c:\source\docker\webdev:/home/webdev/share
+      - ./init-webdev.sh:/init-webdev.sh:ro
+    environment:
+      - HOME=/home/webdev
+    command: ["bash", "/init-webdev.sh"]
+    ports:
+      - "127.0.0.1:2222:2222"
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    networks:
+      - python-network
+
+volumes:
+  webdev-store:
+    driver: local
+
+networks:
+  python-network:
+    external: true
+    name: shared-dev-network

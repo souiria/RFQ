@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -9,12 +9,31 @@
   <ItemGroup>
     <PackageReference Include="IDesign.Analyzers" Version="1.0.18" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="9.0.6" />
-    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="9.0.6" />
+    
+    <PackageReference Include="Google.Protobuf" Version="3.31.1" /><PackageReference Include="System.DirectoryServices.AccountManagement" Version="9.0.6" />
+	<PackageReference Include="Grpc.Net.Client" Version="2.71.0" />
+	<PackageReference Include="Grpc.Net.ClientFactory" Version="2.71.0" />
+	<PackageReference Include="Grpc.Tools" Version="2.72.0" />
+	<PackageReference Include="MudBlazor" Version="8.7.0" />
+	<PackageReference Include="SpreadsheetLight.Cross.Platform" Version="3.7.0" />
   </ItemGroup>
+	
+  <ItemGroup>
+	<Protobuf Include="Protos\rfq.proto" GrpcServices="Client" />
+  </ItemGroup>
+	
+  <Target Name="Tailwind" BeforeTargets="Compile">
+	<Exec Command="C:\Tailwind\tailwindcss.exe --input ./Styles/tailwind.css --output ./wwwroot/styles.css" />
+  </Target>
+
+  <Target Name="TailwindRelease" BeforeTargets="Compile" Condition="'$(Configuration)' == 'Release'">
+	<Exec EnvironmentVariables="NODE_ENV=production" Command="C:\Tailwind\tailwindcss.exe --input ./Styles/tailwind.css --output ./wwwroot/styles.css --minify" />
+  </Target>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Debug\SalesSystem.ServiceDefaults\SalesSystem.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\Utilities\SharedKernal\SharedKernel.csproj" />
+    <ProjectReference Include="..\..\Utilities\SharedModels\SharedModels.csproj" />
   </ItemGroup>
 
 </Project>

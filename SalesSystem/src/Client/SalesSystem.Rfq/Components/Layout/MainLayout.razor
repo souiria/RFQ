@@ -1,23 +1,175 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager NavManager
+@inject CustomAuthenticationStateProvider GetAuthenticationStateAsync
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<MudThemeProvider @ref="_mudThemeProvider" @bind-IsDarkMode="_isDarkMode" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+<MudLayout Class="@(_isDarkMode ? "dark" : null)">
+    <MudAppBar Elevation="1"
+               Fixed="true"
+               Color="Color.Transparent"
+               >
+        <MudStack Row="true"
+                  Spacing="2">
+            <MudText 
+                     Typo="Typo.h6"
+                     Class="my-auto">
+                Sales RFI/RFQ System
+            </MudText>
+        </MudStack>
+        <MudSpacer />
+        <MudStack Row="true"
+                  Spacing="1">
+            <MudText Typo="Typo.body2"
+                     Class="my-auto">
+                Welcome @globalValue!.FirstName
+            </MudText>
+            <MudToggleIconButton @bind-Toggled="@_isDarkMode"
+                                 Size="Size.Medium"
+                                 Color="Color.Default"
+                                 Icon="@Icons.Material.Rounded.LightMode"
+                                 ToggledIcon="@Icons.Material.Rounded.DarkMode"
+                                 Class="p-2 my-auto" />
+            <MudBadge Content="3"
+                      Color="Color.Error"
+                      Overlap="true"
+                      Class="my-auto">
+                <MudIconButton Size="Size.Medium"
+                               Class="p-2"
+                               Color="Color.Default"
+                               Icon="@Icons.Material.Rounded.Notifications" />
+            </MudBadge>
+            <MudMenu AnchorOrigin="Origin.BottomRight"
+                     TransformOrigin="Origin.TopRight">
+                <ActivatorContent>
+                    <MudChip T="string" Size="Size.Large"
+                             Color="Color.Inherit" Icon="@Icons.Material.Rounded.Menu">
+                        <MudStack Spacing="0"
+                                  Row="true"
+                                  Class="flex flex-row">
 
-        <article class="content px-4">
+                            <MudText Typo="Typo.body2"
+                                     Class="my-auto">
+                                Actions
+                            </MudText>
+                        </MudStack>
+                    </MudChip>
+                </ActivatorContent>
+                <ChildContent>
+                    <NavMenu />
+                </ChildContent>
+            </MudMenu>
+        </MudStack>
+    </MudAppBar>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge">
             @Body
-        </article>
-    </main>
-</div>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
 
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
+@code {
+    bool _drawerOpen = false;
+    private bool _isDarkMode;
+    private MudThemeProvider? _mudThemeProvider;
+    GlobalValue? globalValue;
+    string? userName;
+    string? firstName;
+    string? displayName;
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity!.IsAuthenticated)
+        {
+            userName = user.Identity.Name;
+        }
+        else
+        {
+            userName = "Anonymous";
+        }
+
+        using (PrincipalContext context2 = new PrincipalContext(ContextType.Domain))
+        {
+            UserPrincipal principal = UserPrincipal.FindByIdentity(context2, userName);
+            firstName = principal?.GivenName;
+            // string lastName = principal.Surname;
+            displayName = principal?.DisplayName;
+        }
+
+        globalValue = new GlobalValue
+        {
+            DisplayName = displayName,
+            FirstName = firstName,
+            UserAccount = userName
+        };
+    }
+
+    private MudTheme _baseTheme = new MudTheme()
+    {
+        // PaletteLight = new PaletteLight()
+        // {
+        //     AppbarBackground = "#ffffff",
+        //     Background = "#f8f7fa"
+        // },
+        // LayoutProperties = new LayoutProperties()
+        // {
+        //     DefaultBorderRadius = ".4rem"
+        // }
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && _mudThemeProvider!=null)
+        {
+            await _mudThemeProvider.WatchSystemDarkModeAsync(OnSystemDarkModeChanged);
+            StateHasChanged();
+        }
+    }
+
+    Task OnSystemDarkModeChanged(bool newValue)
+    {
+        _isDarkMode = newValue;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    void LandingPage()
+    {
+        NavManager.NavigateTo("/");
+    }
+
+    void InvalidDispatch()
+    {
+        NavManager.NavigateTo("/invalidDispatches");
+    }
+
+    void DuplicateFile()
+    {
+        NavManager.NavigateTo("/duplicateFile");
+    }
+
+    void AlreadyInvoiced()
+    {
+        NavManager.NavigateTo("/alreadyInvoiced");
+    }
+
+    void MissingPrice()
+    {
+        NavManager.NavigateTo("/missingPriceReport");
+    }
+
+    void MonthlyAccrual()
+    {
+        NavManager.NavigateTo("/monthlyAccrualReport");
+    }
+}

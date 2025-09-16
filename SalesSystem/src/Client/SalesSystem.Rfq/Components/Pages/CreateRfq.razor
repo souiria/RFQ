@@ -1,0 +1,339 @@
+﻿@page "/createRfq"
+@inject ISnackbar Snackbar
+@inject RfqUxService rfqUxService
+@rendermode InteractiveServer
+
+<style>
+    .file-upload-input {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 10;
+        opacity: 0;
+    }
+</style>
+
+<MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Create RFI/RFQ</MudText>
+<MudGrid Class="position-fixed">
+    <MudItem xs="12">
+            <MudPaper Elevation="25" Class="d-flex flex-row" Style="height:150px;">
+                <MudPaper Elevation="0" Class="pa-4">
+                <MudStack>
+                    
+                    <MudSelect @bind-Value="customerValue" Label="Customer" Placeholder="Please Select"
+                               AdornmentIcon="@Icons.Material.Filled.People" AdornmentColor="Color.Primary">
+                        <MudSelectItem Value="@("Renault")" Disabled="true">Renault</MudSelectItem>
+                        <MudSelectItem Value="@("Stellantis")">Stellantis</MudSelectItem>
+                        <MudSelectItem Value="@("Ford")">Ford</MudSelectItem>
+                    </MudSelect>
+                    <MudSelect @bind-Value="reasonValue" Label="Reason" Placeholder="Please Select"
+                               AdornmentIcon="@Icons.Material.Filled.Checklist" AdornmentColor="Color.Primary">
+                        <MudSelectItem Value="@("Nominated Business")" Disabled="true">Nominated Business</MudSelectItem>
+                        <MudSelectItem Value="@("Potential New Business")">Potential New Business</MudSelectItem>
+                    </MudSelect>
+                </MudStack>
+        </MudPaper>
+
+            <MudPaper Elevation="0" Class="pa-4">
+                <MudStack>
+                    <MudSelect @bind-Value="projectValue" Label="Project" Placeholder="Please Select"
+                               AdornmentIcon="@Icons.Material.Filled.Settings" AdornmentColor="Color.Primary">
+                        <MudSelectItem Value="@("HJB")" Disabled="true">HJB</MudSelectItem>
+                        <MudSelectItem Value="@("F1H")">F1H</MudSelectItem>
+                        <MudSelectItem Value="@("Lion")">Lion</MudSelectItem>
+                    </MudSelect>
+                    <MudNumericField @bind-Value="vehicleVolume" Label="Vehicle Volume" Variant="Variant.Text" Min="0" />
+                    
+                </MudStack>
+            </MudPaper>
+            <MudPaper Elevation="0" Class="pa-4">
+                <MudStack>
+                    <MudSelect @bind-Value="quotationValue" Label="Quotation Number" Placeholder="Please Select"
+                               AdornmentIcon="@Icons.Material.Filled.People" AdornmentColor="Color.Primary">
+                        <MudSelectItem Value="@("SEWS-25-025-005678")">SEWS-25-025-005678</MudSelectItem>
+                        <MudSelectItem Value="@("SEWS-25-025-005688")">SEWS-25-025-005688</MudSelectItem>
+                        <MudSelectItem Value="@("SEWS-25-025-005692")">SEWS-25-025-005692</MudSelectItem>
+                    </MudSelect>
+                    <MudDatePicker Label="Date Format" @bind-Date="_date" DateFormat="dd.MM.yyyy" />
+                </MudStack>
+            </MudPaper>
+
+            <MudPaper Elevation="0" Class="pa-4">
+                <MudStack>
+                    <MudFileUpload T="IBrowserFile"
+                                   @ref="@_fileUpload"
+                                   OnFilesChanged="OnInputFileChanged"
+                                   Hidden="@false"
+                                   InputClass="file-upload-input"
+                                   tabindex="-1"
+                                   @ondrop="@ClearDragClass"
+                                   @ondragenter="@SetDragClass"
+                                   @ondragleave="@ClearDragClass"
+                                   @ondragend="@ClearDragClass">
+                        <ActivatorContent>
+                            <MudPaper Height="95"
+                                      Outlined="true"
+                                      Class="@_dragClass">
+                                <MudText Typo="Typo.h6">
+                                    Drag and drop files here or click
+                                </MudText>
+                                
+                            </MudPaper>
+                        </ActivatorContent>
+                    </MudFileUpload>
+                    
+                </MudStack>
+            </MudPaper>
+            <MudPaper Elevation="0" Class="pa-4">
+                <MudStack>
+                <MudToolBar Gutters="@false"
+                            Class="relative d-flex justify-end gap-4">
+                    <MudButton Color="Color.Primary"
+                               OnClick="@OpenFilePickerAsync"
+                               Variant="Variant.Filled">
+                        Open file picker
+                    </MudButton>
+                    <MudButton Color="Color.Primary"
+                               Disabled="@(!_fileNames.Any())"
+                               OnClick="@Upload"
+                               Variant="Variant.Filled">
+                        Upload
+                    </MudButton>
+                    <MudButton Color="Color.Error"
+                               Disabled="@(!_fileNames.Any())"
+                               OnClick="@ClearAsync"
+                               Variant="Variant.Filled">
+                        Clear
+                    </MudButton>
+                </MudToolBar>
+                    @foreach (var file in _fileNames)
+                    {
+                        <MudChip T="string"
+                                 Color="Color.Dark"
+                                 Text="@file"
+                                 tabindex="-1" />
+                    }
+                </MudStack>
+            </MudPaper>
+            <MudPaper Elevation="0" Class="pa-4" MinWidth="20%">
+                <MudStack>
+                        <MudToolBar Gutters="@false"
+                                    Class="relative d-flex justify-end gap-4">
+                            <MudButton Color="Color.Primary"
+                                       OnClick="@SubmitDataAsync"
+                                       Variant="Variant.Filled">
+                                Submit
+                            </MudButton>
+                        </MudToolBar>
+                </MudStack>
+            </MudPaper>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" Style="height: calc(100vh - 280px);">
+        <MudPaper Elevation="25" Class="d-flex flex-row" Style="height: calc(100vh - 280px);">
+            <MudDataGrid T="RfqItemUx" Items="@rfqItems" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@_quickFilter"
+                         Hideable="true" Dense="true" Height="500px" FixedFooter="true">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Rfq Information</MudText>
+                    <MudSpacer />
+                    <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                                  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                </ToolBarContent>
+                <Columns>
+                    <TemplateColumn Title="Part Number" CellStyleFunc="@_cellStyleFunc" Sortable="true" SortBy="@(x => x.SampleColumn1)">
+                        <CellTemplate>
+                            <MudIcon Icon="@_iconString" Color="Color.Inherit" Title="@_status" />
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title="SampleColumn2" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn2)">
+                        <CellTemplate>
+                            <MudText Style="font-size:inherit">
+                                <MudHighlighter Text="@context.Item.SampleColumn2" HighlightedText="@_searchString" />
+                            </MudText>
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title="SampleColumn3" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn3)">
+                        <CellTemplate>
+                            <MudText Style="font-size:inherit">
+                                <MudHighlighter Text="@context.Item.SampleColumn3" HighlightedText="@_searchString" />
+                            </MudText>
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title="SampleColumn4" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn4)">
+                        <CellTemplate>
+                            <MudText Style="font-size:inherit">
+                                <MudHighlighter Text="@context.Item.SampleColumn4" HighlightedText="@_searchString" />
+                            </MudText>
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title="SampleColumn5" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn5)">
+                        <CellTemplate>
+                            <MudText Style="font-size:inherit">
+                                <MudHighlighter Text="@context.Item.SampleColumn5" HighlightedText="@_searchString" />
+                            </MudText>
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title="SampleColumn6" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn6)">
+                        <CellTemplate>
+                            <MudText Style="font-size:inherit">
+                                <MudHighlighter Text="@context.Item.SampleColumn6" HighlightedText="@_searchString" />
+                            </MudText>
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title="SampleColumn7" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn7)">
+                        <CellTemplate>
+                            <MudText Style="font-size:inherit">
+                                <MudHighlighter Text="@context.Item.SampleColumn7" HighlightedText="@_searchString" />
+                            </MudText>
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title="SampleColumn8" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn8)">
+                        <CellTemplate>
+                            <MudText Style="font-size:inherit">
+                                <MudHighlighter Text="@context.Item.SampleColumn9" HighlightedText="@_searchString" />
+                            </MudText>
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title="SampleColumn10" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn10)">
+                        <CellTemplate>
+                            <MudText Style="font-size:inherit">
+                                <MudHighlighter Text="@context.Item.SampleColumn10" HighlightedText="@_searchString" />
+                            </MudText>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+
+            </MudDataGrid>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private string? customerValue { get; set; }
+    private string? reasonValue { get; set; }
+    private string? projectValue { get; set; }
+    private string? quotationValue { get; set; }
+    private int vehicleVolume { get; set; }
+    private DateTime? _date = DateTime.Today;
+
+    private const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
+    private string _dragClass = DefaultDragClass;
+    private readonly List<string> _fileNames = new();
+    private MudFileUpload<IBrowserFile>? _fileUpload;
+
+    List<RfqItemUx>? rfqItems = new List<RfqItemUx>();
+    private string _searchString = string.Empty;
+    private string _iconString = string.Empty;
+    private string _status = string.Empty;
+    //private bool _sortNameByLength = false;
+    private bool visible;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await rfqUxService.GetCustomersAsync();
+    }
+
+    public void ToggleOverlay(bool value)
+    {
+        visible = value;
+    }
+
+    private async Task ClearAsync()
+    {
+        await (_fileUpload?.ClearAsync() ?? Task.CompletedTask);
+        _fileNames.Clear();
+        ClearDragClass();
+    }
+
+    private Task OpenFilePickerAsync()
+        => _fileUpload?.OpenFilePickerAsync() ?? Task.CompletedTask;
+
+    private void OnInputFileChanged(InputFileChangeEventArgs e)
+    {
+        ClearDragClass();
+        var files = e.GetMultipleFiles();
+        foreach (var file in files)
+        {
+            _fileNames.Add(file.Name);
+        }
+    }
+
+    private void Upload()
+    {
+        // Upload the files here
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        Snackbar.Add("TODO: Upload your files!");
+    }
+
+    private async Task SubmitDataAsync()
+    {
+        await Task.Delay(0);
+    }
+
+    private void SetDragClass()
+        => _dragClass = $"{DefaultDragClass} mud-border-primary";
+
+    private void ClearDragClass()
+        => _dragClass = DefaultDragClass;
+
+    private Func<RfqItemUx, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.SampleColumn1!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.SampleColumn2!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.SampleColumn3!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.SampleColumn4!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.SampleColumn5!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.SampleColumn6!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.SampleColumn7!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.SampleColumn8!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.SampleColumn9!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.SampleColumn10!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        // if (x.PercentComplete.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+        //     return true;
+
+        return false;
+    };
+
+    private Func<RfqItemUx, string> _cellStyleFunc => x =>
+    {
+        string style = "";
+
+        switch (x.SampleColumn1)
+        {
+            case "":
+                style += "color:#E5BDE5";
+                _iconString = Icons.Material.Filled.Airlines;
+                _status = "Airlines";
+                break;
+            default:
+                break;
+        }
+
+        return style;
+    };
+}

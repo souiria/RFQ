@@ -1,21 +1,21 @@
 using Grpc.Core;
 using Unit4;
 
-namespace Unit4.Services;
-
-public class GreeterService : Greeter.GreeterBase
+namespace Unit4.Services
 {
-    private readonly ILogger<GreeterService> _logger;
-    public GreeterService(ILogger<GreeterService> logger)
+    public class GreeterService : Greeter.GreeterBase
     {
-        _logger = logger;
-    }
-
-    public override Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context)
-    {
-        return Task.FromResult(new HelloReply
+        readonly ILogger<GreeterService> _Logger;
+        public GreeterService(ILogger<GreeterService> logger)
         {
-            Message = "Hello " + request.Name
-        });
+            _Logger = logger;
+        }
+
+        public override async Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context)
+        {
+            HelloReply reply = new HelloReply();
+            reply.Message = "Hello " + request.Name;
+            return await Task.FromResult(reply);
+        }
     }
 }
