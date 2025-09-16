@@ -1,0 +1,143 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "Rfq";
+
+package Rfq;
+
+// The greeting service definition.
+service Rfq {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply);
+  rpc CreateRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc ReadRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequest) returns (ListRfqDrawingPartNumbersGrpc);
+  rpc UpdateRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequest) returns (RfqCrudGrpcResponse);
+
+  rpc CreateRfqProjectGrpc (RfqProjectGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc ReadRfqProjectGrpc (RfqProjectGrpcRequest) returns (ListRfqProjectGrpc);
+  rpc UpdateRfqProjectGrpc (RfqProjectGrpcRequest) returns (RfqCrudGrpcResponse);
+
+  rpc CreateRfqNotesGrpc (RfqNotesGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc ReadRfqNotesGrpc (RfqNotesGrpcRequest) returns (ListRfqNotesGrpc);
+  rpc UpdateRfqNotesGrpc (RfqNotesGrpcRequest) returns (RfqCrudGrpcResponse);
+
+  rpc CreateRfqReasonGrpc (RfqReasonGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc ReadRfqReasonGrpc (RfqReasonGrpcRequest) returns (ListRfqReasonGrpc);
+  rpc UpdateRfqReasonGrpc (RfqReasonGrpcRequest) returns (RfqCrudGrpcResponse);
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings.
+message HelloReply {
+  string message = 1;
+}
+
+// Shared request parameter message
+message GrpcRequestParameter {
+	int32 RequestType = 1;
+	int32 Position = 2;
+	int32 Take = 3;
+	google.protobuf.BoolValue BoolValue = 4;
+	google.protobuf.StringValue StringValue = 5;
+	google.protobuf.Int32Value IntValue = 6;
+	google.protobuf.FloatValue DecimalValue = 7;
+	google.protobuf.Timestamp DateTimeValue = 8;
+}
+
+// Shared CRUD response message
+message RfqCrudGrpcResponse {
+    bool SaveSuccess = 1;
+	string Message = 2;
+	google.protobuf.StringValue StringValue = 3;
+}
+
+message RfqDrawingPartNumbersGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbersGrpcsToCreate = 2;
+  repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbersGrpcsToUpdate = 3;
+  repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbersGrpcsToDelete = 4;
+}
+
+message RfqDrawingPartNumbersGrpc {
+  int64 RowId = 1;
+  int64 RfqId = 2;
+  google.protobuf.StringValue OriginalPartNumber = 3;
+  google.protobuf.DoubleValue OriginalPartNumberPrice = 4;
+  google.protobuf.StringValue SwappedPartNumber = 5;
+  google.protobuf.DoubleValue SwappedPartNumberPrice = 6;
+  google.protobuf.StringValue PriceSource = 7;
+  google.protobuf.BoolValue IsExactMatch = 8;
+  google.protobuf.BoolValue IsSwapped = 9;
+  google.protobuf.StringValue Comments = 10;
+}
+
+message ListRfqDrawingPartNumbersGrpc {
+	repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbers = 1;
+}
+
+message RfqProjectGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated RfqProjectGrpc RfqProjectGrpcsToCreate = 2;
+  repeated RfqProjectGrpc RfqProjectGrpcsToUpdate = 3;
+  repeated RfqProjectGrpc RfqProjectGrpcsToDelete = 4;
+}
+
+message RfqProjectGrpc {
+	int64 RowId = 1;
+	string RfqNumber = 2;
+	google.protobuf.StringValue CustomerBusinessUnitGuid = 3;
+	google.protobuf.StringValue CustomerLocationGuid = 4;
+	google.protobuf.StringValue ProjectGuid = 5;
+	google.protobuf.Int32Value RfqReasonId = 6;
+	google.protobuf.Timestamp RfqResponseDeadline = 7;
+	google.protobuf.StringValue CarModelGuid = 8;
+	google.protobuf.Int32Value VehicleVolume = 9;
+	google.protobuf.Timestamp CreatedDate = 10;
+}
+
+message ListRfqProjectGrpc {
+	repeated RfqProjectGrpc RfqProjects = 1;
+}
+
+message RfqNotesGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated RfqNotesGrpc RfqNotesGrpcsToCreate = 2;
+  repeated RfqNotesGrpc RfqNotesGrpcsToUpdate = 3;
+  repeated RfqNotesGrpc RfqNotesGrpcsToDelete = 4;
+}
+
+message RfqNotesGrpc {
+	int64 RowId = 1;
+	int64 RfqId = 2;
+	google.protobuf.StringValue Note = 3;
+	google.protobuf.StringValue UserGuid = 4;
+	google.protobuf.Timestamp LastModifiedOn = 5;
+}
+
+message ListRfqNotesGrpc {
+	repeated RfqNotesGrpc RfqNotes = 1;
+}
+
+message RfqReasonGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated RfqReasonGrpc RfqReasonGrpcsToCreate = 2;
+  repeated RfqReasonGrpc RfqReasonGrpcsToUpdate = 3;
+  repeated RfqReasonGrpc RfqReasonGrpcsToDelete = 4;
+}
+
+message RfqReasonGrpc {
+	int32 RowId = 1;
+	string ReasonTitle = 2;
+
+}
+
+message ListRfqReasonGrpc {
+	repeated RfqReasonGrpc RfqReasons = 1;
+}

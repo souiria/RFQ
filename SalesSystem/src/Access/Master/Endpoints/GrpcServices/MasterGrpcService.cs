@@ -80,6 +80,11 @@ namespace Master.Endpoints.GrpcServices
             _Logger.GenericLogInformation("GetCustomerLocationGrpcById starting");
             return await _MasterAccessService.GetCustomerLocationsById(request.Id, context.CancellationToken);
         }
+        public override async Task<ListCustomerLocationGrpc> GetCustomerLocationGrpcByCustomerId(CustomerLocationByCustomerIdGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetCustomerLocationGrpcById starting");
+            return await _MasterAccessService.GetCustomerLocationsByCustomerId(request.CustomerId, context.CancellationToken);
+        }
         public override async Task<ListCustomerLocationGrpc> GetCustomerLocationGrpcByUserId(CustomerLocationByUserIdGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetCustomerLocationGrpcByUserId starting");
@@ -113,6 +118,12 @@ namespace Master.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("GetCustomerProjectAssociationGrpcByUserId starting");
             return await _MasterAccessService.GetAllCustomerProjectAssociationsByUserId(request.UserId ,context.CancellationToken);
+        }
+
+        public override async Task<ListCustomerProjectAssociationGrpc> GetCustomerProjectAssociationGrpcByLocationId(CustomerProjectAssociationByLocationIdGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetCustomerProjectAssociationGrpcByLocationId starting");
+            return await _MasterAccessService.GetCustomerProjectAssociationsByLocationId(request.LocationId, context.CancellationToken);
         }
 
         public override async Task GetCustomerProjectAssociationGrpcStream(CustomerProjectAssociationGrpcRequest request, IServerStreamWriter<CustomerProjectAssociationGrpc> responseStream, ServerCallContext context)

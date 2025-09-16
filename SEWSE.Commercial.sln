@@ -167,6 +167,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "seq-container", "seq-contai
 		SalesSystem\docker\seq-container\README.md = SalesSystem\docker\seq-container\README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RfqAccess.Tests", "SalesSystem\Tests\RfqAccess.Tests\RfqAccess.Tests.csproj", "{A3328160-04C1-E275-1C27-495B7E1BE69E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -435,6 +437,14 @@ Global
 		{A5BE42D0-5355-44AB-AEB0-18398A3F30C4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A5BE42D0-5355-44AB-AEB0-18398A3F30C4}.Release|x64.ActiveCfg = Release|Any CPU
 		{A5BE42D0-5355-44AB-AEB0-18398A3F30C4}.Release|x64.Build.0 = Release|Any CPU
+		{A3328160-04C1-E275-1C27-495B7E1BE69E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3328160-04C1-E275-1C27-495B7E1BE69E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3328160-04C1-E275-1C27-495B7E1BE69E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A3328160-04C1-E275-1C27-495B7E1BE69E}.Debug|x64.Build.0 = Debug|Any CPU
+		{A3328160-04C1-E275-1C27-495B7E1BE69E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3328160-04C1-E275-1C27-495B7E1BE69E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3328160-04C1-E275-1C27-495B7E1BE69E}.Release|x64.ActiveCfg = Release|Any CPU
+		{A3328160-04C1-E275-1C27-495B7E1BE69E}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -491,6 +501,7 @@ Global
 		{28B088E7-E137-4645-B329-598D40DB6CB2} = {8DA695E2-1C9B-442B-A16A-CD0714839EC6}
 		{AEC9721A-24D5-447D-B936-5969E0265431} = {8DA695E2-1C9B-442B-A16A-CD0714839EC6}
 		{1B298804-C890-4E91-A7B0-195E4902B761} = {8DA695E2-1C9B-442B-A16A-CD0714839EC6}
+		{A3328160-04C1-E275-1C27-495B7E1BE69E} = {2193328D-16FA-4D41-9977-48C550461D4A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {45532623-50AD-4761-959C-8E565670BB49}
