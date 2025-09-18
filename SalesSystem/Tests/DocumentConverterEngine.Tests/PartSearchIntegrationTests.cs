@@ -1,4 +1,5 @@
 ﻿using DocumentConversion;
+using SharedModels.DocumentConverter.EDI.DTO;
 using SharedModels.DocumentConverter.PartsSearch.DTOs;
 
 namespace DocumentConversionEngine.Tests
@@ -87,8 +88,20 @@ namespace DocumentConversionEngine.Tests
         [Test]
         public void ConvertFordCSVTest()
         {
+            string fileName = Path.GetFileNameWithoutExtension("../../../TestBoms/Ford_Mega_Bom.csv");
             byte[] file = File.ReadAllBytes("../../../TestBoms/Ford_Mega_Bom.csv");
-            IEnumerable<FordCsvDto> fordCsvDtos = DocumentConverter.ConvertFordCSVFile(file);
+            IEnumerable<FordCsvDto> fordCsvDtos = new List<FordCsvDto>();
+            object result = DocumentConverter.ConvertCSV(file, fileName);
+            switch(result)
+            {
+                case IEnumerable<FordCsvDto> returnFordCsvDtos:
+                    fordCsvDtos = returnFordCsvDtos;
+                    break;
+                default:
+                    Assert.Fail("Expected result to be of type IEnumerable<FordCsvDto>");
+                    return;
+            }
+
             Assert.That(fordCsvDtos, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(47277);
             Assert.That(fordCsvDtos.Count, countConstraint);

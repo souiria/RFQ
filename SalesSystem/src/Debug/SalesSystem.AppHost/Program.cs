@@ -14,6 +14,8 @@
 
         IResourceBuilder<ProjectResource> ediAccessService = builder.AddProject<Projects.EDI>("edi-access-service");
 
+        IResourceBuilder<ProjectResource> rfqAccessService = builder.AddProject<Projects.Rfq>("rfq-access-service");
+
         IResourceBuilder<ProjectResource> apiService = builder.AddProject<Projects.SalesSystem_ApiService>("api-service");
 
         IResourceBuilder<ProjectResource> rfqManager = builder.AddProject<Projects.RfqModule>("rfq-module-service");

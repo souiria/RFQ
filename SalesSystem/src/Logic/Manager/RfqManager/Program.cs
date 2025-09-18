@@ -1,20 +1,16 @@
-using RfqModule.Services;
-
-class Program
+namespace RfqManager
 {
-    static void Main(string[] args)
+    class Program
     {
-        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
-        // Add services to the container.
-        builder.Services.AddGrpc();
-
-        WebApplication app = builder.Build();
-
-        // Configure the HTTP request pipeline.
-        app.MapGrpcService<GreeterService>();
-        app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
-
-        app.Run();
+        public static void Main(string[] args)
+        {
+            using (WebApplication app = RfqModule.HostBuilder.CreateApp(null, args))
+            {
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
+                Console.WriteLine("Starting the Masters Service");
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
+                app.Run();
+            }
+        }
     }
 }

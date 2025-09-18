@@ -1,0 +1,17 @@
+﻿global using System.Globalization;
+global using System.Text;
+global using DocumentConversion;
+global using Google.Protobuf;
+global using Google.Protobuf.WellKnownTypes;
+global using Grpc.Core;
+global using Logging;
+global using Master;
+global using Rfq;
+global using RfqModule.Data.Time;
+global using RfqModule.Endpoints.GrpcServices;
+global using RfqModule.Extentions;
+global using RfqModule.Services;
+global using SharedKernel;
+global using SharedModels.DocumentConverter.DSI.Aggregates;
+global using SharedModels.DocumentConverter.DSI.DTOs;
+global using SharedModels.DocumentConverter.PartsSearch.DTOs;

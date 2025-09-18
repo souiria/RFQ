@@ -4,6 +4,8 @@
     {
         public static IEnumerable<CrossReferenceDto> ConvertExcelFile(byte[] file)
         {
+            string fileString = "";
+            fileString = Encoding.UTF8.GetString(file);
             MemoryStream stream = new MemoryStream(file);
             List<CrossReferenceDto> customerNumbers = new List<CrossReferenceDto>();
             //Nissan has several columns so customerNumber2 will be for second column in BOM
@@ -44,7 +46,7 @@
         {
             string fileString = "";
 
-            fileString = Encoding.Default.GetString(file);
+            fileString = Encoding.UTF8.GetString(file);
 
             byte[] encodingPreamble = Encoding.UTF8.GetPreamble();
             string byteOrderMarkUtf8 = Encoding.UTF8.GetString(encodingPreamble);
@@ -112,7 +114,7 @@
         {
             List<CrossReferenceDto> customerNumber = new List<CrossReferenceDto>();
             MemoryStream ms = new MemoryStream(file);
-            StreamReader reader = new StreamReader(ms, Encoding.Default);
+            StreamReader reader = new StreamReader(ms, Encoding.UTF8);
 
             List<RenaultBomDto> renaultBoms = new List<RenaultBomDto>();
             using (CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture))
