@@ -1,10 +1,7 @@
-﻿global using SalesSystem.Rfq;
-global using SalesSystem.Rfq.Components;
+﻿global using SalesSystem.Rfq.Components;
+global using SalesSystem.Rfq.Models;
 global using SalesSystem.Rfq.Services;
 global using System.Diagnostics;
 global using System.DirectoryServices.AccountManagement;
-global using System.Security.Claims;
-global using Microsoft.AspNetCore.Authentication;
-global using Microsoft.AspNetCore.Components.Authorization;
 global using MudBlazor.Services;
 global using SharedModels.Global;

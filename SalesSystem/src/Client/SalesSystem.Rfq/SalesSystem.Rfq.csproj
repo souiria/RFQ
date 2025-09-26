@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Debug\SalesSystem.ServiceDefaults\SalesSystem.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\Logic\Manager\RfqManager\RfqModule.csproj" />
     <ProjectReference Include="..\..\Utilities\SharedKernal\SharedKernel.csproj" />
     <ProjectReference Include="..\..\Utilities\SharedModels\SharedModels.csproj" />
   </ItemGroup>

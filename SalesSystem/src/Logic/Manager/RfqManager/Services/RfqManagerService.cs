@@ -17,17 +17,44 @@
             _RfqClient = rfqClient;
         }
 
-        public async Task<GetCustomersGrpcResponse> GetCustomersGrpc(GetCustomersGrpcRequest request)
+        public async Task<GetAllCustomersGrpcResponse> GetAllCustomersGrpc (GetAllCustomersGrpcRequest request)
+        {
+            try
+            {
+                // Call the Master service to get all customers
+                await Task.Delay(1000);
+                CustomerGrpcRequest getCustomersRequest = new CustomerGrpcRequest();
+                getCustomersRequest.Position = request.Position;
+                getCustomersRequest.Takeamount = request.Take;
+                ListCustomerGrpc customers = _MasterClient.GetCustomerGrpc(getCustomersRequest);
+                GetAllCustomersGrpcResponse getAllCustomersGrpcResponse = new GetAllCustomersGrpcResponse();                
+                foreach (Master.CustomerGrpc? masterCustomer in customers.CustomerGrpc)
+                {
+                    CustomerGrpc customer = masterCustomer.ToCustomerGrpc();
+                    getAllCustomersGrpcResponse.Customers.Add(customer);
+                }
+
+                return getAllCustomersGrpcResponse;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError("Error fetching customers from Master service", ex);
+                throw;
+            }
+        }
+
+        //get user id by display name maybe H1.Core
+
+        public async Task<GetCustomersByUserIdGrpcResponse> GetCustomersByUserIdGrpc(GetCustomersByUserIdGrpcRequest request)
         {
             try
             {
                 // Call the Master service to get customers
                 await Task.Delay(1000);
-                CustomerGrpcRequest getCustomersRequest = new CustomerGrpcRequest();
-                getCustomersRequest.Position = request.Position;
-                getCustomersRequest.Takeamount = request.Takeamount;
-                ListCustomerGrpc customers = _MasterClient.GetCustomerGrpc(getCustomersRequest);
-                GetCustomersGrpcResponse response = new GetCustomersGrpcResponse();
+                CustomerByIdGrpcRequest getCustomersRequest = new CustomerByIdGrpcRequest();
+                getCustomersRequest.Id = request.UserId;
+                ListCustomerGrpc customers = _MasterClient.GetCustomerGrpcById(getCustomersRequest);
+                GetCustomersByUserIdGrpcResponse response = new GetCustomersByUserIdGrpcResponse();
                 foreach (Master.CustomerGrpc? masterCustomer in customers.CustomerGrpc)
                 {
                     CustomerGrpc customer = masterCustomer.ToCustomerGrpc();

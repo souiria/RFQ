@@ -15,7 +15,8 @@ service RfqModule {
 
   // Uploads a file
   rpc UploadFile (FileUploadRequest) returns (FileUploadResponse);
-  rpc GetCustomersGrpc (GetCustomersGrpcRequest) returns (GetCustomersGrpcResponse);
+  rpc GetAllCustomersGrpc (GetAllCustomersGrpcRequest) returns (GetAllCustomersGrpcResponse);
+  rpc GetCustomersByUserIdGrpc (GetCustomersByUserIdGrpcRequest) returns (GetCustomersByUserIdGrpcResponse);
   rpc GetLocationsByCustomerIdGrpc (GetLocationsByCustomerIdGrpcRequest) returns (GetLocationsByCustomerIdGrpcResponse);
   rpc GetProjectsByLocationIdGrpc (GetProjectsByLocationIdGrpcRequest) returns (GetProjectsByLocationIdGrpcResponse);
   rpc GetVehiclesByProjectCodeGrpc (GetVehicleByProjectCodeGrpcRequest) returns (GetVehicleByProjectCodeGrpcResponse);
@@ -44,13 +45,22 @@ message FileUploadResponse {
   // Additional fields for the response as needed
 }
 
-message GetCustomersGrpcRequest {
-	int32 Position = 1;
-	int32 Takeamount = 2;
+message GetAllCustomersGrpcRequest {
+    int32 Position = 1;
+    int32 Take = 2;
+}
+
+message GetAllCustomersGrpcResponse {
+    repeated CustomerGrpc Customers = 1;
+    int32 TotalCount = 2;
+}
+
+message GetCustomersByUserIdGrpcRequest {
+	google.protobuf.StringValue UserId = 1;
 }
 
 // Shared request parameter message
-message GetCustomersGrpcResponse {
+message GetCustomersByUserIdGrpcResponse {
 	repeated CustomerGrpc Customers = 1;
 	int32 TotalCount = 2;
 }
@@ -95,7 +105,8 @@ message ProjectGrpc {
     google.protobuf.StringValue ProjectDescription = 5;
     google.protobuf.Int32Value ProjectAnnualVolume = 6;
     google.protobuf.StringValue ProgramHierarchyGuid = 7;
-    google.protobuf.BoolValue IsActive = 8;
+    google.protobuf.Timestamp CreatedDate = 8;
+    google.protobuf.BoolValue IsActive = 9;
 }
 
 message GetVehicleByProjectCodeGrpcRequest {

@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+
+option csharp_namespace = "Core";
+
+package core;
+
+// The greeting service definition.
+service Core {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply);
+  rpc ReadUsersListGrpc (ReadUsersListGrpcRequest) returns (ListUsersGrpc);
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings.
+message HelloReply {
+  string message = 1;
+}
+
+message GrpcRequestParameter {
+	int32 RequestType = 1;
+	int32 Position = 2;
+	int32 Take = 3;
+	google.protobuf.BoolValue BoolValue = 4;
+	google.protobuf.StringValue StringValue = 5;
+	google.protobuf.Int32Value IntValue = 6;
+	google.protobuf.FloatValue DecimalValue = 7;
+	google.protobuf.Timestamp DateTimeValue = 8;
+}
+
+message RfqCrudGrpcResponse {
+    bool SaveSuccess = 1;
+	string Message = 2;
+	google.protobuf.StringValue StringValue = 3;
+}
+
+message ReadUsersListGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated ListUsersGrpc UserListGrpcsToCreate = 2;
+  repeated ListUsersGrpc UserListGrpcsToUpdate = 3;
+  repeated ListUsersGrpc UserListGrpcsToDelete = 4;
+}
+
+message ListUsersGrpc {
+	repeated UserListGrpc Users = 1;
+}
+
+message UserListGrpc {
+  google.protobuf.StringValue Username = 1;
+  google.protobuf.StringValue FirstName = 2;
+  google.protobuf.StringValue Surname = 3;
+  google.protobuf.StringValue Site = 4;
+  google.protobuf.StringValue Logon = 5;
+  google.protobuf.Timestamp LastLogin = 6;
+  google.protobuf.Timestamp FirstLogin = 7;
+  google.protobuf.StringValue Accesss = 8;
+  google.protobuf.BoolValue IsActive = 9;
+  google.protobuf.StringValue Groups = 10;
+  google.protobuf.StringValue Id = 11;
+  google.protobuf.Timestamp CreatedDate = 12;
+  google.protobuf.Timestamp ModifiedDate = 13;
+  google.protobuf.StringValue CreatedBy = 14;
+  google.protobuf.StringValue ModifiedBy = 15;
+  google.protobuf.StringValue EmailAddress = 16;
+  google.protobuf.Timestamp ActiveDirectoryDeactivationDate = 17;
+  google.protobuf.BoolValue IsUserActive = 18;
+  google.protobuf.BoolValue IsAccountLocked = 19;
+  google.protobuf.StringValue UserRoles = 20;
+  google.protobuf.StringValue CreationHelpDeskNumber = 21;
+  google.protobuf.StringValue CreationHelpDeskDescription = 22;
+  google.protobuf.Timestamp CreationHelpDeskDate = 23;
+  google.protobuf.StringValue LastHelpDeskNumber = 24;
+  google.protobuf.StringValue LastHelpDeskDescription = 25;
+  google.protobuf.Timestamp LastHelpDeskDate = 26;
+  google.protobuf.BoolValue IsH1User = 27;
+}

@@ -20,17 +20,21 @@
             <MudPaper Elevation="25" Class="d-flex flex-row" Style="height:150px;">
                 <MudPaper Elevation="0" Class="pa-4">
                 <MudStack>
-                    
                     <MudSelect @bind-Value="customerValue" Label="Customer" Placeholder="Please Select"
                                AdornmentIcon="@Icons.Material.Filled.People" AdornmentColor="Color.Primary">
-                        <MudSelectItem Value="@("Renault")" Disabled="true">Renault</MudSelectItem>
-                        <MudSelectItem Value="@("Stellantis")">Stellantis</MudSelectItem>
-                        <MudSelectItem Value="@("Ford")">Ford</MudSelectItem>
+                        @foreach(var customer in customers)
+                        {
+                            <MudSelectItem Value="@customer.CustomerBusinessGroupName">@customer.CustomerBusinessGroupName</MudSelectItem>
+                        }
                     </MudSelect>
-                    <MudSelect @bind-Value="reasonValue" Label="Reason" Placeholder="Please Select"
+                    <MudSelect @bind-Value="_reasonValue" Label="Reason" Placeholder="Please Select"
                                AdornmentIcon="@Icons.Material.Filled.Checklist" AdornmentColor="Color.Primary">
-                        <MudSelectItem Value="@("Nominated Business")" Disabled="true">Nominated Business</MudSelectItem>
-                        <MudSelectItem Value="@("Potential New Business")">Potential New Business</MudSelectItem>
+                        @foreach(var reason in reasons)
+                        {
+                            <MudSelectItem Value="@reason.RfqReasonTitle">@reason.RfqReasonTitle</MudSelectItem>
+                        }
+                        @* <MudSelectItem Value="@("Nominated Business")" Disabled="true">Nominated Business</MudSelectItem>
+                        <MudSelectItem Value="@("Potential New Business")">Potential New Business</MudSelectItem> *@
                     </MudSelect>
                 </MudStack>
         </MudPaper>
@@ -39,9 +43,10 @@
                 <MudStack>
                     <MudSelect @bind-Value="projectValue" Label="Project" Placeholder="Please Select"
                                AdornmentIcon="@Icons.Material.Filled.Settings" AdornmentColor="Color.Primary">
-                        <MudSelectItem Value="@("HJB")" Disabled="true">HJB</MudSelectItem>
-                        <MudSelectItem Value="@("F1H")">F1H</MudSelectItem>
-                        <MudSelectItem Value="@("Lion")">Lion</MudSelectItem>
+                        @foreach(var project in projects)
+                        {
+                            <MudSelectItem Value="@project.CustomerProjectCode">@project.CustomerProjectCode</MudSelectItem>
+                        }   
                     </MudSelect>
                     <MudNumericField @bind-Value="vehicleVolume" Label="Vehicle Volume" Variant="Variant.Text" Min="0" />
                     
@@ -94,12 +99,6 @@
                                Variant="Variant.Filled">
                         Open file picker
                     </MudButton>
-                    <MudButton Color="Color.Primary"
-                               Disabled="@(!_fileNames.Any())"
-                               OnClick="@Upload"
-                               Variant="Variant.Filled">
-                        Upload
-                    </MudButton>
                     <MudButton Color="Color.Error"
                                Disabled="@(!_fileNames.Any())"
                                OnClick="@ClearAsync"
@@ -121,9 +120,10 @@
                         <MudToolBar Gutters="@false"
                                     Class="relative d-flex justify-end gap-4">
                             <MudButton Color="Color.Primary"
+                                       Disabled="@(!_fileNames.Any())"  
                                        OnClick="@SubmitDataAsync"
                                        Variant="Variant.Filled">
-                                Submit
+                                Upload
                             </MudButton>
                         </MudToolBar>
                 </MudStack>
@@ -210,11 +210,30 @@
 </MudGrid>
 
 @code {
-    private string? customerValue { get; set; }
-    private string? reasonValue { get; set; }
+    private string? _customerValue { get; set; }
+    private string? customerValue { 
+        get => _customerValue;
+        set 
+        { _customerValue = value;
+            _ = GetProjects(); 
+        }
+    }
+    private string? _reasonValue { get; set; }
     private string? projectValue { get; set; }
-    private string? quotationValue { get; set; }
+    private string? _quotationValue { get; set; }
+    private string? quotationValue 
+    { 
+        get => _quotationValue;
+        set
+        {
+            _quotationValue = value;
+            _ = GetReasons();
+        }
+    }
     private int vehicleVolume { get; set; }
+    private List<RfqModule.CustomerGrpc> customers = new();
+    private List<RfqModule.ProjectGrpc> projects = new();
+    private List<RfqModule.RfqReasonGrpc> reasons = new();
     private DateTime? _date = DateTime.Today;
 
     private const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
@@ -232,7 +251,32 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await rfqUxService.GetCustomersAsync();
+        customers.Clear();
+        customers = await rfqUxService.GetCustomersAsync();
+    }
+
+    private async Task GetProjects()
+    {
+        projects.Clear();
+        projectValue = null;
+        if (!string.IsNullOrWhiteSpace(customerValue))
+        {
+            var customer = customers.FirstOrDefault(c => c.CustomerBusinessGroupName == customerValue);
+            if (customer != null)
+            {
+                List<RfqModule.ProjectGrpc> responseProjects = await rfqUxService.GetProjectByCustomer(customer.Id);
+                projects.AddRange(responseProjects);
+                StateHasChanged();
+            }
+        }
+    }
+
+    public async Task GetReasons()
+    {
+        reasons.Clear();
+        List<RfqModule.RfqReasonGrpc> responseRfqItems = await rfqUxService.GetReasons();
+        reasons.AddRange(responseRfqItems);
+        StateHasChanged();        
     }
 
     public void ToggleOverlay(bool value)
@@ -270,6 +314,49 @@
     private async Task SubmitDataAsync()
     {
         await Task.Delay(0);
+        if (string.IsNullOrWhiteSpace(customerValue)
+        || string.IsNullOrWhiteSpace(projectValue)
+        || string.IsNullOrWhiteSpace(_reasonValue)
+        || string.IsNullOrWhiteSpace(quotationValue)
+        || vehicleVolume <= 0 || !_date.HasValue)
+        {
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add("Please fill in all required fields.", Severity.Error);
+            return;
+        }
+
+        RfqModule.CustomerGrpc? customer = customers.FirstOrDefault(c => c.CustomerBusinessGroupName == customerValue);
+        if (customer is null)
+        {
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add("Selected customer not found.", Severity.Error);
+            return;
+        }
+        RfqModule.ProjectGrpc? project = projects.FirstOrDefault(p => p.CustomerProjectCode == projectValue);
+        if (project is null)
+        {
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add("Selected customer not found.", Severity.Error);
+            return;
+        }
+        RfqModule.RfqReasonGrpc? reason = reasons.FirstOrDefault(r => r.RfqReasonTitle == _reasonValue);
+        if (reason is null)
+        {
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add("Selected customer not found.", Severity.Error);
+            return;
+        }
+        // await rfqUxService.CreateRfqProject(
+        //     customer,
+        //     project,
+        //     reason,
+        //     vehicleVolume,
+        //     _date.Value
+        // );
+        // create project
+        //upload files
+        // get rfq items
+
     }
 
     private void SetDragClass()

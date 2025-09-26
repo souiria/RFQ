@@ -18,11 +18,16 @@
             Task<HelloReply> result = Task.FromResult(reply);
             return result;
         }
-
-        public override async Task<GetCustomersGrpcResponse> GetCustomersGrpc(GetCustomersGrpcRequest request, ServerCallContext context)
+        public override async Task<GetAllCustomersGrpcResponse> GetAllCustomersGrpc(GetAllCustomersGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("GetCustomersGrpc starting");
-            GetCustomersGrpcResponse response = await _RfqManagerService.GetCustomersGrpc(request);
+            _Logger.GenericLogInformation("GetAllCustomersGrpc starting");
+            GetAllCustomersGrpcResponse response = await _RfqManagerService.GetAllCustomersGrpc(request);
+            return response;
+        }
+        public override async Task<GetCustomersByUserIdGrpcResponse> GetCustomersByUserIdGrpc(GetCustomersByUserIdGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetCustomersByUserIdGrpc starting");
+            GetCustomersByUserIdGrpcResponse response = await _RfqManagerService.GetCustomersByUserIdGrpc(request);
             return response;
         }
 
