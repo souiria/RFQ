@@ -18,8 +18,9 @@ service RfqModule {
   rpc GetAllCustomersGrpc (GetAllCustomersGrpcRequest) returns (GetAllCustomersGrpcResponse);
   rpc GetCustomersByUserIdGrpc (GetCustomersByUserIdGrpcRequest) returns (GetCustomersByUserIdGrpcResponse);
   rpc GetLocationsByCustomerIdGrpc (GetLocationsByCustomerIdGrpcRequest) returns (GetLocationsByCustomerIdGrpcResponse);
-  rpc GetProjectsByLocationIdGrpc (GetProjectsByLocationIdGrpcRequest) returns (GetProjectsByLocationIdGrpcResponse);
+  rpc GetProjectsByIdGrpc (GetProjectsByIdGrpcRequest) returns (GetProjectsByIdGrpcResponse);
   rpc GetVehiclesByProjectCodeGrpc (GetVehicleByProjectCodeGrpcRequest) returns (GetVehicleByProjectCodeGrpcResponse);
+  rpc GetCustomerProjectAssociationsByLocationIdGrpc (GetCustomerProjectAssociationsByLocationIdGrpcRequest) returns (GetCustomerProjectAssociationsByLocationIdGrpcResponse);
   rpc GetRfqReasonsGrpc (GetRfqReasonsGrpcRequest) returns (GetRfqReasonsGrpcResponse);
   rpc UploadPartsGrpc (UploadPartsRequestGrpcRequest) returns (UploadPartsRequestGrpcResponse);
 }
@@ -89,11 +90,11 @@ message CustomerLocationGrpc {
     google.protobuf.BoolValue IsActive = 5;
 }
 
-message GetProjectsByLocationIdGrpcRequest {
-    google.protobuf.StringValue LocationId = 1;
+message GetProjectsByIdGrpcRequest {
+    google.protobuf.StringValue Id = 1;
 }
 
-message GetProjectsByLocationIdGrpcResponse {
+message GetProjectsByIdGrpcResponse {
     repeated ProjectGrpc Projects = 1;
 }
 
@@ -123,6 +124,21 @@ message VehicleGrpc {
     google.protobuf.StringValue ProjectReference = 3;
     google.protobuf.StringValue VehicleDisplay = 4;
     google.protobuf.BoolValue IsActive = 5;
+}
+
+message GetCustomerProjectAssociationsByLocationIdGrpcRequest {
+    string LocationId = 1;
+}
+
+message GetCustomerProjectAssociationsByLocationIdGrpcResponse {
+    repeated CustomerProjectAssociationGrpc CustomerProjectAssociation = 1;
+}
+
+message CustomerProjectAssociationGrpc {
+    string Id = 1;
+    string CustomerLocationGuid = 2;
+    string ProjectGuid = 3;    
+    bool IsActive = 4;
 }
 
 message GetRfqReasonsGrpcRequest {

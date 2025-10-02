@@ -8,10 +8,20 @@
                       IconColor="Color.Inherit"
                       Match="NavLinkMatch.All"/>
         <BlazeNavLink Content="Create RFQ"
-                      Href="/createRfq"
+                      Href="@($"/createRfq/{globalValue?.UserId}")"
                       Icon="@Icons.Material.Rounded.Widgets"
                       IconColor="Color.Inherit"
                       Match="NavLinkMatch.All"/>
         
     </MudStack>
 </MudNavMenu>
+@code{
+    [Parameter] public GlobalValue? globalValue { get; set; }
+    string userId = string.Empty;
+
+    protected override Task OnInitializedAsync()
+    {
+        userId = globalValue?.UserId.ToString() ?? string.Empty;
+        return Task.CompletedTask;
+    }
+}

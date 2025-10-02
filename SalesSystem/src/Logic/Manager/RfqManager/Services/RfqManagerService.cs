@@ -43,8 +43,6 @@
             }
         }
 
-        //get user id by display name maybe H1.Core
-
         public async Task<GetCustomersByUserIdGrpcResponse> GetCustomersByUserIdGrpc(GetCustomersByUserIdGrpcRequest request)
         {
             try
@@ -95,30 +93,23 @@
             }
         }
 
-        public async Task<GetProjectsByLocationIdGrpcResponse> GetProjectsByLocationIdGrpc(GetProjectsByLocationIdGrpcRequest request)
+        public async Task<GetProjectsByIdGrpcResponse> GetProjectsByIdGrpc(GetProjectsByIdGrpcRequest request)
         {
             try
             {
                 // Call the Master service to get projects by location ID
                 await Task.Delay(1000);
-                CustomerProjectAssociationByLocationIdGrpcRequest projectRequest = new CustomerProjectAssociationByLocationIdGrpcRequest();
-                projectRequest.LocationId = request.LocationId;
-                ListCustomerProjectAssociationGrpc projectAssociations = _MasterClient.GetCustomerProjectAssociationGrpcByLocationId(projectRequest);
                 List<Master.ProjectGrpc> projects = new List<Master.ProjectGrpc>();
-                foreach (CustomerProjectAssociationGrpc? association in projectAssociations.CustomerProjectAssociationGrpc)
-                {
-                    _Logger.GenericLogInformation("Project Association from Master Service: " + association.ToString());
-                    ProjectByIdGrpcRequest projectRequestById = new ProjectByIdGrpcRequest();
-                    projectRequestById.Id = association.ProjectGuid;
-                    ListProjectGrpc project = _MasterClient.GetProjectGrpcById(projectRequestById);
-                    projects.AddRange(project.ProjectGrpc);
-                }
 
-                GetProjectsByLocationIdGrpcResponse response = new GetProjectsByLocationIdGrpcResponse();
+                GetProjectsByIdGrpcResponse response = new GetProjectsByIdGrpcResponse();
+                ProjectByIdGrpcRequest projectRequest = new ProjectByIdGrpcRequest();
+                projectRequest.Id = request.Id;
+                ListProjectGrpc projectList = _MasterClient.GetProjectGrpcById(projectRequest);
+                projects.AddRange(projectList.ProjectGrpc);
                 foreach (Master.ProjectGrpc? masterProject in projects)
                 {
-                    ProjectGrpc location = masterProject.ToProject();
-                    response.Projects.Add(location);
+                    ProjectGrpc project = masterProject.ToProject();
+                    response.Projects.Add(project);
 
                 }
 
@@ -157,6 +148,30 @@
             catch (Exception ex)
             {
                 _Logger.GenericLogError("Error fetching vehicles from Master service", ex);
+                throw;
+            }
+        }
+
+        public async Task<GetCustomerProjectAssociationsByLocationIdGrpcResponse> GetCustomerProjectAssociationsByLocationIdGrpc(GetCustomerProjectAssociationsByLocationIdGrpcRequest request)
+        {
+            try
+            {
+                await Task.Delay(1000);
+                CustomerProjectAssociationByLocationIdGrpcRequest customerProjectRequest = new CustomerProjectAssociationByLocationIdGrpcRequest();
+                customerProjectRequest.LocationId = request.LocationId;
+                ListCustomerProjectAssociationGrpc customerProjectAssociations = _MasterClient.GetCustomerProjectAssociationGrpcByLocationId(customerProjectRequest);
+                GetCustomerProjectAssociationsByLocationIdGrpcResponse response = new GetCustomerProjectAssociationsByLocationIdGrpcResponse();
+                foreach (Master.CustomerProjectAssociationGrpc? association in customerProjectAssociations.CustomerProjectAssociationGrpc)
+                {
+                    CustomerProjectAssociationGrpc customerProjectAssociation = association.ToCustomerProjectAssociation();
+                    response.CustomerProjectAssociation.Add(customerProjectAssociation);
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError("Error fetching customerProjectAssociations from Master service", ex);
                 throw;
             }
         }

@@ -1,4 +1,5 @@
 ﻿@page "/createRfq"
+@page "/createRfq/{UserId:guid}"
 @inject ISnackbar Snackbar
 @inject RfqUxService rfqUxService
 @rendermode InteractiveServer
@@ -27,9 +28,9 @@
                             <MudSelectItem Value="@customer.CustomerBusinessGroupName">@customer.CustomerBusinessGroupName</MudSelectItem>
                         }
                     </MudSelect>
-                    <MudSelect @bind-Value="_reasonValue" Label="Reason" Placeholder="Please Select"
+                    <MudSelect @bind-Value="reasonValue" Label="Reason" Placeholder="Please Select"
                                AdornmentIcon="@Icons.Material.Filled.Checklist" AdornmentColor="Color.Primary">
-                        @foreach(var reason in reasons)
+                        @foreach (var reason in reasons)
                         {
                             <MudSelectItem Value="@reason.RfqReasonTitle">@reason.RfqReasonTitle</MudSelectItem>
                         }
@@ -41,15 +42,14 @@
 
             <MudPaper Elevation="0" Class="pa-4">
                 <MudStack>
-                    <MudSelect @bind-Value="projectValue" Label="Project" Placeholder="Please Select"
+                    <MudSelect @bind-Value="customerProjectValue" Label="Project" Placeholder="Please Select"
                                AdornmentIcon="@Icons.Material.Filled.Settings" AdornmentColor="Color.Primary">
-                        @foreach(var project in projects)
+                        @foreach (var association in customerProjectAssociations)
                         {
-                            <MudSelectItem Value="@project.CustomerProjectCode">@project.CustomerProjectCode</MudSelectItem>
-                        }   
+                            <MudSelectItem Value="@association.Id">@association.ProjectName - @association.CustomerName</MudSelectItem>
+                        }
                     </MudSelect>
                     <MudNumericField @bind-Value="vehicleVolume" Label="Vehicle Volume" Variant="Variant.Text" Min="0" />
-                    
                 </MudStack>
             </MudPaper>
             <MudPaper Elevation="0" Class="pa-4">
@@ -61,6 +61,7 @@
                         <MudSelectItem Value="@("SEWS-25-025-005692")">SEWS-25-025-005692</MudSelectItem>
                     </MudSelect>
                     <MudDatePicker Label="Date Format" @bind-Date="_date" DateFormat="dd.MM.yyyy" />
+                    
                 </MudStack>
             </MudPaper>
 
@@ -214,11 +215,14 @@
     private string? customerValue { 
         get => _customerValue;
         set 
-        { _customerValue = value;
-            _ = GetProjects(); 
+        {
+            _customerValue = value;
+            _ = GetLocations();
         }
     }
-    private string? _reasonValue { get; set; }
+    private string? customerProjectValue { get; set; }
+    private string? locationValue { get; set; }
+    private string? reasonValue { get; set; }
     private string? projectValue { get; set; }
     private string? _quotationValue { get; set; }
     private string? quotationValue 
@@ -232,8 +236,10 @@
     }
     private int vehicleVolume { get; set; }
     private List<RfqModule.CustomerGrpc> customers = new();
+    private List<RfqModule.CustomerLocationGrpc> locations = new();
     private List<RfqModule.ProjectGrpc> projects = new();
     private List<RfqModule.RfqReasonGrpc> reasons = new();
+    private List<CustomerProjectUx> customerProjectAssociations = new();
     private DateTime? _date = DateTime.Today;
 
     private const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
@@ -248,27 +254,79 @@
     //private bool _sortNameByLength = false;
     private bool visible;
 
+    [Parameter] public Guid? UserId { get; set; }
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         customers.Clear();
-        customers = await rfqUxService.GetCustomersAsync();
+        if(UserId == null || UserId == Guid.Empty)
+        {
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add("UserId is missing in the URL", Severity.Error);
+            return;
+        };
+        customers = await rfqUxService.GetCustomersAsync((Guid)UserId);
+    }
+
+    private async Task GetLocations()
+    {
+        locations.Clear();
+        locationValue = null;
+        if (!string.IsNullOrWhiteSpace(customerValue))
+        {
+            RfqModule.CustomerGrpc? customer = customers.FirstOrDefault(c => c.CustomerBusinessGroupName == customerValue);
+
+            if (customer != null)
+            {
+                List<RfqModule.CustomerLocationGrpc> responseLocations = await rfqUxService.GetLocationsByCustomer(customer.Id);
+                locations.AddRange(responseLocations);
+            }
+        }
+        await GetCustomerProjectAssociations();
+    }
+
+    private async Task GetCustomerProjectAssociations()
+    {
+        customerProjectAssociations.Clear();
+        customerProjectValue = null;
+        if (!string.IsNullOrWhiteSpace(customerValue))
+        {
+            RfqModule.CustomerGrpc? customer = customers.FirstOrDefault(c => c.CustomerBusinessGroupName == customerValue);
+            if (customer != null)
+            {
+                List<CustomerProjectUx> responseAssociations = await rfqUxService.GetCustomerProjectAssociations();
+                customerProjectAssociations.AddRange(responseAssociations);
+                StateHasChanged();
+            }
+            await GetProjects();
+        }
     }
 
     private async Task GetProjects()
     {
         projects.Clear();
         projectValue = null;
+        if (0 < customerProjectAssociations.Count)
+        {
+            List<RfqModule.ProjectGrpc> responseProjects = await rfqUxService.GetProjectsbyCustomerProjectAssociation(customerProjectAssociations);
+            projects.AddRange(responseProjects);
+            StateHasChanged();
+            await GetCustomerProjectAssociationsUx();
+        }
+    }
+
+    private async Task GetCustomerProjectAssociationsUx()
+    {
+        customerProjectValue = null;
         if (!string.IsNullOrWhiteSpace(customerValue))
         {
-            var customer = customers.FirstOrDefault(c => c.CustomerBusinessGroupName == customerValue);
-            if (customer != null)
-            {
-                List<RfqModule.ProjectGrpc> responseProjects = await rfqUxService.GetProjectByCustomer(customer.Id);
-                projects.AddRange(responseProjects);
-                StateHasChanged();
-            }
+
+            List<CustomerProjectUx> responseAssociations = await rfqUxService.GetCustomerProjectUx(projects, locations, customerProjectAssociations);
+            customerProjectAssociations.Clear();
+            customerProjectAssociations.AddRange(responseAssociations);
+            StateHasChanged();
         }
+
     }
 
     public async Task GetReasons()
@@ -276,7 +334,7 @@
         reasons.Clear();
         List<RfqModule.RfqReasonGrpc> responseRfqItems = await rfqUxService.GetReasons();
         reasons.AddRange(responseRfqItems);
-        StateHasChanged();        
+        StateHasChanged();
     }
 
     public void ToggleOverlay(bool value)
@@ -316,7 +374,7 @@
         await Task.Delay(0);
         if (string.IsNullOrWhiteSpace(customerValue)
         || string.IsNullOrWhiteSpace(projectValue)
-        || string.IsNullOrWhiteSpace(_reasonValue)
+        || string.IsNullOrWhiteSpace(reasonValue)
         || string.IsNullOrWhiteSpace(quotationValue)
         || vehicleVolume <= 0 || !_date.HasValue)
         {
@@ -332,29 +390,60 @@
             Snackbar.Add("Selected customer not found.", Severity.Error);
             return;
         }
-        RfqModule.ProjectGrpc? project = projects.FirstOrDefault(p => p.CustomerProjectCode == projectValue);
+        CustomerProjectUx? customerProject = customerProjectAssociations.FirstOrDefault(p => p.Id == customerProjectValue);
+        if (customerProject is null)
+        {
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add("Selected customer not found.", Severity.Error);
+            return;
+        }
+        RfqModule.ProjectGrpc? project = projects.FirstOrDefault(p => p.Id == customerProject.ProjectId);
         if (project is null)
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             Snackbar.Add("Selected customer not found.", Severity.Error);
             return;
         }
-        RfqModule.RfqReasonGrpc? reason = reasons.FirstOrDefault(r => r.RfqReasonTitle == _reasonValue);
+        RfqModule.CustomerLocationGrpc? location = locations.FirstOrDefault(p => p.Id == customerProject.CustomerId);
+        if (location is null)
+        {
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add("Selected customer not found.", Severity.Error);
+            return;
+        }
+        RfqModule.RfqReasonGrpc? reason = reasons.FirstOrDefault(r => r.RfqReasonTitle == reasonValue);
         if (reason is null)
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             Snackbar.Add("Selected customer not found.", Severity.Error);
             return;
         }
-        // await rfqUxService.CreateRfqProject(
-        //     customer,
-        //     project,
-        //     reason,
-        //     vehicleVolume,
-        //     _date.Value
-        // );
+        if(_fileUpload is null || _fileUpload.Files == null)
+        {
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add("Please upload at least one file.", Severity.Error);
+            return;
+        }
+
+        using var stream = _fileUpload.Files.OpenReadStream(10 * 1024 * 1024);
+        using var memoryStream = new MemoryStream();
+        await stream.CopyToAsync(memoryStream);
+        byte[] fileContent = memoryStream.ToArray();
+
+        string fileName = _fileUpload.Files.Name.First().ToString() ?? string.Empty;
+
+        await rfqUxService.CreateRfqProject(
+            // customer,
+            // project,
+            // location,
+            // reason,
+            // vehicleVolume,
+            // _date.Value,
+            // fileName,
+            // fileContent
+        );
         // create project
-        //upload files
+        // upload files
         // get rfq items
 
     }

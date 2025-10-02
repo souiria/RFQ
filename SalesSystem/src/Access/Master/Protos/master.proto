@@ -31,6 +31,7 @@ service Master {
   rpc GetCustomerProjectAssociationGrpcByLocationId (CustomerProjectAssociationByLocationIdGrpcRequest) returns (ListCustomerProjectAssociationGrpc);
   rpc GetCustomerProjectAssociationGrpcStream (CustomerProjectAssociationGrpcRequest) returns (stream CustomerProjectAssociationGrpc);
   rpc GetCustomerProjectAssociationGrpcByUserId (CustomerProjectAssociationByUserIdGrpcRequest) returns (ListCustomerProjectAssociationGrpc);
+  rpc GetCustomerProjectAssociationGrpcByProjectId (CustomerProjectAssociationByProjectIdGrpcRequest) returns (ListCustomerProjectAssociationGrpc);
   rpc GetCustomerBusinessUserAssociationGrpc (CustomerBusinessUserAssociationGrpcRequest) returns (ListCustomerBusinessUserAssociationGrpc);
   rpc GetCustomerBusinessUserAssociationGrpcStream (CustomerBusinessUserAssociationGrpcRequest) returns (stream CustomerBusinessUserAssociationGrpc);
   rpc GetCustomerBusinessUserAssociationGrpcByUserId (CustomerBusinessUserAssociationByUserIdGrpcRequest) returns (ListCustomerBusinessUserAssociationGrpc);
@@ -168,6 +169,9 @@ message CustomerProjectAssociationByUserIdGrpcRequest {
 
 message CustomerProjectAssociationByLocationIdGrpcRequest {
     string LocationId = 1;
+}
+message CustomerProjectAssociationByProjectIdGrpcRequest {
+    string ProjectId = 1;
 }
 
 message CustomerProjectAssociationGrpc {

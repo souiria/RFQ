@@ -224,10 +224,29 @@
         {
             await Task.Delay(1, cancellationToken);
             _FilteredCustomers.CustomerGrpc.Clear();
-            if (_Customers.CustomerGrpc.Any())
+            if (_Customers.CustomerGrpc.Any() && _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Any())
             {
-                List<CustomerGrpc> filteredCustomers = _Customers.CustomerGrpc.Where(x => x.Id == id).ToList();
-                _FilteredCustomers.CustomerGrpc.AddRange(filteredCustomers);
+                CustomerBusinessUserAssociationGrpc? userAssociation = _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Where(x => x.UserGuid == id).FirstOrDefault();
+                if(userAssociation == null || userAssociation.CustomerBusinessHierarchyList == null)
+                {
+                    return _FilteredCustomers;
+                }
+
+                List<CustomerBuisnessHirarchyListDto>? associatedCustomers = JsonConvert.DeserializeObject<List<CustomerBuisnessHirarchyListDto>>(userAssociation.CustomerBusinessHierarchyList);
+                if (associatedCustomers == null)
+                {
+                    return _FilteredCustomers;
+                }
+
+                foreach (CustomerBuisnessHirarchyListDto customer in associatedCustomers)
+                {
+                    if (customer.IsActive == true)
+                    {
+                        List<CustomerGrpc> filteredCustomers = _Customers.CustomerGrpc.Where(x => x.Id == customer.CustomerBusinessHierarchyGuid.ToString()).ToList();
+                        _FilteredCustomers.CustomerGrpc.AddRange(filteredCustomers);
+                    }
+                }
+
                 return _FilteredCustomers;
             }
             else

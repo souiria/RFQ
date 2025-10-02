@@ -59,7 +59,7 @@
                     </MudChip>
                 </ActivatorContent>
                 <ChildContent>
-                    <NavMenu />
+                    <NavMenu GlobalValue="@globalValue" />
                 </ChildContent>
             </MudMenu>
         </MudStack>
@@ -79,6 +79,7 @@
     string? userName;
     string? firstName;
     string? displayName;
+    Guid? userId;
     protected override async Task OnInitializedAsync()
     {
         var authState = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
@@ -98,13 +99,15 @@
             firstName = principal?.GivenName;
             // string lastName = principal.Surname;
             displayName = principal?.DisplayName;
+            userId = principal?.Guid;
         }
 
         globalValue = new GlobalValue
         {
             DisplayName = displayName,
             FirstName = firstName,
-            UserAccount = userName
+            UserAccount = userName,
+            UserId = userId
         };
     }
 

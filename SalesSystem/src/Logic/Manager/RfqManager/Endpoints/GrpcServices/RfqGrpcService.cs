@@ -1,4 +1,6 @@
-﻿namespace RfqModule.Endpoints.GrpcServices
+﻿using Master.CQRS.Specification.Customer;
+
+namespace RfqModule.Endpoints.GrpcServices
 {
     public class RfqGrpcService : RfqModule.RfqModuleBase
     {
@@ -37,16 +39,22 @@
             GetLocationsByCustomerIdGrpcResponse response = await _RfqManagerService.GetLocationsByCustomerIdGrpc(request);
             return response;
         }
-        public override async Task<GetProjectsByLocationIdGrpcResponse> GetProjectsByLocationIdGrpc(GetProjectsByLocationIdGrpcRequest request, ServerCallContext context)
+        public override async Task<GetProjectsByIdGrpcResponse> GetProjectsByIdGrpc(GetProjectsByIdGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("GetProjectsByLocationIdGrpc starting");
-            GetProjectsByLocationIdGrpcResponse response = await _RfqManagerService.GetProjectsByLocationIdGrpc(request);
+            _Logger.GenericLogInformation("GetProjectsByIdGrpc starting");
+            GetProjectsByIdGrpcResponse response = await _RfqManagerService.GetProjectsByIdGrpc(request);
             return response;
         }
         public override async Task<GetVehicleByProjectCodeGrpcResponse> GetVehiclesByProjectCodeGrpc(GetVehicleByProjectCodeGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetVehiclesByProjectCodeGrpc starting");
             GetVehicleByProjectCodeGrpcResponse response = await _RfqManagerService.GetVehiclesByProjectCodeGrpc(request);
+            return response;
+        }
+        public override async Task<GetCustomerProjectAssociationsByLocationIdGrpcResponse> GetCustomerProjectAssociationsByLocationIdGrpc(GetCustomerProjectAssociationsByLocationIdGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetCustomerProjectAssociationsByLocationIdGrpc starting");
+            GetCustomerProjectAssociationsByLocationIdGrpcResponse response = await _RfqManagerService.GetCustomerProjectAssociationsByLocationIdGrpc(request);
             return response;
         }
         public override async Task<GetRfqReasonsGrpcResponse> GetRfqReasonsGrpc(GetRfqReasonsGrpcRequest request, ServerCallContext context)
