@@ -23,6 +23,9 @@
         IResourceBuilder<ProjectResource> cdbManager = builder.AddProject<Projects.CDb>("cdb-module-service");
 
         IResourceBuilder<ProjectResource> sfsManager = builder.AddProject<Projects.SFS>("sfs-module-service");
+
+        IResourceBuilder<ProjectResource> adssManager = builder.AddProject<Projects.Adss>("Adss-module-service");
+
         builder.AddProject<Projects.SalesSystem_Rfq>("RfqFrontEnd");
             //.WithExternalHttpEndpoints()
             //.WithReference(apiService)

@@ -1,0 +1,14 @@
+﻿global using System.Collections.Concurrent;
+global using System.Globalization;
+global using System.Reflection;
+global using System.Text.RegularExpressions;
+global using Adss.Services;
+global using Ardalis.Specification;
+global using Ardalis.Specification.EntityFrameworkCore;
+global using Google.Protobuf.WellKnownTypes;
+global using Grpc.Core;
+global using Logging;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.ChangeTracking;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using SharedKernel;

@@ -1,4 +1,4 @@
-﻿namespace Rfq.Services
+﻿namespace Adss.Services
 {
     public sealed class AdssService : IAdssService
     {
