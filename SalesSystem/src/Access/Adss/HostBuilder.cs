@@ -1,4 +1,6 @@
-﻿namespace Adss
+﻿using Adss.Endpoints.GrpcServices;
+
+namespace Adss
 {
     public static class HostBuilder
     {
@@ -49,7 +51,10 @@
             GrpcWebOptions grpcWebOptions = new GrpcWebOptions();
             grpcWebOptions.DefaultEnabled = true;
             app.UseGrpcWeb(grpcWebOptions);
-             app.MapGet("/", () => "Part Number Image /adss/part-image ");
+            app.MapGrpcService<AdssGrpcService>();
+            app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+
+    
             app.MapGet("/adss/part-image/{partNumber}", async (
                     string partNumber,
                     IAdssService svc,

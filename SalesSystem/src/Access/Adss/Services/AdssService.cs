@@ -1,6 +1,6 @@
 ﻿namespace Adss.Services
 {
-    public sealed class AdssService : IAdssService
+    public class AdssService : IAdssService
     {
          readonly string _RootPath;
  
@@ -8,10 +8,15 @@
 
         public AdssService(IConfiguration config)
         {
-            _RootPath = config["Adss:RootPathLocal"] ?? throw new InvalidOperationException("Adss:RootPathLocal missing.");
+                #if DEBUG
+                            const string rootKey = "Adss:RootPathLocal";
+                #else
+                    const string rootKey = "Adss:RootPathServer";
+                #endif
 
-            string[]? rawExtensions = config.GetSection("Adss:AllowedExtensions").Get<string[]>();
- 
+            _RootPath = config[rootKey]
+                ?? throw new InvalidOperationException($"{rootKey} missing.");
+
             _FallbackFileName = config["Adss:FallbackFileName"] ?? "noimage.jpg";
         }
 

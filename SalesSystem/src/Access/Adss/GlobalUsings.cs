@@ -2,9 +2,11 @@
 global using System.Globalization;
 global using System.Reflection;
 global using System.Text.RegularExpressions;
+global using Adss;
 global using Adss.Services;
 global using Ardalis.Specification;
 global using Ardalis.Specification.EntityFrameworkCore;
+global using Google.Protobuf;
 global using Google.Protobuf.WellKnownTypes;
 global using Grpc.Core;
 global using Logging;
