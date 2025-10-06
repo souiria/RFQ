@@ -28,6 +28,7 @@
             builder.Services.AddGrpc();
             builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddSingleton<IRfqAccessService, RfqAccessService>();
+            builder.Services.AddSingleton<IAdssService, AdssService>();
             builder.Services.AddHostedService<DataImportSchedulerService>();
 
             #endregion
@@ -53,7 +54,17 @@
             app.UseGrpcWeb(grpcWebOptions);
             app.MapGrpcService<RfqGrpcService>();
             app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
-
+            app.MapGet("/adss/part-image/{partNumber}", async (
+                    string partNumber,
+                    IAdssService svc,
+                    CancellationToken ct) =>
+            {
+                (byte[]? bytes, string? contentType) = await svc.GetPartImageAsync(partNumber, ct);
+                return bytes is null || contentType is null
+                    ? Results.NotFound($"No image for part {partNumber}.")
+                    : Results.File(bytes, contentType!, fileDownloadName: $"{partNumber}");
+            });
+            app.MapGet("/ping", () => Results.Text("pong"));
             #endregion
 
             return app;
