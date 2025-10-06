@@ -1,7 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Text.RegularExpressions;
-
-namespace Rfq.Services
+﻿namespace Rfq.Services
 {
     public sealed class AdssService : IAdssService
     {
