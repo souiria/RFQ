@@ -64,7 +64,6 @@
                     ? Results.NotFound($"No image for part {partNumber}.")
                     : Results.File(bytes, contentType!, fileDownloadName: $"{partNumber}");
             });
-            app.MapGet("/ping", () => Results.Text("pong"));
             #endregion
 
             return app;

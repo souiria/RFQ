@@ -42,35 +42,50 @@ namespace Rfq.Services
             string partNumber,
             CancellationToken ct = default)
         {
-            if (string.IsNullOrWhiteSpace(partNumber))
+            if (string.IsNullOrWhiteSpace(partNumber) || !_SafePart.IsMatch(partNumber))
             {
                 return (null, null);
             }
 
-            bool isSafe = _SafePart.IsMatch(partNumber);
-            if (!isSafe)
-            {
-                return (null, null);
-            }
-
+            // 1) Try the requested part number
             foreach (string ext in _Exts)
             {
                 string candidate = Path.Combine(_RootPath, partNumber + ext);
-                bool exists = File.Exists(candidate);
-                if (exists)
+                if (File.Exists(candidate))
                 {
                     await using FileStream fs = File.OpenRead(candidate);
                     using MemoryStream ms = new MemoryStream();
                     await fs.CopyToAsync(ms, ct);
                     byte[] bytes = ms.ToArray();
 
-                    bool found = _MimeByExt.TryGetValue(ext, out string? ctVal);
-                    string contentType = found ? ctVal! : "application/octet-stream";
+                    string contentType = _MimeByExt.TryGetValue(ext, out string? ctVal)
+                        ? ctVal
+                        : "application/octet-stream";
 
                     return (bytes, contentType);
                 }
             }
 
+            // 2) Fallback: return "noimage" from the same folder
+            foreach (string ext in _Exts)
+            {
+                string fallback = Path.Combine(_RootPath, "noimage" + ext);   // noimage.jpg
+                if (File.Exists(fallback))
+                {
+                    await using FileStream fs = File.OpenRead(fallback);
+                    using MemoryStream ms = new MemoryStream();
+                    await fs.CopyToAsync(ms, ct);
+                    byte[] bytes = ms.ToArray();
+
+                    string contentType = _MimeByExt.TryGetValue(ext, out string? ctVal)
+                        ? ctVal
+                        : "application/octet-stream";
+
+                    return (bytes, contentType);
+                }
+            }
+
+            // 3) Nothing at all found
             return (null, null);
         }
     }
