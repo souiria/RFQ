@@ -32,21 +32,22 @@
 
             if (imageBytes == null || imageBytes.Length == 0)
             {
-                // Prepare the reply for 'no image' case
+                //  reply for 'no image' case return from _NoImage64 variable
                 ByteString noImageData = ByteString.CopyFrom(_NoImageBytes);
                 PartImageReply noImageReply = new PartImageReply();
                 noImageReply.Data = noImageData;
                 noImageReply.ContentType = _NoImageContentType;
+                _Logger.GenericLogInformation($"No image found for part number '{partNumber}', returning default image.");
                 return noImageReply;
             }
 
-            // Prepare the reply for the case where an image is available
+            //  reply for the case where an image is available
             ByteString imageData = ByteString.CopyFrom(imageBytes);
             PartImageReply imageReply = new PartImageReply();
 
             imageReply.Data = imageData;
             imageReply.ContentType = contentType;
-            
+            _Logger.GenericLogInformation(information: $"Image found for part number '{partNumber}', returning image with content type '{contentType}'.");
             return imageReply;
         }
     }
