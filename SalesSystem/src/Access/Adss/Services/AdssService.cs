@@ -1,33 +1,43 @@
-﻿namespace Adss.Services
+﻿using Adss.Models;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+namespace Adss.Services
 {
     public class AdssService : IAdssService
     {
          readonly string _RootPath;
-        public AdssService(IConfiguration config)
+        readonly ILogger<AdssService> _Logger;
+        public AdssService( IOptions<AdssSettings> options, IHostEnvironment env, ILogger<AdssService> logger)
         {
-                #if DEBUG
-                            const string rootKey = "Adss:RootPathLocal";
-                #else
-                    const string rootKey = "Adss:RootPathServer";
-                #endif
+            _Logger = logger;
+            AdssSettings settings = options.Value;
 
-            _RootPath = config[rootKey]
-                ?? throw new InvalidOperationException($"{rootKey} missing.");
-
+            // Use local path in Development, otherwise use server path
+                   _RootPath = env.IsDevelopment()
+                ? settings.RootPathLocal
+                : settings.RootPathServer;
+            Console.WriteLine($"Using root path: {_RootPath}");
+            if (string.IsNullOrWhiteSpace(_RootPath))
+            {
+                _Logger.GenericLogInformation(information: $"Root path configuration is missing.");
+                throw new InvalidOperationException("Root path configuration is missing.");
+            }            
         }
 
-       public async Task<(byte[]? ImageBytes, string? ContentType)> GetPartImageAsync( string partNumber, CancellationToken ct = default)
+        public async Task<(byte[]? ImageBytes, string? ContentType)> GetPartImageAsync( string partNumber, CancellationToken ct = default)
         {
                 if (string.IsNullOrWhiteSpace(partNumber))
                 {
-                    return (null, null);
+                _Logger.GenericLogInformation(information: $"Part number is null or empty."); 
+                return (null, null);
                 }
 
                 // 1) Try exact JPG for the part number (no loops, no other extensions)
                 string candidate = Path.Combine(_RootPath, partNumber + ".jpg");
                 if (File.Exists(candidate))
                 {
-                    byte[] bytes = await File.ReadAllBytesAsync(candidate, ct);
+                _Logger.GenericLogInformation(information: $"Found image for part number {partNumber} at {candidate}");
+                byte[] bytes = await File.ReadAllBytesAsync(candidate, ct);
                     return (bytes, "image/jpeg");
                 }
 

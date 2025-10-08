@@ -1,4 +1,5 @@
 ﻿using Adss.Endpoints.GrpcServices;
+using Adss.Models;
 
 namespace Adss
 {
@@ -29,7 +30,8 @@ namespace Adss
             builder.Logging.AddSeq();
             builder.Services.AddGrpc();
             builder.Services.AddSingleton<IAdssService, AdssService>();
-      
+            IConfigurationSection adssSection = builder.Configuration.GetSection("Adss");
+            builder.Services.Configure<AdssSettings>(adssSection);
             #endregion
 
             #endregion
