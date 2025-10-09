@@ -1,12 +1,10 @@
-﻿using Adss.Models;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
-namespace Adss.Services
+﻿namespace Adss.Services
 {
     public class AdssService : IAdssService
     {
-         readonly string _RootPath;
+        readonly string _RootPath;
         readonly ILogger<AdssService> _Logger;
+
         public AdssService( IOptions<AdssSettings> options, IHostEnvironment env, ILogger<AdssService> logger)
         {
             _Logger = logger;

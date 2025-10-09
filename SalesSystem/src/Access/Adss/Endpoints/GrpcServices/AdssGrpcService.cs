@@ -7,6 +7,7 @@
         string _NoImage64;
         readonly byte[] _NoImageBytes;
         string _NoImageContentType;
+
         public AdssGrpcService(IAdssService svc, ILogger<AdssGrpcService> logger)
         {
             _Svc = svc;
@@ -23,6 +24,7 @@
             Task<HelloReply> result = Task.FromResult(reply);
             return result;
         }
+
         public override async Task<PartImageReply> GetPartImage(PartImageRequest request, ServerCallContext context)
         {
             string partNumber = string.IsNullOrWhiteSpace(request.PartNumber) ? "noimage" : request.PartNumber;
