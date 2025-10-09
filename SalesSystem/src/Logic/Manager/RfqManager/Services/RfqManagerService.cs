@@ -22,7 +22,7 @@
             try
             {
                 // Call the Master service to get all customers
-                await Task.Delay(1000);
+                await Task.Delay(1);
                 CustomerGrpcRequest getCustomersRequest = new CustomerGrpcRequest();
                 getCustomersRequest.Position = request.Position;
                 getCustomersRequest.Takeamount = request.Take;
@@ -48,7 +48,7 @@
             try
             {
                 // Call the Master service to get customers
-                await Task.Delay(1000);
+                await Task.Delay(1);
                 CustomerByIdGrpcRequest getCustomersRequest = new CustomerByIdGrpcRequest();
                 getCustomersRequest.Id = request.UserId;
                 ListCustomerGrpc customers = _MasterClient.GetCustomerGrpcById(getCustomersRequest);
@@ -73,7 +73,7 @@
             try
             {
                 // Call the Master service to get locations by customer ID
-                await Task.Delay(1000);
+                await Task.Delay(1);
                 CustomerLocationByCustomerIdGrpcRequest locationRequest = new CustomerLocationByCustomerIdGrpcRequest();
                 locationRequest.CustomerId = request.CustomerId;
                 ListCustomerLocationGrpc locations = _MasterClient.GetCustomerLocationGrpcByCustomerId(locationRequest);
@@ -98,7 +98,7 @@
             try
             {
                 // Call the Master service to get projects by location ID
-                await Task.Delay(1000);
+                await Task.Delay(1);
                 List<Master.ProjectGrpc> projects = new List<Master.ProjectGrpc>();
 
                 GetProjectsByIdGrpcResponse response = new GetProjectsByIdGrpcResponse();
@@ -127,7 +127,7 @@
             try
             {
                 // Call the Master service to get vehicles by project reference
-                await Task.Delay(1000);
+                await Task.Delay(1);
                 VehicleGrpcRequest vehicleRequest = new VehicleGrpcRequest();
                 ListVehicleGrpc vehicles = _MasterClient.GetVehicleGrpc(vehicleRequest);
                 List<VehicleGrpc> filteredVehicles = new List<VehicleGrpc>();
@@ -156,7 +156,7 @@
         {
             try
             {
-                await Task.Delay(1000);
+                await Task.Delay(1);
                 CustomerProjectAssociationByLocationIdGrpcRequest customerProjectRequest = new CustomerProjectAssociationByLocationIdGrpcRequest();
                 customerProjectRequest.LocationId = request.LocationId;
                 ListCustomerProjectAssociationGrpc customerProjectAssociations = _MasterClient.GetCustomerProjectAssociationGrpcByLocationId(customerProjectRequest);
@@ -181,7 +181,7 @@
             try
             {
                 // Call the Rfq service to get RFQ reasons
-                await Task.Delay(1000);
+                await Task.Delay(1);
                 RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
                 GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
                 grpcRequestParameter.Position = request.Position;
@@ -308,7 +308,7 @@
                 return customerParts;
             }
             // Go to the access service to save the data to the database
-            await Task.Delay(1000);
+            await Task.Delay(1);
 
             _Logger.GenericLogInformation("File " + request.FileName + " processed successfully");
             List<string> crossReferences = crossReferenceDtos

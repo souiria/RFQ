@@ -87,10 +87,12 @@
         if (user.Identity!.IsAuthenticated)
         {
             userName = user.Identity.Name;
+            Console.WriteLine($"User is authenticated: {userName}");
         }
         else
         {
             userName = "Anonymous";
+            Console.WriteLine("User is not authenticated.");
         }
 
         using (PrincipalContext context2 = new PrincipalContext(ContextType.Domain))

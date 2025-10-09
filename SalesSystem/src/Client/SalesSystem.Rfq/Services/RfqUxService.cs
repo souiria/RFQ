@@ -26,11 +26,17 @@
         {
             await Task.Delay(0);
             List<RfqModule.ProjectGrpc> projects = new List<RfqModule.ProjectGrpc>();
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            stopwatch.Stop();
             foreach (CustomerProjectUx cp in customerProjects)
             {
+                stopwatch.Restart();
                 RfqModule.GetProjectsByIdGrpcRequest request = new RfqModule.GetProjectsByIdGrpcRequest();
                 request.Id = cp.ProjectId;
                 RfqModule.GetProjectsByIdGrpcResponse response = _RfqModuleClient.GetProjectsByIdGrpc(request);
+                stopwatch.Stop();
+                Console.WriteLine($"GetProjectsByIdGrpc for {cp.CustomerName} / {cp.ProjectName} call duration: {stopwatch.ElapsedMilliseconds} ms");
                 if (0 < response.Projects.Count)
                 {
                     projects.AddRange(response.Projects);

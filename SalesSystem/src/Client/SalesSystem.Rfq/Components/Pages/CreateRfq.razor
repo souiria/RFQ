@@ -3,6 +3,7 @@
 @inject ISnackbar Snackbar
 @inject RfqUxService rfqUxService
 @rendermode InteractiveServer
+@using SalesSystem.Rfq.Extensions
 
 <style>
     .file-upload-input {
@@ -21,14 +22,25 @@
             <MudPaper Elevation="25" Class="d-flex flex-row" Style="height:150px;">
                 <MudPaper Elevation="0" Class="pa-4">
                 <MudStack>
-                    <MudSelect @bind-Value="customerValue" Label="Customer" Placeholder="Please Select"
-                               AdornmentIcon="@Icons.Material.Filled.People" AdornmentColor="Color.Primary">
+                    <MudSelect T="string"
+                               Value="customerValue"
+                               For="@(() => customerValue)"
+                               ValueChanged="OnCustomerValueChanged"
+                               Label="Customer" 
+                               Placeholder="Please Select"
+                               AdornmentIcon="@Icons.Material.Filled.People" 
+                               AdornmentColor="Color.Primary">
                         @foreach(var customer in customers)
                         {
                             <MudSelectItem Value="@customer.CustomerBusinessGroupName">@customer.CustomerBusinessGroupName</MudSelectItem>
                         }
                     </MudSelect>
-                    <MudSelect @bind-Value="reasonValue" Label="Reason" Placeholder="Please Select"
+                    <MudSelect T="string"
+                               Value="reasonValue" 
+                               For="@(() => reasonValue)"
+                               ValueChanged="OnReasonValueChanged"
+                               Label="Reason" 
+                               Placeholder="Please Select"
                                AdornmentIcon="@Icons.Material.Filled.Checklist" AdornmentColor="Color.Primary">
                         @foreach (var reason in reasons)
                         {
@@ -42,8 +54,14 @@
 
             <MudPaper Elevation="0" Class="pa-4">
                 <MudStack>
-                    <MudSelect @bind-Value="customerProjectValue" Label="Project" Placeholder="Please Select"
-                               AdornmentIcon="@Icons.Material.Filled.Settings" AdornmentColor="Color.Primary">
+                    <MudSelect T="string"
+                               Value="customerProjectValue"
+                               For="@(() => customerProjectValue)"
+                               ValueChanged="OnCustomerProjectValueChanged"
+                               Label="Project" 
+                               Placeholder="Please Select"
+                               AdornmentIcon="@Icons.Material.Filled.Settings" 
+                               AdornmentColor="Color.Primary">
                         @foreach (var association in customerProjectAssociations)
                         {
                             <MudSelectItem Value="@association.Id">@association.ProjectName - @association.CustomerName</MudSelectItem>
@@ -54,7 +72,12 @@
             </MudPaper>
             <MudPaper Elevation="0" Class="pa-4">
                 <MudStack>
-                    <MudSelect @bind-Value="quotationValue" Label="Quotation Number" Placeholder="Please Select"
+                    <MudSelect T="string"
+                               Value="quotationValue" 
+                               For="@(() => quotationValue)"
+                               ValueChanged="OnQuotationValueChanged"
+                               Label="Quotation Number" 
+                               Placeholder="Please Select"
                                AdornmentIcon="@Icons.Material.Filled.People" AdornmentColor="Color.Primary">
                         <MudSelectItem Value="@("SEWS-25-025-005678")">SEWS-25-025-005678</MudSelectItem>
                         <MudSelectItem Value="@("SEWS-25-025-005688")">SEWS-25-025-005688</MudSelectItem>
@@ -211,29 +234,13 @@
 </MudGrid>
 
 @code {
-    private string? _customerValue { get; set; }
-    private string? customerValue { 
-        get => _customerValue;
-        set 
-        {
-            _customerValue = value;
-            _ = GetLocations();
-        }
-    }
+    string? customerValue = "";
+
     private string? customerProjectValue { get; set; }
     private string? locationValue { get; set; }
     private string? reasonValue { get; set; }
     private string? projectValue { get; set; }
-    private string? _quotationValue { get; set; }
-    private string? quotationValue 
-    { 
-        get => _quotationValue;
-        set
-        {
-            _quotationValue = value;
-            _ = GetReasons();
-        }
-    }
+    private string? quotationValue { get; set; }
     private int vehicleVolume { get; set; }
     private List<RfqModule.CustomerGrpc> customers = new();
     private List<RfqModule.CustomerLocationGrpc> locations = new();
@@ -251,21 +258,48 @@
     private string _searchString = string.Empty;
     private string _iconString = string.Empty;
     private string _status = string.Empty;
-    //private bool _sortNameByLength = false;
-    private bool visible;
-
+    
     [Parameter] public Guid? UserId { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
-        customers.Clear();
-        if(UserId == null || UserId == Guid.Empty)
+        if (UserId == null || UserId == Guid.Empty)
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             Snackbar.Add("UserId is missing in the URL", Severity.Error);
             return;
-        };
-        customers = await rfqUxService.GetCustomersAsync((Guid)UserId);
+        }
+
+        if(customers.Count == 0)
+        {
+            Func<Guid, Task<List<RfqModule.CustomerGrpc>>> guidAsyncService = rfqUxService.GetCustomersAsync;
+            long timing = 0;
+            int count = 0;
+            (timing, count, customers) = await guidAsyncService.TimeAsyncGuidService((Guid)UserId);
+
+            Snackbar.Add($"Customer load time is ok {timing}ms @{DateTime.UtcNow}", Severity.Success);
+        }
+    }
+
+    // Control generated events - only call StateHasChanged() from events (i.e. methods starting with On....)
+    #region Customer
+
+    async Task OnCustomerValueChanged(string value)
+    {
+        Snackbar.Add($"Customer changed to {value}", Severity.Info);
+        customerValue = value;
+        
+        try
+        {
+            await GetLocations();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to load locations for customer '{customerValue}': {ex.Message}", Severity.Error, config => { config.VisibleStateDuration = 10000; });
+        }
+
+
+        StateHasChanged();
     }
 
     private async Task GetLocations()
@@ -278,11 +312,29 @@
 
             if (customer != null)
             {
-                List<RfqModule.CustomerLocationGrpc> responseLocations = await rfqUxService.GetLocationsByCustomer(customer.Id);
-                locations.AddRange(responseLocations);
+                List<RfqModule.CustomerLocationGrpc> response = new();
+
+                Func<string, Task<List<RfqModule.CustomerLocationGrpc>>> stringAsyncService = rfqUxService.GetLocationsByCustomer;
+
+                long timing = 0;
+                int count = 0;
+                (timing, count, response) = await stringAsyncService.TimeAsyncStringService(customer.Id);
+
+                locations.AddRange(response);
+
+                Snackbar.Add($"Loaded {count} locations for customer '{customer.CustomerBusinessGroupName}' in {timing}ms.", Severity.Info);
+
+                try
+                {
+                    await GetCustomerProjectAssociations();
+                }
+                catch (Exception ex)
+                {
+                    Snackbar.Add($"Failed to load customer project associations for customer '{customerValue}': {ex.Message}", Severity.Error, config => { config.VisibleStateDuration = 10000; });
+                }
+
             }
         }
-        await GetCustomerProjectAssociations();
     }
 
     private async Task GetCustomerProjectAssociations()
@@ -294,11 +346,27 @@
             RfqModule.CustomerGrpc? customer = customers.FirstOrDefault(c => c.CustomerBusinessGroupName == customerValue);
             if (customer != null)
             {
-                List<CustomerProjectUx> responseAssociations = await rfqUxService.GetCustomerProjectAssociations();
-                customerProjectAssociations.AddRange(responseAssociations);
-                StateHasChanged();
+                List<CustomerProjectUx> response = new();
+
+                Func<Task<List<CustomerProjectUx>>> asyncService = rfqUxService.GetCustomerProjectAssociations;
+
+                long timing = 0;
+                int count = 0;
+                (timing, count, response) = await asyncService.TimeAsyncService();
+                customerProjectAssociations.AddRange(response);
+
+                Snackbar.Add($"Loaded {count} customer project associations for customer '{customer.CustomerBusinessGroupName}' in {timing}ms.", Severity.Info);
+
+                try
+                {
+                    await GetProjects();
+                }
+                catch (Exception ex)
+                {
+                    Snackbar.Add($"Failed to load projects for customer '{customerValue}': {ex.Message}", Severity.Error, config => { config.VisibleStateDuration = 10000; });
+                }
+
             }
-            await GetProjects();
         }
     }
 
@@ -308,10 +376,25 @@
         projectValue = null;
         if (0 < customerProjectAssociations.Count)
         {
-            List<RfqModule.ProjectGrpc> responseProjects = await rfqUxService.GetProjectsbyCustomerProjectAssociation(customerProjectAssociations);
-            projects.AddRange(responseProjects);
-            StateHasChanged();
-            await GetCustomerProjectAssociationsUx();
+            List<RfqModule.ProjectGrpc> response = new();
+
+            Func<IList<CustomerProjectUx>, Task<List<RfqModule.ProjectGrpc>>> listAsyncService = rfqUxService.GetProjectsbyCustomerProjectAssociation;
+            long timing = 0;
+            int count = 0;
+            (timing, count, response) = await listAsyncService.TimeAsyncListService(customerProjectAssociations);
+            projects.AddRange(response);
+
+            Snackbar.Add($"Loaded {count} projects for customer project associations in {timing}ms.", Severity.Info);
+
+            try
+            {
+                await GetCustomerProjectAssociationsUx();
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Failed to load project associations (ux) for customer '{customerValue}': {ex.Message}", Severity.Error, config => { config.VisibleStateDuration = 10000; });
+            }
+
         }
     }
 
@@ -321,12 +404,33 @@
         if (!string.IsNullOrWhiteSpace(customerValue))
         {
 
-            List<CustomerProjectUx> responseAssociations = await rfqUxService.GetCustomerProjectUx(projects, locations, customerProjectAssociations);
+            List<CustomerProjectUx> response = await rfqUxService.GetCustomerProjectUx(projects, locations, customerProjectAssociations);
+
             customerProjectAssociations.Clear();
-            customerProjectAssociations.AddRange(responseAssociations);
-            StateHasChanged();
+            customerProjectAssociations.AddRange(response);
+
         }
 
+    }
+    #endregion
+
+    #region Project
+    private async Task OnCustomerProjectValueChanged(string value)
+    {
+        customerProjectValue = value;
+        await Task.Delay(0);
+
+        StateHasChanged();
+    }
+    #endregion
+
+    #region Quotation
+    private async Task OnQuotationValueChanged(string value)
+    {
+        quotationValue = value;
+        await GetReasons();
+
+        StateHasChanged();
     }
 
     public async Task GetReasons()
@@ -334,13 +438,18 @@
         reasons.Clear();
         List<RfqModule.RfqReasonGrpc> responseRfqItems = await rfqUxService.GetReasons();
         reasons.AddRange(responseRfqItems);
+    }
+    #endregion
+
+    #region Reason
+    private async Task OnReasonValueChanged(string value)
+    {
+        reasonValue = value;
+        await Task.Delay(0);
+
         StateHasChanged();
     }
-
-    public void ToggleOverlay(bool value)
-    {
-        visible = value;
-    }
+    #endregion
 
     private async Task ClearAsync()
     {
@@ -433,14 +542,14 @@
         string fileName = _fileUpload.Files.Name.First().ToString() ?? string.Empty;
 
         await rfqUxService.CreateRfqProject(
-            // customer,
-            // project,
-            // location,
-            // reason,
-            // vehicleVolume,
-            // _date.Value,
-            // fileName,
-            // fileContent
+        // customer,
+        // project,
+        // location,
+        // reason,
+        // vehicleVolume,
+        // _date.Value,
+        // fileName,
+        // fileContent
         );
         // create project
         // upload files
@@ -512,4 +621,5 @@
 
         return style;
     };
+
 }
