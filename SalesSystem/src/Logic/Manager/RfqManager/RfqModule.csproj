@@ -21,7 +21,7 @@
     <ProjectReference Include="..\..\..\Access\Rfq\Rfq.csproj" />
     <ProjectReference Include="..\..\..\Debug\SalesSystem.ServiceDefaults\SalesSystem.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\..\Utilities\SharedModels\SharedModels.csproj" />
-    <ProjectReference Include="..\..\Engine\DocumentConversion\DocumentConversion.csproj" />
+    <ProjectReference Include="..\..\Engine\DocumentConversion\Transformation.csproj" />
   </ItemGroup>
 
 </Project>

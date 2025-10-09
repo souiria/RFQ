@@ -1,6 +1,6 @@
 ﻿namespace DocumentConversion
 {
-    public static class DocumentConverter
+    public static class DocumentTransformer
     {
         public static DsiAggregate ConvertDsiFile(byte[] file)
         {

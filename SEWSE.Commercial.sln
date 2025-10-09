@@ -91,7 +91,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPRAccess.Tests", "SalesSys
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CDb", "SalesSystem\src\Access\CDb\CDb.csproj", "{3CB3B2BA-D6A6-6C56-A700-09052A025841}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentConversion", "SalesSystem\src\Logic\Engine\DocumentConversion\DocumentConversion.csproj", "{E964115B-5283-FBF0-5A8C-128A16FB5AA9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transformation", "SalesSystem\src\Logic\Engine\DocumentConversion\Transformation.csproj", "{E964115B-5283-FBF0-5A8C-128A16FB5AA9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentConversionEngine.Tests", "SalesSystem\Tests\DocumentConverterEngine.Tests\DocumentConversionEngine.Tests.csproj", "{2E8970B8-2F24-2494-63F9-AF5D71BBF517}"
 EndProject

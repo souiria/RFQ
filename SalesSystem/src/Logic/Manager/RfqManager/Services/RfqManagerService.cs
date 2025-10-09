@@ -7,6 +7,8 @@
         readonly Rfq.Rfq.RfqClient _RfqClient;
         readonly ILogger<RfqManagerService> _Logger;
 
+        List<ProjectGrpc> _Projects;
+
         public RfqManagerService(ILogger<RfqManagerService> logger,
             Master.Master.MasterClient masterClient,
             Rfq.Rfq.RfqClient rfqClient
@@ -15,6 +17,7 @@
             _Logger = logger;
             _MasterClient = masterClient;
             _RfqClient = rfqClient;
+            _Projects = new List<ProjectGrpc>();
         }
 
         public async Task<GetAllCustomersGrpcResponse> GetAllCustomersGrpc (GetAllCustomersGrpcRequest request)
@@ -22,7 +25,7 @@
             try
             {
                 // Call the Master service to get all customers
-                await Task.Delay(1000);
+                await Task.Delay(1);
                 CustomerGrpcRequest getCustomersRequest = new CustomerGrpcRequest();
                 getCustomersRequest.Position = request.Position;
                 getCustomersRequest.Takeamount = request.Take;
@@ -48,7 +51,7 @@
             try
             {
                 // Call the Master service to get customers
-                await Task.Delay(1000);
+                await Task.Delay(1);
                 CustomerByIdGrpcRequest getCustomersRequest = new CustomerByIdGrpcRequest();
                 getCustomersRequest.Id = request.UserId;
                 ListCustomerGrpc customers = _MasterClient.GetCustomerGrpcById(getCustomersRequest);
@@ -68,82 +71,159 @@
             }
         }
 
-        public async Task<GetLocationsByCustomerIdGrpcResponse> GetLocationsByCustomerIdGrpc(GetLocationsByCustomerIdGrpcRequest request)
+        public async Task<GetProjectAssociationsByCustomerIdResponse> GetProjectAssociationsByCustomerId(GetProjectAssociationsByCustomerIdRequest request)
         {
             try
             {
-                // Call the Master service to get locations by customer ID
-                await Task.Delay(1000);
+                await Task.Delay(1);
+                _Projects.Clear();
+                GetProjectAssociationsByCustomerIdResponse response = new GetProjectAssociationsByCustomerIdResponse();
                 CustomerLocationByCustomerIdGrpcRequest locationRequest = new CustomerLocationByCustomerIdGrpcRequest();
                 locationRequest.CustomerId = request.CustomerId;
                 ListCustomerLocationGrpc locations = _MasterClient.GetCustomerLocationGrpcByCustomerId(locationRequest);
-                GetLocationsByCustomerIdGrpcResponse response = new GetLocationsByCustomerIdGrpcResponse();
-                foreach (Master.CustomerLocationGrpc? masterLocation in locations.CustomerLocationGrpc)
+                if (locations.CustomerLocationGrpc.Count <= 0)
                 {
-                    CustomerLocationGrpc location = masterLocation.ToCustomerLocation();
-                    response.Locations.Add(location);
+                    response.Message = "No locations found for customer";
+                    response.Success = false;
+                    return response;
+                }
+
+                foreach (CustomerLocationGrpc? location in locations.CustomerLocationGrpc)
+                {
+                    CustomerProjectAssociationByLocationIdGrpcRequest customerProjectRequest = new CustomerProjectAssociationByLocationIdGrpcRequest();
+                    customerProjectRequest.LocationId = location.Id;
+                    ListCustomerProjectAssociationGrpc customerProjectAssociations = _MasterClient.GetCustomerProjectAssociationGrpcByLocationId(customerProjectRequest);
+
+                    foreach (CustomerProjectAssociationGrpc? customerProjectAssociation in customerProjectAssociations.CustomerProjectAssociationGrpc)
+                    {
+                        if (customerProjectAssociation.ProjectGuid == null)
+                        {
+                            continue;
+                        }
+
+                        ProjectByIdGrpcRequest projectRequest = new ProjectByIdGrpcRequest();
+                        projectRequest.Id = customerProjectAssociation.ProjectGuid;
+                        ListProjectGrpc projects = _MasterClient.GetProjectGrpcById(projectRequest);
+                        if(projects.ProjectGrpc.Count <= 0)
+                        {
+                            continue;
+                        }
+
+                        _Projects.AddRange(projects.ProjectGrpc);
+                        foreach (ProjectGrpc? project in projects.ProjectGrpc)
+                        {
+                            ProjectAssociation projectAssociation = new ProjectAssociation();
+                            projectAssociation.CustomerLocationGuid = location.Id;
+                            projectAssociation.CustomerLocationName = location.CustomerName;
+                            projectAssociation.CustomerProjectGuid = project.Id;
+                            projectAssociation.CustomerProjectName = project.CustomerProjectCode;
+                            projectAssociation.Id = customerProjectAssociation.Id;
+                            response.ProjectAssociation.Add(projectAssociation);
+                        }
+                    }
                 }
 
                 return response;
             }
             catch (Exception ex)
             {
-                _Logger.GenericLogError("Error fetching locations from Master service", ex);
+                _Logger.GenericLogError("Error fetching project associations from Master service", ex);
                 throw;
             }
         }
 
-        public async Task<GetProjectsByIdGrpcResponse> GetProjectsByIdGrpc(GetProjectsByIdGrpcRequest request)
-        {
-            try
-            {
-                // Call the Master service to get projects by location ID
-                await Task.Delay(1000);
-                List<Master.ProjectGrpc> projects = new List<Master.ProjectGrpc>();
+        //public async Task<GetLocationsByCustomerIdGrpcResponse> GetLocationsByCustomerIdGrpc(GetLocationsByCustomerIdGrpcRequest request)
+        //{
+        //    try
+        //    {
+        //        // Call the Master service to get locations by customer ID
+        //        await Task.Delay(1000);
+        //        CustomerLocationByCustomerIdGrpcRequest locationRequest = new CustomerLocationByCustomerIdGrpcRequest();
+        //        locationRequest.CustomerId = request.CustomerId;
+        //        ListCustomerLocationGrpc locations = _MasterClient.GetCustomerLocationGrpcByCustomerId(locationRequest);
+        //        GetLocationsByCustomerIdGrpcResponse response = new GetLocationsByCustomerIdGrpcResponse();
+        //        foreach (Master.CustomerLocationGrpc? masterLocation in locations.CustomerLocationGrpc)
+        //        {
+        //            CustomerLocationGrpc location = masterLocation.ToCustomerLocation();
+        //            response.Locations.Add(location);
+        //        }
 
-                GetProjectsByIdGrpcResponse response = new GetProjectsByIdGrpcResponse();
-                ProjectByIdGrpcRequest projectRequest = new ProjectByIdGrpcRequest();
-                projectRequest.Id = request.Id;
-                ListProjectGrpc projectList = _MasterClient.GetProjectGrpcById(projectRequest);
-                projects.AddRange(projectList.ProjectGrpc);
-                foreach (Master.ProjectGrpc? masterProject in projects)
-                {
-                    ProjectGrpc project = masterProject.ToProject();
-                    response.Projects.Add(project);
+        //        return response;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _Logger.GenericLogError("Error fetching locations from Master service", ex);
+        //        throw;
+        //    }
+        //}
 
-                }
+        //public async Task<GetProjectsByIdGrpcResponse> GetProjectsByIdGrpc(GetProjectsByIdGrpcRequest request)
+        //{
+        //    try
+        //    {
+        //        // Call the Master service to get projects by location ID
+        //        await Task.Delay(1000);
+        //        List<Master.ProjectGrpc> projects = new List<Master.ProjectGrpc>();
 
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _Logger.GenericLogError("Error fetching projects from Master service", ex);
-                throw;
-            }
-        }
+        //        GetProjectsByIdGrpcResponse response = new GetProjectsByIdGrpcResponse();
+        //        ProjectByIdGrpcRequest projectRequest = new ProjectByIdGrpcRequest();
+        //        projectRequest.Id = request.Id;
+        //        ListProjectGrpc projectList = _MasterClient.GetProjectGrpcById(projectRequest);
+        //        projects.AddRange(projectList.ProjectGrpc);
+        //        foreach (Master.ProjectGrpc? masterProject in projects)
+        //        {
+        //            ProjectGrpc project = masterProject.ToProject();
+        //            response.Projects.Add(project);
 
-        public async Task<GetVehicleByProjectCodeGrpcResponse> GetVehiclesByProjectCodeGrpc(GetVehicleByProjectCodeGrpcRequest request)
+        //        }
+
+        //        return response;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _Logger.GenericLogError("Error fetching projects from Master service", ex);
+        //        throw;
+        //    }
+        //}
+
+        public async Task<List<VehicleGrpc>> GetVehiclesByProjectCodeGrpc(string projectCode)
         {
             try
             {
                 // Call the Master service to get vehicles by project reference
-                await Task.Delay(1000);
+                await Task.Delay(1);
                 VehicleGrpcRequest vehicleRequest = new VehicleGrpcRequest();
                 ListVehicleGrpc vehicles = _MasterClient.GetVehicleGrpc(vehicleRequest);
                 List<VehicleGrpc> filteredVehicles = new List<VehicleGrpc>();
                 foreach (Master.VehicleGrpc? vehicle in vehicles.VehicleGrpc)
                 {
                     _Logger.GenericLogInformation("Vehicle from Master Service: " + vehicle.ToString());
-                    if (vehicle.ProjectReference.Contains(request.ProjectCode, StringComparison.OrdinalIgnoreCase))
+                    if (vehicle.ProjectReference.Contains('+', StringComparison.InvariantCulture))
+                    {
+                        string[] codes = vehicle.ProjectReference.Split('+');
+                        foreach (string code in codes)
+                        {
+                            if (string.IsNullOrWhiteSpace(code))
+                            {
+                                continue;
+                            }
+
+                            if (projectCode.Contains(code, StringComparison.OrdinalIgnoreCase))
+                            {
+                                VehicleGrpc filteredVehicle = vehicle.ToVehicle();
+                                filteredVehicles.Add(filteredVehicle);
+                            }
+                        }
+                    }
+
+                    if (projectCode.Contains(vehicle.ProjectReference, StringComparison.OrdinalIgnoreCase))
                     {
                         VehicleGrpc filteredVehicle = vehicle.ToVehicle();
                         filteredVehicles.Add(filteredVehicle);
                     }
                 }
 
-                GetVehicleByProjectCodeGrpcResponse response = new GetVehicleByProjectCodeGrpcResponse();
-                response.Vehicles.AddRange(filteredVehicles);
-                return response;
+                return filteredVehicles;
             }
             catch (Exception ex)
             {
@@ -152,36 +232,38 @@
             }
         }
 
-        public async Task<GetCustomerProjectAssociationsByLocationIdGrpcResponse> GetCustomerProjectAssociationsByLocationIdGrpc(GetCustomerProjectAssociationsByLocationIdGrpcRequest request)
-        {
-            try
-            {
-                await Task.Delay(1000);
-                CustomerProjectAssociationByLocationIdGrpcRequest customerProjectRequest = new CustomerProjectAssociationByLocationIdGrpcRequest();
-                customerProjectRequest.LocationId = request.LocationId;
-                ListCustomerProjectAssociationGrpc customerProjectAssociations = _MasterClient.GetCustomerProjectAssociationGrpcByLocationId(customerProjectRequest);
-                GetCustomerProjectAssociationsByLocationIdGrpcResponse response = new GetCustomerProjectAssociationsByLocationIdGrpcResponse();
-                foreach (Master.CustomerProjectAssociationGrpc? association in customerProjectAssociations.CustomerProjectAssociationGrpc)
-                {
-                    CustomerProjectAssociationGrpc customerProjectAssociation = association.ToCustomerProjectAssociation();
-                    response.CustomerProjectAssociation.Add(customerProjectAssociation);
-                }
+        
 
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _Logger.GenericLogError("Error fetching customerProjectAssociations from Master service", ex);
-                throw;
-            }
-        }
+        //public async Task<GetCustomerProjectAssociationsByLocationIdGrpcResponse> GetCustomerProjectAssociationsByLocationIdGrpc(GetCustomerProjectAssociationsByLocationIdGrpcRequest request)
+        //{
+        //    try
+        //    {
+        //        await Task.Delay(1000);
+        //        CustomerProjectAssociationByLocationIdGrpcRequest customerProjectRequest = new CustomerProjectAssociationByLocationIdGrpcRequest();
+        //        customerProjectRequest.LocationId = request.LocationId;
+        //        ListCustomerProjectAssociationGrpc customerProjectAssociations = _MasterClient.GetCustomerProjectAssociationGrpcByLocationId(customerProjectRequest);
+        //        GetCustomerProjectAssociationsByLocationIdGrpcResponse response = new GetCustomerProjectAssociationsByLocationIdGrpcResponse();
+        //        foreach (Master.CustomerProjectAssociationGrpc? association in customerProjectAssociations.CustomerProjectAssociationGrpc)
+        //        {
+        //            CustomerProjectAssociationGrpc customerProjectAssociation = association.ToCustomerProjectAssociation();
+        //            response.CustomerProjectAssociation.Add(customerProjectAssociation);
+        //        }
+
+        //        return response;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _Logger.GenericLogError("Error fetching customerProjectAssociations from Master service", ex);
+        //        throw;
+        //    }
+        //}
 
         public async Task<GetRfqReasonsGrpcResponse> GetRfqReasonsGrpc(GetRfqReasonsGrpcRequest request)
         {
             try
             {
                 // Call the Rfq service to get RFQ reasons
-                await Task.Delay(1000);
+                await Task.Delay(1);
                 RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
                 GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
                 grpcRequestParameter.Position = request.Position;
@@ -208,26 +290,10 @@
 
         public async Task<UploadPartsRequestGrpcResponse> UploadPartsGrpc(UploadPartsRequestGrpcRequest request)
         {
-            //string file = File.ReadAllText("Services/Ford.xml");
-            //ByteString bytes = ByteString.CopyFrom(file, Encoding.UTF8);
-            //byte[] fileBytes = await File.ReadAllBytesAsync("Services/Ford_Mega_Bom.csv");
-            //ByteString bytes = ByteString.CopyFrom(fileBytes);
-            //request.FileData = bytes;
             UploadPartsRequestGrpcResponse uploadResponse = new UploadPartsRequestGrpcResponse();
             List<CustomerParts> customerParts = await ConvertDocumentAsync(request);
-            RfqCrudGrpcResponse createRfqProjectResponse = CreateRfqProject(request);
 
-            if (createRfqProjectResponse.SaveSuccess == false)
-            {
-                uploadResponse.Success = false;
-                uploadResponse.Message = "Failed to create RFQ Project";
-                return uploadResponse;
-            }
-
-            List<string> projectIds = createRfqProjectResponse.StringValue.Split(",").ToList();
-            string projectId = projectIds.First();
-
-            RfqCrudGrpcResponse partResponse = CreateRfqDrawingPartNumbers(projectId, customerParts);
+            RfqCrudGrpcResponse partResponse = CreateRfqDrawingPartNumbers(request.ProjectId, customerParts);
 
             if (partResponse.SaveSuccess == false)
             {
@@ -238,7 +304,6 @@
 
             uploadResponse.Success = true;
             uploadResponse.Message = "File processed and RFQ Project and Parts created successfully";
-            uploadResponse.PartNumbers.AddRange(customerParts);
 
             return uploadResponse;
 
@@ -269,33 +334,33 @@
                     case ".CSV":
                     // Handle CSV file processing
                     _Logger.GenericLogInformation("Processing CSV file: " + fileName);
-                    object csvData = DocumentConverter.ConvertCSV(fileData, fileName);
+                    object csvData = DocumentTransformer.ConvertCSV(fileData, fileName);
                     fordCsvDtos = (List<FordCsvDto>)csvData;
                     break;
                     case ".XML":
                     // Handle XML file processing
                     _Logger.GenericLogInformation("Processing XML file: " + fileName);
-                    crossReferenceDtos = DocumentConverter.ConvertFordXMLFile(fileData).ToList();
+                    crossReferenceDtos = DocumentTransformer.ConvertFordXMLFile(fileData).ToList();
                     break;
                     case ".XLSX":
                     // Handle Excel file processing
                     _Logger.GenericLogInformation("Processing Excel file: " + fileName);
-                    crossReferenceDtos = DocumentConverter.ConvertExcelFile(fileData).ToList();
+                    crossReferenceDtos = DocumentTransformer.ConvertExcelFile(fileData).ToList();
                     break;
                     case ".MTF":
                     // Handle MTF file processing
                     _Logger.GenericLogInformation("Processing MTF file: " + fileName);
-                    crossReferenceDtos = DocumentConverter.ConvertToyotaXMLFile(fileData).ToList();
+                    crossReferenceDtos = DocumentTransformer.ConvertToyotaXMLFile(fileData).ToList();
                     break;
                     case ".TXT":
                     // Handle TXT file processing
                     _Logger.GenericLogInformation("Processing TXT file: " + fileName);
-                    crossReferenceDtos = DocumentConverter.ConvertRenaultCSVFile(fileData).ToList();
+                    crossReferenceDtos = DocumentTransformer.ConvertRenaultCSVFile(fileData).ToList();
                     break;
                     case ".DSI":
                     // Handle DSI file processing
                     _Logger.GenericLogInformation("Processing DSI file: " + fileName);
-                    dsiAggregate = DocumentConverter.ConvertDsiFile(fileData);
+                    dsiAggregate = DocumentTransformer.ConvertDsiFile(fileData);
                     break;
                     default:
                     _Logger.GenericLogInformation("Unsupported file type:" + fileExtension);
@@ -348,8 +413,22 @@
             return customerParts;
         }
 
-        RfqCrudGrpcResponse CreateRfqProject(UploadPartsRequestGrpcRequest request)
+        public async Task<CreateRfqProjectGrpcResponse> CreateRfqProject(CreateRfqProjectGrpcRequest request)
         {
+            ProjectGrpc project = _Projects.First(p => p.Id == request.Project.ProjectGuid);
+            string projectCode = project.CustomerProjectCode;
+            List<VehicleGrpc> vehiclesResponse = await GetVehiclesByProjectCodeGrpc(projectCode);
+            CreateRfqProjectGrpcResponse response = new CreateRfqProjectGrpcResponse();
+            if (0 == vehiclesResponse.Count)
+            {
+                response.Success = false;
+                return response;
+            }
+
+            VehicleGrpc vehicle = vehiclesResponse.First();
+
+            request.Project.CarModelGuid = vehicle.Id;
+
             RfqProjectGrpc rfqProject = new RfqProjectGrpc();
             RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
 
@@ -367,7 +446,16 @@
             rfqProjectRequest.GrpcRequestParameter.RequestType = 70;
             rfqProjectRequest.RfqProjectGrpcsToCreate.Add(rfqProject);
             RfqCrudGrpcResponse createResponse = _RfqClient.CreateRfqProjectGrpc(rfqProjectRequest);
-            return createResponse;
+            if (createResponse.SaveSuccess == false)
+            {
+                response.Success = false;
+                response.Message = "Failed to create RFQ Project";
+                return response;
+            }
+
+            response.Message = createResponse.Message;
+            response.CreatedProjectId = createResponse.StringValue.Split(',').First();
+            return response;
         }
 
         List<CustomerParts> GetCustomerParts(List<string> newParts, List<CustomerParts> customerParts)

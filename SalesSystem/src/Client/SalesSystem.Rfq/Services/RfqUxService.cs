@@ -3,122 +3,134 @@
     public class RfqUxService
     {
         readonly RfqModule.RfqModule.RfqModuleClient _RfqModuleClient;
-        List<RfqModule.CustomerLocationGrpc> _CustomerLocations;
 
         public RfqUxService(RfqModule.RfqModule.RfqModuleClient rfqModuleClient)
         {
             _RfqModuleClient = rfqModuleClient;
-            _CustomerLocations = new List<RfqModule.CustomerLocationGrpc>();
         }
         // Data and Grpc Tasks
-        public async Task<List<RfqModule.CustomerGrpc>> GetCustomersAsync(Guid userId)
+        public async Task<List<CustomerGrpc>> GetCustomersAsync(Guid userId)
         {
             await Task.Delay(0);
-            RfqModule.GetCustomersByUserIdGrpcRequest request = new RfqModule.GetCustomersByUserIdGrpcRequest();
+            GetCustomersByUserIdGrpcRequest request = new GetCustomersByUserIdGrpcRequest();
             request.UserId = userId.ToString();
-            RfqModule.GetCustomersByUserIdGrpcResponse customerResponse = _RfqModuleClient.GetCustomersByUserIdGrpc(request);
-            List<RfqModule.CustomerGrpc> customers = new List<RfqModule.CustomerGrpc>();
+            GetCustomersByUserIdGrpcResponse customerResponse = _RfqModuleClient.GetCustomersByUserIdGrpc(request);
+            List<CustomerGrpc> customers = new List<CustomerGrpc>();
             customers.AddRange(customerResponse.Customers);
             return customers;
         }
 
-        public async Task<List<RfqModule.ProjectGrpc>> GetProjectsbyCustomerProjectAssociation(ICollection<CustomerProjectUx> customerProjects)
+        public async Task<List<CustomerProjectUx>> GetProjectAssociationsByCustomerId(string customerId)
         {
             await Task.Delay(0);
-            List<RfqModule.ProjectGrpc> projects = new List<RfqModule.ProjectGrpc>();
-            foreach (CustomerProjectUx cp in customerProjects)
-            {
-                RfqModule.GetProjectsByIdGrpcRequest request = new RfqModule.GetProjectsByIdGrpcRequest();
-                request.Id = cp.ProjectId;
-                RfqModule.GetProjectsByIdGrpcResponse response = _RfqModuleClient.GetProjectsByIdGrpc(request);
-                if (0 < response.Projects.Count)
-                {
-                    projects.AddRange(response.Projects);
-                }
-            }
-
-            return projects;
-        }
-
-        public async Task<List<CustomerProjectUx>> GetCustomerProjectUx(
-            ICollection<RfqModule.ProjectGrpc> projects,
-            ICollection<RfqModule.CustomerLocationGrpc> customerLocations,
-            ICollection<CustomerProjectUx> customerProjects)
-        {
-            await Task.Delay(0);
-            List<CustomerProjectUx> customerProjectUxes = new List<CustomerProjectUx>();
-            foreach (CustomerProjectUx customerProjectUx in customerProjects)
-            {
-                CustomerProjectUx customerProject = new CustomerProjectUx();
-                customerProject.Id = customerProjectUx.Id;
-                customerProject.CustomerId = customerProjectUx.CustomerId;
-                customerProject.ProjectId = customerProjectUx.ProjectId;
-                if(null == customerLocations.Where(c => c.Id == customerProjectUx.CustomerId).FirstOrDefault() 
-                    || null == projects.Where(c => c.Id == customerProjectUx.ProjectId).FirstOrDefault())
-                {
-                    continue;
-                }
-
-                customerProject.CustomerName = customerLocations.Where(c => c.Id == customerProjectUx.CustomerId).First().CustomerName;
-
-                customerProject.ProjectName = projects.Where(c => c.Id == customerProjectUx.ProjectId).First().ProjectName;
-                customerProjectUxes.Add(customerProject);
-            }
-
-            return customerProjectUxes;
-        }
-
-        public async Task<List<CustomerProjectUx>> GetCustomerProjectAssociations()
-        {
-            await Task.Delay(0);
-            List<CustomerProjectUx> customerProjectAssociations = new List<CustomerProjectUx>();
-            foreach (RfqModule.CustomerLocationGrpc location in _CustomerLocations)
-            {
-                RfqModule.GetCustomerProjectAssociationsByLocationIdGrpcRequest request = new RfqModule.GetCustomerProjectAssociationsByLocationIdGrpcRequest();
-                request.LocationId = location.Id;
-                RfqModule.GetCustomerProjectAssociationsByLocationIdGrpcResponse response = _RfqModuleClient.GetCustomerProjectAssociationsByLocationIdGrpc(request);
-                foreach(RfqModule.CustomerProjectAssociationGrpc? association in response.CustomerProjectAssociation)
-                {
-                    CustomerProjectUx customerProjectUx = new CustomerProjectUx();
-                    customerProjectUx.CustomerId = association.CustomerLocationGuid;
-                    customerProjectUx.ProjectId = association.ProjectGuid;
-                    customerProjectUx.Id = association.Id;
-                    customerProjectAssociations.Add(customerProjectUx);
-                }
-            }
-
-            return customerProjectAssociations;
-        }
-
-        public async Task<List<RfqModule.CustomerLocationGrpc>> GetLocationsByCustomer(string customerId)
-        {
-            await Task.Delay(0);
-            RfqModule.GetLocationsByCustomerIdGrpcRequest request = new RfqModule.GetLocationsByCustomerIdGrpcRequest();
+            List<CustomerProjectUx> projectAssociations = new List<CustomerProjectUx>();
+            GetProjectAssociationsByCustomerIdRequest request = new GetProjectAssociationsByCustomerIdRequest();
             request.CustomerId = customerId;
-            RfqModule.GetLocationsByCustomerIdGrpcResponse locationResponse = _RfqModuleClient.GetLocationsByCustomerIdGrpc(request);
-            List<RfqModule.CustomerLocationGrpc> locations = new List<RfqModule.CustomerLocationGrpc>();
-            _CustomerLocations.AddRange(locationResponse.Locations);
-            locations.AddRange(locationResponse.Locations);
-            return locations;
+            GetProjectAssociationsByCustomerIdResponse response = _RfqModuleClient.GetProjectAssociationsByCustomerId(request);
+            foreach (ProjectAssociation? association in response.ProjectAssociation)
+            {
+                CustomerProjectUx projectAssociation = new CustomerProjectUx();
+                projectAssociation.ProjectId = association.CustomerProjectGuid;
+                projectAssociation.ProjectName = association.CustomerProjectName;
+                projectAssociation.CustomerId = association.CustomerLocationGuid;
+                projectAssociation.CustomerName = association.CustomerLocationName;
+                projectAssociation.Id = association.Id;
+                projectAssociations.Add(projectAssociation);
+            }
+
+            return projectAssociations;
         }
 
-        public async Task<List<RfqModule.RfqReasonGrpc>> GetReasons()
+        //public async Task<List<ProjectGrpc>> GetProjectsbyCustomerProjectAssociation(ICollection<CustomerProjectUx> customerProjects)
+        //{
+        //    await Task.Delay(0);
+        //    List<ProjectGrpc> projects = new List<ProjectGrpc>();
+        //    foreach (CustomerProjectUx cp in customerProjects)
+        //    {
+        //        GetProjectsByIdGrpcRequest request = new GetProjectsByIdGrpcRequest();
+        //        request.Id = cp.ProjectId;
+        //        GetProjectsByIdGrpcResponse response = _RfqModuleClient.GetProjectsByIdGrpc(request);
+        //        if (0 < response.Projects.Count)
+        //        {
+        //            projects.AddRange(response.Projects);
+        //        }
+        //    }
+
+        //    return projects;
+        //}
+
+        //public async Task<List<CustomerProjectUx>> GetCustomerProjectUx(
+        //    ICollection<ProjectGrpc> projects,
+        //    ICollection<CustomerLocationGrpc> customerLocations,
+        //    ICollection<CustomerProjectUx> customerProjects)
+        //{
+        //    await Task.Delay(0);
+        //    List<CustomerProjectUx> customerProjectUxes = new List<CustomerProjectUx>();
+        //    foreach (CustomerProjectUx customerProjectUx in customerProjects)
+        //    {
+        //        CustomerProjectUx customerProject = new CustomerProjectUx();
+        //        customerProject.Id = customerProjectUx.Id;
+        //        customerProject.CustomerId = customerProjectUx.CustomerId;
+        //        customerProject.ProjectId = customerProjectUx.ProjectId;
+        //        if(null == customerLocations.Where(c => c.Id == customerProjectUx.CustomerId).FirstOrDefault() 
+        //            || null == projects.Where(c => c.Id == customerProjectUx.ProjectId).FirstOrDefault())
+        //        {
+        //            continue;
+        //        }
+
+        //        customerProject.CustomerName = customerLocations.Where(c => c.Id == customerProjectUx.CustomerId).First().CustomerName;
+
+        //        customerProject.ProjectName = projects.Where(c => c.Id == customerProjectUx.ProjectId).First().ProjectName;
+        //        customerProjectUxes.Add(customerProject);
+        //    }
+
+        //    return customerProjectUxes;
+        //}
+
+        //public async Task<List<CustomerProjectUx>> GetCustomerProjectAssociations()
+        //{
+        //    await Task.Delay(0);
+        //    List<CustomerProjectUx> customerProjectAssociations = new List<CustomerProjectUx>();
+        //    foreach (CustomerLocationGrpc location in _CustomerLocations)
+        //    {
+        //        GetCustomerProjectAssociationsByLocationIdGrpcRequest request = new GetCustomerProjectAssociationsByLocationIdGrpcRequest();
+        //        request.LocationId = location.Id;
+        //        GetCustomerProjectAssociationsByLocationIdGrpcResponse response = _RfqModuleClient.GetCustomerProjectAssociationsByLocationIdGrpc(request);
+        //        foreach(CustomerProjectAssociationGrpc? association in response.CustomerProjectAssociation)
+        //        {
+        //            CustomerProjectUx customerProjectUx = new CustomerProjectUx();
+        //            customerProjectUx.CustomerId = association.CustomerLocationGuid;
+        //            customerProjectUx.ProjectId = association.ProjectGuid;
+        //            customerProjectUx.Id = association.Id;
+        //            customerProjectAssociations.Add(customerProjectUx);
+        //        }
+        //    }
+
+        //    return customerProjectAssociations;
+        //}
+
+        //public async Task<List<CustomerLocationGrpc>> GetLocationsByCustomer(string customerId)
+        //{
+        //    await Task.Delay(0);
+        //    GetLocationsByCustomerIdGrpcRequest request = new GetLocationsByCustomerIdGrpcRequest();
+        //    request.CustomerId = customerId;
+        //    GetLocationsByCustomerIdGrpcResponse locationResponse = _RfqModuleClient.GetLocationsByCustomerIdGrpc(request);
+        //    List<CustomerLocationGrpc> locations = new List<CustomerLocationGrpc>();
+        //    _CustomerLocations.AddRange(locationResponse.Locations);
+        //    locations.AddRange(locationResponse.Locations);
+        //    return locations;
+        //}
+
+        public async Task<List<RfqReasonGrpc>> GetReasons()
         {
             await Task.Delay(0);
-            RfqModule.GetRfqReasonsGrpcRequest request = new RfqModule.GetRfqReasonsGrpcRequest();
+            GetRfqReasonsGrpcRequest request = new GetRfqReasonsGrpcRequest();
             request.RequestType = 1;
-            RfqModule.GetRfqReasonsGrpcResponse response = _RfqModuleClient.GetRfqReasonsGrpc(request);
-            List<RfqModule.RfqReasonGrpc> reasons = new List<RfqModule.RfqReasonGrpc>();
+            GetRfqReasonsGrpcResponse response = _RfqModuleClient.GetRfqReasonsGrpc(request);
+            List<RfqReasonGrpc> reasons = new List<RfqReasonGrpc>();
             reasons.AddRange(response.RfqReasons);
             return reasons;
         }
-
-        //public async Task<List<RfqModule.CustomerLocationGrpc>> GetLocationByProject()
-        //{
-        //    await Task.Delay(0);
-        //    List<RfqModule.CustomerLocationGrpc> locations = new List<RfqModule.CustomerLocationGrpc>();
-
-        //}
 
         public async Task<List<RfqItemUx>> GetRfqUxItemsAsync()
         {
@@ -127,47 +139,57 @@
             return items;
         }
 
-        public async Task<int> CreateRfqProject(
-            //RfqModule.CustomerGrpc customer,
-            //RfqModule.ProjectGrpc project,
-            //RfqModule.CustomerLocationGrpc location,
-            //RfqModule.RfqReasonGrpc reason,
-            //int vehicleVolume,
-            //DateTime createdDate,
-            //string fileName,
-            //byte[] fileContent
-            )
+        public async Task<CreateRfqProjectGrpcResponse> CreateRfqProject(
+            CustomerGrpc customer,
+            CustomerProjectUx project,
+            RfqReasonGrpc reason,
+            int vehicleVolume,
+            DateTime createdDate
+        )
         {
             await Task.Delay(0);
-            //RfqModule.GetVehicleByProjectCodeGrpcRequest request = new RfqModule.GetVehicleByProjectCodeGrpcRequest();
-            //request.ProjectCode = project.ProjectCode;
-            //RfqModule.GetVehicleByProjectCodeGrpcResponse s = _RfqModuleClient.GetVehiclesByProjectCodeGrpc(request);
-            //if(0 == s.Vehicles.Count)
-            //{
-            //    return -1;
-            //}
+            RfqProject rfqProject = new RfqProject();
+            CreateRfqProjectGrpcResponse response = new CreateRfqProjectGrpcResponse();
+            if (reason.RowId != null)
+            {
+                CreateRfqProjectGrpcRequest rfqProjectRequest = new CreateRfqProjectGrpcRequest();
+                RfqProject requestProject = new RfqProject();
+                requestProject.CustomerBusinessUnitGuid = customer.Id;
+                requestProject.CustomerLocationGuid = project.CustomerId;
+                requestProject.ProjectGuid = project.ProjectId;
+                requestProject.RfqReasonId = (int)reason.RowId;
+                requestProject.VehicleVolume = vehicleVolume;
+                requestProject.RfqResponseDeadline = createdDate.ToUniversalTime().ToTimestamp();
+                rfqProjectRequest.Project = requestProject;
 
-            //RfqModule.VehicleGrpc vehicle = s.Vehicles.First();
-            //if (reason.RowId != null) 
-            //{
-            //    RfqModule.UploadPartsRequestGrpcRequest request = new RfqModule.UploadPartsRequestGrpcRequest();
-            //    RfqModule.RfqProject rfqProject = new RfqModule.RfqProject();
-            //    rfqProject.CustomerBusinessUnitGuid = customer.Id;
-            //    rfqProject.CustomerLocationGuid = location.CustomerBusinessHierarchyGuid;
-            //    rfqProject.ProjectGuid = project.Id;
-            //    rfqProject.RfqReasonId = (int)reason.RowId;
-            //    rfqProject.CarModelGuid = vehicle.Id;
-            //    rfqProject.VehicleVolume = vehicleVolume;
-            //    rfqProject.RfqResponseDeadline = createdDate.ToUniversalTime().ToTimestamp();
-            //    request.Project = rfqProject;
-            //}
+                CreateRfqProjectGrpcResponse rfqProjectResponse = _RfqModuleClient.CreateRfqProjectGrpc(rfqProjectRequest);
 
-            //request.CustomerId = customerId;
-            //request.LocationId = _CustomerLocations.Where(x => x.Id == rfqProject.CustomerLocationGuid);
-            //request.ProjectCode = projectCode;
-            //request.ProjectName = projectName;
-            //RfqModule.CreateRfqProjectGrpcResponse response = _RfqModuleClient.CreateRfqProjectGrpc(request);
-            return 1;
+                response.Success = true;
+                response.Message = rfqProjectResponse.Message;
+                response.CreatedProjectId = rfqProjectResponse.CreatedProjectId;
+            }
+
+            return response;
+        }
+
+        public async Task<bool> UploadPartsAsync(string projectId,IBrowserFile file)
+        {
+            UploadPartsRequestGrpcResponse response = new UploadPartsRequestGrpcResponse();
+            using MemoryStream ms = new MemoryStream();
+            await file.OpenReadStream(maxAllowedSize: 10_000_000).CopyToAsync(ms);
+            byte[] fileBytes = ms.ToArray();
+            string fileName = file.Name;
+            UploadPartsRequestGrpcRequest uploadPartsRequestGrpcRequest = new UploadPartsRequestGrpcRequest();
+            uploadPartsRequestGrpcRequest.FileName = fileName;
+            uploadPartsRequestGrpcRequest.FileData = Google.Protobuf.ByteString.CopyFrom(fileBytes);
+            uploadPartsRequestGrpcRequest.ProjectId = projectId;
+            response = _RfqModuleClient.UploadPartsGrpc(uploadPartsRequestGrpcRequest);
+            if (!response.Success)
+            {
+                return false;    
+            }
+
+            return true;
         }
     }
 }

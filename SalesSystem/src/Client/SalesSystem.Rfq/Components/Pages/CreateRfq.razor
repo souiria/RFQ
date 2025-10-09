@@ -144,62 +144,62 @@
                 <Columns>
                     <TemplateColumn Title="Part Number" CellStyleFunc="@_cellStyleFunc" Sortable="true" SortBy="@(x => x.SampleColumn1)">
                         <CellTemplate>
-                            <MudIcon Icon="@_iconString" Color="Color.Inherit" Title="@_status" />
+                            <MudIcon Icon="@_iconString" Color="Color.Inherit" Title="@_status" /> @context.Item.SampleColumn1
                         </CellTemplate>
                     </TemplateColumn>
                     <TemplateColumn Title="SampleColumn2" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn2)">
                         <CellTemplate>
                             <MudText Style="font-size:inherit">
-                                <MudHighlighter Text="@context.Item.SampleColumn2" HighlightedText="@_searchString" />
+                                <MudHighlighter Text="@context.Item.SampleColumn2" HighlightedText="@_searchString" /> @context.Item.SampleColumn2
                             </MudText>
                         </CellTemplate>
                     </TemplateColumn>
                     <TemplateColumn Title="SampleColumn3" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn3)">
                         <CellTemplate>
                             <MudText Style="font-size:inherit">
-                                <MudHighlighter Text="@context.Item.SampleColumn3" HighlightedText="@_searchString" />
+                                <MudHighlighter Text="@context.Item.SampleColumn3" HighlightedText="@_searchString" /> @context.Item.SampleColumn3
                             </MudText>
                         </CellTemplate>
                     </TemplateColumn>
                     <TemplateColumn Title="SampleColumn4" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn4)">
                         <CellTemplate>
                             <MudText Style="font-size:inherit">
-                                <MudHighlighter Text="@context.Item.SampleColumn4" HighlightedText="@_searchString" />
+                                <MudHighlighter Text="@context.Item.SampleColumn4" HighlightedText="@_searchString" /> @context.Item.SampleColumn4
                             </MudText>
                         </CellTemplate>
                     </TemplateColumn>
                     <TemplateColumn Title="SampleColumn5" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn5)">
                         <CellTemplate>
                             <MudText Style="font-size:inherit">
-                                <MudHighlighter Text="@context.Item.SampleColumn5" HighlightedText="@_searchString" />
+                                <MudHighlighter Text="@context.Item.SampleColumn5" HighlightedText="@_searchString" /> @context.Item.SampleColumn5
                             </MudText>
                         </CellTemplate>
                     </TemplateColumn>
                     <TemplateColumn Title="SampleColumn6" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn6)">
                         <CellTemplate>
                             <MudText Style="font-size:inherit">
-                                <MudHighlighter Text="@context.Item.SampleColumn6" HighlightedText="@_searchString" />
+                                <MudHighlighter Text="@context.Item.SampleColumn6" HighlightedText="@_searchString" /> @context.Item.SampleColumn6
                             </MudText>
                         </CellTemplate>
                     </TemplateColumn>
                     <TemplateColumn Title="SampleColumn7" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn7)">
                         <CellTemplate>
                             <MudText Style="font-size:inherit">
-                                <MudHighlighter Text="@context.Item.SampleColumn7" HighlightedText="@_searchString" />
+                                <MudHighlighter Text="@context.Item.SampleColumn7" HighlightedText="@_searchString" /> @context.Item.SampleColumn7
                             </MudText>
                         </CellTemplate>
                     </TemplateColumn>
                     <TemplateColumn Title="SampleColumn8" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn8)">
                         <CellTemplate>
                             <MudText Style="font-size:inherit">
-                                <MudHighlighter Text="@context.Item.SampleColumn9" HighlightedText="@_searchString" />
+                                <MudHighlighter Text="@context.Item.SampleColumn9" HighlightedText="@_searchString" /> @context.Item.SampleColumn8
                             </MudText>
                         </CellTemplate>
                     </TemplateColumn>
                     <TemplateColumn Title="SampleColumn10" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn10)">
                         <CellTemplate>
                             <MudText Style="font-size:inherit">
-                                <MudHighlighter Text="@context.Item.SampleColumn10" HighlightedText="@_searchString" />
+                                <MudHighlighter Text="@context.Item.SampleColumn10" HighlightedText="@_searchString" /> @context.Item.SampleColumn10
                             </MudText>
                         </CellTemplate>
                     </TemplateColumn>
@@ -217,7 +217,7 @@
         set 
         {
             _customerValue = value;
-            _ = GetLocations();
+            _ = GetProjectAggregate();
         }
     }
     private string? customerProjectValue { get; set; }
@@ -236,8 +236,6 @@
     }
     private int vehicleVolume { get; set; }
     private List<RfqModule.CustomerGrpc> customers = new();
-    private List<RfqModule.CustomerLocationGrpc> locations = new();
-    private List<RfqModule.ProjectGrpc> projects = new();
     private List<RfqModule.RfqReasonGrpc> reasons = new();
     private List<CustomerProjectUx> customerProjectAssociations = new();
     private DateTime? _date = DateTime.Today;
@@ -246,8 +244,9 @@
     private string _dragClass = DefaultDragClass;
     private readonly List<string> _fileNames = new();
     private MudFileUpload<IBrowserFile>? _fileUpload;
+    private List<IBrowserFile> _files = new List<IBrowserFile>();
 
-    List<RfqItemUx>? rfqItems = new List<RfqItemUx>();
+    List<RfqItemUx> rfqItems = new List<RfqItemUx>();
     private string _searchString = string.Empty;
     private string _iconString = string.Empty;
     private string _status = string.Empty;
@@ -268,66 +267,66 @@
         customers = await rfqUxService.GetCustomersAsync((Guid)UserId);
     }
 
-    private async Task GetLocations()
+    private async Task GetProjectAggregate()
     {
-        locations.Clear();
         locationValue = null;
         if (!string.IsNullOrWhiteSpace(customerValue))
         {
+            customerProjectAssociations.Clear();
             RfqModule.CustomerGrpc? customer = customers.FirstOrDefault(c => c.CustomerBusinessGroupName == customerValue);
 
             if (customer != null)
             {
-                List<RfqModule.CustomerLocationGrpc> responseLocations = await rfqUxService.GetLocationsByCustomer(customer.Id);
-                locations.AddRange(responseLocations);
-            }
-        }
-        await GetCustomerProjectAssociations();
-    }
-
-    private async Task GetCustomerProjectAssociations()
-    {
-        customerProjectAssociations.Clear();
-        customerProjectValue = null;
-        if (!string.IsNullOrWhiteSpace(customerValue))
-        {
-            RfqModule.CustomerGrpc? customer = customers.FirstOrDefault(c => c.CustomerBusinessGroupName == customerValue);
-            if (customer != null)
-            {
-                List<CustomerProjectUx> responseAssociations = await rfqUxService.GetCustomerProjectAssociations();
-                customerProjectAssociations.AddRange(responseAssociations);
+                List<CustomerProjectUx> projectAssications = await rfqUxService.GetProjectAssociationsByCustomerId(customer.Id);
+                customerProjectAssociations.AddRange(projectAssications);
                 StateHasChanged();
             }
-            await GetProjects();
         }
     }
 
-    private async Task GetProjects()
-    {
-        projects.Clear();
-        projectValue = null;
-        if (0 < customerProjectAssociations.Count)
-        {
-            List<RfqModule.ProjectGrpc> responseProjects = await rfqUxService.GetProjectsbyCustomerProjectAssociation(customerProjectAssociations);
-            projects.AddRange(responseProjects);
-            StateHasChanged();
-            await GetCustomerProjectAssociationsUx();
-        }
-    }
+    // private async Task GetCustomerProjectAssociations()
+    // {
+    //     customerProjectAssociations.Clear();
+    //     customerProjectValue = null;
+    //     if (!string.IsNullOrWhiteSpace(customerValue))
+    //     {
+    //         RfqModule.CustomerGrpc? customer = customers.FirstOrDefault(c => c.CustomerBusinessGroupName == customerValue);
+    //         if (customer != null)
+    //         {
+    //             List<CustomerProjectUx> responseAssociations = await rfqUxService.GetCustomerProjectAssociations();
+    //             customerProjectAssociations.AddRange(responseAssociations);
+    //             StateHasChanged();
+    //         }
+    //         await GetProjects();
+    //     }
+    // }
 
-    private async Task GetCustomerProjectAssociationsUx()
-    {
-        customerProjectValue = null;
-        if (!string.IsNullOrWhiteSpace(customerValue))
-        {
+    // private async Task GetProjects()
+    // {
+    //     projects.Clear();
+    //     projectValue = null;
+    //     if (0 < customerProjectAssociations.Count)
+    //     {
+    //         List<RfqModule.ProjectGrpc> responseProjects = await rfqUxService.GetProjectsbyCustomerProjectAssociation(customerProjectAssociations);
+    //         projects.AddRange(responseProjects);
+    //         StateHasChanged();
+    //         await GetCustomerProjectAssociationsUx();
+    //     }
+    // }
 
-            List<CustomerProjectUx> responseAssociations = await rfqUxService.GetCustomerProjectUx(projects, locations, customerProjectAssociations);
-            customerProjectAssociations.Clear();
-            customerProjectAssociations.AddRange(responseAssociations);
-            StateHasChanged();
-        }
+    // private async Task GetCustomerProjectAssociationsUx()
+    // {
+    //     customerProjectValue = null;
+    //     if (!string.IsNullOrWhiteSpace(customerValue))
+    //     {
 
-    }
+    //         List<CustomerProjectUx> responseAssociations = await rfqUxService.GetCustomerProjectUx(projects, locations, customerProjectAssociations);
+    //         customerProjectAssociations.Clear();
+    //         customerProjectAssociations.AddRange(responseAssociations);
+    //         StateHasChanged();
+    //     }
+
+    // }
 
     public async Task GetReasons()
     {
@@ -359,7 +358,9 @@
         foreach (var file in files)
         {
             _fileNames.Add(file.Name);
+            _files.Add(file);
         }
+        StateHasChanged();
     }
 
     private void Upload()
@@ -373,7 +374,7 @@
     {
         await Task.Delay(0);
         if (string.IsNullOrWhiteSpace(customerValue)
-        || string.IsNullOrWhiteSpace(projectValue)
+        || string.IsNullOrWhiteSpace(customerProjectValue)
         || string.IsNullOrWhiteSpace(reasonValue)
         || string.IsNullOrWhiteSpace(quotationValue)
         || vehicleVolume <= 0 || !_date.HasValue)
@@ -397,20 +398,6 @@
             Snackbar.Add("Selected customer not found.", Severity.Error);
             return;
         }
-        RfqModule.ProjectGrpc? project = projects.FirstOrDefault(p => p.Id == customerProject.ProjectId);
-        if (project is null)
-        {
-            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-            Snackbar.Add("Selected customer not found.", Severity.Error);
-            return;
-        }
-        RfqModule.CustomerLocationGrpc? location = locations.FirstOrDefault(p => p.Id == customerProject.CustomerId);
-        if (location is null)
-        {
-            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-            Snackbar.Add("Selected customer not found.", Severity.Error);
-            return;
-        }
         RfqModule.RfqReasonGrpc? reason = reasons.FirstOrDefault(r => r.RfqReasonTitle == reasonValue);
         if (reason is null)
         {
@@ -418,30 +405,35 @@
             Snackbar.Add("Selected customer not found.", Severity.Error);
             return;
         }
-        if(_fileUpload is null || _fileUpload.Files == null)
+
+        if (0 >= _files.Count)
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             Snackbar.Add("Please upload at least one file.", Severity.Error);
             return;
         }
 
-        using var stream = _fileUpload.Files.OpenReadStream(10 * 1024 * 1024);
-        using var memoryStream = new MemoryStream();
-        await stream.CopyToAsync(memoryStream);
-        byte[] fileContent = memoryStream.ToArray();
-
-        string fileName = _fileUpload.Files.Name.First().ToString() ?? string.Empty;
-
-        await rfqUxService.CreateRfqProject(
-            // customer,
-            // project,
-            // location,
-            // reason,
-            // vehicleVolume,
-            // _date.Value,
-            // fileName,
-            // fileContent
+        CreateRfqProjectGrpcResponse response = await rfqUxService.CreateRfqProject(
+            customer,
+            customerProject,
+            reason,
+            vehicleVolume,
+            _date.Value
         );
+        bool createdFile = false;
+        if (!response.Success)
+        {
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add("Failed to create project.", Severity.Error);
+            return;
+        }
+        foreach(var file in _files)
+        {
+            createdFile = await rfqUxService.UploadPartsAsync(response.CreatedProjectId, file);
+        }
+
+        rfqItems.Clear();
+        StateHasChanged();
         // create project
         // upload files
         // get rfq items
