@@ -2,7 +2,7 @@
 {
     public class AdssGrpcService : AdssGrpc.AdssGrpcBase
     {
-         readonly IAdssService _Svc;
+        readonly IAdssService _Svc;
         readonly ILogger<AdssGrpcService> _Logger;
         string _NoImage64;
         readonly byte[] _NoImageBytes;
@@ -29,9 +29,7 @@
         {
             string partNumber = string.IsNullOrWhiteSpace(request.PartNumber) ? "noimage" : request.PartNumber;
             CancellationToken ct = context.CancellationToken;
-
             (byte[]? imageBytes, string? contentType) = await _Svc.GetPartImageAsync(partNumber, ct);
-
             if (imageBytes == null || imageBytes.Length == 0)
             {
                 //  reply for 'no image' case return from _NoImage64 variable
@@ -46,7 +44,6 @@
             //  reply for the case where an image is available
             ByteString imageData = ByteString.CopyFrom(imageBytes);
             PartImageReply imageReply = new PartImageReply();
-
             imageReply.Data = imageData;
             imageReply.ContentType = contentType;
             _Logger.GenericLogInformation(information: $"Image found for part number '{partNumber}', returning image with content type '{contentType}'.");
