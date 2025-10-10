@@ -1,7 +1,4 @@
-﻿using Adss.Endpoints.GrpcServices;
-using Adss.Models;
-
-namespace Adss
+﻿namespace Adss
 {
     public static class HostBuilder
     {

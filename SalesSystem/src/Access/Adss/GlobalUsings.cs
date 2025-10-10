@@ -3,6 +3,7 @@ global using System.Globalization;
 global using System.Reflection;
 global using System.Text.RegularExpressions;
 global using Adss;
+global using Adss.Endpoints.GrpcServices;
 global using Adss.Models;
 global using Adss.Services;
 global using Ardalis.Specification;
