@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Access\Adss\Adss.csproj" />
     <ProjectReference Include="..\..\Access\CAE\CAE.csproj" />
     <ProjectReference Include="..\..\Access\CDb\CDb.csproj" />
     <ProjectReference Include="..\..\Access\CPD\CPD.csproj" />

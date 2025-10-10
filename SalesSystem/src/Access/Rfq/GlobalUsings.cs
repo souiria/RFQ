@@ -1,5 +1,7 @@
-﻿global using System.Globalization;
+﻿global using System.Collections.Concurrent;
+global using System.Globalization;
 global using System.Reflection;
+global using System.Text.RegularExpressions;
 global using Ardalis.Specification;
 global using Ardalis.Specification.EntityFrameworkCore;
 global using Google.Protobuf.WellKnownTypes;
@@ -21,4 +23,5 @@ global using Rfq.Enums;
 global using Rfq.Extensions;
 global using Rfq.Services;
 global using SharedKernel;
+
 
