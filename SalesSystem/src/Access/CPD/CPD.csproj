@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -6,10 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
 	<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Protobuf Include="Protos\CPD.proto" GrpcServices="Server" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
@@ -25,4 +21,8 @@
     <ProjectReference Include="..\..\Utilities\SharedKernal\SharedKernel.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Protobuf Include="..\..\Utilities\GrpcProtos\**\*.proto" GrpcServices="Server" />
+  </ItemGroup>
+  
 </Project>

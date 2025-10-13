@@ -24,10 +24,9 @@
     <ProjectReference Include="..\..\Debug\SalesSystem.ServiceDefaults\SalesSystem.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\Utilities\Logging\Logging.csproj" />
   </ItemGroup>
-
+  
   <ItemGroup>
-    <Protobuf Include="protos\adss.proto" GrpcServices="Server" />
+    <Protobuf Include="..\..\Utilities\GrpcProtos\**\*.proto" GrpcServices="Server" />
   </ItemGroup>
-
 
 </Project>
