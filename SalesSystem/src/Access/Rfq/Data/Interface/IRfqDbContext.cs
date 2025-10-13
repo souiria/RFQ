@@ -12,6 +12,8 @@
         { get; }
         DbSet<DbDsiBend> DsiBend
         { get; }
+        DbSet<DbDsiBranchConfiguration> DsiBranchConfiguration
+        { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

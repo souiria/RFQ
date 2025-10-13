@@ -1,6 +1,6 @@
 ﻿namespace Rfq.CQRS.Specification
 {
-    public class GetDsiBendReadOnlySpec: Specification<DbDsiBend>
+    public class GetDsiBendReadOnlySpec : Specification<DbDsiBend>
     {
         public GetDsiBendReadOnlySpec(int? position, int? take)
         {

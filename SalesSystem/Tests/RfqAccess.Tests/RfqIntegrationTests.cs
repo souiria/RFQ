@@ -413,6 +413,79 @@ namespace RfqAccess.Tests
         //}
         #endregion
 
+        #region DsiBranchConfiguration
+        [Test]
+        public void GetDsiBranchConfigurationGrpcTest_Success()
+        {
+            DsiBranchConfigurationGrpcRequest reasonGrpcRequest = new DsiBranchConfigurationGrpcRequest();
+            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            requestParameter.RequestType = ((int)RequestType.Read);
+            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.GrpcRequestParameter.RequestType = ((int)RequestType.Read);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiBranchConfigurationGrpc));
+
+            Task<ListDsiBranchConfigurationGrpc> getDsiBranchConfigurationGrpcReply = _GrpcService.ReadDsiBranchConfigurationGrpc(reasonGrpcRequest, serverCallContext);
+            Assert.That(getDsiBranchConfigurationGrpcReply.Result.DsiBranchConfigurations, Is.Not.Null);
+            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            Assert.That(getDsiBranchConfigurationGrpcReply.Result.DsiBranchConfigurations.Count, countConstraint);
+
+        }
+
+        [Test]
+        public void GetDsiBranchConfigurationGrpcByRowIdTest_Success()
+        {
+            DsiBranchConfigurationGrpcRequest reasonGrpcRequest = new DsiBranchConfigurationGrpcRequest();
+            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            requestParameter.RequestType = ((int)RequestType.ReadByRowId);
+            requestParameter.IntValue = 6;
+            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiBranchConfigurationGrpc));
+
+            Task<ListDsiBranchConfigurationGrpc> getDsiBranchConfigurationByRowIdReply = _GrpcService.ReadDsiBranchConfigurationGrpc(reasonGrpcRequest, serverCallContext);
+
+            Assert.That(getDsiBranchConfigurationByRowIdReply.Result.DsiBranchConfigurations, Is.Not.Null);
+            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            Assert.That(getDsiBranchConfigurationByRowIdReply.Result.DsiBranchConfigurations.Count, countConstraint);
+            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("TestUserModule");
+            Assert.That(getDsiBranchConfigurationByRowIdReply.Result.DsiBranchConfigurations.First().UserModule, reasonConstraint);
+        }
+
+        [Test]
+        public void GetDsiBranchConfigurationGrpcByRowIdTest_Fails()
+        {
+            DsiBranchConfigurationGrpcRequest reasonGrpcRequest = new DsiBranchConfigurationGrpcRequest();
+            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            requestParameter.RequestType = ((int)RequestType.ReadByRowId);
+            requestParameter.IntValue = int.MaxValue;
+            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiBranchConfigurationGrpc));
+
+            Task<ListDsiBranchConfigurationGrpc> getDsiBranchConfigurationByRowIdReply = _GrpcService.ReadDsiBranchConfigurationGrpc(reasonGrpcRequest, serverCallContext);
+
+            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            Assert.That(getDsiBranchConfigurationByRowIdReply.Result.DsiBranchConfigurations.Count, countConstraint);
+        }
+
+        //[Test]
+        //public void CreateDsiBranchConfigurationGrpcTest_Success()
+        //{
+        //    DsiBranchConfigurationGrpcRequest reasonGrpcRequest = new DsiBranchConfigurationGrpcRequest();
+        //    GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+        //    requestParameter.RequestType = ((int)RequestType.Create);
+        //    reasonGrpcRequest.GrpcRequestParameter = requestParameter;
+        //    DsiBranchConfigurationGrpc bendGrpc = new DsiBranchConfigurationGrpc();
+        //    bendGrpc.Bend = "TestBend";
+        //    reasonGrpcRequest.DsiBranchConfigurationGrpcsToCreate.Add(bendGrpc);
+        //    ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateDsiBranchConfigurationGrpc));
+        //    NUnit.Framework.Constraints.EqualConstraint originalCountConstraint = Is.EqualTo(0);
+
+        //    Task<ListDsiBranchConfigurationGrpc> getDsiBranchConfigurationByRowIdReply = _GrpcService.ReadDsiBranchConfigurationGrpc(reasonGrpcRequest, serverCallContext);
+
+        //    NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+        //    Assert.That(getDsiBranchConfigurationByRowIdReply.Result.DsiBranchConfigurations.Count, countConstraint);
+        //}
+        #endregion
+
         ServerCallContext CreateServerContext(string methodName)
         {
             DateTime deadline = DateTime.Now.AddMinutes(30);

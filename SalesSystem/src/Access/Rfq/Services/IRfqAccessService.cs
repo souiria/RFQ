@@ -50,5 +50,15 @@
         Task<bool> PopulateDsiBends(CancellationToken cancellationToken);
 
         #endregion
+
+        #region DsiBranchConfiguration
+
+        Task<ListDsiBranchConfigurationGrpc> GetAllDsiBranchConfigurations(CancellationToken cancellationToken);
+        Task<ListDsiBranchConfigurationGrpc> GetDsiBranchConfigurationsByRowId(DsiBranchConfigurationGrpcRequest request, CancellationToken cancellationToken);
+        Task<ListDsiBranchConfigurationGrpc> CreateDsiBranchConfigurations(DsiBranchConfigurationGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> UpdateDsiBranchConfigurations(DsiBranchConfigurationGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> PopulateDsiBranchConfigurations(CancellationToken cancellationToken);
+
+        #endregion
     }
 }

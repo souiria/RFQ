@@ -141,5 +141,57 @@
             return listDsiBendGrpc;
         }
         #endregion
+
+        #region DsiBranchConfigurations
+        public static ListDsiBranchConfigurationGrpc PopulateDsiBranchConfigurationGrpc()
+        {
+            ListDsiBranchConfigurationGrpc listDsiBranchConfigurationGrpc = new ListDsiBranchConfigurationGrpc();
+            for (int i = 0; i < 5; i++)
+            {
+                DsiBranchConfigurationGrpc dsiBranchConfigurationGrpc = new DsiBranchConfigurationGrpc();
+                dsiBranchConfigurationGrpc.RowId = i;
+                dsiBranchConfigurationGrpc.BranchConfigurationId = Guid.NewGuid().ToString();
+                dsiBranchConfigurationGrpc.StartNode = $"StartNode{i}";
+                dsiBranchConfigurationGrpc.StartRoute = $"StartRoute{i}";
+                dsiBranchConfigurationGrpc.StartCoordinates = $"StartCoordinates{i}";
+                dsiBranchConfigurationGrpc.EndNode = $"EndNode{i}";
+                dsiBranchConfigurationGrpc.EndRoute = $"EndRoute{i}";
+                dsiBranchConfigurationGrpc.EndCoordinates = $"EndCoordinates{i}";
+                dsiBranchConfigurationGrpc.Length = i;
+                dsiBranchConfigurationGrpc.CircuitOptionId = Guid.NewGuid().ToString();
+                dsiBranchConfigurationGrpc.BundleDiameter = i;
+                dsiBranchConfigurationGrpc.UserModule = $"UserModule{i}";
+                dsiBranchConfigurationGrpc.AssignedModule = $"AssignedModule{i}";
+                dsiBranchConfigurationGrpc.ModuleFrom = $"ModuleFrom{i}";
+                dsiBranchConfigurationGrpc.BendString = $"BendString{i}";
+                dsiBranchConfigurationGrpc.HarnessId = Guid.NewGuid().ToString();
+                dsiBranchConfigurationGrpc.CreatedBy = Guid.NewGuid().ToString();
+                dsiBranchConfigurationGrpc.CreatedDate = DateTime.UtcNow.ToTimestamp();
+                listDsiBranchConfigurationGrpc.DsiBranchConfigurations.Add(dsiBranchConfigurationGrpc);
+            }
+
+            DsiBranchConfigurationGrpc fixedDsiBranchConfigurationGrpc = new DsiBranchConfigurationGrpc();
+            fixedDsiBranchConfigurationGrpc.RowId = 6;
+            fixedDsiBranchConfigurationGrpc.BranchConfigurationId = Guid.NewGuid().ToString();
+            fixedDsiBranchConfigurationGrpc.StartNode = $"TestStartNode";
+            fixedDsiBranchConfigurationGrpc.StartRoute = $"TestStartRoute";
+            fixedDsiBranchConfigurationGrpc.StartCoordinates = $"TestStartCoordinates";
+            fixedDsiBranchConfigurationGrpc.EndNode = $"TestEndNode";
+            fixedDsiBranchConfigurationGrpc.EndRoute = $"TestEndRoute";
+            fixedDsiBranchConfigurationGrpc.EndCoordinates = $"TestEndCoordinates";
+            fixedDsiBranchConfigurationGrpc.Length = 6;
+            fixedDsiBranchConfigurationGrpc.CircuitOptionId = Guid.NewGuid().ToString();
+            fixedDsiBranchConfigurationGrpc.BundleDiameter = 6;
+            fixedDsiBranchConfigurationGrpc.UserModule = $"TestUserModule";
+            fixedDsiBranchConfigurationGrpc.AssignedModule = $"TestAssignedModule";
+            fixedDsiBranchConfigurationGrpc.ModuleFrom = $"TestModuleFrom";
+            fixedDsiBranchConfigurationGrpc.BendString = $"TestBendString";
+            fixedDsiBranchConfigurationGrpc.HarnessId = Guid.NewGuid().ToString();
+            fixedDsiBranchConfigurationGrpc.CreatedBy = Guid.NewGuid().ToString();
+            fixedDsiBranchConfigurationGrpc.CreatedDate = DateTime.UtcNow.ToTimestamp();
+            listDsiBranchConfigurationGrpc.DsiBranchConfigurations.Add(fixedDsiBranchConfigurationGrpc);
+            return listDsiBranchConfigurationGrpc;
+        }
+        #endregion
     }
 }

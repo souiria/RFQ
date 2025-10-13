@@ -1,4 +1,6 @@
-﻿namespace Rfq.Extensions
+﻿using SharedKernel;
+
+namespace Rfq.Extensions
 {
     public static class RfqMappingExtentions
     {
@@ -134,6 +136,62 @@
             data.Bend = grpc.Bend;
             data.CreatedDate = grpc.CreatedDate.ToDateTime().ToLocalTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime().ToLocalTime();
+            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
+            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            return data;
+        }
+
+        #endregion
+
+        #region DsiBranchConfiguration
+
+        public static DsiBranchConfigurationGrpc FromEntity(this DbDsiBranchConfiguration entity)
+        {
+            DsiBranchConfigurationGrpc data = new DsiBranchConfigurationGrpc();
+            data.RowId = entity.RowId;
+            data.BranchConfigurationId = entity.BranchConfigurationId.ToString();
+            data.StartNode = entity.StartNode;
+            data.StartRoute = entity.StartRoute;
+            data.StartCoordinates = entity.StartCoordinates;
+            data.EndNode = entity.EndNode;
+            data.EndRoute = entity.EndRoute;
+            data.EndCoordinates = entity.EndCoordinates;
+            data.Length = entity.Length;
+            data.CircuitOptionId = entity.CircuitOptionId.ToString();
+            data.BundleDiameter = entity.BundleDiameter;
+            data.UserModule = entity.UserModule;
+            data.AssignedModule = entity.AssignedModule;
+            data.ModuleFrom = entity.ModuleFrom;
+            data.BendString = entity.BendString;
+            data.HarnessId = entity.HarnessId.ToString();
+            data.CreatedDate = entity.CreatedDate.ToUniversalTime().ToTimestamp();
+            data.ModifiedDate = entity.ModifiedDate?.ToUniversalTime().ToTimestamp();
+            data.CreatedBy = entity.CreatedBy.ToString();
+            data.ModifiedBy = entity.ModifiedBy.ToString();
+            return data;
+        }
+
+        public static DbDsiBranchConfiguration ToEntity(this DsiBranchConfigurationGrpc grpc)
+        {
+            DbDsiBranchConfiguration data = new DbDsiBranchConfiguration();
+            data.RowId = grpc.RowId;
+            data.BranchConfigurationId = Guid.Parse(grpc.BranchConfigurationId);
+            data.StartNode = grpc.StartNode;
+            data.StartRoute = grpc.StartRoute;
+            data.StartCoordinates = grpc.StartCoordinates;
+            data.EndNode = grpc.EndNode;
+            data.EndRoute = grpc.EndRoute;
+            data.EndCoordinates = grpc.EndCoordinates;
+            data.Length = grpc.Length ?? 0;
+            data.CircuitOptionId = Guid.Parse(grpc.CircuitOptionId);
+            data.BundleDiameter = grpc.BundleDiameter ?? 0;
+            data.UserModule = grpc.UserModule;
+            data.AssignedModule = grpc.AssignedModule;
+            data.ModuleFrom = grpc.ModuleFrom;
+            data.BendString = grpc.BendString;
+            data.HarnessId = Guid.Parse(grpc.HarnessId);
+            data.CreatedDate = grpc.CreatedDate.ToDateTime();
+            data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
             data.CreatedBy = Guid.Parse(grpc.CreatedBy);
             data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
             return data;

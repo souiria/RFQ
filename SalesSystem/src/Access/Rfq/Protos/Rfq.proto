@@ -31,6 +31,10 @@ service Rfq {
   rpc CreateDsiBendGrpc (DsiBendGrpcRequest) returns (RfqCrudGrpcResponse);
   rpc ReadDsiBendGrpc (DsiBendGrpcRequest) returns (ListDsiBendGrpc);
   rpc UpdateDsiBendGrpc (DsiBendGrpcRequest) returns (RfqCrudGrpcResponse);
+
+  rpc CreateDsiBranchConfigurationGrpc (DsiBranchConfigurationGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc ReadDsiBranchConfigurationGrpc (DsiBranchConfigurationGrpcRequest) returns (ListDsiBranchConfigurationGrpc);
+  rpc UpdateDsiBranchConfigurationGrpc (DsiBranchConfigurationGrpcRequest) returns (RfqCrudGrpcResponse);
 }
 
 // The request message containing the user's name.
@@ -165,4 +169,38 @@ message DsiBendGrpc {
 
 message ListDsiBendGrpc {
 	repeated DsiBendGrpc DsiBends = 1;
+}
+
+message DsiBranchConfigurationGrpcRequest {
+   GrpcRequestParameter GrpcRequestParameter = 1;
+   repeated DsiBranchConfigurationGrpc DsiBranchConfigurationGrpcsToCreate = 2;
+   repeated DsiBranchConfigurationGrpc DsiBranchConfigurationGrpcsToUpdate = 3;
+   repeated DsiBranchConfigurationGrpc DsiBranchConfigurationGrpcsToDelete = 4;
+}
+
+message DsiBranchConfigurationGrpc {
+	int64 RowId = 1;
+	string BranchConfigurationId = 2;
+	google.protobuf.StringValue StartNode = 3;
+	google.protobuf.StringValue StartRoute = 4;
+	google.protobuf.StringValue StartCoordinates = 5;
+	google.protobuf.StringValue EndNode = 6;
+	google.protobuf.StringValue EndRoute = 7;
+	google.protobuf.StringValue EndCoordinates = 8;
+	google.protobuf.FloatValue Length = 9;
+	google.protobuf.StringValue CircuitOptionId = 10;
+	google.protobuf.FloatValue BundleDiameter = 11;
+	google.protobuf.StringValue UserModule = 12;
+	google.protobuf.StringValue AssignedModule = 13;
+	google.protobuf.StringValue ModuleFrom = 14;
+	google.protobuf.StringValue BendString = 15;
+	string HarnessId = 16;
+	google.protobuf.Timestamp CreatedDate = 17;
+	google.protobuf.Timestamp ModifiedDate = 18;
+	string CreatedBy = 19;
+	string ModifiedBy = 20;
+}
+
+message ListDsiBranchConfigurationGrpc {
+	repeated DsiBranchConfigurationGrpc DsiBranchConfigurations = 1;
 }
