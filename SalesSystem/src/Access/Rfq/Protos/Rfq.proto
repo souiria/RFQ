@@ -27,6 +27,10 @@ service Rfq {
   rpc CreateRfqReasonGrpc (RfqReasonGrpcRequest) returns (RfqCrudGrpcResponse);
   rpc ReadRfqReasonGrpc (RfqReasonGrpcRequest) returns (ListRfqReasonGrpc);
   rpc UpdateRfqReasonGrpc (RfqReasonGrpcRequest) returns (RfqCrudGrpcResponse);
+
+  rpc CreateDsiBendGrpc (DsiBendGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc ReadDsiBendGrpc (DsiBendGrpcRequest) returns (ListDsiBendGrpc);
+  rpc UpdateDsiBendGrpc (DsiBendGrpcRequest) returns (RfqCrudGrpcResponse);
 }
 
 // The request message containing the user's name.
@@ -140,4 +144,25 @@ message RfqReasonGrpc {
 
 message ListRfqReasonGrpc {
 	repeated RfqReasonGrpc RfqReasons = 1;
+}
+
+message DsiBendGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiBendGrpc DsiBendGrpcsToCreate = 2;
+  repeated DsiBendGrpc DsiBendGrpcsToUpdate = 3;
+  repeated DsiBendGrpc DsiBendGrpcsToDelete = 4;
+}
+
+message DsiBendGrpc {
+	int64 RowId = 1;
+	string BendId = 2;
+	google.protobuf.StringValue Bend = 3;
+	google.protobuf.Timestamp CreatedDate = 4;
+	google.protobuf.Timestamp ModifiedDate = 5;
+	string CreatedBy = 6;
+	string ModifiedBy = 7;
+}
+
+message ListDsiBendGrpc {
+	repeated DsiBendGrpc DsiBends = 1;
 }

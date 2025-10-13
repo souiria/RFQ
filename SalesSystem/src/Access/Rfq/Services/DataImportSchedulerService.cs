@@ -34,6 +34,8 @@
                 await LogDataPopulationSuccess("RfqNotes", check);
                 check = await _RfqAccessService.PopulateRfqReasons(stoppingToken);
                 await LogDataPopulationSuccess("RfqReasons", check);
+                check = await _RfqAccessService.PopulateDsiBends(stoppingToken);
+                await LogDataPopulationSuccess("DsiBends", check);
             }
 
             return true;

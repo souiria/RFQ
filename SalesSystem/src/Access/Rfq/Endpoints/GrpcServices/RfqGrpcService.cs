@@ -526,5 +526,134 @@
             return responseMessage;
         }
         #endregion
+
+        #region DsiBend
+
+        public override async Task<ListDsiBendGrpc> ReadDsiBendGrpc(DsiBendGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("ReadDsiBendGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse response = new RfqCrudGrpcResponse();
+            switch (requestType)
+            {
+                case RequestType.Read:
+                return await _RfqAccessService.GetAllDsiBends(context.CancellationToken);
+                case RequestType.ReadByRowId:
+                return await _RfqAccessService.GetDsiBendsByRowId(request, context.CancellationToken);
+                default:
+                {
+                    Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                    throw new RpcException(status);
+                }
+            }
+        }
+
+        public override async Task<RfqCrudGrpcResponse> CreateDsiBendGrpc(DsiBendGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("CreateDsiBendGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            if (requestType != RequestType.Create)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for creating dsi bends.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            ListDsiBendGrpc response = await _RfqAccessService.CreateDsiBends(request, cancellationToken);
+            if (response.DsiBends.Count == request.DsiBendGrpcsToCreate.Count)
+            {
+                responseMessage.Message = $"{request.DsiBendGrpcsToCreate.Count} DsiBends types created successfully.";
+                responseMessage.SaveSuccess = true;
+                foreach (DsiBendGrpc reason in response.DsiBends)
+                {
+                    responseMessage.StringValue = reason.RowId.ToString(CultureInfo.InvariantCulture) + ",";
+                }
+            }
+            else
+            {
+                responseMessage.Message = "No/not all DsiBends created.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
+
+        public override async Task<RfqCrudGrpcResponse> UpdateDsiBendGrpc(DsiBendGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("UpdateDsiBendGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            if (requestType != RequestType.Update)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for updating dsi bends.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            bool response = await _RfqAccessService.UpdateDsiBends(request, cancellationToken);
+            if (response)
+            {
+                responseMessage.Message = $"{request.DsiBendGrpcsToUpdate.Count} DsiBend types updated successfully.";
+                responseMessage.SaveSuccess = true;
+            }
+            else
+            {
+                responseMessage.Message = "No/not all DsiBend types updated.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
+
+        #endregion
     }
 }

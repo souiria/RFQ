@@ -10,6 +10,8 @@
         { get; }
         DbSet<DbRfqReason> RfqReason
         { get; }
+        DbSet<DbDsiBend> DsiBend
+        { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

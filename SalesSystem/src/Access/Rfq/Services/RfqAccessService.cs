@@ -21,6 +21,10 @@
         ListRfqReasonGrpc _ListRfqReasons;
         #endregion
 
+        #region DsiBend
+        ListDsiBendGrpc _ListDsiBends;
+        #endregion
+
         #endregion
 
         #region Fields and Properties
@@ -51,6 +55,11 @@
         IQueryHandler<GetRfqReasonQuery, List<RfqReasonGrpc>>? _RfqReasonHandler;
         bool _RfqReasonRefreshInProgress;
 
+        #endregion
+
+        #region DsiBend
+        IQueryHandler<GetDsiBendQuery, List<DsiBendGrpc>>? _DsiBendHandler;
+        bool _DsiBendRefreshInProgress;
         #endregion
 
         readonly IServiceProvider _ServiceProvider;
@@ -85,6 +94,13 @@
 
             _ListRfqReasons = new ListRfqReasonGrpc();
             _RfqReasonRefreshInProgress = false;
+
+            #endregion
+
+            #region DsiBend
+
+            _ListDsiBends = new ListDsiBendGrpc();
+            _DsiBendRefreshInProgress = false;
 
             #endregion
 
@@ -529,7 +545,116 @@
             }
         }
 
-        #endregion 
+        #endregion
+
+        #region DsiBend
+
+        public async Task<ListDsiBendGrpc> GetAllDsiBends(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListRfqReasons.RfqReasons.Any())
+            {
+                return _ListDsiBends;
+            }
+            else
+            {
+                await PopulateRfqReasons(cancellationToken);
+                return _ListDsiBends;
+            }
+        }
+
+        public async Task<ListDsiBendGrpc> GetDsiBendsByRowId(DsiBendGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListDsiBends.DsiBends.Any())
+            {
+            }
+            else
+            {
+                await PopulateDsiBends(cancellationToken);
+            }
+
+            ListDsiBendGrpc responseList = new ListDsiBendGrpc();
+            List<DsiBendGrpc> bends = _ListDsiBends.DsiBends.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            if (bends != null)
+            {
+                responseList.DsiBends.AddRange(bends);
+                return responseList;
+            }
+
+            return responseList;
+        }
+
+        public async Task<ListDsiBendGrpc> CreateDsiBends(DsiBendGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            ListDsiBendGrpc responseList = new ListDsiBendGrpc();
+            if (request == null || request.DsiBendGrpcsToCreate == null || request.DsiBendGrpcsToCreate.Count == 0)
+            {
+                return responseList;
+            }
+
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                ICommandHandler<DsiBendCommand, List<DbDsiBend>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiBendCommand, List<DbDsiBend>>>();
+                DsiBendCommand command = new DsiBendCommand(CommandType.Create, request.DsiBendGrpcsToCreate);
+                Result<List<DbDsiBend>> result = await handler.Handle(command, cancellationToken);
+                if (result.IsSuccess)
+                {
+                    List<DbDsiBend> createdComponents = result.Value;
+                    List<DsiBendGrpc> updatedGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
+                    _ListDsiBends.DsiBends.AddRange(updatedGrpcComponents);
+                    responseList.DsiBends.AddRange(updatedGrpcComponents);
+                    return responseList;
+                }
+                else
+                {
+                    return responseList;
+                }
+            }
+        }
+
+        public async Task<bool> UpdateDsiBends(DsiBendGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            ListDsiBendGrpc responseList = new ListDsiBendGrpc();
+            if (request == null || request.DsiBendGrpcsToUpdate == null || request.DsiBendGrpcsToUpdate.Count == 0)
+            {
+                return false;
+            }
+
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                ICommandHandler<DsiBendCommand, List<DbDsiBend>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiBendCommand, List<DbDsiBend>>>();
+                DsiBendCommand command = new DsiBendCommand(CommandType.Update, request.DsiBendGrpcsToUpdate);
+                Result<List<DbDsiBend>> result = await handler.Handle(command, cancellationToken);
+                if (result.IsSuccess)
+                {
+                    foreach (DsiBendGrpc updatedComponent in request.DsiBendGrpcsToUpdate)
+                    {
+                        DsiBendGrpc? foundItem = _ListDsiBends.DsiBends.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
+                        if (foundItem == null)
+                        {
+                            continue;
+                        }
+
+                        int index = _ListDsiBends.DsiBends.IndexOf(foundItem);
+                        if (index != -1)
+                        {
+                            _ListDsiBends.DsiBends[index] = updatedComponent;
+                        }
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -657,6 +782,38 @@
 
         #endregion
 
+        #region DsiBend
+
+        public async Task<bool> PopulateDsiBends(CancellationToken cancellationToken)
+        {
+            if (!_DsiBendRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _DsiBendHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiBendQuery, List<DsiBendGrpc>>>();
+                    _DsiBendRefreshInProgress = true;
+                    GetDsiBendQuery query = new GetDsiBendQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<DsiBendGrpc>> results = await _DsiBendHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _ListDsiBends.DsiBends.Clear();
+                        _ListDsiBends.DsiBends.AddRange(results.Value);
+                    }
+
+                    _DsiBendRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
+
         #endregion
 
         void PopulateSampleData()
@@ -665,6 +822,7 @@
             _ListRfqProjects = SampleRfqDataService.PopulateRfqProjectGrpc();
             _ListRfqNotes = SampleRfqDataService.PopulateRfqNotesGrpc();
             _ListRfqReasons = SampleRfqDataService.PopulateRfqReasonGrpc();
+            _ListDsiBends = SampleRfqDataService.PopulateDsiBendGrpc();
         }
     }
 }

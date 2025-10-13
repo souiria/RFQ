@@ -110,5 +110,35 @@
         }
 
         #endregion
+
+        #region DsiBend
+
+        public static DsiBendGrpc FromEntity(this DbDsiBend entity)
+        {
+            DsiBendGrpc data = new DsiBendGrpc();
+            data.RowId = entity.RowId;
+            data.BendId = entity.BendId.ToString();
+            data.Bend = entity.Bend;
+            data.CreatedDate = entity.CreatedDate.ToUniversalTime().ToTimestamp();
+            data.ModifiedDate = entity.ModifiedDate?.ToUniversalTime().ToTimestamp();
+            data.CreatedBy = entity.CreatedBy.ToString();
+            data.ModifiedBy = entity.ModifiedBy.ToString();
+            return data;
+        }
+
+        public static DbDsiBend ToEntity(this DsiBendGrpc grpc)
+        {
+            DbDsiBend data = new DbDsiBend();
+            data.RowId = grpc.RowId;
+            data.BendId = Guid.Parse(grpc.BendId);
+            data.Bend = grpc.Bend;
+            data.CreatedDate = grpc.CreatedDate.ToDateTime().ToLocalTime();
+            data.ModifiedDate = grpc.ModifiedDate?.ToDateTime().ToLocalTime();
+            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
+            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            return data;
+        }
+
+        #endregion
     }
 }

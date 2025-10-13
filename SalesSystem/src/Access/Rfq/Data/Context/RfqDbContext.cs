@@ -14,6 +14,7 @@
         public DbSet<DbRfqProject> RfqProject => Set<DbRfqProject>();
         public DbSet<DbRfqNotes> RfqNotes => Set<DbRfqNotes>();
         public DbSet<DbRfqReason> RfqReason => Set<DbRfqReason>();
+        public DbSet<DbDsiBend> DsiBend => Set<DbDsiBend>();
         #endregion
 
         #region OnModelCreating

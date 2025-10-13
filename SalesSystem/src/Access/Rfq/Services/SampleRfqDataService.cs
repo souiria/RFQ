@@ -115,5 +115,31 @@
             return listRfqReasonGrpc;
         }
         #endregion
+
+        #region DsiBends
+        public static ListDsiBendGrpc PopulateDsiBendGrpc()
+        {
+            ListDsiBendGrpc listDsiBendGrpc = new ListDsiBendGrpc();
+            for (int i = 0; i < 5; i++)
+            {
+                DsiBendGrpc dsiBendGrpc = new DsiBendGrpc();
+                dsiBendGrpc.RowId = i;
+                dsiBendGrpc.BendId = Guid.NewGuid().ToString();
+                dsiBendGrpc.Bend = $"Bend{i}";
+                dsiBendGrpc.CreatedBy = Guid.NewGuid().ToString();
+                dsiBendGrpc.CreatedDate = DateTime.UtcNow.ToTimestamp();
+                listDsiBendGrpc.DsiBends.Add(dsiBendGrpc);
+            }
+
+            DsiBendGrpc fixedDsiBendGrpc = new DsiBendGrpc();
+            fixedDsiBendGrpc.RowId = 6;
+            fixedDsiBendGrpc.BendId = Guid.NewGuid().ToString();
+            fixedDsiBendGrpc.Bend = $"FixedBend";
+            fixedDsiBendGrpc.CreatedBy = Guid.NewGuid().ToString();
+            fixedDsiBendGrpc.CreatedDate = DateTime.UtcNow.ToTimestamp();
+            listDsiBendGrpc.DsiBends.Add(fixedDsiBendGrpc);
+            return listDsiBendGrpc;
+        }
+        #endregion
     }
 }
