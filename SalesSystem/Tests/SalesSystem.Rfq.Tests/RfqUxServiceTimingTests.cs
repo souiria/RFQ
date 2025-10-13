@@ -280,7 +280,6 @@ namespace SalesSystem.Rfq.Tests
             List<CustomerProjectUx> result = await _RfqUxService.GetCustomerProjectUx(projects, locations, customerProjects);
             stopwatch.Stop();
 
-
             // Output results
             message = string.Format(CultureInfo.InvariantCulture, TimingTestMessages.TestCompleteMessage, methodName, stopwatch.ElapsedMilliseconds, result.Count);
             Console.WriteLine(message);
@@ -367,6 +366,7 @@ namespace SalesSystem.Rfq.Tests
 
                 
             }
+
             return projects;
         }
 
@@ -385,6 +385,7 @@ namespace SalesSystem.Rfq.Tests
                 
                 locations.Add(location);
             }
+
             return locations;
         }
 
@@ -404,6 +405,7 @@ namespace SalesSystem.Rfq.Tests
 
                 customerProjects.Add(customerProject);
             }
+
             return customerProjects;
         }
     }

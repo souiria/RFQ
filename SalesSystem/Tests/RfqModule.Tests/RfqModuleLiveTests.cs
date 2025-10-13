@@ -1,11 +1,11 @@
-﻿using Google.Protobuf;
+﻿using System.Diagnostics;
+using System.Globalization;
+using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Grpc.Net.Client;
-using RfqModule.Tests.Resources;
-using System.Diagnostics;
-using System.Globalization;
 using static RfqModule.RfqModule;
+using RfqModule.Tests.Resources;
 
 namespace RfqModule.Tests
 {

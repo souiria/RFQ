@@ -1,4 +1,4 @@
-﻿namespace DocumentConversion.TypeConversion.PartSearch
+﻿namespace Transformation.TypeConversion.PartSearch
 {
     public static class PartSearchConverter
     {
@@ -10,7 +10,7 @@
             List<CrossReferenceDto> customerNumbers = new List<CrossReferenceDto>();
             //Nissan has several columns so customerNumber2 will be for second column in BOM
             List<CrossReferenceDto> customerNumbers2 = new List<CrossReferenceDto>();
-            try 
+            try
             {
                 using (SLDocument sl = new SLDocument(stream))
                 {

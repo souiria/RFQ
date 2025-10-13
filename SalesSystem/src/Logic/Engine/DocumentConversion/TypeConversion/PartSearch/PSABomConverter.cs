@@ -1,4 +1,4 @@
-﻿namespace DocumentConversion.TypeConversion.PartSearch
+﻿namespace Transformation.TypeConversion.PartSearch
 {
     public static class PSABomConverter
     {
@@ -19,11 +19,11 @@
             for (int row = startRow; row <= endRow; row++)
             {
                 CrossReferenceDto reference = new CrossReferenceDto();
-                if(sl.GetCellValueAsString(1,3) == "N.PIECE")
+                if (sl.GetCellValueAsString(1, 3) == "N.PIECE")
                 {
                     reference.CustomerNumber = sl.GetCellValueAsString(row, 3);
                 }
-                else if(sl.GetCellValueAsString(1,4) == "N.PIECE")
+                else if (sl.GetCellValueAsString(1, 4) == "N.PIECE")
                 {
                     reference.CustomerNumber = sl.GetCellValueAsString(row, 4);
                 }

@@ -1,4 +1,8 @@
-﻿namespace DocumentConversion
+﻿using Transformation.TypeConversion.DSI;
+using Transformation.TypeConversion.EDI;
+using Transformation.TypeConversion.PartSearch;
+
+namespace Transformation
 {
     public static class DocumentConverter
     {
@@ -56,7 +60,7 @@
         {
             MemoryStream ms = new MemoryStream(file);
             using StreamReader reader = new StreamReader(ms, Encoding.UTF8);
-            string? line = reader.ReadLine();   
+            string? line = reader.ReadLine();
             while (line == null)
             {
                 line = reader.ReadLine();

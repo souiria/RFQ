@@ -1,6 +1,5 @@
 ﻿global using System.Globalization;
 global using System.Text;
-global using DocumentConversion;
 global using Google.Protobuf;
 global using Google.Protobuf.WellKnownTypes;
 global using Grpc.Core;
@@ -15,3 +14,4 @@ global using SharedKernel;
 global using SharedModels.DocumentConverter.DSI.Aggregates;
 global using SharedModels.DocumentConverter.DSI.DTOs;
 global using SharedModels.DocumentConverter.PartsSearch.DTOs;
+global using Transformation;

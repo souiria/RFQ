@@ -27,6 +27,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Logic\Engine\DocumentConversion\Transformation.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Protobuf Include="Protos\Rfq.proto" GrpcServices="Both" />
   </ItemGroup>
 

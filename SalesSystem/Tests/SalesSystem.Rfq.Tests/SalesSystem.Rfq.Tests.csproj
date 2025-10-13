@@ -30,6 +30,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Client\SalesSystem.Rfq\SalesSystem.Rfq.csproj" />
+    <ProjectReference Include="..\..\src\Logic\Engine\DocumentConversion\Transformation.csproj" />
+    <ProjectReference Include="..\..\src\Logic\Manager\RfqManager\RfqModule.csproj" />
   </ItemGroup>
 
   <ItemGroup>
