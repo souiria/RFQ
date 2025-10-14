@@ -14,10 +14,13 @@
         public async Task<List<RfqModule.CustomerGrpc>> GetCustomersAsync(Guid userId)
         {
             await Task.Delay(0);
-            RfqModule.GetCustomersByUserIdGrpcRequest request = new RfqModule.GetCustomersByUserIdGrpcRequest();
-            request.UserId = userId.ToString();
-            RfqModule.GetCustomersByUserIdGrpcResponse customerResponse = _RfqModuleClient.GetCustomersByUserIdGrpc(request);
-            List<RfqModule.CustomerGrpc> customers = new List<RfqModule.CustomerGrpc>();
+            GetCustomersByUserIdGrpcRequest request = new GetCustomersByUserIdGrpcRequest();
+#pragma warning disable CA1308 // Normalize strings to uppercase
+            string v = userId.ToString().ToLowerInvariant();
+#pragma warning restore CA1308 // Normalize strings to uppercase
+            request.UserId = v;
+            GetCustomersByUserIdGrpcResponse customerResponse = _RfqModuleClient.GetCustomersByUserIdGrpc(request);
+            List<CustomerGrpc> customers = new List<CustomerGrpc>();
             customers.AddRange(customerResponse.Customers);
             return customers;
         }
