@@ -44,6 +44,8 @@
                 await LogDataPopulationSuccess("DsiBranchInsulations", check);
                 check = await _RfqAccessService.PopulateDsiBranchInsulationThroughNodes(stoppingToken);
                 await LogDataPopulationSuccess("DsiBranchInsulationThroughNodes", check);
+                check = await _RfqAccessService.PopulateDsiCavityMappings(stoppingToken);
+                await LogDataPopulationSuccess("DsiCavityMapping", check);
             }
 
             return true;

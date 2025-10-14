@@ -1171,5 +1171,134 @@
         }
 
         #endregion
+
+        #region DsiCavityMapping
+
+        public override async Task<ListDsiCavityMappingGrpc> ReadDsiCavityMappingGrpc(DsiCavityMappingGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("ReadDsiCavityMappingGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse response = new RfqCrudGrpcResponse();
+            switch (requestType)
+            {
+                case RequestType.Read:
+                return await _RfqAccessService.GetAllDsiCavityMappings(context.CancellationToken);
+                case RequestType.ReadByRowId:
+                return await _RfqAccessService.GetDsiCavityMappingsByRowId(request, context.CancellationToken);
+                default:
+                {
+                    Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                    throw new RpcException(status);
+                }
+            }
+        }
+
+        public override async Task<RfqCrudGrpcResponse> CreateDsiCavityMappingGrpc(DsiCavityMappingGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("CreateDsiCavityMappingGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            if (requestType != RequestType.Create)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for creating dsi bends.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            ListDsiCavityMappingGrpc response = await _RfqAccessService.CreateDsiCavityMappings(request, cancellationToken);
+            if (response.DsiCavityMappingGrpcs.Count == request.DsiCavityMappingGrpcsToCreate.Count)
+            {
+                responseMessage.Message = $"{request.DsiCavityMappingGrpcsToCreate.Count} DsiCavityMappings types created successfully.";
+                responseMessage.SaveSuccess = true;
+                foreach (DsiCavityMappingGrpc reason in response.DsiCavityMappingGrpcs)
+                {
+                    responseMessage.StringValue = reason.RowId.ToString(CultureInfo.InvariantCulture) + ",";
+                }
+            }
+            else
+            {
+                responseMessage.Message = "No/not all DsiCavityMappings created.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
+
+        public override async Task<RfqCrudGrpcResponse> UpdateDsiCavityMappingGrpc(DsiCavityMappingGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("UpdateDsiCavityMappingGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            if (requestType != RequestType.Update)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for updating dsi bends.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            bool response = await _RfqAccessService.UpdateDsiCavityMappings(request, cancellationToken);
+            if (response)
+            {
+                responseMessage.Message = $"{request.DsiCavityMappingGrpcsToUpdate.Count} DsiCavityMapping types updated successfully.";
+                responseMessage.SaveSuccess = true;
+            }
+            else
+            {
+                responseMessage.Message = "No/not all DsiCavityMapping types updated.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
+
+        #endregion
     }
 }

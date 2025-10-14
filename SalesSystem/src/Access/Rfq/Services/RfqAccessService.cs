@@ -41,6 +41,10 @@
         ListDsiBranchInsulationThroughNodeGrpc _ListDsiBranchInsulationThroughNodes;
         #endregion
 
+        #region DsiCavityMapping
+        ListDsiCavityMappingGrpc _ListDsiCavityMappings;
+        #endregion
+
         #endregion
 
         #region Fields and Properties
@@ -96,6 +100,11 @@
         #region DsiBranchInsulationThroughNode
         IQueryHandler<GetDsiBranchInsulationThroughNodeQuery, List<DsiBranchInsulationThroughNodeGrpc>>? _DsiBranchInsulationThroughNodeHandler;
         bool _DsiBranchInsulationThroughNodeRefreshInProgress;
+        #endregion
+
+        #region DsiCavityMapping
+        IQueryHandler<GetDsiCavityMappingQuery, List<DsiCavityMappingGrpc>>? _DsiCavityMappingHandler;
+        bool _DsiCavityMappingRefreshInProgress;
         #endregion
 
         readonly IServiceProvider _ServiceProvider;
@@ -165,6 +174,13 @@
 
             _ListDsiBranchInsulationThroughNodes = new ListDsiBranchInsulationThroughNodeGrpc();
             _DsiBranchInsulationThroughNodeRefreshInProgress = false;
+
+            #endregion
+
+            #region DsiCavityMapping
+
+            _ListDsiCavityMappings = new ListDsiCavityMappingGrpc();
+            _DsiCavityMappingRefreshInProgress = false;
 
             #endregion
 
@@ -1156,6 +1172,115 @@
 
         #endregion
 
+        #region DsiCavityMapping
+
+        public async Task<ListDsiCavityMappingGrpc> GetAllDsiCavityMappings(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListRfqReasons.RfqReasons.Any())
+            {
+                return _ListDsiCavityMappings;
+            }
+            else
+            {
+                await PopulateRfqReasons(cancellationToken);
+                return _ListDsiCavityMappings;
+            }
+        }
+
+        public async Task<ListDsiCavityMappingGrpc> GetDsiCavityMappingsByRowId(DsiCavityMappingGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListDsiCavityMappings.DsiCavityMappingGrpcs.Any())
+            {
+            }
+            else
+            {
+                await PopulateDsiCavityMappings(cancellationToken);
+            }
+
+            ListDsiCavityMappingGrpc responseList = new ListDsiCavityMappingGrpc();
+            List<DsiCavityMappingGrpc> banchConfigurations = _ListDsiCavityMappings.DsiCavityMappingGrpcs.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            if (banchConfigurations != null)
+            {
+                responseList.DsiCavityMappingGrpcs.AddRange(banchConfigurations);
+                return responseList;
+            }
+
+            return responseList;
+        }
+
+        public async Task<ListDsiCavityMappingGrpc> CreateDsiCavityMappings(DsiCavityMappingGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            ListDsiCavityMappingGrpc responseList = new ListDsiCavityMappingGrpc();
+            if (request == null || request.DsiCavityMappingGrpcsToCreate == null || request.DsiCavityMappingGrpcsToCreate.Count == 0)
+            {
+                return responseList;
+            }
+
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                ICommandHandler<DsiCavityMappingCommand, List<DbDsiCavityMapping>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiCavityMappingCommand, List<DbDsiCavityMapping>>>();
+                DsiCavityMappingCommand command = new DsiCavityMappingCommand(CommandType.Create, request.DsiCavityMappingGrpcsToCreate);
+                Result<List<DbDsiCavityMapping>> result = await handler.Handle(command, cancellationToken);
+                if (result.IsSuccess)
+                {
+                    List<DbDsiCavityMapping> createdComponents = result.Value;
+                    List<DsiCavityMappingGrpc> updatedGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
+                    _ListDsiCavityMappings.DsiCavityMappingGrpcs.AddRange(updatedGrpcComponents);
+                    responseList.DsiCavityMappingGrpcs.AddRange(updatedGrpcComponents);
+                    return responseList;
+                }
+                else
+                {
+                    return responseList;
+                }
+            }
+        }
+
+        public async Task<bool> UpdateDsiCavityMappings(DsiCavityMappingGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            ListDsiCavityMappingGrpc responseList = new ListDsiCavityMappingGrpc();
+            if (request == null || request.DsiCavityMappingGrpcsToUpdate == null || request.DsiCavityMappingGrpcsToUpdate.Count == 0)
+            {
+                return false;
+            }
+
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                ICommandHandler<DsiCavityMappingCommand, List<DbDsiCavityMapping>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiCavityMappingCommand, List<DbDsiCavityMapping>>>();
+                DsiCavityMappingCommand command = new DsiCavityMappingCommand(CommandType.Update, request.DsiCavityMappingGrpcsToUpdate);
+                Result<List<DbDsiCavityMapping>> result = await handler.Handle(command, cancellationToken);
+                if (result.IsSuccess)
+                {
+                    foreach (DsiCavityMappingGrpc updatedComponent in request.DsiCavityMappingGrpcsToUpdate)
+                    {
+                        DsiCavityMappingGrpc? foundItem = _ListDsiCavityMappings.DsiCavityMappingGrpcs.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
+                        if (foundItem == null)
+                        {
+                            continue;
+                        }
+
+                        int index = _ListDsiCavityMappings.DsiCavityMappingGrpcs.IndexOf(foundItem);
+                        if (index != -1)
+                        {
+                            _ListDsiCavityMappings.DsiCavityMappingGrpcs[index] = updatedComponent;
+                        }
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region Data Imports
@@ -1442,6 +1567,38 @@
 
         #endregion
 
+        #region DsiCavityMapping
+
+        public async Task<bool> PopulateDsiCavityMappings(CancellationToken cancellationToken)
+        {
+            if (!_DsiCavityMappingRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _DsiCavityMappingHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiCavityMappingQuery, List<DsiCavityMappingGrpc>>>();
+                    _DsiCavityMappingRefreshInProgress = true;
+                    GetDsiCavityMappingQuery query = new GetDsiCavityMappingQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<DsiCavityMappingGrpc>> results = await _DsiCavityMappingHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _ListDsiCavityMappings.DsiCavityMappingGrpcs.Clear();
+                        _ListDsiCavityMappings.DsiCavityMappingGrpcs.AddRange(results.Value);
+                    }
+
+                    _DsiCavityMappingRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
+
         #endregion
 
         void PopulateSampleData()
@@ -1455,6 +1612,7 @@
             _ListDsiBranchConfigurationBendAssociations = SampleRfqDataService.PopulateDsiBranchConfigurationBendAssociationGrpc();
             _ListDsiBranchInsulations = SampleRfqDataService.PopulateDsiBranchInsulationGrpc();
             _ListDsiBranchInsulationThroughNodes = SampleRfqDataService.PopulateDsiBranchInsulationThroughNodeGrpc();
+            _ListDsiCavityMappings = SampleRfqDataService.PopulateDsiCavityMappingGrpc();
         }
     }
 }

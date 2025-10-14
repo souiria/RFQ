@@ -1,4 +1,6 @@
-﻿namespace Rfq.Extensions
+﻿using SharedKernel;
+
+namespace Rfq.Extensions
 {
     public static class RfqMappingExtentions
     {
@@ -358,6 +360,36 @@
             data.ThroughRoute = grpc.ThroughRoute;
             data.IsThroughFlag = grpc.IsThroughFlag ?? false;
             data.HarnessId = Guid.Parse(grpc.HarnessId);
+            data.CreatedDate = grpc.CreatedDate.ToDateTime();
+            data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
+            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
+            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            return data;
+        }
+
+        #endregion
+
+        #region DsiCavityMapping
+
+        public static DsiCavityMappingGrpc FromEntity(this DbDsiCavityMapping entity)
+        {
+            DsiCavityMappingGrpc data = new DsiCavityMappingGrpc();
+            data.RowId = entity.RowId;
+            data.CavityMappingId = entity.CavityMappingId.ToString();
+            data.CavityMapping = entity.CavityMapping;
+            data.CreatedDate = entity.CreatedDate.ToUniversalTime().ToTimestamp();
+            data.ModifiedDate = entity.ModifiedDate?.ToUniversalTime().ToTimestamp();
+            data.CreatedBy = entity.CreatedBy.ToString();
+            data.ModifiedBy = entity.ModifiedBy.ToString();
+            return data;
+        }
+
+        public static DbDsiCavityMapping ToEntity(this DsiCavityMappingGrpc grpc)
+        {
+            DbDsiCavityMapping data = new DbDsiCavityMapping();
+            data.RowId = grpc.RowId;
+            data.CavityMappingId = Guid.Parse(grpc.CavityMappingId);
+            data.CavityMapping = grpc.CavityMapping;
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
             data.CreatedBy = Guid.Parse(grpc.CreatedBy);

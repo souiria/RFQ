@@ -705,6 +705,79 @@ namespace RfqAccess.Tests
         //}
         #endregion
 
+        #region DsiCavityMapping
+        [Test]
+        public void GetDsiCavityMappingGrpcTest_Success()
+        {
+            DsiCavityMappingGrpcRequest reasonGrpcRequest = new DsiCavityMappingGrpcRequest();
+            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            requestParameter.RequestType = ((int)RequestType.Read);
+            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.GrpcRequestParameter.RequestType = ((int)RequestType.Read);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiCavityMappingGrpc));
+
+            Task<ListDsiCavityMappingGrpc> getDsiCavityMappingGrpcReply = _GrpcService.ReadDsiCavityMappingGrpc(reasonGrpcRequest, serverCallContext);
+            Assert.That(getDsiCavityMappingGrpcReply.Result.DsiCavityMappingGrpcs, Is.Not.Null);
+            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            Assert.That(getDsiCavityMappingGrpcReply.Result.DsiCavityMappingGrpcs.Count, countConstraint);
+
+        }
+
+        [Test]
+        public void GetDsiCavityMappingGrpcByRowIdTest_Success()
+        {
+            DsiCavityMappingGrpcRequest reasonGrpcRequest = new DsiCavityMappingGrpcRequest();
+            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            requestParameter.RequestType = ((int)RequestType.ReadByRowId);
+            requestParameter.IntValue = 6;
+            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiCavityMappingGrpc));
+
+            Task<ListDsiCavityMappingGrpc> getDsiCavityMappingByRowIdReply = _GrpcService.ReadDsiCavityMappingGrpc(reasonGrpcRequest, serverCallContext);
+
+            Assert.That(getDsiCavityMappingByRowIdReply.Result.DsiCavityMappingGrpcs, Is.Not.Null);
+            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            Assert.That(getDsiCavityMappingByRowIdReply.Result.DsiCavityMappingGrpcs.Count, countConstraint);
+            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedCavityMapping");
+            Assert.That(getDsiCavityMappingByRowIdReply.Result.DsiCavityMappingGrpcs.First().CavityMapping, reasonConstraint);
+        }
+
+        [Test]
+        public void GetDsiCavityMappingGrpcByRowIdTest_Fails()
+        {
+            DsiCavityMappingGrpcRequest reasonGrpcRequest = new DsiCavityMappingGrpcRequest();
+            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            requestParameter.RequestType = ((int)RequestType.ReadByRowId);
+            requestParameter.IntValue = int.MaxValue;
+            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiCavityMappingGrpc));
+
+            Task<ListDsiCavityMappingGrpc> getDsiCavityMappingByRowIdReply = _GrpcService.ReadDsiCavityMappingGrpc(reasonGrpcRequest, serverCallContext);
+
+            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            Assert.That(getDsiCavityMappingByRowIdReply.Result.DsiCavityMappingGrpcs.Count, countConstraint);
+        }
+
+        //[Test]
+        //public void CreateDsiCavityMappingGrpcTest_Success()
+        //{
+        //    DsiCavityMappingGrpcRequest reasonGrpcRequest = new DsiCavityMappingGrpcRequest();
+        //    GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+        //    requestParameter.RequestType = ((int)RequestType.Create);
+        //    reasonGrpcRequest.GrpcRequestParameter = requestParameter;
+        //    DsiCavityMappingGrpc bendGrpc = new DsiCavityMappingGrpc();
+        //    bendGrpc.Bend = "TestBend";
+        //    reasonGrpcRequest.DsiCavityMappingGrpcsToCreate.Add(bendGrpc);
+        //    ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateDsiCavityMappingGrpc));
+        //    NUnit.Framework.Constraints.EqualConstraint originalCountConstraint = Is.EqualTo(0);
+
+        //    Task<ListDsiCavityMappingGrpc> getDsiCavityMappingByRowIdReply = _GrpcService.ReadDsiCavityMappingGrpc(reasonGrpcRequest, serverCallContext);
+
+        //    NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+        //    Assert.That(getDsiCavityMappingByRowIdReply.Result.DsiCavityMappingGrpcs.Count, countConstraint);
+        //}
+        #endregion
+
         ServerCallContext CreateServerContext(string methodName)
         {
             DateTime deadline = DateTime.Now.AddMinutes(30);

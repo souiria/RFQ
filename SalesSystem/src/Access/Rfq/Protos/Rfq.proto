@@ -47,6 +47,10 @@ service Rfq {
   rpc CreateDsiBranchInsulationThroughNodeGrpc (DsiBranchInsulationThroughNodeGrpcRequest) returns (RfqCrudGrpcResponse);
   rpc ReadDsiBranchInsulationThroughNodeGrpc (DsiBranchInsulationThroughNodeGrpcRequest) returns (ListDsiBranchInsulationThroughNodeGrpc);
   rpc UpdateDsiBranchInsulationThroughNodeGrpc (DsiBranchInsulationThroughNodeGrpcRequest) returns (RfqCrudGrpcResponse);
+
+  rpc CreateDsiCavityMappingGrpc (DsiCavityMappingGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc ReadDsiCavityMappingGrpc (DsiCavityMappingGrpcRequest) returns (ListDsiCavityMappingGrpc);
+  rpc UpdateDsiCavityMappingGrpc (DsiCavityMappingGrpcRequest) returns (RfqCrudGrpcResponse);
 }
 
 // The request message containing the user's name.
@@ -318,4 +322,25 @@ message DsiBranchInsulationThroughNodeGrpc {
 
 message ListDsiBranchInsulationThroughNodeGrpc {
 	repeated DsiBranchInsulationThroughNodeGrpc DsiBranchInsulationThroughNodes = 1;
+}
+
+message DsiCavityMappingGrpcRequest {
+   GrpcRequestParameter GrpcRequestParameter = 1;
+   repeated DsiCavityMappingGrpc DsiCavityMappingGrpcsToCreate = 2;
+   repeated DsiCavityMappingGrpc DsiCavityMappingGrpcsToUpdate = 3;
+   repeated DsiCavityMappingGrpc DsiCavityMappingGrpcsToDelete = 4;
+}
+
+message DsiCavityMappingGrpc{
+	int64 RowId = 1;
+	google.protobuf.StringValue CavityMappingId = 2;
+	google.protobuf.StringValue CavityMapping = 3;
+	google.protobuf.Timestamp CreatedDate = 4;
+	google.protobuf.Timestamp ModifiedDate = 5;
+	string CreatedBy = 6;
+	string ModifiedBy = 7;
+}
+
+message ListDsiCavityMappingGrpc {
+	repeated DsiCavityMappingGrpc DsiCavityMappingGrpcs = 1;
 }

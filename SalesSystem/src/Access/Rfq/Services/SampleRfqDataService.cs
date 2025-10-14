@@ -352,5 +352,31 @@
             return listDsiBranchInsulationThroughNodeGrpc;
         }
         #endregion
+
+        #region DsiCavityMappings
+        public static ListDsiCavityMappingGrpc PopulateDsiCavityMappingGrpc()
+        {
+            ListDsiCavityMappingGrpc listDsiCavityMappingGrpc = new ListDsiCavityMappingGrpc();
+            for (int i = 0; i < 5; i++)
+            {
+                DsiCavityMappingGrpc dsiCavityMappingGrpc = new DsiCavityMappingGrpc();
+                dsiCavityMappingGrpc.RowId = i;
+                dsiCavityMappingGrpc.CavityMappingId = Guid.NewGuid().ToString();
+                dsiCavityMappingGrpc.CavityMapping = $"CavityMapping{i}";
+                dsiCavityMappingGrpc.CreatedBy = Guid.NewGuid().ToString();
+                dsiCavityMappingGrpc.CreatedDate = DateTime.UtcNow.ToTimestamp();
+                listDsiCavityMappingGrpc.DsiCavityMappingGrpcs.Add(dsiCavityMappingGrpc);
+            }
+
+            DsiCavityMappingGrpc fixedDsiCavityMappingGrpc = new DsiCavityMappingGrpc();
+            fixedDsiCavityMappingGrpc.RowId = 6;
+            fixedDsiCavityMappingGrpc.CavityMappingId = Guid.NewGuid().ToString();
+            fixedDsiCavityMappingGrpc.CavityMapping = $"FixedCavityMapping";
+            fixedDsiCavityMappingGrpc.CreatedBy = Guid.NewGuid().ToString();
+            fixedDsiCavityMappingGrpc.CreatedDate = DateTime.UtcNow.ToTimestamp();
+            listDsiCavityMappingGrpc.DsiCavityMappingGrpcs.Add(fixedDsiCavityMappingGrpc);
+            return listDsiCavityMappingGrpc;
+        }
+        #endregion
     }
 }

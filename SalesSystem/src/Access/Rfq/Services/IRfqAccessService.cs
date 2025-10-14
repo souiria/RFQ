@@ -90,5 +90,15 @@
         Task<bool> PopulateDsiBranchInsulationThroughNodes(CancellationToken cancellationToken);
 
         #endregion
+
+        #region DsiCavityMapping
+
+        Task<ListDsiCavityMappingGrpc> GetAllDsiCavityMappings(CancellationToken cancellationToken);
+        Task<ListDsiCavityMappingGrpc> GetDsiCavityMappingsByRowId(DsiCavityMappingGrpcRequest request, CancellationToken cancellationToken);
+        Task<ListDsiCavityMappingGrpc> CreateDsiCavityMappings(DsiCavityMappingGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> UpdateDsiCavityMappings(DsiCavityMappingGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> PopulateDsiCavityMappings(CancellationToken cancellationToken);
+
+        #endregion
     }
 }
