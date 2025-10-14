@@ -43,6 +43,10 @@ service Rfq {
   rpc CreateDsiBranchInsulationGrpc (DsiBranchInsulationGrpcRequest) returns (RfqCrudGrpcResponse);
   rpc ReadDsiBranchInsulationGrpc (DsiBranchInsulationGrpcRequest) returns (ListDsiBranchInsulationGrpc);
   rpc UpdateDsiBranchInsulationGrpc (DsiBranchInsulationGrpcRequest) returns (RfqCrudGrpcResponse);
+
+  rpc CreateDsiBranchInsulationThroughNodeGrpc (DsiBranchInsulationThroughNodeGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc ReadDsiBranchInsulationThroughNodeGrpc (DsiBranchInsulationThroughNodeGrpcRequest) returns (ListDsiBranchInsulationThroughNodeGrpc);
+  rpc UpdateDsiBranchInsulationThroughNodeGrpc (DsiBranchInsulationThroughNodeGrpcRequest) returns (RfqCrudGrpcResponse);
 }
 
 // The request message containing the user's name.
@@ -289,4 +293,29 @@ message DsiBranchInsulationGrpc {
 
 message ListDsiBranchInsulationGrpc {
 	repeated DsiBranchInsulationGrpc DsiBranchInsulations = 1;
+}
+
+message DsiBranchInsulationThroughNodeGrpcRequest {
+   GrpcRequestParameter GrpcRequestParameter = 1;
+   repeated DsiBranchInsulationThroughNodeGrpc DsiBranchInsulationThroughNodeGrpcsToCreate = 2;
+   repeated DsiBranchInsulationThroughNodeGrpc DsiBranchInsulationThroughNodeGrpcsToUpdate = 3;
+   repeated DsiBranchInsulationThroughNodeGrpc DsiBranchInsulationThroughNodeGrpcsToDelete = 4;
+}
+
+message DsiBranchInsulationThroughNodeGrpc {
+	int64 RowId = 1;
+	google.protobuf.StringValue PieceCode = 2;
+	google.protobuf.DoubleValue ThroughOrder = 3;
+	google.protobuf.StringValue ThroughNode = 4;
+	google.protobuf.StringValue ThroughRoute = 5;
+	google.protobuf.BoolValue IsThroughFlag = 6;
+	google.protobuf.StringValue HarnessId = 7;
+	google.protobuf.Timestamp CreatedDate = 8;
+	google.protobuf.Timestamp ModifiedDate = 9;
+	string CreatedBy = 10;
+	string ModifiedBy = 11;
+}
+
+message ListDsiBranchInsulationThroughNodeGrpc {
+	repeated DsiBranchInsulationThroughNodeGrpc DsiBranchInsulationThroughNodes = 1;
 }

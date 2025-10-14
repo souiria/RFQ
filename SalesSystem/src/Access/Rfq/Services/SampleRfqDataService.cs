@@ -318,5 +318,39 @@
             return listDsiBranchInsulationGrpc;
         }
         #endregion
+
+        #region DsiBranchInsulationThroughNodes
+        public static ListDsiBranchInsulationThroughNodeGrpc PopulateDsiBranchInsulationThroughNodeGrpc()
+        {
+            ListDsiBranchInsulationThroughNodeGrpc listDsiBranchInsulationThroughNodeGrpc = new ListDsiBranchInsulationThroughNodeGrpc();
+            for (int i = 0; i < 5; i++)
+            {
+                DsiBranchInsulationThroughNodeGrpc dsiBranchInsulationThroughNodeGrpc = new DsiBranchInsulationThroughNodeGrpc();
+                dsiBranchInsulationThroughNodeGrpc.RowId = i;
+                dsiBranchInsulationThroughNodeGrpc.PieceCode = "PieceCode" + i;
+                dsiBranchInsulationThroughNodeGrpc.ThroughOrder = i;
+                dsiBranchInsulationThroughNodeGrpc.ThroughNode = "ThroughNode" + i;
+                dsiBranchInsulationThroughNodeGrpc.ThroughRoute = "ThroughRoute" + i;
+                dsiBranchInsulationThroughNodeGrpc.IsThroughFlag = false;
+                dsiBranchInsulationThroughNodeGrpc.HarnessId = Guid.NewGuid().ToString();
+                dsiBranchInsulationThroughNodeGrpc.CreatedBy = Guid.NewGuid().ToString();
+                dsiBranchInsulationThroughNodeGrpc.CreatedDate = DateTime.UtcNow.ToTimestamp();
+                listDsiBranchInsulationThroughNodeGrpc.DsiBranchInsulationThroughNodes.Add(dsiBranchInsulationThroughNodeGrpc);
+            }
+
+            DsiBranchInsulationThroughNodeGrpc fixedDsiBranchInsulationThroughNodeGrpc = new DsiBranchInsulationThroughNodeGrpc();
+            fixedDsiBranchInsulationThroughNodeGrpc.RowId = 6;
+            fixedDsiBranchInsulationThroughNodeGrpc.PieceCode = "FixedPieceCode";
+            fixedDsiBranchInsulationThroughNodeGrpc.ThroughOrder = 1;
+            fixedDsiBranchInsulationThroughNodeGrpc.ThroughNode = "FixedThroughNode";
+            fixedDsiBranchInsulationThroughNodeGrpc.ThroughRoute = "FixedThroughRoute";
+            fixedDsiBranchInsulationThroughNodeGrpc.IsThroughFlag = false;
+            fixedDsiBranchInsulationThroughNodeGrpc.HarnessId = Guid.NewGuid().ToString();
+            fixedDsiBranchInsulationThroughNodeGrpc.CreatedBy = Guid.NewGuid().ToString();
+            fixedDsiBranchInsulationThroughNodeGrpc.CreatedDate = DateTime.UtcNow.ToTimestamp();
+            listDsiBranchInsulationThroughNodeGrpc.DsiBranchInsulationThroughNodes.Add(fixedDsiBranchInsulationThroughNodeGrpc);
+            return listDsiBranchInsulationThroughNodeGrpc;
+        }
+        #endregion
     }
 }

@@ -1042,5 +1042,134 @@
         }
 
         #endregion
+
+        #region DsiBranchInsulationThroughNode
+
+        public override async Task<ListDsiBranchInsulationThroughNodeGrpc> ReadDsiBranchInsulationThroughNodeGrpc(DsiBranchInsulationThroughNodeGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("ReadDsiBranchInsulationThroughNodeGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse response = new RfqCrudGrpcResponse();
+            switch (requestType)
+            {
+                case RequestType.Read:
+                return await _RfqAccessService.GetAllDsiBranchInsulationThroughNodes(context.CancellationToken);
+                case RequestType.ReadByRowId:
+                return await _RfqAccessService.GetDsiBranchInsulationThroughNodesByRowId(request, context.CancellationToken);
+                default:
+                {
+                    Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                    throw new RpcException(status);
+                }
+            }
+        }
+
+        public override async Task<RfqCrudGrpcResponse> CreateDsiBranchInsulationThroughNodeGrpc(DsiBranchInsulationThroughNodeGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("CreateDsiBranchInsulationThroughNodeGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            if (requestType != RequestType.Create)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for creating dsi bends.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            ListDsiBranchInsulationThroughNodeGrpc response = await _RfqAccessService.CreateDsiBranchInsulationThroughNodes(request, cancellationToken);
+            if (response.DsiBranchInsulationThroughNodes.Count == request.DsiBranchInsulationThroughNodeGrpcsToCreate.Count)
+            {
+                responseMessage.Message = $"{request.DsiBranchInsulationThroughNodeGrpcsToCreate.Count} DsiBranchInsulationThroughNodes types created successfully.";
+                responseMessage.SaveSuccess = true;
+                foreach (DsiBranchInsulationThroughNodeGrpc reason in response.DsiBranchInsulationThroughNodes)
+                {
+                    responseMessage.StringValue = reason.RowId.ToString(CultureInfo.InvariantCulture) + ",";
+                }
+            }
+            else
+            {
+                responseMessage.Message = "No/not all DsiBranchInsulationThroughNodes created.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
+
+        public override async Task<RfqCrudGrpcResponse> UpdateDsiBranchInsulationThroughNodeGrpc(DsiBranchInsulationThroughNodeGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("UpdateDsiBranchInsulationThroughNodeGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            if (requestType != RequestType.Update)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for updating dsi bends.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            bool response = await _RfqAccessService.UpdateDsiBranchInsulationThroughNodes(request, cancellationToken);
+            if (response)
+            {
+                responseMessage.Message = $"{request.DsiBranchInsulationThroughNodeGrpcsToUpdate.Count} DsiBranchInsulationThroughNode types updated successfully.";
+                responseMessage.SaveSuccess = true;
+            }
+            else
+            {
+                responseMessage.Message = "No/not all DsiBranchInsulationThroughNode types updated.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
+
+        #endregion
     }
 }

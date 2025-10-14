@@ -18,6 +18,8 @@
         { get; }
         DbSet<DbDsiBranchInsulation> DsiBranchInsulation
         { get; }
+        DbSet<DbDsiBranchInsulationThroughNode> DsiBranchInsulationThroughNode
+        { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

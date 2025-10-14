@@ -37,6 +37,10 @@
         ListDsiBranchInsulationGrpc _ListDsiBranchInsulations;
         #endregion
 
+        #region DsiBranchInsulationThroughNode
+        ListDsiBranchInsulationThroughNodeGrpc _ListDsiBranchInsulationThroughNodes;
+        #endregion
+
         #endregion
 
         #region Fields and Properties
@@ -87,6 +91,11 @@
         #region DsiBranchInsulation
         IQueryHandler<GetDsiBranchInsulationQuery, List<DsiBranchInsulationGrpc>>? _DsiBranchInsulationHandler;
         bool _DsiBranchInsulationRefreshInProgress;
+        #endregion
+
+        #region DsiBranchInsulationThroughNode
+        IQueryHandler<GetDsiBranchInsulationThroughNodeQuery, List<DsiBranchInsulationThroughNodeGrpc>>? _DsiBranchInsulationThroughNodeHandler;
+        bool _DsiBranchInsulationThroughNodeRefreshInProgress;
         #endregion
 
         readonly IServiceProvider _ServiceProvider;
@@ -149,6 +158,13 @@
 
             _ListDsiBranchInsulations = new ListDsiBranchInsulationGrpc();
             _DsiBranchInsulationRefreshInProgress = false;
+
+            #endregion
+
+            #region DsiBranchInsulationThroughNode
+
+            _ListDsiBranchInsulationThroughNodes = new ListDsiBranchInsulationThroughNodeGrpc();
+            _DsiBranchInsulationThroughNodeRefreshInProgress = false;
 
             #endregion
 
@@ -1031,6 +1047,115 @@
 
         #endregion
 
+        #region DsiBranchInsulationThroughNode
+
+        public async Task<ListDsiBranchInsulationThroughNodeGrpc> GetAllDsiBranchInsulationThroughNodes(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListRfqReasons.RfqReasons.Any())
+            {
+                return _ListDsiBranchInsulationThroughNodes;
+            }
+            else
+            {
+                await PopulateRfqReasons(cancellationToken);
+                return _ListDsiBranchInsulationThroughNodes;
+            }
+        }
+
+        public async Task<ListDsiBranchInsulationThroughNodeGrpc> GetDsiBranchInsulationThroughNodesByRowId(DsiBranchInsulationThroughNodeGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListDsiBranchInsulationThroughNodes.DsiBranchInsulationThroughNodes.Any())
+            {
+            }
+            else
+            {
+                await PopulateDsiBranchInsulationThroughNodes(cancellationToken);
+            }
+
+            ListDsiBranchInsulationThroughNodeGrpc responseList = new ListDsiBranchInsulationThroughNodeGrpc();
+            List<DsiBranchInsulationThroughNodeGrpc> banchConfigurations = _ListDsiBranchInsulationThroughNodes.DsiBranchInsulationThroughNodes.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            if (banchConfigurations != null)
+            {
+                responseList.DsiBranchInsulationThroughNodes.AddRange(banchConfigurations);
+                return responseList;
+            }
+
+            return responseList;
+        }
+
+        public async Task<ListDsiBranchInsulationThroughNodeGrpc> CreateDsiBranchInsulationThroughNodes(DsiBranchInsulationThroughNodeGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            ListDsiBranchInsulationThroughNodeGrpc responseList = new ListDsiBranchInsulationThroughNodeGrpc();
+            if (request == null || request.DsiBranchInsulationThroughNodeGrpcsToCreate == null || request.DsiBranchInsulationThroughNodeGrpcsToCreate.Count == 0)
+            {
+                return responseList;
+            }
+
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                ICommandHandler<DsiBranchInsulationThroughNodeCommand, List<DbDsiBranchInsulationThroughNode>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiBranchInsulationThroughNodeCommand, List<DbDsiBranchInsulationThroughNode>>>();
+                DsiBranchInsulationThroughNodeCommand command = new DsiBranchInsulationThroughNodeCommand(CommandType.Create, request.DsiBranchInsulationThroughNodeGrpcsToCreate);
+                Result<List<DbDsiBranchInsulationThroughNode>> result = await handler.Handle(command, cancellationToken);
+                if (result.IsSuccess)
+                {
+                    List<DbDsiBranchInsulationThroughNode> createdComponents = result.Value;
+                    List<DsiBranchInsulationThroughNodeGrpc> updatedGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
+                    _ListDsiBranchInsulationThroughNodes.DsiBranchInsulationThroughNodes.AddRange(updatedGrpcComponents);
+                    responseList.DsiBranchInsulationThroughNodes.AddRange(updatedGrpcComponents);
+                    return responseList;
+                }
+                else
+                {
+                    return responseList;
+                }
+            }
+        }
+
+        public async Task<bool> UpdateDsiBranchInsulationThroughNodes(DsiBranchInsulationThroughNodeGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            ListDsiBranchInsulationThroughNodeGrpc responseList = new ListDsiBranchInsulationThroughNodeGrpc();
+            if (request == null || request.DsiBranchInsulationThroughNodeGrpcsToUpdate == null || request.DsiBranchInsulationThroughNodeGrpcsToUpdate.Count == 0)
+            {
+                return false;
+            }
+
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                ICommandHandler<DsiBranchInsulationThroughNodeCommand, List<DbDsiBranchInsulationThroughNode>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiBranchInsulationThroughNodeCommand, List<DbDsiBranchInsulationThroughNode>>>();
+                DsiBranchInsulationThroughNodeCommand command = new DsiBranchInsulationThroughNodeCommand(CommandType.Update, request.DsiBranchInsulationThroughNodeGrpcsToUpdate);
+                Result<List<DbDsiBranchInsulationThroughNode>> result = await handler.Handle(command, cancellationToken);
+                if (result.IsSuccess)
+                {
+                    foreach (DsiBranchInsulationThroughNodeGrpc updatedComponent in request.DsiBranchInsulationThroughNodeGrpcsToUpdate)
+                    {
+                        DsiBranchInsulationThroughNodeGrpc? foundItem = _ListDsiBranchInsulationThroughNodes.DsiBranchInsulationThroughNodes.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
+                        if (foundItem == null)
+                        {
+                            continue;
+                        }
+
+                        int index = _ListDsiBranchInsulationThroughNodes.DsiBranchInsulationThroughNodes.IndexOf(foundItem);
+                        if (index != -1)
+                        {
+                            _ListDsiBranchInsulationThroughNodes.DsiBranchInsulationThroughNodes[index] = updatedComponent;
+                        }
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region Data Imports
@@ -1285,6 +1410,38 @@
 
         #endregion
 
+        #region DsiBranchInsulationThroughNode
+
+        public async Task<bool> PopulateDsiBranchInsulationThroughNodes(CancellationToken cancellationToken)
+        {
+            if (!_DsiBranchInsulationThroughNodeRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _DsiBranchInsulationThroughNodeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiBranchInsulationThroughNodeQuery, List<DsiBranchInsulationThroughNodeGrpc>>>();
+                    _DsiBranchInsulationThroughNodeRefreshInProgress = true;
+                    GetDsiBranchInsulationThroughNodeQuery query = new GetDsiBranchInsulationThroughNodeQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<DsiBranchInsulationThroughNodeGrpc>> results = await _DsiBranchInsulationThroughNodeHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _ListDsiBranchInsulationThroughNodes.DsiBranchInsulationThroughNodes.Clear();
+                        _ListDsiBranchInsulationThroughNodes.DsiBranchInsulationThroughNodes.AddRange(results.Value);
+                    }
+
+                    _DsiBranchInsulationThroughNodeRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
+
         #endregion
 
         void PopulateSampleData()
@@ -1297,6 +1454,7 @@
             _ListDsiBranchConfigurations = SampleRfqDataService.PopulateDsiBranchConfigurationGrpc();
             _ListDsiBranchConfigurationBendAssociations = SampleRfqDataService.PopulateDsiBranchConfigurationBendAssociationGrpc();
             _ListDsiBranchInsulations = SampleRfqDataService.PopulateDsiBranchInsulationGrpc();
+            _ListDsiBranchInsulationThroughNodes = SampleRfqDataService.PopulateDsiBranchInsulationThroughNodeGrpc();
         }
     }
 }

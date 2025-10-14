@@ -42,6 +42,8 @@
                 await LogDataPopulationSuccess("DsiBranchConfigurationBendAssociations", check);
                 check = await _RfqAccessService.PopulateDsiBranchInsulations(stoppingToken);
                 await LogDataPopulationSuccess("DsiBranchInsulations", check);
+                check = await _RfqAccessService.PopulateDsiBranchInsulationThroughNodes(stoppingToken);
+                await LogDataPopulationSuccess("DsiBranchInsulationThroughNodes", check);
             }
 
             return true;

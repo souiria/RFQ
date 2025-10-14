@@ -328,5 +328,43 @@
         }
 
         #endregion
+
+        #region DsiBranchInsulationThroughNode
+
+        public static DsiBranchInsulationThroughNodeGrpc FromEntity(this DbDsiBranchInsulationThroughNode entity)
+        {
+            DsiBranchInsulationThroughNodeGrpc data = new DsiBranchInsulationThroughNodeGrpc();
+            data.RowId = entity.RowId;
+            data.PieceCode = entity.PieceCode;
+            data.ThroughOrder = entity.ThroughOrder;
+            data.ThroughNode = entity.ThroughNode;
+            data.ThroughRoute = entity.ThroughRoute;
+            data.IsThroughFlag = entity.IsThroughFlag;
+            data.HarnessId = entity.HarnessId.ToString();
+            data.CreatedDate = entity.CreatedDate.ToUniversalTime().ToTimestamp();
+            data.ModifiedDate = entity.ModifiedDate?.ToUniversalTime().ToTimestamp();
+            data.CreatedBy = entity.CreatedBy.ToString();
+            data.ModifiedBy = entity.ModifiedBy.ToString();
+            return data;
+        }
+
+        public static DbDsiBranchInsulationThroughNode ToEntity(this DsiBranchInsulationThroughNodeGrpc grpc)
+        {
+            DbDsiBranchInsulationThroughNode data = new DbDsiBranchInsulationThroughNode();
+            data.RowId = grpc.RowId;
+            data.PieceCode = grpc.PieceCode;
+            data.ThroughOrder = grpc.ThroughOrder ?? 0;
+            data.ThroughNode = grpc.ThroughNode;
+            data.ThroughRoute = grpc.ThroughRoute;
+            data.IsThroughFlag = grpc.IsThroughFlag ?? false;
+            data.HarnessId = Guid.Parse(grpc.HarnessId);
+            data.CreatedDate = grpc.CreatedDate.ToDateTime();
+            data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
+            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
+            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            return data;
+        }
+
+        #endregion
     }
 }

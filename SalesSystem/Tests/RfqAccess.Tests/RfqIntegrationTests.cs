@@ -632,6 +632,79 @@ namespace RfqAccess.Tests
         //}
         #endregion
 
+        #region DsiBranchInsulationThroughNode
+        [Test]
+        public void GetDsiBranchInsulationThroughNodeGrpcTest_Success()
+        {
+            DsiBranchInsulationThroughNodeGrpcRequest reasonGrpcRequest = new DsiBranchInsulationThroughNodeGrpcRequest();
+            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            requestParameter.RequestType = ((int)RequestType.Read);
+            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.GrpcRequestParameter.RequestType = ((int)RequestType.Read);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiBranchInsulationThroughNodeGrpc));
+
+            Task<ListDsiBranchInsulationThroughNodeGrpc> getDsiBranchInsulationThroughNodeGrpcReply = _GrpcService.ReadDsiBranchInsulationThroughNodeGrpc(reasonGrpcRequest, serverCallContext);
+            Assert.That(getDsiBranchInsulationThroughNodeGrpcReply.Result.DsiBranchInsulationThroughNodes, Is.Not.Null);
+            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            Assert.That(getDsiBranchInsulationThroughNodeGrpcReply.Result.DsiBranchInsulationThroughNodes.Count, countConstraint);
+
+        }
+
+        [Test]
+        public void GetDsiBranchInsulationThroughNodeGrpcByRowIdTest_Success()
+        {
+            DsiBranchInsulationThroughNodeGrpcRequest reasonGrpcRequest = new DsiBranchInsulationThroughNodeGrpcRequest();
+            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            requestParameter.RequestType = ((int)RequestType.ReadByRowId);
+            requestParameter.IntValue = 6;
+            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiBranchInsulationThroughNodeGrpc));
+
+            Task<ListDsiBranchInsulationThroughNodeGrpc> getDsiBranchInsulationThroughNodeByRowIdReply = _GrpcService.ReadDsiBranchInsulationThroughNodeGrpc(reasonGrpcRequest, serverCallContext);
+
+            Assert.That(getDsiBranchInsulationThroughNodeByRowIdReply.Result.DsiBranchInsulationThroughNodes, Is.Not.Null);
+            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            Assert.That(getDsiBranchInsulationThroughNodeByRowIdReply.Result.DsiBranchInsulationThroughNodes.Count, countConstraint);
+            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedThroughNode");
+            Assert.That(getDsiBranchInsulationThroughNodeByRowIdReply.Result.DsiBranchInsulationThroughNodes.First().ThroughNode, reasonConstraint);
+        }
+
+        [Test]
+        public void GetDsiBranchInsulationThroughNodeGrpcByRowIdTest_Fails()
+        {
+            DsiBranchInsulationThroughNodeGrpcRequest reasonGrpcRequest = new DsiBranchInsulationThroughNodeGrpcRequest();
+            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            requestParameter.RequestType = ((int)RequestType.ReadByRowId);
+            requestParameter.IntValue = int.MaxValue;
+            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiBranchInsulationThroughNodeGrpc));
+
+            Task<ListDsiBranchInsulationThroughNodeGrpc> getDsiBranchInsulationThroughNodeByRowIdReply = _GrpcService.ReadDsiBranchInsulationThroughNodeGrpc(reasonGrpcRequest, serverCallContext);
+
+            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            Assert.That(getDsiBranchInsulationThroughNodeByRowIdReply.Result.DsiBranchInsulationThroughNodes.Count, countConstraint);
+        }
+
+        //[Test]
+        //public void CreateDsiBranchInsulationThroughNodeGrpcTest_Success()
+        //{
+        //    DsiBranchInsulationThroughNodeGrpcRequest reasonGrpcRequest = new DsiBranchInsulationThroughNodeGrpcRequest();
+        //    GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+        //    requestParameter.RequestType = ((int)RequestType.Create);
+        //    reasonGrpcRequest.GrpcRequestParameter = requestParameter;
+        //    DsiBranchInsulationThroughNodeGrpc bendGrpc = new DsiBranchInsulationThroughNodeGrpc();
+        //    bendGrpc.Bend = "TestBend";
+        //    reasonGrpcRequest.DsiBranchInsulationThroughNodeGrpcsToCreate.Add(bendGrpc);
+        //    ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateDsiBranchInsulationThroughNodeGrpc));
+        //    NUnit.Framework.Constraints.EqualConstraint originalCountConstraint = Is.EqualTo(0);
+
+        //    Task<ListDsiBranchInsulationThroughNodeGrpc> getDsiBranchInsulationThroughNodeByRowIdReply = _GrpcService.ReadDsiBranchInsulationThroughNodeGrpc(reasonGrpcRequest, serverCallContext);
+
+        //    NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+        //    Assert.That(getDsiBranchInsulationThroughNodeByRowIdReply.Result.DsiBranchInsulationThroughNodes.Count, countConstraint);
+        //}
+        #endregion
+
         ServerCallContext CreateServerContext(string methodName)
         {
             DateTime deadline = DateTime.Now.AddMinutes(30);
