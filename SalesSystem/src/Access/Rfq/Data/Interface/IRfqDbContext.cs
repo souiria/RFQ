@@ -16,6 +16,8 @@
         { get; }
         DbSet<DbDsiBranchConfigurationBendAssociation> DsiBranchConfigurationBendAssociation
         { get; }
+        DbSet<DbDsiBranchInsulation> DsiBranchInsulation
+        { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

@@ -33,6 +33,10 @@
         ListDsiBranchConfigurationBendAssociationGrpc _ListDsiBranchConfigurationBendAssociations;
         #endregion
 
+        #region DsiBranchInsulation
+        ListDsiBranchInsulationGrpc _ListDsiBranchInsulations;
+        #endregion
+
         #endregion
 
         #region Fields and Properties
@@ -78,6 +82,11 @@
         #region DsiBranchConfigurationBendAssociation
         IQueryHandler<GetDsiBranchConfigurationBendAssociationQuery, List<DsiBranchConfigurationBendAssociationGrpc>>? _DsiBranchConfigurationBendAssociationHandler;
         bool _DsiBranchConfigurationBendAssociationRefreshInProgress;
+        #endregion
+
+        #region DsiBranchInsulation
+        IQueryHandler<GetDsiBranchInsulationQuery, List<DsiBranchInsulationGrpc>>? _DsiBranchInsulationHandler;
+        bool _DsiBranchInsulationRefreshInProgress;
         #endregion
 
         readonly IServiceProvider _ServiceProvider;
@@ -133,6 +142,13 @@
 
             _ListDsiBranchConfigurationBendAssociations = new ListDsiBranchConfigurationBendAssociationGrpc();
             _DsiBranchConfigurationBendAssociationRefreshInProgress = false;
+
+            #endregion
+
+            #region DsiBranchInsulation
+
+            _ListDsiBranchInsulations = new ListDsiBranchInsulationGrpc();
+            _DsiBranchInsulationRefreshInProgress = false;
 
             #endregion
 
@@ -906,6 +922,115 @@
 
         #endregion
 
+        #region DsiBranchInsulation
+
+        public async Task<ListDsiBranchInsulationGrpc> GetAllDsiBranchInsulations(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListRfqReasons.RfqReasons.Any())
+            {
+                return _ListDsiBranchInsulations;
+            }
+            else
+            {
+                await PopulateRfqReasons(cancellationToken);
+                return _ListDsiBranchInsulations;
+            }
+        }
+
+        public async Task<ListDsiBranchInsulationGrpc> GetDsiBranchInsulationsByRowId(DsiBranchInsulationGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListDsiBranchInsulations.DsiBranchInsulations.Any())
+            {
+            }
+            else
+            {
+                await PopulateDsiBranchInsulations(cancellationToken);
+            }
+
+            ListDsiBranchInsulationGrpc responseList = new ListDsiBranchInsulationGrpc();
+            List<DsiBranchInsulationGrpc> banchConfigurations = _ListDsiBranchInsulations.DsiBranchInsulations.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            if (banchConfigurations != null)
+            {
+                responseList.DsiBranchInsulations.AddRange(banchConfigurations);
+                return responseList;
+            }
+
+            return responseList;
+        }
+
+        public async Task<ListDsiBranchInsulationGrpc> CreateDsiBranchInsulations(DsiBranchInsulationGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            ListDsiBranchInsulationGrpc responseList = new ListDsiBranchInsulationGrpc();
+            if (request == null || request.DsiBranchInsulationGrpcsToCreate == null || request.DsiBranchInsulationGrpcsToCreate.Count == 0)
+            {
+                return responseList;
+            }
+
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                ICommandHandler<DsiBranchInsulationCommand, List<DbDsiBranchInsulation>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiBranchInsulationCommand, List<DbDsiBranchInsulation>>>();
+                DsiBranchInsulationCommand command = new DsiBranchInsulationCommand(CommandType.Create, request.DsiBranchInsulationGrpcsToCreate);
+                Result<List<DbDsiBranchInsulation>> result = await handler.Handle(command, cancellationToken);
+                if (result.IsSuccess)
+                {
+                    List<DbDsiBranchInsulation> createdComponents = result.Value;
+                    List<DsiBranchInsulationGrpc> updatedGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
+                    _ListDsiBranchInsulations.DsiBranchInsulations.AddRange(updatedGrpcComponents);
+                    responseList.DsiBranchInsulations.AddRange(updatedGrpcComponents);
+                    return responseList;
+                }
+                else
+                {
+                    return responseList;
+                }
+            }
+        }
+
+        public async Task<bool> UpdateDsiBranchInsulations(DsiBranchInsulationGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            ListDsiBranchInsulationGrpc responseList = new ListDsiBranchInsulationGrpc();
+            if (request == null || request.DsiBranchInsulationGrpcsToUpdate == null || request.DsiBranchInsulationGrpcsToUpdate.Count == 0)
+            {
+                return false;
+            }
+
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                ICommandHandler<DsiBranchInsulationCommand, List<DbDsiBranchInsulation>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiBranchInsulationCommand, List<DbDsiBranchInsulation>>>();
+                DsiBranchInsulationCommand command = new DsiBranchInsulationCommand(CommandType.Update, request.DsiBranchInsulationGrpcsToUpdate);
+                Result<List<DbDsiBranchInsulation>> result = await handler.Handle(command, cancellationToken);
+                if (result.IsSuccess)
+                {
+                    foreach (DsiBranchInsulationGrpc updatedComponent in request.DsiBranchInsulationGrpcsToUpdate)
+                    {
+                        DsiBranchInsulationGrpc? foundItem = _ListDsiBranchInsulations.DsiBranchInsulations.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
+                        if (foundItem == null)
+                        {
+                            continue;
+                        }
+
+                        int index = _ListDsiBranchInsulations.DsiBranchInsulations.IndexOf(foundItem);
+                        if (index != -1)
+                        {
+                            _ListDsiBranchInsulations.DsiBranchInsulations[index] = updatedComponent;
+                        }
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region Data Imports
@@ -1128,6 +1253,38 @@
 
         #endregion
 
+        #region DsiBranchInsulation
+
+        public async Task<bool> PopulateDsiBranchInsulations(CancellationToken cancellationToken)
+        {
+            if (!_DsiBranchInsulationRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _DsiBranchInsulationHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiBranchInsulationQuery, List<DsiBranchInsulationGrpc>>>();
+                    _DsiBranchInsulationRefreshInProgress = true;
+                    GetDsiBranchInsulationQuery query = new GetDsiBranchInsulationQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<DsiBranchInsulationGrpc>> results = await _DsiBranchInsulationHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _ListDsiBranchInsulations.DsiBranchInsulations.Clear();
+                        _ListDsiBranchInsulations.DsiBranchInsulations.AddRange(results.Value);
+                    }
+
+                    _DsiBranchInsulationRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
+
         #endregion
 
         void PopulateSampleData()
@@ -1139,6 +1296,7 @@
             _ListDsiBends = SampleRfqDataService.PopulateDsiBendGrpc();
             _ListDsiBranchConfigurations = SampleRfqDataService.PopulateDsiBranchConfigurationGrpc();
             _ListDsiBranchConfigurationBendAssociations = SampleRfqDataService.PopulateDsiBranchConfigurationBendAssociationGrpc();
+            _ListDsiBranchInsulations = SampleRfqDataService.PopulateDsiBranchInsulationGrpc();
         }
     }
 }

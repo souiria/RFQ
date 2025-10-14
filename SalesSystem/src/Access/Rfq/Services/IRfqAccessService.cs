@@ -70,5 +70,15 @@
         Task<bool> PopulateDsiBranchConfigurationBendAssociations(CancellationToken cancellationToken);
 
         #endregion
+
+        #region DsiBranchInsulation
+
+        Task<ListDsiBranchInsulationGrpc> GetAllDsiBranchInsulations(CancellationToken cancellationToken);
+        Task<ListDsiBranchInsulationGrpc> GetDsiBranchInsulationsByRowId(DsiBranchInsulationGrpcRequest request, CancellationToken cancellationToken);
+        Task<ListDsiBranchInsulationGrpc> CreateDsiBranchInsulations(DsiBranchInsulationGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> UpdateDsiBranchInsulations(DsiBranchInsulationGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> PopulateDsiBranchInsulations(CancellationToken cancellationToken);
+
+        #endregion
     }
 }

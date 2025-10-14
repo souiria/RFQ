@@ -219,5 +219,104 @@
             return listDsiBranchConfigurationBendAssociationGrpc;
         }
         #endregion
+
+        #region DsiBranchInsulations
+        public static ListDsiBranchInsulationGrpc PopulateDsiBranchInsulationGrpc()
+        {
+            ListDsiBranchInsulationGrpc listDsiBranchInsulationGrpc = new ListDsiBranchInsulationGrpc();
+            for (int i = 0; i < 5; i++)
+            {
+                DsiBranchInsulationGrpc dsiBranchInsulationGrpc = new DsiBranchInsulationGrpc();
+                dsiBranchInsulationGrpc.RowId = i;
+                dsiBranchInsulationGrpc.StartNode = "StartNode" + i;
+                dsiBranchInsulationGrpc.EndNode = "EndNode" + i;
+                dsiBranchInsulationGrpc.EndRoute = "EndRoute" + i;
+                dsiBranchInsulationGrpc.PieceCode = "PieceCode" + i;
+                dsiBranchInsulationGrpc.InsulationCode = "InsulationCode" + i;
+                dsiBranchInsulationGrpc.Diameter = i;
+                dsiBranchInsulationGrpc.CircuitOptionId = Guid.NewGuid().ToString();
+                dsiBranchInsulationGrpc.InsulationNote = "InsulationNote" + i;
+                dsiBranchInsulationGrpc.UserModule = "UserModule" + i;
+                dsiBranchInsulationGrpc.AssignedModule = "AssignedModule" + i;
+                dsiBranchInsulationGrpc.ModuleFrom = "ModuleFrom" + i;
+                dsiBranchInsulationGrpc.CalculationMethod = "CalculationMethod" + i;
+                dsiBranchInsulationGrpc.ManualAmount = i;
+                dsiBranchInsulationGrpc.SplitValue = "SplitValue" + i;
+                dsiBranchInsulationGrpc.JoinNumber = i;
+                dsiBranchInsulationGrpc.AssemblyItemNumber = i;
+                dsiBranchInsulationGrpc.Layer = i;
+                dsiBranchInsulationGrpc.InsulationType = "InsulationType" + i;
+                dsiBranchInsulationGrpc.PartNumber1 = "PartNumber1" + i;
+                dsiBranchInsulationGrpc.PartNumber2 = "PartNumber2" + i;
+                dsiBranchInsulationGrpc.PartNumber3 = "PartNumber3" + i;
+                dsiBranchInsulationGrpc.Colour = "Colour" + i;
+                dsiBranchInsulationGrpc.Type = "Type" + i;
+                dsiBranchInsulationGrpc.Material = "Material" + i;
+                dsiBranchInsulationGrpc.Material = "Material" + i;
+                dsiBranchInsulationGrpc.WallThickness = i;
+                dsiBranchInsulationGrpc.NumberOfTurns = i;
+                dsiBranchInsulationGrpc.TurnsPerBreakout = i;
+                dsiBranchInsulationGrpc.TurnsPerBranch = i;
+                dsiBranchInsulationGrpc.DistanceBetweenItems = i;
+                dsiBranchInsulationGrpc.LongestDistance = i;
+                dsiBranchInsulationGrpc.DistanceFromConnector = i;
+                dsiBranchInsulationGrpc.TubeSelectionType = "TubeSelectionType" + i;
+                dsiBranchInsulationGrpc.TubeSelectionFactor = i;
+                dsiBranchInsulationGrpc.Cutback = i;
+                dsiBranchInsulationGrpc.IsConvoluted = false;
+                dsiBranchInsulationGrpc.IsSlit = false;
+                dsiBranchInsulationGrpc.ModuleSpecificData = "ModuleSpecificData" + i;
+                dsiBranchInsulationGrpc.HarnessId = Guid.NewGuid().ToString();
+                dsiBranchInsulationGrpc.CreatedBy = Guid.NewGuid().ToString();
+                dsiBranchInsulationGrpc.CreatedDate = DateTime.UtcNow.ToTimestamp();
+                listDsiBranchInsulationGrpc.DsiBranchInsulations.Add(dsiBranchInsulationGrpc);
+            }
+
+            DsiBranchInsulationGrpc fixedDsiBranchInsulationGrpc = new DsiBranchInsulationGrpc();
+            fixedDsiBranchInsulationGrpc.RowId = 6;
+            fixedDsiBranchInsulationGrpc.StartNode = "FixedStartNode";
+            fixedDsiBranchInsulationGrpc.EndNode = "FixedEndNode";
+            fixedDsiBranchInsulationGrpc.EndRoute = "FixedEndRoute";
+            fixedDsiBranchInsulationGrpc.PieceCode = "FixedPieceCode";
+            fixedDsiBranchInsulationGrpc.InsulationCode = "FixedInsulationCode";
+            fixedDsiBranchInsulationGrpc.Diameter = 1;
+            fixedDsiBranchInsulationGrpc.CircuitOptionId = Guid.NewGuid().ToString();
+            fixedDsiBranchInsulationGrpc.InsulationNote = "FixedInsulationNote";
+            fixedDsiBranchInsulationGrpc.UserModule = "FixedUserModule";
+            fixedDsiBranchInsulationGrpc.AssignedModule = "FixedAssignedModule";
+            fixedDsiBranchInsulationGrpc.ModuleFrom = "FixedModuleFrom";
+            fixedDsiBranchInsulationGrpc.CalculationMethod = "FixedCalculationMethod";
+            fixedDsiBranchInsulationGrpc.ManualAmount = 1;
+            fixedDsiBranchInsulationGrpc.SplitValue = "FixedSplitValue";
+            fixedDsiBranchInsulationGrpc.JoinNumber = 1;
+            fixedDsiBranchInsulationGrpc.AssemblyItemNumber = 1;
+            fixedDsiBranchInsulationGrpc.Layer = 1;
+            fixedDsiBranchInsulationGrpc.InsulationType = "InsulationType";
+            fixedDsiBranchInsulationGrpc.PartNumber1 = "FixedPartNumber1";
+            fixedDsiBranchInsulationGrpc.PartNumber2 = "FixedPartNumber2";
+            fixedDsiBranchInsulationGrpc.PartNumber3 = "FixedPartNumber3";
+            fixedDsiBranchInsulationGrpc.Colour = "FixedColour";
+            fixedDsiBranchInsulationGrpc.Type = "FixedType";
+            fixedDsiBranchInsulationGrpc.Material = "FixedMaterial";
+            fixedDsiBranchInsulationGrpc.WallThickness = 1;
+            fixedDsiBranchInsulationGrpc.NumberOfTurns = 1;
+            fixedDsiBranchInsulationGrpc.TurnsPerBreakout = 1;
+            fixedDsiBranchInsulationGrpc.TurnsPerBranch = 1;
+            fixedDsiBranchInsulationGrpc.DistanceBetweenItems = 1;
+            fixedDsiBranchInsulationGrpc.LongestDistance = 1;
+            fixedDsiBranchInsulationGrpc.DistanceFromConnector = 1;
+            fixedDsiBranchInsulationGrpc.TubeSelectionType = "FixedTubeSelectionType";
+            fixedDsiBranchInsulationGrpc.TubeSelectionFactor = 1;
+            fixedDsiBranchInsulationGrpc.Cutback = 1;
+            fixedDsiBranchInsulationGrpc.IsConvoluted = false;
+            fixedDsiBranchInsulationGrpc.IsSlit = false;
+            fixedDsiBranchInsulationGrpc.ModuleSpecificData = "FixedModuleSpecificData";
+            fixedDsiBranchInsulationGrpc.HarnessId = Guid.NewGuid().ToString();
+            fixedDsiBranchInsulationGrpc.CreatedBy = Guid.NewGuid().ToString();
+            fixedDsiBranchInsulationGrpc.CreatedDate = DateTime.UtcNow.ToTimestamp();
+            listDsiBranchInsulationGrpc.DsiBranchInsulations.Add(fixedDsiBranchInsulationGrpc);
+            return listDsiBranchInsulationGrpc;
+        }
+        #endregion
     }
 }

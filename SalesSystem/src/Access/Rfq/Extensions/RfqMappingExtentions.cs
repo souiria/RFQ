@@ -226,5 +226,107 @@
         }
 
         #endregion
+
+        #region DsiBranchInsulation
+
+        public static DsiBranchInsulationGrpc FromEntity(this DbDsiBranchInsulation entity)
+        {
+            DsiBranchInsulationGrpc data = new DsiBranchInsulationGrpc();
+            data.RowId = entity.RowId;
+            data.StartNode = entity.StartNode;
+            data.EndNode = entity.EndNode;
+            data.EndRoute = entity.EndRoute;
+            data.PieceCode = entity.PieceCode;
+            data.InsulationCode = entity.InsulationCode;
+            data.Diameter = entity.Diameter;
+            data.CircuitOptionId = entity.CircuitOptionId.ToString();
+            data.InsulationNote = entity.InsulationNote;
+            data.UserModule = entity.UserModule;
+            data.AssignedModule = entity.AssignedModule;
+            data.ModuleFrom = entity.ModuleFrom;
+            data.CalculationMethod = entity.CalculationMethod;
+            data.ManualAmount = entity.ManualAmount;
+            data.SplitValue = entity.SplitValue;
+            data.JoinNumber = entity.JoinNumber;
+            data.AssemblyItemNumber = entity.AssemblyItemNumber;
+            data.Layer = entity.Layer;
+            data.InsulationType = entity.InsulationType;
+            data.PartNumber1 = entity.PartNumber1;
+            data.PartNumber2 = entity.PartNumber2;
+            data.PartNumber3 = entity.PartNumber3;
+            data.Colour = entity.Colour;
+            data.Type = entity.Type;
+            data.Material = entity.Material;
+            data.WallThickness = entity.WallThickness;
+            data.NumberOfTurns = entity.NumberOfTurns;
+            data.TurnsPerBreakout = entity.TurnsPerBreakout;
+            data.TurnsPerBranch = entity.TurnsPerBranch;
+            data.DistanceBetweenItems = entity.DistanceBetweenItems;
+            data.LongestDistance = entity.LongestDistance;
+            data.DistanceFromConnector = entity.DistanceFromConnector;
+            data.TubeSelectionType = entity.TubeSelectionType;
+            data.TubeSelectionFactor = entity.TubeSelectionFactor;
+            data.Cutback = entity.Cutback;
+            data.IsConvoluted = entity.IsConvoluted;
+            data.IsSlit = entity.IsSlit;
+            data.ModuleSpecificData = entity.ModuleSpecificData;
+            data.HarnessId = entity.HarnessId.ToString();
+            data.CreatedDate = entity.CreatedDate.ToUniversalTime().ToTimestamp();
+            data.ModifiedDate = entity.ModifiedDate?.ToUniversalTime().ToTimestamp();
+            data.CreatedBy = entity.CreatedBy.ToString();
+            data.ModifiedBy = entity.ModifiedBy.ToString();
+            return data;
+        }
+
+        public static DbDsiBranchInsulation ToEntity(this DsiBranchInsulationGrpc grpc)
+        {
+            DbDsiBranchInsulation data = new DbDsiBranchInsulation();
+            data.RowId = grpc.RowId;
+            data.StartNode = grpc.StartNode;
+            data.EndNode = grpc.EndNode;
+            data.EndRoute = grpc.EndRoute;
+            data.PieceCode = grpc.PieceCode;
+            data.InsulationCode = grpc.InsulationCode;
+            data.Diameter = grpc.Diameter ?? 0;
+            data.CircuitOptionId = Guid.Parse(grpc.CircuitOptionId);
+            data.InsulationNote = grpc.InsulationNote;
+            data.UserModule = grpc.UserModule;
+            data.AssignedModule = grpc.AssignedModule;
+            data.ModuleFrom = grpc.ModuleFrom;
+            data.CalculationMethod = grpc.CalculationMethod;
+            data.ManualAmount = grpc.ManualAmount ?? 0;
+            data.SplitValue = grpc.SplitValue;
+            data.JoinNumber = grpc.JoinNumber ?? 0;
+            data.AssemblyItemNumber = grpc.AssemblyItemNumber ?? 0;
+            data.Layer = grpc.Layer ?? 0;
+            data.InsulationType = grpc.InsulationType;
+            data.PartNumber1 = grpc.PartNumber1;
+            data.PartNumber2 = grpc.PartNumber2;
+            data.PartNumber3 = grpc.PartNumber3;
+            data.Colour = grpc.Colour;
+            data.Type = grpc.Type;
+            data.Material = grpc.Material;
+            data.WallThickness = grpc.WallThickness ?? 0;
+            data.NumberOfTurns = grpc.NumberOfTurns ?? 0;
+            data.TurnsPerBreakout = grpc.TurnsPerBreakout ?? 0;
+            data.TurnsPerBranch = grpc.TurnsPerBranch ?? 0;
+            data.DistanceBetweenItems = grpc.DistanceBetweenItems ?? 0;
+            data.LongestDistance = grpc.LongestDistance ?? 0;
+            data.DistanceFromConnector = grpc.DistanceFromConnector ?? 0;
+            data.TubeSelectionType = grpc.TubeSelectionType;
+            data.TubeSelectionFactor = grpc.TubeSelectionFactor ?? 0;
+            data.Cutback = grpc.Cutback ?? 0;
+            data.IsConvoluted = grpc.IsConvoluted ?? false;
+            data.IsSlit = grpc.IsSlit ?? false;
+            data.ModuleSpecificData = grpc.ModuleSpecificData;
+            data.HarnessId = Guid.Parse(grpc.HarnessId);
+            data.CreatedDate = grpc.CreatedDate.ToDateTime();
+            data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
+            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
+            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            return data;
+        }
+
+        #endregion
     }
 }

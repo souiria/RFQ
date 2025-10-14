@@ -39,6 +39,10 @@ service Rfq {
   rpc CreateDsiBranchConfigurationBendAssociationGrpc (DsiBranchConfigurationBendAssociationGrpcRequest) returns (RfqCrudGrpcResponse);
   rpc ReadDsiBranchConfigurationBendAssociationGrpc (DsiBranchConfigurationBendAssociationGrpcRequest) returns (ListDsiBranchConfigurationBendAssociationGrpc);
   rpc UpdateDsiBranchConfigurationBendAssociationGrpc (DsiBranchConfigurationBendAssociationGrpcRequest) returns (RfqCrudGrpcResponse);
+
+  rpc CreateDsiBranchInsulationGrpc (DsiBranchInsulationGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc ReadDsiBranchInsulationGrpc (DsiBranchInsulationGrpcRequest) returns (ListDsiBranchInsulationGrpc);
+  rpc UpdateDsiBranchInsulationGrpc (DsiBranchInsulationGrpcRequest) returns (RfqCrudGrpcResponse);
 }
 
 // The request message containing the user's name.
@@ -191,9 +195,9 @@ message DsiBranchConfigurationGrpc {
 	google.protobuf.StringValue EndNode = 6;
 	google.protobuf.StringValue EndRoute = 7;
 	google.protobuf.StringValue EndCoordinates = 8;
-	google.protobuf.FloatValue Length = 9;
+	google.protobuf.DoubleValue Length = 9;
 	google.protobuf.StringValue CircuitOptionId = 10;
-	google.protobuf.FloatValue BundleDiameter = 11;
+	google.protobuf.DoubleValue BundleDiameter = 11;
 	google.protobuf.StringValue UserModule = 12;
 	google.protobuf.StringValue AssignedModule = 13;
 	google.protobuf.StringValue ModuleFrom = 14;
@@ -228,4 +232,61 @@ message DsiBranchConfigurationBendAssociationGrpc {
 
 message ListDsiBranchConfigurationBendAssociationGrpc {
 	repeated DsiBranchConfigurationBendAssociationGrpc DsiBranchConfigurationBendAssociations = 1;
+}
+
+message DsiBranchInsulationGrpcRequest {
+   GrpcRequestParameter GrpcRequestParameter = 1;
+   repeated DsiBranchInsulationGrpc DsiBranchInsulationGrpcsToCreate = 2;
+   repeated DsiBranchInsulationGrpc DsiBranchInsulationGrpcsToUpdate = 3;
+   repeated DsiBranchInsulationGrpc DsiBranchInsulationGrpcsToDelete = 4;
+}
+
+message DsiBranchInsulationGrpc {
+	int64 RowId = 1;
+	google.protobuf.StringValue StartNode = 2;
+	google.protobuf.StringValue EndNode = 3;
+	google.protobuf.StringValue EndRoute = 4;
+	google.protobuf.StringValue PieceCode = 5;
+	google.protobuf.StringValue InsulationCode = 6;
+	google.protobuf.DoubleValue Diameter = 7;
+	google.protobuf.StringValue CircuitOptionId = 8;
+	google.protobuf.StringValue InsulationNote = 9;
+	google.protobuf.StringValue UserModule = 10;
+	google.protobuf.StringValue AssignedModule = 11;
+	google.protobuf.StringValue ModuleFrom = 12;
+	google.protobuf.StringValue CalculationMethod = 13;
+	google.protobuf.DoubleValue ManualAmount = 14;
+	google.protobuf.StringValue SplitValue = 15;
+	google.protobuf.DoubleValue JoinNumber = 16;
+	google.protobuf.DoubleValue AssemblyItemNumber = 17;
+	google.protobuf.DoubleValue Layer = 18;
+	google.protobuf.StringValue InsulationType = 19;
+	google.protobuf.StringValue PartNumber1 = 20;
+	google.protobuf.StringValue PartNumber2 = 21;
+	google.protobuf.StringValue PartNumber3 = 22;
+	google.protobuf.StringValue Colour = 23;
+	google.protobuf.StringValue Type = 24;
+	google.protobuf.StringValue Material = 25;
+	google.protobuf.DoubleValue WallThickness = 26;
+	google.protobuf.DoubleValue NumberOfTurns = 27;
+	google.protobuf.DoubleValue TurnsPerBreakout = 28;
+	google.protobuf.DoubleValue TurnsPerBranch = 29;
+	google.protobuf.DoubleValue DistanceBetweenItems = 30;
+	google.protobuf.DoubleValue LongestDistance = 31;
+	google.protobuf.DoubleValue DistanceFromConnector = 32;
+	google.protobuf.StringValue TubeSelectionType = 33;
+	google.protobuf.DoubleValue TubeSelectionFactor = 34;
+	google.protobuf.DoubleValue Cutback = 35;
+	google.protobuf.BoolValue IsConvoluted = 36;
+	google.protobuf.BoolValue IsSlit = 37;
+	google.protobuf.StringValue ModuleSpecificData = 38;
+	google.protobuf.StringValue HarnessId = 39;
+	google.protobuf.Timestamp CreatedDate = 40;
+	google.protobuf.Timestamp ModifiedDate = 41;
+	string CreatedBy = 42;
+	string ModifiedBy = 43;
+}
+
+message ListDsiBranchInsulationGrpc {
+	repeated DsiBranchInsulationGrpc DsiBranchInsulations = 1;
 }

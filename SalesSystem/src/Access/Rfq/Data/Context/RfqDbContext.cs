@@ -17,6 +17,7 @@
         public DbSet<DbDsiBend> DsiBend => Set<DbDsiBend>();
         public DbSet<DbDsiBranchConfiguration> DsiBranchConfiguration => Set<DbDsiBranchConfiguration>();
         public DbSet<DbDsiBranchConfigurationBendAssociation> DsiBranchConfigurationBendAssociation => Set<DbDsiBranchConfigurationBendAssociation>();
+        public DbSet<DbDsiBranchInsulation> DsiBranchInsulation => Set<DbDsiBranchInsulation>();
         #endregion
 
         #region OnModelCreating

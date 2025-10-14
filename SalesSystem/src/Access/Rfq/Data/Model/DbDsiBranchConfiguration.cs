@@ -18,11 +18,11 @@
         { get; set; }
         public string? EndCoordinates
         { get; set; }
-        public float Length
+        public double Length
         { get; set; }
         public Guid CircuitOptionId
         { get; set; }
-        public float BundleDiameter        
+        public double BundleDiameter        
         { get; set; }
         public string? UserModule
         { get; set; }

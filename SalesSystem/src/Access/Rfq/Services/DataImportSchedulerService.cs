@@ -36,6 +36,12 @@
                 await LogDataPopulationSuccess("RfqReasons", check);
                 check = await _RfqAccessService.PopulateDsiBends(stoppingToken);
                 await LogDataPopulationSuccess("DsiBends", check);
+                check = await _RfqAccessService.PopulateDsiBranchConfigurations(stoppingToken);
+                await LogDataPopulationSuccess("DsiBranchConfigurations", check);
+                check = await _RfqAccessService.PopulateDsiBranchConfigurationBendAssociations(stoppingToken);
+                await LogDataPopulationSuccess("DsiBranchConfigurationBendAssociations", check);
+                check = await _RfqAccessService.PopulateDsiBranchInsulations(stoppingToken);
+                await LogDataPopulationSuccess("DsiBranchInsulations", check);
             }
 
             return true;
