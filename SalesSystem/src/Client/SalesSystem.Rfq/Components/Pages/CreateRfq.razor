@@ -3,6 +3,7 @@
 @inject ISnackbar Snackbar
 @inject RfqUxService RfqUxService
 @rendermode InteractiveServer
+@using SalesSystem.Rfq.Components.Pages.Dialogs
 @using SalesSystem.Rfq.Extensions
 
 <style>
@@ -88,61 +89,18 @@
 
             <MudPaper Elevation="0" Class="pa-4">
                 <MudStack>
-                    <MudFileUpload T="IBrowserFile"
-                                   @ref="@_fileUpload"
-                                   OnFilesChanged="OnInputFileChanged"
-                                   Hidden="@false"
-                                   InputClass="file-upload-input"
-                                   tabindex="-1"
-                                   @ondrop="@ClearDragClass"
-                                   @ondragenter="@SetDragClass"
-                                   @ondragleave="@ClearDragClass"
-                                   @ondragend="@ClearDragClass">
-                        <ActivatorContent>
-                            <MudPaper Height="95"
-                                      Outlined="true"
-                                      Class="@_dragClass">
-                                <MudText Typo="Typo.h6">
-                                    Drag and drop files here or click
-                                </MudText>
-                                
-                            </MudPaper>
-                        </ActivatorContent>
-                    </MudFileUpload>
-                    
+                    <FileManager @ref="componentFileManager"
+                        Files="_files"
+                        OnFilesChanged="OnFilesChanged" />
                 </MudStack>
             </MudPaper>
-            <MudPaper Elevation="0" Class="pa-4">
-                <MudStack>
-                <MudToolBar Gutters="@false"
-                            Class="relative d-flex justify-end gap-4">
-                    <MudButton Color="Color.Primary"
-                               OnClick="@OpenFilePickerAsync"
-                               Variant="Variant.Filled">
-                        Open file picker
-                    </MudButton>
-                    <MudButton Color="Color.Error"
-                               Disabled="@(!_fileNames.Any())"
-                               OnClick="@ClearAsync"
-                               Variant="Variant.Filled">
-                        Clear
-                    </MudButton>
-                </MudToolBar>
-                    @foreach (var file in _fileNames)
-                    {
-                        <MudChip T="string"
-                                 Color="Color.Dark"
-                                 Text="@file"
-                                 tabindex="-1" />
-                    }
-                </MudStack>
-            </MudPaper>
+
             <MudPaper Elevation="0" Class="pa-4" MinWidth="20%">
                 <MudStack>
                         <MudToolBar Gutters="@false"
                                     Class="relative d-flex justify-end gap-4">
                             <MudButton Color="Color.Primary"
-                                       Disabled="@(!_fileNames.Any())"  
+                                       Disabled="@(!_files.Any())"  
                                        OnClick="@SubmitDataAsync"
                                        Variant="Variant.Filled">
                                 Upload
@@ -232,22 +190,25 @@
 </MudGrid>
 
 @code {
-    string? customerValue { get; set; }
 
+    // Reference to the FileManager component
+    FileManager? componentFileManager;
+    List<IBrowserFile> _files { get; set; } = new List<IBrowserFile>();
+
+    // Form values
+    string? customerValue { get; set; }
     string? customerProjectValue { get; set; }
     string? reasonValue { get; set; }
     string? projectValue { get; set; }
     string? quotationValue { get; set; }
     int vehicleVolume { get; set; }
-    
+
     DateTime? _date = DateTime.Today;
 
     const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
     string _dragClass = DefaultDragClass;
-    readonly List<string> _fileNames = new();
-    MudFileUpload<IBrowserFile>? _fileUpload;
-    List<IBrowserFile> _files = new List<IBrowserFile>();
 
+    // rfq items grid
     List<RfqItemUx> rfqItems = new List<RfqItemUx>();
     string _searchString = string.Empty;
     string _iconString = string.Empty;
@@ -324,28 +285,6 @@
         StateHasChanged();
     }
     #endregion
-
-    private async Task ClearAsync()
-    {
-        await (_fileUpload?.ClearAsync() ?? Task.CompletedTask);
-        _fileNames.Clear();
-        ClearDragClass();
-    }
-
-    private Task OpenFilePickerAsync()
-        => _fileUpload?.OpenFilePickerAsync() ?? Task.CompletedTask;
-
-    private void OnInputFileChanged(InputFileChangeEventArgs e)
-    {
-        ClearDragClass();
-        var files = e.GetMultipleFiles();
-        foreach (var file in files)
-        {
-            _fileNames.Add(file.Name);
-            _files.Add(file);
-        }
-        StateHasChanged();
-    }
 
     private void Upload()
     {
@@ -496,6 +435,10 @@
     private void OnCustomerProjectValueChanged(string value)
     {
         customerProjectValue = value;
+        StateHasChanged();
+    }
+    private void OnFilesChanged()
+    {
         StateHasChanged();
     }
 }

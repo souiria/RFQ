@@ -1,4 +1,7 @@
-﻿namespace SalesSystem.Rfq.Services
+﻿using SalesSystem.Rfq.Extensions;
+using SalesSystem.Rfq.Models;
+
+namespace SalesSystem.Rfq.Services
 {
     public class RfqUxService
     {
@@ -41,12 +44,12 @@
             GetProjectAssociationsByCustomerIdResponse response = _RfqModuleClient.GetProjectAssociationsByCustomerId(request);
             foreach (ProjectAssociation? association in response.ProjectAssociation)
             {
-                CustomerProjectUx projectAssociation = new CustomerProjectUx();
-                projectAssociation.ProjectId = association.CustomerProjectGuid;
-                projectAssociation.ProjectName = association.CustomerProjectName;
-                projectAssociation.CustomerId = association.CustomerLocationGuid;
-                projectAssociation.CustomerName = association.CustomerLocationName;
-                projectAssociation.Id = association.Id;
+                CustomerProjectUx? projectAssociation = association.ToCustomerProjectUx();
+                if (null == projectAssociation)
+                {
+                    continue;
+                }
+
                 _CustomerProjectAssociations.Add(projectAssociation);
             }
 

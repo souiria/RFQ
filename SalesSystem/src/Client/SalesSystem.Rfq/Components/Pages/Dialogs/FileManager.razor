@@ -1,0 +1,277 @@
+﻿@using System.IO
+@using Microsoft.JSInterop
+@using SalesSystem.Rfq.Enums
+
+@inject IJSRuntime JSRuntime
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@implements IAsyncDisposable
+
+<style>
+    .mud-item-compact {
+        padding-top: 4px !important;
+        padding-left: 8px !important;
+    }
+
+    .drop-zone {
+        margin-top: 5px;
+        padding: 5px;
+        min-height: 96px;
+        width: 100%;
+        background: white;
+        border: 2px dashed #0087F7;
+        border-radius: 5px;
+    }
+
+    .drop-zone.hover {
+        border-style: solid;
+    }
+
+    .file-item {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 8px;
+        margin: 4px 0;
+        background: #f9f9f9;
+    }
+
+    .file-item.deleted {
+        background: #ffebee;
+        text-decoration: line-through;
+        opacity: 0.6;
+    }
+</style>
+
+<MudGrid>
+    <MudItem xs="12" Class="align-content-center mud-item-compact">
+        <MudText Typo="Typo.body1">File Manager</MudText>
+    </MudItem>
+    
+    @* File Upload Area *@
+    <MudItem xs="12" Class="align-content-center mud-item-compact">
+        <div @ref="dropZoneElement" class="drop-zone">
+            <InputFile @ref="inputFile" key="@inputFileKey" OnChange="OnChange" multiple style="display:none" />
+            <MudText Typo="Typo.body1" Align="Align.Center" Class="mt-4">Drag & Drop Files Here</MudText>
+            <MudText Typo="Typo.body2" Align="Align.Center">or click to select files</MudText>
+        </div>
+    </MudItem>
+
+    @* Action Buttons *@
+    <MudItem xs="12" Class="align-content-center mud-item-compact">
+        <MudTooltip Text="Clear all files">
+            <MudButton Variant="Variant.Filled" 
+                       Color="Color.Warning"
+                       OnClick="ClearAllFiles"
+                       Disabled="@(!Files.Any())"
+                       Size="Size.Small">
+                    <MudIcon Icon="@Icons.Material.Filled.ClearAll" Class="mr-1" />
+            </MudButton>
+        </MudTooltip>
+        @if (Files.Any())
+        {
+            <MudText Typo="Typo.subtitle2"
+                     Class="mb-2">Files (@Files.Count)</MudText>
+        }
+    </MudItem>
+
+    @* File List *@
+    <MudItem xs="12" Class="align-content-center mud-item-compact">
+        @if (Files.Any())
+        {
+            @foreach (var file in Files)
+            {
+                <div class="file-item">
+                    <MudGrid>
+                        <MudItem xs="12">
+                            <MudText Typo="Typo.body2">
+                                <MudIcon Icon="@GetFileTypeIcon(DetermineFileType(file))" Size="Size.Small" Class="mr-2" />
+                                @file.Name
+                            </MudText>
+                        </MudItem>
+                    </MudGrid>
+                </div>
+            }
+        }
+        else
+        {
+            <MudText Typo="Typo.body2" Class="text-center pa-4" Color="Color.Secondary">
+                No files attached
+            </MudText>
+        }
+    </MudItem>
+</MudGrid>
+
+@code {
+
+    [Parameter]
+    public List<IBrowserFile> Files { get; set; } = new();
+
+    [Parameter]
+    public EventCallback OnFilesChanged { get; set; }
+
+    // Drop zone elements
+    private ElementReference dropZoneElement;
+    private InputFile? inputFile;
+    private string? inputFileKey = Guid.NewGuid().ToString();
+    private IJSObjectReference? _module;
+    private IJSObjectReference? _dropZoneInstance;
+
+    // File management state
+    private bool _isInitialized = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // await LoadComponentFiles();
+        await Task.Delay(1); // Ensure async context
+        _isInitialized = true;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await Task.Delay(1); // Ensure async context
+
+        if (_isInitialized)
+        {
+            // await LoadComponentFiles();
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                _module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/DropZone.js");
+                if (inputFile?.Element != null)
+                {
+                    _dropZoneInstance = await _module.InvokeAsync<IJSObjectReference>("initializeFileDropZone", dropZoneElement, inputFile.Element);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERROR initializing drop zone: {ex.Message}");
+            }
+        }
+    }
+
+    private async Task OnChange(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            Console.WriteLine($">>> ENTER OnChange file upload, {e.FileCount} files");
+
+            foreach (var file in e.GetMultipleFiles())
+            {
+                // using Stream stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024); 10MB limit
+                // using MemoryStream ms = new MemoryStream();
+                // await stream.CopyToAsync(ms);
+
+                var fileType = DetermineFileType(file);
+                if(fileType != RfqFileType.UNK && file.Size <= 5 * 1024 * 1024 && 0 < file.Size)
+                {
+                    Files.Add(file);
+                    Console.WriteLine($"Added file: {file.Name} ({file.Size} bytes) as {fileType}");
+                }
+                else
+                {
+                    Snackbar.Add($"File '{file.Name}' bad size limit for {fileType} files.", Severity.Error);
+                    continue;
+                }
+
+            }
+
+            await NotifyFilesChanged();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"ERROR in OnChange: {ex.Message}");
+            Snackbar.Add($"Error uploading files: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private RfqFileType DetermineFileType(IBrowserFile browserFile)
+    {
+        var extension = Path.GetExtension(browserFile.Name).ToLowerInvariant();
+
+        return extension switch
+        {
+            ".dsi" => RfqFileType.DSI,
+            ".csv" or ".txt" => RfqFileType.CSV,
+            _ => RfqFileType.UNK
+        };
+    }
+
+    private RfqFileType DetermineFileType(string fileName, string contentType)
+    {
+        var extension = Path.GetExtension(fileName).ToLowerInvariant();
+        
+        return extension switch
+        {
+            ".dsi" => RfqFileType.DSI,
+            ".csv" or ".txt" => RfqFileType.CSV,
+            _ => RfqFileType.UNK
+        };
+    }
+
+    private string GetFileTypeIcon(RfqFileType fileType)
+    {
+        return fileType switch
+        {
+            RfqFileType.UNK => Icons.Material.Filled.AttachFile,
+            RfqFileType.DSI => Icons.Material.Filled.Engineering,
+            RfqFileType.CSV => Icons.Material.Filled.TextFormat,
+            _ => Icons.Material.Filled.AttachFile
+        };
+    }
+
+    private Color GetFileTypeColor(RfqFileType fileType)
+    {
+        return fileType switch
+        {
+            RfqFileType.UNK => Color.Error,
+            RfqFileType.DSI => Color.Success,
+            RfqFileType.CSV => Color.Warning,
+            _ => Color.Error
+        };
+    }
+
+    private async Task ClearAllFiles()
+    {
+        await Task.Delay(1); // Ensure async context
+        foreach (var file in Files)
+        {
+            Files.Remove(file);
+        }
+    }
+
+    private async Task NotifyFilesChanged()
+    {
+        if (OnFilesChanged.HasDelegate)
+        {
+            await OnFilesChanged.InvokeAsync();
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            if (_dropZoneInstance != null)
+            {
+                await _dropZoneInstance.InvokeVoidAsync("dispose");
+                await _dropZoneInstance.DisposeAsync();
+            }
+
+            if (_module != null)
+            {
+                await _module.DisposeAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"ERROR disposing FileManagement: {ex.Message}");
+        }
+    }
+}

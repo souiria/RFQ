@@ -1,4 +1,6 @@
-﻿namespace SalesSystem.Rfq.Models
+﻿using RfqModule;
+
+namespace SalesSystem.Rfq.Models
 {
     public class CustomerProjectUx
     {
@@ -12,6 +14,5 @@
         { get; set; }
         public string? Id
         { get; set; }
-
     }
 }
