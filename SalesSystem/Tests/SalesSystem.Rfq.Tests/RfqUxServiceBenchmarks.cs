@@ -65,7 +65,7 @@ namespace SalesSystem.Rfq.Tests
         [Benchmark]
         public async Task<List<RfqModule.RfqReasonGrpc>> GetReasons_Benchmark()
         {
-            return await _RfqUxService.GetReasons();
+            return await _RfqUxService.GetReasonsAsync();
         }
     }
 

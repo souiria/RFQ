@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="NUnit.Framework" />
+    <ProjectReference Include="..\..\src\Logic\Engine\DocumentConversion\Transformation.csproj" />
   </ItemGroup>
 
   <ItemGroup>

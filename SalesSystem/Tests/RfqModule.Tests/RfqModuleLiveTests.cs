@@ -31,6 +31,7 @@ namespace RfqModule.Tests
 
         [Test]
         [Category("Live")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
         public async Task SayHello_LiveService_ReturnsCorrectMessage()
         {
             // Arrange

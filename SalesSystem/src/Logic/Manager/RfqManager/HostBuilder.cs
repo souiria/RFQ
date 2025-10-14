@@ -25,7 +25,12 @@
             #region Additional Services
             builder.AddServiceDefaults();
             builder.Logging.AddSeq();
-            builder.Services.AddGrpc();
+            builder.Services.AddGrpc(opt =>
+            {
+                opt.EnableDetailedErrors = true;
+                opt.MaxReceiveMessageSize = int.MaxValue;
+                opt.MaxSendMessageSize = int.MaxValue;
+            });
             builder.Services.AddSingleton<IRfqManagerService, RfqManagerService>();
             builder.Services.AddGrpcClient<Master.Master.MasterClient>(o =>
             {
