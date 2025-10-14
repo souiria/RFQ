@@ -29,6 +29,10 @@
         ListDsiBranchConfigurationGrpc _ListDsiBranchConfigurations;
         #endregion
 
+        #region DsiBranchConfigurationBendAssociation
+        ListDsiBranchConfigurationBendAssociationGrpc _ListDsiBranchConfigurationBendAssociations;
+        #endregion
+
         #endregion
 
         #region Fields and Properties
@@ -69,6 +73,11 @@
         #region DsiBranchConfiguration
         IQueryHandler<GetDsiBranchConfigurationQuery, List<DsiBranchConfigurationGrpc>>? _DsiBranchConfigurationHandler;
         bool _DsiBranchConfigurationRefreshInProgress;
+        #endregion
+
+        #region DsiBranchConfigurationBendAssociation
+        IQueryHandler<GetDsiBranchConfigurationBendAssociationQuery, List<DsiBranchConfigurationBendAssociationGrpc>>? _DsiBranchConfigurationBendAssociationHandler;
+        bool _DsiBranchConfigurationBendAssociationRefreshInProgress;
         #endregion
 
         readonly IServiceProvider _ServiceProvider;
@@ -117,6 +126,13 @@
 
             _ListDsiBranchConfigurations = new ListDsiBranchConfigurationGrpc();
             _DsiBranchConfigurationRefreshInProgress = false;
+
+            #endregion
+
+            #region DsiBranchConfigurationBendAssociation
+
+            _ListDsiBranchConfigurationBendAssociations = new ListDsiBranchConfigurationBendAssociationGrpc();
+            _DsiBranchConfigurationBendAssociationRefreshInProgress = false;
 
             #endregion
 
@@ -781,6 +797,115 @@
 
         #endregion
 
+        #region DsiBranchConfigurationBendAssociation
+
+        public async Task<ListDsiBranchConfigurationBendAssociationGrpc> GetAllDsiBranchConfigurationBendAssociations(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListRfqReasons.RfqReasons.Any())
+            {
+                return _ListDsiBranchConfigurationBendAssociations;
+            }
+            else
+            {
+                await PopulateRfqReasons(cancellationToken);
+                return _ListDsiBranchConfigurationBendAssociations;
+            }
+        }
+
+        public async Task<ListDsiBranchConfigurationBendAssociationGrpc> GetDsiBranchConfigurationBendAssociationsByRowId(DsiBranchConfigurationBendAssociationGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListDsiBranchConfigurationBendAssociations.DsiBranchConfigurationBendAssociations.Any())
+            {
+            }
+            else
+            {
+                await PopulateDsiBranchConfigurationBendAssociations(cancellationToken);
+            }
+
+            ListDsiBranchConfigurationBendAssociationGrpc responseList = new ListDsiBranchConfigurationBendAssociationGrpc();
+            List<DsiBranchConfigurationBendAssociationGrpc> banchConfigurations = _ListDsiBranchConfigurationBendAssociations.DsiBranchConfigurationBendAssociations.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            if (banchConfigurations != null)
+            {
+                responseList.DsiBranchConfigurationBendAssociations.AddRange(banchConfigurations);
+                return responseList;
+            }
+
+            return responseList;
+        }
+
+        public async Task<ListDsiBranchConfigurationBendAssociationGrpc> CreateDsiBranchConfigurationBendAssociations(DsiBranchConfigurationBendAssociationGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            ListDsiBranchConfigurationBendAssociationGrpc responseList = new ListDsiBranchConfigurationBendAssociationGrpc();
+            if (request == null || request.DsiBranchConfigurationBendAssociationGrpcsToCreate == null || request.DsiBranchConfigurationBendAssociationGrpcsToCreate.Count == 0)
+            {
+                return responseList;
+            }
+
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                ICommandHandler<DsiBranchConfigurationBendAssociationCommand, List<DbDsiBranchConfigurationBendAssociation>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiBranchConfigurationBendAssociationCommand, List<DbDsiBranchConfigurationBendAssociation>>>();
+                DsiBranchConfigurationBendAssociationCommand command = new DsiBranchConfigurationBendAssociationCommand(CommandType.Create, request.DsiBranchConfigurationBendAssociationGrpcsToCreate);
+                Result<List<DbDsiBranchConfigurationBendAssociation>> result = await handler.Handle(command, cancellationToken);
+                if (result.IsSuccess)
+                {
+                    List<DbDsiBranchConfigurationBendAssociation> createdComponents = result.Value;
+                    List<DsiBranchConfigurationBendAssociationGrpc> updatedGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
+                    _ListDsiBranchConfigurationBendAssociations.DsiBranchConfigurationBendAssociations.AddRange(updatedGrpcComponents);
+                    responseList.DsiBranchConfigurationBendAssociations.AddRange(updatedGrpcComponents);
+                    return responseList;
+                }
+                else
+                {
+                    return responseList;
+                }
+            }
+        }
+
+        public async Task<bool> UpdateDsiBranchConfigurationBendAssociations(DsiBranchConfigurationBendAssociationGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            ListDsiBranchConfigurationBendAssociationGrpc responseList = new ListDsiBranchConfigurationBendAssociationGrpc();
+            if (request == null || request.DsiBranchConfigurationBendAssociationGrpcsToUpdate == null || request.DsiBranchConfigurationBendAssociationGrpcsToUpdate.Count == 0)
+            {
+                return false;
+            }
+
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                ICommandHandler<DsiBranchConfigurationBendAssociationCommand, List<DbDsiBranchConfigurationBendAssociation>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiBranchConfigurationBendAssociationCommand, List<DbDsiBranchConfigurationBendAssociation>>>();
+                DsiBranchConfigurationBendAssociationCommand command = new DsiBranchConfigurationBendAssociationCommand(CommandType.Update, request.DsiBranchConfigurationBendAssociationGrpcsToUpdate);
+                Result<List<DbDsiBranchConfigurationBendAssociation>> result = await handler.Handle(command, cancellationToken);
+                if (result.IsSuccess)
+                {
+                    foreach (DsiBranchConfigurationBendAssociationGrpc updatedComponent in request.DsiBranchConfigurationBendAssociationGrpcsToUpdate)
+                    {
+                        DsiBranchConfigurationBendAssociationGrpc? foundItem = _ListDsiBranchConfigurationBendAssociations.DsiBranchConfigurationBendAssociations.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
+                        if (foundItem == null)
+                        {
+                            continue;
+                        }
+
+                        int index = _ListDsiBranchConfigurationBendAssociations.DsiBranchConfigurationBendAssociations.IndexOf(foundItem);
+                        if (index != -1)
+                        {
+                            _ListDsiBranchConfigurationBendAssociations.DsiBranchConfigurationBendAssociations[index] = updatedComponent;
+                        }
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region Data Imports
@@ -971,6 +1096,38 @@
 
         #endregion
 
+        #region DsiBranchConfigurationBendAssociation
+
+        public async Task<bool> PopulateDsiBranchConfigurationBendAssociations(CancellationToken cancellationToken)
+        {
+            if (!_DsiBranchConfigurationBendAssociationRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _DsiBranchConfigurationBendAssociationHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiBranchConfigurationBendAssociationQuery, List<DsiBranchConfigurationBendAssociationGrpc>>>();
+                    _DsiBranchConfigurationBendAssociationRefreshInProgress = true;
+                    GetDsiBranchConfigurationBendAssociationQuery query = new GetDsiBranchConfigurationBendAssociationQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<DsiBranchConfigurationBendAssociationGrpc>> results = await _DsiBranchConfigurationBendAssociationHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _ListDsiBranchConfigurationBendAssociations.DsiBranchConfigurationBendAssociations.Clear();
+                        _ListDsiBranchConfigurationBendAssociations.DsiBranchConfigurationBendAssociations.AddRange(results.Value);
+                    }
+
+                    _DsiBranchConfigurationBendAssociationRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
+
         #endregion
 
         void PopulateSampleData()
@@ -981,6 +1138,7 @@
             _ListRfqReasons = SampleRfqDataService.PopulateRfqReasonGrpc();
             _ListDsiBends = SampleRfqDataService.PopulateDsiBendGrpc();
             _ListDsiBranchConfigurations = SampleRfqDataService.PopulateDsiBranchConfigurationGrpc();
+            _ListDsiBranchConfigurationBendAssociations = SampleRfqDataService.PopulateDsiBranchConfigurationBendAssociationGrpc();
         }
     }
 }

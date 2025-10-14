@@ -1,6 +1,4 @@
-﻿using SharedKernel;
-
-namespace Rfq.Extensions
+﻿namespace Rfq.Extensions
 {
     public static class RfqMappingExtentions
     {
@@ -190,6 +188,36 @@ namespace Rfq.Extensions
             data.ModuleFrom = grpc.ModuleFrom;
             data.BendString = grpc.BendString;
             data.HarnessId = Guid.Parse(grpc.HarnessId);
+            data.CreatedDate = grpc.CreatedDate.ToDateTime();
+            data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
+            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
+            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            return data;
+        }
+
+        #endregion
+
+        #region DsiBranchConfigurationBendAssociation
+
+        public static DsiBranchConfigurationBendAssociationGrpc FromEntity(this DbDsiBranchConfigurationBendAssociation entity)
+        {
+            DsiBranchConfigurationBendAssociationGrpc data = new DsiBranchConfigurationBendAssociationGrpc();
+            data.RowId = entity.RowId;
+            data.BranchConfigurationId = entity.BranchConfigurationId.ToString();
+            data.BendId = entity.BendId.ToString();
+            data.CreatedDate = entity.CreatedDate.ToUniversalTime().ToTimestamp();
+            data.ModifiedDate = entity.ModifiedDate?.ToUniversalTime().ToTimestamp();
+            data.CreatedBy = entity.CreatedBy.ToString();
+            data.ModifiedBy = entity.ModifiedBy.ToString();
+            return data;
+        }
+
+        public static DbDsiBranchConfigurationBendAssociation ToEntity(this DsiBranchConfigurationBendAssociationGrpc grpc)
+        {
+            DbDsiBranchConfigurationBendAssociation data = new DbDsiBranchConfigurationBendAssociation();
+            data.RowId = grpc.RowId;
+            data.BranchConfigurationId = Guid.Parse(grpc.BranchConfigurationId);
+            data.BendId = Guid.Parse(grpc.BendId);
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
             data.CreatedBy = Guid.Parse(grpc.CreatedBy);

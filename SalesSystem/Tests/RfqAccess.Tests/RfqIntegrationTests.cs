@@ -486,6 +486,79 @@ namespace RfqAccess.Tests
         //}
         #endregion
 
+        #region DsiBranchConfigurationBendAssociation
+        [Test]
+        public void GetDsiBranchConfigurationBendAssociationGrpcTest_Success()
+        {
+            DsiBranchConfigurationBendAssociationGrpcRequest reasonGrpcRequest = new DsiBranchConfigurationBendAssociationGrpcRequest();
+            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            requestParameter.RequestType = ((int)RequestType.Read);
+            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.GrpcRequestParameter.RequestType = ((int)RequestType.Read);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiBranchConfigurationBendAssociationGrpc));
+
+            Task<ListDsiBranchConfigurationBendAssociationGrpc> getDsiBranchConfigurationBendAssociationGrpcReply = _GrpcService.ReadDsiBranchConfigurationBendAssociationGrpc(reasonGrpcRequest, serverCallContext);
+            Assert.That(getDsiBranchConfigurationBendAssociationGrpcReply.Result.DsiBranchConfigurationBendAssociations, Is.Not.Null);
+            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            Assert.That(getDsiBranchConfigurationBendAssociationGrpcReply.Result.DsiBranchConfigurationBendAssociations.Count, countConstraint);
+
+        }
+
+        [Test]
+        public void GetDsiBranchConfigurationBendAssociationGrpcByRowIdTest_Success()
+        {
+            DsiBranchConfigurationBendAssociationGrpcRequest reasonGrpcRequest = new DsiBranchConfigurationBendAssociationGrpcRequest();
+            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            requestParameter.RequestType = ((int)RequestType.ReadByRowId);
+            requestParameter.IntValue = 6;
+            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiBranchConfigurationBendAssociationGrpc));
+
+            Task<ListDsiBranchConfigurationBendAssociationGrpc> getDsiBranchConfigurationBendAssociationByRowIdReply = _GrpcService.ReadDsiBranchConfigurationBendAssociationGrpc(reasonGrpcRequest, serverCallContext);
+
+            Assert.That(getDsiBranchConfigurationBendAssociationByRowIdReply.Result.DsiBranchConfigurationBendAssociations, Is.Not.Null);
+            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            Assert.That(getDsiBranchConfigurationBendAssociationByRowIdReply.Result.DsiBranchConfigurationBendAssociations.Count, countConstraint);
+            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("664c3151-c7fc-4e0e-971c-f1712a6342e1");
+            Assert.That(getDsiBranchConfigurationBendAssociationByRowIdReply.Result.DsiBranchConfigurationBendAssociations.First().BendId, reasonConstraint);
+        }
+
+        [Test]
+        public void GetDsiBranchConfigurationBendAssociationGrpcByRowIdTest_Fails()
+        {
+            DsiBranchConfigurationBendAssociationGrpcRequest reasonGrpcRequest = new DsiBranchConfigurationBendAssociationGrpcRequest();
+            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            requestParameter.RequestType = ((int)RequestType.ReadByRowId);
+            requestParameter.IntValue = int.MaxValue;
+            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiBranchConfigurationBendAssociationGrpc));
+
+            Task<ListDsiBranchConfigurationBendAssociationGrpc> getDsiBranchConfigurationBendAssociationByRowIdReply = _GrpcService.ReadDsiBranchConfigurationBendAssociationGrpc(reasonGrpcRequest, serverCallContext);
+
+            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            Assert.That(getDsiBranchConfigurationBendAssociationByRowIdReply.Result.DsiBranchConfigurationBendAssociations.Count, countConstraint);
+        }
+
+        //[Test]
+        //public void CreateDsiBranchConfigurationBendAssociationGrpcTest_Success()
+        //{
+        //    DsiBranchConfigurationBendAssociationGrpcRequest reasonGrpcRequest = new DsiBranchConfigurationBendAssociationGrpcRequest();
+        //    GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+        //    requestParameter.RequestType = ((int)RequestType.Create);
+        //    reasonGrpcRequest.GrpcRequestParameter = requestParameter;
+        //    DsiBranchConfigurationBendAssociationGrpc bendGrpc = new DsiBranchConfigurationBendAssociationGrpc();
+        //    bendGrpc.Bend = "TestBend";
+        //    reasonGrpcRequest.DsiBranchConfigurationBendAssociationGrpcsToCreate.Add(bendGrpc);
+        //    ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateDsiBranchConfigurationBendAssociationGrpc));
+        //    NUnit.Framework.Constraints.EqualConstraint originalCountConstraint = Is.EqualTo(0);
+
+        //    Task<ListDsiBranchConfigurationBendAssociationGrpc> getDsiBranchConfigurationBendAssociationByRowIdReply = _GrpcService.ReadDsiBranchConfigurationBendAssociationGrpc(reasonGrpcRequest, serverCallContext);
+
+        //    NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+        //    Assert.That(getDsiBranchConfigurationBendAssociationByRowIdReply.Result.DsiBranchConfigurationBendAssociations.Count, countConstraint);
+        //}
+        #endregion
+
         ServerCallContext CreateServerContext(string methodName)
         {
             DateTime deadline = DateTime.Now.AddMinutes(30);

@@ -193,5 +193,31 @@
             return listDsiBranchConfigurationGrpc;
         }
         #endregion
+
+        #region DsiBranchConfigurationBendAssociations
+        public static ListDsiBranchConfigurationBendAssociationGrpc PopulateDsiBranchConfigurationBendAssociationGrpc()
+        {
+            ListDsiBranchConfigurationBendAssociationGrpc listDsiBranchConfigurationBendAssociationGrpc = new ListDsiBranchConfigurationBendAssociationGrpc();
+            for (int i = 0; i < 5; i++)
+            {
+                DsiBranchConfigurationBendAssociationGrpc dsiBranchConfigurationBendAssociationGrpc = new DsiBranchConfigurationBendAssociationGrpc();
+                dsiBranchConfigurationBendAssociationGrpc.RowId = i;
+                dsiBranchConfigurationBendAssociationGrpc.BendId = Guid.NewGuid().ToString();
+                dsiBranchConfigurationBendAssociationGrpc.BranchConfigurationId = Guid.NewGuid().ToString();
+                dsiBranchConfigurationBendAssociationGrpc.CreatedBy = Guid.NewGuid().ToString();
+                dsiBranchConfigurationBendAssociationGrpc.CreatedDate = DateTime.UtcNow.ToTimestamp();
+                listDsiBranchConfigurationBendAssociationGrpc.DsiBranchConfigurationBendAssociations.Add(dsiBranchConfigurationBendAssociationGrpc);
+            }
+
+            DsiBranchConfigurationBendAssociationGrpc fixedDsiBranchConfigurationBendAssociationGrpc = new DsiBranchConfigurationBendAssociationGrpc();
+            fixedDsiBranchConfigurationBendAssociationGrpc.RowId = 6;
+            fixedDsiBranchConfigurationBendAssociationGrpc.BendId = "664c3151-c7fc-4e0e-971c-f1712a6342e1";
+            fixedDsiBranchConfigurationBendAssociationGrpc.BranchConfigurationId = Guid.NewGuid().ToString();
+            fixedDsiBranchConfigurationBendAssociationGrpc.CreatedBy = Guid.NewGuid().ToString();
+            fixedDsiBranchConfigurationBendAssociationGrpc.CreatedDate = DateTime.UtcNow.ToTimestamp();
+            listDsiBranchConfigurationBendAssociationGrpc.DsiBranchConfigurationBendAssociations.Add(fixedDsiBranchConfigurationBendAssociationGrpc);
+            return listDsiBranchConfigurationBendAssociationGrpc;
+        }
+        #endregion
     }
 }

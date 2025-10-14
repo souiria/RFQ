@@ -16,6 +16,7 @@
         public DbSet<DbRfqReason> RfqReason => Set<DbRfqReason>();
         public DbSet<DbDsiBend> DsiBend => Set<DbDsiBend>();
         public DbSet<DbDsiBranchConfiguration> DsiBranchConfiguration => Set<DbDsiBranchConfiguration>();
+        public DbSet<DbDsiBranchConfigurationBendAssociation> DsiBranchConfigurationBendAssociation => Set<DbDsiBranchConfigurationBendAssociation>();
         #endregion
 
         #region OnModelCreating

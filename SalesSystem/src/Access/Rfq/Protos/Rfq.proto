@@ -35,6 +35,10 @@ service Rfq {
   rpc CreateDsiBranchConfigurationGrpc (DsiBranchConfigurationGrpcRequest) returns (RfqCrudGrpcResponse);
   rpc ReadDsiBranchConfigurationGrpc (DsiBranchConfigurationGrpcRequest) returns (ListDsiBranchConfigurationGrpc);
   rpc UpdateDsiBranchConfigurationGrpc (DsiBranchConfigurationGrpcRequest) returns (RfqCrudGrpcResponse);
+
+  rpc CreateDsiBranchConfigurationBendAssociationGrpc (DsiBranchConfigurationBendAssociationGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc ReadDsiBranchConfigurationBendAssociationGrpc (DsiBranchConfigurationBendAssociationGrpcRequest) returns (ListDsiBranchConfigurationBendAssociationGrpc);
+  rpc UpdateDsiBranchConfigurationBendAssociationGrpc (DsiBranchConfigurationBendAssociationGrpcRequest) returns (RfqCrudGrpcResponse);
 }
 
 // The request message containing the user's name.
@@ -203,4 +207,25 @@ message DsiBranchConfigurationGrpc {
 
 message ListDsiBranchConfigurationGrpc {
 	repeated DsiBranchConfigurationGrpc DsiBranchConfigurations = 1;
+}
+
+message DsiBranchConfigurationBendAssociationGrpcRequest {
+   GrpcRequestParameter GrpcRequestParameter = 1;
+   repeated DsiBranchConfigurationBendAssociationGrpc DsiBranchConfigurationBendAssociationGrpcsToCreate = 2;
+   repeated DsiBranchConfigurationBendAssociationGrpc DsiBranchConfigurationBendAssociationGrpcsToUpdate = 3;
+   repeated DsiBranchConfigurationBendAssociationGrpc DsiBranchConfigurationBendAssociationGrpcsToDelete = 4;
+}
+
+message DsiBranchConfigurationBendAssociationGrpc {
+	int64 RowId = 1;
+	string BendId = 2;
+	string BranchConfigurationId = 3;
+	google.protobuf.Timestamp CreatedDate = 5;
+	google.protobuf.Timestamp ModifiedDate = 6;
+	string CreatedBy = 7;
+	string ModifiedBy = 8;
+}
+
+message ListDsiBranchConfigurationBendAssociationGrpc {
+	repeated DsiBranchConfigurationBendAssociationGrpc DsiBranchConfigurationBendAssociations = 1;
 }

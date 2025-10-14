@@ -784,5 +784,134 @@
         }
 
         #endregion
+
+        #region DsiBranchConfigurationBendAssociation
+
+        public override async Task<ListDsiBranchConfigurationBendAssociationGrpc> ReadDsiBranchConfigurationBendAssociationGrpc(DsiBranchConfigurationBendAssociationGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("ReadDsiBranchConfigurationBendAssociationGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse response = new RfqCrudGrpcResponse();
+            switch (requestType)
+            {
+                case RequestType.Read:
+                return await _RfqAccessService.GetAllDsiBranchConfigurationBendAssociations(context.CancellationToken);
+                case RequestType.ReadByRowId:
+                return await _RfqAccessService.GetDsiBranchConfigurationBendAssociationsByRowId(request, context.CancellationToken);
+                default:
+                {
+                    Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                    throw new RpcException(status);
+                }
+            }
+        }
+
+        public override async Task<RfqCrudGrpcResponse> CreateDsiBranchConfigurationBendAssociationGrpc(DsiBranchConfigurationBendAssociationGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("CreateDsiBranchConfigurationBendAssociationGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            if (requestType != RequestType.Create)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for creating dsi bends.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            ListDsiBranchConfigurationBendAssociationGrpc response = await _RfqAccessService.CreateDsiBranchConfigurationBendAssociations(request, cancellationToken);
+            if (response.DsiBranchConfigurationBendAssociations.Count == request.DsiBranchConfigurationBendAssociationGrpcsToCreate.Count)
+            {
+                responseMessage.Message = $"{request.DsiBranchConfigurationBendAssociationGrpcsToCreate.Count} DsiBranchConfigurationBendAssociations types created successfully.";
+                responseMessage.SaveSuccess = true;
+                foreach (DsiBranchConfigurationBendAssociationGrpc reason in response.DsiBranchConfigurationBendAssociations)
+                {
+                    responseMessage.StringValue = reason.RowId.ToString(CultureInfo.InvariantCulture) + ",";
+                }
+            }
+            else
+            {
+                responseMessage.Message = "No/not all DsiBranchConfigurationBendAssociations created.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
+
+        public override async Task<RfqCrudGrpcResponse> UpdateDsiBranchConfigurationBendAssociationGrpc(DsiBranchConfigurationBendAssociationGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("UpdateDsiBranchConfigurationBendAssociationGrpc starting");
+            if (request == null || request.GrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            if (requestType != RequestType.Update)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for updating dsi bends.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            bool response = await _RfqAccessService.UpdateDsiBranchConfigurationBendAssociations(request, cancellationToken);
+            if (response)
+            {
+                responseMessage.Message = $"{request.DsiBranchConfigurationBendAssociationGrpcsToUpdate.Count} DsiBranchConfigurationBendAssociation types updated successfully.";
+                responseMessage.SaveSuccess = true;
+            }
+            else
+            {
+                responseMessage.Message = "No/not all DsiBranchConfigurationBendAssociation types updated.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
+
+        #endregion
     }
 }
