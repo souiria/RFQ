@@ -23,10 +23,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Debug\SalesSystem.ServiceDefaults\SalesSystem.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\Utilities\Logging\Logging.csproj" />
+    <ProjectReference Include="..\..\Utilities\GrpcProtos\GrpcProtos.csproj" />
+
   </ItemGroup>
   
-  <ItemGroup>
-    <Protobuf Include="..\..\Utilities\GrpcProtos\**\*.proto" GrpcServices="Server" />
-  </ItemGroup>
+
 
 </Project>
