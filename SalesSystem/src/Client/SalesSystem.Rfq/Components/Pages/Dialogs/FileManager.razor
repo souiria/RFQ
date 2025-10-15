@@ -8,16 +8,20 @@
 @implements IAsyncDisposable
 
 <style>
+    .item-scroll {
+        overflow-y: auto;
+    }
+
     .mud-item-compact {
         padding-top: 4px !important;
         padding-left: 8px !important;
     }
 
     .drop-zone {
-        margin-top: 5px;
-        padding: 5px;
+        padding: 4px;
         min-height: 96px;
         width: 100%;
+        max-width: 256px;
         background: white;
         border: 2px dashed #0087F7;
         border-radius: 5px;
@@ -47,35 +51,34 @@
         <MudText Typo="Typo.body1">File Manager</MudText>
     </MudItem>
     
-    @* File Upload Area *@
-    <MudItem xs="12" Class="align-content-center mud-item-compact">
-        <div @ref="dropZoneElement" class="drop-zone">
-            <InputFile @ref="inputFile" key="@inputFileKey" OnChange="OnChange" multiple style="display:none" />
-            <MudText Typo="Typo.body1" Align="Align.Center" Class="mt-4">Drag & Drop Files Here</MudText>
-            <MudText Typo="Typo.body2" Align="Align.Center">or click to select files</MudText>
-        </div>
-    </MudItem>
+    <MudItem xs="12">
+        <MudGrid>
+            @* File Upload Area *@
+            <MudItem xs="12" Class="align-content-start mud-item-compact">
+                <div @ref="dropZoneElement" class="drop-zone align-content-start">
+                    <InputFile @ref="inputFile" key="@inputFileKey" OnChange="OnChange" multiple style="display:none" />
+                    <MudText Typo="Typo.body2" Align="Align.Center" Class="mt-4">Drag & Drop Files Here</MudText>
+                    <MudText Typo="Typo.subtitle2" Align="Align.Center" Class="mt-4">Max.16MB each</MudText>
+                </div>
+            </MudItem>
 
-    @* Action Buttons *@
-    <MudItem xs="12" Class="align-content-center mud-item-compact">
-        <MudTooltip Text="Clear all files">
-            <MudButton Variant="Variant.Filled" 
-                       Color="Color.Warning"
-                       OnClick="ClearAllFiles"
-                       Disabled="@(!Files.Any())"
-                       Size="Size.Small">
-                    <MudIcon Icon="@Icons.Material.Filled.ClearAll" Class="mr-1" />
-            </MudButton>
-        </MudTooltip>
-        @if (Files.Any())
-        {
-            <MudText Typo="Typo.subtitle2"
-                     Class="mb-2">Files (@Files.Count)</MudText>
-        }
+            @* Action Buttons *@
+            <MudItem xs="12" Class="align-content-start mud-item-compact">
+                <MudTooltip Text="Clear all files">
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Warning"
+                               OnClick="ClearAllFiles"
+                               Disabled="@(!Files.Any())"
+                               Size="Size.Small">
+                        <MudIcon Icon="@Icons.Material.Filled.ClearAll" Class="mr-1" />
+                    </MudButton>
+                </MudTooltip>
+            </MudItem>
+        </MudGrid>
     </MudItem>
 
     @* File List *@
-    <MudItem xs="12" Class="align-content-center mud-item-compact">
+    <MudItem xs="12" Class="align-content-start mud-item-compact item-scroll">
         @if (Files.Any())
         {
             @foreach (var file in Files)
@@ -102,6 +105,7 @@
 </MudGrid>
 
 @code {
+    const int MAX_FILE_SIZE = 16 * 1024 * 1024;
 
     [Parameter]
     public List<IBrowserFile> Files { get; set; } = new();
@@ -168,7 +172,7 @@
                 // await stream.CopyToAsync(ms);
 
                 var fileType = DetermineFileType(file);
-                if(fileType != RfqFileType.UNK && file.Size <= 5 * 1024 * 1024 && 0 < file.Size)
+                if (fileType != RfqFileType.UNK && file.Size <= MAX_FILE_SIZE && 0 < file.Size)
                 {
                     Files.Add(file);
                     Console.WriteLine($"Added file: {file.Name} ({file.Size} bytes) as {fileType}");
@@ -193,24 +197,20 @@
 
     private RfqFileType DetermineFileType(IBrowserFile browserFile)
     {
-        var extension = Path.GetExtension(browserFile.Name).ToLowerInvariant();
-
-        return extension switch
-        {
-            ".dsi" => RfqFileType.DSI,
-            ".csv" or ".txt" => RfqFileType.CSV,
-            _ => RfqFileType.UNK
-        };
+        return DetermineFileType(browserFile.Name, browserFile.ContentType);
     }
 
     private RfqFileType DetermineFileType(string fileName, string contentType)
     {
         var extension = Path.GetExtension(fileName).ToLowerInvariant();
-        
+
         return extension switch
         {
             ".dsi" => RfqFileType.DSI,
             ".csv" or ".txt" => RfqFileType.CSV,
+            ".xls" or ".xlsx" => RfqFileType.XLS,
+            ".xml" => RfqFileType.XML,
+            ".mtf" => RfqFileType.MTF,
             _ => RfqFileType.UNK
         };
     }
@@ -222,6 +222,9 @@
             RfqFileType.UNK => Icons.Material.Filled.AttachFile,
             RfqFileType.DSI => Icons.Material.Filled.Engineering,
             RfqFileType.CSV => Icons.Material.Filled.TextFormat,
+            RfqFileType.XLS => Icons.Material.Filled.Workspaces,
+            RfqFileType.XML => Icons.Material.Filled.DataExploration,
+            RfqFileType.MTF => Icons.Material.Filled.DataObject,
             _ => Icons.Material.Filled.AttachFile
         };
     }
@@ -233,16 +236,38 @@
             RfqFileType.UNK => Color.Error,
             RfqFileType.DSI => Color.Success,
             RfqFileType.CSV => Color.Warning,
+            RfqFileType.XLS => Color.Success,
+            RfqFileType.XML => Color.Success,
+            RfqFileType.MTF => Color.Success,
             _ => Color.Error
         };
     }
 
     private async Task ClearAllFiles()
     {
-        await Task.Delay(1); // Ensure async context
-        foreach (var file in Files)
+        try
         {
-            Files.Remove(file);
+            // Clear all files from the collection
+            Files.Clear();
+            
+            // Reset the input file key to clear the input element
+            inputFileKey = Guid.NewGuid().ToString();
+            
+            // Notify parent component that files have changed
+            await NotifyFilesChanged();
+            
+            // Update the UI
+            StateHasChanged();
+            
+            // Show success message
+            Snackbar.Add("All files cleared successfully", Severity.Success);
+            
+            Console.WriteLine(">>> All files cleared from FileManager");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"ERROR in ClearAllFiles: {ex.Message}");
+            Snackbar.Add($"Error clearing files: {ex.Message}", Severity.Error);
         }
     }
 

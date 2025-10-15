@@ -10,5 +10,11 @@ namespace SalesSystem.Rfq.Enums
         DSI,
         [Description("Csv")]
         CSV,
+        [Description("Xls")]
+        XLS,
+        [Description("Xml")]
+        XML,
+        [Description("Mtf")]
+        MTF,
     }
 }
