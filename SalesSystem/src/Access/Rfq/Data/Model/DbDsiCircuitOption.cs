@@ -18,5 +18,4 @@ namespace Rfq.Data.Model
         public Guid ModifiedBy
         { get; set; }
     }
-
 }
