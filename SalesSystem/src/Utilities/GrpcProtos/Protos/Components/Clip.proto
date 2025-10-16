@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "CommonTypes.proto";
+
+option csharp_namespace = "CDb";
+package cdb;
+
+message ClipGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated ClipGrpc ClipGrpcsToCreate = 2;
+  repeated ClipGrpc ClipGrpcsToUpdate = 3;
+  repeated ClipGrpc ClipGrpcsToDelete = 4;
+}
+
+message ClipGrpc {
+  google.protobuf.StringValue Id = 1;
+  google.protobuf.StringValue ClipTypeId = 2;
+  google.protobuf.Int32Value TieType = 3;
+  google.protobuf.StringValue DimensionCode = 4;
+  google.protobuf.StringValue ThicknessCode = 5;
+  google.protobuf.DoubleValue Length = 6;
+  google.protobuf.BoolValue IsDoubleHarness = 7;
+  google.protobuf.Int32Value ClipOrientationStart = 8;
+  google.protobuf.Int32Value ClipOrientationEnd = 9;
+  google.protobuf.StringValue AdditionalInformation = 10;
+}
+
+message ListClipGrpc {
+  repeated ClipGrpc ClipGrpcs = 1;
+}

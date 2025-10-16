@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\edi.proto" GrpcServices="Server" />
-  </ItemGroup>
-
-  <ItemGroup>
 	  <PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
 	  <PackageReference Include="Grpc.AspNetCore.Web" Version="2.71.0" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5" />
@@ -24,6 +20,8 @@
     <ProjectReference Include="..\..\Debug\SalesSystem.ServiceDefaults\SalesSystem.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\Utilities\Logging\Logging.csproj" />
     <ProjectReference Include="..\..\Utilities\SharedKernal\SharedKernel.csproj" />
+    <ProjectReference Include="..\..\Utilities\GrpcProtos\GrpcProtos.csproj" />
+
   </ItemGroup>
 
 </Project>

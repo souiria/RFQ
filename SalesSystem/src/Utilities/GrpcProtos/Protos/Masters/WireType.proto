@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "CommonTypes.proto";
+
+option csharp_namespace = "CDb";
+package cdb;
+
+message WireTypeGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated WireTypeGrpc WireTypeGrpcsToCreate = 2;
+  repeated WireTypeGrpc WireTypeGrpcsToUpdate = 3;
+}
+
+message WireTypeGrpc {
+  google.protobuf.StringValue Id = 1;
+  google.protobuf.StringValue Code = 2;
+  google.protobuf.StringValue Description = 3;
+  google.protobuf.BoolValue IsActive = 4;
+}
+
+message ListWireTypeGrpc {
+  repeated WireTypeGrpc WireTypeGrpcs = 1;
+}
