@@ -1,0 +1,289 @@
+@using System.IO
+@using SalesSystem.Rfq.Enums
+
+<style>
+    .file-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 12px;
+        margin: 8px;
+        background: #fff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: box-shadow 0.2s ease;
+        min-width: 250px;
+        max-width: 300px;
+    }
+
+    .file-card:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .file-card.deleted {
+        background: #ffebee;
+        opacity: 0.7;
+        border-color: #f44336;
+    }
+
+    .file-card.uploaded {
+        background: #e8f5e8;
+        border-color: #4caf50;
+    }
+
+    .file-status-chip {
+        font-size: 0.75rem;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-weight: 500;
+    }
+
+    .status-created { background: #e3f2fd; color: #1976d2; }
+    .status-updated { background: #fff3e0; color: #f57c00; }
+    .status-deleted { background: #ffebee; color: #d32f2f; }
+    .status-read { background: #f3e5f5; color: #7b1fa2; }
+
+    .upload-status-chip {
+        font-size: 0.75rem;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-weight: 500;
+    }
+
+    .upload-not-started { background: #f5f5f5; color: #616161; }
+    .upload-in-progress { background: #fff3e0; color: #f57c00; }
+    .upload-success { background: #e8f5e8; color: #2e7d32; }
+    .upload-failed { background: #ffebee; color: #d32f2f; }
+
+    .cards-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 16px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #757575;
+    }
+</style>
+
+<div class="cards-container">
+    @if (FileObjects.Any(f => f.Status != UxObjectStatus.Deleted))
+    {
+        @foreach (var fileObject in FileObjects.Where(f => f.Status != UxObjectStatus.Deleted))
+        {
+            <MudCard Class="@GetCardCssClass(fileObject)" Elevation="2">
+                <MudCardContent Class="pb-2">
+                    <div class="d-flex align-center mb-2">
+                        <MudIcon Icon="@GetFileTypeIcon(DetermineFileType(fileObject))" 
+                                 Color="@GetFileTypeColor(DetermineFileType(fileObject))" 
+                                 Size="Size.Medium" 
+                                 Class="mr-2" />
+                        <MudText Typo="Typo.subtitle2" Class="flex-grow-1" Style="word-break: break-word;">
+                            @fileObject.File?.Name
+                        </MudText>
+                    </div>
+
+                    <div class="d-flex justify-space-between align-center mb-2">
+                        <div>
+                            <MudText Typo="Typo.caption" Color="Color.Secondary">Status:</MudText>
+                            <span class="file-status-chip @GetStatusCssClass(fileObject.Status)">
+                                @GetStatusDisplayText(fileObject.Status)
+                            </span>
+                        </div>
+                        <div class="text-right">
+                            <MudText Typo="Typo.caption" Color="Color.Secondary">Size:</MudText>
+                            <MudText Typo="Typo.body2">@FormatFileSize(fileObject.File?.Size ?? 0)</MudText>
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">Upload Status:</MudText>
+                        <div class="d-flex align-center">
+                            <span class="upload-status-chip @GetUploadStatusCssClass(fileObject.UploadStatus.Status)">
+                                @GetUploadStatusDisplayText(fileObject.UploadStatus.Status)
+                            </span>
+                            @if (fileObject.UploadStatus.Status == FileUploadStatus.InProgress)
+                            {
+                                <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="ml-2" />
+                            }
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(fileObject.UploadStatus.Message))
+                    {
+                        <div class="mt-2">
+                            <MudText Typo="Typo.caption" Color="Color.Secondary">Message:</MudText>
+                            <MudText Typo="Typo.body2" 
+                                     Color="@(fileObject.UploadStatus.Status == FileUploadStatus.Failed ? Color.Error : Color.Default)"
+                                     Style="word-break: break-word; font-size: 0.8rem;">
+                                @fileObject.UploadStatus.Message
+                            </MudText>
+                        </div>
+                    }
+                </MudCardContent>
+
+                <MudCardActions Class="pt-0">
+                    <div class="d-flex justify-space-between w-100">
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">
+                            @DetermineFileType(fileObject).ToString()
+                        </MudText>
+                    </div>
+                </MudCardActions>
+            </MudCard>
+        }
+    }
+    else
+    {
+        <div class="empty-state">
+            <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Size="Size.Large" Color="Color.Secondary" />
+            <MudText Typo="Typo.h6" Color="Color.Secondary" Class="mt-2">No files uploaded</MudText>
+            <MudText Typo="Typo.body2" Color="Color.Secondary">
+                Upload files using the file manager to see them here
+            </MudText>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<FileObjectUx> FileObjects { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<FileObjectUx> OnRetryUpload { get; set; }
+
+    private string GetCardCssClass(FileObjectUx fileObject)
+    {
+        var baseClass = "file-card";
+        
+        if (fileObject.Status == UxObjectStatus.Deleted)
+            return $"{baseClass} deleted";
+        
+        if (fileObject.IsUploaded || fileObject.UploadStatus.Status == FileUploadStatus.Success)
+            return $"{baseClass} uploaded";
+            
+        return baseClass;
+    }
+
+    private string GetStatusCssClass(UxObjectStatus status)
+    {
+        return status switch
+        {
+            UxObjectStatus.Created => "status-created",
+            UxObjectStatus.Updated => "status-updated",
+            UxObjectStatus.Deleted => "status-deleted",
+            UxObjectStatus.Read => "status-read",
+            _ => "status-created"
+        };
+    }
+
+    private string GetUploadStatusCssClass(FileUploadStatus status)
+    {
+        return status switch
+        {
+            FileUploadStatus.NotStarted => "upload-not-started",
+            FileUploadStatus.InProgress => "upload-in-progress",
+            FileUploadStatus.Success => "upload-success",
+            FileUploadStatus.Failed => "upload-failed",
+            _ => "upload-not-started"
+        };
+    }
+
+    private string GetStatusDisplayText(UxObjectStatus status)
+    {
+        return status switch
+        {
+            UxObjectStatus.Created => "Created",
+            UxObjectStatus.Updated => "Updated",
+            UxObjectStatus.Deleted => "Deleted",
+            UxObjectStatus.Read => "Read",
+            UxObjectStatus.None => "None",
+            _ => status.ToString()
+        };
+    }
+
+    private string GetUploadStatusDisplayText(FileUploadStatus status)
+    {
+        return status switch
+        {
+            FileUploadStatus.NotStarted => "Not Started",
+            FileUploadStatus.InProgress => "Uploading...",
+            FileUploadStatus.Success => "Uploaded",
+            FileUploadStatus.Failed => "Failed",
+            _ => status.ToString()
+        };
+    }
+
+    private string FormatFileSize(long bytes)
+    {
+        if (bytes == 0) return "0 B";
+        
+        string[] sizes = { "B", "KB", "MB", "GB" };
+        int order = 0;
+        double size = bytes;
+        
+        while (size >= 1024 && order < sizes.Length - 1)
+        {
+            order++;
+            size /= 1024;
+        }
+        
+        return $"{size:0.##} {sizes[order]}";
+    }
+
+    private RfqFileType DetermineFileType(FileObjectUx fileObject)
+    {
+        if (fileObject.File == null)
+        {
+            return RfqFileType.UNK;
+        }
+        if (fileObject.Status == UxObjectStatus.Deleted)
+        {
+            return RfqFileType.UNK;
+        }
+        return DetermineFileType(fileObject.File.Name, fileObject.File.ContentType);
+    }
+
+    private RfqFileType DetermineFileType(string fileName, string contentType)
+    {
+        var extension = Path.GetExtension(fileName).ToLowerInvariant();
+
+        return extension switch
+        {
+            ".dsi" => RfqFileType.DSI,
+            ".csv" or ".txt" => RfqFileType.CSV,
+            ".xls" or ".xlsx" => RfqFileType.XLS,
+            ".xml" => RfqFileType.XML,
+            ".mtf" => RfqFileType.MTF,
+            _ => RfqFileType.UNK
+        };
+    }
+
+    private string GetFileTypeIcon(RfqFileType fileType)
+    {
+        return fileType switch
+        {
+            RfqFileType.UNK => Icons.Material.Filled.AttachFile,
+            RfqFileType.DSI => Icons.Material.Filled.Engineering,
+            RfqFileType.CSV => Icons.Material.Filled.TextFormat,
+            RfqFileType.XLS => Icons.Material.Filled.Workspaces,
+            RfqFileType.XML => Icons.Material.Filled.DataExploration,
+            RfqFileType.MTF => Icons.Material.Filled.DataObject,
+            _ => Icons.Material.Filled.AttachFile
+        };
+    }
+
+    private Color GetFileTypeColor(RfqFileType fileType)
+    {
+        return fileType switch
+        {
+            RfqFileType.UNK => Color.Error,
+            RfqFileType.DSI => Color.Success,
+            RfqFileType.CSV => Color.Warning,
+            RfqFileType.XLS => Color.Success,
+            RfqFileType.XML => Color.Success,
+            RfqFileType.MTF => Color.Success,
+            _ => Color.Error
+        };
+    }
+}

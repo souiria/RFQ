@@ -38,19 +38,4 @@
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="Resources\TestMessages.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>TestMessages.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Resources\TestMessages.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>TestMessages.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
 </Project>

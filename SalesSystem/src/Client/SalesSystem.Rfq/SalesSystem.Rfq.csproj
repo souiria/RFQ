@@ -42,8 +42,4 @@
     <ProjectReference Include="..\..\Utilities\SharedModels\SharedModels.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Components\Pages\Dialogs\" />
-  </ItemGroup>
-
 </Project>

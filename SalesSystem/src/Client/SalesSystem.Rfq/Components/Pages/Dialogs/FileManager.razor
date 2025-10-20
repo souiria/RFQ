@@ -1,6 +1,7 @@
 ﻿@using System.IO
 @using Microsoft.JSInterop
 @using SalesSystem.Rfq.Enums
+@using SalesSystem.Rfq.Services
 
 @inject IJSRuntime JSRuntime
 @inject ISnackbar Snackbar
@@ -46,50 +47,55 @@
     }
 </style>
 
-<MudGrid>
-    <MudItem xs="12" Class="align-content-center mud-item-compact">
-        <MudText Typo="Typo.body1">File Manager</MudText>
-    </MudItem>
-    
-    <MudItem xs="12">
-        <MudGrid>
-            @* File Upload Area *@
-            <MudItem xs="12" Class="align-content-start mud-item-compact">
-                <div @ref="dropZoneElement" class="drop-zone align-content-start">
-                    <InputFile @ref="inputFile" key="@inputFileKey" OnChange="OnChange" multiple style="display:none" />
-                    <MudText Typo="Typo.body2" Align="Align.Center" Class="mt-4">Drag & Drop Files Here</MudText>
-                    <MudText Typo="Typo.subtitle2" Align="Align.Center" Class="mt-4">Max.16MB each</MudText>
-                </div>
-            </MudItem>
-
-            @* Action Buttons *@
-            <MudItem xs="12" Class="align-content-start mud-item-compact">
-                <MudTooltip Text="Clear all files">
-                    <MudButton Variant="Variant.Filled"
-                               Color="Color.Warning"
-                               OnClick="ClearAllFiles"
-                               Disabled="@(!Files.Any())"
-                               Size="Size.Small">
-                        <MudIcon Icon="@Icons.Material.Filled.ClearAll" Class="mr-1" />
-                    </MudButton>
-                </MudTooltip>
-            </MudItem>
-        </MudGrid>
-    </MudItem>
+<MudStack Class="gap-1">
+    <div @ref="dropZoneElement" class="drop-zone align-content-start">
+        <InputFile @ref="inputFile" key="@inputFileKey" OnChange="OnChange" multiple style="display:none" />
+        <MudText Typo="Typo.body2" Align="Align.Center" Class="mt-4">Drag & Drop Files Here</MudText>
+        <MudText Typo="Typo.subtitle2" Align="Align.Center" Class="mt-1">Max.16MB each</MudText>
+        <MudTooltip Text="Clear all files">
+            <MudIconButton Variant="Variant.Filled"
+                           Icon="@Icons.Material.Filled.ClearAll"
+                           Color="Color.Warning"
+                           OnClick="ClearAllFiles"
+                           Disabled="@(!FileObjects.Any())"
+                           Size="Size.Small" />
+        </MudTooltip>
+    </div>
 
     @* File List *@
+@* 
     <MudItem xs="12" Class="align-content-start mud-item-compact item-scroll">
-        @if (Files.Any())
+        @if (FileObjects.Any())
         {
-            @foreach (var file in Files)
+            @foreach (var fileObject in FileObjects)
             {
                 <div class="file-item">
                     <MudGrid>
-                        <MudItem xs="12">
+                        <MudItem xs="10">
                             <MudText Typo="Typo.body2">
-                                <MudIcon Icon="@GetFileTypeIcon(DetermineFileType(file))" Size="Size.Small" Class="mr-2" />
-                                @file.Name
+                                <MudIcon Icon="@GetFileTypeIcon(DetermineFileType(fileObject))" Size="Size.Small" Class="mr-2" />
+                                @fileObject.File?.Name
                             </MudText>
+                        </MudItem>
+                        <MudItem xs="2" Class="d-flex align-center justify-end">
+                            @if (fileObject.Status != UxObjectStatus.Deleted)
+                            {
+                                <MudButton Variant="Variant.Text"
+                                           Color="Color.Error"
+                                           OnClick="() => DeleteFile(fileObject)"
+                                           Size="Size.Small">
+                                    <MudIcon Icon="@Icons.Material.Filled.Delete" />
+                                </MudButton>
+                            }
+                            else
+                            {
+                                <MudButton Variant="Variant.Text"
+                                           Color="Color.Success"
+                                           OnClick="() => RestoreFile(fileObject)"
+                                           Size="Size.Small">
+                                    <MudIcon Icon="@Icons.Material.Filled.Restore" />
+                                </MudButton>
+                            }
                         </MudItem>
                     </MudGrid>
                 </div>
@@ -101,14 +107,14 @@
                 No files attached
             </MudText>
         }
-    </MudItem>
-</MudGrid>
+    </MudItem> *@
+</MudStack>
 
 @code {
     const int MAX_FILE_SIZE = 16 * 1024 * 1024;
 
     [Parameter]
-    public List<IBrowserFile> Files { get; set; } = new();
+    public List<FileObjectUx> FileObjects { get; set; } = new();
 
     [Parameter]
     public EventCallback OnFilesChanged { get; set; }
@@ -171,15 +177,17 @@
                 // using MemoryStream ms = new MemoryStream();
                 // await stream.CopyToAsync(ms);
 
-                var fileType = DetermineFileType(file);
-                if (fileType != RfqFileType.UNK && file.Size <= MAX_FILE_SIZE && 0 < file.Size)
+                var fileObject = new FileObjectUx(file);
+
+                var fileType = DetermineFileType(fileObject);
+                if (fileType != RfqFileType.UNK && fileObject.File?.Size <= MAX_FILE_SIZE && 0 < fileObject.File?.Size)
                 {
-                    Files.Add(file);
-                    Console.WriteLine($"Added file: {file.Name} ({file.Size} bytes) as {fileType}");
+                    FileObjects.Add(fileObject);
+                    Console.WriteLine($"Added file: {fileObject.File?.Name} ({fileObject.File?.Size} bytes) as {fileType}");
                 }
                 else
                 {
-                    Snackbar.Add($"File '{file.Name}' bad size limit for {fileType} files.", Severity.Error);
+                    Snackbar.Add($"File '{fileObject.File?.Name}' bad size limit for {fileType} files.", Severity.Error);
                     continue;
                 }
 
@@ -195,9 +203,17 @@
         }
     }
 
-    private RfqFileType DetermineFileType(IBrowserFile browserFile)
+    private RfqFileType DetermineFileType(FileObjectUx fileObject)
     {
-        return DetermineFileType(browserFile.Name, browserFile.ContentType);
+        if(fileObject.File == null)
+        {
+            return RfqFileType.UNK;
+        }
+        if(fileObject.Status == UxObjectStatus.Deleted)
+        {
+            return RfqFileType.UNK;
+        }
+        return DetermineFileType(fileObject.File.Name, fileObject.File.ContentType);
     }
 
     private RfqFileType DetermineFileType(string fileName, string contentType)
@@ -248,7 +264,7 @@
         try
         {
             // Clear all files from the collection
-            Files.Clear();
+            FileObjects.Clear();
             
             // Reset the input file key to clear the input element
             inputFileKey = Guid.NewGuid().ToString();
@@ -268,6 +284,26 @@
         {
             Console.WriteLine($"ERROR in ClearAllFiles: {ex.Message}");
             Snackbar.Add($"Error clearing files: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task DeleteFile(FileObjectUx fileObject)
+    {
+        if (fileObject != null && fileObject.Status != UxObjectStatus.Deleted)
+        {
+            fileObject.Status = UxObjectStatus.Deleted;
+            await NotifyFilesChanged();
+            StateHasChanged();
+        }
+    }
+
+    private async Task RestoreFile(FileObjectUx fileObject)
+    {
+        if (fileObject != null && fileObject.Status == UxObjectStatus.Deleted)
+        {
+            fileObject.Status = UxObjectStatus.Created;
+            await NotifyFilesChanged();
+            StateHasChanged();
         }
     }
 

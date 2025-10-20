@@ -472,9 +472,6 @@
   .mt-auto {
     margin-top: auto;
   }
-  .mr-1 {
-    margin-right: calc(var(--spacing) * 1);
-  }
   .mr-2 {
     margin-right: calc(var(--spacing) * 2);
   }
@@ -498,6 +495,9 @@
   }
   .mb-auto {
     margin-bottom: auto;
+  }
+  .ml-2 {
+    margin-left: calc(var(--spacing) * 2);
   }
   .ml-6 {
     margin-left: calc(var(--spacing) * 6);
@@ -637,8 +637,8 @@
   .flex-wrap-reverse {
     flex-wrap: wrap-reverse;
   }
-  .justify-center {
-    justify-content: center;
+  .justify-end {
+    justify-content: flex-end;
   }
   .gap-0 {
     gap: calc(var(--spacing) * 0);
@@ -898,6 +898,9 @@
   }
   .text-end {
     text-align: end;
+  }
+  .text-right {
+    text-align: right;
   }
   .text-start {
     text-align: start;

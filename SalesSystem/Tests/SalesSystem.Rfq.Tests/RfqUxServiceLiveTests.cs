@@ -72,8 +72,8 @@ namespace SalesSystem.Rfq.Tests
             try
             {
                 // Act - Following the exact pattern from CreateRfq.razor OnInitializedAsync method
-                Func<Guid, Task<List<RfqModule.CustomerGrpc>>> guidAsyncService = _RfqUxService.GetCustomersAsync;
-                (long timing, int count, List<RfqModule.CustomerGrpc> customers) = await guidAsyncService.TimeAsyncGuidService(_TestUserId);
+                Func<Guid, Task<int>> guidAsyncService = _RfqUxService.GetCustomersAsync;
+                (long timing, int count) = await guidAsyncService.TimeAsyncGuidIntService(_TestUserId);
 
                 // Output results - mimicking the Blazor component behavior
                 message = string.Format(CultureInfo.InvariantCulture,
@@ -88,14 +88,14 @@ namespace SalesSystem.Rfq.Tests
                 AssessPerformance(methodName, timing);
                 
                 // Log first few customers (like the Blazor component displays them)
-                LogCustomerDetails(customers);
+                LogCustomerDetails(_RfqUxService.Customers);
 
                 // Assertions
-                Assert.That(customers, Is.Not.Null, "Customer list should not be null");
+                Assert.That(_RfqUxService.Customers, Is.Not.Null, "Customer list should not be null");
                 EqualConstraint itIsEqual = Is.EqualTo(count);
-                Assert.That(customers.Count, itIsEqual, "Customer count should match returned count");
+                Assert.That(_RfqUxService.Customers.Count, itIsEqual, "Customer count should match returned count");
                 GreaterThanConstraint itIsGreaterThan = Is.GreaterThan(0);
-                Assert.That(customers.Count, itIsGreaterThan, "Should return at least one customer for the test user");
+                Assert.That(_RfqUxService.Customers.Count, itIsGreaterThan, "Should return at least one customer for the test user");
 
                 // Performance assertion - warn if too slow but don't fail the test
                 if (_SlowThreshold <= timing)
@@ -105,7 +105,7 @@ namespace SalesSystem.Rfq.Tests
                 }
                 
                 // Validate customer data structure
-                foreach (RfqModule.CustomerGrpc? customer in customers)
+                foreach (RfqModule.CustomerGrpc? customer in _RfqUxService.Customers)
                 {
                     Assert.That(customer.Id, Is.Not.Null.And.Not.Empty, "Customer ID should not be null or empty");
                     Assert.That(customer.CustomerBusinessGroupName, Is.Not.Null, "Customer business group name should not be null");
@@ -136,19 +136,19 @@ namespace SalesSystem.Rfq.Tests
             try
             {
                 // Act
-                Func<Guid, Task<List<RfqModule.CustomerGrpc>>> guidAsyncService = _RfqUxService.GetCustomersAsync;
-                (long timing, int count, List<RfqModule.CustomerGrpc> customers) = await guidAsyncService.TimeAsyncGuidService(_TestUserId);
+                Func<Guid, Task<int>> guidAsyncService = _RfqUxService.GetCustomersAsync;
+                (long timing, int count) = await guidAsyncService.TimeAsyncGuidIntService(_TestUserId);
 
                 // Output results for each run
                 Debug.WriteLine($"[CONSISTENCY-RUN-{TestContext.CurrentContext.CurrentRepeatCount + 1}] " +
                                 $"Retrieved {count} customers in {timing}ms");
 
                 // Assertions for consistency
-                Assert.That(customers, Is.Not.Null);
+                Assert.That(_RfqUxService.Customers, Is.Not.Null);
                 EqualConstraint itIsEqual = Is.EqualTo(count);
-                Assert.That(customers.Count, itIsEqual);
+                Assert.That(_RfqUxService.Customers.Count, itIsEqual);
                 GreaterThanConstraint itIsGreaterThan = Is.GreaterThan(0);
-                Assert.That(customers.Count, itIsGreaterThan);
+                Assert.That(_RfqUxService.Customers.Count, itIsGreaterThan);
 
                 // Track performance consistency across runs
 
@@ -169,18 +169,18 @@ namespace SalesSystem.Rfq.Tests
         public async Task GetCustomersAsync_LiveService_DataValidation()
         {
             // Arrange & Act
-            Func<Guid, Task<List<RfqModule.CustomerGrpc>>> guidAsyncService = _RfqUxService.GetCustomersAsync;
-            (long timing, int count, List<RfqModule.CustomerGrpc> customers) = await guidAsyncService.TimeAsyncGuidService(_TestUserId);
+            Func<Guid, Task<int>> guidAsyncService = _RfqUxService.GetCustomersAsync;
+            (long timing, int count) = await guidAsyncService.TimeAsyncGuidIntService(_TestUserId);
 
             Debug.WriteLine($"[DATA-VALIDATION] Retrieved {count} customers for validation");
 
             // Detailed data validation
-            Assert.That(customers, Is.Not.Null);
+            Assert.That(_RfqUxService.Customers, Is.Not.Null);
             GreaterThanConstraint itIsGreaterThan = Is.GreaterThan(0);
-            Assert.That(customers.Count, itIsGreaterThan, "User should have at least one associated customer");
+            Assert.That(_RfqUxService.Customers.Count, itIsGreaterThan, "User should have at least one associated customer");
 
             // Validate each customer has required fields
-            foreach (RfqModule.CustomerGrpc customer in customers)
+            foreach (RfqModule.CustomerGrpc customer in _RfqUxService.Customers)
             {
                 Assert.That(customer.Id, Is.Not.Null.And.Not.Empty, 
                     $"Customer ID should not be null or empty for customer: {customer.CustomerBusinessGroupName}");
@@ -198,7 +198,7 @@ namespace SalesSystem.Rfq.Tests
             }
 
             // Check for duplicate customer IDs
-            List<string> duplicateIds = customers.GroupBy(c => c.Id).Where(g => !(g.Count() <= 1)).Select(g => g.Key).ToList();
+            List<string> duplicateIds = _RfqUxService.Customers.GroupBy(c => c.Id).Where(g => !(g.Count() <= 1)).Select(g => g.Key).ToList();
 
             // List<string> duplicateIds = customers.GroupBy(c => c.Id).Where(g => (g.Any())).Select(g => g.Key).ToList();
 
@@ -214,81 +214,35 @@ namespace SalesSystem.Rfq.Tests
         public async Task CompositionTest()
         {
             long timing = 0;
-            int count = 0;
             Stopwatch sw = Stopwatch.StartNew();
 
             //GetCustomersAsync
-            List<RfqModule.CustomerGrpc> customers = await _RfqUxService.GetCustomersAsync(_TestUserId);
+            int count = await _RfqUxService.GetCustomersAsync(_TestUserId);
             sw.Stop();
             timing = sw.ElapsedMilliseconds;
-            count = customers.Count;
+            count = _RfqUxService.Customers.Count;
 
             Debug.WriteLine($"[COMPOSITION] GetCustomersAsync retrieved {count} customers in {timing}ms");
             WriteDividerLine();
-            foreach (RfqModule.CustomerGrpc customer in customers)
+            foreach (RfqModule.CustomerGrpc customer in _RfqUxService.Customers)
             {
                 Debug.WriteLine($"\t{customer.CustomerBusinessGroupName} ({customer.Id})");
             }
 
             // GetLocationsByCustomer
-            customers = customers.Where(c => c.CustomerBusinessGroupName == "FORD").ToList();  // This is where the customerId would come from the UI
+            List<RfqModule.CustomerGrpc> customers = _RfqUxService.Customers.Where(c => c.CustomerBusinessGroupName == "FORD").ToList();  // This is where the customerId would come from the UI
             foreach (RfqModule.CustomerGrpc customer in customers)
             {   
-                // get locations
-                sw.Restart();
-                List<RfqModule.CustomerLocationGrpc> locations = await _RfqUxService.GetLocationsByCustomer(customer.Id);
-                sw.Stop();
-                timing = sw.ElapsedMilliseconds;
-                count = locations.Count;
-
-                Debug.WriteLine($"[COMPOSITION] GetLocationsByCustomer retrieved {count} locations for customer {customer.CustomerBusinessGroupName} in {timing}ms");
-                //WriteDividerLine();
-                //foreach (RfqModule.CustomerLocationGrpc location in locations)
-                //{
-                //    Debug.WriteLine($"\t- customerId {location.CustomerBusinessHierarchyGuid} customerLocationId {location.Id} {location.CustomerCode} ({location.CustomerName}) ");
-                //}
-
-                // GetCustomerProjectAssociations
-                sw.Restart();
-                List<CustomerProjectUx> customerProjectAssociations = await _RfqUxService.GetCustomerProjectAssociations();
-                sw.Stop();
-                timing = sw.ElapsedMilliseconds;
-                count = customerProjectAssociations.Count;
-
-                Debug.WriteLine($"[COMPOSITION] GetCustomerProjectAssociations retrieved {count} customer project associations in {timing}ms");
-                //WriteDividerLine();
-                //foreach (CustomerProjectUx association in customerProjectAssociations)
-                //{
-                //    Debug.WriteLine($"\t- customerLocationId {association.CustomerId} projectId {association.ProjectId}");
-                //}
-
-                // GetProjectsbyCustomerProjectAssociation
-                sw.Restart();
-                List<RfqModule.ProjectGrpc> projectsbyCustomerProjectAssociation = await _RfqUxService.GetProjectsbyCustomerProjectAssociation(customerProjectAssociations);
-                sw.Stop();
-                timing = sw.ElapsedMilliseconds;
-                count = projectsbyCustomerProjectAssociation.Count;
-
-                Debug.WriteLine($"[COMPOSITION] GetProjectsbyCustomerProjectAssociation retrieved {count} projects by customer-projects association in {timing}ms");
-                //WriteDividerLine();
-                //foreach (RfqModule.ProjectGrpc project in projectsbyCustomerProjectAssociation)
-                //{
-                //    Debug.WriteLine($"\t- projectId {project.Id} projectCode {project.ProjectCode} projectName {project.ProjectName}");
-                //}
-
                 // GetCustomerProjectUx
                 sw.Restart();
-                List<CustomerProjectUx> projects = await _RfqUxService.GetCustomerProjectUx(projects: projectsbyCustomerProjectAssociation,
-                                                                                            customerLocations: locations,
-                                                                                            customerProjects: customerProjectAssociations);
+                int projectAssociationCount = await _RfqUxService.GetProjectAssociationsByCustomerId(customer.Id);
                 sw.Stop();
                 timing = sw.ElapsedMilliseconds;
-                count = projects.Count;
 
-                Debug.WriteLine($"[COMPOSITION] GetCustomerProjectUx retrieved {projects.Count} projects for select list for customer {customer.CustomerBusinessGroupName} in {timing}ms");
+                Debug.WriteLine($"[COMPOSITION] GetProjectAssociationsByCustomerId retrieved {projectAssociationCount} projects for select list for customer {customer.CustomerBusinessGroupName} in {timing}ms");
                 WriteDividerLine();
                 int pos = 1;
-                foreach (CustomerProjectUx project in projects)
+                foreach (CustomerProjectUx project in _RfqUxService.CustomerProjectAssociations)
                 {
                     Debug.WriteLine($"\t{pos,3}\t customerLocationId {project.CustomerId} customerName {project.CustomerName,32} - projectId {project.ProjectId} projectName {project.ProjectName,32}");
                     pos++;
@@ -346,7 +300,7 @@ namespace SalesSystem.Rfq.Tests
             }
         }
 
-        static void LogCustomerDetails(List<RfqModule.CustomerGrpc> customers)
+        static void LogCustomerDetails(IReadOnlyCollection<RfqModule.CustomerGrpc> customers)
         {
             Debug.WriteLine($"[CUSTOMER-DETAILS] Retrieved {customers.Count} customers:");
             

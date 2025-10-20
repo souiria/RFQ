@@ -163,7 +163,6 @@ namespace SalesSystem.Rfq.Services
         )
         {
             await Task.Delay(0);
-            RfqProject rfqProject = new RfqProject();
             CreateRfqProjectGrpcResponse response = new CreateRfqProjectGrpcResponse();
             if (reason.RowId != null)
             {
@@ -187,7 +186,7 @@ namespace SalesSystem.Rfq.Services
             return response;
         }
 
-        public async Task<bool> UploadPartsAsync(string projectId,IBrowserFile file)
+        public async Task<UploadPartsRequestGrpcResponse> UploadPartsAsync(string projectId, IBrowserFile file)
         {
             UploadPartsRequestGrpcResponse response = new UploadPartsRequestGrpcResponse();
             using MemoryStream ms = new MemoryStream();
@@ -199,12 +198,7 @@ namespace SalesSystem.Rfq.Services
             uploadPartsRequestGrpcRequest.FileData = Google.Protobuf.ByteString.CopyFrom(fileBytes);
             uploadPartsRequestGrpcRequest.ProjectId = projectId;
             response = _RfqModuleClient.UploadPartsGrpc(uploadPartsRequestGrpcRequest);
-            if (!response.Success)
-            {
-                return false;    
-            }
-
-            return true;
-        }
+            return response;
+        }   
     }
 }
