@@ -23,23 +23,48 @@
             switch (accessService)
             {
                 case AccessServices.EDI:
-                    EdiFilterRequest ediRequest = new EdiFilterRequest();
-                    ediRequest.FilterExpression = function.ToString();
-                    ediRequest.DatabaseList = typeof(T).Name;
-                    EdiResponse ediResponse = _EdiClient.FilterEdiDataGrpc(ediRequest);
-                    resultCollection = ExtractEdiResponseData(ediResponse);
-                    return (Collection<T>)resultCollection;
-                case AccessServices.EMACS:
-                    EmacsFilterRequest emacsRequest = new EmacsFilterRequest();
-                    emacsRequest.FilterExpression = function.ToString();
-                    emacsRequest.DatabaseList = typeof(T).Name;
-                    EmacsFilterResponse emacsResponse = _EmacsClient.FilterEmacsDataGrpc(emacsRequest);
-                    resultCollection = ExtractEmacsResponseData(emacsResponse);
+                    resultCollection = FilterWithService<EdiFilterRequest, EdiResponse>(
+                        function,
+                        typeof(T).Name,
+                        req => _EdiClient.FilterEdiDataGrpc(req),
+                        ExtractEdiResponseData
+                    );
                     return (Collection<T>)resultCollection;
 
+                case AccessServices.EMACS:
+                    resultCollection = FilterWithService<EmacsFilterRequest, EmacsFilterResponse>(
+                        function,
+                        typeof(T).Name,
+                        req => _EmacsClient.FilterEmacsDataGrpc(req),
+                        ExtractEmacsResponseData
+                    );
+                return (Collection<T>)resultCollection;
+
                 default:
-                throw new NotImplementedException($"AccessService {accessService} not implemented");
+                    throw new NotImplementedException($"AccessService {accessService} not implemented");
             }
+        }
+
+        Collection<T> FilterWithService<TRequest, TResponse>(
+            Func<T, bool> function, 
+            string databaseList,
+            Func<TRequest, TResponse> serviceCall,
+            Func<TResponse, ICollection<T>> extractData) 
+            where TRequest : new()
+        {
+            TRequest request = new TRequest();
+            string functionString = function.ToString() ?? string.Empty;
+            SetRequestProperties(request, functionString, databaseList);
+            TResponse? response = serviceCall(request);
+            ICollection<T> resultCollection = extractData(response);
+            return (Collection<T>)resultCollection;
+        }
+
+        void SetRequestProperties(object request, string filterExpression, string databaseList)
+        {
+            Type type = request.GetType();
+            type.GetProperty("FilterExpression")?.SetValue(request, filterExpression);
+            type.GetProperty("DatabaseList")?.SetValue(request, databaseList);
         }
 
         ICollection<T> ExtractEdiResponseData(EdiResponse response)
@@ -201,5 +226,5 @@
 
                 return false;
             }
-        }
+    }
 }

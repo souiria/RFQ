@@ -228,7 +228,7 @@
 
             switch (request.DatabaseList)
             {
-                case "CombinedParts":
+                case "CombinedPartsGrpc":
                     await HandleFilterCase<CombinedPartsGrpc>(filterExpressionString, parsingConfig, returnResponse,
                         filterList => {
                             ListCombinedPartsGrpc returnList = new ListCombinedPartsGrpc();
@@ -236,7 +236,7 @@
                             returnResponse.ListCombinedPartsGrpc = returnList;
                         }, context.CancellationToken);
                     break;
-                case "PartCategoryDetail":
+                case "PartCategoryDetailGrpc":
                     await HandleFilterCase<PartCategoryDetailGrpc>(filterExpressionString, parsingConfig, returnResponse,
                         filterList => {
                             ListPartCategoryDetailGrpc returnList = new ListPartCategoryDetailGrpc();
@@ -244,7 +244,7 @@
                             returnResponse.ListPartCategoryDetailGrpc = returnList;
                         }, context.CancellationToken);
                     break;
-                case "PartClassDetail":
+                case "PartClassDetailGrpc":
                     await HandleFilterCase<PartClassDetailGrpc>(filterExpressionString, parsingConfig, returnResponse,
                         filterList => {
                             ListPartClassDetailGrpc returnList = new ListPartClassDetailGrpc();
@@ -252,13 +252,96 @@
                             returnResponse.ListPartClassDetailGrpc = returnList;
                         }, context.CancellationToken);
                     break;
-                case "PartGroups":
+                case "PartGroupsGrpc":
                     await HandleFilterCase<PartGroupsGrpc>(filterExpressionString, parsingConfig, returnResponse,
                         filterList => {
                             ListPartGroupsGrpc returnList = new ListPartGroupsGrpc();
                             returnList.PartGroupsGrpc.AddRange(filterList);
                             returnResponse.ListPartGroupsGrpc = returnList;
                         }, context.CancellationToken);
+                    break;
+                case "PartGroupsConstGrpc":
+                    await HandleFilterCase<PartGroupsConstGrpc>(filterExpressionString, parsingConfig, returnResponse,
+                        filterList => {
+                            ListPartGroupsConstGrpc returnList = new ListPartGroupsConstGrpc();
+                            returnList.PartGroupsConstGrpc.AddRange(filterList);
+                            returnResponse.ListPartGroupsConstGrpc = returnList;
+                        }, context.CancellationToken);
+                    break;
+                case "CustomerDataGrpc":
+                    await HandleFilterCase<CustomerDataGrpc>(filterExpressionString, parsingConfig, returnResponse,
+                        filterList => {
+                            ListCustomerDataGrpc returnList = new ListCustomerDataGrpc();
+                            returnList.CustomerDataGrpc.AddRange(filterList);
+                            returnResponse.ListCustomerDataGrpc = returnList;
+                        }, context.CancellationToken);
+                    break;
+                case "ColourCodeGrpc":
+                    await HandleFilterCase<ColourCodeGrpc>(filterExpressionString, parsingConfig, returnResponse,
+                        filterList => {
+                            ListColourCodeGrpc returnList = new ListColourCodeGrpc();
+                            returnList.ColourCodeGrpc.AddRange(filterList);
+                            returnResponse.ListColourCodeGrpc = returnList;
+                        }, context.CancellationToken);
+                    break;
+                case "MaterialGroupsGrpc":
+                    await HandleFilterCase<MaterialGroupsGrpc>(filterExpressionString, parsingConfig, returnResponse,
+                        filterList => {
+                            ListMaterialGroupsGrpc returnList = new ListMaterialGroupsGrpc();
+                            returnList.MaterialGroupsGrpc.AddRange(filterList);
+                            returnResponse.ListMaterialGroupsGrpc = returnList;
+                        }, context.CancellationToken);
+                    break;
+                case "MaterialTypesGrpc":
+                    await HandleFilterCase<MaterialTypesGrpc>(filterExpressionString, parsingConfig, returnResponse,
+                        filterList => {
+                            ListMaterialTypesGrpc returnList = new ListMaterialTypesGrpc();
+                            returnList.MaterialTypesGrpc.AddRange(filterList);
+                            returnResponse.ListMaterialTypesGrpc = returnList;
+                        }, context.CancellationToken);
+                    break;
+                case "NPACustomerGrpc":
+                    await HandleFilterCase<NPACustomerGrpc>(filterExpressionString, parsingConfig, returnResponse,
+                        filterList => {
+                            ListNPACustomerGrpc returnList = new ListNPACustomerGrpc();
+                            returnList.NPACustomerGrpc.AddRange(filterList);
+                            returnResponse.ListNPACustomerGrpc = returnList;
+                        }, context.CancellationToken);
+                    break;
+                case "NPASupplierGrpc":
+                    await HandleFilterCase<NPASupplierGrpc>(filterExpressionString, parsingConfig, returnResponse,
+                        filterList => {
+                            ListNPASupplierGrpc returnList = new ListNPASupplierGrpc();
+                            returnList.NPASupplierGrpc.AddRange(filterList);
+                            returnResponse.ListNPASupplierGrpc = returnList;
+                        }, context.CancellationToken);
+                    break;
+                case "SuppliersGrpc":
+                    await HandleFilterCase<SuppliersGrpc>(filterExpressionString, parsingConfig, returnResponse,
+                       filterList => {
+                           ListSuppliersGrpc returnList = new ListSuppliersGrpc();
+                           returnList.SuppliersGrpc.AddRange(filterList);
+                           returnResponse.ListSuppliersGrpc = returnList;
+                       }, context.CancellationToken);
+                    break;
+                case "EmacsRFIViewGrpc":
+                    await HandleFilterCase<EmacsRFIViewGrpc>(filterExpressionString, parsingConfig, returnResponse,
+                       filterList => {
+                           ListEmacsRFIViewGrpc returnList = new ListEmacsRFIViewGrpc();
+                           returnList.EmacsRFIViewGrpc.AddRange(filterList);
+                           returnResponse.ListEmacsRFIViewGrpc = returnList;
+                       }, context.CancellationToken);
+                    break;
+                case "PartMSGrpc":
+                    await HandleFilterCase<PARTMSGrpc>(filterExpressionString, parsingConfig, returnResponse,
+                       filterList => {
+                           ListPARTMSGrpc returnList = new ListPARTMSGrpc();
+                           returnList.PARTMSGrpc.AddRange(filterList);
+                           returnResponse.ListPARTMSGrpc = returnList;
+                       }, context.CancellationToken);
+                    break;
+                default:
+                    _Logger.GenericLogInformation($"FilterEmacsDataGrpc: Unknown DatabaseList '{request.DatabaseList}'");
                     break;
             }
 
