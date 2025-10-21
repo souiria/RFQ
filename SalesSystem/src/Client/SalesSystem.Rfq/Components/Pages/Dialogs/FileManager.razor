@@ -20,9 +20,8 @@
 
     .drop-zone {
         padding: 4px;
-        min-height: 96px;
         width: 100%;
-        max-width: 256px;
+        max-height: 128px;
         background: white;
         border: 2px dashed #0087F7;
         border-radius: 5px;
@@ -45,70 +44,79 @@
         text-decoration: line-through;
         opacity: 0.6;
     }
+
+    .file-manager-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
 </style>
 
-<MudStack Class="gap-1">
-    <div @ref="dropZoneElement" class="drop-zone align-content-start">
-        <InputFile @ref="inputFile" key="@inputFileKey" OnChange="OnChange" multiple style="display:none" />
-        <MudText Typo="Typo.body2" Align="Align.Center" Class="mt-4">Drag & Drop Files Here</MudText>
-        <MudText Typo="Typo.subtitle2" Align="Align.Center" Class="mt-1">Max.16MB each</MudText>
-        <MudTooltip Text="Clear all files">
-            <MudIconButton Variant="Variant.Filled"
-                           Icon="@Icons.Material.Filled.ClearAll"
-                           Color="Color.Warning"
-                           OnClick="ClearAllFiles"
-                           Disabled="@(!FileObjects.Any())"
-                           Size="Size.Small" />
-        </MudTooltip>
-    </div>
+<div class="file-manager-container">
+    <MudStack Class="gap-4">
+        <div @ref="dropZoneElement" class="drop-zone align-content-start">
+            <InputFile @ref="inputFile" key="@inputFileKey" OnChange="OnChange" multiple style="display:none" />
+            <MudText Typo="Typo.body2" Align="Align.Center" Class="mt-4">Drag & Drop Files Here</MudText>
+            <MudText Typo="Typo.subtitle2" Align="Align.Center" Class="mt-1">Max.16MB each</MudText>
+            <MudTooltip Text="Clear all files">
+                <MudIconButton Variant="Variant.Filled"
+                               Icon="@Icons.Material.Filled.ClearAll"
+                               Color="Color.Warning"
+                               OnClick="ClearAllFiles"
+                               Disabled="@(!FileObjects.Any())"
+                               Size="Size.Small" />
+            </MudTooltip>
+        </div>
 
-    @* File List *@
+        @* File List *@
 @* 
-    <MudItem xs="12" Class="align-content-start mud-item-compact item-scroll">
-        @if (FileObjects.Any())
-        {
-            @foreach (var fileObject in FileObjects)
+        <MudItem xs="12" Class="align-content-start mud-item-compact item-scroll">
+            @if (FileObjects.Any())
             {
-                <div class="file-item">
-                    <MudGrid>
-                        <MudItem xs="10">
-                            <MudText Typo="Typo.body2">
-                                <MudIcon Icon="@GetFileTypeIcon(DetermineFileType(fileObject))" Size="Size.Small" Class="mr-2" />
-                                @fileObject.File?.Name
-                            </MudText>
-                        </MudItem>
-                        <MudItem xs="2" Class="d-flex align-center justify-end">
-                            @if (fileObject.Status != UxObjectStatus.Deleted)
-                            {
-                                <MudButton Variant="Variant.Text"
-                                           Color="Color.Error"
-                                           OnClick="() => DeleteFile(fileObject)"
-                                           Size="Size.Small">
-                                    <MudIcon Icon="@Icons.Material.Filled.Delete" />
-                                </MudButton>
-                            }
-                            else
-                            {
-                                <MudButton Variant="Variant.Text"
-                                           Color="Color.Success"
-                                           OnClick="() => RestoreFile(fileObject)"
-                                           Size="Size.Small">
-                                    <MudIcon Icon="@Icons.Material.Filled.Restore" />
-                                </MudButton>
-                            }
-                        </MudItem>
-                    </MudGrid>
-                </div>
+                @foreach (var fileObject in FileObjects)
+                {
+                    <div class="file-item">
+                        <MudGrid>
+                            <MudItem xs="10">
+                                <MudText Typo="Typo.body2">
+                                    <MudIcon Icon="@GetFileTypeIcon(DetermineFileType(fileObject))" Size="Size.Small" Class="mr-2" />
+                                    @fileObject.File?.Name
+                                </MudText>
+                            </MudItem>
+                            <MudItem xs="2" Class="d-flex align-center justify-end">
+                                @if (fileObject.Status != UxObjectStatus.Deleted)
+                                {
+                                    <MudButton Variant="Variant.Text"
+                                               Color="Color.Error"
+                                               OnClick="() => DeleteFile(fileObject)"
+                                               Size="Size.Small">
+                                        <MudIcon Icon="@Icons.Material.Filled.Delete" />
+                                    </MudButton>
+                                }
+                                else
+                                {
+                                    <MudButton Variant="Variant.Text"
+                                               Color="Color.Success"
+                                               OnClick="() => RestoreFile(fileObject)"
+                                               Size="Size.Small">
+                                        <MudIcon Icon="@Icons.Material.Filled.Restore" />
+                                    </MudButton>
+                                }
+                            </MudItem>
+                        </MudGrid>
+                    </div>
+                }
             }
-        }
-        else
-        {
-            <MudText Typo="Typo.body2" Class="text-center pa-4" Color="Color.Secondary">
-                No files attached
-            </MudText>
-        }
-    </MudItem> *@
-</MudStack>
+            else
+            {
+                <MudText Typo="Typo.body2" Class="text-center pa-4" Color="Color.Secondary">
+                    No files attached
+                </MudText>
+            }
+        </MudItem> *@
+    </MudStack>
+</div>
 
 @code {
     const int MAX_FILE_SIZE = 16 * 1024 * 1024;
@@ -223,7 +231,8 @@
         return extension switch
         {
             ".dsi" => RfqFileType.DSI,
-            ".csv" or ".txt" => RfqFileType.CSV,
+            ".csv" => RfqFileType.CSV,
+            ".txt" => RfqFileType.TXT,
             ".xls" or ".xlsx" => RfqFileType.XLS,
             ".xml" => RfqFileType.XML,
             ".mtf" => RfqFileType.MTF,
@@ -231,33 +240,50 @@
         };
     }
 
-    private string GetFileTypeIcon(RfqFileType fileType)
-    {
-        return fileType switch
-        {
-            RfqFileType.UNK => Icons.Material.Filled.AttachFile,
-            RfqFileType.DSI => Icons.Material.Filled.Engineering,
-            RfqFileType.CSV => Icons.Material.Filled.TextFormat,
-            RfqFileType.XLS => Icons.Material.Filled.Workspaces,
-            RfqFileType.XML => Icons.Material.Filled.DataExploration,
-            RfqFileType.MTF => Icons.Material.Filled.DataObject,
-            _ => Icons.Material.Filled.AttachFile
-        };
-    }
+    // private string GetFAFileTypeIcon(RfqFileType fileType)
+    // {
+    //     return fileType switch
+    //     {
+    //         RfqFileType.UNK => "fa-solid fa-paperclip",
+    //         RfqFileType.DSI => "fa-solid fa-cogs",
+    //         RfqFileType.CSV => "fa-solid fa-file-csv",
+    //         RfqFileType.TXT => "fa-solid fa-file",
+    //         RfqFileType.XLS => "fa-solid fa-file-excel",
+    //         RfqFileType.XML => "fa-solid fa-file-lines",
+    //         RfqFileType.MTF => "fa-solid fa-file-alt",
+    //         _ => "fa-solid fa-paperclip"
+    //     };
+    // }
 
-    private Color GetFileTypeColor(RfqFileType fileType)
-    {
-        return fileType switch
-        {
-            RfqFileType.UNK => Color.Error,
-            RfqFileType.DSI => Color.Success,
-            RfqFileType.CSV => Color.Warning,
-            RfqFileType.XLS => Color.Success,
-            RfqFileType.XML => Color.Success,
-            RfqFileType.MTF => Color.Success,
-            _ => Color.Error
-        };
-    }
+    // private string GetFileTypeIcon(RfqFileType fileType)
+    // {
+    //     return fileType switch
+    //     {
+    //         RfqFileType.UNK => Icons.Material.Filled.AttachFile,
+    //         RfqFileType.DSI => Icons.Material.Filled.Engineering,
+    //         RfqFileType.CSV => Icons.Material.Filled.TextFormat,
+    //         RfqFileType.TXT => Icons.Material.Filled.TextFormat,
+    //         RfqFileType.XLS => Icons.Material.Filled.Workspaces,
+    //         RfqFileType.XML => Icons.Material.Filled.DataExploration,
+    //         RfqFileType.MTF => Icons.Material.Filled.DataObject,
+    //         _ => Icons.Material.Filled.AttachFile
+    //     };
+    // }
+
+    // private Color GetFileTypeColor(RfqFileType fileType)
+    // {
+    //     return fileType switch
+    //     {
+    //         RfqFileType.UNK => Color.Error,
+    //         RfqFileType.DSI => Color.Success,
+    //         RfqFileType.CSV => Color.Success,
+    //         RfqFileType.TXT => Color.Warning,
+    //         RfqFileType.XLS => Color.Success,
+    //         RfqFileType.XML => Color.Success,
+    //         RfqFileType.MTF => Color.Success,
+    //         _ => Color.Error
+    //     };
+    // }
 
     private async Task ClearAllFiles()
     {

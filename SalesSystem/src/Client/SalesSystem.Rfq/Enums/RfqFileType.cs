@@ -16,5 +16,7 @@ namespace SalesSystem.Rfq.Enums
         XML,
         [Description("Mtf")]
         MTF,
+        [Description("txt")]
+        TXT,
     }
 }

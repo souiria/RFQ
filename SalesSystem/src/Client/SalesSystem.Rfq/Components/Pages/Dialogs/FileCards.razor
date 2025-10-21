@@ -75,7 +75,7 @@
             <MudCard Class="@GetCardCssClass(fileObject)" Elevation="2">
                 <MudCardContent Class="pb-2">
                     <div class="d-flex align-center mb-2">
-                        <MudIcon Icon="@GetFileTypeIcon(DetermineFileType(fileObject))" 
+                        <MudIcon Icon="@GetFAFileTypeIcon(DetermineFileType(fileObject))" 
                                  Color="@GetFileTypeColor(DetermineFileType(fileObject))" 
                                  Size="Size.Medium" 
                                  Class="mr-2" />
@@ -105,7 +105,31 @@
                             </span>
                             @if (fileObject.UploadStatus.Status == FileUploadStatus.InProgress)
                             {
-                                <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="ml-2" />
+                                <MudIcon Icon="fa-solid fa-bars-progress"
+                                         Color="Color.Warning"
+                                         Size="Size.Medium"
+                                         Class="mr-2" />
+                            }
+                            else if (fileObject.UploadStatus.Status == FileUploadStatus.NotStarted)
+                            {
+                                <MudIcon Icon="fa-solid fa-stop"
+                                         Size="Size.Medium"
+                                         Class="mr-2"
+                                         Style="@($"color:{Colors.Gray.Darken2};")" />
+                            }
+                            else if(fileObject.UploadStatus.Status == FileUploadStatus.Success)
+                            {
+                                <MudIcon Icon="fa-solid fa-check-double"
+                                         Color="Color.Success"
+                                         Size="Size.Medium"
+                                         Class="mr-2" />
+                            }
+                            else
+                            {
+                                <MudIcon Icon="fa-solid fa-triangle-exclamation"
+                                         Color="Color.Error"
+                                         Size="Size.Medium"
+                                         Class="mr-2" />
                             }
                         </div>
                     </div>
@@ -251,11 +275,27 @@
         return extension switch
         {
             ".dsi" => RfqFileType.DSI,
-            ".csv" or ".txt" => RfqFileType.CSV,
+            ".csv" => RfqFileType.CSV,
+            ".txt" => RfqFileType.TXT,
             ".xls" or ".xlsx" => RfqFileType.XLS,
             ".xml" => RfqFileType.XML,
             ".mtf" => RfqFileType.MTF,
             _ => RfqFileType.UNK
+        };
+    }
+
+    private string GetFAFileTypeIcon(RfqFileType fileType)
+    {
+        return fileType switch
+        {
+            RfqFileType.UNK => "fa-solid fa-paperclip",
+            RfqFileType.DSI => "fa-brands fa-cuttlefish",
+            RfqFileType.CSV => "fa-solid fa-file-csv",
+            RfqFileType.TXT => "fa-solid fa-file",
+            RfqFileType.XLS => "fa-solid fa-file-excel",
+            RfqFileType.XML => "fa-solid fa-file-lines",
+            RfqFileType.MTF => "fa-solid fa-file-alt",
+            _ => "fa-solid fa-paperclip"
         };
     }
 
@@ -279,7 +319,8 @@
         {
             RfqFileType.UNK => Color.Error,
             RfqFileType.DSI => Color.Success,
-            RfqFileType.CSV => Color.Warning,
+            RfqFileType.CSV => Color.Success,
+            RfqFileType.TXT => Color.Warning,
             RfqFileType.XLS => Color.Success,
             RfqFileType.XML => Color.Success,
             RfqFileType.MTF => Color.Success,

@@ -11,6 +11,7 @@
 
             // Add service defaults & Aspire client integrations.
             builder.AddServiceDefaults();
+            builder.Logging.AddSeq();
 
             //Add Authentication for User
             builder.AddUserAuthentication();

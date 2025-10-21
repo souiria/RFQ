@@ -10,7 +10,7 @@
 <MudGrid Class="position-fixed">
     <MudItem xs="12">
         <MudPaper Class="d-flex flex-row" Style="height:150px;">
-            <MudPaper Elevation="0" Class="pa-4">
+            <MudPaper Class="pa-4">
                 <MudStack>
                     <MudSelect T="string"
                                 Value="customerValue"
@@ -40,7 +40,7 @@
                 </MudStack>
             </MudPaper>
 
-            <MudPaper Elevation="0" Class="pa-4">
+            <MudPaper Class="pa-4">
                 <MudStack>
                     <MudSelect T="string"
                                 Value="customerProjectValue"
@@ -48,7 +48,7 @@
                                 ValueChanged="OnCustomerProjectValueChanged"
                                 Label="Project"
                                 Placeholder="Please Select"
-                                AdornmentIcon="@Icons.Material.Filled.Settings"
+                                AdornmentIcon="@Icons.Material.Filled.DesignServices"
                                 AdornmentColor="Color.Primary">
                         @foreach (var association in RfqUxService.CustomerProjectAssociations)
                         {
@@ -62,7 +62,7 @@
                 </MudStack>
             </MudPaper>
 
-            <MudPaper Elevation="0" Class="pa-4">
+            <MudPaper Class="pa-4">
                 <MudStack>
                     <MudSelect T="string"
                                 Value="quotationValue"
@@ -70,7 +70,8 @@
                                 ValueChanged="OnQuotationValueChanged"
                                 Label="Quotation Number"
                                 Placeholder="Please Select"
-                                AdornmentIcon="@Icons.Material.Filled.People" AdornmentColor="Color.Primary">
+                                AdornmentIcon="@Icons.Material.Filled.RequestQuote"
+                                AdornmentColor="Color.Primary">
                         <MudSelectItem Value="@("SEWS-25-025-005678")">SEWS-25-025-005678</MudSelectItem>
                         <MudSelectItem Value="@("SEWS-25-025-005688")">SEWS-25-025-005688</MudSelectItem>
                         <MudSelectItem Value="@("SEWS-25-025-005692")">SEWS-25-025-005692</MudSelectItem>
@@ -82,14 +83,14 @@
                 </MudStack>
             </MudPaper>
 
-            <MudPaper Elevation="0" Class="d-flex flex-grow-1 pa-4">
+            <MudPaper Class="d-flex flex-grow-1 pa-4 w-100">
                 <FileManager @ref="componentFileManager"
                              FileObjects="FileObjects"
                              OnFilesChanged="OnFilesChanged" />
             </MudPaper>
 
             @* Controls  *@
-            <MudPaper Elevation="0" Class="d-flex align-end pa-4">
+            <MudPaper Class="d-flex align-end pa-4">
                 <MudButton Color="Color.Primary"
                             Disabled="@(!FileObjects.Any())"
                             OnClick="@SubmitDataAsync"

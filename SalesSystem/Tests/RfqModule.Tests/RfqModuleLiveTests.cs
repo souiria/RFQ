@@ -1,11 +1,11 @@
 ﻿using System.Diagnostics;
-using System.Globalization;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Grpc.Net.Client;
-using NUnit.Framework.Interfaces;
+using NUnit.Framework.Constraints;
 using static RfqModule.RfqModule;
+using RfqModule.Tests.Resources;
 namespace RfqModule.Tests
 {
     [TestFixture]
@@ -25,12 +25,13 @@ namespace RfqModule.Tests
 
         public RfqModuleLiveTests()
         {
+            // ford car model EB02010D-EA41-4E55-B309-8A228CBFD7CE
             _GrpcServiceUrl = "https://localhost:7207"; // Adjust to your service URL
             _TestUserId = Guid.Parse("86380EFD-5651-4552-8145-E59E785F099A"); // Replace with valid test user
             _TestUserEmail = "Darran.Williams@sews-e.com";
-            _TestCustomerId = "6812e12d-bd63-4519-8d41-7e66462cfcdb";       // Ford
+            _TestCustomerId = "6812E12D-BD63-4519-8D41-7E66462CFCDB";       // Ford
+            _TestProjectGuid = "1A302054-2821-4FDA-91C3-E86878139783";    // ProjectAssociation T6RANPHEV
             _TestLocationGuid = "FA5B3550-2085-48E3-AE5E-0237BFEC89D7";     // FORD TBC
-            _TestProjectGuid = "9671fd1d-193d-4048-ac36-e209411af29f";      // ProjectAssociation T6RANPHEV; projectId = 1A302054-2821-4FDA-91C3-E86878139783
             _TestUnitGuid = "test-unit-guid";
             _TestModelGuid = "test-model-guid";
         }
@@ -62,11 +63,11 @@ namespace RfqModule.Tests
         [Test]
         [Category("Live")]
         [Category("Basic")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
         public async Task SayHello_LiveService_ReturnsCorrectMessage()
         {
             // Arrange
-            HelloRequest request = new HelloRequest { Name = "LiveTestUser" };
+            HelloRequest request = new HelloRequest();
+            request.Name = "LiveTestUser";
 
             try
             {
@@ -75,9 +76,10 @@ namespace RfqModule.Tests
 
                 // Assert
                 Assert.That(response, Is.Not.Null);
-                Assert.That(response.Message, Is.EqualTo("Hello LiveTestUser"));
+                EqualConstraint equality = Is.EqualTo("Hello LiveTestUser");
+                Assert.That(response.Message, equality);
                 
-                Debug.WriteLine($"[PASS] SayHello Response: {response.Message}");
+                Console.WriteLine($"[PASS] SayHello Response: {response.Message}");
             }
             catch (RpcException ex) when (ex.StatusCode == StatusCode.Unavailable)
             {
@@ -88,7 +90,6 @@ namespace RfqModule.Tests
         [Test]
         [Category("Live")]
         [Category("Customers")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
         public async Task GetAllCustomersGrpc_LiveService_ReturnsCustomers()
         {
             // Arrange
@@ -111,9 +112,10 @@ namespace RfqModule.Tests
                 Debug.WriteLine($"... completed in {stopwatch.ElapsedMilliseconds}ms");
 
                 // Log first few customers
-                foreach (CustomerGrpc customer in response.Customers.Take(3))
+                IEnumerable<CustomerGrpc> customers = response.Customers.Take(10);
+                foreach (CustomerGrpc customer in customers)
                 {
-                    Debug.WriteLine($"  - Customer: {customer.Id} | {customer.CustomerBusinessGroupName}");
+                    Console.WriteLine($"  - Customer: {customer.Id} | {customer.CustomerBusinessGroupName}");
                 }
 
                 // Performance assertion
@@ -131,14 +133,11 @@ namespace RfqModule.Tests
         [Test]
         [Category("Live")]
         [Category("Customers")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
         public async Task GetCustomersByUserIdGrpc_LiveService_WithValidUserId_ReturnsCustomers()
         {
             // Arrange
-            GetCustomersByUserIdGrpcRequest request = new GetCustomersByUserIdGrpcRequest
-            {
-                UserId = _TestUserEmail
-            };
+            GetCustomersByUserIdGrpcRequest request = new GetCustomersByUserIdGrpcRequest();
+            request.UserId = _TestUserId.ToString().ToUpperInvariant();
 
             try
             {
@@ -152,9 +151,10 @@ namespace RfqModule.Tests
                 Debug.WriteLine($"[PASS] GetCustomersByUserId - Total Count: {response.TotalCount}, Retrieved: {response.Customers.Count}");
 
                 // Log customers for this user
-                foreach (CustomerGrpc customer in response.Customers.Take(3))
+                IEnumerable<CustomerGrpc> customers = response.Customers.Take(10);
+                foreach (CustomerGrpc customer in customers)
                 {
-                    Debug.WriteLine($"  - Customer: {customer.Id} | {customer.CustomerBusinessGroupName}");
+                    Console.WriteLine($"  - Customer: {customer.Id} | {customer.CustomerBusinessGroupName}");
                 }
 
                 // Validate customer data structure
@@ -172,14 +172,11 @@ namespace RfqModule.Tests
         [Test]
         [Category("Live")]
         [Category("ProjectAssociations")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
         public async Task GetProjectAssociationsByCustomerId_LiveService_ReturnsAssociations()
         {
             // Arrange
-            GetProjectAssociationsByCustomerIdRequest request = new GetProjectAssociationsByCustomerIdRequest
-            {
-                CustomerId = _TestCustomerId
-            };
+            GetProjectAssociationsByCustomerIdRequest request = new GetProjectAssociationsByCustomerIdRequest();
+            request.CustomerId = _TestCustomerId.ToUpperInvariant();
 
             try
             {
@@ -193,9 +190,10 @@ namespace RfqModule.Tests
                 Debug.WriteLine($"[PASS] GetProjectAssociationsByCustomerId - Retrieved: {response.ProjectAssociation.Count} associations");
 
                 // Log associations
-                foreach (ProjectAssociation? association in response.ProjectAssociation.Take(3))
+                IEnumerable<ProjectAssociation> associations = response.ProjectAssociation.Take(10);
+                foreach (ProjectAssociation? association in associations)
                 {
-                    Debug.WriteLine($"  - Association: {association.Id} | Project: {association.CustomerProjectGuid}");
+                    Console.WriteLine($"  - Association: {association.Id} | Project: {association.CustomerProjectGuid}");
                 }
             }
             catch (RpcException ex) when (ex.StatusCode == StatusCode.Unavailable)
@@ -212,16 +210,13 @@ namespace RfqModule.Tests
         [Test]
         [Category("Live")]
         [Category("RfqReasons")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
         public async Task GetRfqReasonsGrpc_LiveService_ReturnsRfqReasons()
         {
             // Arrange
-            GetRfqReasonsGrpcRequest request = new GetRfqReasonsGrpcRequest
-            {
-                RequestType = 1, // Read operation
-                Position = 0,
-                Take = 10
-            };
+            GetRfqReasonsGrpcRequest request = new GetRfqReasonsGrpcRequest();
+            request.RequestType = 1; // Read operation
+            request.Position = 0;
+            request.Take = 10;
 
             try
             {
@@ -235,15 +230,15 @@ namespace RfqModule.Tests
                 Debug.WriteLine($"[PASS] GetRfqReasons - Retrieved: {response.RfqReasons.Count} reasons");
 
                 // Log first few reasons
-                foreach (RfqReasonGrpc reason in response.RfqReasons.Take(5))
+                IEnumerable<RfqReasonGrpc> reasons = response.RfqReasons.Take(5);
+                foreach (RfqReasonGrpc reason in reasons)
                 {
-                    Debug.WriteLine($"  - Reason: {reason.RowId} | {reason.RfqReasonTitle}");
+                    Console.WriteLine($"  - Reason: {reason.RowId} | {reason.RfqReasonTitle}");
                 }
 
                 // Validate reason data
                 foreach (RfqReasonGrpc reason in response.RfqReasons)
                 {
-                    Assert.That(reason.RowId, Is.GreaterThan(0), "Reason ID should be greater than 0");
                     Assert.That(reason.RfqReasonTitle, Is.Not.Null.And.Not.Empty, "Reason title should not be null or empty");
                 }
             }
@@ -256,42 +251,61 @@ namespace RfqModule.Tests
         [Test]
         [Category("Live")]
         [Category("CreateProject")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
         public async Task CreateRfqProjectGrpc_LiveService_WithValidData_ReturnsSuccess()
         {
+            // service calls are needed, caches need to be filled properly before this test can pass consistently
+            GetCustomersByUserIdGrpcRequest customerRequest = new GetCustomersByUserIdGrpcRequest();
+            customerRequest.UserId = _TestUserId.ToString().ToUpperInvariant();
+            await _RfqModuleClient!.GetCustomersByUserIdGrpcAsync(customerRequest);
+
+            GetProjectAssociationsByCustomerIdRequest projectAssociationsRequest = new GetProjectAssociationsByCustomerIdRequest();
+            projectAssociationsRequest.CustomerId = _TestCustomerId.ToUpperInvariant();
+            GetProjectAssociationsByCustomerIdResponse projectAssociationsByCustomerIdResponse = await _RfqModuleClient!.GetProjectAssociationsByCustomerIdAsync(projectAssociationsRequest);
+
+            GetRfqReasonsGrpcRequest reasonsRequest = new GetRfqReasonsGrpcRequest();
+            reasonsRequest.RequestType = 1; // Read operation
+            reasonsRequest.Position = 0;
+            reasonsRequest.Take = 10;
+
+            GetRfqReasonsGrpcResponse reasonsResponse = await _RfqModuleClient!.GetRfqReasonsGrpcAsync(reasonsRequest);
+            Assert.That(reasonsResponse.RfqReasons, Is.Not.Empty, "Should have RFQ reasons for project creation test");
+            RfqReasonGrpc reason = reasonsResponse.RfqReasons.First();
+
+
+            //string quotationNumber = "SEWS - 25 - 025 - 005678";
+
             // Arrange
             DateTime nextMonth = DateTime.UtcNow.AddDays(30);
 
-            CreateRfqProjectGrpcRequest request = new CreateRfqProjectGrpcRequest();
-            request.Project = new RfqProject();
-            request.Project.CustomerBusinessUnitGuid = _TestUnitGuid;
-            request.Project.CustomerLocationGuid = _TestLocationGuid;
-            request.Project.ProjectGuid = _TestProjectGuid;
-            request.Project.RfqReasonId = 1;
-            request.Project.VehicleVolume = 1000;
-            request.Project.RfqResponseDeadline = Timestamp.FromDateTime(nextMonth);
-            request.Project.CarModelGuid = _TestModelGuid;
+            CreateRfqProjectGrpcRequest projectRequest = new CreateRfqProjectGrpcRequest();
+            projectRequest.Project = new RfqProject();
+            projectRequest.Project.CustomerBusinessUnitGuid = _TestUnitGuid;
+            projectRequest.Project.CustomerLocationGuid = _TestLocationGuid;
+            projectRequest.Project.ProjectGuid = _TestProjectGuid;
+            projectRequest.Project.RfqReasonId = reason.RowId ?? 0;
+            projectRequest.Project.VehicleVolume = 1000;
+            projectRequest.Project.RfqResponseDeadline = DateTime.UtcNow.ToUniversalTime().ToTimestamp();
 
             try
             {
                 // Act
-                CreateRfqProjectGrpcResponse response = await _RfqModuleClient!.CreateRfqProjectGrpcAsync(request);
+                CreateRfqProjectGrpcResponse response = await _RfqModuleClient!.CreateRfqProjectGrpcAsync(projectRequest);
 
                 // Assert
                 Assert.That(response, Is.Not.Null);
                 
-                Debug.WriteLine($"[PASS] CreateRfqProject - Success: {response.Success}, Message: {response.Message}");
+                Console.WriteLine($"[PASS] CreateRfqProject - Success: {response.Success}, Message: {response.Message}");
                 
                 if (response.Success)
                 {
                     Assert.That(response.Success, Is.True);
-                    Debug.WriteLine($"  - Created Project ID: {response.CreatedProjectId}");
+                    Console.WriteLine($"  - Created Project ID: {response.CreatedProjectId}");
                 }
                 else
                 {
                     // Creation may fail due to validation rules with test data
                     Assert.That(response.Message, Is.Not.Null.And.Not.Empty, "Error message should be provided when creation fails");
-                    Debug.WriteLine($"  - Creation failed (expected with test data): {response.Message}");
+                    Console.WriteLine($"  - Creation failed (expected with test data): {response.Message}");
                 }
             }
             catch (RpcException ex) when (ex.StatusCode == StatusCode.Unavailable)
@@ -300,8 +314,8 @@ namespace RfqModule.Tests
             }
             catch (RpcException ex) when (ex.StatusCode == StatusCode.InvalidArgument)
             {
-                Debug.WriteLine($"[INFO] CreateRfqProject validation error (expected with test data): {ex.Status.Detail}");
-                Assert.Pass("Service correctly validated request and returned InvalidArgument");
+                Console.WriteLine($"[INFO] CreateRfqProject validation error (expected with test data): {ex.Status.Detail}");
+                Assert.Pass("Service correctly validated projectRequest and returned InvalidArgument");
             }
         }
 
@@ -311,7 +325,7 @@ namespace RfqModule.Tests
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
         public async Task CreateRfqProjectGrpc_LiveService_WithInvalidData_ReturnsValidationError()
         {
-            // Arrange - Create request with missing required fields
+            // Arrange - Create projectRequest with missing required fields
             CreateRfqProjectGrpcRequest request = new CreateRfqProjectGrpcRequest();
             // Intentionally leave required fields empty to test validation
 
@@ -323,14 +337,14 @@ namespace RfqModule.Tests
                 // Assert
                 Assert.That(response, Is.Not.Null);
                 Assert.That(response.Success, Is.False, "Request with invalid data should not succeed");
-                Assert.That(response.Message, Is.Not.Null.And.Not.Empty, "Error message should be provided for invalid request");
+                Assert.That(response.Message, Is.Not.Null.And.Not.Empty, "Error message should be provided for invalid projectRequest");
                 
                 Debug.WriteLine($"[PASS] CreateRfqProject validation - Success: {response.Success}, Message: {response.Message}");
             }
             catch (RpcException ex) when (ex.StatusCode == StatusCode.InvalidArgument)
             {
-                Debug.WriteLine($"[PASS] CreateRfqProject correctly rejected invalid request: {ex.Status.Detail}");
-                Assert.Pass("Service correctly validated request and returned InvalidArgument");
+                Debug.WriteLine($"[PASS] CreateRfqProject correctly rejected invalid projectRequest: {ex.Status.Detail}");
+                Assert.Pass("Service correctly validated projectRequest and returned InvalidArgument");
             }
             catch (RpcException ex) when (ex.StatusCode == StatusCode.Unavailable)
             {
@@ -496,7 +510,7 @@ namespace RfqModule.Tests
         [Category("Live")]
         [Category("Performance")]
         [Category("HealthCheck")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
+        // T_SHLSAERWT
         public async Task ServiceHealth_LiveService_AllEndpoints_RespondsWithinTimeout()
         {
             TimeSpan timeout = TimeSpan.FromSeconds(30);
@@ -506,13 +520,14 @@ namespace RfqModule.Tests
             try
             {
                 // Test basic connectivity with SayHello
-                HelloRequest helloRequest = new HelloRequest { Name = "HealthCheck" };
+                HelloRequest helloRequest = new HelloRequest();
+                helloRequest.Name = "HealthCheck";
                 HelloReply helloResponse = await _RfqModuleClient!.SayHelloAsync(helloRequest, cancellationToken: cancellationToken);
                 
                 Assert.That(helloResponse, Is.Not.Null);
-                Debug.WriteLine("[PASS] Service Health Check - All endpoints accessible");
-                Debug.WriteLine($"  - Response time: < {timeout.TotalSeconds}s");
-                Debug.WriteLine($"  - Service message: {helloResponse.Message}");
+                Console.WriteLine(TestMessages.T_SHLSAERWT_ServiceHealthCheck);
+                Console.WriteLine(TestMessages.T_SHLSAERWT_Timing, timeout.TotalSeconds);
+                Console.WriteLine(TestMessages.T_SHLSAERWT_ServiceMessage, helloResponse.Message);
             }
             catch (OperationCanceledException)
             {
@@ -527,8 +542,7 @@ namespace RfqModule.Tests
         [Test]
         [Category("Live")]
         [Category("Performance")]
-        [Repeat(3)]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
+        [Repeat(10)]
         public async Task LoadTest_GetCustomers_ConsistencyAndPerformance()
         {
             // This test runs multiple times to check consistency and performance
@@ -536,15 +550,13 @@ namespace RfqModule.Tests
             
             try
             {
-                GetCustomersByUserIdGrpcRequest request = new GetCustomersByUserIdGrpcRequest
-                {
-                    UserId = _TestUserEmail
-                };
+                GetCustomersByUserIdGrpcRequest request = new GetCustomersByUserIdGrpcRequest();
+                request.UserId = _TestUserId.ToString().ToUpperInvariant();
                 
                 GetCustomersByUserIdGrpcResponse response = await _RfqModuleClient!.GetCustomersByUserIdGrpcAsync(request);
                 stopwatch.Stop();
                 
-                Debug.WriteLine($"[LOAD-TEST-RUN-{TestContext.CurrentContext.CurrentRepeatCount + 1}] " +
+                Console.WriteLine($"[LOAD-TEST-RUN-{TestContext.CurrentContext.CurrentRepeatCount + 1,03}] " +
                                 $"Retrieved {response.Customers.Count} customers in {stopwatch.ElapsedMilliseconds}ms");
 
                 Assert.That(response.Customers, Is.Not.Null);

@@ -415,18 +415,23 @@
 
         public async Task<CreateRfqProjectGrpcResponse> CreateRfqProject(CreateRfqProjectGrpcRequest request)
         {
-            ProjectGrpc project = _Projects.First(p => p.Id == request.Project.ProjectGuid);
+            //GetProjectAssociationsByCustomerIdRequest req = new GetProjectAssociationsByCustomerIdRequest();
+            //req.CustomerId = request.Project.CustomerBusinessUnitGuid;
+
+            //await GetProjectAssociationsByCustomerId(req);
+
+            ProjectGrpc project = _Projects.First(p => p.Id.ToUpperInvariant() == request.Project.ProjectGuid.ToUpperInvariant());
             string projectCode = project.CustomerProjectCode;
             List<VehicleGrpc> vehiclesResponse = await GetVehiclesByProjectCodeGrpc(projectCode);
             CreateRfqProjectGrpcResponse response = new CreateRfqProjectGrpcResponse();
             if (0 == vehiclesResponse.Count)
             {
                 response.Success = false;
+                response.Message = $"No vehicles found for the project code {projectCode} (id {request.Project.ProjectGuid.ToUpperInvariant()})";
                 return response;
             }
 
             VehicleGrpc vehicle = vehiclesResponse.First();
-
             request.Project.CarModelGuid = vehicle.Id;
 
             RfqProjectGrpc rfqProject = new RfqProjectGrpc();
