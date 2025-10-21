@@ -1,0 +1,6 @@
+﻿namespace Rfq.CQRS.Specification
+{
+    public class namespace_Rfq
+    {
+    }
+}
