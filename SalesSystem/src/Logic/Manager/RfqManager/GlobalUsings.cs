@@ -1,6 +1,9 @@
 ﻿global using System.Globalization;
+global using System.Linq.Expressions;
 global using System.Text;
 global using DocumentConversion;
+global using EDI;
+global using Emacs;
 global using Google.Protobuf;
 global using Google.Protobuf.WellKnownTypes;
 global using Grpc.Core;

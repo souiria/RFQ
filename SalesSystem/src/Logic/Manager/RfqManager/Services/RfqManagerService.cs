@@ -5,16 +5,19 @@
 
         readonly MasterClient _MasterClient;
         readonly Rfq.Rfq.RfqClient _RfqClient;
+        readonly Emacs.Emacs.EmacsClient _EmacsClient;
         readonly ILogger<RfqManagerService> _Logger;
 
         public RfqManagerService(ILogger<RfqManagerService> logger,
               MasterClient masterClient,
-            Rfq.Rfq.RfqClient rfqClient
+            Rfq.Rfq.RfqClient rfqClient,
+            Emacs.Emacs.EmacsClient emacsClient
             )
         {
             _Logger = logger;
             _MasterClient = masterClient;
             _RfqClient = rfqClient;
+            _EmacsClient = emacsClient;
         }
 
         public async Task<GetCustomersGrpcResponse> GetCustomersGrpc(GetCustomersGrpcRequest request)

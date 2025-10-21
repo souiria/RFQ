@@ -219,5 +219,64 @@
             return await _EMACSAccessService.GetPARTMSGrpcByPartGroupsConstCode(request.PartGroupsConstCode, context.CancellationToken);
         }
         #endregion
+
+        public override async Task<EmacsFilterResponse> FilterEmacsDataGrpc(EmacsFilterRequest request, ServerCallContext context)
+        {
+            ParsingConfig parsingConfig = new ParsingConfig();
+            string filterExpressionString = request.FilterExpression.ToUpperInvariant();
+            EmacsFilterResponse returnResponse = new EmacsFilterResponse();
+
+            switch (request.DatabaseList)
+            {
+                case "CombinedParts":
+                    await HandleFilterCase<CombinedPartsGrpc>(filterExpressionString, parsingConfig, returnResponse,
+                        filterList => {
+                            ListCombinedPartsGrpc returnList = new ListCombinedPartsGrpc();
+                            returnList.CombinedPartsGrpc.AddRange(filterList);
+                            returnResponse.ListCombinedPartsGrpc = returnList;
+                        }, context.CancellationToken);
+                    break;
+                case "PartCategoryDetail":
+                    await HandleFilterCase<PartCategoryDetailGrpc>(filterExpressionString, parsingConfig, returnResponse,
+                        filterList => {
+                            ListPartCategoryDetailGrpc returnList = new ListPartCategoryDetailGrpc();
+                            returnList.PartCategoryDetailGrpc.AddRange(filterList);
+                            returnResponse.ListPartCategoryDetailGrpc = returnList;
+                        }, context.CancellationToken);
+                    break;
+                case "PartClassDetail":
+                    await HandleFilterCase<PartClassDetailGrpc>(filterExpressionString, parsingConfig, returnResponse,
+                        filterList => {
+                            ListPartClassDetailGrpc returnList = new ListPartClassDetailGrpc();
+                            returnList.PartClassDetailGrpc.AddRange(filterList);
+                            returnResponse.ListPartClassDetailGrpc = returnList;
+                        }, context.CancellationToken);
+                    break;
+                case "PartGroups":
+                    await HandleFilterCase<PartGroupsGrpc>(filterExpressionString, parsingConfig, returnResponse,
+                        filterList => {
+                            ListPartGroupsGrpc returnList = new ListPartGroupsGrpc();
+                            returnList.PartGroupsGrpc.AddRange(filterList);
+                            returnResponse.ListPartGroupsGrpc = returnList;
+                        }, context.CancellationToken);
+                    break;
+            }
+
+            return returnResponse;
+        }
+
+        async Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig,
+            EmacsFilterResponse returnResponse, Action<IEnumerable<T>> setResponseCollection, CancellationToken cancellationToken)
+        {
+            Expression<Func<T, bool>> filterExpression = DynamicExpressionParser.ParseLambda<T, bool>(parsingConfig, false, filterExpressionString);
+            Func<T, bool> compiledExpression = filterExpression.Compile();
+            IEnumerable<T> filteredList = await _EMACSAccessService.Filter(compiledExpression, cancellationToken);
+
+            if (filteredList.Any())
+            {
+                setResponseCollection(filteredList);
+                returnResponse.Success = true;
+            }
+        }
     }
 }

@@ -27,13 +27,17 @@
             builder.Logging.AddSeq();
             builder.Services.AddGrpc();
             builder.Services.AddSingleton<IRfqManagerService, RfqManagerService>();
-            builder.Services.AddGrpcClient<Master.Master.MasterClient>(o =>
+            builder.Services.AddGrpcClient<MasterClient>(o =>
             {
                 o.Address = new Uri("https://localhost:7101");
             });
             builder.Services.AddGrpcClient<Rfq.Rfq.RfqClient>(o =>
             {
                 o.Address = new Uri("https://localhost:7116");
+            });
+            builder.Services.AddGrpcClient<Emacs.Emacs.EmacsClient>(o =>
+            {
+                o.Address = new Uri("https://localhost:7285");
             });
             builder.Services.AddInfrastructure();
 

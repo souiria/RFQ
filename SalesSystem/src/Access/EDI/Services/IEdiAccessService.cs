@@ -29,5 +29,6 @@
         Task<bool> SaveEdiInvoiceUnit4GrpcAsync(ListEdiInvoiceUnit4Grpc data, CancellationToken cancellationToken);
         Task<bool> SaveEdiZeroPriceExceptionsGrpcAsync(ListEdiZeroPriceExceptionsGrpc data, CancellationToken cancellationToken);
 
+        Task<IEnumerable<T>> Filter<T>(Func<T, bool> func, CancellationToken cancellationToken);
     }
 }

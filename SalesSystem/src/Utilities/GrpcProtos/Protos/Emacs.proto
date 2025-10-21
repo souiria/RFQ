@@ -56,6 +56,8 @@ service Emacs {
   rpc GetPARTMSGrpcByPartGroup(GetPARTMSGrpcByPartGroupGrpcRequest) returns (ListPARTMSGrpc);
   rpc GetPARTMSGrpcByCategoryCode(GetPARTMSGrpcByCategoryCodeGrpcRequest) returns (ListPARTMSGrpc);
   rpc GetPARTMSGrpcByPartGroupsConstCode(GetPARTMSGrpcByPartGroupsConstCodeGrpcRequest) returns (ListPARTMSGrpc);
+
+  rpc FilterEmacsDataGrpc (EmacsFilterRequest) returns (EmacsFilterResponse);
 }
 
 // The request message containing the user's name.
@@ -444,4 +446,27 @@ message PARTMSGrpc {
     google.protobuf.Int32Value Grease = 37;
     google.protobuf.StringValue CategoryCode = 38;
 
+}
+
+message EmacsFilterRequest {
+    string DatabaseList = 1;
+    string FilterExpression = 2;
+}
+
+message EmacsFilterResponse {
+    bool Success = 1;
+    ListCombinedPartsGrpc ListCombinedPartsGrpc = 2;
+    ListPartCategoryDetailGrpc ListPartCategoryDetailGrpc = 3;
+    ListPartClassDetailGrpc ListPartClassDetailGrpc = 4;
+    ListPartGroupsGrpc ListPartGroupsGrpc = 5;
+    ListPartGroupsConstGrpc ListPartGroupsConstGrpc = 6;
+    ListCustomerDataGrpc ListCustomerDataGrpc = 7;
+    ListColourCodeGrpc ListColourCodeGrpc = 8;
+    ListMaterialGroupsGrpc ListMaterialGroupsGrpc = 9;
+    ListMaterialTypesGrpc ListMaterialTypesGrpc = 10;
+    ListNPACustomerGrpc ListNPACustomerGrpc = 11;
+    ListNPASupplierGrpc ListNPASupplierGrpc = 12;
+    ListSuppliersGrpc ListSuppliersGrpc = 13;
+    ListEmacsRFIViewGrpc ListEmacsRFIViewGrpc = 14;
+    ListPARTMSGrpc ListPARTMSGrpc = 15;
 }
