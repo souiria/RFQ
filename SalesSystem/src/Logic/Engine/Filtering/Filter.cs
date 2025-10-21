@@ -1,4 +1,6 @@
-﻿namespace Filtering
+﻿using SharedModels.Filtering;
+
+namespace Filtering
 {
     public class Filter<T> : IFilter<T> where T : class
     {
