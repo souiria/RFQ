@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "CommonTypes.proto";
+
+option csharp_namespace = "CDb";
+package cdb;
+
+message DiodeGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DiodeGrpc DiodeGrpcsToCreate = 2;
+  repeated DiodeGrpc DiodeGrpcsToUpdate = 3;
+  repeated DiodeGrpc DiodeGrpcsToDelete = 4;
+}
+
+message DiodeGrpc {
+  google.protobuf.StringValue Id = 1;
+  google.protobuf.DoubleValue Amperage = 2;
+  google.protobuf.StringValue Description = 3;
+  google.protobuf.StringValue AdditionalInformation = 4;
+  google.protobuf.Int32Value Color = 5;
+}
+
+message ListDiodeGrpc {
+  repeated DiodeGrpc DiodeGrpcs = 1;
+}

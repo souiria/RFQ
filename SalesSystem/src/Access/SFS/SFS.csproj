@@ -6,9 +6,6 @@
     <Nullable>enable</Nullable>
 	<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
   </PropertyGroup>
-	<ItemGroup>
-	  <Protobuf Include="Protos\SFS.proto" GrpcServices="Both" />
-	</ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
@@ -26,12 +23,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Debug\SalesSystem.ServiceDefaults\SalesSystem.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\Utilities\SharedKernal\SharedKernel.csproj" />
-  </ItemGroup>
+    <ProjectReference Include="..\..\Utilities\GrpcProtos\GrpcProtos.csproj" />
 
-  <ItemGroup>
-    <None Update="Protos\SFS.proto">
-      <GrpcServices>Server</GrpcServices>
-    </None>
   </ItemGroup>
-
+  
 </Project>

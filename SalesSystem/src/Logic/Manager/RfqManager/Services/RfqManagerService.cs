@@ -3,14 +3,14 @@
     public class RfqManagerService : IRfqManagerService
     {
 
-        readonly Master.Master.MasterClient _MasterClient;
+        readonly MasterClient _MasterClient;
         readonly Rfq.Rfq.RfqClient _RfqClient;
         readonly ILogger<RfqManagerService> _Logger;
 
         List<ProjectGrpc> _Projects;
 
         public RfqManagerService(ILogger<RfqManagerService> logger,
-            Master.Master.MasterClient masterClient,
+              MasterClient masterClient,
             Rfq.Rfq.RfqClient rfqClient
             )
         {
