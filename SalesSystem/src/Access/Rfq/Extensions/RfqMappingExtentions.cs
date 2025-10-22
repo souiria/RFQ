@@ -1,7 +1,4 @@
-﻿using static Grpc.Core.Metadata;
-using SharedKernel;
-
-namespace Rfq.Extensions
+﻿namespace Rfq.Extensions
 {
     public static class RfqMappingExtentions
     {
