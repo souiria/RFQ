@@ -4,6 +4,8 @@ using SalesSystem.Rfq.Services;
 using SalesSystem.Rfq.Tests.Resources;
 using System.Diagnostics;
 using System.Globalization;
+using Grpc.Core;
+using Grpc.Net.Client;
 using NUnit.Framework.Constraints;
 
 namespace SalesSystem.Rfq.Tests
@@ -36,22 +38,22 @@ namespace SalesSystem.Rfq.Tests
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-#pragma warning disable CA1031 // Do not catch general exception types
             try
             {
                 // Create gRPC client pointing to the live service
-                Grpc.Net.Client.GrpcChannel channel = Grpc.Net.Client.GrpcChannel.ForAddress(TimingTestMessages.GrpcServiceUrl);
+                GrpcChannel channel = GrpcChannel.ForAddress(TimingTestMessages.GrpcServiceUrl);
                 _GrpcClient = new RfqModule.RfqModule.RfqModuleClient(channel);
                 _RfqUxService = new RfqUxService(_GrpcClient);
 
                 Debug.WriteLine($"[SETUP] Connected to live gRPC service at {TimingTestMessages.GrpcServiceUrl}");
                 Debug.WriteLine($"[SETUP] Test User ID: {_TestUserId}");
             }
-            catch (Exception ex)
+            catch (RpcException ex) when (ex.StatusCode == StatusCode.Unavailable)
             {
-                Assert.Inconclusive($"Failed to setup live gRPC connection: {ex.Message}");
+                string message = string.Format(CultureInfo.InvariantCulture,
+                    TimingTestMessages.ServiceUnavailableMessage, ex.Message);
+                Assert.Inconclusive(message);
             }
-#pragma warning restore CA1031 // Do not catch general exception types
         }
 
         [Test]
@@ -68,7 +70,6 @@ namespace SalesSystem.Rfq.Tests
             Debug.WriteLine(message);
             Debug.WriteLine($"[LIVE-TEST] Using User ID: {_TestUserId}");
 
-#pragma warning disable CA1031 // Do not catch general exception types
             try
             {
                 // Act - Following the exact pattern from CreateRfq.razor OnInitializedAsync method
@@ -111,17 +112,12 @@ namespace SalesSystem.Rfq.Tests
                     Assert.That(customer.CustomerBusinessGroupName, Is.Not.Null, "Customer business group name should not be null");
                 }
             }
-            catch (Grpc.Core.RpcException ex) when (ex.StatusCode == Grpc.Core.StatusCode.Unavailable)
+            catch (RpcException ex) when (ex.StatusCode == StatusCode.Unavailable)
             {
                 message = string.Format(CultureInfo.InvariantCulture,
                     TimingTestMessages.ServiceUnavailableMessage, ex.Message);
                 Assert.Inconclusive(message);
             }
-            catch (Exception ex)
-            {
-                Assert.Fail($"Unexpected exception during live service test: {ex.Message}");
-            }
-#pragma warning restore CA1031 // Do not catch general exception types
         }
 
         [Test]
@@ -157,7 +153,7 @@ namespace SalesSystem.Rfq.Tests
                     Assert.Warn($"Performance variance detected in run {TestContext.CurrentContext.CurrentRepeatCount + 1}: {timing}ms");
                 }
             }
-            catch (Grpc.Core.RpcException ex) when (ex.StatusCode == Grpc.Core.StatusCode.Unavailable)
+            catch (RpcException ex) when (ex.StatusCode == StatusCode.Unavailable)
             {
                 Assert.Inconclusive($"Service unavailable in consistency run {TestContext.CurrentContext.CurrentRepeatCount + 1}: {ex.Message}");
             }

@@ -26,6 +26,8 @@
 
         IResourceBuilder<ProjectResource> sfsManager = builder.AddProject<Projects.SFS>("sfs-module-service");
 
+        IResourceBuilder<ProjectResource> adssAccessService = builder.AddProject<Projects.Adss>("adss-access-service");
+
         builder.AddProject<Projects.SalesSystem_Rfq>("RfqFrontEnd");
             //.WithExternalHttpEndpoints()
             //.WithReference(apiService)
