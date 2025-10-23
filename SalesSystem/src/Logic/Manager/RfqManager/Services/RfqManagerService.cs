@@ -458,6 +458,7 @@
                 return response;
             }
 
+            response.Success = true; // haha
             response.Message = createResponse.Message;
             response.CreatedProjectId = createResponse.StringValue.Split(',').First();
             return response;

@@ -1,6 +1,4 @@
-﻿using RfqModule;
-
-namespace SalesSystem.Rfq.Models
+﻿namespace SalesSystem.Rfq.Models
 {
     public class CustomerProjectUx
     {

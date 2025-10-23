@@ -2,21 +2,162 @@ syntax = "proto3";
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
- 
-option csharp_namespace = "SalesSystem.Rfq.Client";
- 
-package RfqData;
+import "google/protobuf/wrappers.proto";
 
-service RfqDataService {
-	rpc SayHello (HelloRequest) returns (HelloReply);
+option csharp_namespace = "RfqModule";
 
+package RfqModule;
+
+// The greeting service definition.
+service RfqModule {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply);
+
+  // Uploads a file
+  rpc UploadFile (FileUploadRequest) returns (FileUploadResponse);
+  rpc GetAllCustomersGrpc (GetAllCustomersGrpcRequest) returns (GetAllCustomersGrpcResponse);
+  rpc GetCustomersByUserIdGrpc (GetCustomersByUserIdGrpcRequest) returns (GetCustomersByUserIdGrpcResponse);
+  rpc GetProjectAssociationsByCustomerId (GetProjectAssociationsByCustomerIdRequest) returns (GetProjectAssociationsByCustomerIdResponse);
+  rpc GetRfqReasonsGrpc (GetRfqReasonsGrpcRequest) returns (GetRfqReasonsGrpcResponse);
+  rpc GetVehicleByProjectCodeGrpc (GetVehicleByProjectCodeGrpcRequest) returns (GetVehicleByProjectCodeGrpcResponse);
+  rpc UploadPartsGrpc (UploadPartsRequestGrpcRequest) returns (UploadPartsRequestGrpcResponse);
+  rpc CreateRfqProjectGrpc (CreateRfqProjectGrpcRequest) returns (CreateRfqProjectGrpcResponse);
 }
 
+// The request message containing the user's name.
 message HelloRequest {
-	string name = 1;
+  string name = 1;
 }
 
+// The response message containing the greetings.
 message HelloReply {
-	string message = 1;
+  string message = 1;
 }
 
+message FileUploadRequest {
+  bytes file_data = 1;
+  string file_name = 2;
+}
+
+message FileUploadResponse {
+  bool success = 1;
+  string message = 2;
+  // Additional fields for the response as needed
+}
+
+message GetAllCustomersGrpcRequest {
+    int32 Position = 1;
+    int32 Take = 2;
+}
+
+message GetAllCustomersGrpcResponse {
+    repeated CustomerGrpc Customers = 1;
+    int32 TotalCount = 2;
+}
+
+message GetCustomersByUserIdGrpcRequest {
+	google.protobuf.StringValue UserId = 1;
+}
+
+// Shared request parameter message
+message GetCustomersByUserIdGrpcResponse {
+	repeated CustomerGrpc Customers = 1;
+	int32 TotalCount = 2;
+}
+
+message CustomerGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue CustomerBusinessGroupCode = 2;
+    google.protobuf.StringValue CustomerBusinessGroupName = 3;   
+    google.protobuf.StringValue SEWSEBusinessTeam = 4;
+    google.protobuf.BoolValue IsActive = 5;
+}
+
+message GetProjectAssociationsByCustomerIdRequest {
+    string CustomerId = 1;
+}
+
+message GetProjectAssociationsByCustomerIdResponse {
+    bool Success = 1;
+    string Message = 2;
+    repeated ProjectAssociation ProjectAssociation = 3;
+}
+
+message ProjectAssociation {
+    string CustomerLocationGuid = 1;
+    string CustomerProjectGuid = 2;
+    string CustomerLocationName = 3;
+    string CustomerProjectName = 4;
+    string Id = 5;
+}
+
+message GetRfqReasonsGrpcRequest {
+	int32 RequestType = 1;
+	int32 Position = 2;
+	int32 Take = 3;
+}
+
+message GetRfqReasonsGrpcResponse {
+    repeated RfqReasonGrpc RfqReasons = 1;
+}
+
+message RfqReasonGrpc {
+    google.protobuf.Int32Value RowId = 1;
+    google.protobuf.StringValue RfqReasonTitle = 2;   
+}
+
+message GetVehicleByProjectCodeGrpcRequest {
+    google.protobuf.StringValue ProjectCode = 1;
+}
+
+message GetVehicleByProjectCodeGrpcResponse {
+    repeated VehicleGrpc Vehicles = 1;
+}
+
+message VehicleGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue VehicleName = 2;   
+    google.protobuf.StringValue ProjectReference = 3;
+    google.protobuf.StringValue VehicleDisplay = 4;
+    google.protobuf.BoolValue IsActive = 5;
+}
+
+message UploadPartsRequestGrpcRequest {
+  bytes FileData = 1;
+  string FileName = 2;
+  string ProjectId = 3;
+}
+
+message RfqProject {
+	int64 RowId = 1;
+	string RfqNumber = 2;
+	string CustomerBusinessUnitGuid = 3;
+    string CustomerLocationGuid = 4;
+	string ProjectGuid = 5;
+	int32 RfqReasonId = 6;
+	google.protobuf.Timestamp RfqResponseDeadline = 7;
+	string CarModelGuid = 8;
+	int32 VehicleVolume = 9;
+}
+
+message UploadPartsRequestGrpcResponse {
+    bool Success = 1;
+    string Message = 2;
+    RfqProject CreatedProject = 3;
+}
+
+message CustomerParts {
+    google.protobuf.StringValue PartNumber1 = 1;
+    google.protobuf.StringValue PartNumber2 = 2;
+    google.protobuf.StringValue PartNumber3 = 3;
+}
+
+message CreateRfqProjectGrpcRequest {
+  RfqProject Project = 1;
+}
+
+message CreateRfqProjectGrpcResponse {
+    bool Success = 1;
+    string Message = 2;
+    string CreatedProjectId = 3;
+}

@@ -9,7 +9,7 @@
         /// <returns></returns>
         public static IServiceCollection AddRfqUxServices(this IServiceCollection services)
         {
-            services.AddScoped<RfqUxService>();
+            services.AddScoped<RfqUxClientService>();
             return services;
         }
     }

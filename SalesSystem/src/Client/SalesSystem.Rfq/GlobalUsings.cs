@@ -4,6 +4,8 @@ global using SalesSystem.Rfq.Services;
 global using System.Diagnostics;
 global using System.DirectoryServices.AccountManagement;
 global using Google.Protobuf.WellKnownTypes;
+global using Grpc.Net.Client;
+global using Logging;
 global using Microsoft.AspNetCore.Components.Forms;
 global using MudBlazor.Services;
 global using RfqModule;

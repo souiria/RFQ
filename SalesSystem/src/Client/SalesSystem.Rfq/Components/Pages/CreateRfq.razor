@@ -1,7 +1,8 @@
 ﻿@page "/createRfq"
 @page "/createRfq/{UserId:guid}"
 @inject ISnackbar Snackbar
-@inject RfqUxService RfqUxService
+@inject RfqUxClientService RfqUxClientService
+@inject ILogger<CreateRfq> Logger
 @rendermode InteractiveServer
 @using SalesSystem.Rfq.Components.Pages.Dialogs
 @using SalesSystem.Rfq.Extensions
@@ -20,7 +21,7 @@
                                 Placeholder="Please Select"
                                 AdornmentIcon="@Icons.Material.Filled.People"
                                 AdornmentColor="Color.Primary">
-                        @foreach (var customer in RfqUxService.Customers)
+                        @foreach (var customer in RfqUxClientService.Customers)
                         {
                             <MudSelectItem Value="@customer.CustomerBusinessGroupName">@customer.CustomerBusinessGroupName</MudSelectItem>
                         }
@@ -32,7 +33,7 @@
                                 Label="Reason"
                                 Placeholder="Please Select"
                                 AdornmentIcon="@Icons.Material.Filled.Checklist" AdornmentColor="Color.Primary">
-                        @foreach (var reason in RfqUxService.Reasons)
+                        @foreach (var reason in RfqUxClientService.Reasons)
                         {
                             <MudSelectItem Value="@reason.RfqReasonTitle">@reason.RfqReasonTitle</MudSelectItem>
                         }
@@ -50,7 +51,7 @@
                                 Placeholder="Please Select"
                                 AdornmentIcon="@Icons.Material.Filled.DesignServices"
                                 AdornmentColor="Color.Primary">
-                        @foreach (var association in RfqUxService.CustomerProjectAssociations)
+                        @foreach (var association in RfqUxClientService.CustomerProjectAssociations)
                         {
                             <MudSelectItem Value="@association.Id">@association.ProjectName - @association.CustomerName</MudSelectItem>
                         }
@@ -144,23 +145,24 @@
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             Snackbar.Add("UserId is missing in the URL", Severity.Error);
+            Logger.GenericLogInformation("CreateRfq.OnInitializedAsync - UserId is missing in the URL");
             return;
         }
 
-        if(RfqUxService.Customers.Count == 0)
+        if(RfqUxClientService.Customers.Count == 0)
         {
-            Func<Guid, Task<int>> guidAsyncService = RfqUxService.GetCustomersAsync;
+            Func<Guid, Task<int>> guidAsyncService = RfqUxClientService.GetCustomersByUserIdAsync;
             (long timing, int count) = await guidAsyncService.TimeAsyncGuidIntService((Guid)UserId);
-
-            Snackbar.Add($"{count} customers loaded, load time is {timing}ms @{DateTime.UtcNow}", Severity.Success);
+            Logger.GenericLogInformation($"CreateRfq.OnInitializedAsync - Loaded {count} customers for UserId {UserId} in {timing}ms");
+            //Snackbar.Add($"{count} customers loaded, load time is {timing}ms @{DateTime.UtcNow}", Severity.Success);
         }
 
-        if (RfqUxService.Reasons.Count == 0)
+        if (RfqUxClientService.Reasons.Count == 0)
         {
-            Func<Task<int>> guidAsyncService = RfqUxService.GetReasonsAsync;
+            Func<Task<int>> guidAsyncService = RfqUxClientService.GetRfqReasonsAsync;
             (long timing, int count) = await guidAsyncService.TimeAsyncVoidIntService();
-
-            Snackbar.Add($"{count} reasons loaded, load time is {timing}ms @{DateTime.UtcNow}", Severity.Success);
+            Logger.GenericLogInformation($"CreateRfq.OnInitializedAsync - Loaded {count} reasons in {timing}ms");
+            //Snackbar.Add($"{count} reasons loaded, load time is {timing}ms @{DateTime.UtcNow}", Severity.Success);
         }
     }
 
@@ -171,10 +173,11 @@
     {
         customerValue = value;
 
-        var customer = RfqUxService.Customers.FirstOrDefault(c => c.CustomerBusinessGroupName == value);
-        Console.WriteLine($"Customer changed to {customer?.Id} - {customer?.CustomerBusinessGroupName}");
+        var customer = RfqUxClientService.Customers.FirstOrDefault(c => c.CustomerBusinessGroupName == value);
+        Logger.GenericLogInformation($"CreateRfq.OnCustomerValueChanged - Customer changed to {customer?.Id} - {customer?.CustomerBusinessGroupName}");
+        // Console.WriteLine($"Customer changed to {customer?.Id} - {customer?.CustomerBusinessGroupName}");
 
-        Snackbar.Add($"Customer changed to {customer?.Id} - {value}", Severity.Info);
+        // Snackbar.Add($"Customer changed to {customer?.Id} - {value}", Severity.Info);
 
 
         try
@@ -184,6 +187,7 @@
         catch (Exception ex)
         {
             Snackbar.Add($"Failed to load customer projects for customer '{customerValue}': {ex.Message}", Severity.Error, config => { config.VisibleStateDuration = 10000; });
+            Logger.GenericLogError($"CreateRfq.OnCustomerValueChanged - Failed to load customer projects for customer '{customerValue}'", ex);
         }
         StateHasChanged();
     }
@@ -192,11 +196,11 @@
     {
         if (!string.IsNullOrWhiteSpace(customerValue))
         {
-            RfqModule.CustomerGrpc? customer = RfqUxService.Customers.FirstOrDefault(c => c.CustomerBusinessGroupName == customerName);
+            RfqModule.CustomerGrpc? customer = RfqUxClientService.Customers.FirstOrDefault(c => c.CustomerBusinessGroupName == customerName);
 
             if (customer != null)
             {
-                await RfqUxService.GetProjectAssociationsByCustomerId(customer.Id);
+                await RfqUxClientService.GetProjectAssociationsByCustomerIdAsync(customer.Id);
                 StateHasChanged();
             }
         }
@@ -209,8 +213,9 @@
         reasonValue = value;
         await Task.Delay(0);
 
-        var reason = RfqUxService.Reasons.FirstOrDefault(r => r.RfqReasonTitle == value);
-        Console.WriteLine($"Reason changed to {reason?.RowId} - {value}");
+        var reason = RfqUxClientService.Reasons.FirstOrDefault(r => r.RfqReasonTitle == value);
+        Logger.GenericLogInformation($"CreateRfq.OnReasonValueChanged - Reason changed to {reason?.RowId} - {reason?.RfqReasonTitle}");
+        // Console.WriteLine($"Reason changed to {reason?.RowId} - {value}");
 
         StateHasChanged();
     }
@@ -230,21 +235,21 @@
             return;
         }
 
-        RfqModule.CustomerGrpc? customer = RfqUxService.Customers.FirstOrDefault(c => c.CustomerBusinessGroupName == customerValue);
+        RfqModule.CustomerGrpc? customer = RfqUxClientService.Customers.FirstOrDefault(c => c.CustomerBusinessGroupName == customerValue);
         if (customer is null)
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             Snackbar.Add("Selected customer not found.", Severity.Error);
             return;
         }
-        CustomerProjectUx? customerProject = RfqUxService.CustomerProjectAssociations.FirstOrDefault(p => p.Id == customerProjectValue);
+        CustomerProjectUx? customerProject = RfqUxClientService.CustomerProjectAssociations.FirstOrDefault(p => p.Id == customerProjectValue);
         if (customerProject is null)
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             Snackbar.Add("Selected customer project not found.", Severity.Error);
             return;
         }
-        RfqModule.RfqReasonGrpc? reason = RfqUxService.Reasons.FirstOrDefault(r => r.RfqReasonTitle == reasonValue);
+        RfqModule.RfqReasonGrpc? reason = RfqUxClientService.Reasons.FirstOrDefault(r => r.RfqReasonTitle == reasonValue);
         if (reason is null)
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
@@ -261,13 +266,31 @@
 
         Console.WriteLine($"Submitting data: Customer={customer.Id}, Project={customerProject.Id}, Reason={reason.RowId}, VehicleVolume={vehicleVolume}, Date={_date.Value}");
 
-        CreateRfqProjectGrpcResponse response = await RfqUxService.CreateRfqProject(
+        CreateRfqProjectGrpcResponse response = await RfqUxClientService.CreateRfqProjectAsync(
             customer,
             customerProject,
             reason,
             vehicleVolume,
             _date.Value
         );
+
+        if(response == null)
+        {
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add("Failed to create project. Response is null.", Severity.Error);
+            return;
+        }
+        else if(response.Success == false)
+        {
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add($"Failed to create project. {response.Message}", Severity.Error);
+            return;
+        }
+        else
+        {
+            Logger.GenericLogInformation($"CreateRfq.SubmitDataAsync - Created project with ID {response.CreatedProjectId}, {response.Success}/{response.Message}");
+        }
+
 
         UploadPartsRequestGrpcResponse uploadFileResponse = new UploadPartsRequestGrpcResponse();
         if (!response.Success)
@@ -276,14 +299,17 @@
             Snackbar.Add("Failed to create project.", Severity.Error);
             return;
         }
+
         foreach(FileObjectUx fileObject in FileObjects)
         {
             if(fileObject.File == null)
             {
+                Logger.GenericLogInformation($"CreateRfq.SubmitDataAsync - FileObject.File is null, skipping upload.");
                 continue;
             }
-            uploadFileResponse = await RfqUxService.UploadPartsAsync(response.CreatedProjectId, fileObject.File);
+            uploadFileResponse = await RfqUxClientService.UploadPartsAsync(response.CreatedProjectId, fileObject.File);
             fileObject.UploadStatus = new FileObjectUploadStatus(uploadFileResponse);
+            Logger.GenericLogInformation($"CreateRfq.SubmitDataAsync - Uploaded file {fileObject.File.Name}/{fileObject.File.Size}, {fileObject.UploadStatus.Status}/{fileObject.UploadStatus.Message}");
         }
 
         StateHasChanged();
@@ -292,47 +318,6 @@
         // get rfq items
 
     }
-
-    // private async Task OnRetryUpload(FileObjectUx fileObject)
-    // {
-    //     try
-    //     {
-    //         if (fileObject.File == null) return;
-
-    //         // Reset upload status to in progress
-    //         fileObject.UploadStatus.Status = FileUploadStatus.InProgress;
-    //         fileObject.UploadStatus.Message = "Retrying upload...";
-    //         StateHasChanged();
-
-    //         // Here you would typically retry the upload process
-    //         // For now, we'll simulate it with a delay
-    //         await Task.Delay(2000);
-
-    //         // Simulate success/failure - you would replace this with actual upload logic
-    //         var success = new Random().Next(0, 2) == 1;
-    //         fileObject.UploadStatus.Status = success ? FileUploadStatus.Success : FileUploadStatus.Failed;
-    //         fileObject.UploadStatus.Message = success ? "Upload completed successfully" : "Upload failed - please try again";
-
-    //         if (success)
-    //         {
-    //             fileObject.IsUploaded = true;
-    //             Snackbar.Add($"File '{fileObject.File.Name}' uploaded successfully", Severity.Success);
-    //         }
-    //         else
-    //         {
-    //             Snackbar.Add($"Failed to upload '{fileObject.File.Name}'", Severity.Error);
-    //         }
-
-    //         StateHasChanged();
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         fileObject.UploadStatus.Status = FileUploadStatus.Failed;
-    //         fileObject.UploadStatus.Message = $"Error during retry: {ex.Message}";
-    //         Snackbar.Add($"Error retrying upload: {ex.Message}", Severity.Error);
-    //         StateHasChanged();
-    //     }
-    // }
 
     private void SetDragClass()
         => _dragClass = $"{DefaultDragClass} mud-border-primary";
@@ -344,7 +329,7 @@
     {
         quotationValue = value;
 
-        var quotation = RfqUxService.Reasons.FirstOrDefault(r => r.RfqReasonTitle == value);
+        var quotation = RfqUxClientService.Reasons.FirstOrDefault(r => r.RfqReasonTitle == value);
         Console.WriteLine($"Quotation changed to {quotation?.RowId} - {value}");
 
         Snackbar.Add($"Selected quotation {quotation?.RowId} - {value}");
@@ -355,7 +340,7 @@
     {
         customerProjectValue = value;
 
-        var project = RfqUxService.CustomerProjectAssociations.FirstOrDefault(p => p.ProjectName == value);
+        var project = RfqUxClientService.CustomerProjectAssociations.FirstOrDefault(p => p.ProjectName == value);
         Console.WriteLine($"Project changed to {project?.Id} - {project ?.ProjectName}");
 
         Snackbar.Add($"Selected project {project?.Id} - {value}");
