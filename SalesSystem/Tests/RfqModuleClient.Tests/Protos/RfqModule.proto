@@ -8,7 +8,7 @@ option csharp_namespace = "RfqModule";
 
 package RfqModule;
 
-// The greeting service definition.
+// The RFQ service definition.
 service RfqModule {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply);
@@ -42,7 +42,6 @@ message FileUploadRequest {
 message FileUploadResponse {
   bool success = 1;
   string message = 2;
-  // Additional fields for the response as needed
 }
 
 message GetAllCustomersGrpcRequest {
@@ -59,7 +58,6 @@ message GetCustomersByUserIdGrpcRequest {
 	google.protobuf.StringValue UserId = 1;
 }
 
-// Shared request parameter message
 message GetCustomersByUserIdGrpcResponse {
 	repeated CustomerGrpc Customers = 1;
 	int32 TotalCount = 2;

@@ -12,10 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Protos\Rfq.proto" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="IDesign.Analyzers" Version="1.0.18" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="9.0.6" />
     
@@ -25,9 +21,13 @@
 	<PackageReference Include="Grpc.Tools" Version="2.72.0" />
 	<PackageReference Include="MudBlazor" Version="8.7.0" />
 	<PackageReference Include="SpreadsheetLight.Cross.Platform" Version="3.7.0" />
+	  <PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />	  
   </ItemGroup>
-	
-  <Target Name="Tailwind" BeforeTargets="Compile">
+
+
+
+
+	<Target Name="Tailwind" BeforeTargets="Compile">
 	<Exec Command="C:\Tailwind\tailwindcss.exe --input ./Styles/tailwind.css --output ./wwwroot/styles.css" />
   </Target>
 
@@ -37,7 +37,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Debug\SalesSystem.ServiceDefaults\SalesSystem.ServiceDefaults.csproj" />
-    <ProjectReference Include="..\..\Utilities\GrpcProtos\GrpcProtos.csproj" />
     <ProjectReference Include="..\..\Utilities\Logging\Logging.csproj" />
     <ProjectReference Include="..\..\Utilities\SharedKernal\SharedKernel.csproj" />
     <ProjectReference Include="..\..\Utilities\SharedModels\SharedModels.csproj" />
@@ -48,7 +47,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\Rfq.proto" />
+    <Protobuf Include="Protos\RfqModule.proto">
+      <ProtoRoot>Protos</ProtoRoot>
+      <GrpcServices>Client</GrpcServices>
+    </Protobuf>
   </ItemGroup>
 
 </Project>

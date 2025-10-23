@@ -4,6 +4,7 @@
 @inject RfqUxClientService RfqUxClientService
 @inject ILogger<CreateRfq> Logger
 @rendermode InteractiveServer
+@using Google.Protobuf.WellKnownTypes
 @using SalesSystem.Rfq.Components.Pages.Dialogs
 @using SalesSystem.Rfq.Extensions
 
@@ -78,7 +79,7 @@
                         <MudSelectItem Value="@("SEWS-25-025-005692")">SEWS-25-025-005692</MudSelectItem>
                     </MudSelect>
                     <MudDatePicker Label="Date Format"
-                                    @bind-Date="_date"
+                                    @bind-Date="date"
                                     DateFormat="dd.MM.yyyy" />
 
                 </MudStack>
@@ -132,7 +133,7 @@
     string? quotationValue { get; set; }
     int vehicleVolume { get; set; }
 
-    DateTime? _date = DateTime.Today;
+    DateTime? date = DateTime.Today;
 
     const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
     string _dragClass = DefaultDragClass;
@@ -228,7 +229,7 @@
         || string.IsNullOrWhiteSpace(customerProjectValue)
         || string.IsNullOrWhiteSpace(reasonValue)
         || string.IsNullOrWhiteSpace(quotationValue)
-        || vehicleVolume <= 0 || !_date.HasValue)
+        || vehicleVolume <= 0 || !date.HasValue)
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             Snackbar.Add("Please fill in all required fields.", Severity.Error);
@@ -264,15 +265,16 @@
             return;
         }
 
-        Console.WriteLine($"Submitting data: Customer={customer.Id}, Project={customerProject.Id}, Reason={reason.RowId}, VehicleVolume={vehicleVolume}, Date={_date.Value}");
+        Console.WriteLine($"Submitting data: Customer={customer.Id}, Project={customerProject.Id}, Reason={reason.RowId}, VehicleVolume={vehicleVolume}, Date={date.Value}");
+        RfqProject requestProject = new RfqProject();
+        requestProject.CustomerBusinessUnitGuid = customer.Id;
+        requestProject.CustomerLocationGuid = customerProject.CustomerId;
+        requestProject.ProjectGuid = customerProject.ProjectId;
+        requestProject.RfqReasonId = reason.RowId ?? 0;
+        requestProject.VehicleVolume = vehicleVolume;
+        requestProject.RfqResponseDeadline = Timestamp.FromDateTime(date.Value.ToUniversalTime());
 
-        CreateRfqProjectGrpcResponse response = await RfqUxClientService.CreateRfqProjectAsync(
-            customer,
-            customerProject,
-            reason,
-            vehicleVolume,
-            _date.Value
-        );
+        CreateRfqProjectGrpcResponse response = await RfqUxClientService.CreateRfqProjectAsync(requestProject);
 
         if(response == null)
         {
@@ -307,7 +309,7 @@
                 Logger.GenericLogInformation($"CreateRfq.SubmitDataAsync - FileObject.File is null, skipping upload.");
                 continue;
             }
-            uploadFileResponse = await RfqUxClientService.UploadPartsAsync(response.CreatedProjectId, fileObject.File);
+            uploadFileResponse = await RfqUxClientService.UploadPartsAsync(response.CreatedProjectId, fileObject.File, 16_000_000);
             fileObject.UploadStatus = new FileObjectUploadStatus(uploadFileResponse);
             Logger.GenericLogInformation($"CreateRfq.SubmitDataAsync - Uploaded file {fileObject.File.Name}/{fileObject.File.Size}, {fileObject.UploadStatus.Status}/{fileObject.UploadStatus.Message}");
         }
