@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -7,6 +7,14 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.15.4" />
@@ -31,7 +39,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Client\SalesSystem.Rfq\SalesSystem.Rfq.csproj" />
     <ProjectReference Include="..\..\src\Logic\Engine\DocumentConversion\Transformation.csproj" />
-    <ProjectReference Include="..\..\src\Logic\Manager\RfqManager\RfqModule.csproj" />
+    <ProjectReference Include="..\..\src\Utilities\GrpcProtos\GrpcProtos.csproj" />
+    <ProjectReference Include="..\..\src\Utilities\Logging\Logging.csproj" />
   </ItemGroup>
 
   <ItemGroup>
