@@ -2,7 +2,7 @@ syntax = "proto3";
 
 option csharp_namespace = "Unit4";
 
-package greet;
+package Unit4;
 
 // The greeting service definition.
 service Greeter {

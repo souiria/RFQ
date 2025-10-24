@@ -1,12 +1,9 @@
-using Grpc.Core;
-using Unit4;
-
 namespace Unit4.Services
 {
-    public class GreeterService : Greeter.GreeterBase
+    public class Unit4AccessService : Greeter.GreeterBase
     {
-        readonly ILogger<GreeterService> _Logger;
-        public GreeterService(ILogger<GreeterService> logger)
+        readonly ILogger<Unit4AccessService> _Logger;
+        public Unit4AccessService(ILogger<Unit4AccessService> logger)
         {
             _Logger = logger;
         }
