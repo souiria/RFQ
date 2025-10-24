@@ -1,6 +1,4 @@
-﻿using SharedKernel;
-
-namespace CPD.Data.Time
+﻿namespace CPD.Data.Time
 {
     public class DateTimeProvider : IDateTimeProvider
     {

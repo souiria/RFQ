@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SharedKernel
+﻿namespace SharedKernel
 {
     /// <summary>
     /// NOTE: Use `readonly record struct` for most cases in C# 10+

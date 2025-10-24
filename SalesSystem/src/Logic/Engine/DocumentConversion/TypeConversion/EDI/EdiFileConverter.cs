@@ -1,4 +1,4 @@
-﻿namespace DocumentConversion.TypeConversion.EDI
+﻿namespace Transformation.TypeConversion.EDI
 {
     public static class EdiFileConverter
     {
@@ -20,14 +20,14 @@
                 {
                     EdiFileDataDto data = ConvertEdiCSVRow(lineData, fileName);
 
-                    if(ediFileData.Any(x => x.FileName == data.FileName && x.DispatchNumber == data.DispatchNumber && x.DispatchDate == data.DispatchDate))
+                    if (ediFileData.Any(x => x.FileName == data.FileName && x.DispatchNumber == data.DispatchNumber && x.DispatchDate == data.DispatchDate))
                     {
                         // If the data already exists, add it to the duplicate list
                         duplicateEdiFileData.Add(data);
                         continue; // Skip adding this duplicate entry to the main list
                     }
 
-                     ediFileData.Add(data);
+                    ediFileData.Add(data);
                 }
                 catch (FormatException ex)
                 {

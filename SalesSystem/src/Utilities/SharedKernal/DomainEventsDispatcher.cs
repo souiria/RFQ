@@ -1,7 +1,4 @@
-﻿using System.Collections.Concurrent;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace SharedKernel
+﻿namespace SharedKernel
 {
     public sealed class DomainEventsDispatcher(IServiceProvider serviceProvider) : IDomainEventsDispatcher
     {

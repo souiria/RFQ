@@ -19,6 +19,7 @@
             location.Id = masterLocationGrpc.Id;
             location.CustomerCode = masterLocationGrpc.CustomerCode;
             location.CustomerBusinessHierarchyGuid = masterLocationGrpc.CustomerBusinessHierarchyGuid;
+            location.CustomerName = masterLocationGrpc.CustomerName;
             location.IsActive = masterLocationGrpc.IsActive;
             return location;
         }
@@ -45,6 +46,16 @@
             vehicle.VehicleDisplay = masterVehicleGrpc.VehicleDisplay;
             vehicle.IsActive = masterVehicleGrpc.IsActive;
             return vehicle;
+        }
+
+        public static CustomerProjectAssociationGrpc ToCustomerProjectAssociation(this Master.CustomerProjectAssociationGrpc masterCustomerProjectAssociationGrpc)
+        {
+            CustomerProjectAssociationGrpc customerProjectAssociation = new CustomerProjectAssociationGrpc();
+            customerProjectAssociation.Id = masterCustomerProjectAssociationGrpc.Id;
+            customerProjectAssociation.CustomerLocationGuid = masterCustomerProjectAssociationGrpc.CustomerLocationGuid;
+            customerProjectAssociation.ProjectGuid = masterCustomerProjectAssociationGrpc.ProjectGuid;
+            customerProjectAssociation.IsActive = masterCustomerProjectAssociationGrpc.IsActive;
+            return customerProjectAssociation;
         }
 
         public static RfqReasonGrpc ToReason(this Rfq.RfqReasonGrpc rfqRfqReasonGrpc)

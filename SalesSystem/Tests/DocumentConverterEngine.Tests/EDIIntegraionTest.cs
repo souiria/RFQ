@@ -1,5 +1,5 @@
-﻿using DocumentConversion;
-using SharedModels.DocumentConverter.EDI.Aggregates;
+﻿using SharedModels.DocumentConverter.EDI.Aggregates;
+using Transformation;
 
 namespace DocumentConversionEngine.Tests
 {
@@ -16,7 +16,7 @@ namespace DocumentConversionEngine.Tests
         {
             string fileName = Path.GetFileNameWithoutExtension("../../../EDI/12001010_AIHX18472AW3.csv");
             byte[] file = File.ReadAllBytes("../../../EDI/12001010_AIHX18472AW3.csv");
-            object result = DocumentConverter.ConvertCSV(file, fileName);
+            object result = DocumentTransformer.ConvertCSV(file, fileName);
             switch (result)
             {
                 case EdiFileDataAggregate ediFileData:
@@ -42,7 +42,7 @@ namespace DocumentConversionEngine.Tests
         {
             string fileName = Path.GetFileNameWithoutExtension("../../../EDI/12001010_plu_280425_58312351.csv");
             byte[] file = File.ReadAllBytes("../../../EDI/12001010_plu_280425_58312351.csv");
-            object result = DocumentConverter.ConvertCSV(file, fileName);
+            object result = DocumentTransformer.ConvertCSV(file, fileName);
             switch(result)
             {
                 case EdiFileDataAggregate ediFileData:

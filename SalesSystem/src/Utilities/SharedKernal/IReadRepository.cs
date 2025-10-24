@@ -1,6 +1,4 @@
-﻿using Ardalis.Specification;
-
-namespace SharedKernel
+﻿namespace SharedKernel
 {
     /// <summary>
     /// An abstraction for read only persistence operations, based on Ardalis.Specification.

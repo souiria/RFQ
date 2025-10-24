@@ -1,6 +1,6 @@
-﻿namespace DocumentConversion.TypeConversion.DSI
+﻿namespace Transformation.TypeConversion.DSI
 {
-   public static class HarnessNoteInformation
+    public static class HarnessNoteInformation
     {
         public static HarnessDto GetHarnessNoteInformation(HarnessDto model, IEnumerable<string> lines)
         {

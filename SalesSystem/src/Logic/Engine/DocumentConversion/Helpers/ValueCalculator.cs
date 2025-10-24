@@ -1,4 +1,4 @@
-﻿namespace DocumentConversion.Helpers
+﻿namespace Transformation.Helpers
 {
     public static class ValueCalculator
     {

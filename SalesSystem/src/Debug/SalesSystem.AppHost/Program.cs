@@ -16,6 +16,8 @@
 
         IResourceBuilder<ProjectResource> rfqAccessService = builder.AddProject<Projects.Rfq>("rfq-access-service");
 
+        //IResourceBuilder<ProjectResource> coreAccessService = builder.AddProject<Projects.Core>("core-access-service");
+
         IResourceBuilder<ProjectResource> apiService = builder.AddProject<Projects.SalesSystem_ApiService>("api-service");
 
         IResourceBuilder<ProjectResource> rfqManager = builder.AddProject<Projects.RfqModule>("rfq-module-service");

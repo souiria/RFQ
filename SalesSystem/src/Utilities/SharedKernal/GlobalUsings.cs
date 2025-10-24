@@ -1,0 +1,11 @@
+﻿global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Text;
+global using System.Threading.Tasks;
+global using System.Collections.Concurrent;
+global using Microsoft.Extensions.DependencyInjection;
+global using System.Globalization;
+global using System.Security.Principal;
+global using Ardalis.Specification;
+global using System.Diagnostics.CodeAnalysis;

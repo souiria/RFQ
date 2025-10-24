@@ -1,4 +1,4 @@
-﻿namespace DocumentConversion.TypeConversion.DSI
+﻿namespace Transformation.TypeConversion.DSI
 {
     public static class HarnessCircuitInformation
     {
@@ -9,7 +9,7 @@
             CompositeDetailDto model = new CompositeDetailDto();
             foreach (string line in lines)
             {
-                string[] split = line.Split(separator , StringSplitOptions.None);
+                string[] split = line.Split(separator, StringSplitOptions.None);
                 ErrorCheckHelper.CheckLineLengthException(split.Length, 37, line);
 
                 bool boardLengthCheck = double.TryParse(split[13], out double boardLength);
