@@ -55,6 +55,7 @@
     <Protobuf Update="Protos\Masters\WireType.proto" GrpcServices="Both" />
     <Protobuf Update="Protos\PartNumber.proto" GrpcServices="Both" />
     <Protobuf Update="Protos\Tag.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Unit4.proto" GrpcServices="Server" />
   </ItemGroup>
 
 

@@ -171,6 +171,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adss", "SalesSystem\src\Acc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "SalesSystem\src\Access\Core\Core.csproj", "{9732503E-AF59-4A24-8BE5-018D8366E0EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unit4", "SalesSystem\src\Access\Unit4\Unit4.csproj", "{B117A444-9144-4AD2-9B8A-36069BFE307B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -455,6 +457,14 @@ Global
 		{9732503E-AF59-4A24-8BE5-018D8366E0EE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9732503E-AF59-4A24-8BE5-018D8366E0EE}.Release|x64.ActiveCfg = Release|Any CPU
 		{9732503E-AF59-4A24-8BE5-018D8366E0EE}.Release|x64.Build.0 = Release|Any CPU
+		{B117A444-9144-4AD2-9B8A-36069BFE307B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B117A444-9144-4AD2-9B8A-36069BFE307B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B117A444-9144-4AD2-9B8A-36069BFE307B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B117A444-9144-4AD2-9B8A-36069BFE307B}.Debug|x64.Build.0 = Debug|Any CPU
+		{B117A444-9144-4AD2-9B8A-36069BFE307B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B117A444-9144-4AD2-9B8A-36069BFE307B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B117A444-9144-4AD2-9B8A-36069BFE307B}.Release|x64.ActiveCfg = Release|Any CPU
+		{B117A444-9144-4AD2-9B8A-36069BFE307B}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -513,6 +523,7 @@ Global
 		{A3328160-04C1-E275-1C27-495B7E1BE69E} = {2193328D-16FA-4D41-9977-48C550461D4A}
 		{78435FD2-8EC6-4747-AB3C-AC5963507212} = {AB8A2F54-ED2B-4D12-AB8D-9B879F3EB725}
 		{9732503E-AF59-4A24-8BE5-018D8366E0EE} = {AB8A2F54-ED2B-4D12-AB8D-9B879F3EB725}
+		{B117A444-9144-4AD2-9B8A-36069BFE307B} = {AB8A2F54-ED2B-4D12-AB8D-9B879F3EB725}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {45532623-50AD-4761-959C-8E565670BB49}
