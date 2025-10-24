@@ -1,10 +1,13 @@
 ﻿global using System;
 global using System.Collections.Generic;
+global using System.Diagnostics.Tracing;
 global using System.Fabric;
+global using System.Globalization;
 global using System.IO;
 global using System.Linq;
 global using System.Net;
 global using System.Security.Cryptography.X509Certificates;
+global using System.Text;
 global using System.Threading;
 global using System.Threading.Tasks;
 global using Microsoft.AspNetCore.Hosting;

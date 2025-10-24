@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace SharedKernel
+﻿namespace SharedKernel
 {
     public class Result
     {

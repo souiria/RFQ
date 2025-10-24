@@ -1,4 +1,4 @@
-﻿namespace DocumentConversion.TypeConversion.DSI
+﻿namespace Transformation.TypeConversion.DSI
 {
     public static class HarnessCenterStrips
     {
@@ -15,7 +15,7 @@
                 bool stripLengthCheck = double.TryParse(split[3], out double stripLength);
                 bool lengthChangeValueCheck = double.TryParse(split[5], out double lengthChangeValue);
                 bool throughOrderCheck = double.TryParse(split[7], out double throughOrder);
-                
+
                 model.NodeName = split[0];
                 model.Route = split[1];
                 model.WireName = split[2];

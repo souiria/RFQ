@@ -11,6 +11,7 @@
 
             // Add service defaults & Aspire client integrations.
             builder.AddServiceDefaults();
+            builder.Logging.AddSeq();
 
             //Add Authentication for User
             builder.AddUserAuthentication();
@@ -21,20 +22,6 @@
                 .AddInteractiveServerComponents();
 
             builder.Services.AddOutputCache();
-
-            builder.Services.AddHttpClient<WeatherApiClient>(client =>
-            {
-                // This URL uses "https+http://" to indicate HTTPS is preferred over HTTP.
-                // Learn more about service discovery scheme resolution at https://aka.ms/dotnet/sdschemes.
-                client.BaseAddress = new("https+http://api-service");
-            });
-
-            //builder.Services.AddGrpcClient<RfqData.InvoiceInformationServiceClient>(
-            //    options =>
-            //    {
-            //        options.Address = new Uri("https://ukhqh1uat.sews-e.com:443");
-            //    }
-            //);
 
             builder.Services.AddMudServices();
 
@@ -71,15 +58,11 @@
             app.UseRouting();
             app.UseAuthorization();
             app.UseAntiforgery();
-            //app.UseOutputCache();
-            app.UseMiddleware<UserContextEnrichmentMiddleware>();
             app.MapStaticAssets();
             app.MapRazorPages().WithStaticAssets();
             app.MapRazorComponents<App>()
                 .WithStaticAssets()
                 .AddInteractiveServerRenderMode();
-
-            //app.MapDefaultEndpoints();
 
             #endregion
 

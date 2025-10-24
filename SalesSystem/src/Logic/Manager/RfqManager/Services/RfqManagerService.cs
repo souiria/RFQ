@@ -53,7 +53,7 @@
                 // Call the Master service to get customers
                 await Task.Delay(1);
                 CustomerByIdGrpcRequest getCustomersRequest = new CustomerByIdGrpcRequest();
-                getCustomersRequest.Id = request.UserId;
+                getCustomersRequest.Id = request.UserId.ToUpperInvariant();
                 ListCustomerGrpc customers = _MasterClient.GetCustomerGrpcById(getCustomersRequest);
                 GetCustomersByUserIdGrpcResponse response = new GetCustomersByUserIdGrpcResponse();
                 foreach (Master.CustomerGrpc? masterCustomer in customers.CustomerGrpc)
@@ -79,7 +79,7 @@
                 _Projects.Clear();
                 GetProjectAssociationsByCustomerIdResponse response = new GetProjectAssociationsByCustomerIdResponse();
                 CustomerLocationByCustomerIdGrpcRequest locationRequest = new CustomerLocationByCustomerIdGrpcRequest();
-                locationRequest.CustomerId = request.CustomerId;
+                locationRequest.CustomerId = request.CustomerId.ToUpperInvariant();
                 ListCustomerLocationGrpc locations = _MasterClient.GetCustomerLocationGrpcByCustomerId(locationRequest);
                 if (locations.CustomerLocationGrpc.Count <= 0)
                 {
@@ -91,7 +91,7 @@
                 foreach (CustomerLocationGrpc? location in locations.CustomerLocationGrpc)
                 {
                     CustomerProjectAssociationByLocationIdGrpcRequest customerProjectRequest = new CustomerProjectAssociationByLocationIdGrpcRequest();
-                    customerProjectRequest.LocationId = location.Id;
+                    customerProjectRequest.LocationId = location.Id.ToUpperInvariant();
                     ListCustomerProjectAssociationGrpc customerProjectAssociations = _MasterClient.GetCustomerProjectAssociationGrpcByLocationId(customerProjectRequest);
 
                     foreach (CustomerProjectAssociationGrpc? customerProjectAssociation in customerProjectAssociations.CustomerProjectAssociationGrpc)
@@ -102,7 +102,7 @@
                         }
 
                         ProjectByIdGrpcRequest projectRequest = new ProjectByIdGrpcRequest();
-                        projectRequest.Id = customerProjectAssociation.ProjectGuid;
+                        projectRequest.Id = customerProjectAssociation.ProjectGuid.ToUpperInvariant();
                         ListProjectGrpc projects = _MasterClient.GetProjectGrpcById(projectRequest);
                         if(projects.ProjectGrpc.Count <= 0)
                         {
@@ -113,9 +113,9 @@
                         foreach (ProjectGrpc? project in projects.ProjectGrpc)
                         {
                             ProjectAssociation projectAssociation = new ProjectAssociation();
-                            projectAssociation.CustomerLocationGuid = location.Id;
+                            projectAssociation.CustomerLocationGuid = location.Id.ToUpperInvariant();
                             projectAssociation.CustomerLocationName = location.CustomerName;
-                            projectAssociation.CustomerProjectGuid = project.Id;
+                            projectAssociation.CustomerProjectGuid = project.Id.ToUpperInvariant();
                             projectAssociation.CustomerProjectName = project.CustomerProjectCode;
                             projectAssociation.Id = customerProjectAssociation.Id;
                             response.ProjectAssociation.Add(projectAssociation);
@@ -303,7 +303,7 @@
             }
 
             uploadResponse.Success = true;
-            uploadResponse.Message = "File processed and RFQ Project and Parts created successfully";
+            uploadResponse.Message = $"{request.FileName} processed and RFQ Parts created successfully";
 
             return uploadResponse;
 
@@ -373,7 +373,7 @@
                 return customerParts;
             }
             // Go to the access service to save the data to the database
-            await Task.Delay(1000);
+            await Task.Delay(1);
 
             _Logger.GenericLogInformation("File " + request.FileName + " processed successfully");
             List<string> crossReferences = crossReferenceDtos
@@ -415,29 +415,34 @@
 
         public async Task<CreateRfqProjectGrpcResponse> CreateRfqProject(CreateRfqProjectGrpcRequest request)
         {
-            ProjectGrpc project = _Projects.First(p => p.Id == request.Project.ProjectGuid);
+            //GetProjectAssociationsByCustomerIdRequest req = new GetProjectAssociationsByCustomerIdRequest();
+            //req.CustomerId = request.Project.CustomerBusinessUnitGuid;
+
+            //await GetProjectAssociationsByCustomerId(req);
+
+            ProjectGrpc project = _Projects.First(p => p.Id.ToUpperInvariant() == request.Project.ProjectGuid.ToUpperInvariant());
             string projectCode = project.CustomerProjectCode;
             List<VehicleGrpc> vehiclesResponse = await GetVehiclesByProjectCodeGrpc(projectCode);
             CreateRfqProjectGrpcResponse response = new CreateRfqProjectGrpcResponse();
             if (0 == vehiclesResponse.Count)
             {
                 response.Success = false;
+                response.Message = $"No vehicles found for the project code {projectCode} (id {request.Project.ProjectGuid.ToUpperInvariant()})";
                 return response;
             }
 
             VehicleGrpc vehicle = vehiclesResponse.First();
-
             request.Project.CarModelGuid = vehicle.Id;
 
             RfqProjectGrpc rfqProject = new RfqProjectGrpc();
             RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
 
-            rfqProject.CustomerBusinessUnitGuid = request.Project.CustomerBusinessUnitGuid;
-            rfqProject.CustomerLocationGuid = request.Project.CustomerLocationGuid;
-            rfqProject.ProjectGuid = request.Project.ProjectGuid;
+            rfqProject.CustomerBusinessUnitGuid = request.Project.CustomerBusinessUnitGuid.ToUpperInvariant();
+            rfqProject.CustomerLocationGuid = request.Project.CustomerLocationGuid.ToUpperInvariant();
+            rfqProject.ProjectGuid = request.Project.ProjectGuid.ToUpperInvariant();
             rfqProject.RfqReasonId = request.Project.RfqReasonId;
             rfqProject.RfqResponseDeadline = request.Project.RfqResponseDeadline;
-            rfqProject.CarModelGuid = request.Project.CarModelGuid;
+            rfqProject.CarModelGuid = request.Project.CarModelGuid.ToUpperInvariant();
             rfqProject.VehicleVolume = request.Project.VehicleVolume;
             rfqProject.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
 
@@ -453,6 +458,7 @@
                 return response;
             }
 
+            response.Success = true; // haha
             response.Message = createResponse.Message;
             response.CreatedProjectId = createResponse.StringValue.Split(',').First();
             return response;
@@ -485,7 +491,6 @@
             RfqDrawingPartNumbersGrpcRequest partRequest = new RfqDrawingPartNumbersGrpcRequest();
             partRequest.GrpcRequestParameter = new GrpcRequestParameter();
             partRequest.GrpcRequestParameter.RequestType = 70;
-
             foreach (CustomerParts customerPart in customerParts)
             {
                 RfqDrawingPartNumbersGrpc part = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber1);

@@ -1,4 +1,4 @@
-﻿namespace DocumentConversion
+﻿namespace Transformation
 {
     public static class DocumentTransformer
     {
@@ -56,7 +56,7 @@
         {
             MemoryStream ms = new MemoryStream(file);
             using StreamReader reader = new StreamReader(ms, Encoding.UTF8);
-            string? line = reader.ReadLine();   
+            string? line = reader.ReadLine();
             while (line == null)
             {
                 line = reader.ReadLine();

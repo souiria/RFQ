@@ -474,6 +474,9 @@
   .mt-auto {
     margin-top: auto;
   }
+  .mr-2 {
+    margin-right: calc(var(--spacing) * 2);
+  }
   .mb-0 {
     margin-bottom: calc(var(--spacing) * 0);
   }
@@ -894,6 +897,9 @@
   }
   .text-end {
     text-align: end;
+  }
+  .text-right {
+    text-align: right;
   }
   .text-start {
     text-align: start;

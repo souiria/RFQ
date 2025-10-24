@@ -1,11 +1,11 @@
-﻿namespace DocumentConversion.TypeConversion.PartSearch
+﻿namespace Transformation.TypeConversion.PartSearch
 {
     public static class FordXMLBomConverter
     {
         public static IEnumerable<CrossReferenceDto> ConvertHarnessItemBom(XDocument xmlDocument, IEnumerable<CrossReferenceDto> customerNumbers)
         {
             List<CrossReferenceDto> customerNumbersList = customerNumbers.ToList();
-            if (xmlDocument.Root != null) 
+            if (xmlDocument.Root != null)
             {
                 //Harness Part Items (use commented line below if Protection parts are not required. They may be in Eng Sol Parts list, so left in for now.)
                 // IEnumerable<XElement> Parts1 = xmlDocument.Root.Descendants("HarnessItem").Where(x => x.Attribute("type").Value != "Protection");
@@ -15,8 +15,8 @@
                     IEnumerable<XAttribute> attributes = element.Attributes();
                     foreach (XAttribute x in attributes)
                     {
-                        if ((x.Name.ToString().EndsWith("type", StringComparison.InvariantCulture) && x.Value == "Fixing") ||
-                            (x.Name.ToString().EndsWith("type", StringComparison.InvariantCulture) && x.Value == "Device") ||
+                        if (x.Name.ToString().EndsWith("type", StringComparison.InvariantCulture) && x.Value == "Fixing" ||
+                            x.Name.ToString().EndsWith("type", StringComparison.InvariantCulture) && x.Value == "Device" ||
                             x.Name.ToString().EndsWith("type", StringComparison.InvariantCulture) && x.Value == "Protection")
                         {
                             XAttribute? attribute = element.Attribute("compType");
@@ -54,9 +54,9 @@
                     {
                         if (element.Parent != null)
                         {
-                            if ((x.Name.ToString().EndsWith("name", StringComparison.InvariantCulture) && x.Value == "WIRE_END1_TERM") ||
-                                (x.Name.ToString().EndsWith("name", StringComparison.InvariantCulture) && x.Value == "WIRE_END2_TERM") ||
-                                (element.Parent.Name == "DeviceItem"))
+                            if (x.Name.ToString().EndsWith("name", StringComparison.InvariantCulture) && x.Value == "WIRE_END1_TERM" ||
+                                x.Name.ToString().EndsWith("name", StringComparison.InvariantCulture) && x.Value == "WIRE_END2_TERM" ||
+                                element.Parent.Name == "DeviceItem")
                             {
                                 XAttribute? attribute = element.Attribute("value");
                                 if (attribute != null)

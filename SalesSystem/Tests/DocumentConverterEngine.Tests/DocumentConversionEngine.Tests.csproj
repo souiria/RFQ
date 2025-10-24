@@ -22,11 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="NUnit.Framework" />
+    <Folder Include="EDI\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="EDI\" />
+    <ProjectReference Include="..\..\src\Logic\Engine\DocumentConversion\Transformation.csproj" />
   </ItemGroup>
 
 </Project>

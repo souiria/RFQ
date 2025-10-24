@@ -1,4 +1,4 @@
-﻿namespace DocumentConversion.TypeConversion.DSI
+﻿namespace Transformation.TypeConversion.DSI
 {
     public static class HarnessMainNodeComponents
     {
@@ -51,7 +51,7 @@
                 collection.Add(model);
             }
 
-            List< ComponentDto > s = collection.Where(x => !string.IsNullOrWhiteSpace(x.PartNumber1)).ToList();
+            List<ComponentDto> s = collection.Where(x => !string.IsNullOrWhiteSpace(x.PartNumber1)).ToList();
             return collection;
         }
     }

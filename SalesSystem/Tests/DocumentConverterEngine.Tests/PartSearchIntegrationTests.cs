@@ -1,7 +1,6 @@
-﻿using DocumentConversion;
-using SharedModels.DocumentConverter.EDI.DTO;
+﻿using SharedModels.DocumentConverter.EDI.DTO;
 using SharedModels.DocumentConverter.PartsSearch.DTOs;
-
+using Transformation;
 namespace DocumentConversionEngine.Tests
 {
     class PartSearchIntegrationTests

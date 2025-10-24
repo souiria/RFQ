@@ -1,4 +1,4 @@
-﻿namespace DocumentConversion.TypeConversion.DSI
+﻿namespace Transformation.TypeConversion.DSI
 {
     class CompositeOptionCodes
     {

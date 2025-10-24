@@ -1,374 +1,226 @@
 ﻿@page "/createRfq"
 @page "/createRfq/{UserId:guid}"
 @inject ISnackbar Snackbar
-@inject RfqUxService rfqUxService
+@inject RfqUxClientService RfqUxClientService
+@inject ILogger<CreateRfq> Logger
 @rendermode InteractiveServer
-
-<style>
-    .file-upload-input {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        z-index: 10;
-        opacity: 0;
-    }
-</style>
+@using Google.Protobuf.WellKnownTypes
+@using SalesSystem.Rfq.Components.Pages.Dialogs
+@using SalesSystem.Rfq.Extensions
 
 <MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Create RFI/RFQ</MudText>
 <MudGrid Class="position-fixed">
     <MudItem xs="12">
-            <MudPaper Elevation="25" Class="d-flex flex-row" Style="height:150px;">
-                <MudPaper Elevation="0" Class="pa-4">
+        <MudPaper Class="d-flex flex-row" Style="height:150px;">
+            <MudPaper Class="pa-4">
                 <MudStack>
-                    <MudSelect @bind-Value="customerValue" Label="Customer" Placeholder="Please Select"
-                               AdornmentIcon="@Icons.Material.Filled.People" AdornmentColor="Color.Primary">
-                        @foreach(var customer in customers)
+                    <MudSelect T="string"
+                                Value="customerValue"
+                                For="@(() => customerValue)"
+                                ValueChanged="OnCustomerValueChanged"
+                                Label="Customer"
+                                Placeholder="Please Select"
+                                AdornmentIcon="@Icons.Material.Filled.People"
+                                AdornmentColor="Color.Primary">
+                        @foreach (var customer in RfqUxClientService.Customers)
                         {
                             <MudSelectItem Value="@customer.CustomerBusinessGroupName">@customer.CustomerBusinessGroupName</MudSelectItem>
                         }
                     </MudSelect>
-                    <MudSelect @bind-Value="reasonValue" Label="Reason" Placeholder="Please Select"
-                               AdornmentIcon="@Icons.Material.Filled.Checklist" AdornmentColor="Color.Primary">
-                        @foreach (var reason in reasons)
+                    <MudSelect T="string"
+                                Value="reasonValue"
+                                For="@(() => reasonValue)"
+                                ValueChanged="OnReasonValueChanged"
+                                Label="Reason"
+                                Placeholder="Please Select"
+                                AdornmentIcon="@Icons.Material.Filled.Checklist" AdornmentColor="Color.Primary">
+                        @foreach (var reason in RfqUxClientService.Reasons)
                         {
                             <MudSelectItem Value="@reason.RfqReasonTitle">@reason.RfqReasonTitle</MudSelectItem>
                         }
-                        @* <MudSelectItem Value="@("Nominated Business")" Disabled="true">Nominated Business</MudSelectItem>
-                        <MudSelectItem Value="@("Potential New Business")">Potential New Business</MudSelectItem> *@
                     </MudSelect>
                 </MudStack>
-        </MudPaper>
+            </MudPaper>
 
-            <MudPaper Elevation="0" Class="pa-4">
+            <MudPaper Class="pa-4">
                 <MudStack>
-                    <MudSelect @bind-Value="customerProjectValue" Label="Project" Placeholder="Please Select"
-                               AdornmentIcon="@Icons.Material.Filled.Settings" AdornmentColor="Color.Primary">
-                        @foreach (var association in customerProjectAssociations)
+                    <MudSelect T="string"
+                                Value="customerProjectValue"
+                                For="@(() => customerProjectValue)"
+                                ValueChanged="OnCustomerProjectValueChanged"
+                                Label="Project"
+                                Placeholder="Please Select"
+                                AdornmentIcon="@Icons.Material.Filled.DesignServices"
+                                AdornmentColor="Color.Primary">
+                        @foreach (var association in RfqUxClientService.CustomerProjectAssociations)
                         {
                             <MudSelectItem Value="@association.Id">@association.ProjectName - @association.CustomerName</MudSelectItem>
                         }
                     </MudSelect>
-                    <MudNumericField @bind-Value="vehicleVolume" Label="Vehicle Volume" Variant="Variant.Text" Min="0" />
+                    <MudNumericField @bind-Value="vehicleVolume"
+                                        Label="Vehicle Volume"
+                                        Variant="Variant.Text"
+                                        Min="0" />
                 </MudStack>
             </MudPaper>
-            <MudPaper Elevation="0" Class="pa-4">
+
+            <MudPaper Class="pa-4">
                 <MudStack>
-                    <MudSelect @bind-Value="quotationValue" Label="Quotation Number" Placeholder="Please Select"
-                               AdornmentIcon="@Icons.Material.Filled.People" AdornmentColor="Color.Primary">
+                    <MudSelect T="string"
+                                Value="quotationValue"
+                                For="@(() => quotationValue)"
+                                ValueChanged="OnQuotationValueChanged"
+                                Label="Quotation Number"
+                                Placeholder="Please Select"
+                                AdornmentIcon="@Icons.Material.Filled.RequestQuote"
+                                AdornmentColor="Color.Primary">
                         <MudSelectItem Value="@("SEWS-25-025-005678")">SEWS-25-025-005678</MudSelectItem>
                         <MudSelectItem Value="@("SEWS-25-025-005688")">SEWS-25-025-005688</MudSelectItem>
                         <MudSelectItem Value="@("SEWS-25-025-005692")">SEWS-25-025-005692</MudSelectItem>
                     </MudSelect>
-                    <MudDatePicker Label="Date Format" @bind-Date="_date" DateFormat="dd.MM.yyyy" />
-                    
+                    <MudDatePicker Label="Date Format"
+                                    @bind-Date="date"
+                                    DateFormat="dd.MM.yyyy" />
+
                 </MudStack>
             </MudPaper>
 
-            <MudPaper Elevation="0" Class="pa-4">
-                <MudStack>
-                    <MudFileUpload T="IBrowserFile"
-                                   @ref="@_fileUpload"
-                                   OnFilesChanged="OnInputFileChanged"
-                                   Hidden="@false"
-                                   InputClass="file-upload-input"
-                                   tabindex="-1"
-                                   @ondrop="@ClearDragClass"
-                                   @ondragenter="@SetDragClass"
-                                   @ondragleave="@ClearDragClass"
-                                   @ondragend="@ClearDragClass">
-                        <ActivatorContent>
-                            <MudPaper Height="95"
-                                      Outlined="true"
-                                      Class="@_dragClass">
-                                <MudText Typo="Typo.h6">
-                                    Drag and drop files here or click
-                                </MudText>
-                                
-                            </MudPaper>
-                        </ActivatorContent>
-                    </MudFileUpload>
-                    
-                </MudStack>
+            <MudPaper Class="d-flex flex-grow-1 pa-4 w-100">
+                <FileManager @ref="componentFileManager"
+                             FileObjects="FileObjects"
+                             OnFilesChanged="OnFilesChanged" />
             </MudPaper>
-            <MudPaper Elevation="0" Class="pa-4">
-                <MudStack>
-                <MudToolBar Gutters="@false"
-                            Class="relative d-flex justify-end gap-4">
-                    <MudButton Color="Color.Primary"
-                               OnClick="@OpenFilePickerAsync"
-                               Variant="Variant.Filled">
-                        Open file picker
-                    </MudButton>
-                    <MudButton Color="Color.Error"
-                               Disabled="@(!_fileNames.Any())"
-                               OnClick="@ClearAsync"
-                               Variant="Variant.Filled">
-                        Clear
-                    </MudButton>
-                </MudToolBar>
-                    @foreach (var file in _fileNames)
-                    {
-                        <MudChip T="string"
-                                 Color="Color.Dark"
-                                 Text="@file"
-                                 tabindex="-1" />
-                    }
-                </MudStack>
+
+            @* Controls  *@
+            <MudPaper Class="d-flex align-end pa-4">
+                <MudButton Color="Color.Primary"
+                            Disabled="@(!FileObjects.Any())"
+                            OnClick="@SubmitDataAsync"
+                            Variant="Variant.Filled"
+                            Size="Size.Small"
+                            FullWidth="false">
+                    Upload
+                </MudButton>
             </MudPaper>
-            <MudPaper Elevation="0" Class="pa-4" MinWidth="20%">
-                <MudStack>
-                        <MudToolBar Gutters="@false"
-                                    Class="relative d-flex justify-end gap-4">
-                            <MudButton Color="Color.Primary"
-                                       Disabled="@(!_fileNames.Any())"  
-                                       OnClick="@SubmitDataAsync"
-                                       Variant="Variant.Filled">
-                                Upload
-                            </MudButton>
-                        </MudToolBar>
-                </MudStack>
-            </MudPaper>
+
         </MudPaper>
     </MudItem>
-    <MudItem xs="12" Style="height: calc(100vh - 280px);">
-        <MudPaper Elevation="25" Class="d-flex flex-row" Style="height: calc(100vh - 280px);">
-            <MudDataGrid T="RfqItemUx" Items="@rfqItems" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@_quickFilter"
-                         Hideable="true" Dense="true" Height="500px" FixedFooter="true">
-                <ToolBarContent>
-                    <MudText Typo="Typo.h6">Rfq Information</MudText>
-                    <MudSpacer />
-                    <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
-                                  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-                </ToolBarContent>
-                <Columns>
-                    <TemplateColumn Title="Part Number" CellStyleFunc="@_cellStyleFunc" Sortable="true" SortBy="@(x => x.SampleColumn1)">
-                        <CellTemplate>
-                            <MudIcon Icon="@_iconString" Color="Color.Inherit" Title="@_status" /> @context.Item.SampleColumn1
-                        </CellTemplate>
-                    </TemplateColumn>
-                    <TemplateColumn Title="SampleColumn2" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn2)">
-                        <CellTemplate>
-                            <MudText Style="font-size:inherit">
-                                <MudHighlighter Text="@context.Item.SampleColumn2" HighlightedText="@_searchString" /> @context.Item.SampleColumn2
-                            </MudText>
-                        </CellTemplate>
-                    </TemplateColumn>
-                    <TemplateColumn Title="SampleColumn3" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn3)">
-                        <CellTemplate>
-                            <MudText Style="font-size:inherit">
-                                <MudHighlighter Text="@context.Item.SampleColumn3" HighlightedText="@_searchString" /> @context.Item.SampleColumn3
-                            </MudText>
-                        </CellTemplate>
-                    </TemplateColumn>
-                    <TemplateColumn Title="SampleColumn4" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn4)">
-                        <CellTemplate>
-                            <MudText Style="font-size:inherit">
-                                <MudHighlighter Text="@context.Item.SampleColumn4" HighlightedText="@_searchString" /> @context.Item.SampleColumn4
-                            </MudText>
-                        </CellTemplate>
-                    </TemplateColumn>
-                    <TemplateColumn Title="SampleColumn5" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn5)">
-                        <CellTemplate>
-                            <MudText Style="font-size:inherit">
-                                <MudHighlighter Text="@context.Item.SampleColumn5" HighlightedText="@_searchString" /> @context.Item.SampleColumn5
-                            </MudText>
-                        </CellTemplate>
-                    </TemplateColumn>
-                    <TemplateColumn Title="SampleColumn6" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn6)">
-                        <CellTemplate>
-                            <MudText Style="font-size:inherit">
-                                <MudHighlighter Text="@context.Item.SampleColumn6" HighlightedText="@_searchString" /> @context.Item.SampleColumn6
-                            </MudText>
-                        </CellTemplate>
-                    </TemplateColumn>
-                    <TemplateColumn Title="SampleColumn7" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn7)">
-                        <CellTemplate>
-                            <MudText Style="font-size:inherit">
-                                <MudHighlighter Text="@context.Item.SampleColumn7" HighlightedText="@_searchString" /> @context.Item.SampleColumn7
-                            </MudText>
-                        </CellTemplate>
-                    </TemplateColumn>
-                    <TemplateColumn Title="SampleColumn8" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn8)">
-                        <CellTemplate>
-                            <MudText Style="font-size:inherit">
-                                <MudHighlighter Text="@context.Item.SampleColumn9" HighlightedText="@_searchString" /> @context.Item.SampleColumn8
-                            </MudText>
-                        </CellTemplate>
-                    </TemplateColumn>
-                    <TemplateColumn Title="SampleColumn10" Sortable="true" Filterable="true" SortBy="@(x => x.SampleColumn10)">
-                        <CellTemplate>
-                            <MudText Style="font-size:inherit">
-                                <MudHighlighter Text="@context.Item.SampleColumn10" HighlightedText="@_searchString" /> @context.Item.SampleColumn10
-                            </MudText>
-                        </CellTemplate>
-                    </TemplateColumn>
-                </Columns>
-
-            </MudDataGrid>
+    <MudItem xs="12">
+        <MudPaper Class="d-flex flex-column" Width="100%">
+            @* File Cards Section *@
+@*             <FileCards @ref="componentFileCards"
+                       FileObjects="FileObjects"
+                       OnRetryUpload="OnRetryUpload" /> *@
+            <FileCards @ref="componentFileCards"
+                       FileObjects="FileObjects" />
         </MudPaper>
     </MudItem>
 </MudGrid>
 
+
 @code {
-    private string? _customerValue { get; set; }
-    private string? customerValue { 
-        get => _customerValue;
-        set 
-        {
-            _customerValue = value;
-            _ = GetProjectAggregate();
-        }
-    }
-    private string? customerProjectValue { get; set; }
-    private string? locationValue { get; set; }
-    private string? reasonValue { get; set; }
-    private string? projectValue { get; set; }
-    private string? _quotationValue { get; set; }
-    private string? quotationValue 
-    { 
-        get => _quotationValue;
-        set
-        {
-            _quotationValue = value;
-            _ = GetReasons();
-        }
-    }
-    private int vehicleVolume { get; set; }
-    private List<RfqModule.CustomerGrpc> customers = new();
-    private List<RfqModule.RfqReasonGrpc> reasons = new();
-    private List<CustomerProjectUx> customerProjectAssociations = new();
-    private DateTime? _date = DateTime.Today;
 
-    private const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
-    private string _dragClass = DefaultDragClass;
-    private readonly List<string> _fileNames = new();
-    private MudFileUpload<IBrowserFile>? _fileUpload;
-    private List<IBrowserFile> _files = new List<IBrowserFile>();
+    // Reference to the FileManager component
+    FileManager? componentFileManager;
+    FileCards? componentFileCards;
+    List<FileObjectUx> FileObjects { get; set; } = new List<FileObjectUx>();
 
-    List<RfqItemUx> rfqItems = new List<RfqItemUx>();
-    private string _searchString = string.Empty;
-    private string _iconString = string.Empty;
-    private string _status = string.Empty;
-    //private bool _sortNameByLength = false;
-    private bool visible;
+    // Form values
+    string? customerValue { get; set; }
+    string? customerProjectValue { get; set; }
+    string? reasonValue { get; set; }
+    string? projectValue { get; set; }
+    string? quotationValue { get; set; }
+    int vehicleVolume { get; set; }
+
+    DateTime? date = DateTime.Today;
+
+    const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
+    string _dragClass = DefaultDragClass;
 
     [Parameter] public Guid? UserId { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
-        customers.Clear();
-        if(UserId == null || UserId == Guid.Empty)
+        if (UserId == null || UserId == Guid.Empty)
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             Snackbar.Add("UserId is missing in the URL", Severity.Error);
+            Logger.GenericLogInformation("CreateRfq.OnInitializedAsync - UserId is missing in the URL");
             return;
-        };
-        customers = await rfqUxService.GetCustomersAsync((Guid)UserId);
+        }
+
+        if(RfqUxClientService.Customers.Count == 0)
+        {
+            Func<Guid, Task<int>> guidAsyncService = RfqUxClientService.GetCustomersByUserIdAsync;
+            (long timing, int count) = await guidAsyncService.TimeAsyncGuidIntService((Guid)UserId);
+            Logger.GenericLogInformation($"CreateRfq.OnInitializedAsync - Loaded {count} customers for UserId {UserId} in {timing}ms");
+            //Snackbar.Add($"{count} customers loaded, load time is {timing}ms @{DateTime.UtcNow}", Severity.Success);
+        }
+
+        if (RfqUxClientService.Reasons.Count == 0)
+        {
+            Func<Task<int>> guidAsyncService = RfqUxClientService.GetRfqReasonsAsync;
+            (long timing, int count) = await guidAsyncService.TimeAsyncVoidIntService();
+            Logger.GenericLogInformation($"CreateRfq.OnInitializedAsync - Loaded {count} reasons in {timing}ms");
+            //Snackbar.Add($"{count} reasons loaded, load time is {timing}ms @{DateTime.UtcNow}", Severity.Success);
+        }
     }
 
-    private async Task GetProjectAggregate()
+    // Control generated events - only call StateHasChanged() from events (i.e. methods starting with On....)
+    #region Customer
+
+    async Task OnCustomerValueChanged(string value)
     {
-        locationValue = null;
+        customerValue = value;
+
+        var customer = RfqUxClientService.Customers.FirstOrDefault(c => c.CustomerBusinessGroupName == value);
+        Logger.GenericLogInformation($"CreateRfq.OnCustomerValueChanged - Customer changed to {customer?.Id} - {customer?.CustomerBusinessGroupName}");
+        // Console.WriteLine($"Customer changed to {customer?.Id} - {customer?.CustomerBusinessGroupName}");
+
+        // Snackbar.Add($"Customer changed to {customer?.Id} - {value}", Severity.Info);
+
+
+        try
+        {
+            await GetProjectAssociationsByCustomerName(value);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to load customer projects for customer '{customerValue}': {ex.Message}", Severity.Error, config => { config.VisibleStateDuration = 10000; });
+            Logger.GenericLogError($"CreateRfq.OnCustomerValueChanged - Failed to load customer projects for customer '{customerValue}'", ex);
+        }
+        StateHasChanged();
+    }
+
+    async Task GetProjectAssociationsByCustomerName(string customerName)
+    {
         if (!string.IsNullOrWhiteSpace(customerValue))
         {
-            customerProjectAssociations.Clear();
-            RfqModule.CustomerGrpc? customer = customers.FirstOrDefault(c => c.CustomerBusinessGroupName == customerValue);
+            RfqModule.CustomerGrpc? customer = RfqUxClientService.Customers.FirstOrDefault(c => c.CustomerBusinessGroupName == customerName);
 
             if (customer != null)
             {
-                List<CustomerProjectUx> projectAssications = await rfqUxService.GetProjectAssociationsByCustomerId(customer.Id);
-                customerProjectAssociations.AddRange(projectAssications);
+                await RfqUxClientService.GetProjectAssociationsByCustomerIdAsync(customer.Id);
                 StateHasChanged();
             }
         }
     }
+    #endregion
 
-    // private async Task GetCustomerProjectAssociations()
-    // {
-    //     customerProjectAssociations.Clear();
-    //     customerProjectValue = null;
-    //     if (!string.IsNullOrWhiteSpace(customerValue))
-    //     {
-    //         RfqModule.CustomerGrpc? customer = customers.FirstOrDefault(c => c.CustomerBusinessGroupName == customerValue);
-    //         if (customer != null)
-    //         {
-    //             List<CustomerProjectUx> responseAssociations = await rfqUxService.GetCustomerProjectAssociations();
-    //             customerProjectAssociations.AddRange(responseAssociations);
-    //             StateHasChanged();
-    //         }
-    //         await GetProjects();
-    //     }
-    // }
-
-    // private async Task GetProjects()
-    // {
-    //     projects.Clear();
-    //     projectValue = null;
-    //     if (0 < customerProjectAssociations.Count)
-    //     {
-    //         List<RfqModule.ProjectGrpc> responseProjects = await rfqUxService.GetProjectsbyCustomerProjectAssociation(customerProjectAssociations);
-    //         projects.AddRange(responseProjects);
-    //         StateHasChanged();
-    //         await GetCustomerProjectAssociationsUx();
-    //     }
-    // }
-
-    // private async Task GetCustomerProjectAssociationsUx()
-    // {
-    //     customerProjectValue = null;
-    //     if (!string.IsNullOrWhiteSpace(customerValue))
-    //     {
-
-    //         List<CustomerProjectUx> responseAssociations = await rfqUxService.GetCustomerProjectUx(projects, locations, customerProjectAssociations);
-    //         customerProjectAssociations.Clear();
-    //         customerProjectAssociations.AddRange(responseAssociations);
-    //         StateHasChanged();
-    //     }
-
-    // }
-
-    public async Task GetReasons()
+    #region Reason
+    private async Task OnReasonValueChanged(string value)
     {
-        reasons.Clear();
-        List<RfqModule.RfqReasonGrpc> responseRfqItems = await rfqUxService.GetReasons();
-        reasons.AddRange(responseRfqItems);
+        reasonValue = value;
+        await Task.Delay(0);
+
+        var reason = RfqUxClientService.Reasons.FirstOrDefault(r => r.RfqReasonTitle == value);
+        Logger.GenericLogInformation($"CreateRfq.OnReasonValueChanged - Reason changed to {reason?.RowId} - {reason?.RfqReasonTitle}");
+        // Console.WriteLine($"Reason changed to {reason?.RowId} - {value}");
+
         StateHasChanged();
     }
-
-    public void ToggleOverlay(bool value)
-    {
-        visible = value;
-    }
-
-    private async Task ClearAsync()
-    {
-        await (_fileUpload?.ClearAsync() ?? Task.CompletedTask);
-        _fileNames.Clear();
-        ClearDragClass();
-    }
-
-    private Task OpenFilePickerAsync()
-        => _fileUpload?.OpenFilePickerAsync() ?? Task.CompletedTask;
-
-    private void OnInputFileChanged(InputFileChangeEventArgs e)
-    {
-        ClearDragClass();
-        var files = e.GetMultipleFiles();
-        foreach (var file in files)
-        {
-            _fileNames.Add(file.Name);
-            _files.Add(file);
-        }
-        StateHasChanged();
-    }
-
-    private void Upload()
-    {
-        // Upload the files here
-        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-        Snackbar.Add("TODO: Upload your files!");
-    }
+    #endregion
 
     private async Task SubmitDataAsync()
     {
@@ -377,62 +229,91 @@
         || string.IsNullOrWhiteSpace(customerProjectValue)
         || string.IsNullOrWhiteSpace(reasonValue)
         || string.IsNullOrWhiteSpace(quotationValue)
-        || vehicleVolume <= 0 || !_date.HasValue)
+        || vehicleVolume <= 0 || !date.HasValue)
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             Snackbar.Add("Please fill in all required fields.", Severity.Error);
             return;
         }
 
-        RfqModule.CustomerGrpc? customer = customers.FirstOrDefault(c => c.CustomerBusinessGroupName == customerValue);
+        RfqModule.CustomerGrpc? customer = RfqUxClientService.Customers.FirstOrDefault(c => c.CustomerBusinessGroupName == customerValue);
         if (customer is null)
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             Snackbar.Add("Selected customer not found.", Severity.Error);
             return;
         }
-        CustomerProjectUx? customerProject = customerProjectAssociations.FirstOrDefault(p => p.Id == customerProjectValue);
+        CustomerProjectUx? customerProject = RfqUxClientService.CustomerProjectAssociations.FirstOrDefault(p => p.Id == customerProjectValue);
         if (customerProject is null)
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-            Snackbar.Add("Selected customer not found.", Severity.Error);
+            Snackbar.Add("Selected customer project not found.", Severity.Error);
             return;
         }
-        RfqModule.RfqReasonGrpc? reason = reasons.FirstOrDefault(r => r.RfqReasonTitle == reasonValue);
+        RfqModule.RfqReasonGrpc? reason = RfqUxClientService.Reasons.FirstOrDefault(r => r.RfqReasonTitle == reasonValue);
         if (reason is null)
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-            Snackbar.Add("Selected customer not found.", Severity.Error);
+            Snackbar.Add("Selected reason not found.", Severity.Error);
             return;
         }
 
-        if (0 >= _files.Count)
+        if (FileObjects.Count <= 0)
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             Snackbar.Add("Please upload at least one file.", Severity.Error);
             return;
         }
 
-        CreateRfqProjectGrpcResponse response = await rfqUxService.CreateRfqProject(
-            customer,
-            customerProject,
-            reason,
-            vehicleVolume,
-            _date.Value
-        );
-        bool createdFile = false;
+        Console.WriteLine($"Submitting data: Customer={customer.Id}, Project={customerProject.Id}, Reason={reason.RowId}, VehicleVolume={vehicleVolume}, Date={date.Value}");
+        RfqProject requestProject = new RfqProject();
+        requestProject.CustomerBusinessUnitGuid = customer.Id;
+        requestProject.CustomerLocationGuid = customerProject.CustomerId;
+        requestProject.ProjectGuid = customerProject.ProjectId;
+        requestProject.RfqReasonId = reason.RowId ?? 0;
+        requestProject.VehicleVolume = vehicleVolume;
+        requestProject.RfqResponseDeadline = Timestamp.FromDateTime(date.Value.ToUniversalTime());
+
+        CreateRfqProjectGrpcResponse response = await RfqUxClientService.CreateRfqProjectAsync(requestProject);
+
+        if(response == null)
+        {
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add("Failed to create project. Response is null.", Severity.Error);
+            return;
+        }
+        else if(response.Success == false)
+        {
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add($"Failed to create project. {response.Message}", Severity.Error);
+            return;
+        }
+        else
+        {
+            Logger.GenericLogInformation($"CreateRfq.SubmitDataAsync - Created project with ID {response.CreatedProjectId}, {response.Success}/{response.Message}");
+        }
+
+
+        UploadPartsRequestGrpcResponse uploadFileResponse = new UploadPartsRequestGrpcResponse();
         if (!response.Success)
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             Snackbar.Add("Failed to create project.", Severity.Error);
             return;
         }
-        foreach(var file in _files)
+
+        foreach(FileObjectUx fileObject in FileObjects)
         {
-            createdFile = await rfqUxService.UploadPartsAsync(response.CreatedProjectId, file);
+            if(fileObject.File == null)
+            {
+                Logger.GenericLogInformation($"CreateRfq.SubmitDataAsync - FileObject.File is null, skipping upload.");
+                continue;
+            }
+            uploadFileResponse = await RfqUxClientService.UploadPartsAsync(response.CreatedProjectId, fileObject.File, 16_000_000);
+            fileObject.UploadStatus = new FileObjectUploadStatus(uploadFileResponse);
+            Logger.GenericLogInformation($"CreateRfq.SubmitDataAsync - Uploaded file {fileObject.File.Name}/{fileObject.File.Size}, {fileObject.UploadStatus.Status}/{fileObject.UploadStatus.Message}");
         }
 
-        rfqItems.Clear();
         StateHasChanged();
         // create project
         // upload files
@@ -446,62 +327,30 @@
     private void ClearDragClass()
         => _dragClass = DefaultDragClass;
 
-    private Func<RfqItemUx, bool> _quickFilter => x =>
+    private void OnQuotationValueChanged(string value)
     {
-        if (string.IsNullOrWhiteSpace(_searchString))
-            return true;
+        quotationValue = value;
 
-        if (x.SampleColumn1!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
+        var quotation = RfqUxClientService.Reasons.FirstOrDefault(r => r.RfqReasonTitle == value);
+        Console.WriteLine($"Quotation changed to {quotation?.RowId} - {value}");
 
-        if (x.SampleColumn2!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
+        Snackbar.Add($"Selected quotation {quotation?.RowId} - {value}");
 
-        if (x.SampleColumn3!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        if (x.SampleColumn4!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        if (x.SampleColumn5!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        if (x.SampleColumn6!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        if (x.SampleColumn7!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        if (x.SampleColumn8!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        if (x.SampleColumn9!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        if (x.SampleColumn10!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        // if (x.PercentComplete.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-        //     return true;
-
-        return false;
-    };
-
-    private Func<RfqItemUx, string> _cellStyleFunc => x =>
+        StateHasChanged();
+    }
+    private void OnCustomerProjectValueChanged(string value)
     {
-        string style = "";
+        customerProjectValue = value;
 
-        switch (x.SampleColumn1)
-        {
-            case "":
-                style += "color:#E5BDE5";
-                _iconString = Icons.Material.Filled.Airlines;
-                _status = "Airlines";
-                break;
-            default:
-                break;
-        }
+        var project = RfqUxClientService.CustomerProjectAssociations.FirstOrDefault(p => p.ProjectName == value);
+        Console.WriteLine($"Project changed to {project?.Id} - {project ?.ProjectName}");
 
-        return style;
-    };
+        Snackbar.Add($"Selected project {project?.Id} - {value}");
+
+        StateHasChanged();
+    }
+    private void OnFilesChanged()
+    {
+        StateHasChanged();
+    }
 }

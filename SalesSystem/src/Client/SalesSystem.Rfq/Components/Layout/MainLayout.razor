@@ -8,7 +8,7 @@
 <MudSnackbarProvider />
 
 <MudLayout Class="@(_isDarkMode ? "dark" : null)">
-    <MudAppBar Elevation="1"
+    <MudAppBar Elevation="25"
                Fixed="true"
                Color="Color.Transparent"
                >
@@ -87,12 +87,24 @@
         if (user.Identity!.IsAuthenticated)
         {
             userName = user.Identity.Name;
+            Console.WriteLine($"User is authenticated: {userName}");
         }
         else
         {
             userName = "Anonymous";
+            Console.WriteLine("User is not authenticated.");
         }
 
+#if DEBUG
+        using (PrincipalContext context2 = new PrincipalContext(ContextType.Domain))
+        {
+            UserPrincipal principal = UserPrincipal.FindByIdentity(context2, "williad");
+            firstName = principal?.GivenName;
+            // string lastName = principal.Surname;
+            displayName = principal?.DisplayName;
+            userId = new Guid("86380EFD-5651-4552-8145-E59E785F099A");
+        }
+#else
         using (PrincipalContext context2 = new PrincipalContext(ContextType.Domain))
         {
             UserPrincipal principal = UserPrincipal.FindByIdentity(context2, userName);
@@ -101,7 +113,7 @@
             displayName = principal?.DisplayName;
             userId = principal?.Guid;
         }
-
+#endif
         globalValue = new GlobalValue
         {
             DisplayName = displayName,
