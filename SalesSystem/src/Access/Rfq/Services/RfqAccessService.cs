@@ -46,55 +46,55 @@
         #endregion
 
         #region DsiCentreStrip
-         ListDsiCentreStripGrpc _ListDsiCentreStripGrpc;
+        ListDsiCentreStripGrpc _ListDsiCentreStripGrpc;
         #endregion
 
         #region DsiCircuitOption
-         ListDsiCircuitOptionGrpc _ListDsiCircuitOptionGrpc;
+        ListDsiCircuitOptionGrpc _ListDsiCircuitOptionGrpc;
         #endregion
 
         #region DsiComponent
-         ListDsiComponentGrpc _ListDsiComponentGrpc;
+        ListDsiComponentGrpc _ListDsiComponentGrpc;
         #endregion
 
         #region DsiCompositeDetail
-         ListDsiCompositeDetailGrpc _ListDsiCompositeDetailGrpc;
+        ListDsiCompositeDetailGrpc _ListDsiCompositeDetailGrpc;
         #endregion
 
         #region DsiCompositeDetailCircuitOptionAssociation
-         ListDsiCompositeDetailCircuitOptionAssociationGrpc _ListDsiCompositeDetailCircuitOptionAssociationGrpc;
+        ListDsiCompositeDetailCircuitOptionAssociationGrpc _ListDsiCompositeDetailCircuitOptionAssociationGrpc;
         #endregion
 
         #region DsiCompositeOption
-         ListDsiCompositeOptionGrpc _ListDsiCompositeOptionGrpc;
+        ListDsiCompositeOptionGrpc _ListDsiCompositeOptionGrpc;
         #endregion
 
         #region DsiHarness
-         ListDsiHarnessGrpc _ListDsiHarnessGrpc;
+        ListDsiHarnessGrpc _ListDsiHarnessGrpc;
         #endregion
 
         #region DsiHarnessScope
-         ListDsiHarnessScopeGrpc _ListDsiHarnessScopeGrpc;
+        ListDsiHarnessScopeGrpc _ListDsiHarnessScopeGrpc;
         #endregion
 
         #region DsiHarnessScopeScopeAssociation
-         ListDsiHarnessScopeScopeAssociationGrpc _ListDsiHarnessScopeScopeAssociationGrpc;
+        ListDsiHarnessScopeScopeAssociationGrpc _ListDsiHarnessScopeScopeAssociationGrpc;
         #endregion
 
         #region DsiManualBomQuantity
-         ListDsiManualBomQuantityGrpc _ListDsiManualBomQuantityGrpc;
+        ListDsiManualBomQuantityGrpc _ListDsiManualBomQuantityGrpc;
         #endregion
 
         #region DsiMidWireComponent
-         ListDsiMidWireComponentGrpc _ListDsiMidWireComponentGrpc;
+        ListDsiMidWireComponentGrpc _ListDsiMidWireComponentGrpc;
         #endregion
 
         #region DsiModuleChildDetail
-         ListDsiModuleChildDetailGrpc _ListDsiModuleChildDetailGrpc;
+        ListDsiModuleChildDetailGrpc _ListDsiModuleChildDetailGrpc;
         #endregion
 
         #region DsiModuleCompatibility
-         ListDsiModuleCompatibilityGrpc _ListDsiModuleCompatibilityGrpc;
+        ListDsiModuleCompatibilityGrpc _ListDsiModuleCompatibilityGrpc;
         #endregion
 
         #region DsiMulticoreSpecification
@@ -102,7 +102,7 @@
         #endregion
 
         #region DsiPinMapping
-         ListDsiPinMappingGrpc _ListDsiPinMappingGrpc;
+        ListDsiPinMappingGrpc _ListDsiPinMappingGrpc;
         #endregion
 
         #region DsiPinMappingCavityMappingAssociation
@@ -110,35 +110,35 @@
         #endregion
 
         #region DsiScope
-         ListDsiScopeGrpc _ListDsiScopeGrpc;
+        ListDsiScopeGrpc _ListDsiScopeGrpc;
         #endregion
 
         #region DsiSupplier
-         ListDsiSupplierGrpc _ListDsiSupplierGrpc;
+        ListDsiSupplierGrpc _ListDsiSupplierGrpc;
         #endregion
 
         #region DsiTransformedCompositeDetail
-         ListDsiTransformedCompositeDetailGrpc _ListDsiTransformedCompositeDetailGrpc;
+        ListDsiTransformedCompositeDetailGrpc _ListDsiTransformedCompositeDetailGrpc;
         #endregion
 
         #region DsiTransformedHarness
-         ListDsiTransformedHarnessGrpc _ListDsiTransformedHarnessGrpc;
+        ListDsiTransformedHarnessGrpc _ListDsiTransformedHarnessGrpc;
         #endregion
 
         #region DsiTransformedModuleChildDetail
-         ListDsiTransformedModuleChildDetailGrpc _ListDsiTransformedModuleChildDetailGrpc;
+        ListDsiTransformedModuleChildDetailGrpc _ListDsiTransformedModuleChildDetailGrpc;
         #endregion
 
         #region DsiUnitOfMeasure
-         ListDsiUnitOfMeasureGrpc _ListDsiUnitOfMeasureGrpc;
+        ListDsiUnitOfMeasureGrpc _ListDsiUnitOfMeasureGrpc;
         #endregion
 
         #region DsiWireMulticoreMarker
-         ListDsiWireMulticoreMarkerGrpc _ListDsiWireMulticoreMarkerGrpc;
+        ListDsiWireMulticoreMarkerGrpc _ListDsiWireMulticoreMarkerGrpc;
         #endregion
 
         #region DsiWireSpecification
-         ListDsiWireSpecificationGrpc _ListDsiWireSpecificationGrpc;
+        ListDsiWireSpecificationGrpc _ListDsiWireSpecificationGrpc;
         #endregion
 
         #region DsiWireThroughNode
@@ -209,79 +209,79 @@
         #endregion
 
         #region DsiCentreStrip
-         IQueryHandler<GetDsiCentreStripQuery, List<DsiCentreStripGrpc>>? _DsiCentreStripHandler;
-         bool _DsiCentreStripRefreshInProgress;
+        IQueryHandler<GetDsiCentreStripQuery, List<DsiCentreStripGrpc>>? _DsiCentreStripHandler;
+        bool _DsiCentreStripRefreshInProgress;
         #endregion
 
         #region DsiCircuitOption
-         IQueryHandler<GetDsiCircuitOptionQuery, List<DsiCircuitOptionGrpc>>? _DsiCircuitOptionHandler;
-         bool _DsiCircuitOptionRefreshInProgress;
+        IQueryHandler<GetDsiCircuitOptionQuery, List<DsiCircuitOptionGrpc>>? _DsiCircuitOptionHandler;
+        bool _DsiCircuitOptionRefreshInProgress;
         #endregion
 
         #region DsiComponent
-         IQueryHandler<GetDsiComponentQuery, List<DsiComponentGrpc>>? _DsiComponentHandler;
-         bool _DsiComponentRefreshInProgress;
+        IQueryHandler<GetDsiComponentQuery, List<DsiComponentGrpc>>? _DsiComponentHandler;
+        bool _DsiComponentRefreshInProgress;
         #endregion
 
         #region DsiCompositeDetail
-         IQueryHandler<GetDsiCompositeDetailQuery, List<DsiCompositeDetailGrpc>>? _DsiCompositeDetailHandler;
-         bool _DsiCompositeDetailRefreshInProgress;
+        IQueryHandler<GetDsiCompositeDetailQuery, List<DsiCompositeDetailGrpc>>? _DsiCompositeDetailHandler;
+        bool _DsiCompositeDetailRefreshInProgress;
         #endregion
 
         #region DsiCompositeDetailCircuitOptionAssociation
-         IQueryHandler<GetDsiCompositeDetailCircuitOptionAssociationQuery, List<DsiCompositeDetailCircuitOptionAssociationGrpc>>? _DsiCompositeDetailCircuitOptionAssociationHandler;
-         bool _DsiCompositeDetailCircuitOptionAssociationRefreshInProgress;
+        IQueryHandler<GetDsiCompositeDetailCircuitOptionAssociationQuery, List<DsiCompositeDetailCircuitOptionAssociationGrpc>>? _DsiCompositeDetailCircuitOptionAssociationHandler;
+        bool _DsiCompositeDetailCircuitOptionAssociationRefreshInProgress;
 
         #endregion
 
         #region DsiCompositeOption
-         IQueryHandler<GetDsiCompositeOptionQuery, List<DsiCompositeOptionGrpc>>? _DsiCompositeOptionHandler;
-         bool _DsiCompositeOptionRefreshInProgress;
+        IQueryHandler<GetDsiCompositeOptionQuery, List<DsiCompositeOptionGrpc>>? _DsiCompositeOptionHandler;
+        bool _DsiCompositeOptionRefreshInProgress;
         #endregion
 
         #region DsiHarness
-         IQueryHandler<GetDsiHarnessQuery, List<DsiHarnessGrpc>>? _DsiHarnessHandler;
-         bool _DsiHarnessRefreshInProgress;
+        IQueryHandler<GetDsiHarnessQuery, List<DsiHarnessGrpc>>? _DsiHarnessHandler;
+        bool _DsiHarnessRefreshInProgress;
         #endregion
 
         #region DsiHarnessScope
-         IQueryHandler<GetDsiHarnessScopeQuery, List<DsiHarnessScopeGrpc>>? _DsiHarnessScopeHandler;
-         bool _DsiHarnessScopeRefreshInProgress;
+        IQueryHandler<GetDsiHarnessScopeQuery, List<DsiHarnessScopeGrpc>>? _DsiHarnessScopeHandler;
+        bool _DsiHarnessScopeRefreshInProgress;
         #endregion
 
         #region DsiHarnessScopeScopeAssociation
-         IQueryHandler<GetDsiHarnessScopeScopeAssociationQuery, List<DsiHarnessScopeScopeAssociationGrpc>>? _DsiHarnessScopeScopeAssociationHandler;
-         bool _DsiHarnessScopeScopeAssociationRefreshInProgress;
+        IQueryHandler<GetDsiHarnessScopeScopeAssociationQuery, List<DsiHarnessScopeScopeAssociationGrpc>>? _DsiHarnessScopeScopeAssociationHandler;
+        bool _DsiHarnessScopeScopeAssociationRefreshInProgress;
         #endregion
 
         #region DsiManualBomQuantity
-         IQueryHandler<GetDsiManualBomQuantityQuery, List<DsiManualBomQuantityGrpc>>? _DsiManualBomQuantityHandler;
-         bool _DsiManualBomQuantityRefreshInProgress;
+        IQueryHandler<GetDsiManualBomQuantityQuery, List<DsiManualBomQuantityGrpc>>? _DsiManualBomQuantityHandler;
+        bool _DsiManualBomQuantityRefreshInProgress;
         #endregion
 
         #region DsiMidWireComponent
-         IQueryHandler<GetDsiMidWireComponentQuery, List<DsiMidWireComponentGrpc>>? _DsiMidWireComponentHandler;
-         bool _DsiMidWireComponentRefreshInProgress;
+        IQueryHandler<GetDsiMidWireComponentQuery, List<DsiMidWireComponentGrpc>>? _DsiMidWireComponentHandler;
+        bool _DsiMidWireComponentRefreshInProgress;
         #endregion
 
         #region DsiModuleChildDetail
-         IQueryHandler<GetDsiModuleChildDetailQuery, List<DsiModuleChildDetailGrpc>>? _DsiModuleChildDetailHandler;
-         bool _DsiModuleChildDetailRefreshInProgress;
+        IQueryHandler<GetDsiModuleChildDetailQuery, List<DsiModuleChildDetailGrpc>>? _DsiModuleChildDetailHandler;
+        bool _DsiModuleChildDetailRefreshInProgress;
         #endregion
 
         #region DsiModuleCompatibility
-         IQueryHandler<GetDsiModuleCompatibilityQuery, List<DsiModuleCompatibilityGrpc>>? _DsiModuleCompatibilityHandler;
-         bool _DsiModuleCompatibilityRefreshInProgress;
+        IQueryHandler<GetDsiModuleCompatibilityQuery, List<DsiModuleCompatibilityGrpc>>? _DsiModuleCompatibilityHandler;
+        bool _DsiModuleCompatibilityRefreshInProgress;
         #endregion
 
         #region DsiMulticoreSpecification
-         IQueryHandler<GetDsiMulticoreSpecificationQuery, List<DsiMulticoreSpecificationGrpc>>? _DsiMulticoreSpecificationHandler;
-         bool _DsiMulticoreSpecificationRefreshInProgress;
+        IQueryHandler<GetDsiMulticoreSpecificationQuery, List<DsiMulticoreSpecificationGrpc>>? _DsiMulticoreSpecificationHandler;
+        bool _DsiMulticoreSpecificationRefreshInProgress;
         #endregion
 
         #region DsiPinMapping
-         IQueryHandler<GetDsiPinMappingQuery, List<DsiPinMappingGrpc>>? _DsiPinMappingHandler;
-         bool _DsiPinMappingRefreshInProgress;
+        IQueryHandler<GetDsiPinMappingQuery, List<DsiPinMappingGrpc>>? _DsiPinMappingHandler;
+        bool _DsiPinMappingRefreshInProgress;
         #endregion
 
         #region DsiPinMappingCavityMappingAssociation
@@ -290,48 +290,48 @@
         #endregion
 
         #region DsiScope
-         IQueryHandler<GetDsiScopeQuery, List<DsiScopeGrpc>>? _DsiScopeHandler;
-         bool _DsiScopeRefreshInProgress;
+        IQueryHandler<GetDsiScopeQuery, List<DsiScopeGrpc>>? _DsiScopeHandler;
+        bool _DsiScopeRefreshInProgress;
         #endregion
 
         #region DsiSupplier
-         IQueryHandler<GetDsiSupplierQuery, List<DsiSupplierGrpc>>? _DsiSupplierHandler;
-         bool _DsiSupplierRefreshInProgress;
+        IQueryHandler<GetDsiSupplierQuery, List<DsiSupplierGrpc>>? _DsiSupplierHandler;
+        bool _DsiSupplierRefreshInProgress;
         #endregion
 
         #region DsiTransformedCompositeDetail
-         IQueryHandler<GetDsiTransformedCompositeDetailQuery, List<DsiTransformedCompositeDetailGrpc>>? _DsiTransformedCompositeDetailHandler;
-         bool _DsiTransformedCompositeDetailRefreshInProgress;
+        IQueryHandler<GetDsiTransformedCompositeDetailQuery, List<DsiTransformedCompositeDetailGrpc>>? _DsiTransformedCompositeDetailHandler;
+        bool _DsiTransformedCompositeDetailRefreshInProgress;
         #endregion
 
         #region DsiTransformedHarness
-         IQueryHandler<GetDsiTransformedHarnessQuery, List<DsiTransformedHarnessGrpc>>? _DsiTransformedHarnessHandler;
-         bool _DsiTransformedHarnessRefreshInProgress;
+        IQueryHandler<GetDsiTransformedHarnessQuery, List<DsiTransformedHarnessGrpc>>? _DsiTransformedHarnessHandler;
+        bool _DsiTransformedHarnessRefreshInProgress;
         #endregion
 
         #region DsiTransformedModuleChildDetail
-         IQueryHandler<GetDsiTransformedModuleChildDetailQuery, List<DsiTransformedModuleChildDetailGrpc>>? _DsiTransformedModuleChildDetailHandler;
-         bool _DsiTransformedModuleChildDetailRefreshInProgress;
+        IQueryHandler<GetDsiTransformedModuleChildDetailQuery, List<DsiTransformedModuleChildDetailGrpc>>? _DsiTransformedModuleChildDetailHandler;
+        bool _DsiTransformedModuleChildDetailRefreshInProgress;
         #endregion
 
         #region DsiUnitOfMeasure
-         IQueryHandler<GetDsiUnitOfMeasureQuery, List<DsiUnitOfMeasureGrpc>>? _DsiUnitOfMeasureHandler;
-         bool _DsiUnitOfMeasureRefreshInProgress;
+        IQueryHandler<GetDsiUnitOfMeasureQuery, List<DsiUnitOfMeasureGrpc>>? _DsiUnitOfMeasureHandler;
+        bool _DsiUnitOfMeasureRefreshInProgress;
         #endregion
 
         #region DsiWireMulticoreMarker
-         IQueryHandler<GetDsiWireMulticoreMarkerQuery, List<DsiWireMulticoreMarkerGrpc>>? _DsiWireMulticoreMarkerHandler;
-         bool _DsiWireMulticoreMarkerRefreshInProgress;
+        IQueryHandler<GetDsiWireMulticoreMarkerQuery, List<DsiWireMulticoreMarkerGrpc>>? _DsiWireMulticoreMarkerHandler;
+        bool _DsiWireMulticoreMarkerRefreshInProgress;
         #endregion
 
         #region DsiWireSpecification
-         IQueryHandler<GetDsiWireSpecificationQuery, List<DsiWireSpecificationGrpc>>? _DsiWireSpecificationHandler;
-         bool _DsiWireSpecificationRefreshInProgress;
+        IQueryHandler<GetDsiWireSpecificationQuery, List<DsiWireSpecificationGrpc>>? _DsiWireSpecificationHandler;
+        bool _DsiWireSpecificationRefreshInProgress;
         #endregion
 
         #region DsiWireThroughNode
-         IQueryHandler<GetDsiWireThroughNodeQuery, List<DsiWireThroughNodeGrpc>>? _DsiWireThroughNodeHandler;
-         bool _DsiWireThroughNodeRefreshInProgress;
+        IQueryHandler<GetDsiWireThroughNodeQuery, List<DsiWireThroughNodeGrpc>>? _DsiWireThroughNodeHandler;
+        bool _DsiWireThroughNodeRefreshInProgress;
         #endregion
 
         //////////////////////////////////////////////////////////////////////////////////////////////
@@ -415,12 +415,12 @@
 
             #region DsiCircuitOption
             _ListDsiCircuitOptionGrpc = new ListDsiCircuitOptionGrpc();
-             _DsiCircuitOptionRefreshInProgress =false;
+            _DsiCircuitOptionRefreshInProgress = false;
             #endregion
 
             #region DsiCentreStrip
 
-            _ListDsiCentreStripGrpc = new  ListDsiCentreStripGrpc();
+            _ListDsiCentreStripGrpc = new ListDsiCentreStripGrpc();
             _DsiCentreStripRefreshInProgress = false;
 
             #endregion
@@ -638,7 +638,7 @@
                     foreach (RfqDrawingPartNumbersGrpc updatedComponent in request.RfqDrawingPartNumbersGrpcsToUpdate)
                     {
                         RfqDrawingPartNumbersGrpc? foundItem = _ListRfqDrawingPartNumbers.RfqDrawingPartNumbers.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
-                        if(foundItem == null)
+                        if (foundItem == null)
                         {
                             continue;
                         }
@@ -2338,6 +2338,99 @@
                             if (index != -1)
                             {
                                 _ListDsiHarnessScopeGrpc.DsiHarnessScopeGrpcs[index] = updated;
+                            }
+                        }
+                    }
+
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        #endregion
+
+        #region DsiHarnessScopeScopeAssociation
+
+        public async Task<ListDsiHarnessScopeScopeAssociationGrpc> GetAllDsiHarnessScopeScopeAssociations(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            return _ListDsiHarnessScopeScopeAssociationGrpc;
+        }
+
+        public async Task<ListDsiHarnessScopeScopeAssociationGrpc> GetDsiHarnessScopeScopeAssociationsByRowId(DsiHarnessScopeScopeAssociationGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (!_ListDsiHarnessScopeScopeAssociationGrpc.DsiHarnessScopeScopeAssociationGrpcs.Any())
+            {
+                await PopulateDsiHarnessScopeScopeAssociations(cancellationToken);
+            }
+
+            ListDsiHarnessScopeScopeAssociationGrpc responseList = new ListDsiHarnessScopeScopeAssociationGrpc();
+            List<DsiHarnessScopeScopeAssociationGrpc> matches = _ListDsiHarnessScopeScopeAssociationGrpc.DsiHarnessScopeScopeAssociationGrpcs
+                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+
+            responseList.DsiHarnessScopeScopeAssociationGrpcs.AddRange(matches);
+            return responseList;
+        }
+
+        public async Task<ListDsiHarnessScopeScopeAssociationGrpc> CreateDsiHarnessScopeScopeAssociations(DsiHarnessScopeScopeAssociationGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            ListDsiHarnessScopeScopeAssociationGrpc responseList = new ListDsiHarnessScopeScopeAssociationGrpc();
+            if (request?.DsiHarnessScopeScopeAssociationGrpcsToCreate == null || request.DsiHarnessScopeScopeAssociationGrpcsToCreate.Count == 0)
+            {
+                return responseList;
+            }
+
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                ICommandHandler<DsiHarnessScopeScopeAssociationCommand, List<DbDsiHarnessScopeScopeAssociation>> handler =
+                    scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiHarnessScopeScopeAssociationCommand, List<DbDsiHarnessScopeScopeAssociation>>>();
+                DsiHarnessScopeScopeAssociationCommand command =
+                    new DsiHarnessScopeScopeAssociationCommand(CommandType.Create, request.DsiHarnessScopeScopeAssociationGrpcsToCreate);
+                Result<List<DbDsiHarnessScopeScopeAssociation>> result = await handler.Handle(command, cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    List<DsiHarnessScopeScopeAssociationGrpc> updated = result.Value.Select(p => p.FromEntity()).ToList();
+                    _ListDsiHarnessScopeScopeAssociationGrpc.DsiHarnessScopeScopeAssociationGrpcs.AddRange(updated);
+                    responseList.DsiHarnessScopeScopeAssociationGrpcs.AddRange(updated);
+                }
+
+                return responseList;
+            }
+        }
+
+        public async Task<bool> UpdateDsiHarnessScopeScopeAssociations(DsiHarnessScopeScopeAssociationGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (request?.DsiHarnessScopeScopeAssociationGrpcsToUpdate == null || request.DsiHarnessScopeScopeAssociationGrpcsToUpdate.Count == 0)
+            {
+                return false;
+            }
+
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                ICommandHandler<DsiHarnessScopeScopeAssociationCommand, List<DbDsiHarnessScopeScopeAssociation>> handler =
+                    scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiHarnessScopeScopeAssociationCommand, List<DbDsiHarnessScopeScopeAssociation>>>();
+                DsiHarnessScopeScopeAssociationCommand command =
+                    new DsiHarnessScopeScopeAssociationCommand(CommandType.Update, request.DsiHarnessScopeScopeAssociationGrpcsToUpdate);
+                Result<List<DbDsiHarnessScopeScopeAssociation>> result = await handler.Handle(command, cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    foreach (DsiHarnessScopeScopeAssociationGrpc? updated in request.DsiHarnessScopeScopeAssociationGrpcsToUpdate)
+                    {
+                        DsiHarnessScopeScopeAssociationGrpc? existing =
+                            _ListDsiHarnessScopeScopeAssociationGrpc.DsiHarnessScopeScopeAssociationGrpcs.FirstOrDefault(p => p.RowId == updated.RowId);
+                        if (existing != null)
+                        {
+                            int index = _ListDsiHarnessScopeScopeAssociationGrpc.DsiHarnessScopeScopeAssociationGrpcs.IndexOf(existing);
+                            if (index != -1)
+                            {
+                                _ListDsiHarnessScopeScopeAssociationGrpc.DsiHarnessScopeScopeAssociationGrpcs[index] = updated;
                             }
                         }
                     }
@@ -4840,6 +4933,32 @@
             _ListDsiBranchInsulations = SampleRfqDataService.PopulateDsiBranchInsulationGrpc();
             _ListDsiBranchInsulationThroughNodes = SampleRfqDataService.PopulateDsiBranchInsulationThroughNodeGrpc();
             _ListDsiCavityMappings = SampleRfqDataService.PopulateDsiCavityMappingGrpc();
+            _ListDsiCircuitOptionGrpc = SampleRfqDataService.PopulateDsiCircuitOptionGrpc();
+            _ListDsiCentreStripGrpc = SampleRfqDataService.PopulateDsiCentreStripGrpc();
+            _ListDsiComponentGrpc = SampleRfqDataService.PopulateDsiComponentGrpc();
+            _ListDsiCompositeDetailGrpc = SampleRfqDataService.PopulateDsiCompositeDetailGrpc();
+            _ListDsiCompositeDetailCircuitOptionAssociationGrpc = SampleRfqDataService.PopulateDsiCompositeDetailCircuitOptionAssociationGrpc();
+            _ListDsiCompositeOptionGrpc = SampleRfqDataService.PopulateDsiCompositeOptionGrpc();
+            _ListDsiHarnessGrpc = SampleRfqDataService.PopulateDsiHarnessGrpc();
+            _ListDsiHarnessScopeGrpc = SampleRfqDataService.PopulateDsiHarnessScopeGrpc();
+            _ListDsiHarnessScopeScopeAssociationGrpc = SampleRfqDataService.PopulateDsiHarnessScopeScopeAssociationGrpc();
+            _ListDsiManualBomQuantityGrpc = SampleRfqDataService.PopulateDsiManualBomQuantityGrpc();
+            _ListDsiMidWireComponentGrpc = SampleRfqDataService.PopulateDsiMidWireComponentGrpc();
+            _ListDsiModuleChildDetailGrpc = SampleRfqDataService.PopulateDsiModuleChildDetailGrpc();
+            _ListDsiModuleCompatibilityGrpc = SampleRfqDataService.PopulateDsiModuleCompatibilityGrpc();
+            _ListDsiMulticoreSpecificationGrpc = SampleRfqDataService.PopulateDsiMulticoreSpecificationGrpc();
+            _ListDsiPinMappingGrpc = SampleRfqDataService.PopulateDsiPinMappingGrpc();
+            _ListDsiPinMappingCavityMappingAssociationGrpc = SampleRfqDataService.PopulateDsiPinMappingCavityMappingAssociationGrpc();
+            _ListDsiScopeGrpc = SampleRfqDataService.PopulateDsiScopeGrpc();
+            _ListDsiSupplierGrpc = SampleRfqDataService.PopulateDsiSupplierGrpc();
+            _ListDsiTransformedCompositeDetailGrpc = SampleRfqDataService.PopulateDsiTransformedCompositeDetailGrpc();
+            _ListDsiTransformedHarnessGrpc = SampleRfqDataService.PopulateDsiTransformedHarnessGrpc();
+            _ListDsiTransformedModuleChildDetailGrpc = SampleRfqDataService.PopulateDsiTransformedModuleChildDetailGrpc();
+            _ListDsiUnitOfMeasureGrpc = SampleRfqDataService.PopulateDsiUnitOfMeasureGrpc();
+            _ListDsiWireMulticoreMarkerGrpc = SampleRfqDataService.PopulateDsiWireMulticoreMarkerGrpc();
+            _ListDsiWireSpecificationGrpc = SampleRfqDataService.PopulateDsiWireSpecificationGrpc();
+            _ListDsiWireThroughNodeGrpc = SampleRfqDataService.PopulateDsiWireThroughNodeGrpc();
+
         }
     }
 }
