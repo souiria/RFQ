@@ -1,6 +1,4 @@
-﻿using Rfq.CQRS.Command;
-
-namespace Rfq.CQRS.Handler.DsiUnitOfMeasure
+﻿namespace Rfq.CQRS.Handler.DsiUnitOfMeasure
 {
     public class CommandHandler : ICommandHandler<DsiUnitOfMeasureCommand, List<DbDsiUnitOfMeasure>>
     {
