@@ -1,232 +1,123 @@
-﻿using SharedModels.Filtering;
-
-namespace Filtering
+﻿namespace Filtering
 {
-    public class Filter<T> : IFilter<T> where T : class
+    public class Filter //: IFilter
     {
-        readonly Edi.EdiClient _EdiClient;
-        readonly Emacs.Emacs.EmacsClient _EmacsClient;
+        ////readonly Edi.EdiClient _EdiClient;
+        ////readonly Emacs.Emacs.EmacsClient _EmacsClient;
 
-        public Filter(Edi.EdiClient ediClient, Emacs.Emacs.EmacsClient emacsClient)
-        {
-            _EdiClient = ediClient;
-            _EmacsClient = emacsClient;
-        }
-        public Collection<T> FilterExpression(IEnumerable<T> collection, Expression<Func<T, bool>> expression)
-        {
-            Func<T, bool> compiledExpression = expression.Compile();
-            Collection<T> enumerableCollection = (Collection<T>)collection.Where(compiledExpression);
-            return enumerableCollection;
-        }
+        //public Filter(/*Edi.EdiClient ediClient, Emacs.Emacs.EmacsClient emacsClient*/)
+        //{
+        //    //_EdiClient = ediClient;
+        //    //_EmacsClient = emacsClient;
+        //}
 
-        public Collection<T> FilterExpression(Func<T, bool> function, AccessServices accessService)
-        {
-            ICollection<T> resultCollection = new Collection<T>();
-            switch (accessService)
-            {
-                case AccessServices.EDI:
-                    resultCollection = FilterWithService<EdiFilterRequest, EdiResponse>(
-                        function,
-                        typeof(T).Name,
-                        req => _EdiClient.FilterEdiDataGrpc(req),
-                        ExtractEdiResponseData
-                    );
-                    return (Collection<T>)resultCollection;
+        //public TResult FilterExpression<TSource, TResult>(IEnumerable<TSource> collection, Expression<Func<TSource, bool>> expression)
+        //{
+        //    Func<TSource, bool> compiledExpression = expression.Compile();
+        //    TResult enumerableCollection = (TResult)collection.Where(compiledExpression);
+        //    return enumerableCollection;
+        //}
 
-                case AccessServices.EMACS:
-                    resultCollection = FilterWithService<EmacsFilterRequest, EmacsFilterResponse>(
-                        function,
-                        typeof(T).Name,
-                        req => _EmacsClient.FilterEmacsDataGrpc(req),
-                        ExtractEmacsResponseData
-                    );
-                return (Collection<T>)resultCollection;
+        //public TResult FilterExpression<TItem, TResult>(Func<TItem, bool> function, AccessServices accessService)
+        //{
+        //    ICollection<TItem> resultCollection = new Collection<TItem>();
+        //    switch (accessService)
+        //    {
+        //        case AccessServices.EDI:
+        //            resultCollection = FilterWithService<TItem, EdiFilterRequest, EdiResponse>(
+        //                function,
+        //                typeof(TItem).Name,
+        //                req => _EdiClient.FilterEdiDataGrpc(req),
+        //                ExtractEdiResponseData<TItem>
+        //            );
+        //            return (TResult)resultCollection;
 
-                default:
-                    throw new NotImplementedException($"AccessService {accessService} not implemented");
-            }
-        }
+        //        case AccessServices.EMACS:
+        //            resultCollection = FilterWithService<TItem, EmacsFilterRequestGrpc, EmacsFilterResponseGrpc>(
+        //                function,
+        //                typeof(TItem).Name,
+        //                req => _EmacsClient.FilterEmacsDataGrpc(req),
+        //                ExtractEmacsResponseData<TItem>
+        //            );
+        //            return (TResult)resultCollection;
 
-        Collection<T> FilterWithService<TRequest, TResponse>(
-            Func<T, bool> function, 
-            string databaseList,
-            Func<TRequest, TResponse> serviceCall,
-            Func<TResponse, ICollection<T>> extractData) 
-            where TRequest : new()
-        {
-            TRequest request = new TRequest();
-            string functionString = function.ToString() ?? string.Empty;
-            SetRequestProperties(request, functionString, databaseList);
-            TResponse? response = serviceCall(request);
-            ICollection<T> resultCollection = extractData(response);
-            return (Collection<T>)resultCollection;
-        }
+        //        default:
+        //            throw new NotImplementedException($"AccessService {accessService} not implemented");
+        //    }
+        //}
 
-        void SetRequestProperties(object request, string filterExpression, string databaseList)
-        {
-            Type type = request.GetType();
-            type.GetProperty("FilterExpression")?.SetValue(request, filterExpression);
-            type.GetProperty("DatabaseList")?.SetValue(request, databaseList);
-        }
+        //Collection<TItem> FilterWithService<TItem, TRequest, TResponse>(
+        //    Func<TItem, bool> function,
+        //    string databaseList,
+        //    Func<TRequest, TResponse> serviceCall,
+        //    Func<TResponse, ICollection<TItem>> extractData)
+        //    where TRequest : new()
+        //{
+        //    TRequest request = new TRequest();
+        //    string functionString = function.ToString() ?? string.Empty;
+        //    SetRequestProperties(request, functionString, databaseList);
+        //    TResponse? response = serviceCall(request);
+        //    ICollection<TItem> resultCollection = extractData(response);
+        //    return (Collection<TItem>)resultCollection;
+        //}
 
-        ICollection<T> ExtractEdiResponseData(EdiResponse response)
-        {
-            Collection<T> results = new Collection<T>();
+        //void SetRequestProperties(object request, string filterExpression, string databaseList)
+        //{
+        //    Type type = request.GetType();
+        //    type.GetProperty("FilterExpression")?.SetValue(request, filterExpression);
+        //    type.GetProperty("DatabaseList")?.SetValue(request, databaseList);
+        //}
 
-            // Handle ListEdiGlobalParametersGrpc
-            if (TryExtractList(response.ListEdiGlobalParametersGrpc?.EdiGlobalParametersGrpc, results))
-            {
-                return results;
-            }
-            
-            // Handle ListEdiCustomerParameterGrpc
-            if (TryExtractList(response.ListEdiCustomerParameterGrpc?.EdiCustomerParameterGrpc, results))
-            {
-                return results;
-            }
+        //Collection<TItem> ExtractEdiResponseData<TItem>(EdiResponse response)
+        //{
+        //    Collection<TItem> results = new Collection<TItem>();
 
-            // Handle ListEdiFileDataUploadGrpc
-            if (TryExtractList(response.ListEdiFileDataUploadGrpc?.EdiFileDataUploadGrpc, results))
-            {
-                return results;
-            }
+        //    TryExtractList(response.ListEdiGlobalParametersGrpc?.EdiGlobalParametersGrpc, results);
+        //    TryExtractList(response.ListEdiCustomerParameterGrpc?.EdiCustomerParameterGrpc, results);
+        //    TryExtractList(response.ListEdiFileDataUploadGrpc?.EdiFileDataUploadGrpc, results);
+        //    TryExtractList(response.ListEdiFileDataUploadDuplicatesGrpc?.EdiFileDataUploadDuplicatesGrpc, results);
+        //    TryExtractList(response.ListEdiInvoiceInformationGrpc?.EdiInvoiceInformationGrpc, results);
+        //    TryExtractList(response.ListEdiInvoiceInformationDuplicatesGrpc?.EdiInvoiceInformationDuplicateGrpc, results);
+        //    TryExtractList(response.ListEdiInvoiceUnit4Grpc?.EdiInvoiceUnit4Grpc, results);
+        //    TryExtractList(response.ListEdiZeroPriceExceptionsGrpc?.EdiZeroPriceExceptionsGrpc, results);
 
-            // Handle ListEdiFileDataUploadDuplicatesGrpc
-            if (TryExtractList(response.ListEdiFileDataUploadDuplicatesGrpc?.EdiFileDataUploadDuplicatesGrpc, results))
-            {
-                return results;
-            }
+        //    return results;
+        //}
+        //Collection<TItem> ExtractEmacsResponseData<TItem>(EmacsFilterResponseGrpc response)
+        //{
+        //    Collection<TItem> results = new Collection<TItem>();
 
-            // Handle ListEdiInvoiceInformationGrpc
-            if (TryExtractList(response.ListEdiInvoiceInformationGrpc?.EdiInvoiceInformationGrpc, results))
-            {
-                return results;
-            }
+        //    TryExtractList(response.ListCombinedPartsGrpc?.CombinedPartsGrpc, results);
+        //    TryExtractList(response.ListPartCategoryDetailGrpc?.PartCategoryDetailGrpc, results);
+        //    TryExtractList(response.ListPartClassDetailGrpc?.PartClassDetailGrpc, results);
+        //    TryExtractList(response.ListPartGroupsGrpc?.PartGroupsGrpc, results);
+        //    TryExtractList(response.ListPartGroupsConstGrpc?.PartGroupsConstGrpc, results);
+        //    TryExtractList(response.ListCustomerDataGrpc?.CustomerDataGrpc, results);
+        //    TryExtractList(response.ListColourCodeGrpc?.ColourCodeGrpc, results);
+        //    TryExtractList(response.ListMaterialGroupsGrpc?.MaterialGroupsGrpc, results);
+        //    TryExtractList(response.ListMaterialTypesGrpc?.MaterialTypesGrpc, results);
+        //    TryExtractList(response.ListNPACustomerGrpc?.NPACustomerGrpc, results);
+        //    TryExtractList(response.ListNPASupplierGrpc?.NPASupplierGrpc, results);
+        //    TryExtractList(response.ListSuppliersGrpc?.SuppliersGrpc, results);
+        //    TryExtractList(response.ListEmacsRFIViewGrpc?.EmacsRFIViewGrpc, results);
+        //    TryExtractList(response.ListPARTMSGrpc?.PARTMSGrpc, results);
 
-            // Handle ListEdiInvoiceInformationDuplicatesGrpc
-            if (TryExtractList(response.ListEdiInvoiceInformationDuplicatesGrpc?.EdiInvoiceInformationDuplicateGrpc, results))
-            {
-                return results;
-            }
+        //    return results;
+        //}
 
-            // Handle ListEdiInvoiceUnit4Grpc
-            if (TryExtractList(response.ListEdiInvoiceUnit4Grpc?.EdiInvoiceUnit4Grpc, results))
-            {
-                return results;
-            }
+        //bool TryExtractList<TItem, T>(IEnumerable<TItem>? items, Collection<T> results) where TItem : class
+        //{
+        //    if (items != null && typeof(T) == typeof(TItem))
+        //    {
+        //        foreach (TItem item in items)
+        //        {
+        //            results.Add((T)(object)item);
+        //        }
 
-            // Handle ListEdiZeroPriceExceptionsGrpc
-            if (TryExtractList(response.ListEdiZeroPriceExceptionsGrpc?.EdiZeroPriceExceptionsGrpc, results))
-            {
-                return results;
-            }
+        //        return true;
+        //    }
 
-            return results;
-        }
-        ICollection<T> ExtractEmacsResponseData(EmacsFilterResponse response)
-        {
-            Collection<T> results = new Collection<T>();
-
-            // Handle ListCombinedPartsGrpc
-            if (TryExtractList(response.ListCombinedPartsGrpc?.CombinedPartsGrpc, results))
-            {
-                return results;
-            }
-
-            // Handle ListPartCategoryDetailGrpc
-            if (TryExtractList(response.ListPartCategoryDetailGrpc?.PartCategoryDetailGrpc, results))
-            {
-                return results;
-            }
-
-            // Handle ListPartClassDetailGrpc
-            if (TryExtractList(response.ListPartClassDetailGrpc?.PartClassDetailGrpc, results))
-            {
-                return results;
-            }
-
-            // Handle ListPartGroupsGrpc
-            if (TryExtractList(response.ListPartGroupsGrpc?.PartGroupsGrpc, results))
-            {
-                return results;
-            }
-
-            // Handle ListPartGroupsConstGrpc
-            if (TryExtractList(response.ListPartGroupsConstGrpc?.PartGroupsConstGrpc, results))
-            {
-                return results;
-            }
-
-            // Handle ListCustomerDataGrpc
-            if (TryExtractList(response.ListCustomerDataGrpc?.CustomerDataGrpc, results))
-            {
-                return results;
-            }
-
-            // Handle ListColourCodeGrpc
-            if (TryExtractList(response.ListColourCodeGrpc?.ColourCodeGrpc, results))
-            {
-                return results;
-            }
-
-            // Handle ListMaterialGroupsGrpc
-            if (TryExtractList(response.ListMaterialGroupsGrpc?.MaterialGroupsGrpc, results))
-            {
-                return results;
-            }
-
-            // Handle ListMaterialTypesGrpc
-            if (TryExtractList(response.ListMaterialTypesGrpc?.MaterialTypesGrpc, results))
-            {
-                return results;
-            }
-
-            // Handle ListNPACustomerGrpc
-            if (TryExtractList(response.ListNPACustomerGrpc?.NPACustomerGrpc, results))
-            {
-                return results;
-            }
-
-            // Handle ListNPASupplierGrpc
-            if (TryExtractList(response.ListNPASupplierGrpc?.NPASupplierGrpc, results))
-            {
-                return results;
-            }
-
-            // Handle ListSuppliersGrpc
-            if (TryExtractList(response.ListSuppliersGrpc?.SuppliersGrpc, results))
-            {
-                return results;
-            }
-
-            // Handle ListEmacsRFIViewGrpc
-            if (TryExtractList(response.ListEmacsRFIViewGrpc?.EmacsRFIViewGrpc, results))
-            {
-                return results;
-            }
-
-            // Handle ListPARTMSGrpc
-            if (TryExtractList(response.ListPARTMSGrpc?.PARTMSGrpc, results))
-            {
-                return results;
-            }
-
-            return results;
-        }
-
-        bool TryExtractList<TItem>(IEnumerable<TItem>? items, Collection<T> results) where TItem : class
-            {
-                if (items != null && typeof(T) == typeof(TItem))
-                {
-                    foreach (TItem item in items)
-                    {
-                        results.Add((T)(object)item);
-                    }
-
-                    return true;
-                }
-
-                return false;
-            }
+        //    return false;
+        //}
     }
 }

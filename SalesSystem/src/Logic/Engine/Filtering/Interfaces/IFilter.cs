@@ -1,8 +1,8 @@
 ﻿namespace Filtering.Interfaces
 {
-    public interface IFilter<T> where T : class
+    public interface IFilter
     {
-        Collection<T> FilterExpression(IEnumerable<T> collection, Expression<Func<T, bool>> expression);
-        Collection<T> FilterExpression(Func<T, bool> function, AccessServices accessService);
+        TResult FilterExpression<T, TResult>(IEnumerable<T> collection, Expression<Func<T, bool>> expression);
+        TResult FilterExpression<T, TResult>(Func<T, bool> function, AccessServices accessService);
     }
 }

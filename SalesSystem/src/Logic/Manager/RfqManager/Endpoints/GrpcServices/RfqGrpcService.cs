@@ -56,5 +56,11 @@
             UploadPartsRequestGrpcResponse response = await _RfqManagerService.UploadPartsGrpc(request);
             return response;
         }
+        public override async Task<FilterDataGrpcResponse> FilterDataGrpc(FilterDataGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("FilterDataGrpc starting");
+            FilterDataGrpcResponse response = await _RfqManagerService.FilterDataGrpc(request);
+            return response;
+        }
     }
 }

@@ -57,7 +57,7 @@ service Emacs {
   rpc GetPARTMSGrpcByCategoryCode(GetPARTMSGrpcByCategoryCodeGrpcRequest) returns (ListPARTMSGrpc);
   rpc GetPARTMSGrpcByPartGroupsConstCode(GetPARTMSGrpcByPartGroupsConstCodeGrpcRequest) returns (ListPARTMSGrpc);
 
-  rpc FilterEmacsDataGrpc (EmacsFilterRequest) returns (EmacsFilterResponse);
+  rpc FilterEmacsDataGrpc (EmacsFilterRequestGrpc) returns (EmacsFilterResponseGrpc);
 }
 
 // The request message containing the user's name.
@@ -448,12 +448,12 @@ message PARTMSGrpc {
 
 }
 
-message EmacsFilterRequest {
+message EmacsFilterRequestGrpc {
     string DatabaseList = 1;
     string FilterExpression = 2;
 }
 
-message EmacsFilterResponse {
+message EmacsFilterResponseGrpc {
     bool Success = 1;
     ListCombinedPartsGrpc ListCombinedPartsGrpc = 2;
     ListPartCategoryDetailGrpc ListPartCategoryDetailGrpc = 3;

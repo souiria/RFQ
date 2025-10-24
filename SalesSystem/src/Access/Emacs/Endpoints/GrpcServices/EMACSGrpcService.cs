@@ -220,11 +220,11 @@
         }
         #endregion
 
-        public override async Task<EmacsFilterResponse> FilterEmacsDataGrpc(EmacsFilterRequest request, ServerCallContext context)
+        public override async Task<EmacsFilterResponseGrpc> FilterEmacsDataGrpc(EmacsFilterRequestGrpc request, ServerCallContext context)
         {
             ParsingConfig parsingConfig = new ParsingConfig();
             string filterExpressionString = request.FilterExpression.ToUpperInvariant();
-            EmacsFilterResponse returnResponse = new EmacsFilterResponse();
+            EmacsFilterResponseGrpc returnResponse = new EmacsFilterResponseGrpc();
 
             switch (request.DatabaseList)
             {
@@ -349,7 +349,7 @@
         }
 
         async Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig,
-            EmacsFilterResponse returnResponse, Action<IEnumerable<T>> setResponseCollection, CancellationToken cancellationToken)
+            EmacsFilterResponseGrpc returnResponse, Action<IEnumerable<T>> setResponseCollection, CancellationToken cancellationToken)
         {
             Expression<Func<T, bool>> filterExpression = DynamicExpressionParser.ParseLambda<T, bool>(parsingConfig, false, filterExpressionString);
             Func<T, bool> compiledExpression = filterExpression.Compile();

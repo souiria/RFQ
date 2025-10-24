@@ -21,6 +21,7 @@ service RfqModule {
   rpc GetVehiclesByProjectCodeGrpc (GetVehicleByProjectCodeGrpcRequest) returns (GetVehicleByProjectCodeGrpcResponse);
   rpc GetRfqReasonsGrpc (GetRfqReasonsGrpcRequest) returns (GetRfqReasonsGrpcResponse);
   rpc UploadPartsGrpc (UploadPartsRequestGrpcRequest) returns (UploadPartsRequestGrpcResponse);
+  rpc FilterDataGrpc (FilterDataGrpcRequest) returns (FilterDataGrpcResponse);
 }
 
 // The request message containing the user's name.
@@ -157,4 +158,11 @@ message CustomerParts {
     google.protobuf.StringValue PartNumber1 = 1;
     google.protobuf.StringValue PartNumber2 = 2;
     google.protobuf.StringValue PartNumber3 = 3;
+}
+
+message FilterDataGrpcRequest {
+    google.protobuf.StringValue StringValue = 1;
+}
+
+message FilterDataGrpcResponse {
 }

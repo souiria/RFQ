@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SalesSystem\src\Utilities\GrpcProtos\GrpcProtos.csproj" />
-    <ProjectReference Include="..\SalesSystem\src\Utilities\SharedModels\SharedModels.csproj" />
+    <ProjectReference Include="..\..\..\Utilities\GrpcProtos\GrpcProtos.csproj" />
+    <ProjectReference Include="..\..\..\Utilities\SharedModels\SharedModels.csproj" />
   </ItemGroup>
 
 </Project>

@@ -40,6 +40,7 @@
                 o.Address = new Uri("https://localhost:7285");
             });
             builder.Services.AddInfrastructure();
+            //builder.Services.AddSingleton<IFilter, Filter>();
 
             #endregion
 

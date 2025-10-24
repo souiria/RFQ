@@ -1,4 +1,6 @@
-﻿namespace RfqModule.Services
+﻿using Emacs;
+
+namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {
@@ -7,6 +9,7 @@
         readonly Rfq.Rfq.RfqClient _RfqClient;
         readonly Emacs.Emacs.EmacsClient _EmacsClient;
         readonly ILogger<RfqManagerService> _Logger;
+        //readonly IFilter _FilteringService;
 
         public RfqManagerService(ILogger<RfqManagerService> logger,
               MasterClient masterClient,
@@ -18,6 +21,19 @@
             _MasterClient = masterClient;
             _RfqClient = rfqClient;
             _EmacsClient = emacsClient;
+        }
+
+        public async Task<FilterDataGrpcResponse> FilterDataGrpc(FilterDataGrpcRequest request)
+        {
+            await Task.Delay(1);
+            EmacsFilterRequestGrpc emacsRequest = new EmacsFilterRequestGrpc();
+            string g = request.StringValue;
+            Func<CombinedPartsGrpc, bool> d = c => c.SumitomoNumber == g;
+            emacsRequest.FilterExpression = d.ToString() ?? string.Empty;
+            emacsRequest.DatabaseList = "CombinedPartsGrpc";
+            EmacsFilterResponseGrpc q = _EmacsClient.FilterEmacsDataGrpc(emacsRequest);
+            FilterDataGrpcResponse response = new FilterDataGrpcResponse();
+            return response;
         }
 
         public async Task<GetCustomersGrpcResponse> GetCustomersGrpc(GetCustomersGrpcRequest request)
