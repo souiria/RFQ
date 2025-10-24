@@ -1,5 +1,3 @@
-using System.Collections.ObjectModel;
-
 namespace SalesSystem.Rfq.Extensions
 {
     public static class TimingExtensions

@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace SharedKernel
+﻿namespace SharedKernel
 {
     public static class EnumExtensions
     {

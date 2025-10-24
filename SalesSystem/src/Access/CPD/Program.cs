@@ -1,5 +1,3 @@
-using CPD.Services;
-
 namespace CPD
 {
     public static class Program

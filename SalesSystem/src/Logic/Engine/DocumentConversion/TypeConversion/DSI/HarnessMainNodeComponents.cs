@@ -1,6 +1,4 @@
-﻿using Transformation.Helpers;
-
-namespace Transformation.TypeConversion.DSI
+﻿namespace Transformation.TypeConversion.DSI
 {
     public static class HarnessMainNodeComponents
     {

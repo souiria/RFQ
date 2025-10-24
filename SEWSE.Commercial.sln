@@ -10,9 +10,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Manager", "Manager", "{3F465083-C68C-4844-B412-A9FCC2EEF3BC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2193328D-16FA-4D41-9977-48C550461D4A}"
-	ProjectSection(SolutionItems) = preProject
-		SalesSystem\Tests\RfqModule.Tests\RfqModule.Tests.csproj = SalesSystem\Tests\RfqModule.Tests\RfqModule.Tests.csproj
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesSystem.AppHost", "SalesSystem\src\Debug\SalesSystem.AppHost\SalesSystem.AppHost.csproj", "{97F0E308-7594-4D84-9EB8-3547EC02CE65}"
 EndProject

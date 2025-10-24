@@ -1,8 +1,4 @@
-﻿using Transformation.TypeConversion.DSI;
-using Transformation.TypeConversion.EDI;
-using Transformation.TypeConversion.PartSearch;
-
-namespace Transformation
+﻿namespace Transformation
 {
     public static class DocumentTransformer
     {

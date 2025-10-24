@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace SalesSystem.Rfq.Enums
+﻿namespace SalesSystem.Rfq.Enums
 {
     public enum RfqFileType
     {

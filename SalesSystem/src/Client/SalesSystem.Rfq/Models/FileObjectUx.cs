@@ -1,5 +1,4 @@
-﻿using SalesSystem.Rfq.Enums;
-
+﻿
 namespace SalesSystem.Rfq.Models
 {
     public class FileObjectUx
