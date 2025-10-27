@@ -404,15 +404,15 @@
             data.RowId = entity.RowId;
             data.Code = entity.Code;
             data.Name = entity.Name;
-            data.SubsidiaryId = entity.SubsidiaryId ?? 0;
-            data.BuyerId = entity.BuyerId ?? 0;
+            data.SubsidiaryId = entity.Subsidiary_id ?? 0;
+            data.BuyerId = entity.Buyer_Id ?? 0;
             data.Address = entity.Address;
             data.Phone = entity.Phone;
             data.Email = entity.Email;
             data.Contact = entity.Contact;
-            data.AlternateContact = entity.AlternateContact;
+            data.AlternateContact = entity.Alternate_Contact;
             data.Active = entity.Active ?? false;
-            data.JSupplier = entity.JSupplier ?? false;
+            data.JSupplier = entity.J_Supplier ?? false;
             return data;
         }
 
@@ -422,15 +422,15 @@
             data.RowId = grpc.RowId;
             data.Code = grpc.Code;
             data.Name = grpc.Name;
-            data.SubsidiaryId = grpc.SubsidiaryId == 0 ? null : grpc.SubsidiaryId;
-            data.BuyerId = grpc.BuyerId == 0 ? null : grpc.BuyerId;
+            data.Subsidiary_id = grpc.SubsidiaryId == 0 ? null : grpc.SubsidiaryId;
+            data.Buyer_Id = grpc.BuyerId == 0 ? null : grpc.BuyerId;
             data.Address = grpc.Address;
             data.Phone = grpc.Phone;
             data.Email = grpc.Email;
             data.Contact = grpc.Contact;
-            data.AlternateContact = grpc.AlternateContact;
+            data.Alternate_Contact = grpc.AlternateContact;
             data.Active = grpc.Active;
-            data.JSupplier = grpc.JSupplier;
+            data.J_Supplier = grpc.JSupplier;
             return data;
         }
 
@@ -1669,7 +1669,7 @@
             data.RowId = entity.RowId;
             data.Abbreviation = entity.Abbreviation;
             data.Description = entity.Description;
-            data.SubsidiaryId = entity.SubsidiaryId;
+            data.SubsidiaryId = entity.Subsidiary_id;
             return data;
         }
 
@@ -1679,7 +1679,7 @@
             data.RowId = grpc.RowId;
             data.Abbreviation = grpc.Abbreviation;
             data.Description = grpc.Description;
-            data.SubsidiaryId = grpc.SubsidiaryId;
+            data.Subsidiary_id = grpc.SubsidiaryId;
             return data;
         }
 

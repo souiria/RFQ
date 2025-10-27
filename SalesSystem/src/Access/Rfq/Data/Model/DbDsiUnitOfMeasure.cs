@@ -11,7 +11,7 @@
         public string? Description
         { get; set; }
 
-        public long SubsidiaryId
+        public long Subsidiary_id
         { get; set; }
     }
 }
