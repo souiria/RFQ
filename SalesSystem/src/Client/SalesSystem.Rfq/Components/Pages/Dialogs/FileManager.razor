@@ -178,27 +178,62 @@
         try
         {
             Console.WriteLine($">>> ENTER OnChange file upload, {e.FileCount} files");
+            var addedFiles = new List<string>();
+            var rejectedFiles = new List<string>();
 
             foreach (var file in e.GetMultipleFiles())
             {
-                // using Stream stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024); 10MB limit
-                // using MemoryStream ms = new MemoryStream();
-                // await stream.CopyToAsync(ms);
-
-                var fileObject = new FileObjectUx(file);
-
-                var fileType = DetermineFileType(fileObject);
-                if (fileType != RfqFileType.UNK && fileObject.File?.Size <= MAX_FILE_SIZE && 0 < fileObject.File?.Size)
+                try
                 {
-                    FileObjects.Add(fileObject);
-                    Console.WriteLine($"Added file: {fileObject.File?.Name} ({fileObject.File?.Size} bytes) as {fileType}");
-                }
-                else
-                {
-                    Snackbar.Add($"File '{fileObject.File?.Name}' bad size limit for {fileType} files.", Severity.Error);
-                    continue;
-                }
+                    // Check for duplicates by name and size
+                    if (IsFileAlreadyAdded(file))
+                    {
+                        rejectedFiles.Add($"{file.Name} (duplicate)");
+                        Console.WriteLine($"Rejected duplicate file: {file.Name}");
+                        continue;
+                    }
 
+                    var fileObject = new FileObjectUx(file);
+
+                    // Validate file type and size
+                    var fileType = DetermineFileType(fileObject);
+                    if (fileType != RfqFileType.UNK && fileObject.File?.Size <= MAX_FILE_SIZE && 0 < fileObject.File?.Size)
+                    {
+                        FileObjects.Add(fileObject);
+                        addedFiles.Add(file.Name);
+                        Console.WriteLine($"Added file: {fileObject.File?.Name} ({fileObject.File?.Size} bytes) as {fileType}, ID: {fileObject.Id}");
+                    }
+                    else
+                    {
+                        string reason = fileType == RfqFileType.UNK ? "unsupported file type" : 
+                                       fileObject.File?.Size > MAX_FILE_SIZE ? "file too large" : 
+                                       "invalid file size";
+                        rejectedFiles.Add($"{file.Name} ({reason})");
+                        Console.WriteLine($"Rejected file: {file.Name} - {reason}");
+                    }
+                }
+                catch (Exception fileEx)
+                {
+                    rejectedFiles.Add($"{file.Name} (error: {fileEx.Message})");
+                    Console.WriteLine($"Error processing file {file.Name}: {fileEx.Message}");
+                }
+            }
+
+            // Show user feedback
+            if (addedFiles.Count > 0)
+            {
+                string message = addedFiles.Count == 1 
+                    ? $"Added file: {addedFiles[0]}"
+                    : $"Added {addedFiles.Count} files: {string.Join(", ", addedFiles.Take(3))}{(addedFiles.Count > 3 ? "..." : "")}";
+                Snackbar.Add(message, Severity.Success);
+            }
+
+            if (rejectedFiles.Count > 0)
+            {
+                string message = rejectedFiles.Count == 1 
+                    ? $"Rejected file: {rejectedFiles[0]}"
+                    : $"Rejected {rejectedFiles.Count} files: {string.Join(", ", rejectedFiles.Take(3))}{(rejectedFiles.Count > 3 ? "..." : "")}";
+                Snackbar.Add(message, Severity.Warning);
             }
 
             await NotifyFilesChanged();
@@ -209,6 +244,17 @@
             Console.WriteLine($"ERROR in OnChange: {ex.Message}");
             Snackbar.Add($"Error uploading files: {ex.Message}", Severity.Error);
         }
+    }
+
+    /// <summary>
+    /// Check if a file with the same name and size already exists
+    /// </summary>
+    private bool IsFileAlreadyAdded(IBrowserFile newFile)
+    {
+        return FileObjects.Any(f => 
+            f.Status != UxObjectStatus.Deleted &&
+            f.OriginalFileName == newFile.Name && 
+            f.OriginalFileSize == newFile.Size);
     }
 
     private RfqFileType DetermineFileType(FileObjectUx fileObject)
@@ -359,6 +405,57 @@
         catch (Exception ex)
         {
             Console.WriteLine($"ERROR disposing FileManagement: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Resets the InputFile component to prevent file ID mismatches when files are removed
+    /// </summary>
+    public async Task ResetInputFileAsync()
+    {
+        try
+        {
+            // Generate new key to force InputFile to re-render and reset internal state
+            inputFileKey = Guid.NewGuid().ToString();
+            
+            // Force component to re-render
+            StateHasChanged();
+            
+            // Small delay to ensure re-render completes
+            await Task.Delay(50);
+            
+            Console.WriteLine($">>> InputFile reset with new key: {inputFileKey}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"ERROR resetting InputFile: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Removes a file from the collection and resets InputFile if needed
+    /// </summary>
+    public async Task RemoveFileAsync(FileObjectUx fileObject)
+    {
+        try
+        {
+            if (FileObjects.Contains(fileObject))
+            {
+                FileObjects.Remove(fileObject);
+                
+                // Reset InputFile to prevent stale file references
+                await ResetInputFileAsync();
+                
+                await NotifyFilesChanged();
+                
+                Console.WriteLine($">>> Removed file: {fileObject.File?.Name}");
+                Snackbar.Add($"File '{fileObject.File?.Name}' removed successfully", Severity.Info);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"ERROR removing file: {ex.Message}");
+            Snackbar.Add($"Error removing file: {ex.Message}", Severity.Error);
         }
     }
 }

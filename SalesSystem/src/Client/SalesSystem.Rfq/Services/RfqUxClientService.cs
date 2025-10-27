@@ -12,11 +12,13 @@ namespace SalesSystem.Rfq.Services
         List<CustomerGrpc> _Customers;
         List<RfqReasonGrpc> _Reasons;
         List<CustomerProjectUx> _CustomerProjectAssociations;
+        List<string> _QuotationNumbers;
+
         // Cached data accessors
         public IReadOnlyCollection<CustomerGrpc> Customers => _Customers.AsReadOnly();
         public IReadOnlyCollection<RfqReasonGrpc> Reasons => _Reasons.AsReadOnly();
         public IReadOnlyCollection<CustomerProjectUx> CustomerProjectAssociations => _CustomerProjectAssociations.AsReadOnly();
-
+        public IReadOnlyCollection<string> QuotationNumbers => _QuotationNumbers.AsReadOnly();
         public RfqUxClientService(IConfiguration configuration, ILogger<RfqUxClientService>? logger = null)
         {
             _Logger = logger;
@@ -36,8 +38,13 @@ namespace SalesSystem.Rfq.Services
             _Customers = new();
             _Reasons = new();
             _CustomerProjectAssociations = new();
+            _QuotationNumbers = new()
+                {
+                    "SEWS-25-025-005678",
+                    "SEWS-25-025-005688",
+                    "SEWS-25-025-005692"
+                };
         }
-
         public async Task<HelloReply> SayHelloAsync(string name, CancellationToken cancellationToken = default)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
@@ -95,7 +102,8 @@ namespace SalesSystem.Rfq.Services
 
                 GetCustomersByUserIdGrpcResponse response = await _Client.GetCustomersByUserIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
                 _Customers.Clear();
-                _Customers.AddRange(response.Customers);
+                List<CustomerGrpc> orderedCustomers = response.Customers.OrderBy(x => x.CustomerBusinessGroupName).ToList();
+                _Customers.AddRange(orderedCustomers);
                 return _Customers.Count;
             }
             catch (Exception ex)
@@ -117,7 +125,8 @@ namespace SalesSystem.Rfq.Services
                 GetProjectAssociationsByCustomerIdResponse response = await _Client.GetProjectAssociationsByCustomerIdAsync(request, cancellationToken: timeoutCts.Token);
 
                 _CustomerProjectAssociations.Clear();
-                foreach (ProjectAssociation? association in response.ProjectAssociation)
+                IOrderedEnumerable<ProjectAssociation> associations = response.ProjectAssociation.ToList().OrderBy(x => x.CustomerProjectName).ThenBy(x => x.CustomerLocationName);
+                foreach (ProjectAssociation? association in associations)
                 {
                     CustomerProjectUx? projectAssociation = association.ToCustomerProjectUx();
                     if (null == projectAssociation)
@@ -149,7 +158,8 @@ namespace SalesSystem.Rfq.Services
                 GetRfqReasonsGrpcResponse response = await _Client.GetRfqReasonsGrpcAsync(request, cancellationToken: timeoutCts.Token);
 
                 _Reasons.Clear();
-                _Reasons.AddRange(response.RfqReasons);
+                List<RfqReasonGrpc> orderedReasons = response.RfqReasons.OrderBy(x => x.RfqReasonTitle).ToList();
+                _Reasons.AddRange(orderedReasons);
                 return _Reasons.Count;
             }
             catch (Exception ex)

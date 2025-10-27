@@ -42,7 +42,10 @@
                                Color="Color.Default"
                                Icon="@Icons.Material.Rounded.Notifications" />
             </MudBadge>
-            <MudMenu AnchorOrigin="Origin.BottomRight"
+            <MudPaper>
+                <NavMenu GlobalValue="@globalValue" />
+            </MudPaper>
+@*             <MudMenu AnchorOrigin="Origin.BottomRight"
                      TransformOrigin="Origin.TopRight">
                 <ActivatorContent>
                     <MudChip T="string" Size="Size.Large"
@@ -61,7 +64,7 @@
                 <ChildContent>
                     <NavMenu GlobalValue="@globalValue" />
                 </ChildContent>
-            </MudMenu>
+            </MudMenu> *@
         </MudStack>
     </MudAppBar>
     <MudMainContent>
