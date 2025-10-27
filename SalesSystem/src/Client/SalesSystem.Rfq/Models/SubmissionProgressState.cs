@@ -1,6 +1,3 @@
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-
 namespace SalesSystem.Rfq.Models
 {
     public class SubmissionProgressState : INotifyPropertyChanged

@@ -18,8 +18,6 @@
 @code{
     [Parameter] public GlobalValue? globalValue { get; set; }
     string userId = string.Empty;
-    // MudNavMenu? navMenu;
-    // bool expanded = false;
 
     protected override Task OnInitializedAsync()
     {
@@ -28,7 +26,6 @@
     }
     void GoTo(string page)
     {
-        // expanded = false;
         NavigationManager.NavigateTo(page);
     }
 }
