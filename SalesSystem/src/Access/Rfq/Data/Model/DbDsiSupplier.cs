@@ -11,10 +11,10 @@
         public string? Name
         { get; set; }
 
-        public long? SubsidiaryId
+        public long? Subsidiary_id
         { get; set; }
 
-        public long? BuyerId
+        public long? Buyer_Id
         { get; set; }
 
         public string? Address
@@ -29,13 +29,13 @@
         public string? Contact
         { get; set; }
 
-        public string? AlternateContact
+        public string? Alternate_Contact
         { get; set; }
 
         public bool? Active
         { get; set; }
 
-        public bool? JSupplier
+        public bool? J_Supplier
         { get; set; }
     }
 }
