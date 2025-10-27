@@ -11,7 +11,7 @@
         public string? Name
         { get; set; }
 
-        public long? Subsidiary_id
+        public long? Subsidiary_Id
         { get; set; }
 
         public long? Buyer_Id

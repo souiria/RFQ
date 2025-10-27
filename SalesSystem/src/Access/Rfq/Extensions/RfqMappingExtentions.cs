@@ -404,7 +404,7 @@
             data.RowId = entity.RowId;
             data.Code = entity.Code;
             data.Name = entity.Name;
-            data.SubsidiaryId = entity.Subsidiary_id ?? 0;
+            data.SubsidiaryId = entity.Subsidiary_Id ?? 0;
             data.BuyerId = entity.Buyer_Id ?? 0;
             data.Address = entity.Address;
             data.Phone = entity.Phone;
@@ -422,7 +422,7 @@
             data.RowId = grpc.RowId;
             data.Code = grpc.Code;
             data.Name = grpc.Name;
-            data.Subsidiary_id = grpc.SubsidiaryId == 0 ? null : grpc.SubsidiaryId;
+            data.Subsidiary_Id = grpc.SubsidiaryId == 0 ? null : grpc.SubsidiaryId;
             data.Buyer_Id = grpc.BuyerId == 0 ? null : grpc.BuyerId;
             data.Address = grpc.Address;
             data.Phone = grpc.Phone;
@@ -1669,7 +1669,7 @@
             data.RowId = entity.RowId;
             data.Abbreviation = entity.Abbreviation;
             data.Description = entity.Description;
-            data.SubsidiaryId = entity.Subsidiary_id;
+            data.SubsidiaryId = entity.Subsidiary_Id;
             return data;
         }
 
@@ -1679,7 +1679,7 @@
             data.RowId = grpc.RowId;
             data.Abbreviation = grpc.Abbreviation;
             data.Description = grpc.Description;
-            data.Subsidiary_id = grpc.SubsidiaryId;
+            data.Subsidiary_Id = grpc.SubsidiaryId;
             return data;
         }
 
