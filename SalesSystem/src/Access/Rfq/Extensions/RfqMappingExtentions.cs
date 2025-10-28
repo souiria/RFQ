@@ -64,7 +64,11 @@
             data.RfqResponseDeadline = grpc.RfqResponseDeadline?.ToDateTime().ToLocalTime();
             data.CarModelGuid = Guid.Parse(grpc.CarModelGuid);
             data.VehicleVolume = grpc.VehicleVolume;
-            data.CreatedDate = grpc.CreatedDate.ToDateTime().ToLocalTime();
+            data.CreatedDate = grpc.CreatedDate != null
+            ? grpc.CreatedDate.ToDateTime().ToLocalTime()
+            : DateTime.UtcNow; // or DateTime.MinValue or any default
+
+            //data.CreatedDate = grpc.CreatedDate.ToDateTime().ToLocalTime();
             return data;
         }
         #endregion
