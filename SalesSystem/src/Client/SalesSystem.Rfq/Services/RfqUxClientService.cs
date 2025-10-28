@@ -9,10 +9,13 @@ namespace SalesSystem.Rfq.Services
         bool _Disposed;
 
         // Cached Data
+        List<RfqProject> _RfqProjects;
         List<CustomerGrpc> _Customers;
         List<RfqReasonGrpc> _Reasons;
         List<CustomerProjectUx> _CustomerProjectAssociations;
         // Cached data accessors
+
+        public IReadOnlyCollection<RfqProject> RfqProjects => _RfqProjects.AsReadOnly();
         public IReadOnlyCollection<CustomerGrpc> Customers => _Customers.AsReadOnly();
         public IReadOnlyCollection<RfqReasonGrpc> Reasons => _Reasons.AsReadOnly();
         public IReadOnlyCollection<CustomerProjectUx> CustomerProjectAssociations => _CustomerProjectAssociations.AsReadOnly();
@@ -32,6 +35,7 @@ namespace SalesSystem.Rfq.Services
             _Disposed = false;
 
             // cache initialization
+            _RfqProjects = new();
             _Logger = logger;
             _Customers = new();
             _Reasons = new();
@@ -59,6 +63,51 @@ namespace SalesSystem.Rfq.Services
             }
         }
 
+        public async Task<int> GetAllRfqProjectAsync(int position = 0, int take = 100)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+
+            try
+            {
+                GetAllRfqProjectGrpcRequest request = new GetAllRfqProjectGrpcRequest();
+
+                request.Position = position;
+                request.Take = take;
+              
+
+                GetAllRfqProjectGrpcResponse response = await _Client.GetAllRfqProjectGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                _RfqProjects.Clear();
+                _RfqProjects.AddRange(response.Projects);
+
+                return _RfqProjects.Count;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in GetAllRfqProjectGrpc with position {position} and take {take}", ex);
+                throw;
+            }
+        }
+
+        public async Task<RfqProject?> GetRfqProjectByIdAsync(long rowId)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+
+            try
+            {
+                GetRfqProjectByIdGrpcRequest request = new GetRfqProjectByIdGrpcRequest();
+                request.RowId = rowId;
+              
+                GetRfqProjectByIdGrpcResponse response = await _Client.GetRfqProjectByIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                return response.Project;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in GetRfqProjectById for RowId: {rowId}", ex);
+                throw;
+            }
+        }
         public async Task<GetAllCustomersGrpcResponse> GetAllCustomersAsync(
             int position = 0,
             int take = 100,

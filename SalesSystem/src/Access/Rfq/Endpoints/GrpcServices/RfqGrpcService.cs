@@ -178,8 +178,9 @@
                 return await _RfqAccessService.GetRfqProjectByRowId(request, context.CancellationToken);
                 default:
                 {
-                    Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
-                    throw new RpcException(status);
+                    return await _RfqAccessService.GetAllRfqProjects(context.CancellationToken);
+                    //Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                    //throw new RpcException(status);
                 }
             }
         }

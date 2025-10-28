@@ -22,6 +22,7 @@ service RfqModule {
   rpc GetVehicleByProjectCodeGrpc (GetVehicleByProjectCodeGrpcRequest) returns (GetVehicleByProjectCodeGrpcResponse);
   rpc UploadPartsGrpc (UploadPartsRequestGrpcRequest) returns (UploadPartsRequestGrpcResponse);
   rpc CreateRfqProjectGrpc (CreateRfqProjectGrpcRequest) returns (CreateRfqProjectGrpcResponse);
+  rpc GetAllRfqProjectGrpc (GetAllRfqProjectGrpcRequest) returns (GetAllRfqProjectGrpcResponse);
 }
 
 // The request message containing the user's name.
@@ -160,4 +161,14 @@ message CreateRfqProjectGrpcResponse {
     bool Success = 1;
     string Message = 2;
     string CreatedProjectId = 3;
+}
+
+message GetAllRfqProjectGrpcRequest {
+	int32 RequestType = 1;
+	int32 Position = 2;
+	int32 Take = 3;
+}
+
+message GetAllRfqProjectGrpcResponse {
+  repeated RfqProject RfqProjects = 1;
 }

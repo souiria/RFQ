@@ -13,7 +13,7 @@
             return customer;
         }
 
-        public static CustomerLocationGrpc ToCustomerLocation(this Master.CustomerLocationGrpc masterLocationGrpc)
+        public static CustomerLocationGrpc ToCustomerLocation(this CustomerLocationGrpc masterLocationGrpc)
         {
             CustomerLocationGrpc location = new CustomerLocationGrpc();
             location.Id = masterLocationGrpc.Id;
@@ -24,7 +24,7 @@
             return location;
         }
 
-        public static ProjectGrpc ToProject(this Master.ProjectGrpc masterProjectGrpc)
+        public static ProjectGrpc ToProject(this ProjectGrpc masterProjectGrpc)
         {
             ProjectGrpc projectAssociation = new ProjectGrpc();
             projectAssociation.Id = masterProjectGrpc.Id;
@@ -48,7 +48,7 @@
             return vehicle;
         }
 
-        public static CustomerProjectAssociationGrpc ToCustomerProjectAssociation(this Master.CustomerProjectAssociationGrpc masterCustomerProjectAssociationGrpc)
+        public static CustomerProjectAssociationGrpc ToCustomerProjectAssociation(this CustomerProjectAssociationGrpc masterCustomerProjectAssociationGrpc)
         {
             CustomerProjectAssociationGrpc customerProjectAssociation = new CustomerProjectAssociationGrpc();
             customerProjectAssociation.Id = masterCustomerProjectAssociationGrpc.Id;
@@ -64,6 +64,21 @@
             reason.RowId = rfqRfqReasonGrpc.RowId;
             reason.RfqReasonTitle = rfqRfqReasonGrpc.ReasonTitle;
             return reason;
+        }
+
+        public static RfqProject ToRfqProject(this RfqProjectGrpc rfqProjectGrpc)
+        {
+            RfqProject project = new RfqProject();
+            project.RowId = rfqProjectGrpc.RowId;
+            project.RfqNumber = rfqProjectGrpc.RfqNumber;
+            project.CustomerBusinessUnitGuid = rfqProjectGrpc.CustomerBusinessUnitGuid;
+            project.CustomerLocationGuid = rfqProjectGrpc.CustomerLocationGuid;
+            project.ProjectGuid = rfqProjectGrpc.ProjectGuid;
+            project.RfqReasonId = rfqProjectGrpc.RfqReasonId ??0;
+            project.RfqResponseDeadline = rfqProjectGrpc.RfqResponseDeadline;
+            project.CarModelGuid = rfqProjectGrpc.CarModelGuid;
+            project.VehicleVolume = rfqProjectGrpc.VehicleVolume ??0;
+            return project;
         }
     }
 }
