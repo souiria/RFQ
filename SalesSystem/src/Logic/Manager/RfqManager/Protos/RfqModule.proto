@@ -23,6 +23,8 @@ service RfqModule {
   rpc UploadPartsGrpc (UploadPartsRequestGrpcRequest) returns (UploadPartsRequestGrpcResponse);
   rpc CreateRfqProjectGrpc (CreateRfqProjectGrpcRequest) returns (CreateRfqProjectGrpcResponse);
   rpc GetAllRfqProjectGrpc (GetAllRfqProjectGrpcRequest) returns (GetAllRfqProjectGrpcResponse);
+  rpc GetRfqProjectByIdGrpc (GetRfqProjectByIdGrpcRequest) returns (GetRfqProjectByIdGrpcResponse);
+  rpc UpdateRfqProjectGrpc (UpdateRfqProjectGrpcRequest) returns (UpdateRfqProjectGrpcResponse);
 }
 
 // The request message containing the user's name.
@@ -155,6 +157,7 @@ message CustomerParts {
 
 message CreateRfqProjectGrpcRequest {
   RfqProject Project = 1;
+ 
 }
 
 message CreateRfqProjectGrpcResponse {
@@ -171,4 +174,27 @@ message GetAllRfqProjectGrpcRequest {
 
 message GetAllRfqProjectGrpcResponse {
   repeated RfqProject RfqProjects = 1;
+}
+
+message GetRfqProjectByIdGrpcRequest {
+  int64 RowId = 1;
+}
+
+message GetRfqProjectByIdGrpcResponse {
+  RfqProject Project = 1;
+}
+ 
+enum RequestType {
+  None = 0;
+  Read = 1;
+  ReadByRowId = 2;
+}
+
+message UpdateRfqProjectGrpcRequest {
+  RfqProject Project = 1;
+}
+
+message UpdateRfqProjectGrpcResponse {
+  bool Success = 1;
+  string Message = 2;
 }

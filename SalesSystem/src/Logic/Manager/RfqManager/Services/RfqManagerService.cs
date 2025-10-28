@@ -45,7 +45,6 @@
                 throw;
             }
         }
-
         public async Task<GetCustomersByUserIdGrpcResponse> GetCustomersByUserIdGrpc(GetCustomersByUserIdGrpcRequest request)
         {
             try
@@ -217,7 +216,7 @@
                 GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
                 grpcRequestParameter.Position = request.Position;
                 grpcRequestParameter.Take = request.Take;
-                grpcRequestParameter.RequestType = request.RequestType;
+                grpcRequestParameter.RequestType = 1;
                 rfqProjectRequest.GrpcRequestParameter = grpcRequestParameter;
                 ListRfqProjectGrpc rfqProjects = _RfqClient.ReadRfqProjectGrpc(rfqProjectRequest);
 
@@ -234,6 +233,43 @@
             catch (Exception ex)
             {
                 _Logger.GenericLogError("Error fetching RFQ projects from Master service", ex);
+                throw;
+            }
+        }
+
+        public async Task<GetRfqProjectByIdGrpcResponse> GetRfqProjectByIdGrpc(GetRfqProjectByIdGrpcRequest request)
+        {
+            try
+            {
+                await Task.Delay(1);
+
+                GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+                grpcRequestParameter.RequestType = 2;
+
+                RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
+                rfqProjectRequest.GrpcRequestParameter = grpcRequestParameter;
+
+                rfqProjectRequest.RowId = request.RowId;
+
+                ListRfqProjectGrpc rfqProjects = _RfqClient.ReadRfqProjectGrpc(rfqProjectRequest);
+
+                GetRfqProjectByIdGrpcResponse response = new GetRfqProjectByIdGrpcResponse();
+
+                int projectCount = rfqProjects.RfqProjects.Count;
+                bool hasProjects = 0 < projectCount;
+
+                if (hasProjects)
+                {
+                    RfqProjectGrpc grpcProject = rfqProjects.RfqProjects.First();
+                    RfqProject mappedProject = grpcProject.ToRfqProject();
+                    response.Project = mappedProject;
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError($"Error fetching RFQ project by RowId: {request.RowId}", ex);
                 throw;
             }
         }
@@ -412,6 +448,42 @@
             response.Message = createResponse.Message;
             response.CreatedProjectId = createResponse.StringValue.Split(',').First();
             return response;
+        }
+
+        public async Task<UpdateRfqProjectGrpcResponse> UpdateRfqProject(UpdateRfqProjectGrpcRequest request)
+        {
+            try
+            {
+                await Task.Delay(1);
+
+                RfqProjectGrpc rfqProject = new RfqProjectGrpc();
+                rfqProject.RowId = request.Project.RowId;
+                rfqProject.CustomerBusinessUnitGuid = request.Project.CustomerBusinessUnitGuid.ToUpperInvariant();
+                rfqProject.CustomerLocationGuid = request.Project.CustomerLocationGuid.ToUpperInvariant();
+                rfqProject.ProjectGuid = request.Project.ProjectGuid.ToUpperInvariant();
+                rfqProject.RfqReasonId = request.Project.RfqReasonId;
+                rfqProject.RfqResponseDeadline = request.Project.RfqResponseDeadline;
+                rfqProject.CarModelGuid = request.Project.CarModelGuid.ToUpperInvariant();
+                rfqProject.VehicleVolume = request.Project.VehicleVolume;
+
+                RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
+                rfqProjectRequest.GrpcRequestParameter = new GrpcRequestParameter();
+                rfqProjectRequest.GrpcRequestParameter.RequestType = 80; 
+                rfqProjectRequest.RfqProjectGrpcsToCreate.Add(rfqProject);
+
+                RfqCrudGrpcResponse updateResponse = _RfqClient.UpdateRfqProjectGrpc(rfqProjectRequest);
+
+                UpdateRfqProjectGrpcResponse response = new UpdateRfqProjectGrpcResponse();
+                response.Success = updateResponse.SaveSuccess;
+                response.Message = updateResponse.Message;
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError("Error updating RFQ project", ex);
+                throw;
+            }
         }
 
         List<CustomerParts> GetCustomerParts(List<string> newParts, List<CustomerParts> customerParts)

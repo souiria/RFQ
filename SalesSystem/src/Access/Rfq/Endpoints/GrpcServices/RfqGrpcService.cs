@@ -170,6 +170,19 @@
             }
 
             RfqCrudGrpcResponse response = new RfqCrudGrpcResponse();
+            //switch (requestType)
+            //{
+            //    case RequestType.Read:
+            //    return await _RfqAccessService.GetAllRfqProjects(context.CancellationToken);
+            //    case RequestType.ReadByRowId:
+            //    return await _RfqAccessService.GetRfqProjectByRowId(request, context.CancellationToken);
+            //    default:
+            //    {
+            //        //return await _RfqAccessService.GetAllRfqProjects(context.CancellationToken);
+            //        Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+            //        throw new RpcException(status);
+            //    }
+            //}
             switch (requestType)
             {
                 case RequestType.Read:
@@ -177,11 +190,8 @@
                 case RequestType.ReadByRowId:
                 return await _RfqAccessService.GetRfqProjectByRowId(request, context.CancellationToken);
                 default:
-                {
-                    return await _RfqAccessService.GetAllRfqProjects(context.CancellationToken);
-                    //Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
-                    //throw new RpcException(status);
-                }
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
             }
         }
 
@@ -235,28 +245,29 @@
         public override async Task<RfqCrudGrpcResponse> UpdateRfqProjectGrpc(RfqProjectGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("UpdateRfqProjectGrpc starting");
+         
             if (request == null || request.GrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
-            RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
-            {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
-            }
-            else
-            {
-                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
-                throw new RpcException(status);
-            }
+            //RequestType requestType = RequestType.Update;
+            //if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            //{
+            //    requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            //}
+            //else
+            //{
+            //    Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+            //    throw new RpcException(status);
+            //}
 
-            if (requestType != RequestType.Update)
-            {
-                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for updating rfq projects.");
-                throw new RpcException(status);
-            }
+            //if (requestType != RequestType.Update)
+            //{
+            //    Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for updating rfq projects.");
+            //    throw new RpcException(status);
+            //}
 
             RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
             CancellationToken cancellationToken = context.CancellationToken;

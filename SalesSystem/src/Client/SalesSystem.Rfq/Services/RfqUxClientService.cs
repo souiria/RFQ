@@ -108,6 +108,7 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
+ 
         public async Task<GetAllCustomersGrpcResponse> GetAllCustomersAsync(
             int position = 0,
             int take = 100,
@@ -230,7 +231,6 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-
         public async Task<UploadPartsRequestGrpcResponse> UploadPartsAsync(string projectId,
                                                                            IBrowserFile file,
                                                                            long maxAllowedSize = 10_000_000)
@@ -276,6 +276,25 @@ namespace SalesSystem.Rfq.Services
             catch (Exception ex)
             {
                 _Logger?.GenericLogError($"Error in CreateRfqProject", ex);
+                throw;
+            }
+        }
+        public async Task<UpdateRfqProjectGrpcResponse> UpdateRfqProjectAsync(RfqProject project)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+
+            try
+            {
+                UpdateRfqProjectGrpcRequest request = new UpdateRfqProjectGrpcRequest();
+                request.Project = project;
+
+                UpdateRfqProjectGrpcResponse response = await _Client.UpdateRfqProjectGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in UpdateRfqProject for RowId: {project.RowId}", ex);
                 throw;
             }
         }

@@ -64,5 +64,18 @@
             GetAllRfqProjectGrpcResponse response = await _RfqManagerService.GetAllRfqProjectGrpc(request);
             return response;
         }
+        public override async Task<GetRfqProjectByIdGrpcResponse> GetRfqProjectByIdGrpc(GetRfqProjectByIdGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetRfqProjectByIdGrpc starting");
+            GetRfqProjectByIdGrpcResponse response = await _RfqManagerService.GetRfqProjectByIdGrpc(request);
+            return response;
+        }
+
+        public override async Task<UpdateRfqProjectGrpcResponse> UpdateRfqProjectGrpc(UpdateRfqProjectGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("UpdateRfqProjectGrpc starting");
+            UpdateRfqProjectGrpcResponse response = await _RfqManagerService.UpdateRfqProject(request);
+            return response;
+        }
     }
 }

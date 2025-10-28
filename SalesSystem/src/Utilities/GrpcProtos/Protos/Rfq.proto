@@ -211,6 +211,7 @@ message RfqProjectGrpcRequest {
   repeated RfqProjectGrpc RfqProjectGrpcsToCreate = 2;
   repeated RfqProjectGrpc RfqProjectGrpcsToUpdate = 3;
   repeated RfqProjectGrpc RfqProjectGrpcsToDelete = 4;
+ int64 RowId = 5;
 }
 
 message RfqProjectGrpc {

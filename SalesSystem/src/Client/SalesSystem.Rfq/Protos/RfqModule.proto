@@ -24,6 +24,7 @@ service RfqModule {
   rpc CreateRfqProjectGrpc (CreateRfqProjectGrpcRequest) returns (CreateRfqProjectGrpcResponse);
   rpc GetAllRfqProjectGrpc (GetAllRfqProjectGrpcRequest) returns (GetAllRfqProjectGrpcResponse);
   rpc GetRfqProjectByIdGrpc (GetRfqProjectByIdGrpcRequest) returns (GetRfqProjectByIdGrpcResponse);
+  rpc UpdateRfqProjectGrpc (UpdateRfqProjectGrpcRequest) returns (UpdateRfqProjectGrpcResponse);
 }
 
 // The request message containing the user's name.
@@ -179,3 +180,12 @@ message GetRfqProjectByIdGrpcRequest {
 message GetRfqProjectByIdGrpcResponse {
   RfqProject Project = 1;
 }
+
+message UpdateRfqProjectGrpcRequest {
+  RfqProject Project = 1;
+}
+
+message UpdateRfqProjectGrpcResponse {
+  bool Success = 1;
+  string Message = 2;
+  }
