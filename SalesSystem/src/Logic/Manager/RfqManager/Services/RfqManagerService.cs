@@ -481,7 +481,7 @@
             }
             catch (Exception ex)
             {
-                _Logger.GenericLogError("Error updating RFQ project", ex);
+                _Logger.GenericLogError("Error Updating RFQ project", ex);
                 throw;
             }
         }
