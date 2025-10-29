@@ -2,6 +2,7 @@ namespace SalesSystem.Rfq.Services
 {
     public class RfqUxClientService : IDisposable
     {
+        #region Definitions
         readonly GrpcChannel _Channel;
         readonly RfqModule.RfqModule.RfqModuleClient _Client;
         readonly ILogger<RfqUxClientService>? _Logger;
@@ -10,6 +11,7 @@ namespace SalesSystem.Rfq.Services
 
         // Cached Data
         List<RfqProject> _RfqProjects;
+        List<RfqProjectUx> _RfqProjectUxs;
         List<CustomerGrpc> _Customers;
         List<RfqReasonGrpc> _Reasons;
         List<CustomerProjectUx> _CustomerProjectAssociations;
@@ -18,6 +20,7 @@ namespace SalesSystem.Rfq.Services
         // Cached data accessors
 
         public IReadOnlyCollection<RfqProject> RfqProjects => _RfqProjects.AsReadOnly();
+        public IReadOnlyCollection<RfqProjectUx> RfqProjectUxs => _RfqProjectUxs.AsReadOnly();
         public IReadOnlyCollection<CustomerGrpc> Customers => _Customers.AsReadOnly();
         public IReadOnlyCollection<RfqReasonGrpc> Reasons => _Reasons.AsReadOnly();
         public IReadOnlyCollection<CustomerProjectUx> CustomerProjectAssociations => _CustomerProjectAssociations.AsReadOnly();
@@ -38,6 +41,7 @@ namespace SalesSystem.Rfq.Services
 
             // cache initialization
             _RfqProjects = new();
+            _RfqProjectUxs = new();
             _Logger = logger;
             _Customers = new();
             _Reasons = new();
@@ -49,6 +53,8 @@ namespace SalesSystem.Rfq.Services
                     "SEWS-25-025-005692"
                 };
         }
+        #endregion
+        #region Hello Service
         public async Task<HelloReply> SayHelloAsync(string name, CancellationToken cancellationToken = default)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
@@ -69,7 +75,8 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-
+        #endregion
+        #region Rfq Projects
         public async Task<int> GetAllRfqProjectAsync(int position = 0, int take = 100)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
@@ -87,6 +94,16 @@ namespace SalesSystem.Rfq.Services
                 _RfqProjects.Clear();
                 _RfqProjects.AddRange(response.Projects);
 
+                _RfqProjectUxs.Clear();
+                foreach (RfqProject? rfqProject in _RfqProjects)
+                {
+                    RfqProjectUx? uxModel = await rfqProject.ToRfqProjectUx(this);
+                    if (null != uxModel)
+                    {
+                        _RfqProjectUxs.Add(uxModel);
+                    }
+                }
+
                 return _RfqProjects.Count;
             }
             catch (Exception ex)
@@ -95,7 +112,6 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-
         public async Task<RfqProject?> GetRfqProjectByIdAsync(long rowId)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
@@ -115,161 +131,6 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
- 
-        public async Task<GetAllCustomersGrpcResponse> GetAllCustomersAsync(
-            int position = 0,
-            int take = 100,
-            CancellationToken cancellationToken = default)
-        {
-            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-            using CancellationTokenSource combinedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
-
-            try
-            {
-                GetAllCustomersGrpcRequest request = new GetAllCustomersGrpcRequest();
-                request.Position = position;
-                request.Take = take;
-
-                GetAllCustomersGrpcResponse response = await _Client.GetAllCustomersGrpcAsync(request, cancellationToken: combinedCts.Token);
-
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _Logger?.GenericLogError($"Error in GetAllCustomers with position: {position}, take: {take}", ex);
-                throw;
-            }
-        }
-
-        public async Task<int> GetCustomersByUserIdAsync(Guid userId)
-        {
-            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-
-            try
-            {
-                GetCustomersByUserIdGrpcRequest request = new GetCustomersByUserIdGrpcRequest();
-                request.UserId = userId.ToString().ToUpperInvariant();
-
-                GetCustomersByUserIdGrpcResponse response = await _Client.GetCustomersByUserIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
-                _Customers.Clear();
-                List<CustomerGrpc> orderedCustomers = response.Customers.OrderBy(x => x.CustomerBusinessGroupName).ToList();
-                _Customers.AddRange(orderedCustomers);
-                return _Customers.Count;
-            }
-            catch (Exception ex)
-            {
-                _Logger?.GenericLogError($"Error in GetCustomersByUserId for user: {userId}", ex);
-                throw;
-            }
-        }
-
-        public async Task<int> GetProjectAssociationsByCustomerIdAsync(string customerId)
-        {
-            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-
-            try
-            {
-                GetProjectAssociationsByCustomerIdRequest request = new GetProjectAssociationsByCustomerIdRequest();
-                request.CustomerId = customerId;
-
-                GetProjectAssociationsByCustomerIdResponse response = await _Client.GetProjectAssociationsByCustomerIdAsync(request, cancellationToken: timeoutCts.Token);
-
-                _CustomerProjectAssociations.Clear();
-                IOrderedEnumerable<ProjectAssociation> associations = response.ProjectAssociation.ToList().OrderBy(x => x.CustomerProjectName).ThenBy(x => x.CustomerLocationName);
-                foreach (ProjectAssociation? association in associations)
-                {
-                    CustomerProjectUx? projectAssociation = association.ToCustomerProjectUx();
-                    if (null == projectAssociation)
-                    {
-                        continue;
-                    }
-
-                    _CustomerProjectAssociations.Add(projectAssociation);
-                }
-
-                return _CustomerProjectAssociations.Count;
-            }
-            catch (Exception ex)
-            {
-                _Logger?.GenericLogError($"Error in GetProjectAssociationsByCustomerId for customer: {customerId}", ex);
-                throw;
-            }
-        }
-
-        public async Task<int> GetRfqReasonsAsync()
-        {
-            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-
-            try
-            {
-                GetRfqReasonsGrpcRequest request = new GetRfqReasonsGrpcRequest();
-                request.RequestType = 1;
-
-                GetRfqReasonsGrpcResponse response = await _Client.GetRfqReasonsGrpcAsync(request, cancellationToken: timeoutCts.Token);
-
-                _Reasons.Clear();
-                List<RfqReasonGrpc> orderedReasons = response.RfqReasons.OrderBy(x => x.RfqReasonTitle).ToList();
-                _Reasons.AddRange(orderedReasons);
-                return _Reasons.Count;
-            }
-            catch (Exception ex)
-            {
-                _Logger?.GenericLogError($"Error in GetRfqReasons with requestType 1 (read)", ex);
-                throw;
-            }
-        }
-
-        public async Task<GetVehicleByProjectCodeGrpcResponse> GetVehiclesByProjectCodeAsync(
-            string projectCode,
-            CancellationToken cancellationToken = default)
-        {
-            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-            using CancellationTokenSource combinedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
-
-            try
-            {
-                GetVehicleByProjectCodeGrpcRequest request = new GetVehicleByProjectCodeGrpcRequest();
-                request.ProjectCode = projectCode;
-
-                GetVehicleByProjectCodeGrpcResponse response = await _Client.GetVehicleByProjectCodeGrpcAsync(request, cancellationToken: combinedCts.Token);
-
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _Logger?.GenericLogError($"Error in GetVehiclesByProjectCode for project code: {projectCode}", ex);
-                throw;
-            }
-        }
-        public async Task<UploadPartsRequestGrpcResponse> UploadPartsAsync(string projectId,
-                                                                           IBrowserFile file,
-                                                                           long maxAllowedSize = 10_000_000)
-        {
-            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-
-            try
-            {
-                UploadPartsRequestGrpcRequest request = new UploadPartsRequestGrpcRequest();
-                request.ProjectId = projectId;
-                request.FileName = file.Name;
-
-                using MemoryStream memoryStream = new MemoryStream();
-                await file.OpenReadStream(maxAllowedSize: maxAllowedSize).CopyToAsync(memoryStream);
-                byte[] fileData = memoryStream.ToArray();
-
-                request.FileData = Google.Protobuf.ByteString.CopyFrom(fileData);
-
-                UploadPartsRequestGrpcResponse response = await _Client.UploadPartsGrpcAsync(request, cancellationToken: timeoutCts.Token);
-
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _Logger?.GenericLogError($"Error in UploadParts for project: {projectId}, file: {file.Name}", ex);
-                throw;
-            }
-        }
-
         public async Task<CreateRfqProjectGrpcResponse> CreateRfqProjectAsync(RfqProject project)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
@@ -308,7 +169,6 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-
         public async Task<FileUploadResponse> UploadFileAsync(
             byte[] fileData,
             string fileName,
@@ -333,6 +193,164 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
+        #endregion
+        #region Customers and Related Data
+        public async Task<GetAllCustomersGrpcResponse> GetAllCustomersAsync(
+            int position = 0,
+            int take = 100,
+            CancellationToken cancellationToken = default)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+            using CancellationTokenSource combinedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
+
+            try
+            {
+                GetAllCustomersGrpcRequest request = new GetAllCustomersGrpcRequest();
+                request.Position = position;
+                request.Take = take;
+
+                GetAllCustomersGrpcResponse response = await _Client.GetAllCustomersGrpcAsync(request, cancellationToken: combinedCts.Token);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in GetAllCustomers with position: {position}, take: {take}", ex);
+                throw;
+            }
+        }
+        public async Task<int> GetCustomersByUserIdAsync(Guid userId)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+
+            try
+            {
+                GetCustomersByUserIdGrpcRequest request = new GetCustomersByUserIdGrpcRequest();
+                request.UserId = userId.ToString().ToUpperInvariant();
+
+                GetCustomersByUserIdGrpcResponse response = await _Client.GetCustomersByUserIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
+                _Customers.Clear();
+                List<CustomerGrpc> orderedCustomers = response.Customers.OrderBy(x => x.CustomerBusinessGroupName).ToList();
+                _Customers.AddRange(orderedCustomers);
+                return _Customers.Count;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in GetCustomersByUserId for user: {userId}", ex);
+                throw;
+            }
+        }
+        public async Task<int> GetProjectAssociationsByCustomerIdAsync(string customerId)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+
+            try
+            {
+                GetProjectAssociationsByCustomerIdRequest request = new GetProjectAssociationsByCustomerIdRequest();
+                request.CustomerId = customerId;
+
+                GetProjectAssociationsByCustomerIdResponse response = await _Client.GetProjectAssociationsByCustomerIdAsync(request, cancellationToken: timeoutCts.Token);
+
+                _CustomerProjectAssociations.Clear();
+                IOrderedEnumerable<ProjectAssociation> associations = response.ProjectAssociation.ToList().OrderBy(x => x.CustomerProjectName).ThenBy(x => x.CustomerLocationName);
+                foreach (ProjectAssociation? association in associations)
+                {
+                    CustomerProjectUx? projectAssociation = association.ToCustomerProjectUx();
+                    if (null == projectAssociation)
+                    {
+                        continue;
+                    }
+
+                    _CustomerProjectAssociations.Add(projectAssociation);
+                }
+
+                return _CustomerProjectAssociations.Count;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in GetProjectAssociationsByCustomerId for customer: {customerId}", ex);
+                throw;
+            }
+        }
+        #endregion
+        #region Rfq Reasons
+        public async Task<int> GetRfqReasonsAsync()
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+
+            try
+            {
+                GetRfqReasonsGrpcRequest request = new GetRfqReasonsGrpcRequest();
+                request.RequestType = 1;
+
+                GetRfqReasonsGrpcResponse response = await _Client.GetRfqReasonsGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                _Reasons.Clear();
+                List<RfqReasonGrpc> orderedReasons = response.RfqReasons.OrderBy(x => x.RfqReasonTitle).ToList();
+                _Reasons.AddRange(orderedReasons);
+                return _Reasons.Count;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in GetRfqReasons with requestType 1 (read)", ex);
+                throw;
+            }
+        }
+        #endregion
+        #region Vehicles
+        public async Task<GetVehicleByProjectCodeGrpcResponse> GetVehiclesByProjectCodeAsync(
+            string projectCode,
+            CancellationToken cancellationToken = default)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+            using CancellationTokenSource combinedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
+
+            try
+            {
+                GetVehicleByProjectCodeGrpcRequest request = new GetVehicleByProjectCodeGrpcRequest();
+                request.ProjectCode = projectCode;
+
+                GetVehicleByProjectCodeGrpcResponse response = await _Client.GetVehicleByProjectCodeGrpcAsync(request, cancellationToken: combinedCts.Token);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in GetVehiclesByProjectCode for project code: {projectCode}", ex);
+                throw;
+            }
+        }
+        #endregion
+        #region Parts
+        public async Task<UploadPartsRequestGrpcResponse> UploadPartsAsync(string projectId,
+                                                                           IBrowserFile file,
+                                                                           long maxAllowedSize = 10_000_000)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+
+            try
+            {
+                UploadPartsRequestGrpcRequest request = new UploadPartsRequestGrpcRequest();
+                request.ProjectId = projectId;
+                request.FileName = file.Name;
+
+                using MemoryStream memoryStream = new MemoryStream();
+                await file.OpenReadStream(maxAllowedSize: maxAllowedSize).CopyToAsync(memoryStream);
+                byte[] fileData = memoryStream.ToArray();
+
+                request.FileData = Google.Protobuf.ByteString.CopyFrom(fileData);
+
+                UploadPartsRequestGrpcResponse response = await _Client.UploadPartsGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in UploadParts for project: {projectId}, file: {file.Name}", ex);
+                throw;
+            }
+        }
+        #endregion
 
         protected virtual void Dispose(bool disposing)
         {
