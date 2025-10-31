@@ -4,6 +4,7 @@ global using SalesSystem.Rfq.Enums;
 global using SalesSystem.Rfq.Extensions;
 global using SalesSystem.Rfq.Models;
 global using SalesSystem.Rfq.Services;
+global using System.Collections.ObjectModel;
 global using System.ComponentModel;
 global using System.Diagnostics;
 global using System.DirectoryServices.AccountManagement;
@@ -13,4 +14,3 @@ global using Microsoft.AspNetCore.Components.Forms;
 global using MudBlazor.Services;
 global using RfqModule;
 global using SharedModels.Global;
-

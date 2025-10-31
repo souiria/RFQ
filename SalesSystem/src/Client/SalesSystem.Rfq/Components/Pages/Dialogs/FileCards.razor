@@ -12,22 +12,23 @@
         transition: box-shadow 0.2s ease;
         min-width: 250px;
         max-width: 300px;
+        position: relative;
     }
 
-    .file-card:hover {
-        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    }
+        .file-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
 
-    .file-card.deleted {
-        background: #ffebee;
-        opacity: 0.7;
-        border-color: #f44336;
-    }
+        .file-card.deleted {
+            background: #ffebee;
+            opacity: 0.7;
+            border-color: #f44336;
+        }
 
-    .file-card.uploaded {
-        background: #e8f5e8;
-        border-color: #4caf50;
-    }
+        .file-card.uploaded {
+            background: #e8f5e8;
+            border-color: #4caf50;
+        }
 
     .file-status-chip {
         font-size: 0.75rem;
@@ -36,10 +37,25 @@
         font-weight: 500;
     }
 
-    .status-created { background: #e3f2fd; color: #1976d2; }
-    .status-updated { background: #fff3e0; color: #f57c00; }
-    .status-deleted { background: #ffebee; color: #d32f2f; }
-    .status-read { background: #f3e5f5; color: #7b1fa2; }
+    .status-created {
+        background: #e3f2fd;
+        color: #1976d2;
+    }
+
+    .status-updated {
+        background: #fff3e0;
+        color: #f57c00;
+    }
+
+    .status-deleted {
+        background: #ffebee;
+        color: #d32f2f;
+    }
+
+    .status-read {
+        background: #f3e5f5;
+        color: #7b1fa2;
+    }
 
     .upload-status-chip {
         font-size: 0.75rem;
@@ -48,10 +64,25 @@
         font-weight: 500;
     }
 
-    .upload-not-started { background: #f5f5f5; color: #616161; }
-    .upload-in-progress { background: #fff3e0; color: #f57c00; }
-    .upload-success { background: #e8f5e8; color: #2e7d32; }
-    .upload-failed { background: #ffebee; color: #d32f2f; }
+    .upload-not-started {
+        background: #f5f5f5;
+        color: #616161;
+    }
+
+    .upload-in-progress {
+        background: #fff3e0;
+        color: #f57c00;
+    }
+
+    .upload-success {
+        background: #e8f5e8;
+        color: #2e7d32;
+    }
+
+    .upload-failed {
+        background: #ffebee;
+        color: #d32f2f;
+    }
 
     .cards-container {
         display: flex;
@@ -65,6 +96,21 @@
         padding: 40px;
         color: #757575;
     }
+
+    .remove-button {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        z-index: 10;
+        min-width: 24px !important;
+        width: 24px;
+        height: 24px;
+        padding: 0;
+    }
+
+        .remove-button .mud-icon-root {
+            font-size: 14px;
+        }
 </style>
 
 <div class="cards-container">
@@ -73,11 +119,20 @@
         @foreach (var fileObject in FileObjects.Where(f => f.Status != UxObjectStatus.Deleted))
         {
             <MudCard Class="@GetCardCssClass(fileObject)" Elevation="2">
+                <MudTooltip Text="Clear all files">
+                    <MudIconButton Class="remove-button"
+                                   Size="Size.Small"
+                                   Variant="Variant.Filled"
+                                   Icon="@Icons.Material.Filled.Delete"
+                                   Color="Color.Error"
+                                   OnClick="() => RemoveFile(fileObject)" />
+                </MudTooltip>
+
                 <MudCardContent Class="pb-2">
                     <div class="d-flex align-center mb-2">
-                        <MudIcon Icon="@GetFAFileTypeIcon(DetermineFileType(fileObject))" 
-                                 Color="@GetFileTypeColor(DetermineFileType(fileObject))" 
-                                 Size="Size.Medium" 
+                        <MudIcon Icon="@GetFAFileTypeIcon(DetermineFileType(fileObject))"
+                                 Color="@GetFileTypeColor(DetermineFileType(fileObject))"
+                                 Size="Size.Medium"
                                  Class="mr-2" />
                         <MudText Typo="Typo.subtitle2" Class="flex-grow-1" Style="word-break: break-word;">
                             @fileObject.File?.Name
@@ -117,7 +172,7 @@
                                          Class="mr-2"
                                          Style="@($"color:{Colors.Gray.Darken2};")" />
                             }
-                            else if(fileObject.UploadStatus.Status == FileUploadStatus.Success)
+                            else if (fileObject.UploadStatus.Status == FileUploadStatus.Success)
                             {
                                 <MudIcon Icon="fa-solid fa-check-double"
                                          Color="Color.Success"
@@ -138,7 +193,7 @@
                     {
                         <div class="mt-2">
                             <MudText Typo="Typo.caption" Color="Color.Secondary">Message:</MudText>
-                            <MudText Typo="Typo.body2" 
+                            <MudText Typo="Typo.body2"
                                      Color="@(fileObject.UploadStatus.Status == FileUploadStatus.Failed ? Color.Error : Color.Default)"
                                      Style="word-break: break-word; font-size: 0.8rem;">
                                 @fileObject.UploadStatus.Message
@@ -176,16 +231,41 @@
     [Parameter]
     public EventCallback<FileObjectUx> OnRetryUpload { get; set; }
 
+    [Parameter]
+    public EventCallback<FileObjectUx> OnRemoveFile { get; set; }
+
+    private async Task RemoveFile(FileObjectUx fileObject)
+    {
+        try
+        {
+            // Notify parent component about the removal
+            if (OnRemoveFile.HasDelegate)
+            {
+                await OnRemoveFile.InvokeAsync(fileObject);
+            }
+            else
+            {
+                // Fallback: just mark as deleted if no parent handler
+                fileObject.Status = UxObjectStatus.Deleted;
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"ERROR in RemoveFile: {ex.Message}");
+        }
+    }
+
     private string GetCardCssClass(FileObjectUx fileObject)
     {
         var baseClass = "file-card";
-        
+
         if (fileObject.Status == UxObjectStatus.Deleted)
             return $"{baseClass} deleted";
-        
+
         if (fileObject.IsUploaded || fileObject.UploadStatus.Status == FileUploadStatus.Success)
             return $"{baseClass} uploaded";
-            
+
         return baseClass;
     }
 
@@ -241,17 +321,17 @@
     private string FormatFileSize(long bytes)
     {
         if (bytes == 0) return "0 B";
-        
+
         string[] sizes = { "B", "KB", "MB", "GB" };
         int order = 0;
         double size = bytes;
-        
+
         while (size >= 1024 && order < sizes.Length - 1)
         {
             order++;
             size /= 1024;
         }
-        
+
         return $"{size:0.##} {sizes[order]}";
     }
 
