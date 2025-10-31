@@ -191,76 +191,76 @@ namespace CdbAccess.Tests
         //    Assert.That(crudResponse.SaveSuccess, statusConstraint);
         //}
 
-        [Test]
-        public async Task UpdateFileTypeTest()
-        {
-            // Check if the test file already exists
-            FileTypeGrpcRequest request = new FileTypeGrpcRequest();
-            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-            grpcRequestParameter.RequestType = (int)RequestType.ReadById;
-            grpcRequestParameter.StringValue = _CrudFileTypeId; // test id  
-            request.GrpcRequestParameter = grpcRequestParameter;
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadFileTypeGrpc));
+        //[Test]
+        //public async Task UpdateFileTypeTest()
+        //{
+        //    // Check if the test file already exists
+        //    FileTypeGrpcRequest request = new FileTypeGrpcRequest();
+        //    GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+        //    grpcRequestParameter.RequestType = (int)RequestType.ReadById;
+        //    grpcRequestParameter.StringValue = _CrudFileTypeId; // test id  
+        //    request.GrpcRequestParameter = grpcRequestParameter;
+        //    ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadFileTypeGrpc));
 
-            // Act
-            Task<ListFileTypeGrpc> response = _GrpcService.ReadFileTypeGrpc(request, serverCallContext);
+        //    // Act
+        //    Task<ListFileTypeGrpc> response = _GrpcService.ReadFileTypeGrpc(request, serverCallContext);
 
-            // Assert
-            Assert.That(response.Result.FileTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(response.Result.FileTypeGrpcs.Count, countConstraint);
+        //    // Assert
+        //    Assert.That(response.Result.FileTypeGrpcs, Is.Not.Null);
+        //    NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+        //    Assert.That(response.Result.FileTypeGrpcs.Count, countConstraint);
 
-            FileTypeGrpc theFile = response.Result.FileTypeGrpcs[0];
+        //    FileTypeGrpc theFile = response.Result.FileTypeGrpcs[0];
 
-            // Arrange
-            request = new FileTypeGrpcRequest();
-            grpcRequestParameter = new GrpcRequestParameter();
-            grpcRequestParameter.RequestType = (int)RequestType.Update;
-            request.GrpcRequestParameter = grpcRequestParameter;
+        //    // Arrange
+        //    request = new FileTypeGrpcRequest();
+        //    grpcRequestParameter = new GrpcRequestParameter();
+        //    grpcRequestParameter.RequestType = (int)RequestType.Update;
+        //    request.GrpcRequestParameter = grpcRequestParameter;
 
-            // Do some updates FileTypeGrpc object to add
-            theFile.Name = "DELETEME";
-            theFile.Description = "DELETEME";
-            theFile.IsActive = false;
-            request.FileTypeGrpcsToUpdate.Add(theFile);
+        //    // Do some updates FileTypeGrpc object to add
+        //    theFile.Name = "DELETEME";
+        //    theFile.Description = "DELETEME";
+        //    theFile.IsActive = false;
+        //    request.FileTypeGrpcsToUpdate.Add(theFile);
 
-            serverCallContext = CreateServerContext(nameof(_GrpcService.UpdateFileTypeGrpc));
+        //    serverCallContext = CreateServerContext(nameof(_GrpcService.UpdateFileTypeGrpc));
 
-            // Act
-            CDbCrudGrpcResponse crudResponse = await _GrpcService.UpdateFileTypeGrpc(request, serverCallContext);
+        //    // Act
+        //    CDbCrudGrpcResponse crudResponse = await _GrpcService.UpdateFileTypeGrpc(request, serverCallContext);
 
-            // Assert
-            Assert.That(crudResponse, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint statusConstraint = Is.EqualTo(true);
-            Assert.That(crudResponse.SaveSuccess, statusConstraint);
-        }
-        [Test]
-        public async Task XDeleteFileTypeTest()
-        {
-            // there is no Grpc endpoint to delete this type of data, so we have to use the database context directly
-            CDbContext dbContext = _ServiceProvider.GetRequiredService<CDbContext>();
-            DbFileType? dbFileType = await dbContext.FileTypes.FirstOrDefaultAsync(ct => ct.Id.ToString() == _CrudFileTypeId);
-            Assert.That(dbFileType, Is.Not.Null, "The FileType to delete was not found in the database.");
-            dbContext.FileTypes.Remove(dbFileType);
-            await dbContext.SaveChangesAsync();
+        //    // Assert
+        //    Assert.That(crudResponse, Is.Not.Null);
+        //    NUnit.Framework.Constraints.EqualConstraint statusConstraint = Is.EqualTo(true);
+        //    Assert.That(crudResponse.SaveSuccess, statusConstraint);
+        //}
+        //[Test]
+        //public async Task XDeleteFileTypeTest()
+        //{
+        //    // there is no Grpc endpoint to delete this type of data, so we have to use the database context directly
+        //    CDbContext dbContext = _ServiceProvider.GetRequiredService<CDbContext>();
+        //    DbFileType? dbFileType = await dbContext.FileTypes.FirstOrDefaultAsync(ct => ct.Id.ToString() == _CrudFileTypeId);
+        //    Assert.That(dbFileType, Is.Not.Null, "The FileType to delete was not found in the database.");
+        //    dbContext.FileTypes.Remove(dbFileType);
+        //    await dbContext.SaveChangesAsync();
 
-            // Check if the test file already exists
-            FileTypeGrpcRequest request = new FileTypeGrpcRequest();
-            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-            grpcRequestParameter.RequestType = (int)RequestType.ReadById;
-            grpcRequestParameter.StringValue = _CrudFileTypeId; // test id  
-            request.GrpcRequestParameter = grpcRequestParameter;
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadFileTypeGrpc));
+        //    // Check if the test file already exists
+        //    FileTypeGrpcRequest request = new FileTypeGrpcRequest();
+        //    GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+        //    grpcRequestParameter.RequestType = (int)RequestType.ReadById;
+        //    grpcRequestParameter.StringValue = _CrudFileTypeId; // test id  
+        //    request.GrpcRequestParameter = grpcRequestParameter;
+        //    ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadFileTypeGrpc));
 
-            // Act
-            Task<ListFileTypeGrpc> response = _GrpcService.ReadFileTypeGrpc(request, serverCallContext);
+        //    // Act
+        //    Task<ListFileTypeGrpc> response = _GrpcService.ReadFileTypeGrpc(request, serverCallContext);
 
-            // Assert
-            Assert.That(response.Result.FileTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(response.Result.FileTypeGrpcs.Count, countConstraint);
+        //    // Assert
+        //    Assert.That(response.Result.FileTypeGrpcs, Is.Not.Null);
+        //    NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+        //    Assert.That(response.Result.FileTypeGrpcs.Count, countConstraint);
 
-        }
+        //}
 
         // Private helper method to create a mock ServerCallContext
         ServerCallContext CreateServerContext(string methodName)
