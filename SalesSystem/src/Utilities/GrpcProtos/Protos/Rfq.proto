@@ -188,6 +188,7 @@ message RfqDrawingPartNumbersGrpcRequest {
   repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbersGrpcsToCreate = 2;
   repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbersGrpcsToUpdate = 3;
   repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbersGrpcsToDelete = 4;
+   int64 RfqId = 5;
 }
 
 message RfqDrawingPartNumbersGrpc {

@@ -580,7 +580,8 @@
             }
 
             ListRfqDrawingPartNumbersGrpc responseList = new ListRfqDrawingPartNumbersGrpc();
-            List<RfqDrawingPartNumbersGrpc> projects = _ListRfqDrawingPartNumbers.RfqDrawingPartNumbers.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            List<RfqDrawingPartNumbersGrpc> projects = _ListRfqDrawingPartNumbers.RfqDrawingPartNumbers.Where(x => x.RfqId == request.RfqId).ToList();
+   
             if (projects != null)
             {
                 responseList.RfqDrawingPartNumbers.AddRange(projects);

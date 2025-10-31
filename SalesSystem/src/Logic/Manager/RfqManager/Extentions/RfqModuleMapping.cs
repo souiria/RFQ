@@ -80,5 +80,20 @@
             project.VehicleVolume = rfqProjectGrpc.VehicleVolume ??0;
             return project;
         }
+        public static RfqDrawingPartNumber ToRfqDrawingPartNumber(this RfqDrawingPartNumbersGrpc rfqPartGrpc)
+        {
+            RfqDrawingPartNumber part = new RfqDrawingPartNumber();
+            part.RowId = rfqPartGrpc.RowId;
+            part.RfqId = rfqPartGrpc.RfqId;
+            part.OriginalPartNumber = rfqPartGrpc.OriginalPartNumber;
+            part.OriginalPartNumberPrice = rfqPartGrpc.OriginalPartNumberPrice ??0;
+            part.SwappedPartNumber = rfqPartGrpc.SwappedPartNumber;
+            part.SwappedPartNumberPrice = rfqPartGrpc.SwappedPartNumberPrice??0;
+            part.PriceSource = rfqPartGrpc.PriceSource;
+            part.IsExactMatch = rfqPartGrpc.IsExactMatch ?? false;
+            part.IsSwapped = rfqPartGrpc.IsSwapped ?? false;
+            part.Comments = rfqPartGrpc.Comments;
+            return part;
+        }
     }
 }

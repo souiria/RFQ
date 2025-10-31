@@ -1,4 +1,6 @@
-﻿namespace RfqModule.Services
+﻿using Rfq.Data.Model;
+
+namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {
@@ -273,7 +275,46 @@
                 throw;
             }
         }
+        public async Task<GetRfqDrawingPartNumbersByRfqIdGrpcResponse> GetRfqDrawingPartNumbersByRfqIdGrpc(GetRfqDrawingPartNumbersByRfqIdGrpcRequest request)
+        {
+            try
+            {
+                await Task.Delay(1);
 
+                GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+                grpcRequestParameter.RequestType = 2;
+
+                RfqDrawingPartNumbersGrpcRequest rfqDrawingRequest = new RfqDrawingPartNumbersGrpcRequest();
+                rfqDrawingRequest.GrpcRequestParameter = grpcRequestParameter;
+                rfqDrawingRequest.RfqId = request.RfqId;
+
+                ListRfqDrawingPartNumbersGrpc rfqParts = _RfqClient.ReadRfqDrawingPartNumbersGrpc(rfqDrawingRequest);
+
+                GetRfqDrawingPartNumbersByRfqIdGrpcResponse response = new GetRfqDrawingPartNumbersByRfqIdGrpcResponse();
+
+                int partCount = rfqParts.RfqDrawingPartNumbers.Count;
+                bool hasParts = !(partCount <= 0);
+                if (hasParts)
+                {
+                    List<RfqDrawingPartNumber> mappedParts = new List<RfqDrawingPartNumber>();
+
+                    foreach (RfqDrawingPartNumbersGrpc grpcPart in rfqParts.RfqDrawingPartNumbers)
+                    {
+                        RfqDrawingPartNumber mappedPart = grpcPart.ToRfqDrawingPartNumber();
+                        mappedParts.Add(mappedPart);
+                    }
+
+                    response.Parts.AddRange(mappedParts);
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError($"Error fetching RFQ drawing parts by RfqId: {request.RfqId}", ex);
+                throw;
+            }
+        }
         public async Task<UploadPartsRequestGrpcResponse> UploadPartsGrpc(UploadPartsRequestGrpcRequest request)
         {
             UploadPartsRequestGrpcResponse uploadResponse = new UploadPartsRequestGrpcResponse();

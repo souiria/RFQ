@@ -9,12 +9,13 @@ namespace SalesSystem.Rfq.Services
         bool _Disposed;
 
         // Cached Data
+        List<RfqDrawingPartNumber> _RfqDrawingParts;
         List<RfqProject> _RfqProjects;
         List<CustomerGrpc> _Customers;
         List<RfqReasonGrpc> _Reasons;
         List<CustomerProjectUx> _CustomerProjectAssociations;
         // Cached data accessors
-
+        public IReadOnlyCollection<RfqDrawingPartNumber> RfqDrawingParts => _RfqDrawingParts.AsReadOnly();
         public IReadOnlyCollection<RfqProject> RfqProjects => _RfqProjects.AsReadOnly();
         public IReadOnlyCollection<CustomerGrpc> Customers => _Customers.AsReadOnly();
         public IReadOnlyCollection<RfqReasonGrpc> Reasons => _Reasons.AsReadOnly();
@@ -40,6 +41,7 @@ namespace SalesSystem.Rfq.Services
             _Customers = new();
             _Reasons = new();
             _CustomerProjectAssociations = new();
+            _RfqDrawingParts = new();
         }
 
         public async Task<HelloReply> SayHelloAsync(string name, CancellationToken cancellationToken = default)
@@ -108,7 +110,29 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
- 
+        public async Task<List<RfqDrawingPartNumber>> GetRfqDrawingPartNumbersByRfqIdAsync(long rfqId)
+  
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+
+            try
+            {
+                GetRfqDrawingPartNumbersByRfqIdGrpcRequest request = new GetRfqDrawingPartNumbersByRfqIdGrpcRequest();
+                request.RfqId = rfqId;
+
+                GetRfqDrawingPartNumbersByRfqIdGrpcResponse response = await _Client.GetRfqDrawingPartNumbersByRfqIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
+                _RfqDrawingParts.Clear();
+                _RfqDrawingParts.AddRange(response.Parts);
+                return _RfqDrawingParts;
+                //List<RfqDrawingPartNumber> parts = response.Parts.ToList();
+                //return parts;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in GetRfqDrawingPartNumbersByRfqId for RfqId: {rfqId}", ex);
+                throw;
+            }
+        }
         public async Task<GetAllCustomersGrpcResponse> GetAllCustomersAsync(
             int position = 0,
             int take = 100,
@@ -154,7 +178,6 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-
         public async Task<int> GetProjectAssociationsByCustomerIdAsync(string customerId)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);

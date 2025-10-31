@@ -1,4 +1,6 @@
-﻿namespace RfqModule.Services
+﻿using System.Threading.Tasks;
+
+namespace RfqModule.Services
 {
     public interface IRfqManagerService
     {
@@ -15,5 +17,6 @@
         Task<GetAllRfqProjectGrpcResponse> GetAllRfqProjectGrpc(GetAllRfqProjectGrpcRequest request);
         Task<GetRfqProjectByIdGrpcResponse> GetRfqProjectByIdGrpc(GetRfqProjectByIdGrpcRequest request);
         Task<UpdateRfqProjectGrpcResponse> UpdateRfqProject(UpdateRfqProjectGrpcRequest request);
+        Task<GetRfqDrawingPartNumbersByRfqIdGrpcResponse> GetRfqDrawingPartNumbersByRfqIdGrpc(GetRfqDrawingPartNumbersByRfqIdGrpcRequest request);
     }
 }

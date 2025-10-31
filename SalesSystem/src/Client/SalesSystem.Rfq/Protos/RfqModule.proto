@@ -25,6 +25,7 @@ service RfqModule {
   rpc GetAllRfqProjectGrpc (GetAllRfqProjectGrpcRequest) returns (GetAllRfqProjectGrpcResponse);
   rpc GetRfqProjectByIdGrpc (GetRfqProjectByIdGrpcRequest) returns (GetRfqProjectByIdGrpcResponse);
   rpc UpdateRfqProjectGrpc (UpdateRfqProjectGrpcRequest) returns (UpdateRfqProjectGrpcResponse);
+  rpc GetRfqDrawingPartNumbersByRfqIdGrpc (GetRfqDrawingPartNumbersByRfqIdGrpcRequest) returns (GetRfqDrawingPartNumbersByRfqIdGrpcResponse);
 }
 
 // The request message containing the user's name.
@@ -189,3 +190,25 @@ message UpdateRfqProjectGrpcResponse {
   bool Success = 1;
   string Message = 2;
   }
+  message RfqDrawingPartNumber {
+  int64 RowId = 1;
+  int64 RfqId = 2;
+  string OriginalPartNumber = 3;
+  double OriginalPartNumberPrice = 4;
+  string SwappedPartNumber = 5;
+  double SwappedPartNumberPrice = 6;
+  string PriceSource = 7;
+  bool IsExactMatch = 8;
+  bool IsSwapped = 9;
+  string Comments = 10;
+}
+
+message GetRfqDrawingPartNumbersByRfqIdGrpcRequest {
+
+  int64 RfqId = 1;
+}
+
+message GetRfqDrawingPartNumbersByRfqIdGrpcResponse {
+  repeated RfqDrawingPartNumber Parts = 1;
+      int32 TotalCount = 2;
+}
