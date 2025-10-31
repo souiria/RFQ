@@ -8,15 +8,15 @@ namespace SalesSystem.Rfq.Models
         { get; set; }
         public string RfqNumber
         { get; set; }
-        public Guid CustomerBusinessUnitGuid
+        public string CustomerBusinessUnitId
         { get; set; }
         public string? CustomerBusinessUnit
         { get; set; }
-        public Guid CustomerLocationGuid
+        public string CustomerLocationId
         { get; set; }
         public string? CustomerLocation
         { get; set; }
-        public Guid ProjectGuid
+        public string ProjectId
         { get; set; }
         public string? Project
         { get; set; }
@@ -26,7 +26,7 @@ namespace SalesSystem.Rfq.Models
         { get; set; }
         public DateTime? RfqResponseDeadline
         { get; set; }
-        public Guid CarModelGuid
+        public string CarModelId
         { get; set; }
         public string? CarModel
         { get; set; }
@@ -35,11 +35,13 @@ namespace SalesSystem.Rfq.Models
         public RfqProjectUx()
         {
             RfqNumber = string.Empty;
-            CustomerBusinessUnitGuid = Guid.Empty;
-            CustomerLocationGuid = Guid.Empty;
-            ProjectGuid = Guid.Empty;
-            CarModelGuid =  Guid.Empty;
+            CustomerBusinessUnitId = string.Empty;
+            CustomerLocationId = string.Empty;
+            ProjectId = string.Empty;
+            CarModelId = string.Empty;
             VehicleVolume = 0;
+            ProjectId = string.Empty;
+            RfqReasonId = 0;
         }
     }
 }

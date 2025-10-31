@@ -1,5 +1,7 @@
 ﻿@page "/"
-
+@page "/{UserId:guid}"
+@using SalesSystem.Rfq.Components.Pages.Components
+@inject CustomAuthenticationStateProvider GetAuthenticationStateAsync
 @rendermode InteractiveServer
 
 <MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Dashboard</MudText>
@@ -57,7 +59,7 @@
                     <MudText Typo="Typo.h6">RFQ Successes</MudText>
                 </CardHeaderContent>
             </MudCardHeader>
-            <MudCardContent Class="px-1 pb-2 pt-0" Style="height: calc(100vh - 624px);">
+            <MudCardContent Class="px-1 pb-2 pt-0" Style="height: calc(100vh - 624px); min-height: 300px;">
                 <MudSimpleTable Dense="true" Elevation="0" Hover="true">
                     <thead>
                         <tr>
@@ -95,18 +97,67 @@
                     <MudText Typo="Typo.h6">Recent RFQ's'</MudText>
                 </CardHeaderContent>
             </MudCardHeader>
-            <MudCardContent Class="p-0 pb-2">
-                <RecentRfqs />
+            <MudCardContent Class="p-0 pb-2" Style="height: calc(100vh - 624px); min-height: 300px;">
+                @* <RecentRfqs UserId="@UserId" /> *@
+                <RecentRfqs2 UserId="@UserId" />
             </MudCardContent>
         </MudCard>
     </MudItem>
 </MudGrid>
 
 @code {
+    [Parameter] public Guid? UserId { get; set; }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Guid? userId;
+        string? userName;
+        string? firstName;
+        string? displayName;
+
+        if(UserId == null || UserId == Guid.Empty)
+        {
+            var authState = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+            var user = authState.User;
+            if (user.Identity!.IsAuthenticated)
+            {
+                userName = user.Identity.Name;
+                Console.WriteLine($"User is authenticated: {userName}");
+            }
+            else
+            {
+                userName = "Anonymous";
+                Console.WriteLine("User is not authenticated.");
+            }
+
+#if DEBUG
+    using (PrincipalContext context2 = new PrincipalContext(ContextType.Domain))
+    {
+    UserPrincipal principal = UserPrincipal.FindByIdentity(context2, "williad");
+    firstName = principal?.GivenName;
+    // string lastName = principal.Surname;
+    displayName = principal?.DisplayName;
+    userId = new Guid("86380EFD-5651-4552-8145-E59E785F099A");
+    }
+#else
+            using (PrincipalContext context2 = new PrincipalContext(ContextType.Domain))
+            {
+                UserPrincipal principal = UserPrincipal.FindByIdentity(context2, userName);
+                firstName = principal?.GivenName;
+                // string lastName = principal.Surname;
+                displayName = principal?.DisplayName;
+                userId = principal?.Guid;
+            }
+#endif
+            UserId = userId;
+        }
+    }
 
     EarningReport[] earningReports = new EarningReport[]
     {
-        new EarningReport { Name = "Lunees", Title = "Reactor Engineer", Avatar = "https://avatars2.githubusercontent.com/u/71094850?s=460&u=66c16f5bb7d27dc751f6759a82a3a070c8c7fe4b&v=4", Salary = "$0.99", Severity = Color.Success, SeverityTitle = "Low"},
+        new EarningReport { Name = "Lunees", Title = "Reactor Engineer", Avatar = "https://avatars2.githubusercontent.com/u/71094850?s=460&u=66c16f5bb7d27dc751f6759a82a3a070c8c7fe4b&v=4", Salary = "$0            .99", Severity = Color.Success, SeverityTitle = "Low"},
         new EarningReport { Name = "Mikes-gh", Title = "Developer", Avatar = "https://avatars.githubusercontent.com/u/16208742?s=120&v=4", Salary = "$19.12K", Severity = Color.Secondary, SeverityTitle = "Medium"},
         new EarningReport { Name = "Garderoben", Title = "CSS Magician", Avatar = "https://avatars2.githubusercontent.com/u/10367109?s=460&amp;u=2abf95f9e01132e8e2915def42895ffe99c5d2c6&amp;v=4", Salary = "$1337", Severity = Color.Primary, SeverityTitle = "High"},
     };

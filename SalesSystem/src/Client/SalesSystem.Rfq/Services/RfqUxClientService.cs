@@ -97,7 +97,7 @@ namespace SalesSystem.Rfq.Services
                 _RfqProjectUxs.Clear();
                 foreach (RfqProject? rfqProject in _RfqProjects)
                 {
-                    RfqProjectUx? uxModel = await rfqProject.ToRfqProjectUx(this);
+                    RfqProjectUx? uxModel = rfqProject.ToRfqProjectUx();
                     if (null != uxModel)
                     {
                         _RfqProjectUxs.Add(uxModel);
@@ -232,6 +232,7 @@ namespace SalesSystem.Rfq.Services
                 _Customers.Clear();
                 List<CustomerGrpc> orderedCustomers = response.Customers.OrderBy(x => x.CustomerBusinessGroupName).ToList();
                 _Customers.AddRange(orderedCustomers);
+                
                 return _Customers.Count;
             }
             catch (Exception ex)

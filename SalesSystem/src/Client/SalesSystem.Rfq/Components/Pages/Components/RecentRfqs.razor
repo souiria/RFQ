@@ -4,32 +4,33 @@
 @inject IDialogService DialogService
 @inject ILogger<CreateRfq> Logger
 
-@if(IsLoading)
-{
-    <MudCardContent Class="px-0" Style="height: calc(100vh - 624px);">
-        <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large">
-            <ChildContent>
-                <MudText Typo="Typo.subtitle2">Loading...</MudText>
-            </ChildContent>
-        </MudProgressCircular>
-    </MudCardContent>
-}
-else
-{
-    <MudCardContent Class="px-1 pb-2 pt-0" Style="height: calc(100vh - 624px);">  
+<div class="d-flex flex-column pb-2" style="height: 100%; overflow: hidden;">
+    @if(IsLoading)
+    {
+        <div class="d-flex justify-center align-center flex-grow-1">
+            <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large">
+                <ChildContent>
+                    <MudText Typo="Typo.subtitle2">Loading...</MudText>
+                </ChildContent>
+            </MudProgressCircular>
+        </div>
+    }
+    else
+    {
         <MudDataGrid T="RfqProjectUx"
                      @ref="_projectsGrid"
                      Items="@RfqUxClientService.RfqProjectUxs"
-                     Height="calc(100vh - 706px)"
-                     Class="flex-grow-1"
+                     Style="height: 0; min-height: 0; flex: 1 1 auto;"
                      Dense="true"
-                     DragDropColumnReordering="true"
-                     ApplyDropClassesOnDragStarted="true"
+                     FixedHeader="true"
+                     Height="100%"
+                     DragDropColumnReordering="false"
+                     ApplyDropClassesOnDragStarted="false"
                      ColumnResizeMode="ResizeMode.Column"
                      SortMode="SortMode.Multiple"
-                     Hideable="true"
-                     Filterable="true"
-                     Groupable="true"
+                     Hideable="false"
+                     Filterable="false"
+                     Groupable="false"
                      QuickFilter="@QuickFilter"
                      ReadOnly="true"
                      Bordered="true"
@@ -70,13 +71,13 @@ else
                     </CellTemplate>
                 </TemplateColumn>
                 <PropertyColumn Property="x => x.RowId" Title="Id" StickyLeft="true" />
-                <PropertyColumn Property="x => x.RfqNumber" Title="Rfq Number" Groupable="true" Filterable="true" />
+                <PropertyColumn Property="x => x.RfqNumber" Title="Rfq Number" />
                 <PropertyColumn Property="x => x.VehicleVolume" Title="Vehicle Volume" />
                 <PropertyColumn Property="x => x.RfqReason" Title="Rfq Reason" />
             </Columns>
         </MudDataGrid>
-    </MudCardContent>
-}
+    }
+</div>
 
 @code {
     bool IsLoading { get; set; }
@@ -84,12 +85,14 @@ else
 
     MudDataGrid<RfqProjectUx> _projectsGrid { get; set; } = null!;
 
+    [Parameter] public Guid? UserId { get; set; }   
+
     public RecentRfqs()
     {
         ProjectFilter = string.Empty;
         IsLoading = true;
     }
-    
+
     protected override async Task OnInitializedAsync()
     {
         await Refresh();
@@ -111,7 +114,8 @@ else
     private async Task ShowEdit(RfqProjectUx project)
     {
         await Task.Delay(0);
-        Snackbar.Add($"Edit for {project.RowId}: {project.RfqNumber}", Severity.Warning);
+        // Snackbar.Add($"Edit for {project.RowId}: {project.RfqNumber}", Severity.Warning);
+        Navigation.NavigateTo($"/editRfq/{UserId}/{project.RowId}");
     }
 
     // quick filter - filter globally across multiple columns with the same input

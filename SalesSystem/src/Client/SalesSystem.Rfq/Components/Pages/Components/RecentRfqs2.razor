@@ -1,0 +1,102 @@
+﻿@using SalesSystem.Rfq.Models
+@inject RfqUxClientService RfqUxClientService
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject ILogger<RecentRfqs2> Logger
+
+<div class="d-flex flex-column" style="height: 100%; overflow: hidden;">
+    @if (IsLoading)
+    {
+        <div class="d-flex justify-center align-center" style="height: 100%;">
+            <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large">
+                <ChildContent>
+                    <MudText Typo="Typo.subtitle2">Loading...</MudText>
+                </ChildContent>
+            </MudProgressCircular>
+        </div>
+    }
+    else
+    {
+        <MudDataGrid T="RfqProjectUx"
+                     Items="@RfqUxClientService.RfqProjectUxs"
+                     Bordered="true"
+                     Dense="true"
+                     Hover="true"
+                     FixedHeader="true"
+                     Height="calc(100% - 8px)"
+                     Class="mud-grid-no-scroll-x"
+                     Style="flex: 1 1 auto; min-height: 0; overflow-y: auto; margin: 4px 0;">
+            <Columns>
+                <TemplateColumn CellClass="d-flex justify-start" StickyLeft="true" Sortable="false">
+                    <CellTemplate>
+                        <MudStack Row>
+                            <MudIconButton Size="@Size.Small"
+                                           Icon="@Icons.Material.Filled.Edit"
+                                           aria-label="edit"
+                                           OnClick="@(() => NavigateToEdit(context.Item))" />
+                        </MudStack>
+                    </CellTemplate>
+                </TemplateColumn>
+                <PropertyColumn Property="x => x.RfqNumber" Title="RFQ #" StickyLeft="true" />
+                <PropertyColumn Property="x => x.CustomerBusinessUnit" Title="Customer" />
+                <PropertyColumn Property="x => x.Project" Title="Project" />
+                <PropertyColumn Property="x => x.RfqReason" Title="Reason" />
+                <PropertyColumn Property="x => x.VehicleVolume" Title="Volume" />
+                <PropertyColumn Property="x => x.RfqResponseDeadline" Title="Deadline" Format="dd.MM.yyyy">
+                    <CellTemplate>
+                        @if (context.Item.RfqResponseDeadline.HasValue)
+                        {
+                            <MudText>@context.Item.RfqResponseDeadline.Value.ToString("dd.MM.yyyy")</MudText>
+                        }
+                    </CellTemplate>
+                </PropertyColumn>
+            </Columns>
+        </MudDataGrid>
+    }
+</div>
+
+<style>
+    .mud-grid-no-scroll-x {
+        overflow-x: hidden !important;
+    }
+</style>
+
+@code {
+    [Parameter] public Guid? UserId { get; set; }
+    private bool IsLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Logger.LogInformation("Loading RFQ projects...");
+            var count = await RfqUxClientService.GetAllRfqProjectAsync();
+            if (count <= 0)
+            {
+                Snackbar.Add("No RFQ projects found.", Severity.Info);
+            }
+            Logger.LogInformation($"Loaded {count} RFQ projects");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to load RFQ projects");
+            Snackbar.Add("Failed to load RFQ projects.", Severity.Error);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private void NavigateToEdit(RfqProjectUx project)
+    {
+        if (UserId.HasValue)
+        {
+            Navigation.NavigateTo($"/editRfq/{UserId}/{project.RowId}");
+        }
+        else
+        {
+            Snackbar.Add("User ID is required to edit RFQ.", Severity.Warning);
+        }
+    }
+}

@@ -20,7 +20,7 @@ namespace SalesSystem.Rfq.Extensions
             projectAssociation.Id = association.Id;
             return projectAssociation;
         }
-        public static async Task<RfqProjectUx?> ToRfqProjectUx(this RfqProject rfqProject, RfqUxClientService uxClientService)
+        public static RfqProjectUx?ToRfqProjectUx(this RfqProject rfqProject)
         {
             if (rfqProject == null)
             {
@@ -30,21 +30,13 @@ namespace SalesSystem.Rfq.Extensions
             RfqProjectUx uxModel = new RfqProjectUx();
             uxModel.RowId = rfqProject.RowId;
             uxModel.RfqNumber = rfqProject.RfqNumber;
-            uxModel.CustomerBusinessUnitGuid = Guid.Parse(rfqProject.CustomerBusinessUnitGuid);
-            uxModel.CustomerLocationGuid = Guid.Parse(rfqProject.CustomerLocationGuid);
-            uxModel.ProjectGuid = Guid.Parse(rfqProject.ProjectGuid);
+            uxModel.CustomerBusinessUnitId = rfqProject.CustomerBusinessUnitGuid.Trim().ToUpperInvariant();
+            uxModel.CustomerLocationId = rfqProject.CustomerLocationGuid.Trim().ToUpperInvariant();
+            uxModel.ProjectId = rfqProject.ProjectGuid.Trim().ToUpperInvariant();
             uxModel.RfqReasonId = rfqProject.RfqReasonId;
             uxModel.RfqResponseDeadline = rfqProject.RfqResponseDeadline?.ToDateTime();
-            uxModel.CarModelGuid = Guid.Parse(rfqProject.CarModelGuid);
+            uxModel.CarModelId = rfqProject.CarModelGuid.Trim().ToUpperInvariant();
             uxModel.VehicleVolume = rfqProject.VehicleVolume;
-
-            if(0 <= uxClientService.Reasons.Count)
-            {
-                await uxClientService.GetRfqReasonsAsync();
-            }
-
-            RfqReasonGrpc? reason = uxClientService.Reasons.FirstOrDefault(r => r.RowId == rfqProject.RfqReasonId);
-            uxModel.RfqReason = reason?.RfqReasonTitle;
 
             return uxModel;
         }
