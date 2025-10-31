@@ -43,6 +43,8 @@ namespace SalesSystem.Rfq.Services
             _Customers = new();
             _Reasons = new();
             _CustomerProjectAssociations = new();
+            _QuotationNumbers= new();
+            _RfqDrawingParts= new();
         }
         public async Task<HelloReply> SayHelloAsync(string name, CancellationToken cancellationToken = default)
         {
