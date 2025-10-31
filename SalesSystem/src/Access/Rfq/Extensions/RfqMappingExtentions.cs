@@ -61,10 +61,14 @@
             data.CustomerLocationGuid = Guid.Parse(grpc.CustomerLocationGuid);
             data.ProjectGuid = Guid.Parse(grpc.ProjectGuid);
             data.RfqReasonId = grpc.RfqReasonId;
-            data.RfqResponseDeadline = grpc.RfqResponseDeadline?.ToDateTime().ToLocalTime();
+            data.RfqResponseDeadline = grpc.RfqResponseDeadline?.ToDateTime().ToUniversalTime();
             data.CarModelGuid = Guid.Parse(grpc.CarModelGuid);
             data.VehicleVolume = grpc.VehicleVolume;
-            data.CreatedDate = grpc.CreatedDate.ToDateTime().ToLocalTime();
+            data.CreatedDate = grpc.CreatedDate != null
+            ? grpc.CreatedDate.ToDateTime().ToLocalTime()
+            : DateTime.UtcNow; // or DateTime.MinValue or any default
+
+            //data.CreatedDate = grpc.CreatedDate.ToDateTime().ToUniversalTime();
             return data;
         }
         #endregion
@@ -132,8 +136,8 @@
             data.RowId = grpc.RowId;
             data.BendId = Guid.Parse(grpc.BendId);
             data.Bend = grpc.Bend;
-            data.CreatedDate = grpc.CreatedDate.ToDateTime().ToLocalTime();
-            data.ModifiedDate = grpc.ModifiedDate?.ToDateTime().ToLocalTime();
+            data.CreatedDate = grpc.CreatedDate.ToDateTime().ToUniversalTime();
+            data.ModifiedDate = grpc.ModifiedDate?.ToDateTime().ToUniversalTime();
             data.CreatedBy = Guid.Parse(grpc.CreatedBy);
             data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
             return data;

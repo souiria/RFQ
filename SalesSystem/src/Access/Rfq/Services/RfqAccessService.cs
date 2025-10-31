@@ -687,7 +687,9 @@
             }
 
             ListRfqProjectGrpc responseList = new ListRfqProjectGrpc();
-            List<RfqProjectGrpc> projects = _ListRfqProjects.RfqProjects.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            //List<RfqProjectGrpc> projects = _ListRfqProjects.RfqProjects.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            List<RfqProjectGrpc> projects = _ListRfqProjects.RfqProjects.Where(x => x.RowId == request.RowId).ToList();
+
             if (projects != null)
             {
                 responseList.RfqProjects.AddRange(projects);

@@ -469,7 +469,7 @@
                 RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
                 rfqProjectRequest.GrpcRequestParameter = new GrpcRequestParameter();
                 rfqProjectRequest.GrpcRequestParameter.RequestType = 80; 
-                rfqProjectRequest.RfqProjectGrpcsToCreate.Add(rfqProject);
+                rfqProjectRequest.RfqProjectGrpcsToUpdate.Add(rfqProject);
 
                 RfqCrudGrpcResponse updateResponse = _RfqClient.UpdateRfqProjectGrpc(rfqProjectRequest);
 
@@ -481,7 +481,7 @@
             }
             catch (Exception ex)
             {
-                _Logger.GenericLogError("Error updating RFQ project", ex);
+                _Logger.GenericLogError("Error Updating RFQ project", ex);
                 throw;
             }
         }

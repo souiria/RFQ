@@ -173,6 +173,7 @@ message GrpcRequestParameter {
 	google.protobuf.Int32Value IntValue = 6;
 	google.protobuf.FloatValue DecimalValue = 7;
 	google.protobuf.Timestamp DateTimeValue = 8;
+	int64 RowId = 9;
 }
 
 // Shared CRUD response message
@@ -211,7 +212,7 @@ message RfqProjectGrpcRequest {
   repeated RfqProjectGrpc RfqProjectGrpcsToCreate = 2;
   repeated RfqProjectGrpc RfqProjectGrpcsToUpdate = 3;
   repeated RfqProjectGrpc RfqProjectGrpcsToDelete = 4;
- int64 RowId = 5;
+  int64 RowId = 5;
 }
 
 message RfqProjectGrpc {

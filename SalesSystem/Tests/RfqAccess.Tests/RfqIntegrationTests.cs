@@ -115,9 +115,9 @@ namespace RfqAccess.Tests
         {
             RfqProjectGrpcRequest projectGrpcRequest = new RfqProjectGrpcRequest();
             GrpcRequestParameter requestParameter = new GrpcRequestParameter();
-            requestParameter.IntValue = 6;
             requestParameter.RequestType = ((int)RequestType.ReadByRowId);
             projectGrpcRequest.GrpcRequestParameter = requestParameter;
+            projectGrpcRequest.RowId = 6; 
 
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadRfqProjectGrpc));
 
@@ -137,7 +137,8 @@ namespace RfqAccess.Tests
             GrpcRequestParameter requestParameter = new GrpcRequestParameter();
             requestParameter.RequestType = ((int)RequestType.ReadByRowId);
             projectGrpcRequest.GrpcRequestParameter = requestParameter;
-            projectGrpcRequest.GrpcRequestParameter.RequestType = ((int)RequestType.ReadByRowId);
+            projectGrpcRequest.RowId = 9999; 
+
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadRfqProjectGrpc));
 
             Task<ListRfqProjectGrpc> getRfqProjectByRowIdReply = _GrpcService.ReadRfqProjectGrpc(projectGrpcRequest, serverCallContext);
