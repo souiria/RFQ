@@ -7,12 +7,12 @@ namespace CdbAccess.Tests
         ServiceProvider _ServiceProvider;
 
         #region Constants
-        readonly string _CrudFileTypeId;
+        //readonly string _CrudFileTypeId;
         #endregion
 
         public FileTypesTests()
         {
-            _CrudFileTypeId = "20250728-0000-0001-0003-0000DEADBEEF"; // crud test file type ID
+            //_CrudFileTypeId = "20250728-0000-0001-0003-0000DEADBEEF"; // crud test file type ID
         }
 
         [SetUp]
