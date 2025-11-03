@@ -13,29 +13,6 @@
 @inject NavigationManager NavigationManager
 
 @rendermode InteractiveServer
-<style>
-    .rotate-90-degrees {
-        transform: rotate(-90deg);
-        transform-origin: left bottom;
-        white-space: nowrap;
-        position: absolute;
-        bottom: 20px;
-        left: 36px;
-        font-weight: 500;
-    }
-
-    .collapse-button {
-        position: absolute;
-        top: 8px;
-        left: 8px;
-        z-index: 10;
-    }
-
-    .label-collapsed {
-        flex: 0 0 48px !important;
-        min-height: 48px !important;
-    }
-</style>
 
 @if (IsLoading || RfqProject == null)
 {
@@ -57,7 +34,8 @@ else
             <MudPaper Class="d-flex flex-row" Style="height:150px;">
                 @* Region label *@
                 <MudPaper Style="width: 48px; background-color: var(--mud-palette-primary); position: relative; overflow: visible;">
-                    <MudText Class="rotate-90-degrees" Typo="Typo.h6" Style="color: white;">
+                    <MudText Style="transform: rotate(-90deg); transform-origin: left bottom; white-space: nowrap; position: absolute; bottom: 20px; left: 36px; font-weight: 500; color: white;" 
+                             Typo="Typo.h6">
                         Edit RFQ/RFI
                     </MudText>
                 </MudPaper>
@@ -123,7 +101,9 @@ else
                 </MudPaper>
 
                 <MudPaper Class="d-flex flex-grow-1 pa-4 w-100">
-
+                    <FileManager @ref="componentFileManager"
+                                 FileObjects="FileObjects"
+                                 OnFilesChanged="OnFilesChanged" />
                 </MudPaper>
 
                 @* Controls  *@
@@ -139,79 +119,48 @@ else
 
             </MudPaper>
         </MudItem>
-        <MudItem xs="12">
-            @* Dual grid *@
-            <div class="d-flex flex-row" style="height: calc(100vh - 300px);">
-                @* Region labels container *@
-                <div style="width: 48px; display: flex; flex-direction: column;">
-                    @* Matched Parts Label (Top 50%) *@
-                    <MudPaper Class="@(matchedExpanded ? "" : "label-collapsed")" 
-                              Style="@GetLabelStyle(matchedExpanded, true)">
-                        <MudIconButton Class="collapse-button"
-                                     Icon="@(matchedExpanded ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
-                                     Color="Color.Surface"
-                                     Size="Size.Small"
-                                     OnClick="@(() => matchedExpanded = !matchedExpanded)" />
-                        @if (matchedExpanded)
-                        {
-                            <MudText Class="rotate-90-degrees" Typo="Typo.h6" Style="color: white;">
-                                Matched Parts (@MatchedParts.Count())
-                            </MudText>
-                        }
-                    </MudPaper>
-
-                    @* Unmatched Parts Label (Bottom 50%) *@
-                    <MudPaper Class="@(unmatchedExpanded ? "" : "label-collapsed")" 
-                              Style="@GetLabelStyle(unmatchedExpanded, false)">
-                        <MudIconButton Class="collapse-button"
-                                     Icon="@(unmatchedExpanded ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
-                                     Color="Color.Surface"
-                                     Size="Size.Small"
-                                     OnClick="@(() => unmatchedExpanded = !unmatchedExpanded)" />
-                        @if (unmatchedExpanded)
-                        {
-                            <MudText Class="rotate-90-degrees" Typo="Typo.h6" Style="color: white;">
-                                Unmatched Parts (@UnmatchedParts.Count())
-                            </MudText>
-                        }
-                    </MudPaper>
-                </div>
-
-                @* Grids container *@
-                <MudPaper Class="d-flex flex-column pa-4" Style="flex: 1 1 auto; overflow: hidden;">
-                    @* Matched Parts Section (Top 50%) *@
-                    <div class="d-flex flex-column" style="@GetContentStyle(matchedExpanded, true)">
-                        <MudCollapse Expanded="@matchedExpanded" Style="flex: 1 1 auto; min-height: 0; overflow: hidden;">
-                            <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; height: 100%;">
-                                <PartNumbersEditGrid PartNumbers="@MatchedParts" />
-                            </div>
-                        </MudCollapse>
+        <MudItem xs="12" Class="pt-2">
+            <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-3">
+                <MudTabPanel Text="Parts Lists">
+                    @* Part Number Sections *@
+                    <div class="d-flex flex-column" style="height: calc(100vh - 364px); overflow: hidden;">
+                        @* Unmatched Parts Section *@
+                        <PartNumberSection PartNumbers="@UnmatchedParts"
+                                           Label="Unmatched Parts"
+                                           BackgroundColor="var(--mud-palette-warning)"
+                                           InitiallyExpanded="true" />
+                        @* Separator *@
+                        <MudDivider Style="margin: 4px 0;" />
+                        @* Matched Parts Section *@
+                        <PartNumberSection PartNumbers="@MatchedParts"
+                                           Label="Matched Parts"
+                                           BackgroundColor="var(--mud-palette-success)"
+                                           InitiallyExpanded="false" />
                     </div>
-
-                    @* Separator *@
-                    <MudDivider />
-
-                    @* Unmatched Parts Section (Bottom 50%) *@
-                    <div class="d-flex flex-column" style="@GetContentStyle(unmatchedExpanded, false)">
-                        <MudCollapse Expanded="@unmatchedExpanded" Style="flex: 1 1 auto; min-height: 0; overflow: hidden;">
-                            <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; height: 100%;">
-                                <PartNumbersEditGrid PartNumbers="@UnmatchedParts" />
-                            </div>
-                        </MudCollapse>
+                </MudTabPanel>
+                <MudTabPanel Text="BOM Files">
+                    <div class="d-flex flex-column" style="height: calc(100vh - 364px); overflow: hidden;">
+                        @* File Cards Section *@
+                        <FileCards @ref="componentFileCards"
+                                   FileObjects="FileObjects"
+                                   OnRemoveFile="HandleFileRemoval" />
                     </div>
-                </MudPaper>
-            </div>
+                </MudTabPanel>
+            </MudTabs>
         </MudItem>
     </MudGrid>
 }
 
 @code {
-    bool IsLoading { get; set; } = true;   // Start with true
+
+    // Reference to the FileManager component
+    FileManager? componentFileManager;
+    FileCards? componentFileCards;
+    List<FileObjectUx> FileObjects { get; set; } = new List<FileObjectUx>();
+
+    // Form related
+    bool IsLoading { get; set; } = true;
     RfqProjectUx? RfqProject { get; set; }
-    
-    // Collapse states
-    private bool matchedExpanded = true;
-    private bool unmatchedExpanded = true;
 
     [Parameter] public Guid? UserId { get; set; }
     [Parameter] public long RfqProjectId { get; set; }
@@ -219,35 +168,6 @@ else
     // Part numbers data from test list
     IEnumerable<RfqPartNumberUx> MatchedParts => RfqPartNumberUx.TestList.Where(p => p.IsMatched == true);
     IEnumerable<RfqPartNumberUx> UnmatchedParts => RfqPartNumberUx.TestList.Where(p => p.IsMatched == false);
-
-    private string GetLabelStyle(bool isExpanded, bool isTop)
-    {
-        var backgroundColor = isTop ? "var(--mud-palette-success)" : "var(--mud-palette-warning)";
-        var margin = isTop ? "margin-bottom: 4px;" : "margin-top: 4px;";
-        
-        if (isExpanded)
-        {
-            return $"flex: 1 1 100%; background-color: {backgroundColor}; position: relative; overflow: visible; {margin}";
-        }
-        else
-        {
-            return $"background-color: {backgroundColor}; position: relative; overflow: visible; {margin} transition: all 0.3s ease;";
-        }
-    }
-
-    private string GetContentStyle(bool isExpanded, bool isTop)
-    {
-        var margin = isTop ? "margin-bottom: 8px;" : "margin-top: 8px;";
-        
-        if (isExpanded)
-        {
-            return $"flex: 1 1 100%; min-height: 0; {margin}";
-        }
-        else
-        {
-            return $"flex: 0 0 auto; min-height: 0; {margin}";
-        }
-    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -308,8 +228,8 @@ else
             NavigationManager.NavigateTo("/");
         }
     }
-    #region Customer
 
+    #region Customer
     async Task OnCustomerValueChanged(string value)
     {
         RfqProject!.CustomerBusinessUnitId = value;
@@ -347,6 +267,16 @@ else
             }
         }
     }
+
+    private void OnCustomerProjectValueChanged(string value)
+    {
+        RfqProject!.ProjectId = value;
+
+        var project = RfqUxClientService.CustomerProjectAssociations.FirstOrDefault(p => p.Id == value);
+        Logger.GenericLogInformation($"Project changed to {project?.Id} - {project?.ProjectName}");
+
+        StateHasChanged();
+    }
     #endregion
 
     #region Reason
@@ -377,13 +307,55 @@ else
         }
     }
 
-    private void OnCustomerProjectValueChanged(string value)
+    #region File handling
+    private void OnFilesChanged()
     {
-        RfqProject!.ProjectId = value;
-
-        var project = RfqUxClientService.CustomerProjectAssociations.FirstOrDefault(p => p.Id == value);
-        Logger.GenericLogInformation($"Project changed to {project?.Id} - {project?.ProjectName}");
-
         StateHasChanged();
     }
+    private async Task HandleFileRemoval(FileObjectUx fileObject)
+    {
+        try
+        {
+            Logger.GenericLogInformation($"CreateRfq.HandleFileRemoval - Starting removal for file: {fileObject.DisplayName} (ID: {fileObject.Id})");
+
+            // Check if file can be safely removed
+            if (fileObject.CanBeRemovedSafely)
+            {
+                // Remove completely from collection to prevent InputFile issues
+                bool removed = FileObjects.Remove(fileObject);
+
+                if (removed)
+                {
+                    // Reset the FileManager's InputFile component to clear internal state
+                    if (componentFileManager != null)
+                    {
+                        await componentFileManager.ResetInputFileAsync();
+                    }
+
+                    Logger.GenericLogInformation($"CreateRfq.HandleFileRemoval - Completely removed file: {fileObject.DisplayName}");
+                    Snackbar.Add($"File '{fileObject.DisplayName}' removed successfully", Severity.Success);
+                }
+                else
+                {
+                    Logger.GenericLogInformation($"CreateRfq.HandleFileRemoval - File not found in collection: {fileObject.DisplayName}");
+                }
+            }
+            else
+            {
+                // Keep in collection but mark as deleted for uploaded files
+                fileObject.Status = UxObjectStatus.Deleted;
+                Logger.GenericLogInformation($"CreateRfq.HandleFileRemoval - Marked uploaded file as deleted: {fileObject.DisplayName}");
+                Snackbar.Add($"File '{fileObject.DisplayName}' marked as deleted", Severity.Info);
+            }
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError($"CreateRfq.HandleFileRemoval - Error removing file: {fileObject.DisplayName}", ex);
+            Snackbar.Add($"Error removing file: {ex.Message}", Severity.Error);
+        }
+    }
+    #endregion
+
 }

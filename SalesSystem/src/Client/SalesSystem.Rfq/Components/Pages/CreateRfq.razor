@@ -13,6 +13,7 @@
 
 <MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Create RFI/RFQ</MudText>
 <MudGrid Class="position-fixed">
+    @* Attributes *@
     <MudItem xs="12">
         <MudPaper Class="d-flex flex-row" Style="height:150px;">
             <MudPaper Class="pa-4">
@@ -116,6 +117,7 @@
 
         </MudPaper>
     </MudItem>
+    @* File drop zone  *@
     <MudItem xs="12">
         <MudPaper Class="d-flex flex-column" Width="100%">
             @* File Cards Section *@
@@ -499,14 +501,4 @@
         }
     }
 
-    /// <summary>
-    /// Check for duplicate files by name and size before adding
-    /// </summary>
-    private bool IsFileAlreadyAdded(IBrowserFile newFile)
-    {
-        return FileObjects.Any(f => 
-            f.Status != UxObjectStatus.Deleted &&
-            f.OriginalFileName == newFile.Name && 
-            f.OriginalFileSize == newFile.Size);
-    }
 }
