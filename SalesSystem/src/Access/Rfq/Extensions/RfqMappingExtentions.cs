@@ -58,12 +58,20 @@
             DbRfqProject data = new DbRfqProject();
             data.RowId = grpc.RowId;
             data.RfqNumber = grpc.RfqNumber;
-            data.CustomerBusinessUnitGuid = Guid.Parse(grpc.CustomerBusinessUnitGuid);
-            data.CustomerLocationGuid = Guid.Parse(grpc.CustomerLocationGuid);
-            data.ProjectGuid = Guid.Parse(grpc.ProjectGuid);
+            data.CustomerBusinessUnitGuid = !string.IsNullOrWhiteSpace(grpc.CustomerBusinessUnitGuid)
+                ? Guid.Parse(grpc.CustomerBusinessUnitGuid)
+                : Guid.Empty;
+            data.CustomerLocationGuid = !string.IsNullOrWhiteSpace(grpc.CustomerLocationGuid)
+                ? Guid.Parse(grpc.CustomerLocationGuid)
+                : Guid.Empty;
+            data.ProjectGuid = !string.IsNullOrWhiteSpace(grpc.ProjectGuid)
+                ? Guid.Parse(grpc.ProjectGuid)
+                : Guid.Empty;
             data.RfqReasonId = grpc.RfqReasonId;
             data.RfqResponseDeadline = grpc.RfqResponseDeadline?.ToDateTime().ToUniversalTime();
-            data.CarModelGuid = Guid.Parse(grpc.CarModelGuid);
+            data.CarModelGuid = !string.IsNullOrWhiteSpace(grpc.CarModelGuid)
+                ? Guid.Parse(grpc.CarModelGuid)
+                : Guid.Empty;
             data.VehicleVolume = grpc.VehicleVolume;
             data.CreatedDate = grpc.CreatedDate != null
             ? grpc.CreatedDate.ToDateTime().ToLocalTime()

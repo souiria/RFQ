@@ -206,7 +206,7 @@
                 throw;
             }
         }
-        public async Task<RfqCrudGrpcResponse> DeleteRfqProjectByRowIdGrpc(RfqProjectGrpcRequest request)
+        public async Task<RfqCrudResponse> DeleteRfqProjectByRowIdGrpc(RfqProjectRequest request)
         {
             try
             {
@@ -233,7 +233,7 @@
                     message = $"RFQ project with RowId {rowId} not found.";
                 }
 
-                RfqCrudGrpcResponse response = new RfqCrudGrpcResponse();
+                RfqCrudResponse response = new RfqCrudResponse();
                 response.SaveSuccess = result;
                 response.Message = message;
 

@@ -287,19 +287,20 @@
         }
         public override async Task<RfqCrudGrpcResponse> DeleteRfqProjectByRowIdGrpc(RfqProjectGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("DeleteRfqProjectByRowId (soft delete) starting");
+    _Logger.GenericLogInformation("DeleteRfqProjectByRowId (soft delete) starting");
 
-            bool isRequestNull = request == null;
-            long rowId = request?.RowId ?? 0;
-            bool isRowIdMissing = rowId == 0;
+    bool isRequestNull = request == null;
+    long rowId = request?.RowId ?? 0;
+    bool isRowIdMissing = rowId == 0;
 
-            if (isRequestNull || isRowIdMissing)
-            {
-                Status status = new Status(StatusCode.InvalidArgument, $"Invalid or missing RowId. Received: {rowId}");
-                throw new RpcException(status);
-            }
+    if (isRequestNull || isRowIdMissing)
+    {
+        Status status = new Status(StatusCode.InvalidArgument, $"Invalid or missing RowId. Received: {rowId}");
+        throw new RpcException(status);
+    }
 
-            bool result = await _RfqAccessService.DeleteRfqProjectByRowId(rowId, context.CancellationToken);
+            ListRfqProjectGrpc resultList = await _RfqAccessService.DeleteRfqProjectByRowId(request!, context.CancellationToken);
+            bool result = !(resultList?.RfqProjects?.Count <= 0);
 
             string message;
 

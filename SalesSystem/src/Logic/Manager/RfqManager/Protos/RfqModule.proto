@@ -26,7 +26,7 @@ service RfqModule {
   rpc GetRfqProjectByIdGrpc (GetRfqProjectByIdGrpcRequest) returns (GetRfqProjectByIdGrpcResponse);
   rpc UpdateRfqProjectGrpc (UpdateRfqProjectGrpcRequest) returns (UpdateRfqProjectGrpcResponse);
   rpc GetRfqDrawingPartNumbersByRfqIdGrpc (GetRfqDrawingPartNumbersByRfqIdGrpcRequest) returns (GetRfqDrawingPartNumbersByRfqIdGrpcResponse);
-  rpc DeleteRfqProjectByRowIdGrpc (UpdateRfqProjectGrpcRequest) returns (UpdateRfqProjectGrpcResponse);
+  rpc DeleteRfqProjectByRowIdGrpc (RfqProjectRequest) returns (RfqCrudResponse);
 }
 
 // The request message containing the user's name.
@@ -221,4 +221,18 @@ message GetRfqDrawingPartNumbersByRfqIdGrpcRequest {
 
 message GetRfqDrawingPartNumbersByRfqIdGrpcResponse {
   repeated RfqDrawingPartNumber Parts = 1;
+}
+
+message RfqProjectRequest {
+  RfqProject GrpcRequestParameter = 1;
+  repeated RfqProject RfqProjectGrpcsToCreate = 2;
+  repeated RfqProject RfqProjectGrpcsToUpdate = 3;
+  repeated RfqProject RfqProjectGrpcsToDelete = 4;
+  int64 RowId = 5;
+}
+
+message RfqCrudResponse {
+  bool SaveSuccess = 1;
+  string Message = 2;
+  google.protobuf.StringValue StringValue = 3;
 }

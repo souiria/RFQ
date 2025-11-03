@@ -1,4 +1,6 @@
-﻿namespace Rfq.Services
+﻿using static Rfq.Rfq;
+
+namespace Rfq.Services
 {
     public partial class RfqAccessService : IRfqAccessService
     {
@@ -662,22 +664,48 @@
         #endregion
 
         #region RfqProject
-        public async Task<bool> DeleteRfqProjectByRowId(long rowId, CancellationToken cancellationToken)
+        public async Task<ListRfqProjectGrpc> DeleteRfqProjectByRowId(RfqProjectGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
+            ListRfqProjectGrpc responseList = new ListRfqProjectGrpc();
 
-            RfqProjectGrpc? match = _ListRfqProjects.RfqProjects.FirstOrDefault(p => p.RowId == rowId);
-            if (match != null)
+            if (request == null || request.RowId == 0)
             {
-                BoolValue inactiveFlag = new BoolValue();
-                inactiveFlag.Value = false;
-
-                match.IsActive = inactiveFlag.Value;
-                return true;
+                return responseList;
             }
 
-            return false;
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                RfqDbContext dbContext = scope.ServiceProvider.GetRequiredService<RfqDbContext>();
+
+                object[] keyValues = new object[] { request.RowId };
+                DbRfqProject? entity = await dbContext.RfqProject.FindAsync(keyValues, cancellationToken);
+
+                if (entity == null)
+                {
+                    return responseList;
+                }
+
+                entity.IsActive = false;
+
+         
+                    await dbContext.SaveChangesAsync(cancellationToken);
+
+                    RfqProjectGrpc updated = entity.FromEntity();
+
+                    // Update local cache
+                    RfqProjectGrpc? cached = _ListRfqProjects.RfqProjects.FirstOrDefault(p => p.RowId == updated.RowId);
+                    if (cached != null)
+                    {
+                        cached.IsActive = false;
+                    }
+
+                    responseList.RfqProjects.Add(updated);
+               
+                return responseList;
+            }
         }
+
         public async Task<ListRfqProjectGrpc> GetAllRfqProjects(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);

@@ -77,17 +77,10 @@
             UpdateRfqProjectGrpcResponse response = await _RfqManagerService.UpdateRfqProject(request);
             return response;
         }
-        public override async Task<GetRfqDrawingPartNumbersByRfqIdGrpcResponse> GetRfqDrawingPartNumbersByRfqIdGrpc(GetRfqDrawingPartNumbersByRfqIdGrpcRequest request, ServerCallContext context)
+        public override async Task<RfqCrudResponse> DeleteRfqProjectByRowIdGrpc(RfqProjectRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("GetRfqDrawingPartNumbersByRfqIdGrpc starting");
-            GetRfqDrawingPartNumbersByRfqIdGrpcResponse response = await _RfqManagerService.GetRfqDrawingPartNumbersByRfqIdGrpc(request);
-            return response;
+            _Logger.GenericLogInformation("DeleteRfqProjectByRowIdGrpc starting");
+            return await _RfqManagerService.DeleteRfqProjectByRowIdGrpc(request);
         }
-        //public override async Task<UpdateRfqProjectGrpcResponse> DeleteRfqProjectByRowIdGrpc(UpdateRfqProjectGrpcRequest request, ServerCallContext context)
-        //{
-        //    _Logger.GenericLogInformation("DeleteRfqProjectByRowIdGrpc starting");
-        //   UpdateRfqProjectGrpcResponse response = await _RfqManagerService.DeleteRfqProjectByRowIdGrpc(request);
-        //    return response;
-        //}
     }
 }

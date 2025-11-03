@@ -326,6 +326,26 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
+        public async Task<RfqCrudResponse> DeleteRfqProjectByRowIdAsync(long rowId)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+
+            try
+            {
+                RfqProjectRequest request = new RfqProjectRequest();
+
+                request.RowId = rowId;
+
+              RfqCrudResponse response = await _Client.DeleteRfqProjectByRowIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in DeleteRfqProjectByRowId for RowId: {rowId}", ex);
+                throw;
+            }
+        }
 
         public async Task<FileUploadResponse> UploadFileAsync(
             byte[] fileData,
