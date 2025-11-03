@@ -1,4 +1,5 @@
-﻿using Emacs;
+﻿using Azure;
+using Google.Protobuf.WellKnownTypes;
 
 namespace RfqModule.Services
 {
@@ -8,32 +9,23 @@ namespace RfqModule.Services
         readonly MasterClient _MasterClient;
         readonly Rfq.Rfq.RfqClient _RfqClient;
         readonly Emacs.Emacs.EmacsClient _EmacsClient;
+        readonly Adss.AdssGrpc.AdssGrpcClient _AdssGrpcClient;
         readonly ILogger<RfqManagerService> _Logger;
         //readonly IFilter _FilteringService;
 
         public RfqManagerService(ILogger<RfqManagerService> logger,
               MasterClient masterClient,
             Rfq.Rfq.RfqClient rfqClient,
-            Emacs.Emacs.EmacsClient emacsClient
+            Emacs.Emacs.EmacsClient emacsClient,
+            Adss.AdssGrpc.AdssGrpcClient adssGrpcClient
+
             )
         {
             _Logger = logger;
             _MasterClient = masterClient;
             _RfqClient = rfqClient;
             _EmacsClient = emacsClient;
-        }
-
-        public async Task<FilterDataGrpcResponse> FilterDataGrpc(FilterDataGrpcRequest request)
-        {
-            await Task.Delay(1);
-            EmacsFilterRequestGrpc emacsRequest = new EmacsFilterRequestGrpc();
-            string g = request.StringValue;
-            Func<CombinedPartsGrpc, bool> d = c => c.SumitomoNumber == g;
-            emacsRequest.FilterExpression = d.ToString() ?? string.Empty;
-            emacsRequest.DatabaseList = "CombinedPartsGrpc";
-            EmacsFilterResponseGrpc q = _EmacsClient.FilterEmacsDataGrpc(emacsRequest);
-            FilterDataGrpcResponse response = new FilterDataGrpcResponse();
-            return response;
+            _AdssGrpcClient = adssGrpcClient;
         }
 
         public async Task<GetCustomersGrpcResponse> GetCustomersGrpc(GetCustomersGrpcRequest request)
@@ -409,6 +401,157 @@ namespace RfqModule.Services
             part.IsSwapped = false;
             part.Comments = "";
             return part;
+        }
+
+        
+
+        Collection<TItem> ExtractEmacsResponseData<TItem>(EmacsFilterResponseGrpc response)
+        {
+            Collection<TItem> results = new Collection<TItem>();
+
+            TryExtractList(response.ListCombinedPartsGrpc?.CombinedPartsGrpc, results);
+            TryExtractList(response.ListPartCategoryDetailGrpc?.PartCategoryDetailGrpc, results);
+            TryExtractList(response.ListPartClassDetailGrpc?.PartClassDetailGrpc, results);
+            TryExtractList(response.ListPartGroupsGrpc?.PartGroupsGrpc, results);
+            TryExtractList(response.ListPartGroupsConstGrpc?.PartGroupsConstGrpc, results);
+            TryExtractList(response.ListCustomerDataGrpc?.CustomerDataGrpc, results);
+            TryExtractList(response.ListColourCodeGrpc?.ColourCodeGrpc, results);
+            TryExtractList(response.ListMaterialGroupsGrpc?.MaterialGroupsGrpc, results);
+            TryExtractList(response.ListMaterialTypesGrpc?.MaterialTypesGrpc, results);
+            TryExtractList(response.ListNPACustomerGrpc?.NPACustomerGrpc, results);
+            TryExtractList(response.ListNPASupplierGrpc?.NPASupplierGrpc, results);
+            TryExtractList(response.ListSuppliersGrpc?.SuppliersGrpc, results);
+            TryExtractList(response.ListEmacsRFIViewGrpc?.EmacsRFIViewGrpc, results);
+            TryExtractList(response.ListPARTMSGrpc?.PARTMSGrpc, results);
+
+            return results;
+        }
+
+        bool TryExtractList<TItem, T>(IEnumerable<TItem>? items, Collection<T> results) where TItem : class
+        {
+            if (items != null && typeof(T) == typeof(TItem))
+            {
+                foreach (TItem item in items)
+                {
+                    results.Add((T)(object)item);
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public Task<FilterGrpcResponse> FilterByCustomerId(FilterGrpcRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<FilterGrpcResponse> FilterByLocationId(FilterGrpcRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<FilterGrpcResponse> FilterByProjectCode(FilterGrpcRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<FilterGrpcResponse> FilterEmacsByExactPartNumber(FilterGrpcRequest request)
+        {
+            await Task.Delay(1);
+            EmacsFilterRequestGrpc emacsRequest = new EmacsFilterRequestGrpc();
+            Collection<CombinedPartsGrpc> filteredList = new Collection<CombinedPartsGrpc>();
+            FilterGrpcResponse response = new FilterGrpcResponse();
+            string[] parametersToSearch = ["UniformCustomerNumber", "UniformSupplierNumber", "UniformSumitomoNumber"];
+            foreach (string parameter in parametersToSearch)
+            {
+                EmacsFilterResponseGrpc partNumberResponse = FilterEmacsSumitomoNumber(request.StringValue, parameter, "==");
+                if (partNumberResponse.ListCombinedPartsGrpc != null)
+                {
+                    filteredList = ExtractEmacsResponseData<CombinedPartsGrpc>(partNumberResponse);
+                    foreach (CombinedPartsGrpc part in filteredList)
+                    {
+                        string sumitmoNumberString = part.SumitomoNumber.ToString();
+                        response.StringList.Add(sumitmoNumberString);
+                    }
+
+                    response.Success = true;
+                    return response;
+                }
+            }
+
+            return response;
+        }
+
+        public async Task<FilterGrpcResponse> FilterEmacsByContainingPartNumber(FilterGrpcRequest request)
+        {
+            await Task.Delay(1);
+            EmacsFilterRequestGrpc emacsRequest = new EmacsFilterRequestGrpc();
+            Collection<CombinedPartsGrpc> filteredList = new Collection<CombinedPartsGrpc>();
+            FilterGrpcResponse response = new FilterGrpcResponse();
+            string[] parametersToSearch = ["UniformCustomerNumber", "UniformSupplierNumber", "UniformSumitomoNumber"];
+            foreach (string parameter in parametersToSearch)
+            {
+                EmacsFilterResponseGrpc partNumberResponse = FilterEmacsSumitomoNumber(request.StringValue, parameter, ".Contains");
+                if (partNumberResponse.ListCombinedPartsGrpc != null)
+                {
+                    filteredList = ExtractEmacsResponseData<CombinedPartsGrpc>(partNumberResponse);
+                    foreach (CombinedPartsGrpc part in filteredList)
+                    {
+                        string sumitmoNumberString = part.SumitomoNumber.ToString();
+                        response.StringList.Add(sumitmoNumberString);
+                    }
+
+                    response.Success = true;
+                    return response;
+                }
+            }
+
+            return response;
+        }
+
+        public async Task<FilterGrpcResponse> FilterAdssBySumitomoPartNumber(FilterGrpcRequest request)
+        {
+            await Task.Delay(1);
+            Adss.PartImageRequest adssRequest = new Adss.PartImageRequest();
+            adssRequest.PartNumber = request.StringValue;
+            Adss.PartImageReply partImageReply = _AdssGrpcClient.GetPartImage(adssRequest);
+            FilterGrpcResponse response = new FilterGrpcResponse();
+            if (partImageReply != null)
+            {
+                response.StringList.Add(adssRequest.PartNumber);
+                response.ByteList.Add(partImageReply.Data);
+                response.StringList2.Add(partImageReply.ContentType);
+                response.Success = true;
+            }
+            else
+            {
+                response.Success = false;
+            }
+
+            return response;
+        }
+
+        EmacsFilterResponseGrpc FilterEmacsSumitomoNumber(string partNumber, string filterType, string filterOpperator)
+        {
+            EmacsFilterRequestGrpc emacsRequest = new EmacsFilterRequestGrpc();
+            if(filterOpperator == "==")
+            {
+                emacsRequest.FilterExpression = $"{filterType} != null && {filterType} {filterOpperator} \"{partNumber}\"";
+            }
+            else if(filterOpperator == ".Contains")
+            {
+                emacsRequest.FilterExpression =  $"{filterType} != null && {filterType}{filterOpperator}(\"{partNumber}\")";
+            }
+            else
+            {
+                throw new ArgumentException("Invalid filter operator");
+            }
+
+            emacsRequest.DatabaseList = "CombinedPartsGrpc";
+            EmacsFilterResponseGrpc filterResponse = _EmacsClient.FilterEmacsDataGrpc(emacsRequest);
+            return filterResponse;
         }
     }
 }

@@ -1,5 +1,7 @@
-﻿global using System.Globalization;
+﻿global using System.Collections.ObjectModel;
+global using System.Globalization;
 global using DocumentConversion;
+global using Emacs;
 global using Filtering;
 global using Filtering.Interfaces;
 global using Google.Protobuf.WellKnownTypes;
@@ -16,3 +18,4 @@ global using SharedKernel;
 global using SharedModels.DocumentConverter.DSI.Aggregates;
 global using SharedModels.DocumentConverter.DSI.DTOs;
 global using SharedModels.DocumentConverter.PartsSearch.DTOs;
+global using SharedModels.Filtering;

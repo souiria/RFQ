@@ -114,6 +114,7 @@
         Task<bool> PopulatePARTMSAsync(CancellationToken cancellationToken);
         #endregion
 
-        Task<IEnumerable<T>> Filter<T>(Func<T, bool> func, CancellationToken cancellationToken);
+        Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig,
+            Action<IEnumerable<T>> setResponseCollection, CancellationToken cancellationToken);
     }
 }

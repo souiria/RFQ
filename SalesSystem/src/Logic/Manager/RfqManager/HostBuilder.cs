@@ -39,6 +39,10 @@
             {
                 o.Address = new Uri("https://localhost:7285");
             });
+            builder.Services.AddGrpcClient<Adss.AdssGrpc.AdssGrpcClient>(o =>
+            {
+                o.Address = new Uri("https://localhost:7117");
+            });
             builder.Services.AddInfrastructure();
             //builder.Services.AddSingleton<IFilter, Filter>();
 

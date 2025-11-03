@@ -56,10 +56,36 @@
             UploadPartsRequestGrpcResponse response = await _RfqManagerService.UploadPartsGrpc(request);
             return response;
         }
-        public override async Task<FilterDataGrpcResponse> FilterDataGrpc(FilterDataGrpcRequest request, ServerCallContext context)
+        public override async Task<FilterGrpcResponse> FilterGrpc(FilterGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("FilterDataGrpc starting");
-            FilterDataGrpcResponse response = await _RfqManagerService.FilterDataGrpc(request);
+            _Logger.GenericLogInformation("FilterGrpc starting");
+            FilterGrpcResponse response = new FilterGrpcResponse();
+            RfqManagerFilterType filterType = (RfqManagerFilterType)request.FilterRequest.RequestType;
+            switch (filterType)
+            {
+                case RfqManagerFilterType.FilterByCustomerId:
+                    response = await _RfqManagerService.FilterByCustomerId(request);
+                    break;
+                case RfqManagerFilterType.FilterByLocationId:
+                    response = await _RfqManagerService.FilterByLocationId(request);
+                    break;
+                case RfqManagerFilterType.FilterByProjectCode:
+                    response = await _RfqManagerService.FilterByProjectCode(request);
+                    break;
+                case RfqManagerFilterType.FilterEmacsByExactPartNumber:
+                    response = await _RfqManagerService.FilterEmacsByExactPartNumber(request);
+                    break;
+                case RfqManagerFilterType.FilterEmacsByContainingPartNumber:
+                    response = await _RfqManagerService.FilterEmacsByContainingPartNumber(request);
+                    break;
+                case RfqManagerFilterType.FilterAdssBySumitomoPartNumber:
+                    response = await _RfqManagerService.FilterAdssBySumitomoPartNumber(request);
+                    break;
+                default:
+                    _Logger.GenericLogInformation($"FilterGrpc received unknown filter type: {filterType}");
+                    break;
+            }
+
             return response;
         }
     }

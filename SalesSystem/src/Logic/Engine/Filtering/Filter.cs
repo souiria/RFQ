@@ -18,7 +18,7 @@
         //    return enumerableCollection;
         //}
 
-        //public TResult FilterExpression<TItem, TResult>(Func<TItem, bool> function, AccessServices accessService)
+        //public TResult FilterExpression<TItem, TResult>(Func<TItem, bool> function, AccessServices acc essService)
         //{
         //    ICollection<TItem> resultCollection = new Collection<TItem>();
         //    switch (accessService)

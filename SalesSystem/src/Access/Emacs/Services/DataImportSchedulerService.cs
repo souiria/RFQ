@@ -1,5 +1,4 @@
-﻿
-namespace Emacs.Services
+﻿namespace Emacs.Services
 {
     public class DataImportSchedulerService : BackgroundService
     {

@@ -8,6 +8,11 @@
         Task<GetVehicleByProjectCodeGrpcResponse> GetVehiclesByProjectCodeGrpc(GetVehicleByProjectCodeGrpcRequest request);
         Task<GetRfqReasonsGrpcResponse> GetRfqReasonsGrpc(GetRfqReasonsGrpcRequest request);
         Task<UploadPartsRequestGrpcResponse> UploadPartsGrpc(UploadPartsRequestGrpcRequest request);
-        Task<FilterDataGrpcResponse> FilterDataGrpc(FilterDataGrpcRequest request);
+        Task<FilterGrpcResponse> FilterByCustomerId(FilterGrpcRequest request);
+        Task<FilterGrpcResponse> FilterByLocationId(FilterGrpcRequest request);
+        Task<FilterGrpcResponse> FilterByProjectCode(FilterGrpcRequest request);
+        Task<FilterGrpcResponse> FilterEmacsByExactPartNumber(FilterGrpcRequest request);
+        Task<FilterGrpcResponse> FilterEmacsByContainingPartNumber(FilterGrpcRequest request);
+        Task<FilterGrpcResponse> FilterAdssBySumitomoPartNumber(FilterGrpcRequest request);
     }
 }
