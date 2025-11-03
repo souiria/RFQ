@@ -80,11 +80,11 @@
         { get; set; }
         public decimal? OriginalPartNumberPrice
         { get; set; }
-        public string? SwappedPartNumber
+        public string? SwappedPartNumber            
         { get; set; }
         public decimal? SwappedPartNumberPrice
         { get; set; }
-        public string? PriceSource
+        public string? PriceSource      // JSON Material_Code & Supplier Code & System_Name
         { get; set; }
         public bool? IsExactMatch
         { get; set; }

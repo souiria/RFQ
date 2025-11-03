@@ -23,6 +23,18 @@
         left: 36px;
         font-weight: 500;
     }
+
+    .collapse-button {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        z-index: 10;
+    }
+
+    .label-collapsed {
+        flex: 0 0 48px !important;
+        min-height: 48px !important;
+    }
 </style>
 
 @if (IsLoading || RfqProject == null)
@@ -128,41 +140,64 @@ else
             </MudPaper>
         </MudItem>
         <MudItem xs="12">
+            @* Dual grid *@
             <div class="d-flex flex-row" style="height: calc(100vh - 300px);">
                 @* Region labels container *@
                 <div style="width: 48px; display: flex; flex-direction: column;">
                     @* Matched Parts Label (Top 50%) *@
-                    <MudPaper Style="flex: 1 1 50%; background-color: var(--mud-palette-success); position: relative; overflow: visible; margin-bottom: 4px;">
-                        <MudText Class="rotate-90-degrees" Typo="Typo.h6" Style="color: white;">
-                            Matched Parts
-                        </MudText>
+                    <MudPaper Class="@(matchedExpanded ? "" : "label-collapsed")" 
+                              Style="@GetLabelStyle(matchedExpanded, true)">
+                        <MudIconButton Class="collapse-button"
+                                     Icon="@(matchedExpanded ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+                                     Color="Color.Surface"
+                                     Size="Size.Small"
+                                     OnClick="@(() => matchedExpanded = !matchedExpanded)" />
+                        @if (matchedExpanded)
+                        {
+                            <MudText Class="rotate-90-degrees" Typo="Typo.h6" Style="color: white;">
+                                Matched Parts (@MatchedParts.Count())
+                            </MudText>
+                        }
                     </MudPaper>
 
                     @* Unmatched Parts Label (Bottom 50%) *@
-                    <MudPaper Style="flex: 1 1 50%; background-color: var(--mud-palette-warning); position: relative; overflow: visible; margin-top: 4px;">
-                        <MudText Class="rotate-90-degrees" Typo="Typo.h6" Style="color: white;">
-                            Unmatched Parts
-                        </MudText>
+                    <MudPaper Class="@(unmatchedExpanded ? "" : "label-collapsed")" 
+                              Style="@GetLabelStyle(unmatchedExpanded, false)">
+                        <MudIconButton Class="collapse-button"
+                                     Icon="@(unmatchedExpanded ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+                                     Color="Color.Surface"
+                                     Size="Size.Small"
+                                     OnClick="@(() => unmatchedExpanded = !unmatchedExpanded)" />
+                        @if (unmatchedExpanded)
+                        {
+                            <MudText Class="rotate-90-degrees" Typo="Typo.h6" Style="color: white;">
+                                Unmatched Parts (@UnmatchedParts.Count())
+                            </MudText>
+                        }
                     </MudPaper>
                 </div>
 
                 @* Grids container *@
                 <MudPaper Class="d-flex flex-column pa-4" Style="flex: 1 1 auto; overflow: hidden;">
                     @* Matched Parts Section (Top 50%) *@
-                    <div class="d-flex flex-column" style="flex: 1 1 50%; min-height: 0; margin-bottom: 8px;">
-                        <div style="flex: 1 1 auto; min-height: 0; overflow: hidden;">
-                            <PartNumbersEditGrid PartNumbers="@MatchedParts" />
-                        </div>
+                    <div class="d-flex flex-column" style="@GetContentStyle(matchedExpanded, true)">
+                        <MudCollapse Expanded="@matchedExpanded" Style="flex: 1 1 auto; min-height: 0; overflow: hidden;">
+                            <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; height: 100%;">
+                                <PartNumbersEditGrid PartNumbers="@MatchedParts" />
+                            </div>
+                        </MudCollapse>
                     </div>
 
                     @* Separator *@
                     <MudDivider />
 
                     @* Unmatched Parts Section (Bottom 50%) *@
-                    <div class="d-flex flex-column" style="flex: 1 1 50%; min-height: 0; margin-top: 8px;">
-                        <div style="flex: 1 1 auto; min-height: 0; overflow: hidden;">
-                            <PartNumbersEditGrid PartNumbers="@UnmatchedParts" />
-                        </div>
+                    <div class="d-flex flex-column" style="@GetContentStyle(unmatchedExpanded, false)">
+                        <MudCollapse Expanded="@unmatchedExpanded" Style="flex: 1 1 auto; min-height: 0; overflow: hidden;">
+                            <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; height: 100%;">
+                                <PartNumbersEditGrid PartNumbers="@UnmatchedParts" />
+                            </div>
+                        </MudCollapse>
                     </div>
                 </MudPaper>
             </div>
@@ -173,6 +208,10 @@ else
 @code {
     bool IsLoading { get; set; } = true;   // Start with true
     RfqProjectUx? RfqProject { get; set; }
+    
+    // Collapse states
+    private bool matchedExpanded = true;
+    private bool unmatchedExpanded = true;
 
     [Parameter] public Guid? UserId { get; set; }
     [Parameter] public long RfqProjectId { get; set; }
@@ -180,6 +219,35 @@ else
     // Part numbers data from test list
     IEnumerable<RfqPartNumberUx> MatchedParts => RfqPartNumberUx.TestList.Where(p => p.IsMatched == true);
     IEnumerable<RfqPartNumberUx> UnmatchedParts => RfqPartNumberUx.TestList.Where(p => p.IsMatched == false);
+
+    private string GetLabelStyle(bool isExpanded, bool isTop)
+    {
+        var backgroundColor = isTop ? "var(--mud-palette-success)" : "var(--mud-palette-warning)";
+        var margin = isTop ? "margin-bottom: 4px;" : "margin-top: 4px;";
+        
+        if (isExpanded)
+        {
+            return $"flex: 1 1 100%; background-color: {backgroundColor}; position: relative; overflow: visible; {margin}";
+        }
+        else
+        {
+            return $"background-color: {backgroundColor}; position: relative; overflow: visible; {margin} transition: all 0.3s ease;";
+        }
+    }
+
+    private string GetContentStyle(bool isExpanded, bool isTop)
+    {
+        var margin = isTop ? "margin-bottom: 8px;" : "margin-top: 8px;";
+        
+        if (isExpanded)
+        {
+            return $"flex: 1 1 100%; min-height: 0; {margin}";
+        }
+        else
+        {
+            return $"flex: 0 0 auto; min-height: 0; {margin}";
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
