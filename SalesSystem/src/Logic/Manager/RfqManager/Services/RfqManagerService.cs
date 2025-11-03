@@ -206,6 +206,46 @@
                 throw;
             }
         }
+        public async Task<RfqCrudGrpcResponse> DeleteRfqProjectByRowIdGrpc(RfqProjectGrpcRequest request)
+        {
+            try
+            {
+                await Task.Delay(1);
+
+                long rowId = request.RowId;
+
+                GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+                grpcRequestParameter.RequestType = 3;
+
+                RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
+                rfqProjectRequest.RowId = rowId;
+                rfqProjectRequest.GrpcRequestParameter = grpcRequestParameter;
+                RfqCrudGrpcResponse grpcResponse =  _RfqClient.DeleteRfqProjectByRowIdGrpc(rfqProjectRequest);
+                bool result = grpcResponse.SaveSuccess;
+          
+                string message;
+                if (result)
+                {
+                    message = $"RFQ project with RowId {rowId} marked as inactive.";
+                }
+                else
+                {
+                    message = $"RFQ project with RowId {rowId} not found.";
+                }
+
+                RfqCrudGrpcResponse response = new RfqCrudGrpcResponse();
+                response.SaveSuccess = result;
+                response.Message = message;
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = $"Error deleting RFQ project by RowId: {request.RowId}";
+                _Logger.GenericLogError(errorMessage, ex);
+                throw;
+            }
+        }
 
         public async Task<GetAllRfqProjectGrpcResponse> GetAllRfqProjectGrpc(GetAllRfqProjectGrpcRequest request)
         {

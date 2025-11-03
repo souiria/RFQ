@@ -285,7 +285,38 @@
 
             return responseMessage;
         }
+        public override async Task<RfqCrudGrpcResponse> DeleteRfqProjectByRowIdGrpc(RfqProjectGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("DeleteRfqProjectByRowId (soft delete) starting");
 
+            bool isRequestNull = request == null;
+            long rowId = request?.RowId ?? 0;
+            bool isRowIdMissing = rowId == 0;
+
+            if (isRequestNull || isRowIdMissing)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, $"Invalid or missing RowId. Received: {rowId}");
+                throw new RpcException(status);
+            }
+
+            bool result = await _RfqAccessService.DeleteRfqProjectByRowId(rowId, context.CancellationToken);
+
+            string message;
+
+            if (result)
+            {
+                message = $"RFQ project with RowId {rowId} marked as inactive.";
+            }
+            else
+            {
+                message = $"RFQ project with RowId {rowId} not found.";
+            }
+
+            RfqCrudGrpcResponse grpcResponse = new RfqCrudGrpcResponse();
+            grpcResponse.SaveSuccess = result;
+            grpcResponse.Message = message;
+            return grpcResponse;
+        }
         #endregion
 
         #region RfqNotes

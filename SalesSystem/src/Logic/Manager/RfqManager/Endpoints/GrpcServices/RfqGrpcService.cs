@@ -83,5 +83,11 @@
             GetRfqDrawingPartNumbersByRfqIdGrpcResponse response = await _RfqManagerService.GetRfqDrawingPartNumbersByRfqIdGrpc(request);
             return response;
         }
+        //public override async Task<UpdateRfqProjectGrpcResponse> DeleteRfqProjectByRowIdGrpc(UpdateRfqProjectGrpcRequest request, ServerCallContext context)
+        //{
+        //    _Logger.GenericLogInformation("DeleteRfqProjectByRowIdGrpc starting");
+        //   UpdateRfqProjectGrpcResponse response = await _RfqManagerService.DeleteRfqProjectByRowIdGrpc(request);
+        //    return response;
+        //}
     }
 }

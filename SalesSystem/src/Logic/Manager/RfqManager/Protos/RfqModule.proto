@@ -26,6 +26,7 @@ service RfqModule {
   rpc GetRfqProjectByIdGrpc (GetRfqProjectByIdGrpcRequest) returns (GetRfqProjectByIdGrpcResponse);
   rpc UpdateRfqProjectGrpc (UpdateRfqProjectGrpcRequest) returns (UpdateRfqProjectGrpcResponse);
   rpc GetRfqDrawingPartNumbersByRfqIdGrpc (GetRfqDrawingPartNumbersByRfqIdGrpcRequest) returns (GetRfqDrawingPartNumbersByRfqIdGrpcResponse);
+  rpc DeleteRfqProjectByRowIdGrpc (UpdateRfqProjectGrpcRequest) returns (UpdateRfqProjectGrpcResponse);
 }
 
 // The request message containing the user's name.
@@ -142,6 +143,7 @@ message RfqProject {
 	google.protobuf.Timestamp RfqResponseDeadline = 7;
 	string CarModelGuid = 8;
 	int32 VehicleVolume = 9;
+    	google.protobuf.BoolValue IsActive = 10;
 }
 
 message UploadPartsRequestGrpcResponse {

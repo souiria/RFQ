@@ -662,18 +662,40 @@
         #endregion
 
         #region RfqProject
+        public async Task<bool> DeleteRfqProjectByRowId(long rowId, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+
+            RfqProjectGrpc? match = _ListRfqProjects.RfqProjects.FirstOrDefault(p => p.RowId == rowId);
+            if (match != null)
+            {
+                BoolValue inactiveFlag = new BoolValue();
+                inactiveFlag.Value = false;
+
+                match.IsActive = inactiveFlag.Value;
+                return true;
+            }
+
+            return false;
+        }
         public async Task<ListRfqProjectGrpc> GetAllRfqProjects(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListRfqProjects.RfqProjects.Any())
-            {
-                return _ListRfqProjects;
-            }
-            else
+
+            if (!_ListRfqProjects.RfqProjects.Any())
             {
                 await PopulateRfqProjects(cancellationToken);
-                return _ListRfqProjects;
             }
+
+            ListRfqProjectGrpc activeProjectsList = new ListRfqProjectGrpc();
+
+            List<RfqProjectGrpc> activeProjects = _ListRfqProjects.RfqProjects
+                .Where(p => p.IsActive != null && p.IsActive.Value)
+                .ToList();
+
+            activeProjectsList.RfqProjects.AddRange(activeProjects);
+
+            return activeProjectsList;
         }
 
         public async Task<ListRfqProjectGrpc> GetRfqProjectByRowId(RfqProjectGrpcRequest request, CancellationToken cancellationToken)

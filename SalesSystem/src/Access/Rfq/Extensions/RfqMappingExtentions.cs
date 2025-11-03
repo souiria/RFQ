@@ -50,6 +50,7 @@
             data.CarModelGuid = entity.CarModelGuid.ToString();
             data.VehicleVolume = entity.VehicleVolume;
             data.CreatedDate = entity.CreatedDate?.ToUniversalTime().ToTimestamp();
+            data.IsActive = entity.IsActive;
             return data;
         }
         public static DbRfqProject ToEntity(this RfqProjectGrpc grpc)
@@ -68,7 +69,7 @@
             ? grpc.CreatedDate.ToDateTime().ToLocalTime()
             : DateTime.UtcNow; // or DateTime.MinValue or any default
 
-            //data.CreatedDate = grpc.CreatedDate.ToDateTime().ToUniversalTime();
+            data.IsActive = grpc.IsActive ?? true;
             return data;
         }
         #endregion
