@@ -7,7 +7,6 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
@@ -24,9 +23,8 @@
     </PackageReference>
     <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
   </ItemGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\..\SalesSystem\src\Access\SFS\SFS.csproj" />
+    <ProjectReference Include="..\..\src\Access\SFS\SFS.csproj" />
   </ItemGroup>
 
   <ItemGroup>

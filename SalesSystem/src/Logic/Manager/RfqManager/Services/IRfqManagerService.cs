@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace RfqModule.Services
+﻿namespace RfqModule.Services
 {
     public interface IRfqManagerService
     {
