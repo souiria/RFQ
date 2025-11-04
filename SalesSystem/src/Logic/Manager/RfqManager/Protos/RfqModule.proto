@@ -144,6 +144,7 @@ message RfqProject {
 	string CarModelGuid = 8;
 	int32 VehicleVolume = 9;
     google.protobuf.BoolValue IsActive = 10;
+    google.protobuf.Timestamp CreatedDate = 11;
 }
 
 message UploadPartsRequestGrpcResponse {
