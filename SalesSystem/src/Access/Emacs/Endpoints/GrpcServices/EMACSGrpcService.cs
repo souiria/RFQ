@@ -378,18 +378,5 @@ namespace Emacs.Endpoints.GrpcServices
 
             return returnResponse;
         }
-
-        //async Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig,
-        //    EmacsFilterResponseGrpc returnResponse, Action<IEnumerable<T>> setResponseCollection, CancellationToken cancellationToken)
-        //{
-        //    Expression<Func<T, bool>> filterExpression = DynamicExpressionParser.ParseLambda<T, bool>(parsingConfig, false, filterExpressionString);
-        //    Func<T, bool> compiledExpression = filterExpression.Compile();
-        //    IEnumerable<T> filteredList = await _EMACSAccessService.Filter(compiledExpression, cancellationToken);
-        //    if (filteredList != null && filteredList.Any())
-        //    {
-        //        setResponseCollection(filteredList);
-        //        returnResponse.Success = true;
-        //    }
-        //}
     }
 }

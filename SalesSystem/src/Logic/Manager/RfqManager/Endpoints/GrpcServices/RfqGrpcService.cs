@@ -87,6 +87,9 @@
                 case RfqManagerFilterType.FilterCPDBySumitomoPartNumber:
                     response = await _RfqManagerService.FilterCPDBySumitomoPartNumber(request);
                     break;
+                case RfqManagerFilterType.FilterRFQBySumitomoPartNumber:
+                    response = await _RfqManagerService.FilterRFQBySumitomoPartNumber(request);
+                    break;
                 default:
                     _Logger.GenericLogInformation($"FilterGrpc received unknown filter type: {filterType}");
                     break;

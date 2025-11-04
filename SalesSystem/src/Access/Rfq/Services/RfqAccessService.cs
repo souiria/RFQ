@@ -1,4 +1,6 @@
-﻿namespace Rfq.Services
+﻿using System.Linq.Expressions;
+
+namespace Rfq.Services
 {
     public partial class RfqAccessService : IRfqAccessService
     {
@@ -658,6 +660,31 @@
         #endregion
 
         #endregion
+
+        public async Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig, Action<IEnumerable<T>> setResponseCollection,
+        CancellationToken cancellationToken)
+        {
+            Expression<Func<T, bool>> filterExpression = DynamicExpressionParser.ParseLambda<T, bool>(parsingConfig, false, filterExpressionString);
+            Func<T, bool> compiledExpression = filterExpression.Compile();
+            IEnumerable<T> filteredList = new List<T>();
+            filteredList = await Filter(compiledExpression, cancellationToken);
+            setResponseCollection(filteredList);
+        }
+
+        public async Task<IEnumerable<T>> Filter<T>(Func<T, bool> func, CancellationToken cancellationToken)
+        {
+            return await Task.Run(() =>
+            {
+                return typeof(T).Name switch
+                {
+                    "RfqDrawingPartNumbersGrpc" => _ListRfqDrawingPartNumbers.RfqDrawingPartNumbers.Cast<T>().Where(func).ToList(),
+                    "RfqReasonsGrpc" => _ListRfqReasons.RfqReasons.Cast<T>().Where(func).ToList(),
+                    "RfqNotesGrpc" => _ListRfqNotes.RfqNotes.Cast<T>().Where(func).ToList(),
+                    "RfqProjects" => _ListRfqProjects.RfqProjects.Cast<T>().Where(func).ToList(),
+                    _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
+                };
+            }, cancellationToken);
+        }
 
         void PopulateSampleData()
         {

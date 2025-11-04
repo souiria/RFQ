@@ -1,6 +1,4 @@
-﻿using NPR.Data.Model;
-
-namespace NPR.Services
+﻿namespace NPR.Services
 {
     public sealed class NPRAccessService : INPRAccessService
     {

@@ -1,4 +1,6 @@
-﻿namespace Rfq.Endpoints.GrpcServices
+﻿using NPR;
+
+namespace Rfq.Endpoints.GrpcServices
 {
     public class RfqGrpcService : Rfq.RfqBase
     {
@@ -526,5 +528,64 @@
             return responseMessage;
         }
         #endregion
+
+        public override async Task<RfqFilterResponse> FilterRfqGrpc(RfqFilterRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("FilterRfqGrpc starting");
+            ParsingConfig parsingConfig = new ParsingConfig();
+            RfqFilterResponse returnResponse = new RfqFilterResponse();
+            switch (request.DatabaseList)
+            {
+                case "RfqDrawingPartNumbersGrpc":
+                await _RfqAccessService.HandleFilterCase<RfqDrawingPartNumbersGrpc>(
+                    request.FilterExpression, parsingConfig,
+                    filterlist =>
+                    {
+                        ListRfqDrawingPartNumbersGrpc returnList = new ListRfqDrawingPartNumbersGrpc();
+                        returnList.RfqDrawingPartNumbers.AddRange(filterlist);
+                        returnResponse.ListRfqDrawingPartNumbersGrpc = returnList;
+                        returnResponse.Success = true;
+                    }, context.CancellationToken);
+                break;
+                case "RfqProjectGrpc":
+                await _RfqAccessService.HandleFilterCase<RfqProjectGrpc>(
+                    request.FilterExpression, parsingConfig,
+                    filterlist =>
+                    {
+                        ListRfqProjectGrpc returnList = new ListRfqProjectGrpc();
+                        returnList.RfqProjects.AddRange(filterlist);
+                        returnResponse.ListRfqProjectGrpc = returnList;
+                        returnResponse.Success = true;
+                    }, context.CancellationToken);
+                break;
+                case "RfqNotesGrpc":
+                await _RfqAccessService.HandleFilterCase<RfqNotesGrpc>(
+                    request.FilterExpression, parsingConfig,
+                    filterlist =>
+                    {
+                        ListRfqNotesGrpc returnList = new ListRfqNotesGrpc();
+                        returnList.RfqNotes.AddRange(filterlist);
+                        returnResponse.ListRfqNotesGrpc = returnList;
+                        returnResponse.Success = true;
+                    }, context.CancellationToken);
+                break;
+                case "RfqReasonGrpc":
+                await _RfqAccessService.HandleFilterCase<RfqReasonGrpc>(
+                    request.FilterExpression, parsingConfig,
+                    filterlist =>
+                    {
+                        ListRfqReasonGrpc returnList = new ListRfqReasonGrpc();
+                        returnList.RfqReasons.AddRange(filterlist);
+                        returnResponse.ListRfqReasonGrpc = returnList;
+                        returnResponse.Success = true;
+                    }, context.CancellationToken);
+                break;
+                default:
+                _Logger.GenericLogInformation($"FilterRfqGrpc: Unknown DatabaseList '{request.DatabaseList}'");
+                break;
+            }
+
+            return returnResponse;
+        }
     }
 }

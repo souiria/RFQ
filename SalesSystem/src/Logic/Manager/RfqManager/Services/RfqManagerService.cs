@@ -533,6 +533,30 @@ namespace RfqModule.Services
 
             return response;
         }
+        public async Task<FilterGrpcResponse> FilterRFQBySumitomoPartNumber(FilterGrpcRequest request)
+        {
+            await Task.Delay(1);
+            FilterGrpcResponse response = new FilterGrpcResponse();
+            RfqFilterRequest filterRequest = new RfqFilterRequest();
+            Collection<RfqDrawingPartNumbersGrpc> filteredList = new Collection<RfqDrawingPartNumbersGrpc>();
+            RfqFilterResponse rfqResponse = FilterSumitomoNumber<RfqFilterResponse>(request.StringValue, "SumitomoPartNumber", "==");
+            filteredList = ExtractRFQResponseData<RfqDrawingPartNumbersGrpc>(rfqResponse);
+            response.Success = true;
+            foreach (RfqDrawingPartNumbersGrpc part in filteredList)
+            {
+                string sumitmoNumberString = part.SumitomoPartNumber.ToString();
+                double price = price = part.OriginalPartNumberPrice ?? 0;
+                if (part.IsSwapped == true)
+                {
+                    price = part.SwappedPartNumberPrice ?? 0;
+                }
+
+                response.StringList.Add(sumitmoNumberString);
+                response.DoubleList.Add(price);
+            }
+
+            return response;
+        }
 
         Collection<TItem> ExtractEmacsResponseData<TItem>(EmacsFilterResponseGrpc response)
         {
@@ -568,6 +592,17 @@ namespace RfqModule.Services
             Collection<TItem> results = new Collection<TItem>();
 
             TryExtractList(response.ListH1NPRViewGrpc?.H1NPRViewGrpc, results);
+
+            return results;
+        }
+        Collection<TItem> ExtractRFQResponseData<TItem>(RfqFilterResponse response)
+        {
+            Collection<TItem> results = new Collection<TItem>();
+
+            TryExtractList(response.ListRfqDrawingPartNumbersGrpc?.RfqDrawingPartNumbers, results);
+            TryExtractList(response.ListRfqReasonGrpc?.RfqReasons, results);
+            TryExtractList(response.ListRfqNotesGrpc?.RfqNotes, results);
+            TryExtractList(response.ListRfqProjectGrpc?.RfqProjects, results);
 
             return results;
         }
@@ -621,6 +656,12 @@ namespace RfqModule.Services
                 cpdRequest.DatabaseList = "MatSuppMstViewGrpc";
                 CPDFilterResponse filterCpdResponse = _CPDClient.FilterCPDGrpc(cpdRequest);
                 return (T)(object)filterCpdResponse;
+                case "RfqFilterResponse":
+                RfqFilterRequest rfqRequest = new RfqFilterRequest();
+                rfqRequest.FilterExpression = filterExpression;
+                rfqRequest.DatabaseList = "RfqDrawingPartNumberGrpc";
+                RfqFilterResponse filterRfqResponse = _RfqClient.FilterRfqGrpc(rfqRequest);
+                return (T)(object)filterRfqResponse;
                 default:
                 throw new ArgumentException("Invalid type parameter");
             }

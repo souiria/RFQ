@@ -11,5 +11,6 @@
         FilterAdssBySumitomoPartNumber = 6,
         FilterNPRBySumitomoPartNumber = 7,
         FilterCPDBySumitomoPartNumber = 8,
+        FilterRFQBySumitomoPartNumber = 9,
     }
 }

@@ -1,6 +1,4 @@
-﻿using Emacs;
-
-namespace NPR.Endpoints.GrpcServices
+﻿namespace NPR.Endpoints.GrpcServices
 {
     public class NPRGrpcService : NPR.NPRBase
     {

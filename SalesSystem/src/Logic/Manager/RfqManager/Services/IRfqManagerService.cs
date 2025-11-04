@@ -16,5 +16,6 @@
         Task<FilterGrpcResponse> FilterAdssBySumitomoPartNumber(FilterGrpcRequest request);
         Task<FilterGrpcResponse> FilterNPRBySumitomoPartNumber(FilterGrpcRequest request);
         Task<FilterGrpcResponse> FilterCPDBySumitomoPartNumber(FilterGrpcRequest request);
+        Task<FilterGrpcResponse> FilterRFQBySumitomoPartNumber(FilterGrpcRequest request);
     }
 }
