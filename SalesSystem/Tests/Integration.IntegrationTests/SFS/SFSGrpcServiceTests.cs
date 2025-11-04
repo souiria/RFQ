@@ -1,9 +1,5 @@
-﻿using System.Linq.Expressions;
-using Google.Protobuf.WellKnownTypes;
-using SFS;
+﻿using SFS;
 using SFS.Endpoints.GrpcServices;
-using HelloReply = SFS.HelloReply;
-using HelloRequest = SFS.HelloRequest;
 using SFS.Services;
 namespace Integration.Tests.SFS
 {
