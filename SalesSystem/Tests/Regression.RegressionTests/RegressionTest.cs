@@ -1,16 +1,6 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Grpc.Core;
-using Grpc.Core.Testing;
-using Grpc.Net.Client;
-using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
-using SFS;
+﻿using SFS;
 using SFS.Endpoints.GrpcServices;
 using SFS.Services;
-using SharedKernel;
 
 namespace Regression.Tests
 {
