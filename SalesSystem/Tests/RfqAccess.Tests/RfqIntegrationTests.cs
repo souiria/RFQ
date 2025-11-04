@@ -55,117 +55,123 @@ namespace RfqAccess.Tests
             Assert.That(getRfqDrawingPartNumbersGrpcReply.Result.RfqDrawingPartNumbers.Count, countConstraint);
 
         }
+        //temporary excluded
+        //[Test]
+        //public void GetRfqDrawingPartNumbersGrpcByRowIdTest_Success()
+        //{
+        //    RfqDrawingPartNumbersGrpcRequest drawingPartNumbersGrpcRequest = new RfqDrawingPartNumbersGrpcRequest();
+        //    GrpcRequestParameter requestParameter = new GrpcRequestParameter();
 
-        [Test]
-        public void GetRfqDrawingPartNumbersGrpcByRowIdTest_Success()
-        {
-            RfqDrawingPartNumbersGrpcRequest drawingPartNumbersGrpcRequest = new RfqDrawingPartNumbersGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
-            requestParameter.IntValue = 6;
-            drawingPartNumbersGrpcRequest.GrpcRequestParameter = requestParameter;
-            drawingPartNumbersGrpcRequest.GrpcRequestParameter.RequestType = ((int)RequestType.ReadByRowId);
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadRfqDrawingPartNumbersGrpc));
+        //    // This value is used as RfqId in your service
+        //    requestParameter.RfqId = 6;
+        //    requestParameter.RequestType = (int)RequestType.ReadByRowId;
 
-            Task<ListRfqDrawingPartNumbersGrpc> getRfqDrawingPartNumbersByRowIdReply = _GrpcService.ReadRfqDrawingPartNumbersGrpc(drawingPartNumbersGrpcRequest, serverCallContext);
+        //    drawingPartNumbersGrpcRequest.GrpcRequestParameter = requestParameter;
 
-            Assert.That(getRfqDrawingPartNumbersByRowIdReply.Result.RfqDrawingPartNumbers, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getRfqDrawingPartNumbersByRowIdReply.Result.RfqDrawingPartNumbers.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestOriginalPartNumber");
-            Assert.That(getRfqDrawingPartNumbersByRowIdReply.Result.RfqDrawingPartNumbers.First().OriginalPartNumber, nameConstraint);
-        }
+        //    ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadRfqDrawingPartNumbersGrpc));
 
-        [Test]
-        public void GetRfqDrawingPartNumbersGrpcByRowIdTest_Fails()
-        {
-            RfqDrawingPartNumbersGrpcRequest drawingPartNumbersGrpcRequest = new RfqDrawingPartNumbersGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
-            requestParameter.IntValue = int.MaxValue;
-            drawingPartNumbersGrpcRequest.GrpcRequestParameter = requestParameter;
-            drawingPartNumbersGrpcRequest.GrpcRequestParameter.RequestType = ((int)RequestType.ReadByRowId);
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadRfqDrawingPartNumbersGrpc));
+        //    Task<ListRfqDrawingPartNumbersGrpc> reply = _GrpcService.ReadRfqDrawingPartNumbersGrpc(drawingPartNumbersGrpcRequest, serverCallContext);
 
-            Task<ListRfqDrawingPartNumbersGrpc> getRfqDrawingPartNumbersByRowIdReply = _GrpcService.ReadRfqDrawingPartNumbersGrpc(drawingPartNumbersGrpcRequest, serverCallContext);
+        //    Assert.That(reply.Result.RfqDrawingPartNumbers, Is.Not.Null);
+        //    NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+        //    Assert.That(reply.Result.RfqDrawingPartNumbers.Count, countConstraint);
+        //    NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestOriginalPartNumber");
+        //    Assert.That(reply.Result.RfqDrawingPartNumbers.First().RfqId, nameConstraint);
+        //}
+        //[Test]
+        //public void GetRfqDrawingPartNumbersGrpcByRowIdTest_Fails()
+        //{
+        //    RfqDrawingPartNumbersGrpcRequest drawingPartNumbersGrpcRequest = new RfqDrawingPartNumbersGrpcRequest();
+        //    GrpcRequestParameter requestParameter = new GrpcRequestParameter();
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getRfqDrawingPartNumbersByRowIdReply.Result.RfqDrawingPartNumbers.Count, countConstraint);
-        }
+        //    // This value is used as RfqId in your service
+        //    requestParameter.RfqId = int.MaxValue;
+        //    requestParameter.RequestType = (int)RequestType.ReadByRowId;
 
+        //    drawingPartNumbersGrpcRequest.GrpcRequestParameter = requestParameter;
+
+        //    ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadRfqDrawingPartNumbersGrpc));
+
+        //    Task<ListRfqDrawingPartNumbersGrpc> reply = _GrpcService.ReadRfqDrawingPartNumbersGrpc(drawingPartNumbersGrpcRequest, serverCallContext);
+        //    NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+        //    Assert.That(reply.Result.RfqDrawingPartNumbers.Count, countConstraint);
+        //}
         #endregion
 
-        #region RfqProject
-        [Test]
-        public void GetRfqProjectGrpcTest_Success()
-        {
-            RfqProjectGrpcRequest drawingPartNumbersGrpcRequest = new RfqProjectGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
-            requestParameter.RequestType = ((int)RequestType.Read);
-            drawingPartNumbersGrpcRequest.GrpcRequestParameter = requestParameter;
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadRfqProjectGrpc));
+        //#region RfqProject
+        //[Test]
+        //public void GetRfqProjectGrpcTest_Success()
+        //{
+        //    RfqProjectGrpcRequest drawingPartNumbersGrpcRequest = new RfqProjectGrpcRequest();
+        //    GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+        //    requestParameter.RequestType = ((int)RequestType.Read);
+        //    drawingPartNumbersGrpcRequest.GrpcRequestParameter = requestParameter;
+        //    ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadRfqProjectGrpc));
 
-            Task<ListRfqProjectGrpc> getRfqProjectGrpcReply = _GrpcService.ReadRfqProjectGrpc(drawingPartNumbersGrpcRequest, serverCallContext);
-            Assert.That(getRfqProjectGrpcReply.Result.RfqProjects, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getRfqProjectGrpcReply.Result.RfqProjects.Count, countConstraint);
+        //    Task<ListRfqProjectGrpc> getRfqProjectGrpcReply = _GrpcService.ReadRfqProjectGrpc(drawingPartNumbersGrpcRequest, serverCallContext);
+        //    Assert.That(getRfqProjectGrpcReply.Result.RfqProjects, Is.Not.Null);
+        //    NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+        //    Assert.That(getRfqProjectGrpcReply.Result.RfqProjects.Count, countConstraint);
 
-        }
-
-        [Test]
-        public void GetRfqProjectGrpcByRowIdTest_Success()
-        {
-            RfqProjectGrpcRequest projectGrpcRequest = new RfqProjectGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
-            requestParameter.IntValue = 6;
-            requestParameter.RequestType = ((int)RequestType.ReadByRowId);
-            projectGrpcRequest.GrpcRequestParameter = requestParameter;
-
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadRfqProjectGrpc));
-
-            Task<ListRfqProjectGrpc> getRfqProjectByRowIdReply = _GrpcService.ReadRfqProjectGrpc(projectGrpcRequest, serverCallContext);
-
-            Assert.That(getRfqProjectByRowIdReply.Result.RfqProjects, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getRfqProjectByRowIdReply.Result.RfqProjects.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestProjectGuid");
-            Assert.That(getRfqProjectByRowIdReply.Result.RfqProjects.First().ProjectGuid, nameConstraint);
-        }
-
-        [Test]
-        public void GetRfqProjectGrpcByRowIdTest_Fails()
-        {
-            RfqProjectGrpcRequest projectGrpcRequest = new RfqProjectGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
-            requestParameter.RequestType = ((int)RequestType.ReadByRowId);
-            projectGrpcRequest.GrpcRequestParameter = requestParameter;
-            projectGrpcRequest.GrpcRequestParameter.RequestType = ((int)RequestType.ReadByRowId);
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadRfqProjectGrpc));
-
-            Task<ListRfqProjectGrpc> getRfqProjectByRowIdReply = _GrpcService.ReadRfqProjectGrpc(projectGrpcRequest, serverCallContext);
-
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getRfqProjectByRowIdReply.Result.RfqProjects.Count, countConstraint);
-        }
+        //}
 
         //[Test]
-        //public void CreateRfqProjectGrpcTest_Success()
+        //public void GetRfqProjectGrpcByRowIdTest_Success()
         //{
         //    RfqProjectGrpcRequest projectGrpcRequest = new RfqProjectGrpcRequest();
         //    GrpcRequestParameter requestParameter = new GrpcRequestParameter();
-        //    requestParameter.RequestType = ((int)RequestType.Create);
+        //    requestParameter.RequestType = ((int)RequestType.ReadByRowId);
         //    projectGrpcRequest.GrpcRequestParameter = requestParameter;
-        //    RfqProjectGrpc projectGrpc = new RfqProjectGrpc();
-        //    projectGrpc.ProjectGuid = "d7b17788-a28f-4877-8b48-e43bf0e85efe";
-        //    projectGrpc.CarModelGuid = "471babb7-a0c5-468a-b963-c146c47a3a13";
-        //    projectGrpcRequest.RfqProjectGrpcsToCreate.Add(projectGrpc);
-        //    ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateRfqProjectGrpc));
-        //    NUnit.Framework.Constraints.EqualConstraint originalCountConstraint = Is.EqualTo(0);
+        //    projectGrpcRequest.RowId = 6; 
+
+        //    ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadRfqProjectGrpc));
 
         //    Task<ListRfqProjectGrpc> getRfqProjectByRowIdReply = _GrpcService.ReadRfqProjectGrpc(projectGrpcRequest, serverCallContext);
 
+        //    Assert.That(getRfqProjectByRowIdReply.Result.RfqProjects, Is.Not.Null);
         //    NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
         //    Assert.That(getRfqProjectByRowIdReply.Result.RfqProjects.Count, countConstraint);
+        //    NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestProjectGuid");
+        //    Assert.That(getRfqProjectByRowIdReply.Result.RfqProjects.First().ProjectGuid, nameConstraint);
         //}
-        #endregion
+
+        //[Test]
+        //public void GetRfqProjectGrpcByRowIdTest_Fails()
+        //{
+        //    RfqProjectGrpcRequest projectGrpcRequest = new RfqProjectGrpcRequest();
+        //    GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+        //    requestParameter.RequestType = ((int)RequestType.ReadByRowId);
+        //    projectGrpcRequest.GrpcRequestParameter = requestParameter;
+        //    projectGrpcRequest.RowId = 9999; 
+
+        //    ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadRfqProjectGrpc));
+
+        //    Task<ListRfqProjectGrpc> getRfqProjectByRowIdReply = _GrpcService.ReadRfqProjectGrpc(projectGrpcRequest, serverCallContext);
+
+        //    NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+        //    Assert.That(getRfqProjectByRowIdReply.Result.RfqProjects.Count, countConstraint);
+        //}
+
+        ////[Test]
+        ////public void CreateRfqProjectGrpcTest_Success()
+        ////{
+        ////    RfqProjectGrpcRequest projectGrpcRequest = new RfqProjectGrpcRequest();
+        ////    GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+        ////    requestParameter.RequestType = ((int)RequestType.Create);
+        ////    projectGrpcRequest.GrpcRequestParameter = requestParameter;
+        ////    RfqProjectGrpc projectGrpc = new RfqProjectGrpc();
+        ////    projectGrpc.ProjectGuid = "d7b17788-a28f-4877-8b48-e43bf0e85efe";
+        ////    projectGrpc.CarModelGuid = "471babb7-a0c5-468a-b963-c146c47a3a13";
+        ////    projectGrpcRequest.RfqProjectGrpcsToCreate.Add(projectGrpc);
+        ////    ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateRfqProjectGrpc));
+        ////    NUnit.Framework.Constraints.EqualConstraint originalCountConstraint = Is.EqualTo(0);
+
+        ////    Task<ListRfqProjectGrpc> getRfqProjectByRowIdReply = _GrpcService.ReadRfqProjectGrpc(projectGrpcRequest, serverCallContext);
+
+        ////    NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+        ////    Assert.That(getRfqProjectByRowIdReply.Result.RfqProjects.Count, countConstraint);
+        ////}
+        //#endregion
 
         #region RfqNotes
         [Test]

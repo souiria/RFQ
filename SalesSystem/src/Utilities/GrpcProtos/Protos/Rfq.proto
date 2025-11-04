@@ -19,6 +19,7 @@ service Rfq {
   rpc CreateRfqProjectGrpc (RfqProjectGrpcRequest) returns (RfqCrudGrpcResponse);
   rpc ReadRfqProjectGrpc (RfqProjectGrpcRequest) returns (ListRfqProjectGrpc);
   rpc UpdateRfqProjectGrpc (RfqProjectGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc DeleteRfqProjectByRowIdGrpc (RfqProjectGrpcRequest) returns (RfqCrudGrpcResponse);
 
   rpc CreateRfqNotesGrpc (RfqNotesGrpcRequest) returns (RfqCrudGrpcResponse);
   rpc ReadRfqNotesGrpc (RfqNotesGrpcRequest) returns (ListRfqNotesGrpc);
@@ -173,6 +174,8 @@ message GrpcRequestParameter {
 	google.protobuf.Int32Value IntValue = 6;
 	google.protobuf.FloatValue DecimalValue = 7;
 	google.protobuf.Timestamp DateTimeValue = 8;
+	int64 RowId = 9;
+	int64 RfqId = 10;
 }
 
 // Shared CRUD response message
@@ -187,6 +190,7 @@ message RfqDrawingPartNumbersGrpcRequest {
   repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbersGrpcsToCreate = 2;
   repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbersGrpcsToUpdate = 3;
   repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbersGrpcsToDelete = 4;
+   int64 RfqId = 5;
 }
 
 message RfqDrawingPartNumbersGrpc {
@@ -211,7 +215,7 @@ message RfqProjectGrpcRequest {
   repeated RfqProjectGrpc RfqProjectGrpcsToCreate = 2;
   repeated RfqProjectGrpc RfqProjectGrpcsToUpdate = 3;
   repeated RfqProjectGrpc RfqProjectGrpcsToDelete = 4;
- int64 RowId = 5;
+  int64 RowId = 5;
 }
 
 message RfqProjectGrpc {
@@ -225,6 +229,7 @@ message RfqProjectGrpc {
 	google.protobuf.StringValue CarModelGuid = 8;
 	google.protobuf.Int32Value VehicleVolume = 9;
 	google.protobuf.Timestamp CreatedDate = 10;
+		google.protobuf.BoolValue IsActive = 11;
 }
 
 message ListRfqProjectGrpc {

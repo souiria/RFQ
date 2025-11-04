@@ -19,7 +19,7 @@
         Task<ListRfqProjectGrpc> CreateRfqProjects(RfqProjectGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateRfqProjects(RfqProjectGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateRfqProjects(CancellationToken cancellationToken);
-
+        Task<ListRfqProjectGrpc> DeleteRfqProjectByRowId(RfqProjectGrpcRequest request, CancellationToken cancellationToken);
         #endregion
 
         #region Notes

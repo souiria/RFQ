@@ -50,6 +50,7 @@
             data.CarModelGuid = entity.CarModelGuid.ToString();
             data.VehicleVolume = entity.VehicleVolume;
             data.CreatedDate = entity.CreatedDate?.ToUniversalTime().ToTimestamp();
+            data.IsActive = entity.IsActive;
             return data;
         }
         public static DbRfqProject ToEntity(this RfqProjectGrpc grpc)
@@ -57,14 +58,26 @@
             DbRfqProject data = new DbRfqProject();
             data.RowId = grpc.RowId;
             data.RfqNumber = grpc.RfqNumber;
-            data.CustomerBusinessUnitGuid = Guid.Parse(grpc.CustomerBusinessUnitGuid);
-            data.CustomerLocationGuid = Guid.Parse(grpc.CustomerLocationGuid);
-            data.ProjectGuid = Guid.Parse(grpc.ProjectGuid);
+            data.CustomerBusinessUnitGuid = !string.IsNullOrWhiteSpace(grpc.CustomerBusinessUnitGuid)
+                ? Guid.Parse(grpc.CustomerBusinessUnitGuid)
+                : Guid.Empty;
+            data.CustomerLocationGuid = !string.IsNullOrWhiteSpace(grpc.CustomerLocationGuid)
+                ? Guid.Parse(grpc.CustomerLocationGuid)
+                : Guid.Empty;
+            data.ProjectGuid = !string.IsNullOrWhiteSpace(grpc.ProjectGuid)
+                ? Guid.Parse(grpc.ProjectGuid)
+                : Guid.Empty;
             data.RfqReasonId = grpc.RfqReasonId;
-            data.RfqResponseDeadline = grpc.RfqResponseDeadline?.ToDateTime().ToLocalTime();
-            data.CarModelGuid = Guid.Parse(grpc.CarModelGuid);
+            data.RfqResponseDeadline = grpc.RfqResponseDeadline?.ToDateTime().ToUniversalTime();
+            data.CarModelGuid = !string.IsNullOrWhiteSpace(grpc.CarModelGuid)
+                ? Guid.Parse(grpc.CarModelGuid)
+                : Guid.Empty;
             data.VehicleVolume = grpc.VehicleVolume;
-            data.CreatedDate = grpc.CreatedDate.ToDateTime().ToLocalTime();
+            data.CreatedDate = grpc.CreatedDate != null
+            ? grpc.CreatedDate.ToDateTime().ToLocalTime()
+            : DateTime.UtcNow; // or DateTime.MinValue or any default
+
+            data.IsActive = grpc.IsActive ?? true;
             return data;
         }
         #endregion
@@ -132,8 +145,8 @@
             data.RowId = grpc.RowId;
             data.BendId = Guid.Parse(grpc.BendId);
             data.Bend = grpc.Bend;
-            data.CreatedDate = grpc.CreatedDate.ToDateTime().ToLocalTime();
-            data.ModifiedDate = grpc.ModifiedDate?.ToDateTime().ToLocalTime();
+            data.CreatedDate = grpc.CreatedDate.ToDateTime().ToUniversalTime();
+            data.ModifiedDate = grpc.ModifiedDate?.ToDateTime().ToUniversalTime();
             data.CreatedBy = Guid.Parse(grpc.CreatedBy);
             data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
             return data;

@@ -10,6 +10,7 @@ namespace SalesSystem.Rfq.Services
         bool _Disposed;
 
         // Cached Data
+        List<RfqDrawingPartNumber> _RfqDrawingParts;
         List<RfqProject> _RfqProjects;
         List<RfqProjectUx> _RfqProjectUxs;
         List<CustomerGrpc> _Customers;
@@ -18,7 +19,7 @@ namespace SalesSystem.Rfq.Services
         List<string> _QuotationNumbers;
 
         // Cached data accessors
-
+        public IReadOnlyCollection<RfqDrawingPartNumber> RfqDrawingParts => _RfqDrawingParts.AsReadOnly();
         public IReadOnlyCollection<RfqProject> RfqProjects => _RfqProjects.AsReadOnly();
         public IReadOnlyCollection<RfqProjectUx> RfqProjectUxs => _RfqProjectUxs.AsReadOnly();
         public IReadOnlyCollection<CustomerGrpc> Customers => _Customers.AsReadOnly();
@@ -46,12 +47,8 @@ namespace SalesSystem.Rfq.Services
             _Customers = new();
             _Reasons = new();
             _CustomerProjectAssociations = new();
-            _QuotationNumbers = new()
-                {
-                    "SEWS-25-025-005678",
-                    "SEWS-25-025-005688",
-                    "SEWS-25-025-005692"
-                };
+            _QuotationNumbers= new();
+            _RfqDrawingParts= new();
         }
         #endregion
         #region Hello Service
@@ -131,70 +128,29 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-        public async Task<CreateRfqProjectGrpcResponse> CreateRfqProjectAsync(RfqProject project)
+        public async Task<List<RfqDrawingPartNumber>> GetRfqDrawingPartNumbersByRfqIdAsync(long rfqId)
+  
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
 
             try
             {
-                CreateRfqProjectGrpcRequest request = new CreateRfqProjectGrpcRequest();
-                request.Project = project;
+                GetRfqDrawingPartNumbersByRfqIdGrpcRequest request = new GetRfqDrawingPartNumbersByRfqIdGrpcRequest();
+                request.RfqId = rfqId;
 
-                CreateRfqProjectGrpcResponse response = await _Client.CreateRfqProjectGrpcAsync(request, cancellationToken: timeoutCts.Token);
-
-                return response;
+                GetRfqDrawingPartNumbersByRfqIdGrpcResponse response = await _Client.GetRfqDrawingPartNumbersByRfqIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
+                _RfqDrawingParts.Clear();
+                _RfqDrawingParts.AddRange(response.Parts);
+                return _RfqDrawingParts;
+                //List<RfqDrawingPartNumber> parts = response.Parts.ToList();
+                //return parts;
             }
             catch (Exception ex)
             {
-                _Logger?.GenericLogError($"Error in CreateRfqProject", ex);
+                _Logger?.GenericLogError($"Error in GetRfqDrawingPartNumbersByRfqId for RfqId: {rfqId}", ex);
                 throw;
             }
         }
-        public async Task<UpdateRfqProjectGrpcResponse> UpdateRfqProjectAsync(RfqProject project)
-        {
-            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-
-            try
-            {
-                UpdateRfqProjectGrpcRequest request = new UpdateRfqProjectGrpcRequest();
-                request.Project = project;
-
-                UpdateRfqProjectGrpcResponse response = await _Client.UpdateRfqProjectGrpcAsync(request, cancellationToken: timeoutCts.Token);
-
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _Logger?.GenericLogError($"Error in UpdateRfqProject for RowId: {project.RowId}", ex);
-                throw;
-            }
-        }
-        public async Task<FileUploadResponse> UploadFileAsync(
-            byte[] fileData,
-            string fileName,
-            CancellationToken cancellationToken = default)
-        {
-            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-            using CancellationTokenSource combinedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
-
-            try
-            {
-                FileUploadRequest request = new FileUploadRequest();
-                request.FileName = fileName;
-                request.FileData = Google.Protobuf.ByteString.CopyFrom(fileData);
-
-                FileUploadResponse response = await _Client.UploadFileAsync(request, cancellationToken: combinedCts.Token);
-
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _Logger?.GenericLogError($"Error in UploadFile for file: {fileName}", ex);
-                throw;
-            }
-        }
-        #endregion
-        #region Customers and Related Data
         public async Task<GetAllCustomersGrpcResponse> GetAllCustomersAsync(
             int position = 0,
             int take = 100,
@@ -352,6 +308,89 @@ namespace SalesSystem.Rfq.Services
             }
         }
         #endregion
+        public async Task<CreateRfqProjectGrpcResponse> CreateRfqProjectAsync(RfqProject project)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+
+            try
+            {
+                CreateRfqProjectGrpcRequest request = new CreateRfqProjectGrpcRequest();
+                request.Project = project;
+
+                CreateRfqProjectGrpcResponse response = await _Client.CreateRfqProjectGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in CreateRfqProject", ex);
+                throw;
+            }
+        }
+        public async Task<UpdateRfqProjectGrpcResponse> UpdateRfqProjectAsync(RfqProject project)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+
+            try
+            {
+                UpdateRfqProjectGrpcRequest request = new UpdateRfqProjectGrpcRequest();
+                request.Project = project;
+
+                UpdateRfqProjectGrpcResponse response = await _Client.UpdateRfqProjectGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in UpdateRfqProject for RowId: {project.RowId}", ex);
+                throw;
+            }
+        }
+        public async Task<RfqCrudResponse> DeleteRfqProjectByRowIdAsync(long rowId)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+
+            try
+            {
+                RfqProjectRequest request = new RfqProjectRequest();
+
+                request.RowId = rowId;
+
+              RfqCrudResponse response = await _Client.DeleteRfqProjectByRowIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in DeleteRfqProjectByRowId for RowId: {rowId}", ex);
+                throw;
+            }
+        }
+
+        public async Task<FileUploadResponse> UploadFileAsync(
+            byte[] fileData,
+            string fileName,
+            CancellationToken cancellationToken = default)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+            using CancellationTokenSource combinedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
+
+            try
+            {
+                FileUploadRequest request = new FileUploadRequest();
+                request.FileName = fileName;
+                request.FileData = Google.Protobuf.ByteString.CopyFrom(fileData);
+
+                FileUploadResponse response = await _Client.UploadFileAsync(request, cancellationToken: combinedCts.Token);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in UploadFile for file: {fileName}", ex);
+                throw;
+            }
+        }
 
         protected virtual void Dispose(bool disposing)
         {
