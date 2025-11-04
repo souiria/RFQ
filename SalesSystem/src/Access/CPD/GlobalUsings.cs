@@ -1,4 +1,5 @@
-﻿global using System.Reflection;
+﻿global using System.Linq.Dynamic.Core;
+global using System.Reflection;
 global using Ardalis.Specification;
 global using Ardalis.Specification.EntityFrameworkCore;
 global using CPD.CQRS.Query.HarnessCostingCalculationDataView;
@@ -18,3 +19,4 @@ global using Grpc.Core;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using SharedKernel;
+

@@ -2,13 +2,12 @@
 global using System.Globalization;
 global using DocumentConversion;
 global using Emacs;
-global using Filtering;
-global using Filtering.Interfaces;
 global using Google.Protobuf.WellKnownTypes;
 global using Grpc.Core;
 global using Logging;
 global using Master;
 global using static Master.Master;
+global using NPR;
 global using Rfq;
 global using RfqModule.Data.Time;
 global using RfqModule.Endpoints.GrpcServices;

@@ -14,5 +14,7 @@
         Task<FilterGrpcResponse> FilterEmacsByExactPartNumber(FilterGrpcRequest request);
         Task<FilterGrpcResponse> FilterEmacsByContainingPartNumber(FilterGrpcRequest request);
         Task<FilterGrpcResponse> FilterAdssBySumitomoPartNumber(FilterGrpcRequest request);
+        Task<FilterGrpcResponse> FilterNPRBySumitomoPartNumber(FilterGrpcRequest request);
+        Task<FilterGrpcResponse> FilterCPDBySumitomoPartNumber(FilterGrpcRequest request);
     }
 }

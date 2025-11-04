@@ -9,5 +9,7 @@
         FilterEmacsByExactPartNumber = 4,
         FilterEmacsByContainingPartNumber = 5,
         FilterAdssBySumitomoPartNumber = 6,
+        FilterNPRBySumitomoPartNumber = 7,
+        FilterCPDBySumitomoPartNumber = 8,
     }
 }

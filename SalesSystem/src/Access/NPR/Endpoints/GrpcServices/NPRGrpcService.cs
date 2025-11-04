@@ -1,4 +1,6 @@
-﻿namespace NPR.Endpoints.GrpcServices
+﻿using Emacs;
+
+namespace NPR.Endpoints.GrpcServices
 {
     public class NPRGrpcService : NPR.NPRBase
     {
@@ -25,5 +27,22 @@
             return await _NPRAccessService.GetAllH1NPRView(context.CancellationToken);
         }
         #endregion
+
+        public override async Task<NPRFilterResponse> FilterNPRGrpc(NPRFilterRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("FilterNPRGrpc starting");
+            ParsingConfig parsingConfig = new ParsingConfig();
+            NPRFilterResponse returnResponse = new NPRFilterResponse();
+            await _NPRAccessService.HandleFilterCase<H1NPRViewGrpc>(
+                request.FilterExpression, parsingConfig,
+                filterlist =>
+                {
+                    ListH1NPRViewGrpc returnList = new ListH1NPRViewGrpc();
+                    returnList.H1NPRViewGrpc.AddRange(filterlist);
+                    returnResponse.ListH1NPRViewGrpc = returnList;
+                    returnResponse.Success = true;
+                }, context.CancellationToken);
+            return returnResponse;
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace CPD.Endpoints.GrpcServices
+﻿using NPR;
+
+namespace CPD.Endpoints.GrpcServices
 {
     public class CPDGrpcService : CPD.CPDBase
     {
@@ -36,5 +38,22 @@
 
         }
         #endregion
+
+        public override async Task<CPDFilterResponse> FilterCPDGrpc(CPDFilterRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("FilterCPDGrpc starting");
+            ParsingConfig parsingConfig = new ParsingConfig();
+            CPDFilterResponse returnResponse = new CPDFilterResponse();
+            await _CPDAccessService.HandleFilterCase<MatSuppMstViewGrpc>(
+                request.FilterExpression, parsingConfig,
+                filterlist =>
+                {
+                    ListMatSuppMstGrpc returnList = new ListMatSuppMstGrpc();
+                    returnList.MatSuppMstViewGrpc.AddRange(filterlist);
+                    returnResponse.ListMatSuppMstGrpc = returnList;
+                    returnResponse.Success = true;
+                }, context.CancellationToken);
+            return returnResponse;
+        }
     }
 }
