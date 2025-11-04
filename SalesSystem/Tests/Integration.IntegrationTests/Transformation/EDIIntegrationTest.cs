@@ -3,10 +3,10 @@ using Transformation;
 
 namespace DocumentConversionEngine.Tests
 {
-    class EDIIntegraionTest
+    class EDIIntegrationTest
     {
         EdiFileDataAggregate _EdiFileDataAggregates;
-        public EDIIntegraionTest()
+        public EDIIntegrationTest()
         {
             _EdiFileDataAggregates = new EdiFileDataAggregate();
         }
@@ -14,8 +14,8 @@ namespace DocumentConversionEngine.Tests
         [Test]
         public void CovertEdiFile1Test()
         {
-            string fileName = Path.GetFileNameWithoutExtension("../../../EDI/12001010_AIHX18472AW3.csv");
-            byte[] file = File.ReadAllBytes("../../../EDI/12001010_AIHX18472AW3.csv");
+            string fileName = Path.GetFileNameWithoutExtension("../../../Transformation/EDI/12001010_AIHX18472AW3.csv");
+            byte[] file = File.ReadAllBytes("../../../Transformation/EDI/12001010_AIHX18472AW3.csv");
             object result = DocumentTransformer.ConvertCSV(file, fileName);
             switch (result)
             {
@@ -40,8 +40,8 @@ namespace DocumentConversionEngine.Tests
         [Test]
         public void CovertEdiFile2Test()
         {
-            string fileName = Path.GetFileNameWithoutExtension("../../../EDI/12001010_plu_280425_58312351.csv");
-            byte[] file = File.ReadAllBytes("../../../EDI/12001010_plu_280425_58312351.csv");
+            string fileName = Path.GetFileNameWithoutExtension("../../../Transformation/EDI/12001010_plu_280425_58312351.csv");
+            byte[] file = File.ReadAllBytes("../../../Transformation/EDI/12001010_plu_280425_58312351.csv");
             object result = DocumentTransformer.ConvertCSV(file, fileName);
             switch(result)
             {

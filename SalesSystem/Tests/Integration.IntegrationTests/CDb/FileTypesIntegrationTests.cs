@@ -1,6 +1,15 @@
-namespace CdbAccess.Tests
+using CDb;
+using CDb.Data.Context;
+using CDb.Data.Model.Components;
+using CDb.Data.Model.Masters;
+using CDb.Endpoints.GrpcServices;
+using CDb.Enums;
+using CDb.Extensions;
+using CDb.Services;
+
+namespace Integration.Tests.CDb
 {
-    public class FileTypesTests
+    public class FileTypesIntegrationTests
     {
         ICDbAccessService _CDbAccessService;
         CDbGrpcService _GrpcService;
@@ -10,7 +19,7 @@ namespace CdbAccess.Tests
         //readonly string _CrudFileTypeId;
         #endregion
 
-        public FileTypesTests()
+        public FileTypesIntegrationTests()
         {
             //_CrudFileTypeId = "20250728-0000-0001-0003-0000DEADBEEF"; // crud test file type ID
         }
@@ -20,16 +29,27 @@ namespace CdbAccess.Tests
         {
             ServiceCollection serviceCollection = new ServiceCollection();
 
-            string currentDirectory = Directory.GetCurrentDirectory();
-            // Configure appsettings.json
+            // Get the directory where the test assembly is located
+            string testDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
+
+            // Navigate up to find the project root or specify the exact path to appsettings.json
+            string thePath = Path.Combine(testDirectory, "..", "..", "..", "CDb");
+            string projectRoot = Path.GetFullPath(thePath);
+
+            // Configure appsettings.json with the correct path
             IConfiguration configuration = new ConfigurationBuilder()
-                .SetBasePath(currentDirectory)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .SetBasePath(projectRoot)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddEnvironmentVariables()
                 .Build();
-            
+
+            // Debug: Log the configuration path and connection string
+            Console.WriteLine($"Looking for appsettings.json in: {projectRoot}");
+            string? connectionString = configuration.GetConnectionString("Database");
+            Console.WriteLine($"Connection String: {connectionString ?? "NOT FOUND"}");
+
             // Add configuration to services
-            serviceCollection.AddSingleton<IConfiguration>(configuration);
+            serviceCollection.AddSingleton(configuration);
 
             serviceCollection.AddLogging(loggingBuilder =>
             {
@@ -54,21 +74,23 @@ namespace CdbAccess.Tests
         }
 
         [Test]
+        [Category("Integration")]
         public void SayHelloTest()
         {
             HelloRequest request = new HelloRequest();
-            request.Name = "FileTypesTests";
+            request.Name = "FileTypesIntegrationTests";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.SayHello));
 
             Task<HelloReply> helloReply = _GrpcService.SayHello(request, serverCallContext);
 
-            string replyString = "Hello FileTypesTests";
+            string replyString = "Hello FileTypesIntegrationTests";
             NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(replyString);
             Assert.That(helloReply, Is.Not.Null);
             Assert.That(helloReply.Result.Message, equalConstraint);
         }
 
         [Test]
+        [Category("Integration")]
         public void GetAllFileTypesTest()
         {
             // Arrange
@@ -88,6 +110,7 @@ namespace CdbAccess.Tests
             Assert.That(response.Result.FileTypeGrpcs.Count, countConstraint);
         }
         [Test]
+        [Category("Integration")]
         public void GetByIdFileTypeTest()
         {
             // Arrange
@@ -121,6 +144,7 @@ namespace CdbAccess.Tests
 
         }
         [Test]
+        [Category("Integration")]
         public void GetByNameFileTypeTest()
         {
             // Arrange

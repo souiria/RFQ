@@ -1,6 +1,15 @@
-namespace CdbAccess.Tests
+using CDb;
+using CDb.Data.Context;
+using CDb.Data.Model.Components;
+using CDb.Data.Model.Masters;
+using CDb.Endpoints.GrpcServices;
+using CDb.Enums;
+using CDb.Extensions;
+using CDb.Services;
+
+namespace Integration.Tests.CDb
 {
-    public class CrimpingProcessTypesTests
+    public class CrimpingProcessTypesIntegrationTests
     {
         ICDbAccessService _CDbAccessService;
         CDbGrpcService _GrpcService;
@@ -10,7 +19,7 @@ namespace CdbAccess.Tests
         readonly string _CrudCrimpingProcessTypeId;
         #endregion
 
-        public CrimpingProcessTypesTests()
+        public CrimpingProcessTypesIntegrationTests()
         {
             _CrudCrimpingProcessTypeId = "20250728-0000-0000-0003-0000DEADBEEF"; // crud test crimpigProcess type ID
         }
@@ -20,16 +29,27 @@ namespace CdbAccess.Tests
         {
             ServiceCollection serviceCollection = new ServiceCollection();
 
-            string currentDirectory = Directory.GetCurrentDirectory();
-            // Configure appsettings.json
+            // Get the directory where the test assembly is located
+            string testDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
+
+            // Navigate up to find the project root or specify the exact path to appsettings.json
+            string thePath = Path.Combine(testDirectory, "..", "..", "..", "CDb");
+            string projectRoot = Path.GetFullPath(thePath);
+
+            // Configure appsettings.json with the correct path
             IConfiguration configuration = new ConfigurationBuilder()
-                .SetBasePath(currentDirectory)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .SetBasePath(projectRoot)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddEnvironmentVariables()
                 .Build();
-            
+
+            // Debug: Log the configuration path and connection string
+            Console.WriteLine($"Looking for appsettings.json in: {projectRoot}");
+            string? connectionString = configuration.GetConnectionString("Database");
+            Console.WriteLine($"Connection String: {connectionString ?? "NOT FOUND"}");
+
             // Add configuration to services
-            serviceCollection.AddSingleton<IConfiguration>(configuration);
+            serviceCollection.AddSingleton(configuration);
 
             serviceCollection.AddLogging(loggingBuilder =>
             {
@@ -54,6 +74,7 @@ namespace CdbAccess.Tests
         }
 
         [Test]
+        [Category("Integration")]
         public void GetAllCrimpingProcessTypesTest()
         {
             // Arrange
@@ -73,6 +94,7 @@ namespace CdbAccess.Tests
             Assert.That(response.Result.CrimpingProcessTypeGrpcs.Count, countConstraint);
         }
         [Test]
+        [Category("Integration")]
         public void GetByIdCrimpingProcessTypeTest()
         {
             // Arrange
@@ -106,6 +128,7 @@ namespace CdbAccess.Tests
 
         }
         [Test]
+        [Category("Integration")]
         public void GetByCodeCrimpingProcessTypeTest()
         {
             // Arrange
@@ -132,6 +155,7 @@ namespace CdbAccess.Tests
 
         }
         [Test]
+        [Category("Integration")]
         public async Task CreateCrimpingProcessTypeTest()
         {
             // Check if the test crimpigProcess already exists
@@ -176,6 +200,7 @@ namespace CdbAccess.Tests
         }
 
         [Test]
+        [Category("Integration")]
         public async Task UpdateCrimpingProcessTypeTest()
         {
             // Check if the test crimpigProcess already exists
@@ -219,6 +244,7 @@ namespace CdbAccess.Tests
             Assert.That(crudResponse.SaveSuccess, statusConstraint);
         }
         [Test]
+        [Category("Integration")]
         public async Task XDeleteCrimpingProcessTypeTest()
         {
             // there is no Grpc endpoint to delete this type of data, so we have to use the database context directly

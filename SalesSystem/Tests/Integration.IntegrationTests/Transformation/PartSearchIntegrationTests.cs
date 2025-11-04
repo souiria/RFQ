@@ -15,7 +15,7 @@ namespace DocumentConversionEngine.Tests
         [Test]
         public void CovertNissanExcelFileTest()
         {
-            byte[] file = File.ReadAllBytes("../../../TestBoms/NissanExcel.xlsx");
+            byte[] file = File.ReadAllBytes("../../../Transformation/TestBoms/NissanExcel.xlsx");
             _CrossReferences = DocumentTransformer.ConvertExcelFile(file);
             Assert.That(_CrossReferences, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(344);
@@ -27,7 +27,7 @@ namespace DocumentConversionEngine.Tests
         [Test]
         public void ConvertPSAExcelFileTest()
         {
-            byte[] file = File.ReadAllBytes("../../../TestBoms/PSAExcel.xlsx");
+            byte[] file = File.ReadAllBytes("../../../Transformation/TestBoms/PSAExcel.xlsx");
             _CrossReferences = DocumentTransformer.ConvertExcelFile(file);
             Assert.That(_CrossReferences, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(82);
@@ -39,7 +39,7 @@ namespace DocumentConversionEngine.Tests
         [Test]
         public void ConvertHarnessDesignBomTest()
         {
-            byte[] file = File.ReadAllBytes("../../../TestBoms/FordBomExample.xml");
+            byte[] file = File.ReadAllBytes("../../../Transformation/TestBoms/FordBomExample.xml");
             _CrossReferences = DocumentTransformer.ConvertFordXMLFile(file);
             Assert.That(_CrossReferences, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(2260);
@@ -51,7 +51,7 @@ namespace DocumentConversionEngine.Tests
         [Test]
         public void ConvertHarnessItemBomTest()
         {
-            byte[] file = File.ReadAllBytes("../../../TestBoms/FordBom.xml");
+            byte[] file = File.ReadAllBytes("../../../Transformation/TestBoms/FordBom.xml");
             _CrossReferences = DocumentTransformer.ConvertFordXMLFile(file);
             Assert.That(_CrossReferences, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(111);
@@ -63,7 +63,7 @@ namespace DocumentConversionEngine.Tests
         [Test]
         public void ConvertToyotaXMLTest()
         {
-            byte[] file = File.ReadAllBytes("../../../TestBoms/ToyotaBom.mtf");
+            byte[] file = File.ReadAllBytes("../../../Transformation/TestBoms/ToyotaBom.mtf");
             _CrossReferences = DocumentTransformer.ConvertToyotaXMLFile(file);
             Assert.That(_CrossReferences, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(120);
@@ -75,7 +75,7 @@ namespace DocumentConversionEngine.Tests
         [Test]
         public void ConvertRenaultCSVTest()
         {
-            byte[] file = File.ReadAllBytes("../../../TestBoms/RenaultBom.txt");
+            byte[] file = File.ReadAllBytes("../../../Transformation/TestBoms/RenaultBom.txt");
             _CrossReferences = DocumentTransformer.ConvertRenaultCSVFile(file);
             Assert.That(_CrossReferences, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(193);
@@ -87,8 +87,8 @@ namespace DocumentConversionEngine.Tests
         [Test]
         public void ConvertFordCSVTest()
         {
-            string fileName = Path.GetFileNameWithoutExtension("../../../TestBoms/Ford_Mega_Bom.csv");
-            byte[] file = File.ReadAllBytes("../../../TestBoms/Ford_Mega_Bom.csv");
+            string fileName = Path.GetFileNameWithoutExtension("../../../TestBoms/Transformation/Ford_Mega_Bom.csv");
+            byte[] file = File.ReadAllBytes("../../../Transformation/TestBoms/Ford_Mega_Bom.csv");
             IEnumerable<FordCsvDto> fordCsvDtos = new List<FordCsvDto>();
             object result = DocumentTransformer.ConvertCSV(file, fileName);
             switch(result)

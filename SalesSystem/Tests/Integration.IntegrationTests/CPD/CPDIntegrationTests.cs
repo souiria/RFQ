@@ -1,13 +1,8 @@
 ﻿using CPD;
 using CPD.Endpoints.GrpcServices;
 using CPD.Services;
-using Grpc.Core;
-using Grpc.Core.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Moq;
 
-namespace CPDAccess.Tests
+namespace Integration.Tests.CPD
 {
     public class CPDIntegrationTests
     {

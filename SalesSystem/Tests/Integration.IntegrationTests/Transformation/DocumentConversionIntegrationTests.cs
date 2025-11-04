@@ -2,7 +2,7 @@
 using SharedModels.DocumentConverter.DSI.DTOs;
 using Transformation;
 
-namespace DocumentConverterEngine.Tests
+namespace Integration.Tests.Transformation
 {
     public class DocumentConversionIntegrationTests
     {
@@ -11,7 +11,7 @@ namespace DocumentConverterEngine.Tests
         [SetUp]
         public void Setup()
         {
-            _File = File.ReadAllBytes("../../../TestData.dsi");
+            _File = File.ReadAllBytes("../../../Transformation/TestData.dsi");
             _Model = DocumentTransformer.ConvertDsiFile(_File);
         }
 
@@ -19,7 +19,7 @@ namespace DocumentConverterEngine.Tests
         public void TestGetHarnessNameInformation()
         {
             Assert.That(_Model.Harness, Is.Not.Null);
-
+            DateTime ctDate = new DateTime(2023, 12, 5);
             NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo("T2L2-14A005-ZC");
             Assert.That(_Model.Harness.HarnessName1, equalConstraint);
             equalConstraint = Is.EqualTo("");
@@ -28,7 +28,7 @@ namespace DocumentConverterEngine.Tests
             Assert.That(_Model.Harness.HarnessIssue1, equalConstraint);
             equalConstraint = Is.EqualTo("");
             Assert.That(_Model.Harness.SimilarHarnessIssue1, equalConstraint);
-            DateTime harnessDate1 = new DateTime(2023, 05, 12);
+            DateTime harnessDate1 = ctDate;
             equalConstraint = Is.EqualTo(harnessDate1);
             Assert.That(_Model.Harness.HarnessDate1, equalConstraint);
             equalConstraint = Is.EqualTo("T2L2-14A005-ZC");
@@ -37,7 +37,7 @@ namespace DocumentConverterEngine.Tests
             Assert.That(_Model.Harness.SimilarHarnessName2, equalConstraint);
             equalConstraint = Is.EqualTo("171");
             Assert.That(_Model.Harness.HarnessIssue2, equalConstraint);
-            DateTime harnessDate2 = new DateTime(2023, 05, 12);
+            DateTime harnessDate2 = ctDate;
             equalConstraint = Is.EqualTo(harnessDate2);
             Assert.That(_Model.Harness.HarnessDate2, equalConstraint);
             equalConstraint = Is.EqualTo(12);
@@ -114,7 +114,7 @@ namespace DocumentConverterEngine.Tests
         public void TestGetHarnessCircuitInformantion()
         {
             Assert.That(_Model.CompositeDetailList, Is.Not.Null);
-
+            DateTime ctDate = new DateTime(2023, 12, 5);
             NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(48);
             Assert.That(_Model.CompositeDetailList.Count, equalConstraint);
             CompositeDetailDto model = _Model.CompositeDetailList.Last();
@@ -128,7 +128,7 @@ namespace DocumentConverterEngine.Tests
             Assert.That(model.HarnessIssue1, equalConstraint);
             equalConstraint = Is.EqualTo("");
             Assert.That(model.SimilarHarnessIssue1, equalConstraint);
-            DateTime harnessDate1 = new DateTime(2023, 05, 12);
+            DateTime harnessDate1 = ctDate;
             equalConstraint = Is.EqualTo(harnessDate1);
             Assert.That(model.HarnessDate1, equalConstraint);
             equalConstraint = Is.EqualTo("T2L2-14A005-WC");
@@ -137,7 +137,7 @@ namespace DocumentConverterEngine.Tests
             Assert.That(model.SimilarHarnessName2, equalConstraint);
             equalConstraint = Is.EqualTo("171");
             Assert.That(model.HarnessIssue2, equalConstraint);
-            DateTime harnessDate2 = new DateTime(2023, 05, 12);
+            DateTime harnessDate2 = ctDate;
             equalConstraint = Is.EqualTo(harnessDate2);
             Assert.That(model.HarnessDate2, equalConstraint);
             equalConstraint = Is.EqualTo("Landrover");

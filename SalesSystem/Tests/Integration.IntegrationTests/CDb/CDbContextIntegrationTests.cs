@@ -1,4 +1,13 @@
-namespace CdbAccess.Tests
+using CDb;
+using CDb.Data.Context;
+using CDb.Data.Model.Components;
+using CDb.Data.Model.Masters;
+using CDb.Endpoints.GrpcServices;
+using CDb.Enums;
+using CDb.Extensions;
+using CDb.Services;
+
+namespace Integration.Tests.CDb
 {
     [TestFixture]
     public class CDbContextIntegrationTests
@@ -14,7 +23,6 @@ namespace CdbAccess.Tests
         {
             _TestCableId = Guid.Parse("20250804-0000-0001-0001-0000DEADBEEF");
             _TestCableId2 = Guid.Parse("20250804-0000-0001-0002-0000DEADBEEF");
-
         }
 
         [SetUp]
@@ -22,16 +30,27 @@ namespace CdbAccess.Tests
         {
             ServiceCollection serviceCollection = new ServiceCollection();
 
-            string currentDirectory = Directory.GetCurrentDirectory();
-            // Configure appsettings.json
+            // Get the directory where the test assembly is located
+            string testDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
+
+            // Navigate up to find the project root or specify the exact path to appsettings.json
+            string thePath = Path.Combine(testDirectory, "..", "..", "..", "CDb");
+            string projectRoot = Path.GetFullPath(thePath);
+            
+            // Configure appsettings.json with the correct path
             IConfiguration configuration = new ConfigurationBuilder()
-                .SetBasePath(currentDirectory)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .SetBasePath(projectRoot)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddEnvironmentVariables()
                 .Build();
 
+            // Debug: Log the configuration path and connection string
+            Console.WriteLine($"Looking for appsettings.json in: {projectRoot}");
+            string? connectionString = configuration.GetConnectionString("Database");
+            Console.WriteLine($"Connection String: {connectionString ?? "NOT FOUND"}");
+
             // Add configuration to services
-            serviceCollection.AddSingleton<IConfiguration>(configuration);
+            serviceCollection.AddSingleton(configuration);
 
             serviceCollection.AddLogging(loggingBuilder =>
             {
@@ -51,6 +70,7 @@ namespace CdbAccess.Tests
         #region Database Connection Tests
 
         [Test]
+        [Category("Integration")]
         public async Task CDbContext_0CanConnectToDatabase_ReturnsTrue()
         {
             // Act
@@ -62,6 +82,7 @@ namespace CdbAccess.Tests
         }
 
         [Test]
+        [Category("Integration")]
         public void CDbContext_1HasRequiredDbSets_AllDbSetsAreNotNull()
         {
             using CDbContext context = _ServiceProvider.GetRequiredService<CDbContext>();
@@ -88,6 +109,7 @@ namespace CdbAccess.Tests
         #region CRUD Operations Tests
 
         [Test]
+        [Category("Integration")]
         public async Task CDbContext_2CreateAndRetrieveCable_ReturnsCorrectData()
         {
             // Arrange
@@ -134,6 +156,7 @@ namespace CdbAccess.Tests
         }
 
         [Test]
+        [Category("Integration")]
         public async Task CDbContext_3UpdateComponent_ReflectsChanges()
         {
             // Arrange - Create a component first

@@ -1,13 +1,8 @@
-﻿using Grpc.Core;
-using Grpc.Core.Testing;
-using Master;
+﻿using Master;
 using Master.Endpoints.GrpcServices;
 using Master.Services;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Moq;
 
-namespace MastersAccess.Tests
+namespace Integration.Tests.Master
 {
     public class MastersIntegrationTests
     {

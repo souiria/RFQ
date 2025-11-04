@@ -1,6 +1,15 @@
-namespace CdbAccess.Tests
+using CDb;
+using CDb.Data.Context;
+using CDb.Data.Model.Components;
+using CDb.Data.Model.Masters;
+using CDb.Endpoints.GrpcServices;
+using CDb.Enums;
+using CDb.Extensions;
+using CDb.Services;
+
+namespace Integration.Tests.CDb
 {
-    public class ClipTypesTests
+    public class ClipTypesIntegrationTests
     {
         ICDbAccessService _CDbAccessService;
         CDbGrpcService _GrpcService;
@@ -10,7 +19,7 @@ namespace CdbAccess.Tests
         readonly string _CrudClipTypeId;
         #endregion
 
-        public ClipTypesTests()
+        public ClipTypesIntegrationTests()
         {
             _CrudClipTypeId = "20250728-0000-0000-0001-0000DEADBEEF"; // crud test clip type ID
         }
@@ -20,16 +29,27 @@ namespace CdbAccess.Tests
         {
             ServiceCollection serviceCollection = new ServiceCollection();
 
-            string currentDirectory = Directory.GetCurrentDirectory();
-            // Configure appsettings.json
+            // Get the directory where the test assembly is located
+            string testDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
+
+            // Navigate up to find the project root or specify the exact path to appsettings.json
+            string thePath = Path.Combine(testDirectory, "..", "..", "..", "CDb");
+            string projectRoot = Path.GetFullPath(thePath);
+
+            // Configure appsettings.json with the correct path
             IConfiguration configuration = new ConfigurationBuilder()
-                .SetBasePath(currentDirectory)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .SetBasePath(projectRoot)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddEnvironmentVariables()
                 .Build();
-            
+
+            // Debug: Log the configuration path and connection string
+            Console.WriteLine($"Looking for appsettings.json in: {projectRoot}");
+            string? connectionString = configuration.GetConnectionString("Database");
+            Console.WriteLine($"Connection String: {connectionString ?? "NOT FOUND"}");
+
             // Add configuration to services
-            serviceCollection.AddSingleton<IConfiguration>(configuration);
+            serviceCollection.AddSingleton(configuration);
 
             serviceCollection.AddLogging(loggingBuilder =>
             {
@@ -54,21 +74,23 @@ namespace CdbAccess.Tests
         }
 
         [Test]
+        [Category("Integration")]
         public void SayHelloTest()
         {
             HelloRequest request = new HelloRequest();
-            request.Name = "ClipTypesTests";
+            request.Name = "ClipTypesIntegrationTests";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.SayHello));
 
             Task<HelloReply> helloReply = _GrpcService.SayHello(request, serverCallContext);
 
-            string replyString = "Hello ClipTypesTests";
+            string replyString = "Hello ClipTypesIntegrationTests";
             NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(replyString);
             Assert.That(helloReply, Is.Not.Null);
             Assert.That(helloReply.Result.Message, equalConstraint);
         }
 
         [Test]
+        [Category("Integration")]
         public void GetAllClipTypesTest()
         {
             // Arrange
@@ -87,7 +109,46 @@ namespace CdbAccess.Tests
             NUnit.Framework.Constraints.GreaterThanOrEqualConstraint countConstraint = Is.GreaterThanOrEqualTo(7);
             Assert.That(response.Result.ClipTypeGrpcs.Count, countConstraint);
         }
+
+        //[Test]
+        //[Category("Integration")]
+
+        //public void GetActiveClipTypesTest()
+        //{
+        //    ClipTypeGrpcRequest request = new ClipTypeGrpcRequest();
+        //    GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+        //    grpcRequestParameter.RequestType = (int)RequestType.ReadByIsActive;
+        //    grpcRequestParameter.BoolValue = true;
+        //    request.GrpcRequestParameter = grpcRequestParameter;
+        //    ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadClipTypeGrpc));
+
+        //    Task<ListClipTypeGrpc> getClipTypeGrpcReply = _GrpcService.ReadClipTypeGrpc(request, serverCallContext);
+        //    Assert.That(getClipTypeGrpcReply.Result.ClipTypeGrpcs, Is.Not.Null);
+        //    NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(4);
+        //    Assert.That(getClipTypeGrpcReply.Result.ClipTypeGrpcs.Count, countConstraint);
+
+        //}
+
+        //[Test]
+        //[Category("Integration")]
+
+        //public void GetNotActiveClipTypesTest()
+        //{
+        //    ClipTypeGrpcRequest request = new ClipTypeGrpcRequest();
+        //    GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+        //    grpcRequestParameter.RequestType = (int)RequestType.ReadByIsActive;
+        //    grpcRequestParameter.BoolValue = false; // Only not active clip types
+        //    request.GrpcRequestParameter = grpcRequestParameter;
+        //    ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadClipTypeGrpc));
+
+        //    Task<ListClipTypeGrpc> getClipTypeGrpcReply = _GrpcService.ReadClipTypeGrpc(request, serverCallContext);
+        //    Assert.That(getClipTypeGrpcReply.Result.ClipTypeGrpcs, Is.Not.Null);
+        //    NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+        //    Assert.That(getClipTypeGrpcReply.Result.ClipTypeGrpcs.Count, countConstraint);
+
+        //}
         [Test]
+        [Category("Integration")]
         public void GetByIdClipTypeTest()
         {
             // Arrange
@@ -120,7 +181,9 @@ namespace CdbAccess.Tests
             Assert.That(response.Result.ClipTypeGrpcs[0].Description, descriptionConstraint);
 
         }
+
         [Test]
+        [Category("Integration")]
         public void GetByCodeClipTypeTest()
         {
             // Arrange
@@ -147,7 +210,9 @@ namespace CdbAccess.Tests
             Assert.That(clipTypeId, codeConstraint);
 
         }
+
         [Test]
+        [Category("Integration")]
         public async Task CreateClipTypeTest()
         {
             // Check if the test clip already exists
@@ -192,6 +257,7 @@ namespace CdbAccess.Tests
         }
 
         [Test]
+        [Category("Integration")]
         public async Task UpdateClipTypeTest()
         {
             // Check if the test clip already exists
@@ -234,7 +300,10 @@ namespace CdbAccess.Tests
             NUnit.Framework.Constraints.EqualConstraint statusConstraint = Is.EqualTo(true);
             Assert.That(crudResponse.SaveSuccess, statusConstraint);
         }
+
         [Test]
+        [Category("Integration")]
+
         public async Task XDeleteClipTypeTest()
         {
             // there is no Grpc endpoint to delete this type of data, so we have to use the database context directly

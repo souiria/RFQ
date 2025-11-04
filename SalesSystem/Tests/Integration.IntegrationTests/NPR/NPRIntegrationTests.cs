@@ -1,13 +1,8 @@
-﻿using Grpc.Core;
-using Grpc.Core.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Moq;
-using NPR;
+﻿using NPR;
 using NPR.Endpoints.GrpcServices;
 using NPR.Services;
 
-namespace NPRAccess.Tests
+namespace Integration.Tests.NPR
 {
     public class NPRIntegrationTests
     {

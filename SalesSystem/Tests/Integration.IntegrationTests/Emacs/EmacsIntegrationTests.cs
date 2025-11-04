@@ -1,13 +1,8 @@
 ﻿using Emacs;
 using Emacs.Endpoints.GrpcServices;
 using Emacs.Services;
-using Grpc.Core;
-using Grpc.Core.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Moq;
 
-namespace EmacsAccess.Tests
+namespace Integration.Tests.Emacs
 {
     public class EmacsIntegrationTests
     {

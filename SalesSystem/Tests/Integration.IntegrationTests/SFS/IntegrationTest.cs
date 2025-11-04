@@ -1,14 +1,10 @@
-﻿using Grpc.Core;
-using Grpc.Core.Testing;
-using Grpc.Net.Client;
-using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
-using SFS;
+﻿using SFS;
 using SFS.Endpoints.GrpcServices;
+using HelloReply = SFS.HelloReply;
+using HelloRequest = SFS.HelloRequest;
 using SFS.Services;
 
-namespace Integration.Tests
+namespace Integration.Tests.SFS
 {
     public class SayHelloTests
     {

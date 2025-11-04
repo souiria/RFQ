@@ -1,13 +1,11 @@
 ﻿using System.Linq.Expressions;
 using Google.Protobuf.WellKnownTypes;
-using Grpc.Core;
-using Grpc.Core.Testing;
-using Microsoft.Extensions.Logging;
-using Moq;
 using SFS;
 using SFS.Endpoints.GrpcServices;
-using SFS.Services; 
-namespace SFSTests
+using HelloReply = SFS.HelloReply;
+using HelloRequest = SFS.HelloRequest;
+using SFS.Services;
+namespace Integration.Tests.SFS
 {
     public class SFSGrpcServiceTests
     {
@@ -157,6 +155,7 @@ namespace SFSTests
         }
 
         [Test]
+        [Category("Integration")]
         public void SayHelloTest()
         {
             HelloRequest request = new HelloRequest();
@@ -172,6 +171,7 @@ namespace SFSTests
         }
 
         [Test]
+        [Category("Integration")]
         public void GetAllCarModelsTest()
         {
             // Arrange
@@ -203,6 +203,7 @@ namespace SFSTests
         }
 
         [Test]
+        [Category("Integration")]
         public void GetAllProfilesTest()
         {
             // Arrange
@@ -227,6 +228,7 @@ namespace SFSTests
         }
 
         [Test]
+        [Category("Integration")]
         public void GetAllCalculationTypesTest()
         {
             // Arrange
@@ -249,6 +251,7 @@ namespace SFSTests
             Assert.That(calculation.DisplayMember, displayConstraint);
         }
         [Test]
+        [Category("Integration")]
         public void GetAllCustomersTest()
         {
             // Arrange
@@ -284,6 +287,7 @@ namespace SFSTests
         }
 
         [Test]
+        [Category("Integration")]
         public void GetAllPeriodsTest()
         {
             // Arrange
@@ -319,6 +323,7 @@ namespace SFSTests
         }
 
         [Test]
+        [Category("Integration")]
         public void GetAllCustomerNonWorkingDaysTest()
         {
             // Arrange
@@ -350,6 +355,7 @@ namespace SFSTests
         }
 
         [Test]
+        [Category("Integration")]
         public void GetAllMonthlyVolumesTest()
         {
             // Arrange
@@ -384,6 +390,7 @@ namespace SFSTests
         }
 
         [Test]
+        [Category("Integration")]
         public void GetAllDailyVolumesTest()
         {
             // Arrange
@@ -415,6 +422,7 @@ namespace SFSTests
         }
 
         [Test]
+        [Category("Integration")]
         public void GetAllForecastsTest()
         {
             // Arrange
@@ -446,6 +454,7 @@ namespace SFSTests
         }
 
         [Test]
+        [Category("Integration")]
         public void GetAllSitesTest()
         {
             // Arrange
