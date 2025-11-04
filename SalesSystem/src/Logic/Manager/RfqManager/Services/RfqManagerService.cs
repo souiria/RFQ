@@ -206,6 +206,46 @@
                 throw;
             }
         }
+        public async Task<RfqCrudResponse> DeleteRfqProjectByRowIdGrpc(RfqProjectRequest request)
+        {
+            try
+            {
+                await Task.Delay(1);
+
+                long rowId = request.RowId;
+
+                GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+                grpcRequestParameter.RequestType = 3;
+
+                RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
+                rfqProjectRequest.RowId = rowId;
+                rfqProjectRequest.GrpcRequestParameter = grpcRequestParameter;
+                RfqCrudGrpcResponse grpcResponse =  _RfqClient.DeleteRfqProjectByRowIdGrpc(rfqProjectRequest);
+                bool result = grpcResponse.SaveSuccess;
+          
+                string message;
+                if (result)
+                {
+                    message = $"RFQ project with RowId {rowId} marked as inactive.";
+                }
+                else
+                {
+                    message = $"RFQ project with RowId {rowId} not found.";
+                }
+
+                RfqCrudResponse response = new RfqCrudResponse();
+                response.SaveSuccess = result;
+                response.Message = message;
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = $"Error deleting RFQ project by RowId: {request.RowId}";
+                _Logger.GenericLogError(errorMessage, ex);
+                throw;
+            }
+        }
 
         public async Task<GetAllRfqProjectGrpcResponse> GetAllRfqProjectGrpc(GetAllRfqProjectGrpcRequest request)
         {
@@ -273,7 +313,46 @@
                 throw;
             }
         }
+        public async Task<GetRfqDrawingPartNumbersByRfqIdGrpcResponse> GetRfqDrawingPartNumbersByRfqIdGrpc(GetRfqDrawingPartNumbersByRfqIdGrpcRequest request)
+        {
+            try
+            {
+                await Task.Delay(1);
 
+                GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+                grpcRequestParameter.RequestType = 2;
+
+                RfqDrawingPartNumbersGrpcRequest rfqDrawingRequest = new RfqDrawingPartNumbersGrpcRequest();
+                rfqDrawingRequest.GrpcRequestParameter = grpcRequestParameter;
+                rfqDrawingRequest.RfqId = request.RfqId;
+
+                ListRfqDrawingPartNumbersGrpc rfqParts = _RfqClient.ReadRfqDrawingPartNumbersGrpc(rfqDrawingRequest);
+
+                GetRfqDrawingPartNumbersByRfqIdGrpcResponse response = new GetRfqDrawingPartNumbersByRfqIdGrpcResponse();
+
+                int partCount = rfqParts.RfqDrawingPartNumbers.Count;
+                bool hasParts = !(partCount <= 0);
+                if (hasParts)
+                {
+                    List<RfqDrawingPartNumber> mappedParts = new List<RfqDrawingPartNumber>();
+
+                    foreach (RfqDrawingPartNumbersGrpc grpcPart in rfqParts.RfqDrawingPartNumbers)
+                    {
+                        RfqDrawingPartNumber mappedPart = grpcPart.ToRfqDrawingPartNumber();
+                        mappedParts.Add(mappedPart);
+                    }
+
+                    response.Parts.AddRange(mappedParts);
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError($"Error fetching RFQ drawing parts by RfqId: {request.RfqId}", ex);
+                throw;
+            }
+        }
         public async Task<UploadPartsRequestGrpcResponse> UploadPartsGrpc(UploadPartsRequestGrpcRequest request)
         {
             UploadPartsRequestGrpcResponse uploadResponse = new UploadPartsRequestGrpcResponse();

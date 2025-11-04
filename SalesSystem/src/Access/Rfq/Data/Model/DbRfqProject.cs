@@ -31,5 +31,7 @@
 
         public DbRfqReason? RfqReason
         { get; set; }
+        public bool IsActive 
+        { get; set; } = true;
     }
 }

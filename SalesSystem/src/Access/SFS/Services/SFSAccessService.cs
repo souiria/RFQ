@@ -211,5 +211,14 @@ namespace SFS.Services
             _DailyVolumeGrpcs.Items.AddRange(result.Value);
             return _DailyVolumeGrpcs;
         }
+
+        public Task<HelloReply> SayHelloAsync(string name)
+        {
+            HelloReply reply = new HelloReply();
+            reply.Message = "Hello " + name;
+
+            Task<HelloReply> result = Task.FromResult(reply);
+            return result;
+        }
     }
 }

@@ -9,6 +9,7 @@ namespace SalesSystem.Rfq.Services
         bool _Disposed;
 
         // Cached Data
+        List<RfqDrawingPartNumber> _RfqDrawingParts;
         List<RfqProject> _RfqProjects;
         List<CustomerGrpc> _Customers;
         List<RfqReasonGrpc> _Reasons;
@@ -16,7 +17,7 @@ namespace SalesSystem.Rfq.Services
         List<string> _QuotationNumbers;
 
         // Cached data accessors
-
+        public IReadOnlyCollection<RfqDrawingPartNumber> RfqDrawingParts => _RfqDrawingParts.AsReadOnly();
         public IReadOnlyCollection<RfqProject> RfqProjects => _RfqProjects.AsReadOnly();
         public IReadOnlyCollection<CustomerGrpc> Customers => _Customers.AsReadOnly();
         public IReadOnlyCollection<RfqReasonGrpc> Reasons => _Reasons.AsReadOnly();
@@ -42,12 +43,8 @@ namespace SalesSystem.Rfq.Services
             _Customers = new();
             _Reasons = new();
             _CustomerProjectAssociations = new();
-            _QuotationNumbers = new()
-                {
-                    "SEWS-25-025-005678",
-                    "SEWS-25-025-005688",
-                    "SEWS-25-025-005692"
-                };
+            _QuotationNumbers= new();
+            _RfqDrawingParts= new();
         }
         public async Task<HelloReply> SayHelloAsync(string name, CancellationToken cancellationToken = default)
         {
@@ -115,7 +112,29 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
- 
+        public async Task<List<RfqDrawingPartNumber>> GetRfqDrawingPartNumbersByRfqIdAsync(long rfqId)
+  
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+
+            try
+            {
+                GetRfqDrawingPartNumbersByRfqIdGrpcRequest request = new GetRfqDrawingPartNumbersByRfqIdGrpcRequest();
+                request.RfqId = rfqId;
+
+                GetRfqDrawingPartNumbersByRfqIdGrpcResponse response = await _Client.GetRfqDrawingPartNumbersByRfqIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
+                _RfqDrawingParts.Clear();
+                _RfqDrawingParts.AddRange(response.Parts);
+                return _RfqDrawingParts;
+                //List<RfqDrawingPartNumber> parts = response.Parts.ToList();
+                //return parts;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in GetRfqDrawingPartNumbersByRfqId for RfqId: {rfqId}", ex);
+                throw;
+            }
+        }
         public async Task<GetAllCustomersGrpcResponse> GetAllCustomersAsync(
             int position = 0,
             int take = 100,
@@ -162,7 +181,6 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-
         public async Task<int> GetProjectAssociationsByCustomerIdAsync(string customerId)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
@@ -305,6 +323,26 @@ namespace SalesSystem.Rfq.Services
             catch (Exception ex)
             {
                 _Logger?.GenericLogError($"Error in UpdateRfqProject for RowId: {project.RowId}", ex);
+                throw;
+            }
+        }
+        public async Task<RfqCrudResponse> DeleteRfqProjectByRowIdAsync(long rowId)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+
+            try
+            {
+                RfqProjectRequest request = new RfqProjectRequest();
+
+                request.RowId = rowId;
+
+              RfqCrudResponse response = await _Client.DeleteRfqProjectByRowIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in DeleteRfqProjectByRowId for RowId: {rowId}", ex);
                 throw;
             }
         }

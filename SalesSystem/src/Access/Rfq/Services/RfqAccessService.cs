@@ -580,7 +580,8 @@
             }
 
             ListRfqDrawingPartNumbersGrpc responseList = new ListRfqDrawingPartNumbersGrpc();
-            List<RfqDrawingPartNumbersGrpc> projects = _ListRfqDrawingPartNumbers.RfqDrawingPartNumbers.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            List<RfqDrawingPartNumbersGrpc> projects = _ListRfqDrawingPartNumbers.RfqDrawingPartNumbers.Where(x => x.RfqId == request.RfqId).ToList();
+   
             if (projects != null)
             {
                 responseList.RfqDrawingPartNumbers.AddRange(projects);
@@ -661,18 +662,66 @@
         #endregion
 
         #region RfqProject
+        public async Task<ListRfqProjectGrpc> DeleteRfqProjectByRowId(RfqProjectGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            ListRfqProjectGrpc responseList = new ListRfqProjectGrpc();
+
+            if (request == null || request.RowId == 0)
+            {
+                return responseList;
+            }
+
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                RfqDbContext dbContext = scope.ServiceProvider.GetRequiredService<RfqDbContext>();
+
+                object[] keyValues = new object[] { request.RowId };
+                DbRfqProject? entity = await dbContext.RfqProject.FindAsync(keyValues, cancellationToken);
+
+                if (entity == null)
+                {
+                    return responseList;
+                }
+
+                entity.IsActive = false;
+
+         
+                    await dbContext.SaveChangesAsync(cancellationToken);
+
+                    RfqProjectGrpc updated = entity.FromEntity();
+
+                    // Update local cache
+                    RfqProjectGrpc? cached = _ListRfqProjects.RfqProjects.FirstOrDefault(p => p.RowId == updated.RowId);
+                    if (cached != null)
+                    {
+                        cached.IsActive = false;
+                    }
+
+                    responseList.RfqProjects.Add(updated);
+               
+                return responseList;
+            }
+        }
+
         public async Task<ListRfqProjectGrpc> GetAllRfqProjects(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListRfqProjects.RfqProjects.Any())
-            {
-                return _ListRfqProjects;
-            }
-            else
+
+            if (!_ListRfqProjects.RfqProjects.Any())
             {
                 await PopulateRfqProjects(cancellationToken);
-                return _ListRfqProjects;
             }
+
+            ListRfqProjectGrpc activeProjectsList = new ListRfqProjectGrpc();
+
+            List<RfqProjectGrpc> activeProjects = _ListRfqProjects.RfqProjects
+                .Where(p => p.IsActive != null && p.IsActive.Value)
+                .ToList();
+
+            activeProjectsList.RfqProjects.AddRange(activeProjects);
+
+            return activeProjectsList;
         }
 
         public async Task<ListRfqProjectGrpc> GetRfqProjectByRowId(RfqProjectGrpcRequest request, CancellationToken cancellationToken)

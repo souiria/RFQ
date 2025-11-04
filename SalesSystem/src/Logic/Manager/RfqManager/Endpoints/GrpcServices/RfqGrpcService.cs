@@ -77,5 +77,10 @@
             UpdateRfqProjectGrpcResponse response = await _RfqManagerService.UpdateRfqProject(request);
             return response;
         }
+        public override async Task<RfqCrudResponse> DeleteRfqProjectByRowIdGrpc(RfqProjectRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("DeleteRfqProjectByRowIdGrpc starting");
+            return await _RfqManagerService.DeleteRfqProjectByRowIdGrpc(request);
+        }
     }
 }
