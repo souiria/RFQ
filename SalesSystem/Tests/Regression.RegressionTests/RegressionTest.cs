@@ -1,4 +1,8 @@
-﻿namespace Regression.Tests
+﻿using SFS;
+using SFS.Endpoints.GrpcServices;
+using SFS.Services;
+
+namespace Regression.Tests
 {
     public class SayHelloTests
     {
