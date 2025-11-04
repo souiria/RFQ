@@ -1,4 +1,4 @@
-﻿namespace DocumentConversion.TypeConversion.DSI
+﻿namespace Transformation.TypeConversion.DSI
 {
     public static class ModuleChildDetails
     {
@@ -20,12 +20,12 @@
                 model.IsCoreModule = ValueCalculator.CalculateLogicalValue(split[1], false);
                 model.HarnessName1 = split[2];
                 model.HarnessIssue1 = split[3];
-                model.HarnessDate1 = !string.IsNullOrWhiteSpace(split[4]) ? ErrorCheckHelper.CheckDateTimeFormatException(split[4]) : (DateTime?)null;
+                model.HarnessDate1 = !string.IsNullOrWhiteSpace(split[4]) ? ErrorCheckHelper.CheckDateTimeFormatException(split[4]) : null;
                 model.SimilarHarnessName1 = split[5];
                 model.SimilarHarnessIssue1 = split[6];
                 model.HarnessName2 = split[7];
                 model.HarnessIssue2 = split[8];
-                model.HarnessDate2 = !string.IsNullOrWhiteSpace(split[9]) ? ErrorCheckHelper.CheckDateTimeFormatException(split[9]) : (DateTime?)null;
+                model.HarnessDate2 = !string.IsNullOrWhiteSpace(split[9]) ? ErrorCheckHelper.CheckDateTimeFormatException(split[9]) : null;
                 model.SimilarHarnessName2 = split[10];
                 model.SimilarHarnessIssue2 = split[11];
                 model.Customer = split[12];

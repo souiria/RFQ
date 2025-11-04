@@ -1,4 +1,4 @@
-﻿namespace DocumentConversion.TypeConversion.PartSearch
+﻿namespace Transformation.TypeConversion.PartSearch
 {
     class NissanBomConverter
     {

@@ -18,32 +18,26 @@
             Task<HelloReply> result = Task.FromResult(reply);
             return result;
         }
-
-        public override async Task<GetCustomersGrpcResponse> GetCustomersGrpc(GetCustomersGrpcRequest request, ServerCallContext context)
+        public override async Task<GetAllCustomersGrpcResponse> GetAllCustomersGrpc(GetAllCustomersGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("GetCustomersGrpc starting");
-            GetCustomersGrpcResponse response = await _RfqManagerService.GetCustomersGrpc(request);
+            _Logger.GenericLogInformation("GetAllCustomersGrpc starting");
+            GetAllCustomersGrpcResponse response = await _RfqManagerService.GetAllCustomersGrpc(request);
+            return response;
+        }
+        public override async Task<GetCustomersByUserIdGrpcResponse> GetCustomersByUserIdGrpc(GetCustomersByUserIdGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetCustomersByUserIdGrpc starting");
+            GetCustomersByUserIdGrpcResponse response = await _RfqManagerService.GetCustomersByUserIdGrpc(request);
             return response;
         }
 
-        public override async Task<GetLocationsByCustomerIdGrpcResponse> GetLocationsByCustomerIdGrpc(GetLocationsByCustomerIdGrpcRequest request, ServerCallContext context)
+        public override async Task<GetProjectAssociationsByCustomerIdResponse> GetProjectAssociationsByCustomerId(GetProjectAssociationsByCustomerIdRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("GetLocationsByCustomerIdGrpc starting");
-            GetLocationsByCustomerIdGrpcResponse response = await _RfqManagerService.GetLocationsByCustomerIdGrpc(request);
+            _Logger.GenericLogInformation("GetCustomersByUserIdGrpc starting");
+            GetProjectAssociationsByCustomerIdResponse response = await _RfqManagerService.GetProjectAssociationsByCustomerId(request);
             return response;
         }
-        public override async Task<GetProjectsByLocationIdGrpcResponse> GetProjectsByLocationIdGrpc(GetProjectsByLocationIdGrpcRequest request, ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("GetProjectsByLocationIdGrpc starting");
-            GetProjectsByLocationIdGrpcResponse response = await _RfqManagerService.GetProjectsByLocationIdGrpc(request);
-            return response;
-        }
-        public override async Task<GetVehicleByProjectCodeGrpcResponse> GetVehiclesByProjectCodeGrpc(GetVehicleByProjectCodeGrpcRequest request, ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("GetVehiclesByProjectCodeGrpc starting");
-            GetVehicleByProjectCodeGrpcResponse response = await _RfqManagerService.GetVehiclesByProjectCodeGrpc(request);
-            return response;
-        }
+
         public override async Task<GetRfqReasonsGrpcResponse> GetRfqReasonsGrpc(GetRfqReasonsGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetRfqReasonsGrpc starting");
@@ -55,6 +49,38 @@
             _Logger.GenericLogInformation("UploadPartsGrpc starting");
             UploadPartsRequestGrpcResponse response = await _RfqManagerService.UploadPartsGrpc(request);
             return response;
+        }
+
+        public override async Task<CreateRfqProjectGrpcResponse> CreateRfqProjectGrpc(CreateRfqProjectGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("CreateRfqProjectGrpc starting");
+            CreateRfqProjectGrpcResponse response = await _RfqManagerService.CreateRfqProject(request);
+            return response;
+        }
+
+        public override async Task<GetAllRfqProjectGrpcResponse> GetAllRfqProjectGrpc(GetAllRfqProjectGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetAllRfqProjectGrpc starting");
+            GetAllRfqProjectGrpcResponse response = await _RfqManagerService.GetAllRfqProjectGrpc(request);
+            return response;
+        }
+        public override async Task<GetRfqProjectByIdGrpcResponse> GetRfqProjectByIdGrpc(GetRfqProjectByIdGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetRfqProjectByIdGrpc starting");
+            GetRfqProjectByIdGrpcResponse response = await _RfqManagerService.GetRfqProjectByIdGrpc(request);
+            return response;
+        }
+
+        public override async Task<UpdateRfqProjectGrpcResponse> UpdateRfqProjectGrpc(UpdateRfqProjectGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("UpdateRfqProjectGrpc starting");
+            UpdateRfqProjectGrpcResponse response = await _RfqManagerService.UpdateRfqProject(request);
+            return response;
+        }
+        public override async Task<RfqCrudResponse> DeleteRfqProjectByRowIdGrpc(RfqProjectRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("DeleteRfqProjectByRowIdGrpc starting");
+            return await _RfqManagerService.DeleteRfqProjectByRowIdGrpc(request);
         }
         public override async Task<FilterGrpcResponse> FilterGrpc(FilterGrpcRequest request, ServerCallContext context)
         {

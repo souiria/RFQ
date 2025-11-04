@@ -13,17 +13,18 @@
             return customer;
         }
 
-        public static CustomerLocationGrpc ToCustomerLocation(this Master.CustomerLocationGrpc masterLocationGrpc)
+        public static CustomerLocationGrpc ToCustomerLocation(this CustomerLocationGrpc masterLocationGrpc)
         {
             CustomerLocationGrpc location = new CustomerLocationGrpc();
             location.Id = masterLocationGrpc.Id;
             location.CustomerCode = masterLocationGrpc.CustomerCode;
             location.CustomerBusinessHierarchyGuid = masterLocationGrpc.CustomerBusinessHierarchyGuid;
+            location.CustomerName = masterLocationGrpc.CustomerName;
             location.IsActive = masterLocationGrpc.IsActive;
             return location;
         }
 
-        public static ProjectGrpc ToProject(this Master.ProjectGrpc masterProjectGrpc)
+        public static ProjectGrpc ToProject(this ProjectGrpc masterProjectGrpc)
         {
             ProjectGrpc projectAssociation = new ProjectGrpc();
             projectAssociation.Id = masterProjectGrpc.Id;
@@ -47,12 +48,52 @@
             return vehicle;
         }
 
+        public static CustomerProjectAssociationGrpc ToCustomerProjectAssociation(this CustomerProjectAssociationGrpc masterCustomerProjectAssociationGrpc)
+        {
+            CustomerProjectAssociationGrpc customerProjectAssociation = new CustomerProjectAssociationGrpc();
+            customerProjectAssociation.Id = masterCustomerProjectAssociationGrpc.Id;
+            customerProjectAssociation.CustomerLocationGuid = masterCustomerProjectAssociationGrpc.CustomerLocationGuid;
+            customerProjectAssociation.ProjectGuid = masterCustomerProjectAssociationGrpc.ProjectGuid;
+            customerProjectAssociation.IsActive = masterCustomerProjectAssociationGrpc.IsActive;
+            return customerProjectAssociation;
+        }
+
         public static RfqReasonGrpc ToReason(this Rfq.RfqReasonGrpc rfqRfqReasonGrpc)
         {
             RfqReasonGrpc reason = new RfqReasonGrpc();
             reason.RowId = rfqRfqReasonGrpc.RowId;
             reason.RfqReasonTitle = rfqRfqReasonGrpc.ReasonTitle;
             return reason;
+        }
+
+        public static RfqProject ToRfqProject(this RfqProjectGrpc rfqProjectGrpc)
+        {
+            RfqProject project = new RfqProject();
+            project.RowId = rfqProjectGrpc.RowId;
+            project.RfqNumber = rfqProjectGrpc.RfqNumber;
+            project.CustomerBusinessUnitGuid = rfqProjectGrpc.CustomerBusinessUnitGuid;
+            project.CustomerLocationGuid = rfqProjectGrpc.CustomerLocationGuid;
+            project.ProjectGuid = rfqProjectGrpc.ProjectGuid;
+            project.RfqReasonId = rfqProjectGrpc.RfqReasonId ??0;
+            project.RfqResponseDeadline = rfqProjectGrpc.RfqResponseDeadline;
+            project.CarModelGuid = rfqProjectGrpc.CarModelGuid;
+            project.VehicleVolume = rfqProjectGrpc.VehicleVolume ??0;
+            return project;
+        }
+        public static RfqDrawingPartNumber ToRfqDrawingPartNumber(this RfqDrawingPartNumbersGrpc rfqPartGrpc)
+        {
+            RfqDrawingPartNumber part = new RfqDrawingPartNumber();
+            part.RowId = rfqPartGrpc.RowId;
+            part.RfqId = rfqPartGrpc.RfqId;
+            part.OriginalPartNumber = rfqPartGrpc.OriginalPartNumber;
+            part.OriginalPartNumberPrice = rfqPartGrpc.OriginalPartNumberPrice ??0;
+            part.SwappedPartNumber = rfqPartGrpc.SwappedPartNumber;
+            part.SwappedPartNumberPrice = rfqPartGrpc.SwappedPartNumberPrice??0;
+            part.PriceSource = rfqPartGrpc.PriceSource;
+            part.IsExactMatch = rfqPartGrpc.IsExactMatch ?? false;
+            part.IsSwapped = rfqPartGrpc.IsSwapped ?? false;
+            part.Comments = rfqPartGrpc.Comments;
+            return part;
         }
     }
 }

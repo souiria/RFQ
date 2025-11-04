@@ -1,5 +1,3 @@
-using Emacs.Services;
-
 namespace Emacs
 {
     public static class Program

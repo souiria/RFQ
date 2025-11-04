@@ -1,5 +1,3 @@
-using System.Globalization;
-
 namespace SF.Access.CDbs
 {
     [EventSource(Name = "MyCompany-SF.Commercial.Access-SF.Access.CDbs")]

@@ -19,6 +19,7 @@ service Rfq {
   rpc CreateRfqProjectGrpc (RfqProjectGrpcRequest) returns (RfqCrudGrpcResponse);
   rpc ReadRfqProjectGrpc (RfqProjectGrpcRequest) returns (ListRfqProjectGrpc);
   rpc UpdateRfqProjectGrpc (RfqProjectGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc DeleteRfqProjectByRowIdGrpc (RfqProjectGrpcRequest) returns (RfqCrudGrpcResponse);
 
   rpc CreateRfqNotesGrpc (RfqNotesGrpcRequest) returns (RfqCrudGrpcResponse);
   rpc ReadRfqNotesGrpc (RfqNotesGrpcRequest) returns (ListRfqNotesGrpc);
@@ -27,6 +28,130 @@ service Rfq {
   rpc CreateRfqReasonGrpc (RfqReasonGrpcRequest) returns (RfqCrudGrpcResponse);
   rpc ReadRfqReasonGrpc (RfqReasonGrpcRequest) returns (ListRfqReasonGrpc);
   rpc UpdateRfqReasonGrpc (RfqReasonGrpcRequest) returns (RfqCrudGrpcResponse);
+
+  rpc CreateDsiBendGrpc (DsiBendGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc ReadDsiBendGrpc (DsiBendGrpcRequest) returns (ListDsiBendGrpc);
+  rpc UpdateDsiBendGrpc (DsiBendGrpcRequest) returns (RfqCrudGrpcResponse);
+
+  rpc CreateDsiBranchConfigurationGrpc (DsiBranchConfigurationGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc ReadDsiBranchConfigurationGrpc (DsiBranchConfigurationGrpcRequest) returns (ListDsiBranchConfigurationGrpc);
+  rpc UpdateDsiBranchConfigurationGrpc (DsiBranchConfigurationGrpcRequest) returns (RfqCrudGrpcResponse);
+
+  rpc CreateDsiBranchConfigurationBendAssociationGrpc (DsiBranchConfigurationBendAssociationGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc ReadDsiBranchConfigurationBendAssociationGrpc (DsiBranchConfigurationBendAssociationGrpcRequest) returns (ListDsiBranchConfigurationBendAssociationGrpc);
+  rpc UpdateDsiBranchConfigurationBendAssociationGrpc (DsiBranchConfigurationBendAssociationGrpcRequest) returns (RfqCrudGrpcResponse);
+
+  rpc CreateDsiBranchInsulationGrpc (DsiBranchInsulationGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc ReadDsiBranchInsulationGrpc (DsiBranchInsulationGrpcRequest) returns (ListDsiBranchInsulationGrpc);
+  rpc UpdateDsiBranchInsulationGrpc (DsiBranchInsulationGrpcRequest) returns (RfqCrudGrpcResponse);
+
+  rpc CreateDsiBranchInsulationThroughNodeGrpc (DsiBranchInsulationThroughNodeGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc ReadDsiBranchInsulationThroughNodeGrpc (DsiBranchInsulationThroughNodeGrpcRequest) returns (ListDsiBranchInsulationThroughNodeGrpc);
+  rpc UpdateDsiBranchInsulationThroughNodeGrpc (DsiBranchInsulationThroughNodeGrpcRequest) returns (RfqCrudGrpcResponse);
+
+  rpc CreateDsiCavityMappingGrpc (DsiCavityMappingGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc ReadDsiCavityMappingGrpc (DsiCavityMappingGrpcRequest) returns (ListDsiCavityMappingGrpc);
+  rpc UpdateDsiCavityMappingGrpc (DsiCavityMappingGrpcRequest) returns (RfqCrudGrpcResponse);
+
+  rpc CreateDsiCircuitOptionGrpc (DsiCircuitOptionGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiCircuitOptionGrpc (DsiCircuitOptionGrpcRequest) returns (ListDsiCircuitOptionGrpc);
+rpc UpdateDsiCircuitOptionGrpc (DsiCircuitOptionGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiCentreStripGrpc (DsiCentreStripGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiCentreStripGrpc (DsiCentreStripGrpcRequest) returns (ListDsiCentreStripGrpc);
+rpc UpdateDsiCentreStripGrpc (DsiCentreStripGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiComponentGrpc (DsiComponentGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiComponentGrpc (DsiComponentGrpcRequest) returns (ListDsiComponentGrpc);
+rpc UpdateDsiComponentGrpc (DsiComponentGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiCompositeDetailGrpc (DsiCompositeDetailGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiCompositeDetailGrpc (DsiCompositeDetailGrpcRequest) returns (ListDsiCompositeDetailGrpc);
+rpc UpdateDsiCompositeDetailGrpc (DsiCompositeDetailGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiCompositeDetailCircuitOptionAssociationGrpc (DsiCompositeDetailCircuitOptionAssociationGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiCompositeDetailCircuitOptionAssociationGrpc (DsiCompositeDetailCircuitOptionAssociationGrpcRequest) returns (ListDsiCompositeDetailCircuitOptionAssociationGrpc);
+rpc UpdateDsiCompositeDetailCircuitOptionAssociationGrpc (DsiCompositeDetailCircuitOptionAssociationGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiCompositeOptionGrpc (DsiCompositeOptionGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiCompositeOptionGrpc (DsiCompositeOptionGrpcRequest) returns (ListDsiCompositeOptionGrpc);
+rpc UpdateDsiCompositeOptionGrpc (DsiCompositeOptionGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiHarnessGrpc (DsiHarnessGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiHarnessGrpc (DsiHarnessGrpcRequest) returns (ListDsiHarnessGrpc);
+rpc UpdateDsiHarnessGrpc (DsiHarnessGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiHarnessScopeGrpc (DsiHarnessScopeGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiHarnessScopeGrpc (DsiHarnessScopeGrpcRequest) returns (ListDsiHarnessScopeGrpc);
+rpc UpdateDsiHarnessScopeGrpc (DsiHarnessScopeGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiHarnessScopeScopeAssociationGrpc (DsiHarnessScopeScopeAssociationGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiHarnessScopeScopeAssociationGrpc (DsiHarnessScopeScopeAssociationGrpcRequest) returns (ListDsiHarnessScopeScopeAssociationGrpc);
+rpc UpdateDsiHarnessScopeScopeAssociationGrpc (DsiHarnessScopeScopeAssociationGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiManualBomQuantityGrpc (DsiManualBomQuantityGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiManualBomQuantityGrpc (DsiManualBomQuantityGrpcRequest) returns (ListDsiManualBomQuantityGrpc);
+rpc UpdateDsiManualBomQuantityGrpc (DsiManualBomQuantityGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiMidWireComponentGrpc (DsiMidWireComponentGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiMidWireComponentGrpc (DsiMidWireComponentGrpcRequest) returns (ListDsiMidWireComponentGrpc);
+rpc UpdateDsiMidWireComponentGrpc (DsiMidWireComponentGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiModuleChildDetailGrpc (DsiModuleChildDetailGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiModuleChildDetailGrpc (DsiModuleChildDetailGrpcRequest) returns (ListDsiModuleChildDetailGrpc);
+rpc UpdateDsiModuleChildDetailGrpc (DsiModuleChildDetailGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiModuleCompatibilityGrpc (DsiModuleCompatibilityGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiModuleCompatibilityGrpc (DsiModuleCompatibilityGrpcRequest) returns (ListDsiModuleCompatibilityGrpc);
+rpc UpdateDsiModuleCompatibilityGrpc (DsiModuleCompatibilityGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiMulticoreSpecificationGrpc (DsiMulticoreSpecificationGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiMulticoreSpecificationGrpc (DsiMulticoreSpecificationGrpcRequest) returns (ListDsiMulticoreSpecificationGrpc);
+rpc UpdateDsiMulticoreSpecificationGrpc (DsiMulticoreSpecificationGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiPinMappingGrpc (DsiPinMappingGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiPinMappingGrpc (DsiPinMappingGrpcRequest) returns (ListDsiPinMappingGrpc);
+rpc UpdateDsiPinMappingGrpc (DsiPinMappingGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiPinMappingCavityMappingAssociationGrpc (DsiPinMappingCavityMappingAssociationGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiPinMappingCavityMappingAssociationGrpc (DsiPinMappingCavityMappingAssociationGrpcRequest) returns (ListDsiPinMappingCavityMappingAssociationGrpc);
+rpc UpdateDsiPinMappingCavityMappingAssociationGrpc (DsiPinMappingCavityMappingAssociationGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiScopeGrpc (DsiScopeGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiScopeGrpc (DsiScopeGrpcRequest) returns (ListDsiScopeGrpc);
+rpc UpdateDsiScopeGrpc (DsiScopeGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiSupplierGrpc (DsiSupplierGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiSupplierGrpc (DsiSupplierGrpcRequest) returns (ListDsiSupplierGrpc);
+rpc UpdateDsiSupplierGrpc (DsiSupplierGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiTransformedCompositeDetailGrpc (DsiTransformedCompositeDetailGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiTransformedCompositeDetailGrpc (DsiTransformedCompositeDetailGrpcRequest) returns (ListDsiTransformedCompositeDetailGrpc);
+rpc UpdateDsiTransformedCompositeDetailGrpc (DsiTransformedCompositeDetailGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiTransformedHarnessGrpc (DsiTransformedHarnessGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiTransformedHarnessGrpc (DsiTransformedHarnessGrpcRequest) returns (ListDsiTransformedHarnessGrpc);
+rpc UpdateDsiTransformedHarnessGrpc (DsiTransformedHarnessGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiTransformedModuleChildDetailGrpc (DsiTransformedModuleChildDetailGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiTransformedModuleChildDetailGrpc (DsiTransformedModuleChildDetailGrpcRequest) returns (ListDsiTransformedModuleChildDetailGrpc);
+rpc UpdateDsiTransformedModuleChildDetailGrpc (DsiTransformedModuleChildDetailGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiUnitOfMeasureGrpc (DsiUnitOfMeasureGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiUnitOfMeasureGrpc (DsiUnitOfMeasureGrpcRequest) returns (ListDsiUnitOfMeasureGrpc);
+rpc UpdateDsiUnitOfMeasureGrpc (DsiUnitOfMeasureGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiWireMulticoreMarkerGrpc (DsiWireMulticoreMarkerGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiWireMulticoreMarkerGrpc (DsiWireMulticoreMarkerGrpcRequest) returns (ListDsiWireMulticoreMarkerGrpc);
+rpc UpdateDsiWireMulticoreMarkerGrpc (DsiWireMulticoreMarkerGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiWireSpecificationGrpc (DsiWireSpecificationGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiWireSpecificationGrpc (DsiWireSpecificationGrpcRequest) returns (ListDsiWireSpecificationGrpc);
+rpc UpdateDsiWireSpecificationGrpc (DsiWireSpecificationGrpcRequest) returns (RfqCrudGrpcResponse);
+
+rpc CreateDsiWireThroughNodeGrpc (DsiWireThroughNodeGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadDsiWireThroughNodeGrpc (DsiWireThroughNodeGrpcRequest) returns (ListDsiWireThroughNodeGrpc);
+rpc UpdateDsiWireThroughNodeGrpc (DsiWireThroughNodeGrpcRequest) returns (RfqCrudGrpcResponse);
 
   rpc FilterRfqGrpc (RfqFilterRequest) returns (RfqFilterResponse);
 }
@@ -51,6 +176,8 @@ message GrpcRequestParameter {
 	google.protobuf.Int32Value IntValue = 6;
 	google.protobuf.FloatValue DecimalValue = 7;
 	google.protobuf.Timestamp DateTimeValue = 8;
+	int64 RowId = 9;
+	int64 RfqId = 10;
 }
 
 // Shared CRUD response message
@@ -65,6 +192,7 @@ message RfqDrawingPartNumbersGrpcRequest {
   repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbersGrpcsToCreate = 2;
   repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbersGrpcsToUpdate = 3;
   repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbersGrpcsToDelete = 4;
+   int64 RfqId = 5;
 }
 
 message RfqDrawingPartNumbersGrpc {
@@ -92,6 +220,7 @@ message RfqProjectGrpcRequest {
   repeated RfqProjectGrpc RfqProjectGrpcsToCreate = 2;
   repeated RfqProjectGrpc RfqProjectGrpcsToUpdate = 3;
   repeated RfqProjectGrpc RfqProjectGrpcsToDelete = 4;
+  int64 RowId = 5;
 }
 
 message RfqProjectGrpc {
@@ -105,6 +234,7 @@ message RfqProjectGrpc {
 	google.protobuf.StringValue CarModelGuid = 8;
 	google.protobuf.Int32Value VehicleVolume = 9;
 	google.protobuf.Timestamp CreatedDate = 10;
+		google.protobuf.BoolValue IsActive = 11;
 }
 
 message ListRfqProjectGrpc {
@@ -145,6 +275,1072 @@ message RfqReasonGrpc {
 
 message ListRfqReasonGrpc {
 	repeated RfqReasonGrpc RfqReasons = 1;
+}
+
+message DsiBendGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiBendGrpc DsiBendGrpcsToCreate = 2;
+  repeated DsiBendGrpc DsiBendGrpcsToUpdate = 3;
+  repeated DsiBendGrpc DsiBendGrpcsToDelete = 4;
+}
+
+message DsiBendGrpc {
+	int64 RowId = 1;
+	string BendId = 2;
+	google.protobuf.StringValue Bend = 3;
+	google.protobuf.Timestamp CreatedDate = 4;
+	google.protobuf.Timestamp ModifiedDate = 5;
+	string CreatedBy = 6;
+	string ModifiedBy = 7;
+}
+
+message ListDsiBendGrpc {
+	repeated DsiBendGrpc DsiBends = 1;
+}
+
+message DsiBranchConfigurationGrpcRequest {
+   GrpcRequestParameter GrpcRequestParameter = 1;
+   repeated DsiBranchConfigurationGrpc DsiBranchConfigurationGrpcsToCreate = 2;
+   repeated DsiBranchConfigurationGrpc DsiBranchConfigurationGrpcsToUpdate = 3;
+   repeated DsiBranchConfigurationGrpc DsiBranchConfigurationGrpcsToDelete = 4;
+}
+
+message DsiBranchConfigurationGrpc {
+	int64 RowId = 1;
+	string BranchConfigurationId = 2;
+	google.protobuf.StringValue StartNode = 3;
+	google.protobuf.StringValue StartRoute = 4;
+	google.protobuf.StringValue StartCoordinates = 5;
+	google.protobuf.StringValue EndNode = 6;
+	google.protobuf.StringValue EndRoute = 7;
+	google.protobuf.StringValue EndCoordinates = 8;
+	google.protobuf.DoubleValue Length = 9;
+	google.protobuf.StringValue CircuitOptionId = 10;
+	google.protobuf.DoubleValue BundleDiameter = 11;
+	google.protobuf.StringValue UserModule = 12;
+	google.protobuf.StringValue AssignedModule = 13;
+	google.protobuf.StringValue ModuleFrom = 14;
+	google.protobuf.StringValue BendString = 15;
+	string HarnessId = 16;
+	google.protobuf.Timestamp CreatedDate = 17;
+	google.protobuf.Timestamp ModifiedDate = 18;
+	string CreatedBy = 19;
+	string ModifiedBy = 20;
+}
+
+message ListDsiBranchConfigurationGrpc {
+	repeated DsiBranchConfigurationGrpc DsiBranchConfigurations = 1;
+}
+
+message DsiBranchConfigurationBendAssociationGrpcRequest {
+   GrpcRequestParameter GrpcRequestParameter = 1;
+   repeated DsiBranchConfigurationBendAssociationGrpc DsiBranchConfigurationBendAssociationGrpcsToCreate = 2;
+   repeated DsiBranchConfigurationBendAssociationGrpc DsiBranchConfigurationBendAssociationGrpcsToUpdate = 3;
+   repeated DsiBranchConfigurationBendAssociationGrpc DsiBranchConfigurationBendAssociationGrpcsToDelete = 4;
+}
+
+message DsiBranchConfigurationBendAssociationGrpc {
+	int64 RowId = 1;
+	string BendId = 2;
+	string BranchConfigurationId = 3;
+	google.protobuf.Timestamp CreatedDate = 5;
+	google.protobuf.Timestamp ModifiedDate = 6;
+	string CreatedBy = 7;
+	string ModifiedBy = 8;
+}
+
+message ListDsiBranchConfigurationBendAssociationGrpc {
+	repeated DsiBranchConfigurationBendAssociationGrpc DsiBranchConfigurationBendAssociations = 1;
+}
+
+message DsiBranchInsulationGrpcRequest {
+   GrpcRequestParameter GrpcRequestParameter = 1;
+   repeated DsiBranchInsulationGrpc DsiBranchInsulationGrpcsToCreate = 2;
+   repeated DsiBranchInsulationGrpc DsiBranchInsulationGrpcsToUpdate = 3;
+   repeated DsiBranchInsulationGrpc DsiBranchInsulationGrpcsToDelete = 4;
+}
+
+message DsiBranchInsulationGrpc {
+	int64 RowId = 1;
+	google.protobuf.StringValue StartNode = 2;
+	google.protobuf.StringValue EndNode = 3;
+	google.protobuf.StringValue EndRoute = 4;
+	google.protobuf.StringValue PieceCode = 5;
+	google.protobuf.StringValue InsulationCode = 6;
+	google.protobuf.DoubleValue Diameter = 7;
+	google.protobuf.StringValue CircuitOptionId = 8;
+	google.protobuf.StringValue InsulationNote = 9;
+	google.protobuf.StringValue UserModule = 10;
+	google.protobuf.StringValue AssignedModule = 11;
+	google.protobuf.StringValue ModuleFrom = 12;
+	google.protobuf.StringValue CalculationMethod = 13;
+	google.protobuf.DoubleValue ManualAmount = 14;
+	google.protobuf.StringValue SplitValue = 15;
+	google.protobuf.DoubleValue JoinNumber = 16;
+	google.protobuf.DoubleValue AssemblyItemNumber = 17;
+	google.protobuf.DoubleValue Layer = 18;
+	google.protobuf.StringValue InsulationType = 19;
+	google.protobuf.StringValue PartNumber1 = 20;
+	google.protobuf.StringValue PartNumber2 = 21;
+	google.protobuf.StringValue PartNumber3 = 22;
+	google.protobuf.StringValue Colour = 23;
+	google.protobuf.StringValue Type = 24;
+	google.protobuf.StringValue Material = 25;
+	google.protobuf.DoubleValue WallThickness = 26;
+	google.protobuf.DoubleValue NumberOfTurns = 27;
+	google.protobuf.DoubleValue TurnsPerBreakout = 28;
+	google.protobuf.DoubleValue TurnsPerBranch = 29;
+	google.protobuf.DoubleValue DistanceBetweenItems = 30;
+	google.protobuf.DoubleValue LongestDistance = 31;
+	google.protobuf.DoubleValue DistanceFromConnector = 32;
+	google.protobuf.StringValue TubeSelectionType = 33;
+	google.protobuf.DoubleValue TubeSelectionFactor = 34;
+	google.protobuf.DoubleValue Cutback = 35;
+	google.protobuf.BoolValue IsConvoluted = 36;
+	google.protobuf.BoolValue IsSlit = 37;
+	google.protobuf.StringValue ModuleSpecificData = 38;
+	google.protobuf.StringValue HarnessId = 39;
+	google.protobuf.Timestamp CreatedDate = 40;
+	google.protobuf.Timestamp ModifiedDate = 41;
+	string CreatedBy = 42;
+	string ModifiedBy = 43;
+}
+
+message ListDsiBranchInsulationGrpc {
+	repeated DsiBranchInsulationGrpc DsiBranchInsulations = 1;
+}
+
+message DsiBranchInsulationThroughNodeGrpcRequest {
+   GrpcRequestParameter GrpcRequestParameter = 1;
+   repeated DsiBranchInsulationThroughNodeGrpc DsiBranchInsulationThroughNodeGrpcsToCreate = 2;
+   repeated DsiBranchInsulationThroughNodeGrpc DsiBranchInsulationThroughNodeGrpcsToUpdate = 3;
+   repeated DsiBranchInsulationThroughNodeGrpc DsiBranchInsulationThroughNodeGrpcsToDelete = 4;
+}
+
+message DsiBranchInsulationThroughNodeGrpc {
+	int64 RowId = 1;
+	google.protobuf.StringValue PieceCode = 2;
+	google.protobuf.DoubleValue ThroughOrder = 3;
+	google.protobuf.StringValue ThroughNode = 4;
+	google.protobuf.StringValue ThroughRoute = 5;
+	google.protobuf.BoolValue IsThroughFlag = 6;
+	google.protobuf.StringValue HarnessId = 7;
+	google.protobuf.Timestamp CreatedDate = 8;
+	google.protobuf.Timestamp ModifiedDate = 9;
+	string CreatedBy = 10;
+	string ModifiedBy = 11;
+}
+
+message ListDsiBranchInsulationThroughNodeGrpc {
+	repeated DsiBranchInsulationThroughNodeGrpc DsiBranchInsulationThroughNodes = 1;
+}
+
+message DsiCavityMappingGrpcRequest {
+   GrpcRequestParameter GrpcRequestParameter = 1;
+   repeated DsiCavityMappingGrpc DsiCavityMappingGrpcsToCreate = 2;
+   repeated DsiCavityMappingGrpc DsiCavityMappingGrpcsToUpdate = 3;
+   repeated DsiCavityMappingGrpc DsiCavityMappingGrpcsToDelete = 4;
+}
+
+message DsiCavityMappingGrpc{
+	int64 RowId = 1;
+	google.protobuf.StringValue CavityMappingId = 2;
+	google.protobuf.StringValue CavityMapping = 3;
+	google.protobuf.Timestamp CreatedDate = 4;
+	google.protobuf.Timestamp ModifiedDate = 5;
+	string CreatedBy = 6;
+	string ModifiedBy = 7;
+}
+
+message ListDsiCavityMappingGrpc {
+	repeated DsiCavityMappingGrpc DsiCavityMappingGrpcs = 1;
+}
+
+message DsiCentreStripGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiCentreStripGrpc DsiCentreStripGrpcsToCreate = 2;
+  repeated DsiCentreStripGrpc DsiCentreStripGrpcsToUpdate = 3;
+  repeated DsiCentreStripGrpc DsiCentreStripGrpcsToDelete = 4;
+}
+
+message DsiCentreStripGrpc {
+  int64 RowId = 1;
+  google.protobuf.StringValue NodeName = 2;
+  google.protobuf.StringValue Route = 3;
+  google.protobuf.StringValue WireName = 4;
+  double StripLength = 5;
+  google.protobuf.StringValue LengthChangeType = 6;
+  double LengthChangeValue = 7;
+  google.protobuf.StringValue Option = 8;
+  double ThroughOrder = 9;
+  string HarnessID = 10;
+  google.protobuf.Timestamp CreatedDate = 11;
+  google.protobuf.Timestamp ModifiedDate = 12;
+  string CreatedBy = 13;
+  string ModifiedBy = 14;
+}
+
+message ListDsiCentreStripGrpc {
+  repeated DsiCentreStripGrpc DsiCentreStripGrpcs = 1;
+}
+
+message DsiCircuitOptionGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiCircuitOptionGrpc DsiCircuitOptionGrpcsToCreate = 2;
+  repeated DsiCircuitOptionGrpc DsiCircuitOptionGrpcsToUpdate = 3;
+  repeated DsiCircuitOptionGrpc DsiCircuitOptionGrpcsToDelete = 4;
+}
+
+message DsiCircuitOptionGrpc {
+  int64 RowId = 1;
+  string CircuitOptionId = 2;
+  google.protobuf.StringValue OptionName = 3;
+  google.protobuf.Timestamp CreatedDate = 4;
+  google.protobuf.Timestamp ModifiedDate = 5;
+  string CreatedBy = 6;
+  string ModifiedBy = 7;
+}
+
+message ListDsiCircuitOptionGrpc {
+  repeated DsiCircuitOptionGrpc DsiCircuitOptionGrpcs = 1;
+}
+
+message DsiComponentGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiComponentGrpc DsiComponentGrpcsToCreate = 2;
+  repeated DsiComponentGrpc DsiComponentGrpcsToUpdate = 3;
+  repeated DsiComponentGrpc DsiComponentGrpcsToDelete = 4;
+}
+
+message DsiComponentGrpc {
+  int64 RowId = 1;
+  google.protobuf.StringValue NodeName = 2;
+  google.protobuf.StringValue CavityName = 3;
+  google.protobuf.StringValue WireName = 4;
+  google.protobuf.StringValue SequenceNumber = 5;
+  google.protobuf.StringValue ComponentTypeCode1 = 6;
+  google.protobuf.StringValue ComponentOption = 7;
+  google.protobuf.StringValue ServiceFunction = 8;
+  google.protobuf.StringValue Route = 9;
+  google.protobuf.StringValue PartNumber1 = 10;
+  google.protobuf.StringValue PartNumber2 = 11;
+  google.protobuf.StringValue PartNumber3 = 12;
+  double Quantity = 13;
+  double CrossSectionalArea = 14;
+  bool IsSelectTerminal = 15;
+  bool IsSeal = 16;
+  bool IsPlugged = 17;
+  google.protobuf.StringValue BlockNumber = 18;
+  google.protobuf.StringValue TerminationMethod = 19;
+  google.protobuf.StringValue MaterialCode = 20;
+  google.protobuf.StringValue ComponentTypeCode2 = 21;
+  google.protobuf.StringValue InsulationType = 22;
+  google.protobuf.StringValue UserModule = 23;
+  google.protobuf.StringValue AssignedModule = 24;
+  google.protobuf.StringValue ModuleFrom = 25;
+  google.protobuf.StringValue SplitValue = 26;
+  google.protobuf.StringValue Datum = 27;
+  double AssemblyItemNumber = 28;
+  google.protobuf.StringValue ColourCode = 29;
+  double NumberOfCavities = 30;
+  bool IsBackshell = 31;
+  google.protobuf.StringValue WireOption = 32;
+  string HarnessID = 33;
+  google.protobuf.Timestamp CreatedDate = 34;
+  google.protobuf.Timestamp ModifiedDate = 35;
+  string CreatedBy = 36;
+  string ModifiedBy = 37;
+}
+
+message ListDsiComponentGrpc {
+  repeated DsiComponentGrpc DsiComponentGrpcs = 1;
+}
+
+
+message DsiCompositeDetailGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiCompositeDetailGrpc DsiCompositeDetailGrpcsToCreate = 2;
+  repeated DsiCompositeDetailGrpc DsiCompositeDetailGrpcsToUpdate = 3;
+  repeated DsiCompositeDetailGrpc DsiCompositeDetailGrpcsToDelete = 4;
+}
+
+message DsiCompositeDetailGrpc {
+  int64 RowId = 1;
+  string CompositeDetailId = 2;
+  google.protobuf.StringValue HarnessName1 = 3;
+  google.protobuf.StringValue SimilarHarnessName1 = 4;
+  google.protobuf.StringValue HarnessIssue1 = 5;
+  google.protobuf.StringValue SimilarHarnessIssue1 = 6;
+  google.protobuf.Timestamp HarnessDate1 = 7;
+  google.protobuf.StringValue HarnessName2 = 8;
+  google.protobuf.StringValue SimilarHarnessName2 = 9;
+  google.protobuf.StringValue HarnessIssue2 = 10;
+  google.protobuf.StringValue SimilarHarnessIssue2 = 11;
+  google.protobuf.Timestamp HarnessDate2 = 12;
+  google.protobuf.StringValue Customer = 13;
+  google.protobuf.StringValue Site = 14;
+  google.protobuf.StringValue Range = 15;
+  double BoardLength = 16;
+  double BoardWidth = 17;
+  google.protobuf.StringValue Datum = 18;
+  google.protobuf.StringValue UserField1 = 19;
+  google.protobuf.StringValue UserField2 = 20;
+  google.protobuf.StringValue UserField3 = 21;
+  google.protobuf.StringValue UserField4 = 22;
+  google.protobuf.StringValue UserField5 = 23;
+  google.protobuf.StringValue Checker = 24;
+  google.protobuf.StringValue Inputter = 25;
+  google.protobuf.StringValue DraftedBy = 26;
+  google.protobuf.StringValue PreparedBy = 27;
+  google.protobuf.StringValue Type = 28;
+  google.protobuf.StringValue Title = 29;
+  google.protobuf.StringValue EngineSize = 30;
+  google.protobuf.StringValue ManufacturingCell = 31;
+  google.protobuf.StringValue Trim = 32;
+  google.protobuf.StringValue HandDrive = 33;
+  google.protobuf.StringValue TubeAddOnType = 34;
+  double TubeAddOnFactor = 35;
+  bool IsManualTerminal = 36;
+  bool IsAllConnectorsSealed = 37;
+  google.protobuf.StringValue AlphaCode = 38;
+  string HarnessID = 39;
+  google.protobuf.StringValue CircuitOption = 40;
+  google.protobuf.Timestamp CreatedDate = 41;
+  google.protobuf.Timestamp ModifiedDate = 42;
+  string CreatedBy = 43;
+  string ModifiedBy = 44;
+}
+
+message ListDsiCompositeDetailGrpc {
+  repeated DsiCompositeDetailGrpc DsiCompositeDetailGrpcs = 1;
+}
+
+message DsiCompositeDetailCircuitOptionAssociationGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiCompositeDetailCircuitOptionAssociationGrpc DsiCompositeDetailCircuitOptionAssociationGrpcsToCreate = 2;
+  repeated DsiCompositeDetailCircuitOptionAssociationGrpc DsiCompositeDetailCircuitOptionAssociationGrpcsToUpdate = 3;
+  repeated DsiCompositeDetailCircuitOptionAssociationGrpc DsiCompositeDetailCircuitOptionAssociationGrpcsToDelete = 4;
+}
+
+message DsiCompositeDetailCircuitOptionAssociationGrpc {
+  int64 RowId = 1;
+  string CompositeDetailId = 2;
+  string CircuitOptionId = 3;
+  google.protobuf.Timestamp CreatedDate = 4;
+  google.protobuf.Timestamp ModifiedDate = 5;
+  string CreatedBy = 6;
+  string ModifiedBy = 7;
+}
+
+message ListDsiCompositeDetailCircuitOptionAssociationGrpc {
+  repeated DsiCompositeDetailCircuitOptionAssociationGrpc DsiCompositeDetailCircuitOptionAssociationGrpcs = 1;
+}
+
+message DsiCompositeOptionGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiCompositeOptionGrpc DsiCompositeOptionGrpcsToCreate = 2;
+  repeated DsiCompositeOptionGrpc DsiCompositeOptionGrpcsToUpdate = 3;
+  repeated DsiCompositeOptionGrpc DsiCompositeOptionGrpcsToDelete = 4;
+}
+
+message DsiCompositeOptionGrpc {
+  int64 RowId = 1;
+  string CompositeOptionId = 2;
+  google.protobuf.StringValue OptionName = 3;
+  google.protobuf.StringValue Description = 4;
+  string HarnessID = 5;
+  google.protobuf.Timestamp CreatedDate = 6;
+  google.protobuf.Timestamp ModifiedDate = 7;
+  string CreatedBy = 8;
+  string ModifiedBy = 9;
+}
+
+message ListDsiCompositeOptionGrpc {
+  repeated DsiCompositeOptionGrpc DsiCompositeOptionGrpcs = 1;
+}
+
+message DsiHarnessGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiHarnessGrpc DsiHarnessGrpcsToCreate = 2;
+  repeated DsiHarnessGrpc DsiHarnessGrpcsToUpdate = 3;
+  repeated DsiHarnessGrpc DsiHarnessGrpcsToDelete = 4;
+}
+
+message DsiHarnessGrpc {
+  int64 RowId = 1;
+  string HarnessId = 2;
+  google.protobuf.StringValue HarnessName1 = 3;
+  google.protobuf.StringValue SimilarHarnessName1 = 4;
+  google.protobuf.StringValue HarnessIssue1 = 5;
+  google.protobuf.StringValue SimilarHarnessIssue1 = 6;
+  google.protobuf.Timestamp HarnessDate1 = 7;
+  google.protobuf.StringValue HarnessName2 = 8;
+  google.protobuf.StringValue SimilarHarnessName2 = 9;
+  google.protobuf.StringValue HarnessIssue2 = 10;
+  google.protobuf.StringValue SimilarHarnessIssue2 = 11;
+  google.protobuf.Timestamp HarnessDate2 = 12;
+  double FileVersion = 13;
+  google.protobuf.StringValue Customer = 14;
+  google.protobuf.StringValue Site = 15;
+  google.protobuf.StringValue Range = 16;
+  double BoardLength = 17;
+  double BoardWidth = 18;
+  google.protobuf.StringValue Datum = 19;
+  google.protobuf.StringValue UserField1 = 20;
+  google.protobuf.StringValue UserField2 = 21;
+  google.protobuf.StringValue UserField3 = 22;
+  google.protobuf.StringValue UserField4 = 23;
+  google.protobuf.StringValue UserField5 = 24;
+  google.protobuf.StringValue Checker = 25;
+  google.protobuf.StringValue Inputter = 26;
+  google.protobuf.StringValue DraftedBy = 27;
+  google.protobuf.StringValue PreparedBy = 28;
+  google.protobuf.StringValue Type = 29;
+  google.protobuf.StringValue Title = 30;
+  google.protobuf.StringValue EngineSize = 31;
+  google.protobuf.StringValue ManufacturingCell = 32;
+  google.protobuf.StringValue Trim = 33;
+  google.protobuf.StringValue HandDrive = 34;
+  google.protobuf.StringValue TubeAddOnType = 35;
+  double TubeAddOnFactor = 36;
+  bool IsManualTerminal = 37;
+  bool IsAllConnectorsSealed = 38;
+  google.protobuf.StringValue DatumNode = 39;
+  google.protobuf.StringValue DatumRoute = 40;
+  bool IsModule = 41;
+  google.protobuf.StringValue AlphaCode = 42;
+  bool IsPitchTableUsed = 43;
+  google.protobuf.StringValue AdditionalComments = 44;
+  google.protobuf.Timestamp CreatedDate = 45;
+  google.protobuf.Timestamp ModifiedDate = 46;
+  string CreatedBy = 47;
+  string ModifiedBy = 48;
+}
+
+message ListDsiHarnessGrpc {
+  repeated DsiHarnessGrpc DsiHarnessGrpcs = 1;
+}
+
+message DsiHarnessScopeGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiHarnessScopeGrpc DsiHarnessScopeGrpcsToCreate = 2;
+  repeated DsiHarnessScopeGrpc DsiHarnessScopeGrpcsToUpdate = 3;
+  repeated DsiHarnessScopeGrpc DsiHarnessScopeGrpcsToDelete = 4;
+}
+
+message DsiHarnessScopeGrpc {
+  int64 RowId = 1;
+  string HarnessScopeId = 2;
+  google.protobuf.StringValue HarnessName1 = 3;
+  google.protobuf.StringValue HarnessIssue1 = 4;
+  google.protobuf.StringValue HarnessName2 = 5;
+  google.protobuf.StringValue HarnessIssue2 = 6;
+  google.protobuf.StringValue ScopeCategory = 7;
+  string HarnessID = 8;
+  google.protobuf.Timestamp CreatedDate = 9;
+  google.protobuf.Timestamp ModifiedDate = 10;
+  string CreatedBy = 11;
+  string ModifiedBy = 12;
+}
+
+message ListDsiHarnessScopeGrpc {
+  repeated DsiHarnessScopeGrpc DsiHarnessScopeGrpcs = 1;
+}
+
+message DsiHarnessScopeScopeAssociationGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiHarnessScopeScopeAssociationGrpc DsiHarnessScopeScopeAssociationGrpcsToCreate = 2;
+  repeated DsiHarnessScopeScopeAssociationGrpc DsiHarnessScopeScopeAssociationGrpcsToUpdate = 3;
+  repeated DsiHarnessScopeScopeAssociationGrpc DsiHarnessScopeScopeAssociationGrpcsToDelete = 4;
+}
+
+message DsiHarnessScopeScopeAssociationGrpc {
+  int64 RowId = 1;
+  string HarnessScopeID = 2;
+  string ScopeID = 3;
+  google.protobuf.Timestamp CreatedDate = 4;
+  google.protobuf.Timestamp ModifiedDate = 5;
+  string CreatedBy = 6;
+  string ModifiedBy = 7;
+}
+
+message ListDsiHarnessScopeScopeAssociationGrpc {
+  repeated DsiHarnessScopeScopeAssociationGrpc DsiHarnessScopeScopeAssociationGrpcs = 1;
+}
+
+message DsiManualBomQuantityGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiManualBomQuantityGrpc DsiManualBomQuantityGrpcsToCreate = 2;
+  repeated DsiManualBomQuantityGrpc DsiManualBomQuantityGrpcsToUpdate = 3;
+  repeated DsiManualBomQuantityGrpc DsiManualBomQuantityGrpcsToDelete = 4;
+}
+
+message DsiManualBomQuantityGrpc {
+  int64 RowId = 1;
+  google.protobuf.StringValue SplitValue = 2;
+  google.protobuf.StringValue ModuleCode = 3;
+  double Percentage = 4;
+  string HarnessID = 5;
+  google.protobuf.Timestamp CreatedDate = 6;
+  google.protobuf.Timestamp ModifiedDate = 7;
+  string CreatedBy = 8;
+  string ModifiedBy = 9;
+}
+
+message ListDsiManualBomQuantityGrpc {
+  repeated DsiManualBomQuantityGrpc DsiManualBomQuantityGrpcs = 1;
+}
+
+message DsiMidWireComponentGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiMidWireComponentGrpc DsiMidWireComponentGrpcsToCreate = 2;
+  repeated DsiMidWireComponentGrpc DsiMidWireComponentGrpcsToUpdate = 3;
+  repeated DsiMidWireComponentGrpc DsiMidWireComponentGrpcsToDelete = 4;
+}
+
+message DsiMidWireComponentGrpc {
+  int64 RowId = 1;
+  google.protobuf.StringValue NodeName = 2;
+  google.protobuf.StringValue Route = 3;
+  google.protobuf.StringValue WireName = 4;
+  google.protobuf.StringValue Option = 5;
+  google.protobuf.StringValue MidWireOption = 6;
+  google.protobuf.StringValue Cavity = 7;
+  double ThroughOrder = 8;
+  string HarnessID = 9;
+  google.protobuf.Timestamp CreatedDate = 10;
+  google.protobuf.Timestamp ModifiedDate = 11;
+  string CreatedBy = 12;
+  string ModifiedBy = 13;
+}
+
+message ListDsiMidWireComponentGrpc {
+  repeated DsiMidWireComponentGrpc DsiMidWireComponentGrpcs = 1;
+}
+
+message DsiModuleChildDetailGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiModuleChildDetailGrpc DsiModuleChildDetailGrpcsToCreate = 2;
+  repeated DsiModuleChildDetailGrpc DsiModuleChildDetailGrpcsToUpdate = 3;
+  repeated DsiModuleChildDetailGrpc DsiModuleChildDetailGrpcsToDelete = 4;
+}
+
+message DsiModuleChildDetailGrpc {
+  int64 RowId = 1;
+  google.protobuf.StringValue ModuleCode = 2;
+  bool IsCoreModule = 3;
+  google.protobuf.StringValue HarnessName1 = 4;
+  google.protobuf.StringValue SimilarHarnessName1 = 5;
+  google.protobuf.StringValue HarnessIssue1 = 6;
+  google.protobuf.StringValue SimilarHarnessIssue1 = 7;
+  google.protobuf.Timestamp HarnessDate1 = 8;
+  google.protobuf.StringValue HarnessName2 = 9;
+  google.protobuf.StringValue SimilarHarnessName2 = 10;
+  google.protobuf.StringValue HarnessIssue2 = 11;
+  google.protobuf.StringValue SimilarHarnessIssue2 = 12;
+  google.protobuf.Timestamp HarnessDate2 = 13;
+  google.protobuf.StringValue Customer = 14;
+  google.protobuf.StringValue Site = 15;
+  google.protobuf.StringValue Range = 16;
+  double BoardLength = 17;
+  double BoardWidth = 18;
+  google.protobuf.StringValue Datum = 19;
+  google.protobuf.StringValue UserField1 = 20;
+  google.protobuf.StringValue UserField2 = 21;
+  google.protobuf.StringValue UserField3 = 22;
+  google.protobuf.StringValue UserField4 = 23;
+  google.protobuf.StringValue UserField5 = 24;
+  google.protobuf.StringValue Checker = 25;
+  google.protobuf.StringValue Inputter = 26;
+  google.protobuf.StringValue DraftedBy = 27;
+  google.protobuf.StringValue PreparedBy = 28;
+  google.protobuf.StringValue Type = 29;
+  google.protobuf.StringValue Title = 30;
+  google.protobuf.StringValue EngineSize = 31;
+  google.protobuf.StringValue ManufacturingCell = 32;
+  google.protobuf.StringValue Trim = 33;
+  google.protobuf.StringValue HandDrive = 34;
+  google.protobuf.StringValue TubeAddOnType = 35;
+  double TubeAddOnFactor = 36;
+  bool IsManualTerminal = 37;
+  bool IsAllConnectorSealed = 38;
+  google.protobuf.StringValue AlphaCode = 39;
+  string HarnessID = 40;
+  google.protobuf.Timestamp CreatedDate = 41;
+  google.protobuf.Timestamp ModifiedDate = 42;
+  string CreatedBy = 43;
+  string ModifiedBy = 44;
+}
+
+message ListDsiModuleChildDetailGrpc {
+  repeated DsiModuleChildDetailGrpc DsiModuleChildDetailGrpcs = 1;
+}
+
+message DsiModuleCompatibilityGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiModuleCompatibilityGrpc DsiModuleCompatibilityGrpcsToCreate = 2;
+  repeated DsiModuleCompatibilityGrpc DsiModuleCompatibilityGrpcsToUpdate = 3;
+  repeated DsiModuleCompatibilityGrpc DsiModuleCompatibilityGrpcsToDelete = 4;
+}
+
+message DsiModuleCompatibilityGrpc {
+  int64 RowId = 1;
+  google.protobuf.StringValue ModuleCode1 = 2;
+  google.protobuf.StringValue ModuleCode2 = 3;
+  google.protobuf.StringValue Relationship = 4;
+  string HarnessID = 5;
+  google.protobuf.Timestamp CreatedDate = 6;
+  google.protobuf.Timestamp ModifiedDate = 7;
+  string CreatedBy = 8;
+  string ModifiedBy = 9;
+}
+
+message ListDsiModuleCompatibilityGrpc {
+  repeated DsiModuleCompatibilityGrpc DsiModuleCompatibilityGrpcs = 1;
+}
+
+message DsiMulticoreSpecificationGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiMulticoreSpecificationGrpc DsiMulticoreSpecificationGrpcsToCreate = 2;
+  repeated DsiMulticoreSpecificationGrpc DsiMulticoreSpecificationGrpcsToUpdate = 3;
+  repeated DsiMulticoreSpecificationGrpc DsiMulticoreSpecificationGrpcsToDelete = 4;
+}
+
+message DsiMulticoreSpecificationGrpc {
+  int64 RowId = 1;
+  google.protobuf.StringValue MulticoreName = 2;
+  bool IsIncludedOnBom = 3;
+  bool IsIncludedOnChart = 4;
+  google.protobuf.StringValue Tag = 5;
+  google.protobuf.StringValue Note = 6;
+  google.protobuf.StringValue LengthChangeType = 7;
+  double LengthChangeValue = 8;
+  google.protobuf.StringValue OuterSheathCutBackAtEnd1Type = 9;
+  double OuterSheathCutBackAtEnd1Value = 10;
+  google.protobuf.StringValue OuterSheathCutBackAtEnd2Type = 11;
+  double OuterSheathCutBackAtEnd2Value = 12;
+  google.protobuf.StringValue Colour = 13;
+  google.protobuf.StringValue Material = 14;
+  google.protobuf.StringValue Specification = 15;
+  bool IsSheathed = 16;
+  google.protobuf.StringValue UserModule = 17;
+  double AssemblyItemNumber = 18;
+  google.protobuf.StringValue ParentMulticoreName = 19;
+  google.protobuf.StringValue MulticoreOption = 20;
+  google.protobuf.StringValue ParentMulticoreOption = 21;
+  double UnmodifiedMulticoreLength = 22;
+  double ModifiedMulticoreLength = 23;
+  google.protobuf.StringValue PartNumber1 = 24;
+  google.protobuf.StringValue PartNumber2 = 25;
+  google.protobuf.StringValue PartNumber3 = 26;
+  string HarnessID = 27;
+  google.protobuf.Timestamp CreatedDate = 28;
+  google.protobuf.Timestamp ModifiedDate = 29;
+  string CreatedBy = 30;
+  string ModifiedBy = 31;
+}
+
+message ListDsiMulticoreSpecificationGrpc {
+  repeated DsiMulticoreSpecificationGrpc DsiMulticoreSpecificationGrpcs = 1;
+}
+
+message DsiPinMappingGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiPinMappingGrpc DsiPinMappingGrpcsToCreate = 2;
+  repeated DsiPinMappingGrpc DsiPinMappingGrpcsToUpdate = 3;
+  repeated DsiPinMappingGrpc DsiPinMappingGrpcsToDelete = 4;
+}
+
+message DsiPinMappingGrpc {
+  int64 RowId = 1;
+  string PinMappingId = 2;
+  google.protobuf.StringValue Node1 = 3;
+  google.protobuf.StringValue Node2 = 4;
+  google.protobuf.StringValue HarnessName1 = 5;
+  google.protobuf.StringValue HarnessIssue1 = 6;
+  google.protobuf.StringValue HarnessName2 = 7;
+  google.protobuf.StringValue HarnessIssue2 = 8;
+  google.protobuf.StringValue Separator = 9;
+  string HarnessID = 10;
+  google.protobuf.Timestamp CreatedDate = 11;
+  google.protobuf.Timestamp ModifiedDate = 12;
+  string CreatedBy = 13;
+  string ModifiedBy = 14;
+}
+
+message ListDsiPinMappingGrpc {
+  repeated DsiPinMappingGrpc DsiPinMappingGrpcs = 1;
+}
+
+message DsiPinMappingCavityMappingAssociationGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiPinMappingCavityMappingAssociationGrpc DsiPinMappingCavityMappingAssociationGrpcsToCreate = 2;
+  repeated DsiPinMappingCavityMappingAssociationGrpc DsiPinMappingCavityMappingAssociationGrpcsToUpdate = 3;
+  repeated DsiPinMappingCavityMappingAssociationGrpc DsiPinMappingCavityMappingAssociationGrpcsToDelete = 4;
+}
+
+message DsiPinMappingCavityMappingAssociationGrpc {
+  int64 RowId = 1;
+  string PinMappingID = 2;
+  string CavityMappingID = 3;
+  int32 MappingNumber = 4;
+  google.protobuf.StringValue CreatedDate = 5;
+  google.protobuf.StringValue ModifiedDate = 6;
+  google.protobuf.StringValue CreatedBy = 7;
+  google.protobuf.StringValue ModifiedBy = 8;
+}
+
+message ListDsiPinMappingCavityMappingAssociationGrpc {
+  repeated DsiPinMappingCavityMappingAssociationGrpc DsiPinMappingCavityMappingAssociationGrpcs = 1;
+}
+
+message DsiScopeGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiScopeGrpc DsiScopeGrpcsToCreate = 2;
+  repeated DsiScopeGrpc DsiScopeGrpcsToUpdate = 3;
+  repeated DsiScopeGrpc DsiScopeGrpcsToDelete = 4;
+}
+
+message DsiScopeGrpc {
+  int64 RowId = 1;
+  google.protobuf.StringValue Scope = 2;
+  google.protobuf.Timestamp CreatedDate = 3;
+  google.protobuf.Timestamp ModifiedDate = 4;
+  string CreatedBy = 5;
+  string ModifiedBy = 6;
+}
+
+message ListDsiScopeGrpc {
+  repeated DsiScopeGrpc DsiScopeGrpcs = 1;
+}
+
+message DsiSupplierGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiSupplierGrpc DsiSupplierGrpcsToCreate = 2;
+  repeated DsiSupplierGrpc DsiSupplierGrpcsToUpdate = 3;
+  repeated DsiSupplierGrpc DsiSupplierGrpcsToDelete = 4;
+}
+
+message DsiSupplierGrpc {
+  int64 RowId = 1;
+  google.protobuf.StringValue Code = 2;
+  google.protobuf.StringValue Name = 3;
+  int64 SubsidiaryId = 4;
+  int64 BuyerId = 5;
+  google.protobuf.StringValue Address = 6;
+  google.protobuf.StringValue Phone = 7;
+  google.protobuf.StringValue Email = 8;
+  google.protobuf.StringValue Contact = 9;
+  google.protobuf.StringValue AlternateContact = 10;
+  google.protobuf.BoolValue Active = 11;
+  google.protobuf.BoolValue JSupplier = 12;
+}
+
+message ListDsiSupplierGrpc {
+  repeated DsiSupplierGrpc DsiSupplierGrpcs = 1;
+}
+
+message DsiTransformedCompositeDetailGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiTransformedCompositeDetailGrpc DsiTransformedCompositeDetailGrpcsToCreate = 2;
+  repeated DsiTransformedCompositeDetailGrpc DsiTransformedCompositeDetailGrpcsToUpdate = 3;
+  repeated DsiTransformedCompositeDetailGrpc DsiTransformedCompositeDetailGrpcsToDelete = 4;
+}
+
+message DsiTransformedCompositeDetailGrpc {
+  int64 RowId = 1;
+  google.protobuf.StringValue HarnessName1 = 2;
+  google.protobuf.StringValue SimilarHarnessName1 = 3;
+  google.protobuf.StringValue HarnessIssue1 = 4;
+  google.protobuf.StringValue SimilarHarnessIssue1 = 5;
+  google.protobuf.Timestamp HarnessDate1 = 6;
+  google.protobuf.StringValue HarnessName2 = 7;
+  google.protobuf.StringValue SimilarHarnessName2 = 8;
+  google.protobuf.StringValue HarnessIssue2 = 9;
+  google.protobuf.StringValue SimilarHarnessIssue2 = 10;
+  google.protobuf.Timestamp HarnessDate2 = 11;
+  google.protobuf.StringValue Customer = 12;
+  google.protobuf.StringValue Site = 13;
+  google.protobuf.StringValue Range = 14;
+  double BoardLength = 15;
+  double BoardWidth = 16;
+  google.protobuf.StringValue Datum = 17;
+  google.protobuf.StringValue UserField1 = 18;
+  google.protobuf.StringValue UserField2 = 19;
+  google.protobuf.StringValue UserField3 = 20;
+  google.protobuf.StringValue UserField4 = 21;
+  google.protobuf.StringValue UserField5 = 22;
+  google.protobuf.StringValue Checker = 23;
+  google.protobuf.StringValue Inputter = 24;
+  google.protobuf.StringValue DraftedBy = 25;
+  google.protobuf.StringValue PreparedBy = 26;
+  google.protobuf.StringValue Type = 27;
+  google.protobuf.StringValue Title = 28;
+  google.protobuf.StringValue EngineSize = 29;
+  google.protobuf.StringValue ManufacturingCell = 30;
+  google.protobuf.StringValue Trim = 31;
+  google.protobuf.StringValue HandDrive = 32;
+  google.protobuf.StringValue TubeAddOnType = 33;
+  double TubeAddOnFactor = 34;
+  bool IsManualTerminal = 35;
+  bool IsAllConnectorsSealed = 36;
+  google.protobuf.StringValue AlphaCode = 37;
+  string HarnessID = 38;
+  google.protobuf.StringValue CircuitOption = 39;
+  google.protobuf.Timestamp CreatedDate = 40;
+  google.protobuf.Timestamp ModifiedDate = 41;
+  string CreatedBy = 42;
+  string ModifiedBy = 43;
+}
+
+message ListDsiTransformedCompositeDetailGrpc {
+  repeated DsiTransformedCompositeDetailGrpc DsiTransformedCompositeDetailGrpcs = 1;
+}
+
+message DsiTransformedHarnessGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiTransformedHarnessGrpc DsiTransformedHarnessGrpcsToCreate = 2;
+  repeated DsiTransformedHarnessGrpc DsiTransformedHarnessGrpcsToUpdate = 3;
+  repeated DsiTransformedHarnessGrpc DsiTransformedHarnessGrpcsToDelete = 4;
+}
+
+message DsiTransformedHarnessGrpc {
+  int64 RowId = 1;
+  google.protobuf.StringValue HarnessName1 = 2;
+  google.protobuf.StringValue SimilarHarnessName1 = 3;
+  google.protobuf.StringValue HarnessIssue1 = 4;
+  google.protobuf.StringValue SimilarHarnessIssue1 = 5;
+  google.protobuf.Timestamp HarnessDate1 = 6;
+  google.protobuf.StringValue HarnessName2 = 7;
+  google.protobuf.StringValue SimilarHarnessName2 = 8;
+  google.protobuf.StringValue HarnessIssue2 = 9;
+  google.protobuf.StringValue SimilarHarnessIssue2 = 10;
+  google.protobuf.Timestamp HarnessDate2 = 11;
+  double FileVersion = 12;
+  google.protobuf.StringValue Customer = 13;
+  google.protobuf.StringValue Site = 14;
+  google.protobuf.StringValue Range = 15;
+  double BoardLength = 16;
+  double BoardWidth = 17;
+  google.protobuf.StringValue Datum = 18;
+  google.protobuf.StringValue UserField1 = 19;
+  google.protobuf.StringValue UserField2 = 20;
+  google.protobuf.StringValue UserField3 = 21;
+  google.protobuf.StringValue UserField4 = 22;
+  google.protobuf.StringValue UserField5 = 23;
+  google.protobuf.StringValue Checker = 24;
+  google.protobuf.StringValue Inputter = 25;
+  google.protobuf.StringValue DraftedBy = 26;
+  google.protobuf.StringValue PreparedBy = 27;
+  google.protobuf.StringValue Type = 28;
+  google.protobuf.StringValue Title = 29;
+  google.protobuf.StringValue EngineSize = 30;
+  google.protobuf.StringValue ManufacturingCell = 31;
+  google.protobuf.StringValue Trim = 32;
+  google.protobuf.StringValue HandDrive = 33;
+  google.protobuf.StringValue TubeAddOnType = 34;
+  double TubeAddOnFactor = 35;
+  bool IsManualTerminal = 36;
+  bool IsAllConnectorsSealed = 37;
+  google.protobuf.StringValue DatumNode = 38;
+  google.protobuf.StringValue DatumRoute = 39;
+  bool IsModule = 40;
+  google.protobuf.StringValue AlphaCode = 41;
+  bool IsPitchTableUsed = 42;
+  google.protobuf.StringValue AdditionalComments = 43;
+  google.protobuf.Timestamp CreatedDate = 44;
+  google.protobuf.Timestamp ModifiedDate = 45;
+  string CreatedBy = 46;
+  string ModifiedBy = 47;
+}
+
+message ListDsiTransformedHarnessGrpc {
+  repeated DsiTransformedHarnessGrpc DsiTransformedHarnessGrpcs = 1;
+}
+
+message DsiTransformedModuleChildDetailGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiTransformedModuleChildDetailGrpc DsiTransformedModuleChildDetailGrpcsToCreate = 2;
+  repeated DsiTransformedModuleChildDetailGrpc DsiTransformedModuleChildDetailGrpcsToUpdate = 3;
+  repeated DsiTransformedModuleChildDetailGrpc DsiTransformedModuleChildDetailGrpcsToDelete = 4;
+}
+
+message DsiTransformedModuleChildDetailGrpc {
+  int64 RowId = 1;
+  google.protobuf.StringValue ModuleCode = 2;
+  google.protobuf.BoolValue IsCoreModule = 3;
+  google.protobuf.StringValue HarnessName1 = 4;
+  google.protobuf.StringValue SimilarHarnessName1 = 5;
+  google.protobuf.StringValue HarnessIssue1 = 6;
+  google.protobuf.StringValue SimilarHarnessIssue1 = 7;
+  google.protobuf.Timestamp HarnessDate1 = 8;
+  google.protobuf.StringValue HarnessName2 = 9;
+  google.protobuf.StringValue SimilarHarnessName2 = 10;
+  google.protobuf.StringValue HarnessIssue2 = 11;
+  google.protobuf.StringValue SimilarHarnessIssue2 = 12;
+  google.protobuf.Timestamp HarnessDate2 = 13;
+  google.protobuf.StringValue Customer = 14;
+  google.protobuf.StringValue Site = 15;
+  google.protobuf.StringValue Range = 16;
+  double BoardLength = 17;
+  double BoardWidth = 18;
+  google.protobuf.StringValue Datum = 19;
+  google.protobuf.StringValue UserField1 = 20;
+  google.protobuf.StringValue UserField2 = 21;
+  google.protobuf.StringValue UserField3 = 22;
+  google.protobuf.StringValue UserField4 = 23;
+  google.protobuf.StringValue UserField5 = 24;
+  google.protobuf.StringValue Checker = 25;
+  google.protobuf.StringValue Inputter = 26;
+  google.protobuf.StringValue DraftedBy = 27;
+  google.protobuf.StringValue PreparedBy = 28;
+  google.protobuf.StringValue Type = 29;
+  google.protobuf.StringValue Title = 30;
+  google.protobuf.StringValue EngineSize = 31;
+  google.protobuf.StringValue ManufacturingCell = 32;
+  google.protobuf.StringValue Trim = 33;
+  google.protobuf.StringValue HandDrive = 34;
+  google.protobuf.StringValue TubeAddOnType = 35;
+  double TubeAddOnFactor = 36;
+  bool IsManualTerminal = 37;
+  bool IsAllConnectorSealed = 38;
+  google.protobuf.StringValue AlphaCode = 39;
+  string HarnessID = 40;
+  google.protobuf.Timestamp CreatedDate = 41;
+  google.protobuf.Timestamp ModifiedDate = 42;
+  string CreatedBy = 43;
+  string ModifiedBy = 44;
+}
+
+message ListDsiTransformedModuleChildDetailGrpc {
+  repeated DsiTransformedModuleChildDetailGrpc DsiTransformedModuleChildDetailGrpcs = 1;
+}
+
+message DsiUnitOfMeasureGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiUnitOfMeasureGrpc DsiUnitOfMeasureGrpcsToCreate = 2;
+  repeated DsiUnitOfMeasureGrpc DsiUnitOfMeasureGrpcsToUpdate = 3;
+  repeated DsiUnitOfMeasureGrpc DsiUnitOfMeasureGrpcsToDelete = 4;
+}
+
+message DsiUnitOfMeasureGrpc {
+  int64 RowId = 1;
+  google.protobuf.StringValue Abbreviation = 2;
+  google.protobuf.StringValue Description = 3;
+  int64 SubsidiaryId = 4;
+}
+
+message ListDsiUnitOfMeasureGrpc {
+  repeated DsiUnitOfMeasureGrpc DsiUnitOfMeasureGrpcs = 1;
+}
+
+message DsiWireMulticoreMarkerGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiWireMulticoreMarkerGrpc DsiWireMulticoreMarkerGrpcsToCreate = 2;
+  repeated DsiWireMulticoreMarkerGrpc DsiWireMulticoreMarkerGrpcsToUpdate = 3;
+  repeated DsiWireMulticoreMarkerGrpc DsiWireMulticoreMarkerGrpcsToDelete = 4;
+}
+
+message DsiWireMulticoreMarkerGrpc {
+  int64 RowId = 1;
+  google.protobuf.StringValue ItemType = 2;
+  google.protobuf.StringValue ItemName = 3;
+  google.protobuf.StringValue Option = 4;
+  google.protobuf.StringValue Location = 5;
+  google.protobuf.StringValue Text = 6;
+  google.protobuf.StringValue ColourCode = 7;
+  double Spacing = 8;
+  string HarnessID = 9;
+  google.protobuf.Timestamp CreatedDate = 10;
+  google.protobuf.Timestamp ModifiedDate = 11;
+  string CreatedBy = 12;
+  string ModifiedBy = 13;
+}
+
+message ListDsiWireMulticoreMarkerGrpc {
+  repeated DsiWireMulticoreMarkerGrpc DsiWireMulticoreMarkerGrpcs = 1;
+}
+
+
+message DsiWireSpecificationGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiWireSpecificationGrpc DsiWireSpecificationGrpcsToCreate = 2;
+  repeated DsiWireSpecificationGrpc DsiWireSpecificationGrpcsToUpdate = 3;
+  repeated DsiWireSpecificationGrpc DsiWireSpecificationGrpcsToDelete = 4;
+}
+
+message DsiWireSpecificationGrpc {
+  int64 RowId = 1;
+  google.protobuf.StringValue WireName = 2;
+  google.protobuf.StringValue CompositeOptionString = 3;
+  google.protobuf.StringValue WireType = 4;
+  google.protobuf.StringValue Colour = 5;
+  double CrossSectionalArea = 6;
+  google.protobuf.StringValue Material = 7;
+  google.protobuf.StringValue UserModule = 8;
+  google.protobuf.StringValue MulticoreName = 9;
+  google.protobuf.StringValue End1NodeName = 10;
+  google.protobuf.StringValue End1Route = 11;
+  google.protobuf.StringValue End1Cavity = 12;
+  google.protobuf.StringValue End1MaterialCode = 13;
+  google.protobuf.StringValue End2NodeName = 14;
+  google.protobuf.StringValue End2Route = 15;
+  google.protobuf.StringValue End2Cavity = 16;
+  google.protobuf.StringValue End2MaterialCode = 17;
+  bool IsIncludedOnBom = 18;
+  bool IsIncludedOnChart = 19;
+  google.protobuf.StringValue WireTag = 20;
+  google.protobuf.StringValue WireNote = 21;
+  google.protobuf.StringValue WireLengthChangeType = 22;
+  double WireLengthChangeValue = 23;
+  double AssemblyItemNumber = 24;
+  google.protobuf.StringValue MulticoreOption = 25;
+  double UnmodifiedWireLength = 26;
+  double ModifiedWireLength = 27;
+  double CutbackAtEnd1 = 28;
+  double CutbackAtEnd2 = 29;
+  google.protobuf.StringValue PartNumber1 = 30;
+  google.protobuf.StringValue PartNumber2 = 31;
+  google.protobuf.StringValue PartNumber3 = 32;
+  google.protobuf.StringValue Signal = 33;
+  string HarnessID = 34;
+  google.protobuf.Timestamp CreatedDate = 35;
+  google.protobuf.Timestamp ModifiedDate = 36;
+  string CreatedBy = 37;
+  string ModifiedBy = 38;
+}
+
+message ListDsiWireSpecificationGrpc {
+  repeated DsiWireSpecificationGrpc DsiWireSpecificationGrpcs = 1;
+}
+
+message DsiWireThroughNodeGrpcRequest {
+  GrpcRequestParameter GrpcRequestParameter = 1;
+  repeated DsiWireThroughNodeGrpc DsiWireThroughNodeGrpcsToCreate = 2;
+  repeated DsiWireThroughNodeGrpc DsiWireThroughNodeGrpcsToUpdate = 3;
+  repeated DsiWireThroughNodeGrpc DsiWireThroughNodeGrpcsToDelete = 4;
+}
+
+message DsiWireThroughNodeGrpc {
+  int64 RowId = 1;
+  google.protobuf.StringValue WireName = 2;
+  google.protobuf.StringValue Option = 3;
+  double ThroughOrder = 4;
+  google.protobuf.StringValue ThroughNode = 5;
+  google.protobuf.StringValue ThroughRoute = 6;
+  bool IsThroughFlag = 7;
+  string HarnessID = 8;
+  google.protobuf.Timestamp CreatedDate = 9;
+  google.protobuf.Timestamp ModifiedDate = 10;
+  string CreatedBy = 11;
+  string ModifiedBy = 12;
+}
+
+message ListDsiWireThroughNodeGrpc {
+  repeated DsiWireThroughNodeGrpc DsiWireThroughNodeGrpcs = 1;
+}
+
+
 }
 
 message RfqFilterRequest {

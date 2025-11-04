@@ -1,6 +1,6 @@
-﻿using DocumentConversion;
-using SharedModels.DocumentConverter.DSI.Aggregates;
+﻿using SharedModels.DocumentConverter.DSI.Aggregates;
 using SharedModels.DocumentConverter.DSI.DTOs;
+using Transformation;
 
 namespace DocumentConverterEngine.Tests
 {
@@ -12,7 +12,7 @@ namespace DocumentConverterEngine.Tests
         public void Setup()
         {
             _File = File.ReadAllBytes("../../../TestData.dsi");
-            _Model = DocumentConverter.ConvertDsiFile(_File);
+            _Model = DocumentTransformer.ConvertDsiFile(_File);
         }
 
         [Test]

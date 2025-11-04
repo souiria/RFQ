@@ -15,6 +15,7 @@
     <ProjectReference Include="..\..\Access\Adss\Adss.csproj" />
     <ProjectReference Include="..\..\Access\CAE\CAE.csproj" />
     <ProjectReference Include="..\..\Access\CDb\CDb.csproj" />
+    <ProjectReference Include="..\..\Access\Core\Core.csproj" />
     <ProjectReference Include="..\..\Access\CPD\CPD.csproj" />
     <ProjectReference Include="..\..\Access\EDI\EDI.csproj" />
     <ProjectReference Include="..\..\Access\Emacs\Emacs.csproj" />
@@ -22,6 +23,7 @@
     <ProjectReference Include="..\..\Access\NPR\NPR.csproj" />
     <ProjectReference Include="..\..\Access\Rfq\Rfq.csproj" />
     <ProjectReference Include="..\..\Access\SFS\SFS.csproj" />
+    <ProjectReference Include="..\..\Access\Unit4\Unit4.csproj" />
     <ProjectReference Include="..\..\Client\SalesSystem.ApiService\SalesSystem.ApiService.csproj" />
     <ProjectReference Include="..\..\Client\SalesSystem.Rfq\SalesSystem.Rfq.csproj" />
     <ProjectReference Include="..\..\Logic\Manager\EdiModule\EdiModule.csproj" />
@@ -30,6 +32,7 @@
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.AppHost" Version="9.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
   </ItemGroup>
 
 </Project>

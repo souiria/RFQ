@@ -191,7 +191,7 @@
             if (_Currencies.CurrencyGrpc.Any())
             {
                 _FilteredCurrencies.CurrencyGrpc.Clear();
-                List<CurrencyGrpc> filteredList = _Currencies.CurrencyGrpc.Where(x => x.Id == id).ToList();
+                List<CurrencyGrpc> filteredList = _Currencies.CurrencyGrpc.Where(x => x.Id.ToUpperInvariant() == id.ToUpperInvariant()).ToList();
                 _FilteredCurrencies.CurrencyGrpc.AddRange(filteredList);
                 return _FilteredCurrencies;
             }
@@ -224,10 +224,29 @@
         {
             await Task.Delay(1, cancellationToken);
             _FilteredCustomers.CustomerGrpc.Clear();
-            if (_Customers.CustomerGrpc.Any())
+            if (_Customers.CustomerGrpc.Any() && _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Any())
             {
-                List<CustomerGrpc> filteredCustomers = _Customers.CustomerGrpc.Where(x => x.Id == id).ToList();
-                _FilteredCustomers.CustomerGrpc.AddRange(filteredCustomers);
+                CustomerBusinessUserAssociationGrpc? userAssociation = _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Where(x => x.UserGuid.ToUpperInvariant() == id.ToUpperInvariant()).FirstOrDefault();
+                if(userAssociation == null || userAssociation.CustomerBusinessHierarchyList == null)
+                {
+                    return _FilteredCustomers;
+                }
+
+                List<CustomerBuisnessHirarchyListDto>? associatedCustomers = JsonConvert.DeserializeObject<List<CustomerBuisnessHirarchyListDto>>(userAssociation.CustomerBusinessHierarchyList);
+                if (associatedCustomers == null)
+                {
+                    return _FilteredCustomers;
+                }
+
+                foreach (CustomerBuisnessHirarchyListDto customer in associatedCustomers)
+                {
+                    if (customer.IsActive == true)
+                    {
+                        List<CustomerGrpc> filteredCustomers = _Customers.CustomerGrpc.Where(x => x.Id.ToUpperInvariant() == customer.CustomerBusinessHierarchyGuid.ToString().ToUpperInvariant()).ToList();
+                        _FilteredCustomers.CustomerGrpc.AddRange(filteredCustomers);
+                    }
+                }
+
                 return _FilteredCustomers;
             }
             else
@@ -257,7 +276,7 @@
             _FilteredLocations.CustomerLocationGrpc.Clear();
             if (_CustomerLocations.CustomerLocationGrpc.Any())
             {
-                List<CustomerLocationGrpc> filteredLocations = _CustomerLocations.CustomerLocationGrpc.Where(x => x.Id == id).ToList();
+                List<CustomerLocationGrpc> filteredLocations = _CustomerLocations.CustomerLocationGrpc.Where(x => x.Id.ToUpperInvariant() == id.ToUpperInvariant()).ToList();
                 _FilteredLocations.CustomerLocationGrpc.AddRange(filteredLocations);
                 return _FilteredLocations;
             }
@@ -274,7 +293,7 @@
             _FilteredLocations.CustomerLocationGrpc.Clear();
             if (_CustomerLocations.CustomerLocationGrpc.Any() && _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Any())
             {
-                CustomerBusinessUserAssociationGrpc? user = _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Where(x => x.UserGuid == userId).FirstOrDefault();
+                CustomerBusinessUserAssociationGrpc? user = _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Where(x => x.UserGuid.ToUpperInvariant() == userId.ToUpperInvariant()).FirstOrDefault();
                 if (user != null)
                 {
                     if (user.CustomerBusinessHierarchyList != null)
@@ -310,7 +329,7 @@
             _FilteredLocations.CustomerLocationGrpc.Clear();
             if (_CustomerLocations.CustomerLocationGrpc.Any())
             {
-                List<CustomerLocationGrpc> filteredLocations = _CustomerLocations.CustomerLocationGrpc.Where(x => x.CustomerBusinessHierarchyGuid == customerId).ToList();
+                List<CustomerLocationGrpc> filteredLocations = _CustomerLocations.CustomerLocationGrpc.Where(x => x.CustomerBusinessHierarchyGuid.ToUpperInvariant() == customerId.ToUpperInvariant()).ToList();
                 _FilteredLocations.CustomerLocationGrpc.AddRange(filteredLocations);
                 return _FilteredLocations;
             }
@@ -341,7 +360,8 @@
             _FilteredLocations.CustomerLocationGrpc.Clear();
             if (_CustomerProjectAssociations.CustomerProjectAssociationGrpc.Any() && _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Any())
             {
-                CustomerBusinessUserAssociationGrpc? user = GetCustomerBusinessUserAssociationsByUserId(userId, cancellationToken).Result.CustomerBusinessUserAssociationGrpc.FirstOrDefault();
+                string upperUserId = userId.ToUpperInvariant();
+                CustomerBusinessUserAssociationGrpc? user = GetCustomerBusinessUserAssociationsByUserId(upperUserId, cancellationToken).Result.CustomerBusinessUserAssociationGrpc.FirstOrDefault();
                 if (user != null)
                 {
                     if (user.CustomerBusinessHierarchyList != null)
@@ -355,11 +375,11 @@
                                 {
                                     if (customer.CustomerBusinessHierarchyGuid != null)
                                     {
-                                        List<CustomerLocationGrpc> filteredLocations = _CustomerLocations.CustomerLocationGrpc.Where(x => x.CustomerBusinessHierarchyGuid == customer.CustomerBusinessHierarchyGuid).ToList();
+                                        List<CustomerLocationGrpc> filteredLocations = _CustomerLocations.CustomerLocationGrpc.Where(x => x.CustomerBusinessHierarchyGuid.ToUpperInvariant() == customer.CustomerBusinessHierarchyGuid.ToUpperInvariant()).ToList();
                                         _FilteredLocations.CustomerLocationGrpc.AddRange(filteredLocations);
                                         foreach (CustomerLocationGrpc customerLocation in _FilteredLocations.CustomerLocationGrpc)
                                         {
-                                            List<CustomerProjectAssociationGrpc> customerProjects = _CustomerProjectAssociations.CustomerProjectAssociationGrpc.Where(x => x.CustomerLocationGuid == customerLocation.Id).ToList();
+                                            List<CustomerProjectAssociationGrpc> customerProjects = _CustomerProjectAssociations.CustomerProjectAssociationGrpc.Where(x => x.CustomerLocationGuid.ToUpperInvariant() == customerLocation.Id.ToUpperInvariant()).ToList();
                                             _FilteredCustomerProjectAssociations.CustomerProjectAssociationGrpc.AddRange(customerProjects);
                                         }
                                     }
@@ -384,7 +404,7 @@
             _FilteredCustomerProjectAssociations.CustomerProjectAssociationGrpc.Clear();
             if (_CustomerProjectAssociations.CustomerProjectAssociationGrpc.Any())
             {
-                List<CustomerProjectAssociationGrpc> filteredProjects = _CustomerProjectAssociations.CustomerProjectAssociationGrpc.Where(x => x.CustomerLocationGuid == locationId).ToList();
+                List<CustomerProjectAssociationGrpc> filteredProjects = _CustomerProjectAssociations.CustomerProjectAssociationGrpc.Where(x => x.CustomerLocationGuid.ToUpperInvariant() == locationId.ToUpperInvariant()).ToList();
                 _FilteredCustomerProjectAssociations.CustomerProjectAssociationGrpc.AddRange(filteredProjects);
                 return _FilteredCustomerProjectAssociations;
             }
@@ -418,7 +438,7 @@
                 ListCustomerLocationGrpc locations = await GetCustomerLocationsByUserId(userId, cancellationToken);
                 foreach(CustomerLocationGrpc location in locations.CustomerLocationGrpc)
                 {
-                    List<CustomerSalesEntityGrpc> salesByLocation = _CustomerSalesEntities.CustomerSalesEntityGrpc.Where(x => x.CustomerHierarchyGuid == location.Id).ToList();
+                    List<CustomerSalesEntityGrpc> salesByLocation = _CustomerSalesEntities.CustomerSalesEntityGrpc.Where(x => x.CustomerHierarchyGuid.ToUpperInvariant() == location.Id.ToUpperInvariant()).ToList();
                     _FilteredCustomerSalesEntities.CustomerSalesEntityGrpc.AddRange(salesByLocation);
                 }
 
@@ -450,7 +470,7 @@
             _FilteredCustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Clear();
             if (_CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Any())
             {
-                List<CustomerBusinessUserAssociationGrpc> filteredCustomerBusinessUserAssociationGrpc = _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Where(x => x.UserGuid == userId).ToList();
+                List<CustomerBusinessUserAssociationGrpc> filteredCustomerBusinessUserAssociationGrpc = _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Where(x => x.UserGuid.ToUpperInvariant() == userId.ToUpperInvariant()).ToList();
                 _FilteredCustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.AddRange(filteredCustomerBusinessUserAssociationGrpc);
                 return _FilteredCustomerBusinessUserAssociations;
             }
@@ -484,7 +504,7 @@
             if (_Platforms.PlatformGrpc.Any())
             {
                 _FilteredPlatforms.PlatformGrpc.Clear();
-                List<PlatformGrpc> filteredPlatforms = _Platforms.PlatformGrpc.Where(x => x.Id == id).ToList();
+                List<PlatformGrpc> filteredPlatforms = _Platforms.PlatformGrpc.Where(x => x.Id.ToUpperInvariant() == id.ToUpperInvariant()).ToList();
                 _FilteredPlatforms.PlatformGrpc.AddRange(filteredPlatforms);
                 return _FilteredPlatforms;
             }
@@ -514,7 +534,7 @@
             if (_Programs.ProgramGrpc.Any())
             {
                 _FilteredPrograms.ProgramGrpc.Clear();
-                List<ProgramGrpc> filteredPrograms = _Programs.ProgramGrpc.Where(x => x.Id == id).ToList();
+                List<ProgramGrpc> filteredPrograms = _Programs.ProgramGrpc.Where(x => x.Id.ToUpperInvariant() == id.ToUpperInvariant()).ToList();
                 _FilteredPrograms.ProgramGrpc.AddRange(filteredPrograms);
                 return _FilteredPrograms;
             }
@@ -545,7 +565,7 @@
             if (_Projects.ProjectGrpc.Any())
             {
                 _FilteredProjects.ProjectGrpc.Clear();
-                List<ProjectGrpc> filteredProjects = _Projects.ProjectGrpc.Where(x => x.Id == id).ToList();
+                List<ProjectGrpc> filteredProjects = _Projects.ProjectGrpc.Where(x => x.Id.ToUpperInvariant() == id.ToUpperInvariant()).ToList();
                 _FilteredProjects.ProjectGrpc.AddRange(filteredProjects);
                 return _FilteredProjects;
             }
@@ -576,7 +596,7 @@
             if (_Milestones.MilestoneGrpc.Any())
             {
                 _FilteredMilestones.MilestoneGrpc.Clear();
-                List<MilestoneGrpc> filteredMilestones = _Milestones.MilestoneGrpc.Where(x => x.Id == id).ToList();
+                List<MilestoneGrpc> filteredMilestones = _Milestones.MilestoneGrpc.Where(x => x.Id.ToUpperInvariant() == id.ToUpperInvariant()).ToList();
                 _FilteredMilestones.MilestoneGrpc.AddRange(filteredMilestones);
                 return _FilteredMilestones;
             }
@@ -611,7 +631,7 @@
             if (_Vehicles.VehicleGrpc.Any())
             {
                 _FilteredVehicles.VehicleGrpc.Clear();
-                List<VehicleGrpc> filteredVehicles = _Vehicles.VehicleGrpc.Where(x => x.Id == id).ToList();
+                List<VehicleGrpc> filteredVehicles = _Vehicles.VehicleGrpc.Where(x => x.Id.ToUpperInvariant() == id.ToUpperInvariant()).ToList();
                 _FilteredVehicles.VehicleGrpc.AddRange(filteredVehicles);
                 return _FilteredVehicles;
             }

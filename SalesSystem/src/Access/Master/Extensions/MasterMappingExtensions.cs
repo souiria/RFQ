@@ -37,6 +37,7 @@
             data.Id = entity.Id.ToString();
             data.CustomerCode = entity.CustomerCode;
             data.CustomerBusinessHierarchyGuid = entity.CustomerBusinessHierarchyGuid.ToString();
+            data.CustomerName = entity.CustomerName;
             data.IsActive = entity.IsActive;
             return data;
         }
