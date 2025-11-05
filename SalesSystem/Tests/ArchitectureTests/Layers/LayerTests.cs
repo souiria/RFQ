@@ -1,7 +1,4 @@
-﻿using NetArchTest.Rules;
-using Shouldly;
-
-namespace ArchitectureTests.Layers
+﻿namespace ArchitectureTests.Layers
 {
     public class LayerTests : BaseTest
     {
