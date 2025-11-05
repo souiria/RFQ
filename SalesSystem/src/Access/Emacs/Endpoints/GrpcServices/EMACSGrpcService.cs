@@ -1,6 +1,4 @@
-﻿using Microsoft.IdentityModel.Tokens;
-
-namespace Emacs.Endpoints.GrpcServices
+﻿namespace Emacs.Endpoints.GrpcServices
 {
     public class EMACSGrpcService : Emacs.EmacsBase
     {

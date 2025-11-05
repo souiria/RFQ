@@ -1340,9 +1340,6 @@ message ListDsiWireThroughNodeGrpc {
   repeated DsiWireThroughNodeGrpc DsiWireThroughNodeGrpcs = 1;
 }
 
-
-}
-
 message RfqFilterRequest {
 	string DatabaseList = 1;
     string FilterExpression = 2;

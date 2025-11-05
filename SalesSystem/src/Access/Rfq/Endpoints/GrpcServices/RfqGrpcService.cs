@@ -1,6 +1,4 @@
-﻿using NPR;
-
-namespace Rfq.Endpoints.GrpcServices
+﻿namespace Rfq.Endpoints.GrpcServices
 {
     public class RfqGrpcService : Rfq.RfqBase
     {
@@ -4671,7 +4669,6 @@ namespace Rfq.Endpoints.GrpcServices
         }
 
         #endregion
-
 
         public override async Task<RfqFilterResponse> FilterRfqGrpc(RfqFilterRequest request, ServerCallContext context)
         {
