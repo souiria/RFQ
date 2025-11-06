@@ -1,5 +1,4 @@
-﻿
-namespace Adss.Services
+﻿namespace Adss.Services
 {
     public class AdssService : IAdssService
     {
