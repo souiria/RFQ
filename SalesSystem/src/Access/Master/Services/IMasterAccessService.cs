@@ -11,7 +11,7 @@
         #region Customer
 
         Task<ListCustomerGrpc> GetAllCustomerBusinessUnits(CancellationToken cancellationToken);
-        Task<ListCustomerGrpc> GetCustomerBusinessUnitsById(string id ,CancellationToken cancellationToken);
+        Task<ListCustomerGrpc> GetCustomerBusinessUnitsByUserId(string id ,CancellationToken cancellationToken);
         Task<bool> PopulateCustomersAsync(CancellationToken cancellationToken);
         Task<ListCustomerLocationGrpc> GetAllCustomerLocations(CancellationToken cancellationToken);
         Task<ListCustomerLocationGrpc> GetCustomerLocationsById(string id, CancellationToken cancellationToken);

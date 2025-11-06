@@ -63,9 +63,9 @@
             {
                 // Call the Master service to get customers
                 await Task.Delay(1);
-                CustomerByIdGrpcRequest getCustomersRequest = new CustomerByIdGrpcRequest();
+                CustomerByUserIdGrpcRequest getCustomersRequest = new CustomerByUserIdGrpcRequest();
                 getCustomersRequest.Id = request.UserId.ToUpperInvariant();
-                ListCustomerGrpc customers = _MasterClient.GetCustomerGrpcById(getCustomersRequest);
+                ListCustomerGrpc customers = _MasterClient.GetCustomerGrpcByUserId(getCustomersRequest);
                 GetCustomersByUserIdGrpcResponse response = new GetCustomersByUserIdGrpcResponse();
                 foreach (Master.CustomerGrpc? masterCustomer in customers.CustomerGrpc)
                 {

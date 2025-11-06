@@ -18,7 +18,7 @@ service Master {
 
   rpc GetCustomerGrpc (CustomerGrpcRequest) returns (ListCustomerGrpc);
   rpc GetCustomerGrpcStream (CustomerGrpcRequest) returns (stream CustomerGrpc);
-  rpc GetCustomerGrpcById (CustomerByIdGrpcRequest) returns (ListCustomerGrpc);
+  rpc GetCustomerGrpcByUserId (CustomerByUserIdGrpcRequest) returns (ListCustomerGrpc);
   rpc GetCustomerLocationGrpc (CustomerLocationGrpcRequest) returns (ListCustomerLocationGrpc);
   rpc GetCustomerLocationGrpcStream (CustomerLocationGrpcRequest) returns (stream CustomerLocationGrpc);
   rpc GetCustomerLocationGrpcById (CustomerLocationByIdGrpcRequest) returns (ListCustomerLocationGrpc);
@@ -91,7 +91,7 @@ message CustomerGrpcRequest {
   int32 takeamount = 2;
 }
 
-message CustomerByIdGrpcRequest {
+message CustomerByUserIdGrpcRequest {
     string Id = 1;
 }
 

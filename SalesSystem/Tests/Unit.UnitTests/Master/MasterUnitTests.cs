@@ -101,28 +101,28 @@ namespace Unit.Tests.Master
         [Category("Unit")]
         public void GetCustomerGrpcByIdTest_Success()
         {
-            CustomerByIdGrpcRequest customerByIdGrpcRequest = new CustomerByIdGrpcRequest();
-            customerByIdGrpcRequest.Id = "46711693-0ea4-4f9a-86c1-4973308bf795";
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerGrpcById));
+            CustomerByUserIdGrpcRequest customerByIdGrpcRequest = new CustomerByUserIdGrpcRequest();
+            customerByIdGrpcRequest.Id = "83853662-6d20-41b0-b6ac-fd3271406b6b";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerGrpcByUserId));
 
-            Task<ListCustomerGrpc> getCustomerGrpcByIdReply = _GrpcService.GetCustomerGrpcById(customerByIdGrpcRequest, serverCallContext);
+            Task<ListCustomerGrpc> getCustomerGrpcByIdReply = _GrpcService.GetCustomerGrpcByUserId(customerByIdGrpcRequest, serverCallContext);
 
             Assert.That(getCustomerGrpcByIdReply.Result.CustomerGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(getCustomerGrpcByIdReply.Result.CustomerGrpc.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestGroupName");
-            Assert.That(getCustomerGrpcByIdReply.Result.CustomerGrpc.First().CustomerBusinessGroupName, nameConstraint);
+            NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("04707931-2cff-4b2c-8fbd-bef614c6a99a");
+            Assert.That(getCustomerGrpcByIdReply.Result.CustomerGrpc.First().Id, nameConstraint);
         }
 
         [Test]
         [Category("Unit")]
         public void GetCustomerGrpcByIdTest_Fail()
         {
-            CustomerByIdGrpcRequest customerByIdGrpcRequest = new CustomerByIdGrpcRequest();
+            CustomerByUserIdGrpcRequest customerByIdGrpcRequest = new CustomerByUserIdGrpcRequest();
             customerByIdGrpcRequest.Id = Guid.NewGuid().ToString();
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerGrpcById));
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerGrpcByUserId));
 
-            Task<ListCustomerGrpc> getCustomerGrpcByIdReply = _GrpcService.GetCustomerGrpcById(customerByIdGrpcRequest, serverCallContext);
+            Task<ListCustomerGrpc> getCustomerGrpcByIdReply = _GrpcService.GetCustomerGrpcByUserId(customerByIdGrpcRequest, serverCallContext);
 
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(getCustomerGrpcByIdReply.Result.CustomerGrpc.Count, countConstraint);
