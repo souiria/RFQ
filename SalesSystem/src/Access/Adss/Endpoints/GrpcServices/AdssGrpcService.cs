@@ -49,13 +49,5 @@
             _Logger.GenericLogInformation(information: $"Image found for part number '{partNumber}', returning image with content type '{contentType}'.");
             return imageReply;
         }
-
-        //public override async Task<FilterImageResponse> FilterImage(FilterImageRequest request, ServerCallContext context)
-        //{
-        //    _Logger.GenericLogInformation("FilterImage method starting.");
-        //    FilterImageResponse response = new FilterImageResponse();
-        //    response = await _Svc.FilterImage(request);
-        //    return response;
-        //}
     }
 }
