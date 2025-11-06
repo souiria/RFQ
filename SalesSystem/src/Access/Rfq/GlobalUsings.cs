@@ -1,5 +1,6 @@
 ﻿global using System.Globalization;
 global using System.Linq.Dynamic.Core;
+global using System.Linq.Expressions;
 global using System.Reflection;
 global using Ardalis.Specification;
 global using Ardalis.Specification.EntityFrameworkCore;

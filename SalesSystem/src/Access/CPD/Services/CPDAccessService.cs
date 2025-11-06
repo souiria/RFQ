@@ -1,7 +1,4 @@
-﻿
-using System.Linq.Expressions;
-
-namespace CPD.Services
+﻿namespace CPD.Services
 {
     public class CPDAccessService : ICPDAccessService
     {

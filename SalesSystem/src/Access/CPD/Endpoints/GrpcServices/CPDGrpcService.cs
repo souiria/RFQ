@@ -1,6 +1,4 @@
-﻿using NPR;
-
-namespace CPD.Endpoints.GrpcServices
+﻿namespace CPD.Endpoints.GrpcServices
 {
     public class CPDGrpcService : CPD.CPDBase
     {

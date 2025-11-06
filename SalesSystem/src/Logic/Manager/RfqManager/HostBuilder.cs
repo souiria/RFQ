@@ -57,7 +57,6 @@
                 o.Address = new Uri("https://localhost:7166");
             });
             builder.Services.AddInfrastructure();
-            //builder.Services.AddSingleton<IFilter, Filter>();
 
             #endregion
 
