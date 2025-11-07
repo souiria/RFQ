@@ -22,6 +22,12 @@
         { get; set; }
         public string? Comments
         { get; set; }
+        public string? SumitomoPartNumber
+        { get; set; }
+        public string? SupplierPartNumber
+        { get; set; }
+        public Guid? NprId
+        { get; set; }
         public DbRfqProject? RfqProject
         { get; set; }
     }

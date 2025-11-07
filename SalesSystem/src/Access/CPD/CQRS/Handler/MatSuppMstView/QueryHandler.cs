@@ -14,7 +14,7 @@
         public async Task<Result<List<MatSuppMstViewGrpc>>> Handle(GetMattSuppMstViewQuery query, CancellationToken cancellationToken)
         {
             _MatSuppMstViews.Clear();
-            GetMatSuppMstViewReadOnlySpec spec = new GetMatSuppMstViewReadOnlySpec(0, 100);
+            GetMatSuppMstViewReadOnlySpec spec = new GetMatSuppMstViewReadOnlySpec(query.Position, query.TakeAmount);
             List<DbMattSuppMstView> results = await _Repository.ListAsync(spec, cancellationToken);
             foreach (DbMattSuppMstView result in results)
             {

@@ -23,6 +23,7 @@
     <ProjectReference Include="..\..\..\Debug\SalesSystem.ServiceDefaults\SalesSystem.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\..\Utilities\SharedModels\SharedModels.csproj" />
     <ProjectReference Include="..\..\Engine\DocumentConversion\Transformation.csproj" />
+    <ProjectReference Include="..\..\Engine\Filtering\Filtering.csproj" />
   </ItemGroup>
 
 </Project>

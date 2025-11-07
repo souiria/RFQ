@@ -14,6 +14,7 @@ service NPR {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply);
   rpc GetAllH1NPRViewGrpc (H1NPRViewRequest) returns (ListH1NPRViewGrpc);
+  rpc FilterNPRGrpc (NPRFilterRequest) returns (NPRFilterResponse);
 }
 
 // The request message containing the user's name.
@@ -99,4 +100,14 @@ message H1NPRViewGrpc{
 
 message ListH1NPRViewGrpc {
 	repeated H1NPRViewGrpc H1NPRViewGrpc = 1;
+}
+
+message NPRFilterRequest {
+    string DatabaseList = 1;
+    string FilterExpression = 2;
+}
+
+message NPRFilterResponse {
+	bool Success = 1;
+	ListH1NPRViewGrpc ListH1NPRViewGrpc = 2;
 }

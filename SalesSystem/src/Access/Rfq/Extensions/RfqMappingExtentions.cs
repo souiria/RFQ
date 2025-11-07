@@ -16,6 +16,9 @@
             data.IsExactMatch = entity.IsExactMatch;
             data.IsSwapped = entity.IsSwapped;
             data.Comments = entity.Comments;
+            data.SumitomoPartNumber = entity.SumitomoPartNumber;
+            data.SupplierPartNumber = entity.SupplierPartNumber;
+            data.NprId = entity.NprId?.ToString();
             return data;
         }
 
@@ -32,6 +35,9 @@
             data.IsExactMatch = grpc.IsExactMatch;
             data.IsSwapped = grpc.IsSwapped;
             data.Comments = grpc.Comments;
+            data.SumitomoPartNumber = grpc.SumitomoPartNumber;
+            data.SupplierPartNumber = grpc.SupplierPartNumber;
+            data.NprId = string.IsNullOrEmpty(grpc.NprId) ? null : Guid.Parse(grpc.NprId);
             return data;
         }
         #endregion

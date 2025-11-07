@@ -57,10 +57,10 @@ namespace Master.Endpoints.GrpcServices
             ListCustomerGrpc results = await _MasterAccessService.GetAllCustomerBusinessUnits(context.CancellationToken);
         }
 
-        public override async Task<ListCustomerGrpc> GetCustomerGrpcById(CustomerByIdGrpcRequest request, ServerCallContext context)
+        public override async Task<ListCustomerGrpc> GetCustomerGrpcByUserId(CustomerByUserIdGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetCustomerGrpcById starting");
-            return await _MasterAccessService.GetCustomerBusinessUnitsById(request.Id, context.CancellationToken);
+            return await _MasterAccessService.GetCustomerBusinessUnitsByUserId(request.Id, context.CancellationToken);
         }
 
         public override async Task<ListCustomerLocationGrpc> GetCustomerLocationGrpc(CustomerLocationGrpcRequest request, ServerCallContext context)
