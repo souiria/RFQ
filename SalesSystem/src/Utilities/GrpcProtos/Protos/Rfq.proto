@@ -230,6 +230,7 @@ message RfqProjectGrpc {
 	google.protobuf.Int32Value VehicleVolume = 9;
 	google.protobuf.Timestamp CreatedDate = 10;
 	google.protobuf.BoolValue IsActive = 11;
+	string RfqReasonI= 12;
 }
 
 message ListRfqProjectGrpc {

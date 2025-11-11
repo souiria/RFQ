@@ -247,24 +247,80 @@
             }
         }
 
+        //public async Task<GetAllRfqProjectGrpcResponse> GetAllRfqProjectGrpc(GetAllRfqProjectGrpcRequest request)
+        //{
+        //    try
+        //    {
+        //        await Task.Delay(1);
+        //        RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
+        //        GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+        //        grpcRequestParameter.Position = request.Position;
+        //        grpcRequestParameter.Take = request.Take;
+        //        grpcRequestParameter.RequestType = 1;
+        //        rfqProjectRequest.GrpcRequestParameter = grpcRequestParameter;
+        //        ListRfqProjectGrpc rfqProjects = _RfqClient.ReadRfqProjectGrpc(rfqProjectRequest);
+
+        //        GetAllRfqProjectGrpcResponse response = new GetAllRfqProjectGrpcResponse();
+
+        //        foreach (RfqProjectGrpc project in rfqProjects.RfqProjects)
+        //        {
+        //            RfqProject mappedProject = project.ToRfqProject();
+        //            response.RfqProjects.Add(mappedProject);
+        //        }
+
+        //        return response;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _Logger.GenericLogError("Error fetching RFQ projects from Master service", ex);
+        //        throw;
+        //    }
+        //}
         public async Task<GetAllRfqProjectGrpcResponse> GetAllRfqProjectGrpc(GetAllRfqProjectGrpcRequest request)
         {
             try
             {
                 await Task.Delay(1);
+
+                // Prepare RFQ project request
                 RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
                 GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
                 grpcRequestParameter.Position = request.Position;
                 grpcRequestParameter.Take = request.Take;
                 grpcRequestParameter.RequestType = 1;
                 rfqProjectRequest.GrpcRequestParameter = grpcRequestParameter;
+
+                // Fetch RFQ projects
                 ListRfqProjectGrpc rfqProjects = _RfqClient.ReadRfqProjectGrpc(rfqProjectRequest);
 
+                // Fetch RFQ reasons
+                RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
+                GrpcRequestParameter reasonRequestParameter = new GrpcRequestParameter();
+                reasonRequestParameter.Position = 0;
+                reasonRequestParameter.Take = 100;
+                reasonRequestParameter.RequestType = 1;
+                rfqReasonRequest.GrpcRequestParameter = reasonRequestParameter;
+
+                ListRfqReasonGrpc rfqReasons = _RfqClient.ReadRfqReasonGrpc(rfqReasonRequest);
+
+                // Build reason lookup
+                Dictionary<int, string> reasonLookup = rfqReasons.RfqReasons
+                  .Where(static r => r.RowId != 0 && r.ReasonTitle != null)
+                  .ToDictionary(r => r.RowId, r => r.ReasonTitle);
+
+                // Prepare response
                 GetAllRfqProjectGrpcResponse response = new GetAllRfqProjectGrpcResponse();
 
                 foreach (RfqProjectGrpc project in rfqProjects.RfqProjects)
                 {
                     RfqProject mappedProject = project.ToRfqProject();
+
+                    // Attach reason title if available
+                    if (reasonLookup.TryGetValue(mappedProject.RfqReasonId, out string? reasonTitle))
+                    {
+                        mappedProject.GetType().GetProperty("RfqReasonI")?.SetValue(mappedProject, reasonTitle);
+                    }
+
                     response.RfqProjects.Add(mappedProject);
                 }
 

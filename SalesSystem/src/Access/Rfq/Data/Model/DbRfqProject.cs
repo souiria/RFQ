@@ -1,4 +1,6 @@
-﻿namespace Rfq.Data.Model
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Rfq.Data.Model
 {
     public class DbRfqProject : IAggregateRoot
     {
@@ -33,5 +35,8 @@
         { get; set; }
         public bool IsActive 
         { get; set; } = true;
+        [NotMapped]
+        public string? RfqReasonI
+        { get; set; }
     }
 }
