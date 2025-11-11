@@ -1,0 +1,361 @@
+﻿@page "/editRfq/{UserId:guid}/{RfqProjectId:long}"
+
+@using Google.Protobuf.WellKnownTypes
+@using SalesSystem.Rfq.Components.Pages.Dialogs
+@using SalesSystem.Rfq.Extensions
+@using SalesSystem.Rfq.Models
+@using SalesSystem.Rfq.Components.Pages.Components
+
+@inject ISnackbar Snackbar
+@inject RfqUxClientService RfqUxClientService
+@inject ILogger<EditRfq> Logger
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+
+@rendermode InteractiveServer
+
+@if (IsLoading || RfqProject == null)
+{
+    <MudContainer Class="d-flex justify-center align-center" Style="height: calc(100vh - 128px);">
+        <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large">
+            <ChildContent>
+                <MudText Typo="Typo.subtitle2">
+                    Loading...
+                </MudText>
+            </ChildContent>
+        </MudProgressCircular>
+    </MudContainer>
+}
+else
+{
+    <MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Edit RFI/RFQ</MudText>
+    <MudGrid Class="position-fixed">
+        <MudItem xs="12">
+            <MudPaper Class="d-flex flex-row" Style="height:150px;">
+                @* Region label *@
+                <MudPaper Style="width: 48px; background-color: var(--mud-palette-primary); position: relative; overflow: visible;">
+                    <MudText Style="transform: rotate(-90deg); transform-origin: left bottom; white-space: nowrap; position: absolute; bottom: 20px; left: 36px; font-weight: 500; color: white;" 
+                             Typo="Typo.h6">
+                        Edit RFQ/RFI
+                    </MudText>
+                </MudPaper>
+                <MudPaper Class="pa-4">
+                    <MudStack>
+                        <MudSelect T="string"
+                                   Value="@RfqProject.CustomerBusinessUnitId"
+                                   For="@(() => RfqProject.CustomerBusinessUnitId)"
+                                   ValueChanged="OnCustomerValueChanged"
+                                   Label="Customer"
+                                   Placeholder="Please Select"
+                                   AdornmentIcon="@Icons.Material.Filled.People"
+                                   AdornmentColor="Color.Primary">
+                            @foreach (var customer in RfqUxClientService.Customers)
+                            {
+                                <MudSelectItem Value="@customer.Id">@customer.CustomerBusinessGroupName</MudSelectItem>
+                            }
+                        </MudSelect>
+                        <MudSelect T="int?"
+                                   Value="@(RfqProject.RfqReasonId == 0 ? null : (int?)RfqProject.RfqReasonId)"
+                                   ValueChanged="OnReasonValueChanged"
+                                   Label="Reason"
+                                   Placeholder="Please Select"
+                                   AdornmentIcon="@Icons.Material.Filled.Checklist"
+                                   AdornmentColor="Color.Primary">
+                            @foreach (var reason in RfqUxClientService.Reasons)
+                            {
+                                <MudSelectItem Value="@((int?)reason.RowId)">@reason.RfqReasonTitle</MudSelectItem>
+                            }
+                        </MudSelect>
+
+                    </MudStack>
+                </MudPaper>
+
+                <MudPaper Class="pa-4">
+                    <MudStack>
+                        <MudSelect T="string"
+                                   Value="@RfqProject.ProjectId"
+                                   For="@(() => RfqProject.ProjectId)"
+                                   ValueChanged="OnCustomerProjectValueChanged"
+                                   Label="Project"
+                                   Placeholder="Please Select"
+                                   AdornmentIcon="@Icons.Material.Filled.DesignServices"
+                                   AdornmentColor="Color.Primary">
+                            @foreach (var association in RfqUxClientService.CustomerProjectAssociations)
+                            {
+                                <MudSelectItem Value="@association.Id">@association.ProjectName - @association.CustomerName</MudSelectItem>
+                            }
+                        </MudSelect>
+                        <MudNumericField @bind-Value="@RfqProject.VehicleVolume"
+                                         Label="Vehicle Volume"
+                                         Variant="Variant.Text"
+                                         Min="0" />
+                    </MudStack>
+                </MudPaper>
+
+                <MudPaper Class="pa-4">
+                    <MudStack>
+                        <MudDatePicker Label="Date Format"
+                                       @bind-Date="RfqProject.RfqResponseDeadline"
+                                       DateFormat="dd.MM.yyyy" />
+                    </MudStack>
+                </MudPaper>
+
+                <MudPaper Class="d-flex flex-grow-1 pa-4 w-100">
+                    <FileManager @ref="componentFileManager"
+                                 FileObjects="FileObjects"
+                                 OnFilesChanged="OnFilesChanged" />
+                </MudPaper>
+
+                @* Controls  *@
+                <MudPaper Class="d-flex align-end pa-4">
+                    <MudButton Color="Color.Primary"
+                               OnClick="@SubmitDataAsync"
+                               Variant="Variant.Filled"
+                               Size="Size.Small"
+                               FullWidth="false">
+                        Upload
+                    </MudButton>
+                </MudPaper>
+
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" Class="pt-2">
+            <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-3">
+                <MudTabPanel Text="Parts Lists">
+                    @* Part Number Sections *@
+                    <div class="d-flex flex-column" style="height: calc(100vh - 364px); overflow: hidden;">
+                        @* Unmatched Parts Section *@
+                        <PartNumberSection PartNumbers="@UnmatchedParts"
+                                           Label="Unmatched Parts"
+                                           BackgroundColor="var(--mud-palette-warning)"
+                                           InitiallyExpanded="true" />
+                        @* Separator *@
+                        <MudDivider Style="margin: 4px 0;" />
+                        @* Matched Parts Section *@
+                        <PartNumberSection PartNumbers="@MatchedParts"
+                                           Label="Matched Parts"
+                                           BackgroundColor="var(--mud-palette-success)"
+                                           InitiallyExpanded="false" />
+                    </div>
+                </MudTabPanel>
+                <MudTabPanel Text="BOM Files">
+                    <div class="d-flex flex-column" style="height: calc(100vh - 364px); overflow: hidden;">
+                        @* File Cards Section *@
+                        <FileCards @ref="componentFileCards"
+                                   FileObjects="FileObjects"
+                                   OnRemoveFile="HandleFileRemoval" />
+                    </div>
+                </MudTabPanel>
+            </MudTabs>
+        </MudItem>
+    </MudGrid>
+}
+
+@code {
+
+    // Reference to the FileManager component
+    FileManager? componentFileManager;
+    FileCards? componentFileCards;
+    List<FileObjectUx> FileObjects { get; set; } = new List<FileObjectUx>();
+
+    // Form related
+    bool IsLoading { get; set; } = true;
+    RfqProjectUx? RfqProject { get; set; }
+
+    [Parameter] public Guid? UserId { get; set; }
+    [Parameter] public long RfqProjectId { get; set; }
+
+    // Part numbers data from test list
+    IEnumerable<RfqPartNumberUx> MatchedParts => RfqPartNumberUx.TestList.Where(p => p.IsMatched == true);
+    IEnumerable<RfqPartNumberUx> UnmatchedParts => RfqPartNumberUx.TestList.Where(p => p.IsMatched == false);
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (UserId == null || UserId == Guid.Empty)
+        {
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add("UserId is missing in the URL", Severity.Error);
+            Logger.GenericLogInformation("EditRfq.OnInitializedAsync - UserId is missing in the URL");
+            IsLoading = false;
+            NavigationManager.NavigateTo("/");
+        }
+
+        try
+        {
+            if (RfqUxClientService.Customers.Count == 0)
+            {
+                Func<Guid, Task<int>> guidAsyncService = RfqUxClientService.GetCustomersByUserIdAsync;
+                (long timing, int count) = await guidAsyncService.TimeAsyncGuidIntService((Guid)UserId!);
+                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded {count} customers for UserId {UserId} in {timing}ms");
+            }
+
+            if (RfqUxClientService.Reasons.Count == 0)
+            {
+                Func<Task<int>> guidAsyncService = RfqUxClientService.GetRfqReasonsAsync;
+                (long timing, int count) = await guidAsyncService.TimeAsyncVoidIntService();
+                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded {count} reasons in {timing}ms");
+            }
+
+            // get the project
+            var rfqProject = await RfqUxClientService.GetRfqProjectByIdAsync(RfqProjectId);
+            if (rfqProject == null)
+            {
+                Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+                Snackbar.Add($"RFQ Project with Id {RfqProjectId} not found", Severity.Error);
+                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - RFQ Project with Id {RfqProjectId} not found");
+                NavigationManager.NavigateTo("/");
+                return;
+            }
+
+            RfqProject = rfqProject.ToRfqProjectUx();
+            if (RfqProject == null)
+            {
+                Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+                Snackbar.Add($"Error mapping RFQ Project with Id {RfqProjectId}", Severity.Error);
+                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Error mapping RFQ Project with Id {RfqProjectId}");
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                IsLoading = false;
+                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded RFQ Project with Id {RfqProject.RowId} - {RfqProject.RfqNumber}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError("EditRfq.OnInitializedAsync - Error loading RFQ project", ex);
+            Snackbar.Add("Error loading RFQ project", Severity.Error);
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
+    #region Customer
+    async Task OnCustomerValueChanged(string value)
+    {
+        RfqProject!.CustomerBusinessUnitId = value;
+
+        var customer = RfqUxClientService.Customers.FirstOrDefault(c => c.CustomerBusinessGroupName == value);
+        if (customer == null)
+        {
+            Logger.GenericLogInformation($"EditRfq.OnCustomerValueChanged - Customer with name '{value}' not found");
+            return;
+        }
+        await Task.Delay(0);
+        Logger.GenericLogInformation($"EditRfq.OnCustomerValueChanged - Customer changed to {customer?.Id} - {customer?.CustomerBusinessGroupName}");
+
+        try
+        {
+            await GetProjectAssociationsByCustomerName(customer!.CustomerBusinessGroupName);
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError($"EditRfq.OnCustomerValueChanged - Failed to load customer projects for customer '{RfqProject!.CustomerBusinessUnitId}'", ex);
+        }
+        StateHasChanged();
+    }
+
+    async Task GetProjectAssociationsByCustomerName(string value)
+    {
+        if (!string.IsNullOrWhiteSpace(RfqProject!.CustomerBusinessUnitId))
+        {
+            RfqModule.CustomerGrpc? customer = RfqUxClientService.Customers.FirstOrDefault(c => c.Id == value);
+
+            if (customer != null)
+            {
+                await RfqUxClientService.GetProjectAssociationsByCustomerIdAsync(customer.Id);
+                StateHasChanged();
+            }
+        }
+    }
+
+    private void OnCustomerProjectValueChanged(string value)
+    {
+        RfqProject!.ProjectId = value;
+
+        var project = RfqUxClientService.CustomerProjectAssociations.FirstOrDefault(p => p.Id == value);
+        Logger.GenericLogInformation($"Project changed to {project?.Id} - {project?.ProjectName}");
+
+        StateHasChanged();
+    }
+    #endregion
+
+    #region Reason
+    async Task OnReasonValueChanged(int? value)
+    {
+        RfqProject!.RfqReasonId = value ?? 0;
+        await Task.Delay(0);
+
+        var reason = RfqUxClientService.Reasons.FirstOrDefault(r => r.RowId == (value ?? 0));
+        Logger.GenericLogInformation($"EditRfq.OnReasonValueChanged - Reason changed to {reason?.RowId} - {reason?.RfqReasonTitle}");
+
+        StateHasChanged();
+    }
+    #endregion
+
+    private async Task SubmitDataAsync()
+    {
+        await Task.Delay(0);
+        try
+        {
+
+            StateHasChanged();
+
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError("EditRfq.SubmitDataAsync - Unexpected error during submission", ex);
+        }
+    }
+
+    #region File handling
+    private void OnFilesChanged()
+    {
+        StateHasChanged();
+    }
+    private async Task HandleFileRemoval(FileObjectUx fileObject)
+    {
+        try
+        {
+            Logger.GenericLogInformation($"CreateRfq.HandleFileRemoval - Starting removal for file: {fileObject.DisplayName} (ID: {fileObject.Id})");
+
+            // Check if file can be safely removed
+            if (fileObject.CanBeRemovedSafely)
+            {
+                // Remove completely from collection to prevent InputFile issues
+                bool removed = FileObjects.Remove(fileObject);
+
+                if (removed)
+                {
+                    // Reset the FileManager's InputFile component to clear internal state
+                    if (componentFileManager != null)
+                    {
+                        await componentFileManager.ResetInputFileAsync();
+                    }
+
+                    Logger.GenericLogInformation($"CreateRfq.HandleFileRemoval - Completely removed file: {fileObject.DisplayName}");
+                    Snackbar.Add($"File '{fileObject.DisplayName}' removed successfully", Severity.Success);
+                }
+                else
+                {
+                    Logger.GenericLogInformation($"CreateRfq.HandleFileRemoval - File not found in collection: {fileObject.DisplayName}");
+                }
+            }
+            else
+            {
+                // Keep in collection but mark as deleted for uploaded files
+                fileObject.Status = UxObjectStatus.Deleted;
+                Logger.GenericLogInformation($"CreateRfq.HandleFileRemoval - Marked uploaded file as deleted: {fileObject.DisplayName}");
+                Snackbar.Add($"File '{fileObject.DisplayName}' marked as deleted", Severity.Info);
+            }
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError($"CreateRfq.HandleFileRemoval - Error removing file: {fileObject.DisplayName}", ex);
+            Snackbar.Add($"Error removing file: {ex.Message}", Severity.Error);
+        }
+    }
+    #endregion
+
+}

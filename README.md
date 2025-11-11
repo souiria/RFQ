@@ -96,3 +96,22 @@
             🎉 All database connections working properly!
             ```
         - You now have access setup between containers.
+
+
+## Testing
+
+1. **Categories**
+
+```
+
+        [Test]
+        [Category("Unit")]
+        [Category("Integration")]
+        [Category("Regression")]
+        [Category("Performance")]
+
+```
+
+   - Use the appropriate category attributes to classify tests.
+   - Unit tests should focus on individual components, integration tests on interactions between components, and regression tests on ensuring existing functionality remains intact.
+
