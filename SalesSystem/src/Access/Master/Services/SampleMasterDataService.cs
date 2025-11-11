@@ -45,7 +45,7 @@
             }
 
             CustomerGrpc fixedCustomerDto = new CustomerGrpc();
-            fixedCustomerDto.Id = "46711693-0ea4-4f9a-86c1-4973308bf795";
+            fixedCustomerDto.Id = "04707931-2cff-4b2c-8fbd-bef614c6a99a";
             fixedCustomerDto.CustomerBusinessGroupCode = "TestGroupCode";
             fixedCustomerDto.CustomerBusinessGroupName = "TestGroupName";
             fixedCustomerDto.SEWSEBusinessTeam = "TestSEWSETeam";

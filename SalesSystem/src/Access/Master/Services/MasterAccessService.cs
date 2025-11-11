@@ -220,7 +220,7 @@
             }
         }
 
-        public async Task<ListCustomerGrpc> GetCustomerBusinessUnitsById(string id, CancellationToken cancellationToken)
+        public async Task<ListCustomerGrpc> GetCustomerBusinessUnitsByUserId(string id, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             _FilteredCustomers.CustomerGrpc.Clear();

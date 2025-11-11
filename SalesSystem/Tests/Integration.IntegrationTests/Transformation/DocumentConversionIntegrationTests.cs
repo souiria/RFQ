@@ -19,7 +19,7 @@ namespace Integration.Tests.Transformation
         public void TestGetHarnessNameInformation()
         {
             Assert.That(_Model.Harness, Is.Not.Null);
-            DateTime ctDate = new DateTime(2023, 12, 5);
+            DateTime ctDate = new DateTime(2023, 5, 12);
             NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo("T2L2-14A005-ZC");
             Assert.That(_Model.Harness.HarnessName1, equalConstraint);
             equalConstraint = Is.EqualTo("");
@@ -114,7 +114,7 @@ namespace Integration.Tests.Transformation
         public void TestGetHarnessCircuitInformantion()
         {
             Assert.That(_Model.CompositeDetailList, Is.Not.Null);
-            DateTime ctDate = new DateTime(2023, 12, 5);
+            DateTime ctDate = new DateTime(2023, 5, 12);
             NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(48);
             Assert.That(_Model.CompositeDetailList.Count, equalConstraint);
             CompositeDetailDto model = _Model.CompositeDetailList.Last();

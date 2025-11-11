@@ -17,5 +17,14 @@
         Task<UpdateRfqProjectGrpcResponse> UpdateRfqProject(UpdateRfqProjectGrpcRequest request);
         Task<GetRfqDrawingPartNumbersByRfqIdGrpcResponse> GetRfqDrawingPartNumbersByRfqIdGrpc(GetRfqDrawingPartNumbersByRfqIdGrpcRequest request);
         Task<RfqCrudResponse> DeleteRfqProjectByRowIdGrpc(RfqProjectRequest request);
+        Task<FilterGrpcResponse> FilterByCustomerId(FilterGrpcRequest request);
+        Task<FilterGrpcResponse> FilterByLocationId(FilterGrpcRequest request);
+        Task<FilterGrpcResponse> FilterByProjectCode(FilterGrpcRequest request);
+        Task<FilterGrpcResponse> FilterEmacsByExactPartNumber(FilterGrpcRequest request);
+        Task<FilterGrpcResponse> FilterEmacsByContainingPartNumber(FilterGrpcRequest request);
+        Task<FilterGrpcResponse> FilterAdssBySumitomoPartNumber(FilterGrpcRequest request);
+        Task<FilterGrpcResponse> FilterNPRBySumitomoPartNumber(FilterGrpcRequest request);
+        Task<FilterGrpcResponse> FilterCPDBySumitomoPartNumber(FilterGrpcRequest request);
+        Task<FilterGrpcResponse> FilterRFQBySumitomoPartNumber(FilterGrpcRequest request);
     }
 }
