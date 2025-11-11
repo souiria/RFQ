@@ -12,7 +12,6 @@
         #region PartCategoryDetail
 
         Task<ListPartCategoryDetailGrpc> GetAllPartCategoryDetail(CancellationToken cancellationToken);
-        Task<ListPartCategoryDetailGrpc> GetPartCategoryDetailByCategoryCode(string categoryCode, CancellationToken cancellationToken);
 
         Task<bool> PopulatePartCategoryDetailAsync(CancellationToken cancellationToken);
         #endregion
@@ -20,7 +19,6 @@
         #region PartClassDetail
 
         Task<ListPartClassDetailGrpc> GetAllPartClassDetail(CancellationToken cancellationToken);
-        Task<ListPartClassDetailGrpc> GetPartClassDetailByClasses(string class1, double class2 ,CancellationToken cancellationToken);
 
         Task<bool> PopulatePartClassDetailAsync(CancellationToken cancellationToken);
         #endregion
@@ -28,7 +26,6 @@
         #region PartGroups
 
         Task<ListPartGroupsGrpc> GetAllPartGroups(CancellationToken cancellationToken);
-        Task<ListPartGroupsGrpc> GetPartGroupsByPartGroup(string partGroup, CancellationToken cancellationToken);
 
         Task<bool> PopulatePartGroupsAsync(CancellationToken cancellationToken);
         #endregion
@@ -36,7 +33,6 @@
         #region PartGroupsConst
 
         Task<ListPartGroupsConstGrpc> GetAllPartGroupsConst(CancellationToken cancellationToken);
-        Task<ListPartGroupsConstGrpc> GetAllPartGroupsConstByGroup3(string group3,CancellationToken cancellationToken);
 
         Task<bool> PopulatePartGroupsConstAsync(CancellationToken cancellationToken);
         #endregion
@@ -51,7 +47,6 @@
         #region ColourCode
 
         Task<ListColourCodeGrpc> GetAllColourCode(CancellationToken cancellationToken);
-        Task<ListColourCodeGrpc> GetColourCodeByColorCode(string colorCode, CancellationToken cancellationToken);
 
         Task<bool> PopulateColourCodeAsync(CancellationToken cancellationToken);
         #endregion
@@ -59,7 +54,6 @@
         #region MaterialGroups
 
         Task<ListMaterialGroupsGrpc> GetAllMaterialGroups(CancellationToken cancellationToken);
-        Task<ListMaterialGroupsGrpc> GetMaterialGroupsByMaterialGroupId(string materialGroupId, CancellationToken cancellationToken);
 
         Task<bool> PopulateMaterialGroupsAsync(CancellationToken cancellationToken);
         #endregion
@@ -67,7 +61,6 @@
         #region MaterialTypes
 
         Task<ListMaterialTypesGrpc> GetAllMaterialTypes(CancellationToken cancellationToken);
-        Task<ListMaterialTypesGrpc> GetMaterialTypesByMaterials(string materialGroup, string materialType, CancellationToken cancellationToken);
 
         Task<bool> PopulateMaterialTypesAsync(CancellationToken cancellationToken);
         #endregion
@@ -103,13 +96,6 @@
         #region PARTMS
 
         Task<ListPARTMSGrpc> GetAllPARTMSGrpc(CancellationToken cancellationToken);
-        Task<ListPARTMSGrpc> GetPARTMSGrpcByClass(string class1, double class2, CancellationToken cancellationToken);
-        Task<ListPARTMSGrpc> GetPARTMSGrpcByColorCode(string colorCode, CancellationToken cancellationToken);
-        Task<ListPARTMSGrpc> GetPARTMSGrpcByMaterial(string materialGroup, string materialType, CancellationToken cancellationToken);
-        Task<ListPARTMSGrpc> GetPARTMSGrpcByMaterialGroup(string materialGroup, CancellationToken cancellationToken);
-        Task<ListPARTMSGrpc> GetPARTMSGrpcByPartGroup(string partGroup, CancellationToken cancellationToken);
-        Task<ListPARTMSGrpc> GetPARTMSGrpcByCategoryCode(string catogoryCode, CancellationToken cancellationToken);
-        Task<ListPARTMSGrpc> GetPARTMSGrpcByPartGroupsConstCode(string partGroupsConstCode, CancellationToken cancellationToken);
 
         Task<bool> PopulatePARTMSAsync(CancellationToken cancellationToken);
         #endregion
