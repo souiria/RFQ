@@ -7,6 +7,14 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="CDb\appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
@@ -24,7 +32,14 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Access\CDb\CDb.csproj" />
+    <ProjectReference Include="..\..\src\Access\CPD\CPD.csproj" />
+    <ProjectReference Include="..\..\src\Access\Emacs\Emacs.csproj" />
+    <ProjectReference Include="..\..\src\Access\Master\Master.csproj" />
+    <ProjectReference Include="..\..\src\Access\NPR\NPR.csproj" />
+    <ProjectReference Include="..\..\src\Access\Rfq\Rfq.csproj" />
     <ProjectReference Include="..\..\src\Access\SFS\SFS.csproj" />
+    <ProjectReference Include="..\..\src\Logic\Engine\DocumentConversion\Transformation.csproj" />
   </ItemGroup>
 
   <ItemGroup>
