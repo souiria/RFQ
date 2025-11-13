@@ -145,7 +145,7 @@ message RfqProject {
 	int32 VehicleVolume = 9;
     google.protobuf.BoolValue IsActive = 10;
     google.protobuf.Timestamp CreatedDate = 11;
-    string RfqReasonI= 12;
+    string RfqReasonName= 12;
     string CustomerBusinessGroupCode= 13;
 	string CustomerLocationName= 14;
 	string	ProjectName= 15;

@@ -79,7 +79,7 @@
             project.CarModelGuid = rfqProjectGrpc.CarModelGuid;
             project.VehicleVolume = rfqProjectGrpc.VehicleVolume ??0;
             project.CreatedDate = rfqProjectGrpc.CreatedDate;
-            project.RfqReasonI = rfqProjectGrpc.RfqReasonI;
+            project.RfqReasonName = rfqProjectGrpc.RfqReasonName;
             project.IsActive = rfqProjectGrpc.IsActive; 
             project.ProjectName = rfqProjectGrpc.ProjectName;
             project.CustomerBusinessGroupCode= rfqProjectGrpc.CustomerBusinessGroupCode;

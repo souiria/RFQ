@@ -1,4 +1,5 @@
 ﻿global using System.Collections.Concurrent;
+global using System.ComponentModel.DataAnnotations.Schema;
 global using System.Globalization;
 global using System.Reflection;
 global using System.Text.RegularExpressions;
@@ -23,5 +24,3 @@ global using Rfq.Enums;
 global using Rfq.Extensions;
 global using Rfq.Services;
 global using SharedKernel;
-
-
