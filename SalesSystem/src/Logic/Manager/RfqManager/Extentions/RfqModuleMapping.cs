@@ -81,6 +81,10 @@
             project.CreatedDate = rfqProjectGrpc.CreatedDate;
             project.RfqReasonI = rfqProjectGrpc.RfqReasonI;
             project.IsActive = rfqProjectGrpc.IsActive; 
+            project.ProjectName = rfqProjectGrpc.ProjectName;
+            project.CustomerBusinessGroupCode= rfqProjectGrpc.CustomerBusinessGroupCode;
+            project.CustomerLocationName = rfqProjectGrpc.CustomerLocationName;
+            project.CarModelName = rfqProjectGrpc.CarModelName;
             return project;
         }
         public static RfqDrawingPartNumber ToRfqDrawingPartNumber(this RfqDrawingPartNumbersGrpc rfqPartGrpc)

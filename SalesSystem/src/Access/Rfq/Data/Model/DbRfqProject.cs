@@ -38,5 +38,21 @@ namespace Rfq.Data.Model
         [NotMapped]
         public string? RfqReasonI
         { get; set; }
+   
+        [NotMapped]
+        public string? CustomerBusinessGroupCode
+        { get; set; }
+
+        [NotMapped]
+        public string CustomerLocation 
+        { get; set; } = "Default Location";
+
+        [NotMapped]
+        public string Project
+        { get; set; } = "Default Project";
+
+        [NotMapped]
+        public string CarModel
+        { get; set; } = "Default Car Model";
     }
 }
