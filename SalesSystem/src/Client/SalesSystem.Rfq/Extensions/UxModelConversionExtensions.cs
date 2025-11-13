@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace SalesSystem.Rfq.Extensions
+﻿namespace SalesSystem.Rfq.Extensions
 {
     public static class UxModelConversionExtensions
 
