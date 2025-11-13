@@ -1,5 +1,4 @@
-﻿
-namespace Rfq.Services
+﻿namespace Rfq.Services
 {
     public partial class RfqAccessService : IRfqAccessService
     {

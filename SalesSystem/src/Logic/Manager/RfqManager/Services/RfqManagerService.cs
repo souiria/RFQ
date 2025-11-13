@@ -246,25 +246,287 @@
                 throw;
             }
         }
+        //public async Task<GetAllRfqProjectGrpcResponse> GetAllRfqProjectGrpc(GetAllRfqProjectGrpcRequest request)
+        //{
+        //    try
+        //    {
+        //        await Task.Delay(1);
 
-        public async Task<GetAllRfqProjectGrpcResponse> GetAllRfqProjectGrpc(GetAllRfqProjectGrpcRequest request)
+        //        // Prepare RFQ project request
+        //        RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
+        //        GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+        //        grpcRequestParameter.Position = request.Position;
+        //        grpcRequestParameter.Take = request.Take;
+        //        grpcRequestParameter.RequestType = 1;
+        //        rfqProjectRequest.GrpcRequestParameter = grpcRequestParameter;
+
+        //        // Fetch RFQ projects
+        //        ListRfqProjectGrpc rfqProjects = _RfqClient.ReadRfqProjectGrpc(rfqProjectRequest);
+
+        //        // Fetch RFQ reasons
+        //        RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
+        //        GrpcRequestParameter reasonRequestParameter = new GrpcRequestParameter();
+        //        reasonRequestParameter.Position = 0;
+        //        reasonRequestParameter.Take = 100;
+        //        reasonRequestParameter.RequestType = 1;
+        //        rfqReasonRequest.GrpcRequestParameter = reasonRequestParameter;
+
+        //        ListRfqReasonGrpc rfqReasons = _RfqClient.ReadRfqReasonGrpc(rfqReasonRequest);
+
+        //        // Build reason lookup
+        //        Dictionary<int, string> reasonLookup = rfqReasons.RfqReasons
+        //            .Where(r => r.RowId != 0 && r.ReasonTitle != null)
+        //            .ToDictionary(r => r.RowId, r => r.ReasonTitle);
+
+        //        // Fetch customers
+        //        GetAllCustomersGrpcRequest customerRequest = new GetAllCustomersGrpcRequest();
+        //        customerRequest.Position = 0;
+        //        customerRequest.Take = 1000;
+
+        //        GetAllCustomersGrpcResponse customerResponse = await GetAllCustomersGrpc(customerRequest);
+        //        // Build customer lookup
+        //        Dictionary<string, string> customerLookup = customerResponse.Customers
+        //            .Where(c => c.Id != null && c.CustomerBusinessGroupCode != null)
+        //            .ToDictionary(c => c.Id, c => c.CustomerBusinessGroupCode);
+
+        //        // Prepare response
+        //        GetAllRfqProjectGrpcResponse response = new GetAllRfqProjectGrpcResponse();
+
+        //        foreach (RfqProjectGrpc project in rfqProjects.RfqProjects)
+        //        {
+        //            RfqProject mappedProject = project.ToRfqProject();
+
+        //            // Attach reason title if available
+        //            if (reasonLookup.TryGetValue(mappedProject.RfqReasonId, out string? reasonTitle))
+        //            {
+        //                mappedProject.GetType().GetProperty("RfqReasonI")?.SetValue(mappedProject, reasonTitle ?? string.Empty);
+        //            }
+
+        //            // Attach customer business group code if available
+        //            if (customerLookup.TryGetValue(mappedProject.CustomerBusinessUnitGuid, out string? groupCode))
+        //            {
+        //                mappedProject.GetType().GetProperty("CustomerBusinessGroupCode")?.SetValue(mappedProject, groupCode ?? string.Empty);
+        //            }
+
+        //            // Set default values
+        //            mappedProject.GetType().GetProperty("CustomerLocationName")?.SetValue(mappedProject, "Default Location");
+        //            mappedProject.GetType().GetProperty("ProjectName")?.SetValue(mappedProject, "Default Project");
+        //            mappedProject.GetType().GetProperty("CarModelName")?.SetValue(mappedProject, "Default Car Model");
+
+        //            response.RfqProjects.Add(mappedProject);
+        //        }
+
+        //        return response;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _Logger.GenericLogError("Error fetching RFQ projects from Master service", ex);
+        //        throw;
+        //    }
+        //}
+        public async Task<GetAllRfqProjectGrpcResponse> GetAllRfqProjectGrpc00000(GetAllRfqProjectGrpcRequest request)
         {
             try
             {
                 await Task.Delay(1);
+
+                // Prepare RFQ project request
                 RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
                 GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
                 grpcRequestParameter.Position = request.Position;
                 grpcRequestParameter.Take = request.Take;
                 grpcRequestParameter.RequestType = 1;
                 rfqProjectRequest.GrpcRequestParameter = grpcRequestParameter;
+
+                // Fetch RFQ projects
                 ListRfqProjectGrpc rfqProjects = _RfqClient.ReadRfqProjectGrpc(rfqProjectRequest);
 
+                // Fetch RFQ reasons
+                RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
+                GrpcRequestParameter reasonRequestParameter = new GrpcRequestParameter();
+                reasonRequestParameter.Position = 0;
+                reasonRequestParameter.Take = 100;
+                reasonRequestParameter.RequestType = 1;
+                rfqReasonRequest.GrpcRequestParameter = reasonRequestParameter;
+
+                ListRfqReasonGrpc rfqReasons = _RfqClient.ReadRfqReasonGrpc(rfqReasonRequest);
+
+                // Build reason lookup
+                Dictionary<int, string> reasonLookup = rfqReasons.RfqReasons
+                    .Where(r => r.RowId != 0 && r.ReasonTitle != null)
+                    .ToDictionary(r => r.RowId, r => r.ReasonTitle);
+
+                // Fetch customers
+                GetAllCustomersGrpcRequest customerRequest = new GetAllCustomersGrpcRequest();
+                customerRequest.Position = 0;
+                customerRequest.Take = 1000;
+
+                GetAllCustomersGrpcResponse customerResponse = await GetAllCustomersGrpc(customerRequest);
+                // Build customer lookup
+                Dictionary<string, string> customerLookup = customerResponse.Customers
+                    .Where(c => c.Id != null && c.CustomerBusinessGroupCode != null)
+                    .ToDictionary(c => c.Id, c => c.CustomerBusinessGroupCode);
+
+                CustomerLocationGrpcRequest customerLocationRequest = new CustomerLocationGrpcRequest();
+                customerLocationRequest.Position = 0;
+                customerLocationRequest.Takeamount = 1000;
+                ListCustomerLocationGrpc listCustomerLocationLookup = _MasterClient.GetCustomerLocationGrpc(customerLocationRequest);
+
+                ProjectGrpcRequest projectGrpcRequest = new ProjectGrpcRequest();
+                projectGrpcRequest.Position = 0;
+                projectGrpcRequest.Takeamount = 1000;
+                ListProjectGrpc listProjectLookup = _MasterClient.GetProjectGrpc(projectGrpcRequest);
+                VehicleGrpcRequest vehicleGrpcRequest = new VehicleGrpcRequest();
+                vehicleGrpcRequest.Position = 0;
+                vehicleGrpcRequest.Takeamount = 1000;
+                ListVehicleGrpc listVehicleLookup = _MasterClient.GetVehicleGrpc(vehicleGrpcRequest);
+
+                // Prepare response
                 GetAllRfqProjectGrpcResponse response = new GetAllRfqProjectGrpcResponse();
 
                 foreach (RfqProjectGrpc project in rfqProjects.RfqProjects)
                 {
                     RfqProject mappedProject = project.ToRfqProject();
+
+                    // Attach reason title if available
+                    if (reasonLookup.TryGetValue(mappedProject.RfqReasonId, out string? reasonTitle))
+                    {
+                        mappedProject.GetType().GetProperty("RfqReasonI")?.SetValue(mappedProject, reasonTitle ?? string.Empty);
+                    }
+
+                    // Attach customer business group code if available
+                    if (customerLookup.TryGetValue(mappedProject.CustomerBusinessUnitGuid, out string? groupCode))
+                    {
+                        mappedProject.GetType().GetProperty("CustomerBusinessGroupCode")?.SetValue(mappedProject, groupCode ?? string.Empty);
+                    }
+
+                    // Set default values
+                    mappedProject.GetType().GetProperty("CustomerLocationName")?.SetValue(mappedProject, "Default Location");
+                    mappedProject.GetType().GetProperty("ProjectName")?.SetValue(mappedProject, "Default Project");
+                    mappedProject.GetType().GetProperty("CarModelName")?.SetValue(mappedProject, "Default Car Model");
+
+                    response.RfqProjects.Add(mappedProject);
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError("Error fetching RFQ projects from Master service", ex);
+                throw;
+            }
+        }
+        public async Task<GetAllRfqProjectGrpcResponse> GetAllRfqProjectGrpc(GetAllRfqProjectGrpcRequest request)
+        {
+            try
+            {
+                await Task.Delay(1);
+
+                // Prepare RFQ project request
+                RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
+                GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+                grpcRequestParameter.Position = request.Position;
+                grpcRequestParameter.Take = request.Take;
+                grpcRequestParameter.RequestType = 1;
+                rfqProjectRequest.GrpcRequestParameter = grpcRequestParameter;
+
+                // Fetch RFQ projects
+                ListRfqProjectGrpc rfqProjects = _RfqClient.ReadRfqProjectGrpc(rfqProjectRequest);
+
+                // Fetch RFQ reasons
+                RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
+                GrpcRequestParameter reasonRequestParameter = new GrpcRequestParameter();
+                reasonRequestParameter.Position = 0;
+                reasonRequestParameter.Take = 100;
+                reasonRequestParameter.RequestType = 1;
+                rfqReasonRequest.GrpcRequestParameter = reasonRequestParameter;
+
+                ListRfqReasonGrpc rfqReasons = _RfqClient.ReadRfqReasonGrpc(rfqReasonRequest);
+
+                // Build reason lookup
+                Dictionary<int, string> reasonLookup = rfqReasons.RfqReasons
+                    .Where(r => r.RowId != 0 && r.ReasonTitle != null)
+                    .ToDictionary(r => r.RowId, r => r.ReasonTitle);
+
+                // Fetch customers
+                GetAllCustomersGrpcRequest customerRequest = new GetAllCustomersGrpcRequest();
+                customerRequest.Position = 0;
+                customerRequest.Take = 1000;
+
+                GetAllCustomersGrpcResponse customerResponse = await GetAllCustomersGrpc(customerRequest);
+
+                // Build customer lookup
+                Dictionary<string, string> customerLookup = customerResponse.Customers
+                    .Where(c => c.Id != null && c.CustomerBusinessGroupCode != null)
+                    .ToDictionary(c => c.Id, c => c.CustomerBusinessGroupCode);
+
+                // Fetch customer locations
+                CustomerLocationGrpcRequest customerLocationRequest = new CustomerLocationGrpcRequest();
+                customerLocationRequest.Position = 0;
+                customerLocationRequest.Takeamount = 1000;
+                ListCustomerLocationGrpc listCustomerLocationLookup = _MasterClient.GetCustomerLocationGrpc(customerLocationRequest);
+
+                Dictionary<string, string> locationLookup = listCustomerLocationLookup.CustomerLocationGrpc
+                    .Where(l => l.Id != null && l.CustomerCode != null)
+                    .ToDictionary(l => l.Id, l => l.CustomerCode);
+
+                // Fetch projects
+                ProjectGrpcRequest projectGrpcRequest = new ProjectGrpcRequest();
+                projectGrpcRequest.Position = 0;
+                projectGrpcRequest.Takeamount = 1000;
+                ListProjectGrpc listProjectLookup = _MasterClient.GetProjectGrpc(projectGrpcRequest);
+
+                Dictionary<string, string> projectLookup = listProjectLookup.ProjectGrpc
+                    .Where(p => p.Id != null && p.ProjectName != null)
+                    .ToDictionary(p => p.Id, p => p.ProjectName);
+
+                // Fetch vehicles
+                VehicleGrpcRequest vehicleGrpcRequest = new VehicleGrpcRequest();
+                vehicleGrpcRequest.Position = 0;
+                vehicleGrpcRequest.Takeamount = 1000;
+                ListVehicleGrpc listVehicleLookup = _MasterClient.GetVehicleGrpc(vehicleGrpcRequest);
+
+                Dictionary<string, string> vehicleLookup = listVehicleLookup.VehicleGrpc
+                    .Where(v => v.Id != null && v.VehicleName != null)
+                    .ToDictionary(v => v.Id, v => v.VehicleName);
+
+                // Prepare response
+                GetAllRfqProjectGrpcResponse response = new GetAllRfqProjectGrpcResponse();
+
+                foreach (RfqProjectGrpc project in rfqProjects.RfqProjects)
+                {
+                    RfqProject mappedProject = project.ToRfqProject();
+
+                    // Attach reason title
+                    if (reasonLookup.TryGetValue(mappedProject.RfqReasonId, out string? reasonTitle))
+                    {
+                        mappedProject.GetType().GetProperty("RfqReasonI")?.SetValue(mappedProject, reasonTitle ?? string.Empty);
+                    }
+
+                    // Attach customer business group code
+                    if (customerLookup.TryGetValue(mappedProject.CustomerBusinessUnitGuid, out string? groupCode))
+                    {
+                        mappedProject.GetType().GetProperty("CustomerBusinessGroupCode")?.SetValue(mappedProject, groupCode ?? string.Empty);
+                    }
+
+                    // Attach customer location name
+                    if (locationLookup.TryGetValue(mappedProject.CustomerLocationGuid, out string? locationName))
+                    {
+                        mappedProject.GetType().GetProperty("CustomerLocationName")?.SetValue(mappedProject, locationName ?? string.Empty);
+                    }
+
+                    // Attach project name
+                    if (projectLookup.TryGetValue(mappedProject.ProjectGuid, out string? projectName))
+                    {
+                        mappedProject.GetType().GetProperty("ProjectName")?.SetValue(mappedProject, projectName ?? string.Empty);
+                    }
+
+                    // Attach car model name
+                    if (vehicleLookup.TryGetValue(mappedProject.CarModelGuid, out string? carModelName))
+                    {
+                        mappedProject.GetType().GetProperty("CarModelName")?.SetValue(mappedProject, carModelName ?? string.Empty);
+                    }
+
                     response.RfqProjects.Add(mappedProject);
                 }
 
