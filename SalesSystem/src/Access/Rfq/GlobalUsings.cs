@@ -21,7 +21,7 @@ global using Rfq.Data.Time;
 global using Rfq.Endpoints.GrpcServices;
 global using Rfq.Enums;
 global using Rfq.Extensions;
+global using static Rfq.Rfq;
 global using Rfq.Services;
 global using SharedKernel;
-
 

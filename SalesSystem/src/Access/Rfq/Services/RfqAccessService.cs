@@ -1,5 +1,4 @@
-﻿using static Rfq.Rfq;
-
+﻿
 namespace Rfq.Services
 {
     public partial class RfqAccessService : IRfqAccessService
