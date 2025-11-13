@@ -141,9 +141,15 @@ message RfqProject {
 	google.protobuf.Timestamp RfqResponseDeadline = 7;
 	string CarModelGuid = 8;
 	int32 VehicleVolume = 9;
-    google.protobuf.BoolValue IsActive = 10;
-    google.protobuf.Timestamp CreatedDate = 11;
+	google.protobuf.Timestamp CreatedDate = 10;
+	google.protobuf.BoolValue IsActive = 11;
+	string RfqReasonName= 12;
+    string CustomerBusinessGroupCode= 13;
+	string CustomerLocationName= 14;
+	string	ProjectName= 15;
+	string	CarModelName= 16;
 }
+
 
 message UploadPartsRequestGrpcResponse {
     bool Success = 1;
