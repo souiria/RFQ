@@ -1,0 +1,104 @@
+﻿@using System.Net.Http.Json
+
+<div class="d-flex flex-column" style="height: 100%; overflow: hidden;">
+    <MudDataGrid T="RfqPartNumberUx" 
+                 Items="@PartNumbers" 
+                 ReadOnly="false" 
+                 EditMode="DataGridEditMode.Form"
+                 StartedEditingItem="@StartedEditingItem" 
+                 CanceledEditingItem="@CanceledEditingItem" 
+                 CommittedItemChanges="@CommittedItemChanges"
+                 Bordered="true" 
+                 Dense="true" 
+                 EditTrigger="DataGridEditTrigger.Manual"
+                 FixedHeader="true"
+                 Height="calc(100% - 16px)"
+                 Class="mud-grid-no-scroll-x"
+                 Style="flex: 1 1 auto; min-height: 0; overflow-y: auto; margin: 8px 0;">
+        <Columns>
+            <TemplateColumn CellClass="d-flex justify-start">
+                <CellTemplate>
+                    <MudIconButton Size="@Size.Small" 
+                                  Icon="@Icons.Material.Outlined.Edit" 
+                                  OnClick="@context.Actions.StartEditingItemAsync" />
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.RowId" Title="ID" Editable="false" />
+            <PropertyColumn Property="x => x.OriginalPartNumber" Title="Original P/N" />
+            <PropertyColumn Property="x => x.OriginalPartNumberPrice" Title="Original Price" Format="C2">
+                <EditTemplate>
+                    <MudNumericField @bind-Value="context.Item.OriginalPartNumberPrice" 
+                                    Format="N2" 
+                                    Adornment="Adornment.Start" 
+                                    AdornmentText="$" 
+                                    Margin="@Margin.Dense" />
+                </EditTemplate>
+            </PropertyColumn>
+            <PropertyColumn Property="x => x.SwappedPartNumber" Title="Swapped P/N" />
+            <PropertyColumn Property="x => x.SwappedPartNumberPrice" Title="Swapped Price" Format="C2">
+                <EditTemplate>
+                    <MudNumericField @bind-Value="context.Item.SwappedPartNumberPrice" 
+                                    Format="N2" 
+                                    Adornment="Adornment.Start" 
+                                    AdornmentText="$" 
+                                    Margin="@Margin.Dense" />
+                </EditTemplate>
+            </PropertyColumn>
+            <PropertyColumn Property="x => x.PriceSource" Title="Price Source" />
+            <PropertyColumn Property="x => x.IsExactMatch" Title="Exact Match">
+                <EditTemplate>
+                    <MudCheckBox @bind-Value="context.Item.IsExactMatch" Dense="true" />
+                </EditTemplate>
+            </PropertyColumn>
+            <PropertyColumn Property="x => x.IsSwapped" Title="Swapped">
+                <EditTemplate>
+                    <MudCheckBox @bind-Value="context.Item.IsSwapped" Dense="true" />
+                </EditTemplate>
+            </PropertyColumn>
+            <PropertyColumn Property="x => x.Comments" Title="Comments">
+                <EditTemplate>
+                    <MudTextField @bind-Value="context.Item.Comments" 
+                                 Lines="2" 
+                                 Margin="@Margin.Dense" />
+                </EditTemplate>
+            </PropertyColumn>
+        </Columns>
+    </MudDataGrid>
+</div>
+
+<style>
+    .mud-grid-no-scroll-x {
+        overflow-x: hidden !important;
+    }
+    .mud-table-sticky-header {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background-color: var(--mud-palette-surface);
+    }
+</style>
+
+@code {
+    [Parameter] public IEnumerable<RfqPartNumberUx> PartNumbers { get; set; } = new List<RfqPartNumberUx>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(1);
+    }
+
+    // events
+    void StartedEditingItem(RfqPartNumberUx item)
+    {
+        //_events.Insert(0, $"Event = StartedEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    }
+
+    void CanceledEditingItem(RfqPartNumberUx item)
+    {
+        //_events.Insert(0, $"Event = CanceledEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    }
+
+    void CommittedItemChanges(RfqPartNumberUx item)
+    {
+        //_events.Insert(0, $"Event = CommittedItemChanges, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    }
+}

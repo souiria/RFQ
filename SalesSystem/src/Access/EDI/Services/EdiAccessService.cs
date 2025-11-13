@@ -667,6 +667,27 @@
 
         #endregion
 
+        public async Task<IEnumerable<T>> Filter<T>(Func<T, bool> func, CancellationToken cancellationToken)
+        {
+            string s = typeof(T).Name;
+            return await Task.Run(() =>
+            {
+                IEnumerable<T> result = Enumerable.Empty<T>();
+                switch (typeof(T).Name)
+                {
+                    case "EdiCustomerParameterGrpc":
+                        IEnumerable<T> ediCustomerParameters = _ListEdiCustomerParameters.EdiCustomerParameterGrpc.Cast<T>();
+                        result = ediCustomerParameters.Where(func);
+                        break;
+                    // Add cases for other types as needed
+                    default:
+                        throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}");
+                }
+
+                return (IEnumerable<T>)result.ToList();
+            }, cancellationToken);
+        }
+
         void PopulateSampleData()
         {
             _ListEdiCustomerParameters = SampleEdiDataService.PopulateEdiCustomerParameters();

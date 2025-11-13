@@ -636,8 +636,14 @@
   .flex-wrap-reverse {
     flex-wrap: wrap-reverse;
   }
+  .justify-center {
+    justify-content: center;
+  }
   .justify-end {
     justify-content: flex-end;
+  }
+  .justify-start {
+    justify-content: flex-start;
   }
   .gap-0 {
     gap: calc(var(--spacing) * 0);

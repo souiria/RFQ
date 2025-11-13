@@ -46,7 +46,7 @@
         public override async Task<ListPartCategoryDetailGrpc> GetPartCategoryDetailGrpcByCategoryCode(PartCategoryDetailByCategoryCodeGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetPartCategoryDetailGrpcByCategoryCode starting");
-            return await _EMACSAccessService.GetPartCategoryDetailByCategoryCode(request.CategoryCode ,context.CancellationToken);
+            return await _EMACSAccessService.GetPartCategoryDetailByCategoryCode(request.CategoryCode, context.CancellationToken);
         }
         #endregion
 
@@ -59,7 +59,7 @@
         public override async Task<ListPartClassDetailGrpc> GetPartClassDetailGrpcByClasses(PartClassDetailByClassesGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetPartClassDetailGrpcByClasses starting");
-            return await _EMACSAccessService.GetPartClassDetailByClasses(request.Class1, request.Class2 ,context.CancellationToken);
+            return await _EMACSAccessService.GetPartClassDetailByClasses(request.Class1, request.Class2, context.CancellationToken);
         }
         #endregion
 
@@ -85,7 +85,7 @@
         public override async Task<ListPartGroupsConstGrpc> GetPartGroupsConstGrpcByGroup3(PartGroupsConstByGroup3GrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetPartGroupsConstGrpc starting");
-            return await _EMACSAccessService.GetAllPartGroupsConstByGroup3(request.Group3,context.CancellationToken);
+            return await _EMACSAccessService.GetAllPartGroupsConstByGroup3(request.Group3, context.CancellationToken);
         }
         #endregion
 
@@ -106,7 +106,7 @@
         public override async Task<ListColourCodeGrpc> GetColourCodeGrpcByColorCode(GetColourCodeByColorCodeGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetColourCodeGrpcByColorCode starting");
-            return await _EMACSAccessService.GetColourCodeByColorCode(request.ColorCode ,context.CancellationToken);
+            return await _EMACSAccessService.GetColourCodeByColorCode(request.ColorCode, context.CancellationToken);
         }
         #endregion
 
@@ -132,7 +132,7 @@
         public override async Task<ListMaterialTypesGrpc> GetMaterialTypesGrpcByMaterials(GetMaterialTypesByMaterialsGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetMaterialTypesGrpcByMaterials starting");
-            return await _EMACSAccessService.GetMaterialTypesByMaterials(request.MaterialGroup, request.MaterialType,context.CancellationToken);
+            return await _EMACSAccessService.GetMaterialTypesByMaterials(request.MaterialGroup, request.MaterialType, context.CancellationToken);
         }
         #endregion
 
@@ -179,19 +179,19 @@
         public override async Task<ListPARTMSGrpc> GetPARTMSGrpcByClass(GetPARTMSGrpcByClassGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetPARTMSGrpcByClass starting");
-            
+
             return await _EMACSAccessService.GetPARTMSGrpcByClass(request.Class1, request.Class2, context.CancellationToken);
         }
         public override async Task<ListPARTMSGrpc> GetPARTMSGrpcByColorCode(GetPARTMSGrpcByColorCodeGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetPARTMSGrpcByColorCode starting");
-            
+
             return await _EMACSAccessService.GetPARTMSGrpcByColorCode(request.ColorCode, context.CancellationToken);
         }
         public override async Task<ListPARTMSGrpc> GetPARTMSGrpcByMaterial(GetPARTMSGrpcByMaterialGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetPARTMSGrpcByMaterial starting");
-            
+
             return await _EMACSAccessService.GetPARTMSGrpcByMaterial(request.MaterialGroup, request.MaterialType, context.CancellationToken);
         }
         public override async Task<ListPARTMSGrpc> GetPARTMSGrpcByMaterialGroup(GetPARTMSGrpcByMaterialGroupGrpcRequest request, ServerCallContext context)
@@ -219,5 +219,162 @@
             return await _EMACSAccessService.GetPARTMSGrpcByPartGroupsConstCode(request.PartGroupsConstCode, context.CancellationToken);
         }
         #endregion
+
+        public override async Task<EmacsFilterResponseGrpc> FilterEmacsDataGrpc(EmacsFilterRequestGrpc request, ServerCallContext context)
+        {
+            ParsingConfig parsingConfig = new ParsingConfig();
+            string filterExpressionString = request.FilterExpression;
+
+            EmacsFilterResponseGrpc returnResponse = new EmacsFilterResponseGrpc();
+
+            switch (request.DatabaseList)
+            {
+                case "CombinedPartsGrpc":
+                await _EMACSAccessService.HandleFilterCase<CombinedPartsGrpc>(filterExpressionString, parsingConfig,
+                filterList =>
+                {
+                    ListCombinedPartsGrpc returnList = new ListCombinedPartsGrpc();
+                    returnList.CombinedPartsGrpc.AddRange(filterList);
+                    returnResponse.ListCombinedPartsGrpc = returnList;
+                    returnResponse.Success = true;
+                }, context.CancellationToken);
+                break;
+                case "PartCategoryDetailGrpc":
+                await _EMACSAccessService.HandleFilterCase<PartCategoryDetailGrpc>(filterExpressionString, parsingConfig,
+                    filterList =>
+                    {
+                        ListPartCategoryDetailGrpc returnList = new ListPartCategoryDetailGrpc();
+                        returnList.PartCategoryDetailGrpc.AddRange(filterList);
+                        returnResponse.ListPartCategoryDetailGrpc = returnList;
+                        returnResponse.Success = true;
+                    }, context.CancellationToken);
+                break;
+                case "PartClassDetailGrpc":
+                await _EMACSAccessService.HandleFilterCase<PartClassDetailGrpc>(filterExpressionString, parsingConfig,
+                    filterList =>
+                    {
+                        ListPartClassDetailGrpc returnList = new ListPartClassDetailGrpc();
+                        returnList.PartClassDetailGrpc.AddRange(filterList);
+                        returnResponse.ListPartClassDetailGrpc = returnList;
+                        returnResponse.Success = true;
+                    }, context.CancellationToken);
+                break;
+                case "PartGroupsGrpc":
+                await _EMACSAccessService.HandleFilterCase<PartGroupsGrpc>(filterExpressionString, parsingConfig,
+                    filterList =>
+                    {
+                        ListPartGroupsGrpc returnList = new ListPartGroupsGrpc();
+                        returnList.PartGroupsGrpc.AddRange(filterList);
+                        returnResponse.ListPartGroupsGrpc = returnList;
+                        returnResponse.Success = true;
+                    }, context.CancellationToken);
+                break;
+                case "PartGroupsConstGrpc":
+                await _EMACSAccessService.HandleFilterCase<PartGroupsConstGrpc>(filterExpressionString, parsingConfig,
+                    filterList =>
+                    {
+                        ListPartGroupsConstGrpc returnList = new ListPartGroupsConstGrpc();
+                        returnList.PartGroupsConstGrpc.AddRange(filterList);
+                        returnResponse.ListPartGroupsConstGrpc = returnList;
+                        returnResponse.Success = true;
+                    }, context.CancellationToken);
+                break;
+                case "CustomerDataGrpc":
+                await _EMACSAccessService.HandleFilterCase<CustomerDataGrpc>(filterExpressionString, parsingConfig,
+                    filterList =>
+                    {
+                        ListCustomerDataGrpc returnList = new ListCustomerDataGrpc();
+                        returnList.CustomerDataGrpc.AddRange(filterList);
+                        returnResponse.ListCustomerDataGrpc = returnList;
+                        returnResponse.Success = true;
+                    }, context.CancellationToken);
+                break;
+                case "ColourCodeGrpc":
+                await _EMACSAccessService.HandleFilterCase<ColourCodeGrpc>(filterExpressionString, parsingConfig,
+                    filterList =>
+                    {
+                        ListColourCodeGrpc returnList = new ListColourCodeGrpc();
+                        returnList.ColourCodeGrpc.AddRange(filterList);
+                        returnResponse.ListColourCodeGrpc = returnList;
+                        returnResponse.Success = true;
+                    }, context.CancellationToken);
+                break;
+                case "MaterialGroupsGrpc":
+                await _EMACSAccessService.HandleFilterCase<MaterialGroupsGrpc>(filterExpressionString, parsingConfig,
+                    filterList =>
+                    {
+                        ListMaterialGroupsGrpc returnList = new ListMaterialGroupsGrpc();
+                        returnList.MaterialGroupsGrpc.AddRange(filterList);
+                        returnResponse.ListMaterialGroupsGrpc = returnList;
+                        returnResponse.Success = true;
+                    }, context.CancellationToken);
+                break;
+                case "MaterialTypesGrpc":
+                await _EMACSAccessService.HandleFilterCase<MaterialTypesGrpc>(filterExpressionString, parsingConfig,
+                    filterList =>
+                    {
+                        ListMaterialTypesGrpc returnList = new ListMaterialTypesGrpc();
+                        returnList.MaterialTypesGrpc.AddRange(filterList);
+                        returnResponse.ListMaterialTypesGrpc = returnList;
+                        returnResponse.Success = true;
+                    }, context.CancellationToken);
+                break;
+                case "NPACustomerGrpc":
+                await _EMACSAccessService.HandleFilterCase<NPACustomerGrpc>(filterExpressionString, parsingConfig,
+                    filterList =>
+                    {
+                        ListNPACustomerGrpc returnList = new ListNPACustomerGrpc();
+                        returnList.NPACustomerGrpc.AddRange(filterList);
+                        returnResponse.ListNPACustomerGrpc = returnList;
+                        returnResponse.Success = true;
+                    }, context.CancellationToken);
+                break;
+                case "NPASupplierGrpc":
+                await _EMACSAccessService.HandleFilterCase<NPASupplierGrpc>(filterExpressionString, parsingConfig,
+                    filterList =>
+                    {
+                        ListNPASupplierGrpc returnList = new ListNPASupplierGrpc();
+                        returnList.NPASupplierGrpc.AddRange(filterList);
+                        returnResponse.ListNPASupplierGrpc = returnList;
+                        returnResponse.Success = true;
+                    }, context.CancellationToken);
+                break;
+                case "SuppliersGrpc":
+                await _EMACSAccessService.HandleFilterCase<SuppliersGrpc>(filterExpressionString, parsingConfig,
+                   filterList =>
+                   {
+                       ListSuppliersGrpc returnList = new ListSuppliersGrpc();
+                       returnList.SuppliersGrpc.AddRange(filterList);
+                       returnResponse.ListSuppliersGrpc = returnList;
+                       returnResponse.Success = true;
+                   }, context.CancellationToken);
+                break;
+                case "EmacsRFIViewGrpc":
+                await _EMACSAccessService.HandleFilterCase<EmacsRFIViewGrpc>(filterExpressionString, parsingConfig,
+                   filterList =>
+                   {
+                       ListEmacsRFIViewGrpc returnList = new ListEmacsRFIViewGrpc();
+                       returnList.EmacsRFIViewGrpc.AddRange(filterList);
+                       returnResponse.ListEmacsRFIViewGrpc = returnList;
+                       returnResponse.Success = true;
+                   }, context.CancellationToken);
+                break;
+                case "PartMSGrpc":
+                await _EMACSAccessService.HandleFilterCase<PARTMSGrpc>(filterExpressionString, parsingConfig,
+                   filterList =>
+                   {
+                       ListPARTMSGrpc returnList = new ListPARTMSGrpc();
+                       returnList.PARTMSGrpc.AddRange(filterList);
+                       returnResponse.ListPARTMSGrpc = returnList;
+                       returnResponse.Success = true;
+                   }, context.CancellationToken);
+                break;
+                default:
+                _Logger.GenericLogInformation($"FilterEmacsDataGrpc: Unknown DatabaseList '{request.DatabaseList}'");
+                break;
+            }
+
+            return returnResponse;
+        }
     }
 }

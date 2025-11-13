@@ -68,53 +68,6 @@
                                Size="Size.Small" />
             </MudTooltip>
         </div>
-
-        @* File List *@
-@* 
-        <MudItem xs="12" Class="align-content-start mud-item-compact item-scroll">
-            @if (FileObjects.Any())
-            {
-                @foreach (var fileObject in FileObjects)
-                {
-                    <div class="file-item">
-                        <MudGrid>
-                            <MudItem xs="10">
-                                <MudText Typo="Typo.body2">
-                                    <MudIcon Icon="@GetFileTypeIcon(DetermineFileType(fileObject))" Size="Size.Small" Class="mr-2" />
-                                    @fileObject.File?.Name
-                                </MudText>
-                            </MudItem>
-                            <MudItem xs="2" Class="d-flex align-center justify-end">
-                                @if (fileObject.Status != UxObjectStatus.Deleted)
-                                {
-                                    <MudButton Variant="Variant.Text"
-                                               Color="Color.Error"
-                                               OnClick="() => DeleteFile(fileObject)"
-                                               Size="Size.Small">
-                                        <MudIcon Icon="@Icons.Material.Filled.Delete" />
-                                    </MudButton>
-                                }
-                                else
-                                {
-                                    <MudButton Variant="Variant.Text"
-                                               Color="Color.Success"
-                                               OnClick="() => RestoreFile(fileObject)"
-                                               Size="Size.Small">
-                                        <MudIcon Icon="@Icons.Material.Filled.Restore" />
-                                    </MudButton>
-                                }
-                            </MudItem>
-                        </MudGrid>
-                    </div>
-                }
-            }
-            else
-            {
-                <MudText Typo="Typo.body2" Class="text-center pa-4" Color="Color.Secondary">
-                    No files attached
-                </MudText>
-            }
-        </MudItem> *@
     </MudStack>
 </div>
 
@@ -246,9 +199,6 @@
         }
     }
 
-    /// <summary>
-    /// Check if a file with the same name and size already exists
-    /// </summary>
     private bool IsFileAlreadyAdded(IBrowserFile newFile)
     {
         return FileObjects.Any(f => 

@@ -2,6 +2,7 @@ namespace SalesSystem.Rfq.Services
 {
     public class RfqUxClientService : IDisposable
     {
+        #region Definitions
         readonly GrpcChannel _Channel;
         readonly RfqModule.RfqModule.RfqModuleClient _Client;
         readonly ILogger<RfqUxClientService>? _Logger;
@@ -11,6 +12,7 @@ namespace SalesSystem.Rfq.Services
         // Cached Data
         List<RfqDrawingPartNumber> _RfqDrawingParts;
         List<RfqProject> _RfqProjects;
+        List<RfqProjectUx> _RfqProjectUxs;
         List<CustomerGrpc> _Customers;
         List<RfqReasonGrpc> _Reasons;
         List<CustomerProjectUx> _CustomerProjectAssociations;
@@ -19,6 +21,7 @@ namespace SalesSystem.Rfq.Services
         // Cached data accessors
         public IReadOnlyCollection<RfqDrawingPartNumber> RfqDrawingParts => _RfqDrawingParts.AsReadOnly();
         public IReadOnlyCollection<RfqProject> RfqProjects => _RfqProjects.AsReadOnly();
+        public IReadOnlyCollection<RfqProjectUx> RfqProjectUxs => _RfqProjectUxs.AsReadOnly();
         public IReadOnlyCollection<CustomerGrpc> Customers => _Customers.AsReadOnly();
         public IReadOnlyCollection<RfqReasonGrpc> Reasons => _Reasons.AsReadOnly();
         public IReadOnlyCollection<CustomerProjectUx> CustomerProjectAssociations => _CustomerProjectAssociations.AsReadOnly();
@@ -39,6 +42,7 @@ namespace SalesSystem.Rfq.Services
 
             // cache initialization
             _RfqProjects = new();
+            _RfqProjectUxs = new();
             _Logger = logger;
             _Customers = new();
             _Reasons = new();
@@ -46,6 +50,8 @@ namespace SalesSystem.Rfq.Services
             _QuotationNumbers= new();
             _RfqDrawingParts= new();
         }
+        #endregion
+        #region Hello Service
         public async Task<HelloReply> SayHelloAsync(string name, CancellationToken cancellationToken = default)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
@@ -66,7 +72,8 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-
+        #endregion
+        #region Rfq Projects
         public async Task<int> GetAllRfqProjectAsync(int position = 0, int take = 100)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
@@ -84,6 +91,16 @@ namespace SalesSystem.Rfq.Services
                 _RfqProjects.Clear();
                 _RfqProjects.AddRange(response.Projects);
 
+                _RfqProjectUxs.Clear();
+                foreach (RfqProject? rfqProject in _RfqProjects)
+                {
+                    RfqProjectUx? uxModel = rfqProject.ToRfqProjectUx();
+                    if (null != uxModel)
+                    {
+                        _RfqProjectUxs.Add(uxModel);
+                    }
+                }
+
                 return _RfqProjects.Count;
             }
             catch (Exception ex)
@@ -92,7 +109,6 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-
         public async Task<RfqProject?> GetRfqProjectByIdAsync(long rowId)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
@@ -159,7 +175,6 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-
         public async Task<int> GetCustomersByUserIdAsync(Guid userId)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
@@ -173,6 +188,7 @@ namespace SalesSystem.Rfq.Services
                 _Customers.Clear();
                 List<CustomerGrpc> orderedCustomers = response.Customers.OrderBy(x => x.CustomerBusinessGroupName).ToList();
                 _Customers.AddRange(orderedCustomers);
+                
                 return _Customers.Count;
             }
             catch (Exception ex)
@@ -213,7 +229,8 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-
+        #endregion
+        #region Rfq Reasons
         public async Task<int> GetRfqReasonsAsync()
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
@@ -236,7 +253,8 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-
+        #endregion
+        #region Vehicles
         public async Task<GetVehicleByProjectCodeGrpcResponse> GetVehiclesByProjectCodeAsync(
             string projectCode,
             CancellationToken cancellationToken = default)
@@ -259,6 +277,8 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
+        #endregion
+        #region Parts
         public async Task<UploadPartsRequestGrpcResponse> UploadPartsAsync(string projectId,
                                                                            IBrowserFile file,
                                                                            long maxAllowedSize = 10_000_000)
@@ -287,7 +307,7 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-
+        #endregion
         public async Task<CreateRfqProjectGrpcResponse> CreateRfqProjectAsync(RfqProject project)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);

@@ -9,6 +9,7 @@
         EdiInvoiceInformation = 4,
         EdiInvoiceInformationDuplicates = 5,
         EdiInvoiceUnit4 = 6,
-        EdiZeroPriceExceptions = 7
+        EdiZeroPriceExceptions = 7,
+        EdiFilter = 8
     }
 }

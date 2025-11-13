@@ -153,6 +153,28 @@
 
         #endregion
 
+        public async Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig,
+            Action<IEnumerable<T>> setResponseCollection, CancellationToken cancellationToken)
+        {
+            Expression<Func<T, bool>> filterExpression = DynamicExpressionParser.ParseLambda<T, bool>(parsingConfig, false, filterExpressionString);
+            Func<T, bool> compiledExpression = filterExpression.Compile();
+            IEnumerable<T> filteredList = new List<T>();
+            filteredList = await Filter(compiledExpression, cancellationToken);
+            setResponseCollection(filteredList);
+        }
+
+        public async Task<IEnumerable<T>> Filter<T>(Func<T, bool> func, CancellationToken cancellationToken)
+        {
+            return await Task.Run(() =>
+            {
+                return typeof(T).Name switch
+                {
+                    "MatSuppMstViewGrpc" => _ListMatSuppMstView.MatSuppMstViewGrpc.Cast<T>().Where(func).ToList(),
+                    _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
+                };
+            }, cancellationToken);
+        }
+
         void PopulateSampleData()
         {
             _ListMatSuppMstView = SampleCPDDataService.PopulateMatSuppMstView();

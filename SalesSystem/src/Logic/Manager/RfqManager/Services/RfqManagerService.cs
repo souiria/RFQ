@@ -5,19 +5,31 @@
 
         readonly MasterClient _MasterClient;
         readonly Rfq.Rfq.RfqClient _RfqClient;
+        readonly Emacs.Emacs.EmacsClient _EmacsClient;
+        readonly Adss.AdssGrpc.AdssGrpcClient _AdssGrpcClient;
+        readonly NPR.NPR.NPRClient _NPRGrpcClient;
+        readonly CPD.CPD.CPDClient _CPDClient;
         readonly ILogger<RfqManagerService> _Logger;
 
         List<ProjectGrpc> _Projects;
 
         public RfqManagerService(ILogger<RfqManagerService> logger,
               MasterClient masterClient,
-            Rfq.Rfq.RfqClient rfqClient
+            Rfq.Rfq.RfqClient rfqClient,
+            Emacs.Emacs.EmacsClient emacsClient,
+            Adss.AdssGrpc.AdssGrpcClient adssGrpcClient,
+            NPR.NPR.NPRClient nprClient,
+            CPD.CPD.CPDClient cPDClient
             )
         {
             _Logger = logger;
             _MasterClient = masterClient;
             _RfqClient = rfqClient;
             _Projects = new List<ProjectGrpc>();
+            _EmacsClient = emacsClient;
+            _AdssGrpcClient = adssGrpcClient;
+            _NPRGrpcClient = nprClient;
+            _CPDClient = cPDClient;
         }
 
         public async Task<GetAllCustomersGrpcResponse> GetAllCustomersGrpc (GetAllCustomersGrpcRequest request)
@@ -51,9 +63,9 @@
             {
                 // Call the Master service to get customers
                 await Task.Delay(1);
-                CustomerByIdGrpcRequest getCustomersRequest = new CustomerByIdGrpcRequest();
+                CustomerByUserIdGrpcRequest getCustomersRequest = new CustomerByUserIdGrpcRequest();
                 getCustomersRequest.Id = request.UserId.ToUpperInvariant();
-                ListCustomerGrpc customers = _MasterClient.GetCustomerGrpcById(getCustomersRequest);
+                ListCustomerGrpc customers = _MasterClient.GetCustomerGrpcByUserId(getCustomersRequest);
                 GetCustomersByUserIdGrpcResponse response = new GetCustomersByUserIdGrpcResponse();
                 foreach (Master.CustomerGrpc? masterCustomer in customers.CustomerGrpc)
                 {
@@ -719,5 +731,272 @@
             part.Comments = "";
             return part;
         }
+
+        #region Filtering
+
+        public Task<FilterGrpcResponse> FilterByCustomerId(FilterGrpcRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<FilterGrpcResponse> FilterByLocationId(FilterGrpcRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<FilterGrpcResponse> FilterByProjectCode(FilterGrpcRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<FilterGrpcResponse> FilterEmacsByExactPartNumber(FilterGrpcRequest request)
+        {
+            await Task.Delay(1);
+            EmacsFilterRequestGrpc emacsRequest = new EmacsFilterRequestGrpc();
+            Collection<CombinedPartsGrpc> filteredList = new Collection<CombinedPartsGrpc>();
+            FilterGrpcResponse response = new FilterGrpcResponse();
+            string[] parametersToSearch = ["UniformCustomerNumber", "UniformSupplierNumber", "UniformSumitomoNumber"];
+            foreach (string parameter in parametersToSearch)
+            {
+                EmacsFilterResponseGrpc partNumberResponse = FilterSumitomoNumber<EmacsFilterResponseGrpc>(request.StringValue, parameter, "==");
+                if (partNumberResponse.ListCombinedPartsGrpc != null)
+                {
+                    filteredList = ExtractEmacsResponseData<CombinedPartsGrpc>(partNumberResponse);
+                    foreach (CombinedPartsGrpc part in filteredList)
+                    {
+                        string sumitmoNumberString = part.SumitomoNumber.ToString();
+                        response.StringList.Add(sumitmoNumberString);
+                    }
+
+                    response.Success = true;
+                    return response;
+                }
+            }
+
+            return response;
+        }
+
+        public async Task<FilterGrpcResponse> FilterEmacsByContainingPartNumber(FilterGrpcRequest request)
+        {
+            await Task.Delay(1);
+            EmacsFilterRequestGrpc emacsRequest = new EmacsFilterRequestGrpc();
+            Collection<CombinedPartsGrpc> filteredList = new Collection<CombinedPartsGrpc>();
+            FilterGrpcResponse response = new FilterGrpcResponse();
+            string[] parametersToSearch = ["UniformCustomerNumber", "UniformSupplierNumber", "UniformSumitomoNumber"];
+            foreach (string parameter in parametersToSearch)
+            {
+                EmacsFilterResponseGrpc partNumberResponse = FilterSumitomoNumber<EmacsFilterResponseGrpc>(request.StringValue, parameter, ".Contains");
+                if (partNumberResponse.ListCombinedPartsGrpc != null)
+                {
+                    filteredList = ExtractEmacsResponseData<CombinedPartsGrpc>(partNumberResponse);
+                    foreach (CombinedPartsGrpc part in filteredList)
+                    {
+                        string sumitmoNumberString = part.SumitomoNumber.ToString();
+                        response.StringList.Add(sumitmoNumberString);
+                    }
+
+                    response.Success = true;
+                    return response;
+                }
+            }
+
+            return response;
+        }
+
+        public async Task<FilterGrpcResponse> FilterAdssBySumitomoPartNumber(FilterGrpcRequest request)
+        {
+            await Task.Delay(1);
+            Adss.PartImageRequest adssRequest = new Adss.PartImageRequest();
+            adssRequest.PartNumber = request.StringValue;
+            Adss.PartImageReply partImageReply = _AdssGrpcClient.GetPartImage(adssRequest);
+            FilterGrpcResponse response = new FilterGrpcResponse();
+            if (partImageReply != null)
+            {
+                response.StringList.Add(adssRequest.PartNumber);
+                response.ByteList.Add(partImageReply.Data);
+                response.StringList2.Add(partImageReply.ContentType);
+                response.Success = true;
+            }
+            else
+            {
+                response.Success = false;
+            }
+
+            return response;
+        }
+
+        public async Task<FilterGrpcResponse> FilterNPRBySumitomoPartNumber(FilterGrpcRequest request)
+        {
+            await Task.Delay(1);
+            FilterGrpcResponse response = new FilterGrpcResponse();
+            NPRFilterRequest filterRequest = new NPRFilterRequest();
+            Collection<H1NPRViewGrpc> filteredList = new Collection<H1NPRViewGrpc>();
+            NPRFilterResponse nprResponse = FilterSumitomoNumber<NPRFilterResponse>(request.StringValue, "SumitomoNo", "==");
+            filteredList = ExtractNRPResponseData<H1NPRViewGrpc>(nprResponse);
+            response.Success = true;
+            foreach( H1NPRViewGrpc part in filteredList)
+            {
+                string sumitmoNumberString = part.SumitomoNo.ToString();
+                double price = part.Price ?? 0;
+                response.StringList.Add(sumitmoNumberString);
+                response.DoubleList.Add(price);
+            }
+
+            return response;
+        }
+
+        public async Task<FilterGrpcResponse> FilterCPDBySumitomoPartNumber(FilterGrpcRequest request)
+        {
+            await Task.Delay(1);
+            FilterGrpcResponse response = new FilterGrpcResponse();
+            CPDFilterRequest filterRequest = new CPDFilterRequest();
+            Collection<MatSuppMstViewGrpc> filteredList = new Collection<MatSuppMstViewGrpc>();
+            CPDFilterResponse cpdResponse = FilterSumitomoNumber<CPDFilterResponse>(request.StringValue, "MaterialNo", "==");
+            filteredList = ExtractCPDResponseData<MatSuppMstViewGrpc>(cpdResponse);
+            response.Success = true;
+            foreach (MatSuppMstViewGrpc part in filteredList)
+            {
+                string sumitmoNumberString = part.MaterialNo.ToString();
+                double price = part.PoPrice ?? 0;
+                response.StringList.Add(sumitmoNumberString);
+                response.DoubleList.Add(price);
+            }
+
+            return response;
+        }
+        public async Task<FilterGrpcResponse> FilterRFQBySumitomoPartNumber(FilterGrpcRequest request)
+        {
+            await Task.Delay(1);
+            FilterGrpcResponse response = new FilterGrpcResponse();
+            RfqFilterRequest filterRequest = new RfqFilterRequest();
+            Collection<RfqDrawingPartNumbersGrpc> filteredList = new Collection<RfqDrawingPartNumbersGrpc>();
+            RfqFilterResponse rfqResponse = FilterSumitomoNumber<RfqFilterResponse>(request.StringValue, "SumitomoPartNumber", "==");
+            filteredList = ExtractRFQResponseData<RfqDrawingPartNumbersGrpc>(rfqResponse);
+            response.Success = true;
+            foreach (RfqDrawingPartNumbersGrpc part in filteredList)
+            {
+                string sumitmoNumberString = part.SumitomoPartNumber.ToString();
+                double price = price = part.OriginalPartNumberPrice ?? 0;
+                if (part.IsSwapped == true)
+                {
+                    price = part.SwappedPartNumberPrice ?? 0;
+                }
+
+                response.StringList.Add(sumitmoNumberString);
+                response.DoubleList.Add(price);
+            }
+
+            return response;
+        }
+
+        Collection<TItem> ExtractEmacsResponseData<TItem>(EmacsFilterResponseGrpc response)
+        {
+            Collection<TItem> results = new Collection<TItem>();
+
+            TryExtractList(response.ListCombinedPartsGrpc?.CombinedPartsGrpc, results);
+            TryExtractList(response.ListPartCategoryDetailGrpc?.PartCategoryDetailGrpc, results);
+            TryExtractList(response.ListPartClassDetailGrpc?.PartClassDetailGrpc, results);
+            TryExtractList(response.ListPartGroupsGrpc?.PartGroupsGrpc, results);
+            TryExtractList(response.ListPartGroupsConstGrpc?.PartGroupsConstGrpc, results);
+            TryExtractList(response.ListCustomerDataGrpc?.CustomerDataGrpc, results);
+            TryExtractList(response.ListColourCodeGrpc?.ColourCodeGrpc, results);
+            TryExtractList(response.ListMaterialGroupsGrpc?.MaterialGroupsGrpc, results);
+            TryExtractList(response.ListMaterialTypesGrpc?.MaterialTypesGrpc, results);
+            TryExtractList(response.ListNPACustomerGrpc?.NPACustomerGrpc, results);
+            TryExtractList(response.ListNPASupplierGrpc?.NPASupplierGrpc, results);
+            TryExtractList(response.ListSuppliersGrpc?.SuppliersGrpc, results);
+            TryExtractList(response.ListEmacsRFIViewGrpc?.EmacsRFIViewGrpc, results);
+            TryExtractList(response.ListPARTMSGrpc?.PARTMSGrpc, results);
+
+            return results;
+        }
+        Collection<TItem> ExtractCPDResponseData<TItem>(CPDFilterResponse response)
+        {
+            Collection<TItem> results = new Collection<TItem>();
+
+            TryExtractList(response.ListMatSuppMstGrpc?.MatSuppMstViewGrpc, results);
+
+            return results;
+        }
+        Collection<TItem> ExtractNRPResponseData<TItem>(NPRFilterResponse response)
+        {
+            Collection<TItem> results = new Collection<TItem>();
+
+            TryExtractList(response.ListH1NPRViewGrpc?.H1NPRViewGrpc, results);
+
+            return results;
+        }
+        Collection<TItem> ExtractRFQResponseData<TItem>(RfqFilterResponse response)
+        {
+            Collection<TItem> results = new Collection<TItem>();
+
+            TryExtractList(response.ListRfqDrawingPartNumbersGrpc?.RfqDrawingPartNumbers, results);
+            TryExtractList(response.ListRfqReasonGrpc?.RfqReasons, results);
+            TryExtractList(response.ListRfqNotesGrpc?.RfqNotes, results);
+            TryExtractList(response.ListRfqProjectGrpc?.RfqProjects, results);
+
+            return results;
+        }
+        bool TryExtractList<TItem, T>(IEnumerable<TItem>? items, Collection<T> results) where TItem : class
+        {
+            if (items != null && typeof(T) == typeof(TItem))
+            {
+                foreach (TItem item in items)
+                {
+                    results.Add((T)(object)item);
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+        T FilterSumitomoNumber<T>(string partNumber, string filterType, string filterOpperator)
+        {
+            string filterExpression = string.Empty;
+            if (filterOpperator == "==")
+            {
+                filterExpression = $"{filterType} != null && {filterType} {filterOpperator} \"{partNumber}\"";
+            }
+            else if (filterOpperator == ".Contains")
+            {
+                filterExpression = $"{filterType} != null && {filterType}{filterOpperator}(\"{partNumber}\")";
+            }
+            else
+            {
+                throw new ArgumentException("Invalid filter operator");
+            }
+
+            switch (typeof(T).Name)
+            {
+                case "EmacsFilterResponseGrpc":
+                EmacsFilterRequestGrpc emacsRequest = new EmacsFilterRequestGrpc();
+                emacsRequest.FilterExpression = filterExpression;
+                emacsRequest.DatabaseList = "CombinedPartsGrpc";
+                EmacsFilterResponseGrpc filterResponse = _EmacsClient.FilterEmacsDataGrpc(emacsRequest);
+                return (T)(object)filterResponse;
+                case "NPRFilterResponse":
+                NPRFilterRequest nprRequest = new NPRFilterRequest();
+                nprRequest.FilterExpression = filterExpression;
+                nprRequest.DatabaseList = "H1NPRViewGrpc";
+                NPRFilterResponse filterNprResponse = _NPRGrpcClient.FilterNPRGrpc(nprRequest);
+                return (T)(object)filterNprResponse;
+                case "CPDFilterResponse":
+                CPDFilterRequest cpdRequest = new CPDFilterRequest();
+                cpdRequest.FilterExpression = filterExpression;
+                cpdRequest.DatabaseList = "MatSuppMstViewGrpc";
+                CPDFilterResponse filterCpdResponse = _CPDClient.FilterCPDGrpc(cpdRequest);
+                return (T)(object)filterCpdResponse;
+                case "RfqFilterResponse":
+                RfqFilterRequest rfqRequest = new RfqFilterRequest();
+                rfqRequest.FilterExpression = filterExpression;
+                rfqRequest.DatabaseList = "RfqDrawingPartNumberGrpc";
+                RfqFilterResponse filterRfqResponse = _RfqClient.FilterRfqGrpc(rfqRequest);
+                return (T)(object)filterRfqResponse;
+                default:
+                throw new ArgumentException("Invalid type parameter");
+            }
+        }
+        #endregion
     }
 }

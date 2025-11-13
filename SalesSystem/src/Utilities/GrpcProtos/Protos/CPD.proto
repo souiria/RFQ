@@ -14,6 +14,7 @@ service CPD {
   rpc SayHello (HelloRequest) returns (HelloReply);
   rpc GetAllMatSuppMstView (MatSuppMstViewGrpcRequest) returns (ListMatSuppMstGrpc);
   rpc GetAllHarnessCostingCalculationDataView (HarnessCostingCalculationDataViewGrpcRequest) returns (ListHarnessCostingCalculationDataGrpc);
+  rpc FilterCPDGrpc (CPDFilterRequest) returns (CPDFilterResponse);
 }
 
 // The request message containing the user's name.
@@ -94,4 +95,14 @@ message HarnessCostingCalculationDataGrpc {
 
 message ListHarnessCostingCalculationDataGrpc {
 	repeated HarnessCostingCalculationDataGrpc HarnessCostingCalculationDataGrpc = 1;
+}
+
+message CPDFilterRequest {
+	string DatabaseList = 1;
+    string FilterExpression = 2;
+}
+
+message CPDFilterResponse {
+	bool Success = 1;
+	ListMatSuppMstGrpc ListMatSuppMstGrpc = 2;
 }

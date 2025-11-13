@@ -3,6 +3,7 @@ syntax = "proto3";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
+import "google/protobuf/any.proto";
 
 option csharp_namespace = "EDI";
 
@@ -13,6 +14,7 @@ service Edi {
     rpc SayHello (HelloRequest) returns (HelloReply);
 	rpc GetEdiDataGrpc (EdiRequest) returns (EdiResponse);
     rpc SaveEdiDataGrpc (EdiSaveRequest) returns (EdiResponse);
+    rpc FilterEdiDataGrpc (EdiFilterRequest) returns (EdiResponse);
 }
 
 message HelloRequest {
@@ -310,4 +312,9 @@ message ListEdiZeroPriceExceptionsGrpc {
 message EdiZeroPriceExceptionsGrpc {
     string WmsCustomerCode = 1;
     string ProductNumber = 2;
+}
+
+message EdiFilterRequest {
+    string DatabaseList = 1;
+    string FilterExpression = 2;
 }
