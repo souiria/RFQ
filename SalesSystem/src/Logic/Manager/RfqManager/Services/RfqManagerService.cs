@@ -89,39 +89,44 @@
                 await Task.Delay(1);
                 _Projects.Clear();
                 GetProjectAssociationsByCustomerIdResponse response = new GetProjectAssociationsByCustomerIdResponse();
-                CustomerLocationByCustomerIdGrpcRequest locationRequest = new CustomerLocationByCustomerIdGrpcRequest();
-                locationRequest.CustomerId = request.CustomerId.ToUpperInvariant();
-                ListCustomerLocationGrpc locations = _MasterClient.GetCustomerLocationGrpcByCustomerId(locationRequest);
-                if (locations.CustomerLocationGrpc.Count <= 0)
+                MastersFilterRequestGrpc filterRequest = new MastersFilterRequestGrpc();
+                filterRequest.DatabaseList = "CUSTOMERLOCATIONGRPC";
+                filterRequest.FilterExpression = $"CustomerId != null && CustomerId == \"{request.CustomerId.ToUpperInvariant()}\"";
+                MastersFilterResponseGrpc locations = _MasterClient.FilterMasterDataGrpc(filterRequest);
+                List<CustomerLocationGrpc> extractedLocations = ExtractMastersResponseData<CustomerLocationGrpc>(locations).ToList();
+                if (extractedLocations.Count <= 0)
                 {
                     response.Message = "No locations found for customer";
                     response.Success = false;
                     return response;
                 }
 
-                foreach (CustomerLocationGrpc? location in locations.CustomerLocationGrpc)
+                foreach (CustomerLocationGrpc? location in extractedLocations)
                 {
-                    CustomerProjectAssociationByLocationIdGrpcRequest customerProjectRequest = new CustomerProjectAssociationByLocationIdGrpcRequest();
-                    customerProjectRequest.LocationId = location.Id.ToUpperInvariant();
-                    ListCustomerProjectAssociationGrpc customerProjectAssociations = _MasterClient.GetCustomerProjectAssociationGrpcByLocationId(customerProjectRequest);
+                    filterRequest.DatabaseList = "CUSTOMERPROJECTASSOCIATIONGRPC";
+                    filterRequest.FilterExpression = $"CustomerGuid != null && CustomerGuid == \"{location.Id.ToUpperInvariant()}\"";
+                    MastersFilterResponseGrpc projectAssociations = _MasterClient.FilterMasterDataGrpc(filterRequest);
+                    List<CustomerProjectAssociationGrpc> extractedProjectAssociations = ExtractMastersResponseData<CustomerProjectAssociationGrpc>(projectAssociations).ToList();
 
-                    foreach (CustomerProjectAssociationGrpc? customerProjectAssociation in customerProjectAssociations.CustomerProjectAssociationGrpc)
+                    foreach (CustomerProjectAssociationGrpc? customerProjectAssociation in extractedProjectAssociations)
                     {
                         if (customerProjectAssociation.ProjectGuid == null)
                         {
                             continue;
                         }
 
-                        ProjectByIdGrpcRequest projectRequest = new ProjectByIdGrpcRequest();
-                        projectRequest.Id = customerProjectAssociation.ProjectGuid.ToUpperInvariant();
-                        ListProjectGrpc projects = _MasterClient.GetProjectGrpcById(projectRequest);
-                        if(projects.ProjectGrpc.Count <= 0)
+                        filterRequest.DatabaseList = "PROJECTGRPC";
+                        filterRequest.FilterExpression = $"Id != null && Id == \"{customerProjectAssociation.ProjectGuid.ToUpperInvariant()}\"";
+                        MastersFilterResponseGrpc projects = _MasterClient.FilterMasterDataGrpc(filterRequest);
+                        List<ProjectGrpc> extractedProjects = ExtractMastersResponseData<ProjectGrpc>(projects).ToList();
+
+                        if(extractedProjects.Count <= 0)
                         {
                             continue;
                         }
 
-                        _Projects.AddRange(projects.ProjectGrpc);
-                        foreach (ProjectGrpc? project in projects.ProjectGrpc)
+                        _Projects.AddRange(extractedProjects);
+                        foreach (ProjectGrpc? project in extractedProjects)
                         {
                             ProjectAssociation projectAssociation = new ProjectAssociation();
                             projectAssociation.CustomerLocationGuid = location.Id.ToUpperInvariant();
@@ -842,6 +847,24 @@
             TryExtractList(response.ListRfqReasonGrpc?.RfqReasons, results);
             TryExtractList(response.ListRfqNotesGrpc?.RfqNotes, results);
             TryExtractList(response.ListRfqProjectGrpc?.RfqProjects, results);
+
+            return results;
+        }
+        Collection<TItem> ExtractMastersResponseData<TItem>(MastersFilterResponseGrpc response)
+        {
+            Collection<TItem> results = new Collection<TItem>();
+
+            TryExtractList(response.CurrencyGrpcList?.CurrencyGrpc, results);
+            TryExtractList(response.CustomerGrpcList?.CustomerGrpc, results);
+            TryExtractList(response.CustomerLocationGrpcList?.CustomerLocationGrpc, results);
+            TryExtractList(response.CustomerSalesEntityGrpcList?.CustomerSalesEntityGrpc, results);
+            TryExtractList(response.CustomerProjectAssociationGrpcList?.CustomerProjectAssociationGrpc, results);
+            TryExtractList(response.CustomerBusinessUserAssociationGrpcList?.CustomerBusinessUserAssociationGrpc, results);
+            TryExtractList(response.MilestoneGrpcList?.MilestoneGrpc, results);
+            TryExtractList(response.PlatformGrpcList?.PlatformGrpc, results);
+            TryExtractList(response.ProgramGrpcList?.ProgramGrpc, results);
+            TryExtractList(response.ProjectGrpcList?.ProjectGrpc, results);
+            TryExtractList(response.VehicleGrpcList?.VehicleGrpc, results);
 
             return results;
         }

@@ -1034,22 +1034,22 @@
         {
             return await Task.Run(() =>
             {
-                return typeof(T).Name switch
+                return typeof(T).Name.ToUpperInvariant() switch
                 {
-                    "CombinedPartsGrpc" => _ListCombinedParts.CombinedPartsGrpc.Cast<T>().Where(func).ToList(),
-                    "PartCategoryDetailGrpc" => _ListPartCatogoryDetail.PartCategoryDetailGrpc.Cast<T>().Where(func).ToList(),
-                    "PartClassDetailGrpc" => _ListPartClassDetail.PartClassDetailGrpc.Cast<T>().Where(func).ToList(),
-                    "PartGroupsGrpc" => _ListPartGroups.PartGroupsGrpc.Cast<T>().Where(func).ToList(),
-                    "PartGroupsConstGrpc" => _ListPartGroupsConst.PartGroupsConstGrpc.Cast<T>().Where(func).ToList(),
-                    "CustomerDataGrpc" => _ListCustomerData.CustomerDataGrpc.Cast<T>().Where(func).ToList(),
-                    "ColourCodeGrpc" => _ListColourCode.ColourCodeGrpc.Cast<T>().Where(func).ToList(),
-                    "MaterialGroupsGrpc" => _ListMaterialGroups.MaterialGroupsGrpc.Cast<T>().Where(func).ToList(),
-                    "MaterialTypesGrpc" => _ListMaterialTypes.MaterialTypesGrpc.Cast<T>().Where(func).ToList(),
-                    "NPACustomerGrpc" => _ListNPACustomer.NPACustomerGrpc.Cast<T>().Where(func).ToList(),
-                    "NPASupplierGrpc" => _ListNPASupplier.NPASupplierGrpc.Cast<T>().Where(func).ToList(),
-                    "SuppliersGrpc" => _ListSuppliers.SuppliersGrpc.Cast<T>().Where(func).ToList(),
-                    "EmacsRFIViewGrpc" => _ListEmacsRFIView.EmacsRFIViewGrpc.Cast<T>().Where(func).ToList(),
-                    "PARTMSGrpc" => _ListPARTMS.PARTMSGrpc.Cast<T>().Where(func).ToList(),
+                    "COMBINEDPARTSGRPC" => _ListCombinedParts.CombinedPartsGrpc.Cast<T>().Where(func).ToList(),
+                    "PARTCATEGORYDETAILGRPC" => _ListPartCatogoryDetail.PartCategoryDetailGrpc.Cast<T>().Where(func).ToList(),
+                    "PARTCLASSDETAILGRPC" => _ListPartClassDetail.PartClassDetailGrpc.Cast<T>().Where(func).ToList(),
+                    "PARTGROUPSGRPC" => _ListPartGroups.PartGroupsGrpc.Cast<T>().Where(func).ToList(),
+                    "PARTGROUPSCONSTGRPC" => _ListPartGroupsConst.PartGroupsConstGrpc.Cast<T>().Where(func).ToList(),
+                    "CUSTOMERDATAGRPC" => _ListCustomerData.CustomerDataGrpc.Cast<T>().Where(func).ToList(),
+                    "COLOURCODEGRPC" => _ListColourCode.ColourCodeGrpc.Cast<T>().Where(func).ToList(),
+                    "MATERIALGROUPSGRPC" => _ListMaterialGroups.MaterialGroupsGrpc.Cast<T>().Where(func).ToList(),
+                    "MATERIALTYPESGRPC" => _ListMaterialTypes.MaterialTypesGrpc.Cast<T>().Where(func).ToList(),
+                    "NPACUSTOMERGRPC" => _ListNPACustomer.NPACustomerGrpc.Cast<T>().Where(func).ToList(),
+                    "NPASUPPLIERGRPC" => _ListNPASupplier.NPASupplierGrpc.Cast<T>().Where(func).ToList(),
+                    "SUPPLIERSGRPC" => _ListSuppliers.SuppliersGrpc.Cast<T>().Where(func).ToList(),
+                    "EMACSRFIVIEWGRPC" => _ListEmacsRFIView.EmacsRFIViewGrpc.Cast<T>().Where(func).ToList(),
+                    "PARTMSGRPC" => _ListPARTMS.PARTMSGrpc.Cast<T>().Where(func).ToList(),
                     _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
                 };
             }, cancellationToken);

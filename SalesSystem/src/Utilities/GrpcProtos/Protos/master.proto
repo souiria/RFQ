@@ -14,45 +14,35 @@ service Master {
   rpc SayHello (HelloRequest) returns (HelloReply);
   rpc GetCurrencyGrpc (CurrencyGrpcRequest) returns (ListCurrencyGrpc);
   rpc GetCurrencyGrpcStream (CurrencyGrpcRequest) returns (stream CurrencyGrpc);
-  rpc GetCurrencyGrpcById (CurrencyByIdGrpcRequest) returns (ListCurrencyGrpc);
 
   rpc GetCustomerGrpc (CustomerGrpcRequest) returns (ListCustomerGrpc);
   rpc GetCustomerGrpcStream (CustomerGrpcRequest) returns (stream CustomerGrpc);
   rpc GetCustomerGrpcByUserId (CustomerByUserIdGrpcRequest) returns (ListCustomerGrpc);
   rpc GetCustomerLocationGrpc (CustomerLocationGrpcRequest) returns (ListCustomerLocationGrpc);
   rpc GetCustomerLocationGrpcStream (CustomerLocationGrpcRequest) returns (stream CustomerLocationGrpc);
-  rpc GetCustomerLocationGrpcById (CustomerLocationByIdGrpcRequest) returns (ListCustomerLocationGrpc);
-  rpc GetCustomerLocationGrpcByCustomerId (CustomerLocationByCustomerIdGrpcRequest) returns (ListCustomerLocationGrpc);
   rpc GetCustomerLocationGrpcByUserId (CustomerLocationByUserIdGrpcRequest) returns (ListCustomerLocationGrpc);
   rpc GetCustomerSalesEntityGrpc (CustomerSalesEntityGrpcRequest) returns (ListCustomerSalesEntityGrpc);
   rpc GetCustomerSalesEntityGrpcStream (CustomerSalesEntityGrpcRequest) returns (stream CustomerSalesEntityGrpc);
   rpc GetCustomerSalesEntityGrpcByUserId (CustomerSalesEntityByUserIdGrpcRequest) returns (ListCustomerSalesEntityGrpc);
   rpc GetCustomerProjectAssociationGrpc (CustomerProjectAssociationGrpcRequest) returns (ListCustomerProjectAssociationGrpc);
-  rpc GetCustomerProjectAssociationGrpcByLocationId (CustomerProjectAssociationByLocationIdGrpcRequest) returns (ListCustomerProjectAssociationGrpc);
   rpc GetCustomerProjectAssociationGrpcStream (CustomerProjectAssociationGrpcRequest) returns (stream CustomerProjectAssociationGrpc);
   rpc GetCustomerProjectAssociationGrpcByUserId (CustomerProjectAssociationByUserIdGrpcRequest) returns (ListCustomerProjectAssociationGrpc);
-  rpc GetCustomerProjectAssociationGrpcByProjectId (CustomerProjectAssociationByProjectIdGrpcRequest) returns (ListCustomerProjectAssociationGrpc);
   rpc GetCustomerBusinessUserAssociationGrpc (CustomerBusinessUserAssociationGrpcRequest) returns (ListCustomerBusinessUserAssociationGrpc);
   rpc GetCustomerBusinessUserAssociationGrpcStream (CustomerBusinessUserAssociationGrpcRequest) returns (stream CustomerBusinessUserAssociationGrpc);
-  rpc GetCustomerBusinessUserAssociationGrpcByUserId (CustomerBusinessUserAssociationByUserIdGrpcRequest) returns (ListCustomerBusinessUserAssociationGrpc);
 
   rpc GetMilestoneGrpc (MilestoneGrpcRequest) returns (ListMilestoneGrpc);
   rpc GetMilestoneGrpcStream (MilestoneGrpcRequest) returns (stream MilestoneGrpc);
-  rpc GetMilestoneGrpcById (MilestoneByIdGrpcRequest) returns (ListMilestoneGrpc);
   rpc GetPlatformGrpc (PlatformGrpcRequest) returns (ListPlatformGrpc);
   rpc GetPlatformGrpcStream (PlatformGrpcRequest) returns (stream PlatformGrpc);
-  rpc GetPlatformGrpcById (PlatformByIdGrpcRequest) returns (ListPlatformGrpc);
   rpc GetProgramGrpc (ProgramGrpcRequest) returns (ListProgramGrpc);
   rpc GetProgramGrpcStream (ProgramGrpcRequest) returns (stream ProgramGrpc);
-  rpc GetProgramGrpcById (ProgramByIdGrpcRequest) returns (ListProgramGrpc);
   rpc GetProjectGrpc (ProjectGrpcRequest) returns (ListProjectGrpc);
   rpc GetProjectGrpcStream (ProjectGrpcRequest) returns (stream ProjectGrpc);
-  rpc GetProjectGrpcById (ProjectByIdGrpcRequest) returns (ListProjectGrpc);
 
   rpc GetVehicleGrpc (VehicleGrpcRequest) returns (ListVehicleGrpc);
   rpc GetVehicleGrpcStream (VehicleGrpcRequest) returns (stream VehicleGrpc);
-  rpc GetVehicleGrpcById (VehicleByIdGrpcRequest) returns (ListVehicleGrpc);
-  rpc GetVehicleGrpcByDisplay (VehicleByDisplayGrpcRequest) returns (ListVehicleGrpc);
+
+  rpc FilterMasterDataGrpc (MastersFilterRequestGrpc) returns (MastersFilterResponseGrpc);
 }
 
 // The request message containing the user's name.
@@ -68,10 +58,6 @@ message HelloReply {
 message CurrencyGrpcRequest {
   int32 position = 1;
   int32 takeamount = 2;
-}
-
-message CurrencyByIdGrpcRequest {
-    string Id = 1;
 }
 
 message CurrencyGrpc {
@@ -112,16 +98,8 @@ message CustomerLocationGrpcRequest {
   int32 takeamount = 2;
 }
 
-message CustomerLocationByIdGrpcRequest {
-    string Id = 1;
-}
-
 message CustomerLocationByUserIdGrpcRequest {
     string UserId = 1;
-}
-
-message CustomerLocationByCustomerIdGrpcRequest {
-    string CustomerId = 1;
 }
 
 message CustomerLocationGrpc {
@@ -167,13 +145,6 @@ message CustomerProjectAssociationByUserIdGrpcRequest {
     string UserId = 1;
 }
 
-message CustomerProjectAssociationByLocationIdGrpcRequest {
-    string LocationId = 1;
-}
-message CustomerProjectAssociationByProjectIdGrpcRequest {
-    string ProjectId = 1;
-}
-
 message CustomerProjectAssociationGrpc {
     string Id = 1;
     string CustomerLocationGuid = 2;
@@ -190,10 +161,6 @@ message CustomerBusinessUserAssociationGrpcRequest {
   int32 takeamount = 2;
 }
 
-message CustomerBusinessUserAssociationByUserIdGrpcRequest {
-  string UserId = 1;
-}
-
 message CustomerBusinessUserAssociationGrpc {
     string Id = 1;
     string CustomerBusinessHierarchyList = 2;
@@ -208,9 +175,6 @@ message ListCustomerBusinessUserAssociationGrpc {
 message MilestoneGrpcRequest {
   int32 position = 1;
   int32 takeamount = 2;
-}
-message MilestoneByIdGrpcRequest {
-    string Id = 1;
 }
 
 message MilestoneGrpc {
@@ -231,9 +195,6 @@ message PlatformGrpcRequest {
   int32 takeamount = 2;
 }
 
-message PlatformByIdGrpcRequest {
-    string Id = 1;
-}
 
 message PlatformGrpc {
     google.protobuf.StringValue Id = 1;
@@ -252,9 +213,6 @@ message ProgramGrpcRequest {
   int32 takeamount = 2;
 }
 
-message ProgramByIdGrpcRequest {
-    string Id = 1;
-}
 
 message ProgramGrpc {
     google.protobuf.StringValue Id = 1;
@@ -270,9 +228,6 @@ message ListProgramGrpc {
 message ProjectGrpcRequest {
   int32 position = 1;
   int32 takeamount = 2;
-}
-message ProjectByIdGrpcRequest {
-    string Id = 1;
 }
 
 message ProjectGrpc {
@@ -295,13 +250,6 @@ message VehicleGrpcRequest {
   int32 takeamount = 2;
 }
 
-message VehicleByIdGrpcRequest {
-    string Id = 1;
-}
-
-message VehicleByDisplayGrpcRequest {
-    string VehicleDisplay = 1;
-}
 
 message VehicleGrpc {
     google.protobuf.StringValue Id = 1;
@@ -313,4 +261,24 @@ message VehicleGrpc {
 
 message ListVehicleGrpc {
     repeated VehicleGrpc VehicleGrpc = 1;
+}
+
+message MastersFilterRequestGrpc {
+    string DatabaseList = 1;
+    string FilterExpression = 2;
+}
+
+message MastersFilterResponseGrpc {
+    bool Success = 1;
+    ListCurrencyGrpc CurrencyGrpcList = 2;
+    ListCustomerGrpc CustomerGrpcList = 3;
+    ListCustomerLocationGrpc CustomerLocationGrpcList = 4;
+    ListCustomerSalesEntityGrpc CustomerSalesEntityGrpcList = 5;
+    ListCustomerProjectAssociationGrpc CustomerProjectAssociationGrpcList = 6;
+    ListCustomerBusinessUserAssociationGrpc CustomerBusinessUserAssociationGrpcList = 7;
+    ListMilestoneGrpc MilestoneGrpcList = 8;
+    ListPlatformGrpc PlatformGrpcList = 9;
+    ListProgramGrpc ProgramGrpcList = 10;
+    ListProjectGrpc ProjectGrpcList = 11;
+    ListVehicleGrpc VehicleGrpcList = 12;
 }

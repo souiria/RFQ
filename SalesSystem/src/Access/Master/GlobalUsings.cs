@@ -1,4 +1,5 @@
-﻿global using System.Reflection;
+﻿global using System.Linq.Dynamic.Core;
+global using System.Reflection;
 global using Ardalis.Specification;
 global using Ardalis.Specification.EntityFrameworkCore;
 global using Google.Protobuf.WellKnownTypes;
@@ -28,4 +29,3 @@ global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Logging;
 global using Newtonsoft.Json;
 global using SharedKernel;
-

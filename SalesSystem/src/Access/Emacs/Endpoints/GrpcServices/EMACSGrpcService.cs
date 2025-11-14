@@ -148,9 +148,9 @@
 
             EmacsFilterResponseGrpc returnResponse = new EmacsFilterResponseGrpc();
 
-            switch (request.DatabaseList)
+            switch (request.DatabaseList.ToUpperInvariant())
             {
-                case "CombinedPartsGrpc":
+                case "COMBINEDPARTSGRPC":
                 await _EMACSAccessService.HandleFilterCase<CombinedPartsGrpc>(filterExpressionString, parsingConfig,
                 filterList =>
                 {
@@ -160,7 +160,7 @@
                     returnResponse.Success = true;
                 }, context.CancellationToken);
                 break;
-                case "PartCategoryDetailGrpc":
+                case "PARTCATEGORYDETAILGRPC":
                 await _EMACSAccessService.HandleFilterCase<PartCategoryDetailGrpc>(filterExpressionString, parsingConfig,
                     filterList =>
                     {
@@ -170,7 +170,7 @@
                         returnResponse.Success = true;
                     }, context.CancellationToken);
                 break;
-                case "PartClassDetailGrpc":
+                case "PARTCLASSDETAILGRPC":
                 await _EMACSAccessService.HandleFilterCase<PartClassDetailGrpc>(filterExpressionString, parsingConfig,
                     filterList =>
                     {
@@ -180,7 +180,7 @@
                         returnResponse.Success = true;
                     }, context.CancellationToken);
                 break;
-                case "PartGroupsGrpc":
+                case "PARTGROUPSGRPC":
                 await _EMACSAccessService.HandleFilterCase<PartGroupsGrpc>(filterExpressionString, parsingConfig,
                     filterList =>
                     {
@@ -190,7 +190,7 @@
                         returnResponse.Success = true;
                     }, context.CancellationToken);
                 break;
-                case "PartGroupsConstGrpc":
+                case "PARTGROUPSCONSTGRPC":
                 await _EMACSAccessService.HandleFilterCase<PartGroupsConstGrpc>(filterExpressionString, parsingConfig,
                     filterList =>
                     {
@@ -200,7 +200,7 @@
                         returnResponse.Success = true;
                     }, context.CancellationToken);
                 break;
-                case "CustomerDataGrpc":
+                case "CUSTOMERDATAGRPC":
                 await _EMACSAccessService.HandleFilterCase<CustomerDataGrpc>(filterExpressionString, parsingConfig,
                     filterList =>
                     {
@@ -210,7 +210,7 @@
                         returnResponse.Success = true;
                     }, context.CancellationToken);
                 break;
-                case "ColourCodeGrpc":
+                case "COLOURCODEGRPC":
                 await _EMACSAccessService.HandleFilterCase<ColourCodeGrpc>(filterExpressionString, parsingConfig,
                     filterList =>
                     {
@@ -220,7 +220,7 @@
                         returnResponse.Success = true;
                     }, context.CancellationToken);
                 break;
-                case "MaterialGroupsGrpc":
+                case "MATERIALGROUPSGRPC":
                 await _EMACSAccessService.HandleFilterCase<MaterialGroupsGrpc>(filterExpressionString, parsingConfig,
                     filterList =>
                     {
@@ -230,7 +230,7 @@
                         returnResponse.Success = true;
                     }, context.CancellationToken);
                 break;
-                case "MaterialTypesGrpc":
+                case "MATERIALTYPESGRPC":
                 await _EMACSAccessService.HandleFilterCase<MaterialTypesGrpc>(filterExpressionString, parsingConfig,
                     filterList =>
                     {
@@ -240,7 +240,7 @@
                         returnResponse.Success = true;
                     }, context.CancellationToken);
                 break;
-                case "NPACustomerGrpc":
+                case "NPACUSTOMERGRPC":
                 await _EMACSAccessService.HandleFilterCase<NPACustomerGrpc>(filterExpressionString, parsingConfig,
                     filterList =>
                     {
@@ -250,7 +250,7 @@
                         returnResponse.Success = true;
                     }, context.CancellationToken);
                 break;
-                case "NPASupplierGrpc":
+                case "NPASUPPLIERGRPC":
                 await _EMACSAccessService.HandleFilterCase<NPASupplierGrpc>(filterExpressionString, parsingConfig,
                     filterList =>
                     {
@@ -260,7 +260,7 @@
                         returnResponse.Success = true;
                     }, context.CancellationToken);
                 break;
-                case "SuppliersGrpc":
+                case "SUPPLIERSGRPC":
                 await _EMACSAccessService.HandleFilterCase<SuppliersGrpc>(filterExpressionString, parsingConfig,
                    filterList =>
                    {
@@ -270,7 +270,7 @@
                        returnResponse.Success = true;
                    }, context.CancellationToken);
                 break;
-                case "EmacsRFIViewGrpc":
+                case "EMACSRFIVIEWGRPC":
                 await _EMACSAccessService.HandleFilterCase<EmacsRFIViewGrpc>(filterExpressionString, parsingConfig,
                    filterList =>
                    {
@@ -280,7 +280,7 @@
                        returnResponse.Success = true;
                    }, context.CancellationToken);
                 break;
-                case "PARTMSGrpc":
+                case "PARTMSGRPC":
                 await _EMACSAccessService.HandleFilterCase<PARTMSGrpc>(filterExpressionString, parsingConfig,
                    filterList =>
                    {
