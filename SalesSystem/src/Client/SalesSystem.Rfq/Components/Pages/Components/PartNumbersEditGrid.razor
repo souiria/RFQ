@@ -1,4 +1,11 @@
 ﻿@using System.Net.Http.Json
+@using SharedModels.Filtering
+
+@inject RfqUxClientService RfqUxClientService
+@inject ISnackbar Snackbar
+@inject ILogger<PartNumbersEditGrid> Logger
+@inject IDialogService DialogService
+
 
 <div class="d-flex flex-column" style="height: 100%; overflow: hidden;">
     <MudDataGrid T="RfqPartNumberUx" 
@@ -19,8 +26,8 @@
             <TemplateColumn CellClass="d-flex justify-start">
                 <CellTemplate>
                     <MudIconButton Size="@Size.Small" 
-                                  Icon="@Icons.Material.Outlined.Edit" 
-                                  OnClick="@context.Actions.StartEditingItemAsync" />
+                                  Icon="@Icons.Material.Outlined.Search"
+                                   OnClick="@(()=> OnSearch(context.Item))" />
                 </CellTemplate>
             </TemplateColumn>
             <PropertyColumn Property="x => x.RowId" Title="ID" Editable="false" />
@@ -100,5 +107,82 @@
     void CommittedItemChanges(RfqPartNumberUx item)
     {
         //_events.Insert(0, $"Event = CommittedItemChanges, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    }
+    private async Task OnSearch(RfqPartNumberUx item)
+    {
+        await Task.Delay(1);
+        if(item != null)
+        {
+            Logger.GenericLogInformation($"Searching for part number: {item.OriginalPartNumber}");
+
+            try
+            {
+                // Call FilterRFQBySumitomoPartNumber
+                FilterGrpcResponse response = await RfqUxClientService.FilterByRequestTypeAsync(
+                    RfqManagerFilterType.FilterRFQBySumitomoPartNumber,
+                    item.OriginalPartNumber
+                );
+
+                if (response.Success 
+                    && response.StringList != null
+                    && response.StringList.Count > 0)
+                {
+                    // Build results message
+                    System.Text.StringBuilder messageBuilder = new System.Text.StringBuilder();
+                    messageBuilder.AppendLine($"Found {response.StringList.Count} result(s) for part number: {item.OriginalPartNumber}");
+                    messageBuilder.AppendLine();
+                    
+                    // Display Sumitomo Part Numbers and Prices
+                    for (int i = 0; i < response.StringList.Count; i++)
+                    {
+                        string partNumber = response.StringList[i] ?? "N/A";
+                        // string price = "N/A";
+                        
+                        // Check if we have corresponding price data
+                        // if (response.DoubleList != null && i < response.DoubleList.Count)
+                        // {
+                        //     double? priceValue = response.DoubleList[i]?.Value;
+                        //     price = priceValue.HasValue ? $"${priceValue.Value:N2}" : "N/A";
+                        // }
+                        
+                        messageBuilder.AppendLine($"Part #{i + 1}:");
+                        messageBuilder.AppendLine($"  Sumitomo Number: {partNumber}");
+                        // messageBuilder.AppendLine($"  Price: {price}");
+                        messageBuilder.AppendLine();
+                    }
+
+                    Logger.GenericLogInformation($"Search successful: {response.StringList.Count} results found");
+                    
+                    // Display results in dialog
+                    await DialogService.ShowMessageBox(
+                        "Search Results", 
+                        messageBuilder.ToString(),
+                        yesText: "OK"
+                    );
+                }
+                else
+                {
+                    string message = response.Success 
+                        ? $"No results found for part number: {item.OriginalPartNumber}"
+                        : $"Search failed for part number: {item.OriginalPartNumber}";
+                    
+                    Logger.GenericLogInformation(message);
+                    await DialogService.ShowMessageBox("Search Results", message);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.GenericLogError($"Error searching for part number: {item.OriginalPartNumber}", ex);
+                await DialogService.ShowMessageBox(
+                    "Error", 
+                    $"An error occurred while searching: {ex.Message}"
+                );
+            }
+        }
+        else
+        {
+            Logger.GenericLogInformation($"No part number found for null item...");
+            await DialogService.ShowMessageBox("Search Part Number", $"No part number found for null item...");
+        }
     }
 }

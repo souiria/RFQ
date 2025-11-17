@@ -8,7 +8,7 @@ option csharp_namespace = "RfqModule";
 
 package RfqModule;
 
-// The RFQ service definition.
+// The greeting service definition.
 service RfqModule {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply);
@@ -27,8 +27,7 @@ service RfqModule {
   rpc UpdateRfqProjectGrpc (UpdateRfqProjectGrpcRequest) returns (UpdateRfqProjectGrpcResponse);
   rpc GetRfqDrawingPartNumbersByRfqIdGrpc (GetRfqDrawingPartNumbersByRfqIdGrpcRequest) returns (GetRfqDrawingPartNumbersByRfqIdGrpcResponse);
   rpc DeleteRfqProjectByRowIdGrpc (RfqProjectRequest) returns (RfqCrudResponse);
-  // filtering
-  rpc FilterRfqGrpc (RfqFilterRequest) returns (RfqFilterResponse);
+  rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
 }
 
 // The request message containing the user's name.
@@ -49,6 +48,7 @@ message FileUploadRequest {
 message FileUploadResponse {
   bool success = 1;
   string message = 2;
+  // Additional fields for the response as needed
 }
 
 message GetAllCustomersGrpcRequest {
@@ -65,6 +65,7 @@ message GetCustomersByUserIdGrpcRequest {
 	google.protobuf.StringValue UserId = 1;
 }
 
+// Shared request parameter message
 message GetCustomersByUserIdGrpcResponse {
 	repeated CustomerGrpc Customers = 1;
 	int32 TotalCount = 2;
@@ -143,9 +144,9 @@ message RfqProject {
 	google.protobuf.Timestamp RfqResponseDeadline = 7;
 	string CarModelGuid = 8;
 	int32 VehicleVolume = 9;
-	google.protobuf.Timestamp CreatedDate = 10;
-	google.protobuf.BoolValue IsActive = 11;
-	string RfqReasonName= 12;
+    google.protobuf.BoolValue IsActive = 10;
+    google.protobuf.Timestamp CreatedDate = 11;
+    string RfqReasonName= 12;
     string CustomerBusinessGroupCode= 13;
 	string CustomerLocationName= 14;
 	string	ProjectName= 15;
@@ -167,6 +168,7 @@ message CustomerParts {
 
 message CreateRfqProjectGrpcRequest {
   RfqProject Project = 1;
+ 
 }
 
 message CreateRfqProjectGrpcResponse {
@@ -176,13 +178,18 @@ message CreateRfqProjectGrpcResponse {
 }
 
 message GetAllRfqProjectGrpcRequest {
-    int32 Position = 1;
-    int32 Take = 2;
+	int32 RequestType = 1;
+	int32 Position = 2;
+	int32 Take = 3;
+}
+
+message RfqProjectWithReason {
+  RfqProject Project = 1;
+  string RfqReasonTitle = 2;
 }
 
 message GetAllRfqProjectGrpcResponse {
-    repeated RfqProject Projects = 1;
-    int32 TotalCount = 2;
+  repeated RfqProject RfqProjects = 1;
 }
 
 message GetRfqProjectByIdGrpcRequest {
@@ -192,6 +199,12 @@ message GetRfqProjectByIdGrpcRequest {
 message GetRfqProjectByIdGrpcResponse {
   RfqProject Project = 1;
 }
+ 
+enum RequestType {
+  None = 0;
+  Read = 1;
+  ReadByRowId = 2;
+}
 
 message UpdateRfqProjectGrpcRequest {
   RfqProject Project = 1;
@@ -200,8 +213,8 @@ message UpdateRfqProjectGrpcRequest {
 message UpdateRfqProjectGrpcResponse {
   bool Success = 1;
   string Message = 2;
-  }
-  message RfqDrawingPartNumber {
+}
+message RfqDrawingPartNumber {
   int64 RowId = 1;
   int64 RfqId = 2;
   string OriginalPartNumber = 3;
@@ -221,8 +234,8 @@ message GetRfqDrawingPartNumbersByRfqIdGrpcRequest {
 
 message GetRfqDrawingPartNumbersByRfqIdGrpcResponse {
   repeated RfqDrawingPartNumber Parts = 1;
-      int32 TotalCount = 2;
 }
+
 message RfqProjectRequest {
   RfqProject GrpcRequestParameter = 1;
   repeated RfqProject RfqProjectGrpcsToCreate = 2;
@@ -237,75 +250,23 @@ message RfqCrudResponse {
   google.protobuf.StringValue StringValue = 3;
 }
 
-// filtering
-message RfqFilterRequest {
-	string DatabaseList = 1;
-    string FilterExpression = 2;
+message FilterGrpcRequest {
+    FilterRequestType FilterRequest = 1;
+    google.protobuf.StringValue StringValue = 2;
+    google.protobuf.Int32Value Int32Value = 3;
+
 }
 
-message RfqFilterResponse {
-	bool Success = 1;
-	ListRfqProjectGrpc ListRfqProjectGrpc = 2;
-	ListRfqNotesGrpc ListRfqNotesGrpc = 3;
-	ListRfqReasonGrpc ListRfqReasonGrpc = 4;
-	ListRfqDrawingPartNumbersGrpc ListRfqDrawingPartNumbersGrpc = 5;
+message FilterGrpcResponse {
+    bool Success = 1;
+    repeated google.protobuf.StringValue StringList = 2;
+    repeated google.protobuf.Int32Value IntList = 3;
+    repeated bytes ByteList = 4;
+    repeated google.protobuf.DoubleValue DoubleList = 6; 
+    repeated google.protobuf.StringValue StringList2 = 5;
+
 }
 
-message ListRfqDrawingPartNumbersGrpc {
-	repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbers = 1;
-}
-
-message RfqDrawingPartNumbersGrpc {
-  int64 RowId = 1;
-  int64 RfqId = 2;
-  google.protobuf.StringValue OriginalPartNumber = 3;
-  google.protobuf.DoubleValue OriginalPartNumberPrice = 4;
-  google.protobuf.StringValue SwappedPartNumber = 5;
-  google.protobuf.DoubleValue SwappedPartNumberPrice = 6;
-  google.protobuf.StringValue PriceSource = 7;
-  google.protobuf.BoolValue IsExactMatch = 8;
-  google.protobuf.BoolValue IsSwapped = 9;
-  google.protobuf.StringValue Comments = 10;
-  google.protobuf.StringValue SumitomoPartNumber = 11;
-  google.protobuf.StringValue SupplierPartNumber = 12;
-  google.protobuf.StringValue NprId = 13;
-}
-
-message ListRfqReasonGrpc {
-	repeated RfqReasonGrpc RfqReasons = 1;
-}
-
-message ListRfqNotesGrpc {
-	repeated RfqNotesGrpc RfqNotes = 1;
-}
-
-message RfqNotesGrpc {
-	int64 RowId = 1;
-	int64 RfqId = 2;
-	google.protobuf.StringValue Note = 3;
-	google.protobuf.StringValue UserGuid = 4;
-	google.protobuf.Timestamp LastModifiedOn = 5;
-}
-
-message ListRfqProjectGrpc {
-	repeated RfqProjectGrpc RfqProjects = 1;
-}
-
-message RfqProjectGrpc {
-	int64 RowId = 1;
-	string RfqNumber = 2;
-	google.protobuf.StringValue CustomerBusinessUnitGuid = 3;
-	google.protobuf.StringValue CustomerLocationGuid = 4;
-	google.protobuf.StringValue ProjectGuid = 5;
-	google.protobuf.Int32Value RfqReasonId = 6;
-	google.protobuf.Timestamp RfqResponseDeadline = 7;
-	google.protobuf.StringValue CarModelGuid = 8;
-	google.protobuf.Int32Value VehicleVolume = 9;
-	google.protobuf.Timestamp CreatedDate = 10;
-	google.protobuf.BoolValue IsActive = 11;
-	string RfqReasonName= 12;
-	string CustomerBusinessGroupCode= 13;
-	string CustomerLocationName= 14;
-	string	ProjectName= 15;
-	string	CarModelName= 16;
+message FilterRequestType {
+    int32 RequestType = 1;
 }
