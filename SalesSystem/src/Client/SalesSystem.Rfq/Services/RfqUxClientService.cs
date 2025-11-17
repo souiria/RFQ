@@ -12,21 +12,21 @@ namespace SalesSystem.Rfq.Services
         bool _Disposed;
 
         // Cached Data
-        List<RfqDrawingPartNumber> _RfqDrawingParts;
+        List<RfqDrawingPartNumberUx?> _RfqDrawingPartNumbers;
         List<RfqProject> _RfqProjects;
         List<RfqProjectUx> _RfqProjectUxs;
         List<CustomerUx?> _Customers;
         List<RfqReasonGrpc> _Reasons;
-        List<CustomerProjectUx> _CustomerProjectAssociations;
+        List<ProjectAssociationUx> _CustomerProjectAssociations;
         List<string> _QuotationNumbers;
 
         // Cached data accessors
-        public IReadOnlyCollection<RfqDrawingPartNumber> RfqDrawingParts => _RfqDrawingParts.AsReadOnly();
+        public IReadOnlyCollection<RfqDrawingPartNumberUx?> RfqDrawingPartNumbers => _RfqDrawingPartNumbers.AsReadOnly();
         public IReadOnlyCollection<RfqProject> RfqProjects => _RfqProjects.AsReadOnly();
         public IReadOnlyCollection<RfqProjectUx> RfqProjectUxs => _RfqProjectUxs.AsReadOnly(); // only active projects are here
         public IReadOnlyCollection<CustomerUx?> Customers => _Customers.AsReadOnly();
         public IReadOnlyCollection<RfqReasonGrpc> Reasons => _Reasons.AsReadOnly();
-        public IReadOnlyCollection<CustomerProjectUx> CustomerProjectAssociations => _CustomerProjectAssociations.AsReadOnly();
+        public IReadOnlyCollection<ProjectAssociationUx> CustomerProjectAssociations => _CustomerProjectAssociations.AsReadOnly();
         public IReadOnlyCollection<string> QuotationNumbers => _QuotationNumbers.AsReadOnly();
         public RfqUxClientService(IConfiguration configuration, ILogger<RfqUxClientService>? logger = null)
         {
@@ -55,7 +55,7 @@ namespace SalesSystem.Rfq.Services
                 "SEWS-25-025-005688",
                 "SEWS-25-025-005692"
             };
-            _RfqDrawingParts= new();
+            _RfqDrawingPartNumbers= new();
         }
         #endregion
 
@@ -118,7 +118,7 @@ namespace SalesSystem.Rfq.Services
 
                 GetCustomersByUserIdGrpcResponse response = await _Client.GetCustomersByUserIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
                 _Customers.Clear();
-                List<CustomerUx?> orderedCustomers = response.Customers.Select(x => x.ToCustomerUx()).OrderBy(x => x?.CustomerBusinessGroupName).ToList();
+                List<CustomerUx?> orderedCustomers = response.Customers.Select(x => x.ToUx()).OrderBy(x => x?.CustomerBusinessGroupName).ToList();
                 _Customers.AddRange(orderedCustomers);
 
                 return _Customers.Count;
@@ -158,7 +158,7 @@ namespace SalesSystem.Rfq.Services
                         continue; // skip inactive projects
                     }
 
-                    RfqProjectUx? uxModel = rfqProject.ToRfqProjectUx();
+                    RfqProjectUx? uxModel = rfqProject.ToUx();
                     if (null != uxModel)
                     {
                         _RfqProjectUxs.Add(uxModel);
@@ -250,6 +250,9 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
+        #endregion
+
+        #region Project Associations
         public async Task<int> GetProjectAssociationsByCustomerIdAsync(string customerId)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
@@ -265,7 +268,7 @@ namespace SalesSystem.Rfq.Services
                 IOrderedEnumerable<ProjectAssociation> associations = response.ProjectAssociation.ToList().OrderBy(x => x.CustomerProjectName).ThenBy(x => x.CustomerLocationName);
                 foreach (ProjectAssociation? association in associations)
                 {
-                    CustomerProjectUx? projectAssociation = association.ToCustomerProjectUx();
+                    ProjectAssociationUx? projectAssociation = association.ToUx();
                     if (null == projectAssociation)
                     {
                         continue;
@@ -282,7 +285,10 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-        public async Task<List<RfqDrawingPartNumber>> GetRfqDrawingPartNumbersByRfqIdAsync(long rfqId)
+        #endregion
+
+        #region PartNumbers
+        public async Task<int> GetRfqDrawingPartNumbersByRfqIdAsync(long rfqId)
   
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
@@ -293,11 +299,15 @@ namespace SalesSystem.Rfq.Services
                 request.RfqId = rfqId;
 
                 GetRfqDrawingPartNumbersByRfqIdGrpcResponse response = await _Client.GetRfqDrawingPartNumbersByRfqIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
-                _RfqDrawingParts.Clear();
-                _RfqDrawingParts.AddRange(response.Parts);
-                return _RfqDrawingParts;
-                //List<RfqDrawingPartNumber> parts = response.Parts.ToList();
-                //return parts;
+                _RfqDrawingPartNumbers.Clear();
+                if(null != response && 0 <= response.Parts.Count) 
+                {
+                    List<RfqDrawingPartNumberUx?> uxs = response.Parts.Select(x => x.ToUx()).ToList();
+                    _RfqDrawingPartNumbers.AddRange(uxs);
+                    return _RfqDrawingPartNumbers.Count;
+                }
+
+                return 0;
             }
             catch (Exception ex)
             {
@@ -305,7 +315,6 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-
         #endregion
 
         #region Rfq Reasons
@@ -429,6 +438,8 @@ namespace SalesSystem.Rfq.Services
             return await FilterGrpcAsync(request, cancellationToken);
         }
         #endregion
+
+        #region FileUploads
         public async Task<FileUploadResponse> UploadFileAsync(
             byte[] fileData,
             string fileName,
@@ -453,7 +464,9 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Cleanup
         protected virtual void Dispose(bool disposing)
         {
             if (!_Disposed)
@@ -473,5 +486,6 @@ namespace SalesSystem.Rfq.Services
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
+        #endregion
     }
 }

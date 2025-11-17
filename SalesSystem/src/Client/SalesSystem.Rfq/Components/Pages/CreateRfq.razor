@@ -288,12 +288,12 @@
             CustomerUx? customer = RfqUxClientService.Customers.FirstOrDefault(c => c?.CustomerBusinessGroupName == customerValue);
             if (customer is null)
             {
-                progressState.SetError("Validation failed: Customer not found", "Selected customer not found.");
+                progressState.SetError("Validation fProjectAssociation not found", "Selected customer not found.");
                 Logger.GenericLogInformation("CreateRfq.SubmitDataAsync - Validation failed: Customer not found");
                 return;
             }
             
-            CustomerProjectUx? customerProject = RfqUxClientService.CustomerProjectAssociations.FirstOrDefault(p => p.Id == customerProjectValue);
+            ProjectAssociationUx? customerProject = RfqUxClientService.CustomerProjectAssociations.FirstOrDefault(p => p.Id == customerProjectValue);
             if (customerProject is null)
             {
                 progressState.SetError("Validation failed: Project not found", "Selected customer project not found.");

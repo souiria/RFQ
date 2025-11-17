@@ -8,7 +8,7 @@
 
 
 <div class="d-flex flex-column" style="height: 100%; overflow: hidden;">
-    <MudDataGrid T="RfqPartNumberUx" 
+    <MudDataGrid T="RfqDrawingPartNumberUx" 
                  Items="@PartNumbers" 
                  ReadOnly="false" 
                  EditMode="DataGridEditMode.Form"
@@ -86,7 +86,7 @@
 </style>
 
 @code {
-    [Parameter] public IEnumerable<RfqPartNumberUx> PartNumbers { get; set; } = new List<RfqPartNumberUx>();
+    [Parameter] public IEnumerable<RfqDrawingPartNumberUx> PartNumbers { get; set; } = new List<RfqDrawingPartNumberUx>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -94,21 +94,21 @@
     }
 
     // events
-    void StartedEditingItem(RfqPartNumberUx item)
+    void StartedEditingItem(RfqDrawingPartNumberUx item)
     {
         //_events.Insert(0, $"Event = StartedEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
     }
 
-    void CanceledEditingItem(RfqPartNumberUx item)
+    void CanceledEditingItem(RfqDrawingPartNumberUx item)
     {
         //_events.Insert(0, $"Event = CanceledEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
     }
 
-    void CommittedItemChanges(RfqPartNumberUx item)
+    void CommittedItemChanges(RfqDrawingPartNumberUx item)
     {
         //_events.Insert(0, $"Event = CommittedItemChanges, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
     }
-    private async Task OnSearch(RfqPartNumberUx item)
+    private async Task OnSearch(RfqDrawingPartNumberUx item)
     {
         await Task.Delay(1);
         if(item != null)

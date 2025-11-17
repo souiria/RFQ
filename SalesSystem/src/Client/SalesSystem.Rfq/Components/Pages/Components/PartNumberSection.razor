@@ -68,7 +68,7 @@
 </div>
 
 @code {
-    [Parameter] public IEnumerable<RfqPartNumberUx> PartNumbers { get; set; } = Enumerable.Empty<RfqPartNumberUx>();
+    [Parameter] public IEnumerable<RfqDrawingPartNumberUx> PartNumbers { get; set; } = Enumerable.Empty<RfqDrawingPartNumberUx>();
     [Parameter] public string Label { get; set; } = string.Empty;
     [Parameter] public string BackgroundColor { get; set; } = "var(--mud-palette-primary)";
     [Parameter] public bool InitiallyExpanded { get; set; } = true;

@@ -153,9 +153,9 @@ else
                     </div>
                 </MudTabPanel>
                 <MudTabPanel Text="BOM Files">
-                    <div class="d-flex flex-column" style="height: calc(100vh - 364px); overflow: hidden;">
+                    <div class="d-flex flex-column" sDrawingtyle="height: calc(100vh - 364px)Drawing; overflow: hidden;">
                         @* File Cards Section *@
-                        <FileCards @ref="componentFileCards"
+  Drawing                      <FileCards @rDrawingef="componentFileCards"
                                    FileObjects="FileObjects"
                                    OnRemoveFile="HandleFileRemoval" />
                     </div>
@@ -169,7 +169,7 @@ else
 
     // Reference to the FileManager component
     FileManager? componentFileManager;
-    FileCards? componentFileCards;
+    // FileCards? componentFileCards;
     List<FileObjectUx> FileObjects { get; set; } = new List<FileObjectUx>();
 
 
@@ -181,8 +181,8 @@ else
     [Parameter] public long RfqProjectId { get; set; }
 
     // Part numbers data from test list
-    IEnumerable<RfqPartNumberUx> MatchedParts => RfqPartNumberUx.TestList.Where(p => p.IsMatched == true);
-    IEnumerable<RfqPartNumberUx> UnmatchedParts => RfqPartNumberUx.TestList.Where(p => p.IsMatched == false);
+    IList<RfqDrawingPartNumberUx?>? MatchedParts = new List<RfqDrawingPartNumberUx?>();
+    IList<RfqDrawingPartNumberUx?>? UnmatchedParts = new List<RfqDrawingPartNumberUx?>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -237,7 +237,7 @@ else
                 // }
             }
 
-            RfqProject = rfqProject.ToRfqProjectUx();
+            RfqProject = rfqProject.ToUx();
             if (RfqProject == null)
             {
                 Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
@@ -250,6 +250,15 @@ else
                 IsLoading = false;
                 Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded RFQ Project with Id {RfqProject.RowId} - {RfqProject.RfqNumber} {RfqProject.ProjectId}");
             }
+
+            // get the part numbers
+            int partNumbersCount = await RfqUxClientService.GetRfqDrawingPartNumbersByRfqIdAsync(RfqProjectId);
+            if(partNumbersCount>0)
+            {
+                MatchedParts = RfqUxClientService.RfqDrawingPartNumbers.Where(x => x?.IsExactMatch == true).ToList();
+                UnmatchedParts = RfqUxClientService.RfqDrawingPartNumbers.Where(x => x?.IsExactMatch != true).ToList();
+            }
+
         }
         catch (Exception ex)
         {
