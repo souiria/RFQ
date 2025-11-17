@@ -26,7 +26,9 @@ service RfqModule {
   rpc GetRfqProjectByIdGrpc (GetRfqProjectByIdGrpcRequest) returns (GetRfqProjectByIdGrpcResponse);
   rpc UpdateRfqProjectGrpc (UpdateRfqProjectGrpcRequest) returns (UpdateRfqProjectGrpcResponse);
   rpc GetRfqDrawingPartNumbersByRfqIdGrpc (GetRfqDrawingPartNumbersByRfqIdGrpcRequest) returns (GetRfqDrawingPartNumbersByRfqIdGrpcResponse);
-    rpc DeleteRfqProjectByRowIdGrpc (RfqProjectRequest) returns (RfqCrudResponse);
+  rpc DeleteRfqProjectByRowIdGrpc (RfqProjectRequest) returns (RfqCrudResponse);
+  // filtering
+  rpc FilterRfqGrpc (RfqFilterRequest) returns (RfqFilterResponse);
 }
 
 // The request message containing the user's name.
@@ -233,4 +235,77 @@ message RfqCrudResponse {
   bool SaveSuccess = 1;
   string Message = 2;
   google.protobuf.StringValue StringValue = 3;
+}
+
+// filtering
+message RfqFilterRequest {
+	string DatabaseList = 1;
+    string FilterExpression = 2;
+}
+
+message RfqFilterResponse {
+	bool Success = 1;
+	ListRfqProjectGrpc ListRfqProjectGrpc = 2;
+	ListRfqNotesGrpc ListRfqNotesGrpc = 3;
+	ListRfqReasonGrpc ListRfqReasonGrpc = 4;
+	ListRfqDrawingPartNumbersGrpc ListRfqDrawingPartNumbersGrpc = 5;
+}
+
+message ListRfqDrawingPartNumbersGrpc {
+	repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbers = 1;
+}
+
+message RfqDrawingPartNumbersGrpc {
+  int64 RowId = 1;
+  int64 RfqId = 2;
+  google.protobuf.StringValue OriginalPartNumber = 3;
+  google.protobuf.DoubleValue OriginalPartNumberPrice = 4;
+  google.protobuf.StringValue SwappedPartNumber = 5;
+  google.protobuf.DoubleValue SwappedPartNumberPrice = 6;
+  google.protobuf.StringValue PriceSource = 7;
+  google.protobuf.BoolValue IsExactMatch = 8;
+  google.protobuf.BoolValue IsSwapped = 9;
+  google.protobuf.StringValue Comments = 10;
+  google.protobuf.StringValue SumitomoPartNumber = 11;
+  google.protobuf.StringValue SupplierPartNumber = 12;
+  google.protobuf.StringValue NprId = 13;
+}
+
+message ListRfqReasonGrpc {
+	repeated RfqReasonGrpc RfqReasons = 1;
+}
+
+message ListRfqNotesGrpc {
+	repeated RfqNotesGrpc RfqNotes = 1;
+}
+
+message RfqNotesGrpc {
+	int64 RowId = 1;
+	int64 RfqId = 2;
+	google.protobuf.StringValue Note = 3;
+	google.protobuf.StringValue UserGuid = 4;
+	google.protobuf.Timestamp LastModifiedOn = 5;
+}
+
+message ListRfqProjectGrpc {
+	repeated RfqProjectGrpc RfqProjects = 1;
+}
+
+message RfqProjectGrpc {
+	int64 RowId = 1;
+	string RfqNumber = 2;
+	google.protobuf.StringValue CustomerBusinessUnitGuid = 3;
+	google.protobuf.StringValue CustomerLocationGuid = 4;
+	google.protobuf.StringValue ProjectGuid = 5;
+	google.protobuf.Int32Value RfqReasonId = 6;
+	google.protobuf.Timestamp RfqResponseDeadline = 7;
+	google.protobuf.StringValue CarModelGuid = 8;
+	google.protobuf.Int32Value VehicleVolume = 9;
+	google.protobuf.Timestamp CreatedDate = 10;
+	google.protobuf.BoolValue IsActive = 11;
+	string RfqReasonName= 12;
+	string CustomerBusinessGroupCode= 13;
+	string CustomerLocationName= 14;
+	string	ProjectName= 15;
+	string	CarModelName= 16;
 }

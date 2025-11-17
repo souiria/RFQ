@@ -3,6 +3,7 @@
     public static class UxModelConversionExtensions
 
     {
+        #region CustomerProjectUx Conversion
         public static CustomerProjectUx? ToCustomerProjectUx(this ProjectAssociation association)
         {
             if (association == null)
@@ -11,11 +12,11 @@
             }
 
             CustomerProjectUx projectAssociation = new CustomerProjectUx();
-            projectAssociation.ProjectId = association.CustomerProjectGuid;
+            projectAssociation.ProjectId = association.CustomerProjectGuid.ToUpperInvariant();
             projectAssociation.ProjectName = association.CustomerProjectName;
-            projectAssociation.CustomerId = association.CustomerLocationGuid;
+            projectAssociation.CustomerId = association.CustomerLocationGuid.ToUpperInvariant();
             projectAssociation.CustomerName = association.CustomerLocationName;
-            projectAssociation.Id = association.Id;
+            projectAssociation.Id = association.Id.ToUpperInvariant();
             return projectAssociation;
         }
         public static RfqProjectUx?ToRfqProjectUx(this RfqProject rfqProject)
@@ -38,5 +39,24 @@
 
             return uxModel;
         }
+        #endregion
+
+        #region CustomerUx Conversion
+        public static CustomerUx? ToCustomerUx(this CustomerGrpc customerGrpc)
+        {
+            if (customerGrpc == null)
+            {
+                return null;
+            }
+
+            CustomerUx customerUx = new CustomerUx();
+            customerUx.Id = customerGrpc.Id?.ToUpperInvariant();
+            customerUx.CustomerBusinessGroupCode = customerGrpc.CustomerBusinessGroupCode;
+            customerUx.CustomerBusinessGroupName = customerGrpc.CustomerBusinessGroupName;
+            customerUx.SEWSEBusinessTeam = customerGrpc.SEWSEBusinessTeam;
+            customerUx.IsActive = customerGrpc.IsActive ?? false;
+            return customerUx;
+        }
+        #endregion
     }
 }

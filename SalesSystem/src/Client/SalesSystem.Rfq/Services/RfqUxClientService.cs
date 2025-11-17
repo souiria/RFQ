@@ -13,7 +13,7 @@ namespace SalesSystem.Rfq.Services
         List<RfqDrawingPartNumber> _RfqDrawingParts;
         List<RfqProject> _RfqProjects;
         List<RfqProjectUx> _RfqProjectUxs;
-        List<CustomerGrpc> _Customers;
+        List<CustomerUx?> _Customers;
         List<RfqReasonGrpc> _Reasons;
         List<CustomerProjectUx> _CustomerProjectAssociations;
         List<string> _QuotationNumbers;
@@ -21,8 +21,8 @@ namespace SalesSystem.Rfq.Services
         // Cached data accessors
         public IReadOnlyCollection<RfqDrawingPartNumber> RfqDrawingParts => _RfqDrawingParts.AsReadOnly();
         public IReadOnlyCollection<RfqProject> RfqProjects => _RfqProjects.AsReadOnly();
-        public IReadOnlyCollection<RfqProjectUx> RfqProjectUxs => _RfqProjectUxs.AsReadOnly();
-        public IReadOnlyCollection<CustomerGrpc> Customers => _Customers.AsReadOnly();
+        public IReadOnlyCollection<RfqProjectUx> RfqProjectUxs => _RfqProjectUxs.AsReadOnly(); // only active projects are here
+        public IReadOnlyCollection<CustomerUx?> Customers => _Customers.AsReadOnly();
         public IReadOnlyCollection<RfqReasonGrpc> Reasons => _Reasons.AsReadOnly();
         public IReadOnlyCollection<CustomerProjectUx> CustomerProjectAssociations => _CustomerProjectAssociations.AsReadOnly();
         public IReadOnlyCollection<string> QuotationNumbers => _QuotationNumbers.AsReadOnly();
@@ -47,7 +47,12 @@ namespace SalesSystem.Rfq.Services
             _Customers = new();
             _Reasons = new();
             _CustomerProjectAssociations = new();
-            _QuotationNumbers= new();
+            _QuotationNumbers= new()
+            {
+                "SEWS-25-025-005678",
+                "SEWS-25-025-005688",
+                "SEWS-25-025-005692"
+            };
             _RfqDrawingParts= new();
         }
         #endregion
@@ -88,12 +93,18 @@ namespace SalesSystem.Rfq.Services
 
                 GetAllRfqProjectGrpcResponse response = await _Client.GetAllRfqProjectGrpcAsync(request, cancellationToken: timeoutCts.Token);
 
+                // dto list
                 _RfqProjects.Clear();
                 _RfqProjects.AddRange(response.Projects);
-
+                // ux list
                 _RfqProjectUxs.Clear();
                 foreach (RfqProject? rfqProject in _RfqProjects)
                 {
+                    if(rfqProject.IsActive.HasValue && !rfqProject.IsActive.Value)
+                    {
+                        continue; // skip inactive projects
+                    }
+
                     RfqProjectUx? uxModel = rfqProject.ToRfqProjectUx();
                     if (null != uxModel)
                     {
@@ -186,7 +197,7 @@ namespace SalesSystem.Rfq.Services
 
                 GetCustomersByUserIdGrpcResponse response = await _Client.GetCustomersByUserIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
                 _Customers.Clear();
-                List<CustomerGrpc> orderedCustomers = response.Customers.OrderBy(x => x.CustomerBusinessGroupName).ToList();
+                List<CustomerUx?> orderedCustomers = response.Customers.Select(x => x.ToCustomerUx()).OrderBy(x => x?.CustomerBusinessGroupName).ToList();
                 _Customers.AddRange(orderedCustomers);
                 
                 return _Customers.Count;
@@ -356,7 +367,7 @@ namespace SalesSystem.Rfq.Services
 
                 request.RowId = rowId;
 
-              RfqCrudResponse response = await _Client.DeleteRfqProjectByRowIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
+                RfqCrudResponse response = await _Client.DeleteRfqProjectByRowIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
 
                 return response;
             }

@@ -23,7 +23,7 @@
     {
         <MudDataGrid T="RfqProjectUx"
                      @ref="@_DataGrid"
-                     Items="@_RfqProjects"
+                     Items="@RfqUxClientService.RfqProjectUxs"
                      QuickFilter="@QuickFilter"
                      Bordered="true"
                      Dense="true"
@@ -95,7 +95,7 @@
 
 @code {
     MudDataGrid<RfqProjectUx> _DataGrid = null!;
-    IEnumerable<RfqProjectUx> _RfqProjects = new List<RfqProjectUx>();
+    // IEnumerable<RfqProjectUx> _RfqProjects = new List<RfqProjectUx>();
     string? _SearchString = string.Empty;
 
     [Parameter] public Guid? UserId { get; set; }
@@ -119,8 +119,8 @@
                 Snackbar.Add("No RFQ projects found.", Severity.Info);
             }
             // FIX: Assign the correct type directly, do not use Concat (Concat does not mutate the original list)
-            _RfqProjects = RfqUxClientService.RfqProjectUxs.Cast<RfqProjectUx>().ToList();
-            Logger.LogInformation($"Loaded {count} RFQ projects");
+            // _RfqProjects = RfqUxClientService.RfqProjectUxs.Cast<RfqProjectUx>().ToList();
+            Logger.LogInformation($"Loaded {RfqUxClientService.RfqProjectUxs.Count} RFQ projects");
         }
         catch (Exception ex)
         {

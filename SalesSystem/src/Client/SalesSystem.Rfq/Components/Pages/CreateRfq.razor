@@ -29,7 +29,7 @@
                                AdornmentColor="Color.Primary">
                         @foreach (var customer in RfqUxClientService.Customers)
                         {
-                            <MudSelectItem Value="@customer.CustomerBusinessGroupName">@customer.CustomerBusinessGroupName</MudSelectItem>
+                            <MudSelectItem Value="@customer?.CustomerBusinessGroupName">@customer?.CustomerBusinessGroupName</MudSelectItem>
                         }
                     </MudSelect>
                     <MudSelect T="string"
@@ -184,7 +184,7 @@
     {
         customerValue = value;
 
-        var customer = RfqUxClientService.Customers.FirstOrDefault(c => c.CustomerBusinessGroupName == value);
+        var customer = RfqUxClientService.Customers.FirstOrDefault(c => c?.CustomerBusinessGroupName == value);
         Logger.GenericLogInformation($"CreateRfq.OnCustomerValueChanged - Customer changed to {customer?.Id} - {customer?.CustomerBusinessGroupName}");
 
         try
@@ -202,12 +202,16 @@
     {
         if (!string.IsNullOrWhiteSpace(customerValue))
         {
-            RfqModule.CustomerGrpc? customer = RfqUxClientService.Customers.FirstOrDefault(c => c.CustomerBusinessGroupName == customerName);
+            CustomerUx? customer = RfqUxClientService.Customers.FirstOrDefault(c => c?.CustomerBusinessGroupName == customerName);
 
-            if (customer != null)
+            if (customer != null && Guid.TryParse(customer.Id, out Guid customerId))
             {
-                await RfqUxClientService.GetProjectAssociationsByCustomerIdAsync(customer.Id);
+                await RfqUxClientService.GetProjectAssociationsByCustomerIdAsync(customerId.ToString());
                 StateHasChanged();
+            }
+            else
+            {
+                Logger.GenericLogInformation($"CreateRfq.GetProjectAssociationsByCustomerName - Customer not found or invalid ID for '{customerName}'");
             }
         }
     }
@@ -281,7 +285,7 @@
                 return;
             }
 
-            RfqModule.CustomerGrpc? customer = RfqUxClientService.Customers.FirstOrDefault(c => c.CustomerBusinessGroupName == customerValue);
+            CustomerUx? customer = RfqUxClientService.Customers.FirstOrDefault(c => c?.CustomerBusinessGroupName == customerValue);
             if (customer is null)
             {
                 progressState.SetError("Validation failed: Customer not found", "Selected customer not found.");

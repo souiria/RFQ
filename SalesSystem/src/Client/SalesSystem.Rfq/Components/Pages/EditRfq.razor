@@ -51,7 +51,7 @@ else
                                    AdornmentColor="Color.Primary">
                             @foreach (var customer in RfqUxClientService.Customers)
                             {
-                                <MudSelectItem Value="@customer.Id">@customer.CustomerBusinessGroupName</MudSelectItem>
+                                <MudSelectItem Value="@customer?.Id">@customer?.CustomerBusinessGroupName</MudSelectItem>
                             }
                         </MudSelect>
                         <MudSelect T="int?"
@@ -82,7 +82,7 @@ else
                                    AdornmentColor="Color.Primary">
                             @foreach (var association in RfqUxClientService.CustomerProjectAssociations)
                             {
-                                <MudSelectItem Value="@association.Id">@association.ProjectName - @association.CustomerName</MudSelectItem>
+                                <MudSelectItem Value="@association.ProjectId">@association.ProjectName - @association.CustomerName</MudSelectItem>
                             }
                         </MudSelect>
                         <MudNumericField @bind-Value="@RfqProject.VehicleVolume"
@@ -94,6 +94,20 @@ else
 
                 <MudPaper Class="pa-4">
                     <MudStack>
+@*                         <MudSelect T="string"
+                                   Value="quotationValue"
+                                   For="@(() => quotationValue)"
+                                   ValueChanged="OnQuotationValueChanged"
+                                   Label="Quotation Number"
+                                   Placeholder="Please Select"
+                                   Disabled="uploadedSuccessfully"
+                                   AdornmentIcon="@Icons.Material.Filled.RequestQuote"
+                                   AdornmentColor="Color.Primary">
+                            @foreach (string quotationNumber in RfqUxClientService.QuotationNumbers)
+                            {
+                                <MudSelectItem Value="@quotationNumber">@quotationNumber</MudSelectItem>
+                            }
+                        </MudSelect> *@
                         <MudDatePicker Label="Date Format"
                                        @bind-Date="RfqProject.RfqResponseDeadline"
                                        DateFormat="dd.MM.yyyy" />
@@ -158,6 +172,7 @@ else
     FileCards? componentFileCards;
     List<FileObjectUx> FileObjects { get; set; } = new List<FileObjectUx>();
 
+
     // Form related
     bool IsLoading { get; set; } = true;
     RfqProjectUx? RfqProject { get; set; }
@@ -206,6 +221,21 @@ else
                 NavigationManager.NavigateTo("/");
                 return;
             }
+            else
+            {
+                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Retrieved RFQ Project with Id {rfqProject.RowId} - {rfqProject.RfqNumber} - Customer {rfqProject.CustomerBusinessUnitGuid} / {rfqProject.CustomerBusinessGroupCode} - Project {rfqProject.ProjectGuid} / {rfqProject.ProjectName}");
+            }
+
+            if (RfqUxClientService.CustomerProjectAssociations.Count == 0)
+            {
+                Func<string, Task<int>> stringAsyncService = RfqUxClientService.GetProjectAssociationsByCustomerIdAsync;
+                (long timing, int count) = await stringAsyncService.TimeAsyncStringIntService(rfqProject.CustomerBusinessUnitGuid);
+                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded {count} customerProjectAssociations for CustomerBusinessUnitGuid {rfqProject.CustomerBusinessUnitGuid} in {timing}ms");
+                // foreach (var item in RfqUxClientService.CustomerProjectAssociations)
+                // {
+                //     Logger.GenericLogInformation($"{item.Id}, {item.ProjectId}, {item.ProjectName}, {item.CustomerId}, {item.CustomerName}");
+                // }
+            }
 
             RfqProject = rfqProject.ToRfqProjectUx();
             if (RfqProject == null)
@@ -218,7 +248,7 @@ else
             else
             {
                 IsLoading = false;
-                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded RFQ Project with Id {RfqProject.RowId} - {RfqProject.RfqNumber}");
+                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded RFQ Project with Id {RfqProject.RowId} - {RfqProject.RfqNumber} {RfqProject.ProjectId}");
             }
         }
         catch (Exception ex)
@@ -234,7 +264,7 @@ else
     {
         RfqProject!.CustomerBusinessUnitId = value;
 
-        var customer = RfqUxClientService.Customers.FirstOrDefault(c => c.CustomerBusinessGroupName == value);
+        var customer = RfqUxClientService.Customers.FirstOrDefault(c => c?.CustomerBusinessGroupName == value);
         if (customer == null)
         {
             Logger.GenericLogInformation($"EditRfq.OnCustomerValueChanged - Customer with name '{value}' not found");
@@ -254,16 +284,27 @@ else
         StateHasChanged();
     }
 
-    async Task GetProjectAssociationsByCustomerName(string value)
+    async Task GetProjectAssociationsByCustomerName(string? customerBusinessGroupName)
     {
         if (!string.IsNullOrWhiteSpace(RfqProject!.CustomerBusinessUnitId))
         {
-            RfqModule.CustomerGrpc? customer = RfqUxClientService.Customers.FirstOrDefault(c => c.Id == value);
+            // CustomerUx? customer = RfqUxClientService.Customers.FirstOrDefault(c => c.Id == value);
 
-            if (customer != null)
+            // if (customer != null)
+            // {
+            //     await RfqUxClientService.GetProjectAssociationsByCustomerIdAsync(customer.Id);
+            //     StateHasChanged();
+            // }
+            CustomerUx? customer = RfqUxClientService.Customers.FirstOrDefault(c => c?.CustomerBusinessGroupName == customerBusinessGroupName);
+
+            if (customer != null && Guid.TryParse(customer.Id, out Guid customerId))
             {
-                await RfqUxClientService.GetProjectAssociationsByCustomerIdAsync(customer.Id);
+                await RfqUxClientService.GetProjectAssociationsByCustomerIdAsync(customerId.ToString());
                 StateHasChanged();
+            }
+            else
+            {
+                Logger.GenericLogInformation($"CreateRfq.GetProjectAssociationsByCustomerName - Customer not found or invalid ID for '{customerBusinessGroupName}'");
             }
         }
     }
