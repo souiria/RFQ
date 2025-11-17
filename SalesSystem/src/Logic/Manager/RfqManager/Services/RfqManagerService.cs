@@ -380,43 +380,6 @@
                 throw;
             }
         }
-
-        public async Task<GetRfqProjectByIdGrpcResponse> GetRfqProjectByIdGrpc0000(GetRfqProjectByIdGrpcRequest request)
-        {
-            try
-            {
-                await Task.Delay(1);
-
-                GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-                grpcRequestParameter.RequestType = 2;
-
-                RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
-                rfqProjectRequest.GrpcRequestParameter = grpcRequestParameter;
-
-                rfqProjectRequest.RowId = request.RowId;
-
-                ListRfqProjectGrpc rfqProjects = _RfqClient.ReadRfqProjectGrpc(rfqProjectRequest);
-
-                GetRfqProjectByIdGrpcResponse response = new GetRfqProjectByIdGrpcResponse();
-
-                int projectCount = rfqProjects.RfqProjects.Count;
-                bool hasProjects = 0 < projectCount;
-
-                if (hasProjects)
-                {
-                    RfqProjectGrpc grpcProject = rfqProjects.RfqProjects.First();
-                    RfqProject mappedProject = grpcProject.ToRfqProject();
-                    response.Project = mappedProject;
-                }
-
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _Logger.GenericLogError($"Error fetching RFQ project by RowId: {request.RowId}", ex);
-                throw;
-            }
-        }
         public async Task<GetRfqProjectByIdGrpcResponse> GetRfqProjectByIdGrpc(GetRfqProjectByIdGrpcRequest request)
         {
             try
