@@ -331,15 +331,6 @@
             {
                 await Task.Delay(1);
 
-                //GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-                //grpcRequestParameter.RequestType = 2;
-
-                //RfqDrawingPartNumbersGrpcRequest rfqDrawingRequest = new RfqDrawingPartNumbersGrpcRequest();
-                //rfqDrawingRequest.GrpcRequestParameter = grpcRequestParameter;
-                //rfqDrawingRequest.RfqId = request.RfqId;
-
-                //ListRfqDrawingPartNumbersGrpc rfqParts = _RfqClient.ReadRfqDrawingPartNumbersGrpc(rfqDrawingRequest);
-
                 RfqFilterRequest grpcRequestParameter = new RfqFilterRequest();
                 grpcRequestParameter.DatabaseList = "RfqProjectGrpc";
                 grpcRequestParameter.FilterExpression = $"RfqId != null && RfqId == {request.RfqId}";
