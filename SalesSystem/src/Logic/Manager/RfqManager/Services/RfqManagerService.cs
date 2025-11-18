@@ -300,24 +300,19 @@
             {
                 await Task.Delay(1);
 
-                GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-                grpcRequestParameter.RequestType = 2;
-
-                RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
-                rfqProjectRequest.GrpcRequestParameter = grpcRequestParameter;
-
-                rfqProjectRequest.RowId = request.RowId;
-
-                ListRfqProjectGrpc rfqProjects = _RfqClient.ReadRfqProjectGrpc(rfqProjectRequest);
+                RfqFilterRequest grpcRequestParameter = new RfqFilterRequest();
+                grpcRequestParameter.DatabaseList = "RfqProjectGrpc";
+                grpcRequestParameter.FilterExpression = $"RowId != null && RowId == {request.RowId}";
+                RfqFilterResponse rfqProjects = _RfqClient.FilterRfqGrpc(grpcRequestParameter);
 
                 GetRfqProjectByIdGrpcResponse response = new GetRfqProjectByIdGrpcResponse();
 
-                int projectCount = rfqProjects.RfqProjects.Count;
+                int projectCount = rfqProjects.ListRfqProjectGrpc.RfqProjects.Count;
                 bool hasProjects = 0 < projectCount;
 
                 if (hasProjects)
                 {
-                    RfqProjectGrpc grpcProject = rfqProjects.RfqProjects.First();
+                    RfqProjectGrpc grpcProject = rfqProjects.ListRfqProjectGrpc.RfqProjects.First();
                     RfqProject mappedProject = grpcProject.ToRfqProject();
                     response.Project = mappedProject;
                 }
@@ -336,24 +331,29 @@
             {
                 await Task.Delay(1);
 
-                GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-                grpcRequestParameter.RequestType = 2;
+                //GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+                //grpcRequestParameter.RequestType = 2;
 
-                RfqDrawingPartNumbersGrpcRequest rfqDrawingRequest = new RfqDrawingPartNumbersGrpcRequest();
-                rfqDrawingRequest.GrpcRequestParameter = grpcRequestParameter;
-                rfqDrawingRequest.RfqId = request.RfqId;
+                //RfqDrawingPartNumbersGrpcRequest rfqDrawingRequest = new RfqDrawingPartNumbersGrpcRequest();
+                //rfqDrawingRequest.GrpcRequestParameter = grpcRequestParameter;
+                //rfqDrawingRequest.RfqId = request.RfqId;
 
-                ListRfqDrawingPartNumbersGrpc rfqParts = _RfqClient.ReadRfqDrawingPartNumbersGrpc(rfqDrawingRequest);
+                //ListRfqDrawingPartNumbersGrpc rfqParts = _RfqClient.ReadRfqDrawingPartNumbersGrpc(rfqDrawingRequest);
+
+                RfqFilterRequest grpcRequestParameter = new RfqFilterRequest();
+                grpcRequestParameter.DatabaseList = "RfqProjectGrpc";
+                grpcRequestParameter.FilterExpression = $"RfqId != null && RfqId == {request.RfqId}";
+                RfqFilterResponse rfqParts = _RfqClient.FilterRfqGrpc(grpcRequestParameter);
 
                 GetRfqDrawingPartNumbersByRfqIdGrpcResponse response = new GetRfqDrawingPartNumbersByRfqIdGrpcResponse();
 
-                int partCount = rfqParts.RfqDrawingPartNumbers.Count;
+                int partCount = rfqParts.ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Count;
                 bool hasParts = !(partCount <= 0);
                 if (hasParts)
                 {
                     List<RfqDrawingPartNumber> mappedParts = new List<RfqDrawingPartNumber>();
 
-                    foreach (RfqDrawingPartNumbersGrpc grpcPart in rfqParts.RfqDrawingPartNumbers)
+                    foreach (RfqDrawingPartNumbersGrpc grpcPart in rfqParts.ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers)
                     {
                         RfqDrawingPartNumber mappedPart = grpcPart.ToRfqDrawingPartNumber();
                         mappedParts.Add(mappedPart);

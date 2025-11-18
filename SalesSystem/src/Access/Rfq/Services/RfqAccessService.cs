@@ -602,6 +602,14 @@
 
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
+                foreach(RfqDrawingPartNumbersGrpc part in request.RfqDrawingPartNumbersGrpcsToCreate)
+                {
+                    if(_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Any(x => x.OriginalPartNumber == part.OriginalPartNumber))
+                    {
+                        request.RfqDrawingPartNumbersGrpcsToCreate.Remove(part);
+                    }
+                }
+
                 ICommandHandler<RfqDrawingPartNumberCommand, List<DbRfqDrawingPartNumber>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<RfqDrawingPartNumberCommand, List<DbRfqDrawingPartNumber>>>();
                 RfqDrawingPartNumberCommand command = new RfqDrawingPartNumberCommand(CommandType.Create, request.RfqDrawingPartNumbersGrpcsToCreate);
                 Result<List<DbRfqDrawingPartNumber>> result = await handler.Handle(command, cancellationToken);
