@@ -192,7 +192,7 @@ message RfqDrawingPartNumbersGrpcRequest {
   repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbersGrpcsToCreate = 2;
   repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbersGrpcsToUpdate = 3;
   repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbersGrpcsToDelete = 4;
-   int64 RfqId = 5;
+  int64 RfqId = 5;
 }
 
 message RfqDrawingPartNumbersGrpc {
@@ -1351,4 +1351,35 @@ message RfqFilterResponse {
 	ListRfqNotesGrpc ListRfqNotesGrpc = 3;
 	ListRfqReasonGrpc ListRfqReasonGrpc = 4;
 	ListRfqDrawingPartNumbersGrpc ListRfqDrawingPartNumbersGrpc = 5;
+	ListDsiBendGrpc ListDsiBendGrpc = 6;
+	ListDsiBranchConfigurationGrpc ListDsiBranchConfigurationGrpc = 7;
+	ListDsiBranchConfigurationBendAssociationGrpc ListDsiBranchConfigurationBendAssociationGrpc = 9;
+	ListDsiBranchInsulationGrpc ListDsiBranchInsulationGrpc = 10;
+	ListDsiBranchInsulationThroughNodeGrpc ListDsiBranchInsulationThroughNodeGrpc = 11;
+	ListDsiCavityMappingGrpc ListDsiCavityMappingGrpc = 12;
+	ListDsiCentreStripGrpc ListDsiCentreStripGrpc = 13;
+	ListDsiCircuitOptionGrpc ListDsiCircuitOptionGrpc = 14;
+	ListDsiComponentGrpc ListDsiComponentGrpc = 15;
+	ListDsiCompositeDetailGrpc ListDsiCompositeDetailGrpc = 16;
+	ListDsiCompositeDetailCircuitOptionAssociationGrpc ListDsiCompositeDetailCircuitOptionAssociationGrpc = 17;
+	ListDsiCompositeOptionGrpc ListDsiCompositeOptionGrpc = 18;
+	ListDsiHarnessGrpc ListDsiHarnessGrpc = 19;
+	ListDsiHarnessScopeGrpc ListDsiHarnessScopeGrpc = 20;
+	ListDsiHarnessScopeScopeAssociationGrpc ListDsiHarnessScopeScopeAssociationGrpc = 21;
+	ListDsiManualBomQuantityGrpc ListDsiManualBomQuantityGrpc = 22;
+	ListDsiMidWireComponentGrpc ListDsiMidWireComponentGrpc = 23;
+	ListDsiModuleChildDetailGrpc ListDsiModuleChildDetailGrpc = 24;
+	ListDsiModuleCompatibilityGrpc ListDsiModuleCompatibilityGrpc = 25;
+	ListDsiMulticoreSpecificationGrpc ListDsiMulticoreSpecificationGrpc = 26;
+	ListDsiPinMappingGrpc ListDsiPinMappingGrpc = 27;
+	ListDsiPinMappingCavityMappingAssociationGrpc ListDsiPinMappingCavityMappingAssociationGrpc = 28;
+	ListDsiScopeGrpc ListDsiScopeGrpc = 29;
+	ListDsiSupplierGrpc ListDsiSupplierGrpc = 30;
+	ListDsiTransformedCompositeDetailGrpc ListDsiTransformedCompositeDetailGrpc = 31;
+	ListDsiTransformedHarnessGrpc ListDsiTransformedHarnessGrpc = 32;
+	ListDsiTransformedModuleChildDetailGrpc ListDsiTransformedModuleChildDetailGrpc = 33;
+	ListDsiUnitOfMeasureGrpc ListDsiUnitOfMeasureGrpc = 34;
+	ListDsiWireMulticoreMarkerGrpc ListDsiWireMulticoreMarkerGrpc = 35;
+	ListDsiWireSpecificationGrpc ListDsiWireSpecificationGrpc = 36;
+	ListDsiWireThroughNodeGrpc ListDsiWireThroughNodeGrpc = 37;
 }

@@ -921,7 +921,7 @@
                 case "RfqFilterResponse":
                 RfqFilterRequest rfqRequest = new RfqFilterRequest();
                 rfqRequest.FilterExpression = filterExpression;
-                rfqRequest.DatabaseList = "RfqDrawingPartNumberGrpc";
+                rfqRequest.DatabaseList = "RfqDrawingPartNumbersGrpc";
                 RfqFilterResponse filterRfqResponse = _RfqClient.FilterRfqGrpc(rfqRequest);
                 return (T)(object)filterRfqResponse;
                 default:

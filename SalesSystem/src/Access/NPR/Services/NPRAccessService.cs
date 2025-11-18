@@ -107,9 +107,9 @@
         {
             return await Task.Run(() =>
             {
-                return typeof(T).Name switch
+                return typeof(T).Name.ToUpperInvariant() switch
                 {
-                    "H1NPRViewGrpc" => _H1NPRView.H1NPRViewGrpc.Cast<T>().Where(func).ToList(),
+                    "H1NPRVIEWGRPC" => _H1NPRView.H1NPRViewGrpc.Cast<T>().Where(func).ToList(),
                     _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
                 };
             }, cancellationToken);
