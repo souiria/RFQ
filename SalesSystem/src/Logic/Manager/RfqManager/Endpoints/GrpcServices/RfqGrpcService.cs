@@ -70,7 +70,11 @@
             GetRfqProjectByIdGrpcResponse response = await _RfqManagerService.GetRfqProjectByIdGrpc(request);
             return response;
         }
-
+        public override async Task<GetRfqDrawingPartNumbersByRfqIdGrpcResponse> GetRfqDrawingPartNumbersByRfqIdGrpc(GetRfqDrawingPartNumbersByRfqIdGrpcRequest request,  ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetRfqDrawingPartNumbersByRfqIdGrpc starting");
+            return await _RfqManagerService.GetRfqDrawingPartNumbersByRfqIdGrpc(request);
+        }
         public override async Task<UpdateRfqProjectGrpcResponse> UpdateRfqProjectGrpc(UpdateRfqProjectGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("UpdateRfqProjectGrpc starting");
