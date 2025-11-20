@@ -1,0 +1,151 @@
+@inject RfqUxClientService RfqUxClientService
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@inject ILogger<CreateRfq> Logger
+
+<div class="d-flex flex-column pb-2" style="height: 100%; overflow: hidden;">
+    @if(IsLoading)
+    {
+        <div class="d-flex justify-center align-center flex-grow-1">
+            <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large">
+                <ChildContent>
+                    <MudText Typo="Typo.subtitle2">Loading...</MudText>
+                </ChildContent>
+            </MudProgressCircular>
+        </div>
+    }
+    else
+    {
+        <MudDataGrid T="RfqProjectUx"
+                     @ref="_projectsGrid"
+                     Items="@RfqUxClientService.RfqProjectUxs"
+                     Style="height: 0; min-height: 0; flex: 1 1 auto;"
+                     Dense="true"
+                     FixedHeader="true"
+                     Height="100%"
+                     DragDropColumnReordering="false"
+                     ApplyDropClassesOnDragStarted="false"
+                     ColumnResizeMode="ResizeMode.Column"
+                     SortMode="SortMode.Multiple"
+                     Hideable="false"
+                     Filterable="false"
+                     Groupable="false"
+                     QuickFilter="@QuickFilter"
+                     ReadOnly="true"
+                     Bordered="true"
+                     ShowMenuIcon="true">
+            <ToolBarContent>
+                <MudTooltip Text="Full text search">
+                    <MudTextField @bind-Value="ProjectFilter" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                                  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                </MudTooltip>
+                <MudSpacer />
+                <MudTooltip Text="Refresh Dataset">
+                    <MudIconButton Size="Size.Small"
+                                   Color="Color.Primary"
+                                   Icon="@Icons.Material.Filled.Refresh"
+                                   aria-label="exportall"
+                                   @onclick="@(() => Refresh())" />
+                </MudTooltip>
+                <span>&nbsp;</span>
+            </ToolBarContent>
+            <Columns>
+                <TemplateColumn CellClass="d-flex justify-end" StickyLeft="true">
+                    <CellTemplate>
+                        <MudStack Row>
+                            <MudIconButton Size="Size.Small"
+                                           Icon="@Icons.Material.Filled.Info"
+                                           aria-label="info"
+                                           OnClick="@(() => ShowInfo(context.Item))" />
+                            <MudIconButton Size="Size.Small"
+                                           Icon="@Icons.Material.Filled.Edit"
+                                           aria-label="edit"
+                                           OnClick="@(() => ShowEdit(context.Item))" />
+                            <MudIconButton Size="Size.Small"
+                                           Icon="@Icons.Material.Filled.Delete"
+                                           aria-label="delete"
+                                           OnClick="@(() => ShowDelete(context.Item))" />
+
+                        </MudStack>
+                    </CellTemplate>
+                </TemplateColumn>
+                <PropertyColumn Property="x => x.RowId" Title="Id" StickyLeft="true" />
+                <PropertyColumn Property="x => x.RfqNumber" Title="Rfq Number" />
+                <PropertyColumn Property="x => x.VehicleVolume" Title="Vehicle Volume" />
+                <PropertyColumn Property="x => x.RfqReason" Title="Rfq Reason" />
+            </Columns>
+        </MudDataGrid>
+    }
+</div>
+
+@code {
+    bool IsLoading { get; set; }
+    string ProjectFilter { get; set; }
+
+    MudDataGrid<RfqProjectUx> _projectsGrid { get; set; } = null!;
+
+    [Parameter] public Guid? UserId { get; set; }   
+
+    public RecentRfqs()
+    {
+        ProjectFilter = string.Empty;
+        IsLoading = true;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Refresh();
+    }
+    
+    // grid event handlers
+    private async Task ShowInfo(RfqProjectUx project)
+    {
+        await Task.Delay(0);
+        Snackbar.Add($"Info for {project.RowId}: {project.RfqNumber}", Severity.Info);
+    }
+
+    private async Task ShowDelete(RfqProjectUx project)
+    {
+        await Task.Delay(0);
+        Snackbar.Add($"Delete for {project.RowId}: {project.RfqNumber}", Severity.Error);
+    }
+
+    private async Task ShowEdit(RfqProjectUx project)
+    {
+        await Task.Delay(0);
+        // Snackbar.Add($"Edit for {project.RowId}: {project.RfqNumber}", Severity.Warning);
+        Navigation.NavigateTo($"/editRfq/{UserId}/{project.RowId}");
+    }
+
+    // quick filter - filter globally across multiple columns with the same input
+    Func<RfqProjectUx, bool> QuickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(ProjectFilter))
+            return true;
+
+        if (x.RfqNumber.Contains(ProjectFilter, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    };
+
+    async Task Refresh()
+    {
+        ProjectFilter = "";
+        IsLoading = true;
+        Logger.GenericLogInformation($"RfqUxClientService.RfqProject loading...");
+        var stopWatch = System.Diagnostics.Stopwatch.StartNew();
+        stopWatch.Start();
+        int count = await RfqUxClientService.GetAllRfqProjectAsync();
+        if (count <= 0)
+        {
+            Snackbar.Add("Failed to load RfqProject.", Severity.Error);
+            IsLoading = false;
+            return;
+        }
+        stopWatch.Stop();
+        Logger.GenericLogInformation($"RfqUxClientService.RfqProject loaded in {stopWatch.ElapsedMilliseconds} ms");
+        IsLoading = false;
+    }
+}

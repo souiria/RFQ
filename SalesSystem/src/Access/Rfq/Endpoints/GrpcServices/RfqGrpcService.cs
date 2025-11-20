@@ -455,8 +455,7 @@ namespace Rfq.Endpoints.GrpcServices
                 return await _RfqAccessService.GetAllRfqReasons(context.CancellationToken);
                 default:
                 {
-                    Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
-                    throw new RpcException(status);
+                    return await _RfqAccessService.GetAllRfqReasons(context.CancellationToken);
                 }
             }
         }

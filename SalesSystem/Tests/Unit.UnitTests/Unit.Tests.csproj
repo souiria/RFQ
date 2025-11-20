@@ -14,7 +14,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Grpc.Core.Testing" Version="2.46.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.7" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.9" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="NUnit" Version="4.2.2" />
@@ -26,11 +28,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Access\CDb\CDb.csproj" />
     <ProjectReference Include="..\..\src\Access\Emacs\Emacs.csproj" />
     <ProjectReference Include="..\..\src\Access\Master\Master.csproj" />
     <ProjectReference Include="..\..\src\Access\NPR\NPR.csproj" />
     <ProjectReference Include="..\..\src\Access\Rfq\Rfq.csproj" />
     <ProjectReference Include="..\..\src\Access\SFS\SFS.csproj" />
+    <ProjectReference Include="..\..\src\Utilities\SharedModels\SharedModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>

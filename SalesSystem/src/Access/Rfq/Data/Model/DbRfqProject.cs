@@ -33,5 +33,24 @@
         { get; set; }
         public bool IsActive 
         { get; set; } = true;
+        [NotMapped]
+        public string? RfqReasonNamr
+        { get; set; }
+   
+        [NotMapped]
+        public string? CustomerBusinessGroupCode
+        { get; set; }
+
+        [NotMapped]
+        public string CustomerLocation 
+        { get; set; } = "Default Location";
+
+        [NotMapped]
+        public string Project
+        { get; set; } = "Default Project";
+
+        [NotMapped]
+        public string CarModel
+        { get; set; } = "Default Car Model";
     }
 }

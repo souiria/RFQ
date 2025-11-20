@@ -78,6 +78,13 @@
             project.RfqResponseDeadline = rfqProjectGrpc.RfqResponseDeadline;
             project.CarModelGuid = rfqProjectGrpc.CarModelGuid;
             project.VehicleVolume = rfqProjectGrpc.VehicleVolume ??0;
+            project.CreatedDate = rfqProjectGrpc.CreatedDate;
+            project.RfqReasonName = rfqProjectGrpc.RfqReasonName;
+            project.IsActive = rfqProjectGrpc.IsActive; 
+            project.ProjectName = rfqProjectGrpc.ProjectName;
+            project.CustomerBusinessGroupCode= rfqProjectGrpc.CustomerBusinessGroupCode;
+            project.CustomerLocationName = rfqProjectGrpc.CustomerLocationName;
+            project.CarModelName = rfqProjectGrpc.CarModelName;
             return project;
         }
         public static RfqDrawingPartNumber ToRfqDrawingPartNumber(this RfqDrawingPartNumbersGrpc rfqPartGrpc)
