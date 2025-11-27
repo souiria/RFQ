@@ -122,13 +122,60 @@ else
 
                 @* Controls  *@
                 <MudPaper Class="d-flex align-end pa-4">
-                    <MudButton Color="Color.Primary"
-                               OnClick="@SubmitDataAsync"
-                               Variant="Variant.Filled"
-                               Size="Size.Small"
-                               FullWidth="false">
-                        Upload
-                    </MudButton>
+                    <MudStack Row>
+                        <MudItem>
+                            <MudStack>
+                                <MudButton Color="Color.Info"
+                                           OnClick="@SearchAllUnmatchedPartsAsync"
+                                           Variant="Variant.Filled"
+                                           Size="Size.Small"
+                                           StartIcon="@Icons.Material.Filled.TravelExplore"
+                                           FullWidth="false"
+                                           Disabled="@(UnmatchedParts.Count == 0 || _isSearchingAll)">
+                                    Search All
+                                </MudButton>
+                                <MudButton Color="Color.Secondary"
+                                           OnClick="@FlipAllMatchedPartsAsync"
+                                           Variant="Variant.Filled"
+                                           Size="Size.Small"
+                                           StartIcon="@Icons.Material.Filled.SwapVert"
+                                           FullWidth="false"
+                                           Disabled="@(MatchedParts.Count == 0)">
+                                    Flip All
+                                </MudButton>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem>
+                            <MudStack>
+                                <MudButton Color="Color.Warning"
+                                           OnClick="@ReloadDataAsync"
+                                           Variant="Variant.Filled"
+                                           Size="Size.Small"
+                                           StartIcon="@Icons.Material.Filled.Repeat"
+                                           FullWidth="false">
+                                    Reload
+                                </MudButton>
+                                <MudButton Color="Color.Primary"
+                                           OnClick="@RefreshDataAsync"
+                                           Variant="Variant.Filled"
+                                           Size="Size.Small"
+                                           StartIcon="@Icons.Material.Filled.Refresh"
+                                           FullWidth="false">
+                                    Refresh
+                                </MudButton>
+                                <MudButton Color="Color.Primary"
+                                           OnClick="@UploadFilesAsync"
+                                           Variant="Variant.Filled"
+                                           Disabled="FileObjects.Count==0"
+                                           Size="Size.Small"
+                                           StartIcon="@Icons.Material.Filled.Update"
+                                           FullWidth="false">
+                                    Upload
+                                </MudButton>
+                            </MudStack>
+                        </MudItem>
+                    </MudStack>
+
                 </MudPaper>
 
             </MudPaper>
@@ -142,20 +189,24 @@ else
                         <PartNumberSection PartNumbers="@UnmatchedParts"
                                            Label="Unmatched Parts"
                                            BackgroundColor="var(--mud-palette-warning)"
-                                           InitiallyExpanded="true" />
+                                           InitiallyExpanded="true"
+                                           OnPartNumberDeleted="@HandlePartNumberDeleted"
+                                           OnPartNumberUpdated="@HandlePartNumberUpdated" />
                         @* Separator *@
                         <MudDivider Style="margin: 4px 0;" />
                         @* Matched Parts Section *@
                         <PartNumberSection PartNumbers="@MatchedParts"
                                            Label="Matched Parts"
                                            BackgroundColor="var(--mud-palette-success)"
-                                           InitiallyExpanded="false" />
+                                           InitiallyExpanded="false"
+                                           OnPartNumberDeleted="@HandlePartNumberDeleted"
+                                           OnPartNumberUpdated="@HandlePartNumberUpdated" />
                     </div>
                 </MudTabPanel>
                 <MudTabPanel Text="BOM Files">
                     <div class="d-flex flex-column" sDrawingtyle="height: calc(100vh - 364px)Drawing; overflow: hidden;">
                         @* File Cards Section *@
-  Drawing                      <FileCards @rDrawingef="componentFileCards"
+                        <FileCards @rDrawingef="componentFileCards"
                                    FileObjects="FileObjects"
                                    OnRemoveFile="HandleFileRemoval" />
                     </div>
@@ -172,6 +223,9 @@ else
     // FileCards? componentFileCards;
     List<FileObjectUx> FileObjects { get; set; } = new List<FileObjectUx>();
 
+    // Search All state tracking
+    private bool _isSearchingAll = false;
+    private CancellationTokenSource? _searchCancellationTokenSource;
 
     // Form related
     bool IsLoading { get; set; } = true;
@@ -180,9 +234,9 @@ else
     [Parameter] public Guid? UserId { get; set; }
     [Parameter] public long RfqProjectId { get; set; }
 
-    // Part numbers data from test list
-    IList<RfqDrawingPartNumberUx?>? MatchedParts = new List<RfqDrawingPartNumberUx?>();
-    IList<RfqDrawingPartNumberUx?>? UnmatchedParts = new List<RfqDrawingPartNumberUx?>();
+    // Part numbers data - changed to List for mutability
+    List<RfqDrawingPartNumberUx?> MatchedParts = new List<RfqDrawingPartNumberUx?>();
+    List<RfqDrawingPartNumberUx?> UnmatchedParts = new List<RfqDrawingPartNumberUx?>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -197,68 +251,7 @@ else
 
         try
         {
-            if (RfqUxClientService.Customers.Count == 0)
-            {
-                Func<Guid, Task<int>> guidAsyncService = RfqUxClientService.GetCustomersByUserIdAsync;
-                (long timing, int count) = await guidAsyncService.TimeAsyncGuidIntService((Guid)UserId!);
-                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded {count} customers for UserId {UserId} in {timing}ms");
-            }
-
-            if (RfqUxClientService.Reasons.Count == 0)
-            {
-                Func<Task<int>> guidAsyncService = RfqUxClientService.GetRfqReasonsAsync;
-                (long timing, int count) = await guidAsyncService.TimeAsyncVoidIntService();
-                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded {count} reasons in {timing}ms");
-            }
-
-            // get the project
-            var rfqProject = await RfqUxClientService.GetRfqProjectByIdAsync(RfqProjectId);
-            if (rfqProject == null)
-            {
-                Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-                Snackbar.Add($"RFQ Project with Id {RfqProjectId} not found", Severity.Error);
-                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - RFQ Project with Id {RfqProjectId} not found");
-                NavigationManager.NavigateTo("/");
-                return;
-            }
-            else
-            {
-                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Retrieved RFQ Project with Id {rfqProject.RowId} - {rfqProject.RfqNumber} - Customer {rfqProject.CustomerBusinessUnitGuid} / {rfqProject.CustomerBusinessGroupCode} - Project {rfqProject.ProjectGuid} / {rfqProject.ProjectName}");
-            }
-
-            if (RfqUxClientService.CustomerProjectAssociations.Count == 0)
-            {
-                Func<string, Task<int>> stringAsyncService = RfqUxClientService.GetProjectAssociationsByCustomerIdAsync;
-                (long timing, int count) = await stringAsyncService.TimeAsyncStringIntService(rfqProject.CustomerBusinessUnitGuid);
-                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded {count} customerProjectAssociations for CustomerBusinessUnitGuid {rfqProject.CustomerBusinessUnitGuid} in {timing}ms");
-                // foreach (var item in RfqUxClientService.CustomerProjectAssociations)
-                // {
-                //     Logger.GenericLogInformation($"{item.Id}, {item.ProjectId}, {item.ProjectName}, {item.CustomerId}, {item.CustomerName}");
-                // }
-            }
-
-            RfqProject = rfqProject.ToUx();
-            if (RfqProject == null)
-            {
-                Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-                Snackbar.Add($"Error mapping RFQ Project with Id {RfqProjectId}", Severity.Error);
-                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Error mapping RFQ Project with Id {RfqProjectId}");
-                NavigationManager.NavigateTo("/");
-            }
-            else
-            {
-                IsLoading = false;
-                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded RFQ Project with Id {RfqProject.RowId} - {RfqProject.RfqNumber} {RfqProject.ProjectId}");
-            }
-
-            // get the part numbers
-            int partNumbersCount = await RfqUxClientService.GetRfqDrawingPartNumbersByRfqIdAsync(RfqProjectId);
-            if(partNumbersCount>0)
-            {
-                MatchedParts = RfqUxClientService.RfqDrawingPartNumbers.Where(x => x?.IsExactMatch == true).ToList();
-                UnmatchedParts = RfqUxClientService.RfqDrawingPartNumbers.Where(x => x?.IsExactMatch != true).ToList();
-            }
-
+            await LoadDataAsync();
         }
         catch (Exception ex)
         {
@@ -267,6 +260,72 @@ else
             NavigationManager.NavigateTo("/");
         }
     }
+
+    async Task LoadDataAsync()
+    {
+        if (RfqUxClientService.Customers.Count == 0)
+        {
+            Func<Guid, Task<int>> guidAsyncService = RfqUxClientService.GetCustomersByUserIdAsync;
+            (long timing, int count) = await guidAsyncService.TimeAsyncGuidIntService((Guid)UserId!);
+            Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded {count} customers for UserId {UserId} in {timing}ms");
+        }
+
+        if (RfqUxClientService.Reasons.Count == 0)
+        {
+            Func<Task<int>> guidAsyncService = RfqUxClientService.GetRfqReasonsAsync;
+            (long timing, int count) = await guidAsyncService.TimeAsyncVoidIntService();
+            Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded {count} reasons in {timing}ms");
+        }
+
+        // get the project
+        var rfqProject = await RfqUxClientService.GetRfqProjectByIdAsync(RfqProjectId);
+        if (rfqProject == null)
+        {
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add($"RFQ Project with Id {RfqProjectId} not found", Severity.Error);
+            Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - RFQ Project with Id {RfqProjectId} not found");
+            NavigationManager.NavigateTo("/");
+            return;
+        }
+        else
+        {
+            Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Retrieved RFQ Project with Id {rfqProject.RowId} - {rfqProject.RfqNumber} - Customer {rfqProject.CustomerBusinessUnitGuid} / {rfqProject.CustomerBusinessGroupCode} - Project {rfqProject.ProjectGuid} / {rfqProject.ProjectName}");
+        }
+
+        if (RfqUxClientService.CustomerProjectAssociations.Count == 0)
+        {
+            Func<string, Task<int>> stringAsyncService = RfqUxClientService.GetProjectAssociationsByCustomerIdAsync;
+            (long timing, int count) = await stringAsyncService.TimeAsyncStringIntService(rfqProject.CustomerBusinessUnitGuid);
+            Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded {count} customerProjectAssociations for CustomerBusinessUnitGuid {rfqProject.CustomerBusinessUnitGuid} in {timing}ms");
+            // foreach (var item in RfqUxClientService.CustomerProjectAssociations)
+            // {
+            //     Logger.GenericLogInformation($"{item.Id}, {item.ProjectId}, {item.ProjectName}, {item.CustomerId}, {item.CustomerName}");
+            // }
+        }
+
+        RfqProject = rfqProject.ToUx();
+        if (RfqProject == null)
+        {
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add($"Error mapping RFQ Project with Id {RfqProjectId}", Severity.Error);
+            Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Error mapping RFQ Project with Id {RfqProjectId}");
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            IsLoading = false;
+            Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded RFQ Project with Id {RfqProject.RowId} - {RfqProject.RfqNumber} {RfqProject.ProjectId}");
+        }
+
+        // get the part numbers
+        int partNumbersCount = await RfqUxClientService.GetRfqDrawingPartNumbersByRfqIdAsync(RfqProjectId);
+        if (partNumbersCount > 0)
+        {
+            MatchedParts = RfqUxClientService.RfqDrawingPartNumbers.Where(x => x?.IsMatched == true).ToList();
+            UnmatchedParts = RfqUxClientService.RfqDrawingPartNumbers.Where(x => !x?.IsMatched == true).ToList();
+        }
+    }
+
 
     #region Customer
     async Task OnCustomerValueChanged(string value)
@@ -342,20 +401,327 @@ else
     }
     #endregion
 
-    private async Task SubmitDataAsync()
+    #region Part Number
+    private async Task FlipAllMatchedPartsAsync()
+    {
+        if (MatchedParts.Count == 0)
+        {
+            Snackbar.Add("No matched parts to flip", Severity.Info);
+            Logger.GenericLogInformation("EditRfq.FlipAllMatchedPartsAsync - No matched parts available");
+            return;
+        }
+
+        try
+        {
+            // Show confirmation dialog
+            bool? confirm = await DialogService.ShowMessageBox(
+                "Confirm Flip All",
+                $"Are you sure you want to flip all {MatchedParts.Count} matched part(s) to unmatched? This will set IsExactMatch and IsMatched to false for all matched parts.",
+                yesText: "Flip All",
+                cancelText: "Cancel"
+            );
+
+            if (confirm != true)
+            {
+                Logger.GenericLogInformation("EditRfq.FlipAllMatchedPartsAsync - User cancelled flip operation");
+                return;
+            }
+
+            Logger.GenericLogInformation($"EditRfq.FlipAllMatchedPartsAsync - Flipping {MatchedParts.Count} matched parts");
+
+            // Create a list to hold parts that need to be moved
+            List<RfqDrawingPartNumberUx> partsToFlip = new List<RfqDrawingPartNumberUx>();
+
+            // Update all matched parts
+            foreach (var part in MatchedParts.ToList()) // ToList() to avoid modification during iteration
+            {
+                if (part != null)
+                {
+                    part.IsExactMatch = false;
+                    part.IsMatched = false;
+                    partsToFlip.Add(part);
+
+                    // Update via service
+                    await RfqUxClientService.UpdateRfqDrawingPartNumber(part);
+
+                    Logger.GenericLogInformation($"EditRfq.FlipAllMatchedPartsAsync - Flipped part: {part.OriginalPartNumber}");
+                }
+            }
+
+            // Move all flipped parts from MatchedParts to UnmatchedParts
+            foreach (var part in partsToFlip)
+            {
+                MatchedParts.Remove(part);
+                UnmatchedParts.Add(part);
+            }
+
+            Snackbar.Add($"Successfully flipped {partsToFlip.Count} part(s) to unmatched", Severity.Success);
+            Logger.GenericLogInformation($"EditRfq.FlipAllMatchedPartsAsync - Successfully flipped {partsToFlip.Count} parts");
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError("EditRfq.FlipAllMatchedPartsAsync - Error flipping matched parts", ex);
+            Snackbar.Add($"Error flipping parts: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task UploadFilesAsync()
     {
         await Task.Delay(0);
         try
         {
-
             StateHasChanged();
-
         }
         catch (Exception ex)
         {
-            Logger.GenericLogError("EditRfq.SubmitDataAsync - Unexpected error during submission", ex);
+            Logger.GenericLogError($"EditRfq.UploadFilesAsync - Unexpected error during file load {ex.Message}", ex);
         }
     }
+
+    private async Task ReloadDataAsync()
+    {
+        await Task.Delay(0);
+        try
+        {
+            await LoadDataAsync();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError($"EditRfq.ReloadDataAsync - Unexpected error during data reload {ex.Message}", ex);
+        }
+    }
+
+    private async Task RefreshDataAsync()
+    {
+        await Task.Delay(0);
+        try
+        {
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError($"EditRfq.RefreshDataAsync - Unexpected error during data refresh {ex.Message}", ex);
+        }
+    }
+    #endregion
+
+    #region Search All
+    private async Task SearchAllUnmatchedPartsAsync()
+    {
+        if (UnmatchedParts.Count == 0)
+        {
+            Snackbar.Add("No unmatched parts to search", Severity.Info);
+            return;
+        }
+
+        _isSearchingAll = true;
+        _searchCancellationTokenSource = new CancellationTokenSource();
+
+        try
+        {
+            Logger.GenericLogInformation($"EditRfq.SearchAllUnmatchedPartsAsync - Starting search for {UnmatchedParts.Count} unmatched parts");
+
+            int totalCount = UnmatchedParts.Count;
+
+            // Create progress state
+            var progressState = new SearchProgressState(totalCount, _searchCancellationTokenSource);
+
+            // Create progress dialog parameters
+            DialogParameters progressParams = new DialogParameters
+        {
+            { "ProgressState", progressState }
+        };
+
+            DialogOptions progressOptions = new DialogOptions
+            {
+                MaxWidth = MaxWidth.Medium,
+                FullWidth = true,
+                CloseOnEscapeKey = false,
+                BackdropClick = true
+            };
+
+            IDialogReference progressDialog = await DialogService.ShowAsync<SearchProgressDialog>(
+                "Search Progress",
+                progressParams,
+                progressOptions
+            );
+
+            // List to track parts that need to be moved
+            List<RfqDrawingPartNumberUx> partsToMove = new List<RfqDrawingPartNumberUx>();
+
+            int processedCount = 0;
+            int totalSearched = 0;
+            int totalMatched = 0;
+            int totalUnmatched = 0;
+            int multiMatchCount = 0;
+
+            // Process each unmatched part
+            foreach (var part in UnmatchedParts.ToList())
+            {
+                if (_searchCancellationTokenSource.Token.IsCancellationRequested)
+                {
+                    Logger.GenericLogInformation("EditRfq.SearchAllUnmatchedPartsAsync - Search cancelled by user");
+                    break;
+                }
+
+                if (part == null || string.IsNullOrWhiteSpace(part.OriginalPartNumber))
+                {
+                    continue;
+                }
+
+                string currentPartNumber = part.OriginalPartNumber;
+                Logger.GenericLogInformation($"EditRfq.SearchAllUnmatchedPartsAsync - Searching part {processedCount + 1}/{totalCount}: {currentPartNumber}");
+
+                try
+                {
+                    // Clean up part number
+                    string cleanedUpPn = part.OriginalPartNumber.Replace("-", "").Replace(" ", "").ToUpperInvariant();
+
+                    // Search EMACS for Sumitomo part numbers
+                    SearchResultUx emacsResponse = await RfqUxClientService.SearchEmacsContainsCustomerPn(cleanedUpPn);
+
+                    totalSearched++;
+
+                    if (emacsResponse.IsSuccessful && emacsResponse.StringList != null && emacsResponse.StringList.Count > 0)
+                    {
+                        // Get the first Sumitomo part number
+                        string? sumitomoPartNumber = emacsResponse.StringList.FirstOrDefault();
+
+                        if (!string.IsNullOrWhiteSpace(sumitomoPartNumber))
+                        {
+                            // Search NPR for pricing
+                            SearchResultUx nprResponse = await RfqUxClientService.SearchNprSewsePn(sumitomoPartNumber);
+
+                            if (nprResponse.IsSuccessful &&
+                                nprResponse.StringList != null &&
+                                nprResponse.StringList.Count > 0 &&
+                                nprResponse.DoubleList != null &&
+                                nprResponse.DoubleList.Count > 0)
+                            {
+                                // Get the first NPR part and price
+                                string nprPartNumber = nprResponse.StringList[0];
+                                decimal nprPrice = Math.Round((decimal)nprResponse.DoubleList[0], 5, MidpointRounding.AwayFromZero);
+
+                                // Check if there are multiple matches
+                                bool hasMultipleMatches = nprResponse.StringList.Count > 1;
+
+                                // Update part with NPR data
+                                part.SwappedPartNumber = nprPartNumber;
+                                part.SwappedPartNumberPrice = nprPrice;
+                                part.PriceSource = "NPR";
+                                part.IsExactMatch = true;
+                                part.IsMatched = true;
+                                part.IsSwapped = false;
+                                part.MultiMatch = hasMultipleMatches;
+
+                                if (hasMultipleMatches)
+                                {
+                                    multiMatchCount++;
+                                }
+
+                                // Add audit comment
+                                var commentData = new
+                                {
+                                    User = "System",
+                                    Timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                                    Action = "AutoSearch_NPR_Applied",
+                                    SumitomoPartNumber = sumitomoPartNumber,
+                                    NprPartNumber = nprPartNumber,
+                                    NprPrice = nprPrice,
+                                    MultiMatch = hasMultipleMatches,
+                                    MatchCount = nprResponse.StringList.Count
+                                };
+
+                                string commentJson = System.Text.Json.JsonSerializer.Serialize(commentData, new System.Text.Json.JsonSerializerOptions
+                                {
+                                    WriteIndented = false
+                                });
+
+                                if (string.IsNullOrWhiteSpace(part.Comments))
+                                {
+                                    part.Comments = commentJson;
+                                }
+                                else
+                                {
+                                    part.Comments += $"; {commentJson}";
+                                }
+
+                                // Update via service
+                                await RfqUxClientService.UpdateRfqDrawingPartNumber(part);
+
+                                partsToMove.Add(part);
+                                totalMatched++;
+
+                                Logger.GenericLogInformation($"EditRfq.SearchAllUnmatchedPartsAsync - Matched part: {currentPartNumber} -> {nprPartNumber} (${nprPrice:F5}) - MultiMatch: {hasMultipleMatches}");
+                            }
+                            else
+                            {
+                                totalUnmatched++;
+                                Logger.GenericLogInformation($"EditRfq.SearchAllUnmatchedPartsAsync - No NPR data found for: {currentPartNumber}");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        totalUnmatched++;
+                        Logger.GenericLogInformation($"EditRfq.SearchAllUnmatchedPartsAsync - No EMACS results for: {currentPartNumber}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.GenericLogError($"EditRfq.SearchAllUnmatchedPartsAsync - Error searching part: {currentPartNumber}", ex);
+                    totalUnmatched++;
+                }
+
+                processedCount++;
+
+                // Update progress state - this will trigger the dialog to update
+                progressState.UpdateProgress(
+                    processedCount,
+                    totalSearched,
+                    totalMatched,
+                    totalUnmatched,
+                    multiMatchCount,
+                    currentPartNumber
+                );
+            }
+
+            // Move matched parts from UnmatchedParts to MatchedParts
+            foreach (var part in partsToMove)
+            {
+                UnmatchedParts.Remove(part);
+                MatchedParts.Add(part);
+            }
+
+            // Mark as complete
+            progressState.Complete();
+
+            Logger.GenericLogInformation($"EditRfq.SearchAllUnmatchedPartsAsync - Search complete. Searched: {totalSearched}, Matched: {totalMatched}, Unmatched: {totalUnmatched}, MultiMatch: {multiMatchCount}");
+
+            // Close progress dialog after a short delay
+            await Task.Delay(2000);
+            progressDialog.Close();
+
+            Snackbar.Add($"Search complete: {totalMatched} matched, {totalUnmatched} unmatched ({multiMatchCount} with multiple matches)", Severity.Success);
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError("EditRfq.SearchAllUnmatchedPartsAsync - Error during search all operation", ex);
+            Snackbar.Add($"Error during search: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isSearchingAll = false;
+            _searchCancellationTokenSource?.Dispose();
+            _searchCancellationTokenSource = null;
+        }
+    }
+    #endregion
 
     #region File handling
     private void OnFilesChanged()
@@ -408,4 +774,88 @@ else
     }
     #endregion
 
+    private async Task HandlePartNumberDeleted(RfqDrawingPartNumberUx deletedItem)
+    {
+        try
+        {
+            // Remove from the appropriate collection
+            if (deletedItem.IsMatched)
+            {
+                MatchedParts.Remove(deletedItem);
+                Logger.GenericLogInformation($"EditRfq.HandlePartNumberDeleted - Removed matched part: {deletedItem.OriginalPartNumber}");
+            }
+            else
+            {
+                UnmatchedParts.Remove(deletedItem);
+                Logger.GenericLogInformation($"EditRfq.HandlePartNumberDeleted - Removed unmatched part: {deletedItem.OriginalPartNumber}");
+            }
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError($"EditRfq.HandlePartNumberDeleted - Error handling deletion of part: {deletedItem.OriginalPartNumber}", ex);
+        }
+
+        await Task.CompletedTask;
+    }
+
+    private async Task HandlePartNumberUpdated(RfqDrawingPartNumberUx updatedItem)
+    {
+        try
+        {
+            // Find the item in both lists
+            var matchedItem = MatchedParts.FirstOrDefault(p => p?.RowId == updatedItem.RowId);
+            var unmatchedItem = UnmatchedParts.FirstOrDefault(p => p?.RowId == updatedItem.RowId);
+
+            // Determine current location
+            bool isInMatchedList = matchedItem != null;
+            bool isInUnmatchedList = unmatchedItem != null;
+
+            // Check if the IsMatched status changed and item needs to move between lists
+            if (updatedItem.IsMatched && isInUnmatchedList)
+            {
+                // Move from unmatched to matched
+                UnmatchedParts.Remove(unmatchedItem);
+                MatchedParts.Add(updatedItem);
+                Logger.GenericLogInformation($"EditRfq.HandlePartNumberUpdated - Moved part to matched: {updatedItem.OriginalPartNumber}");
+            }
+            else if (!updatedItem.IsMatched && isInMatchedList)
+            {
+                // Move from matched to unmatched
+                MatchedParts.Remove(matchedItem);
+                UnmatchedParts.Add(updatedItem);
+                Logger.GenericLogInformation($"EditRfq.HandlePartNumberUpdated - Moved part to unmatched: {updatedItem.OriginalPartNumber}");
+            }
+            else if (isInMatchedList)
+            {
+                // Update in place in matched list
+                var index = MatchedParts.IndexOf(matchedItem);
+                if (index >= 0)
+                {
+                    MatchedParts[index] = updatedItem;
+                }
+                Logger.GenericLogInformation($"EditRfq.HandlePartNumberUpdated - Updated matched part: {updatedItem.OriginalPartNumber}");
+            }
+            else if (isInUnmatchedList)
+            {
+                // Update in place in unmatched list
+                var index = UnmatchedParts.IndexOf(unmatchedItem);
+                if (index >= 0)
+                {
+                    UnmatchedParts[index] = updatedItem;
+                }
+                Logger.GenericLogInformation($"EditRfq.HandlePartNumberUpdated - Updated unmatched part: {updatedItem.OriginalPartNumber}");
+            }
+
+            // Force UI refresh
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError($"EditRfq.HandlePartNumberUpdated - Error handling update of part: {updatedItem.OriginalPartNumber}", ex);
+        }
+
+        await Task.CompletedTask;
+    }
 }

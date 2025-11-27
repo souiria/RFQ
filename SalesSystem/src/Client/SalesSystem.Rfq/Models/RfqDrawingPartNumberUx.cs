@@ -1,4 +1,6 @@
-﻿namespace SalesSystem.Rfq.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SalesSystem.Rfq.Models
 {
     public class RfqDrawingPartNumberUx
     {
@@ -10,6 +12,12 @@
         {
             _TestList = new List<RfqDrawingPartNumberUx>();
             //GenerateTestData();
+        }
+
+        public RfqDrawingPartNumberUx()
+        {
+            IsMatched = false;
+            MultiMatch = false;
         }
 
         //[System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
@@ -53,7 +61,7 @@
         //        decimal originalPrice = (decimal)(random.NextDouble() * 1000 + 10);
         //        bool hasSwapped = 0.7 <= random.NextDouble(); // Lower chance for unmatched items
         //        decimal? swappedPrice = hasSwapped ? (decimal)(originalPrice * (0.8m + (decimal)random.NextDouble() * 0.4m)) : (decimal?)null;
-                
+
         //        _TestList.Add(new RfqDrawingPartNumberUx
         //        {
         //            RowId = i,
@@ -78,10 +86,12 @@
         { get; set; }
         public string? OriginalPartNumber
         { get; set; }
+        [Column(TypeName = "decimal(12, 5)")]
         public decimal? OriginalPartNumberPrice
         { get; set; }
         public string? SwappedPartNumber            
         { get; set; }
+        [Column(TypeName = "decimal(12, 5)")]
         public decimal? SwappedPartNumberPrice
         { get; set; }
         public string? PriceSource      // JSON Material_Code & Supplier Code & System_Name
@@ -92,7 +102,9 @@
         { get; set; }
         public string? Comments
         { get; set; }
-        public bool? IsMatched
+        public bool IsMatched
+        { get; set; }
+        public bool MultiMatch
         { get; set; }
     }
 }

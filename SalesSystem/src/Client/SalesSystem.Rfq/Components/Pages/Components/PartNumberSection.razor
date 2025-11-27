@@ -61,7 +61,9 @@
     {
         <MudPaper Class="pa-4" Style="flex: 1 1 auto; overflow: hidden; display: flex; flex-direction: column;">
             <div style="flex: 1 1 auto; min-height: 0; overflow: hidden;">
-                <PartNumbersEditGrid PartNumbers="@PartNumbers" />
+                <PartNumbersEditGrid PartNumbers="@PartNumbers" 
+                                     OnPartNumberDeleted="@OnPartNumberDeleted"
+                                     OnPartNumberUpdated="@OnPartNumberUpdated" />
             </div>
         </MudPaper>
     }
@@ -72,6 +74,8 @@
     [Parameter] public string Label { get; set; } = string.Empty;
     [Parameter] public string BackgroundColor { get; set; } = "var(--mud-palette-primary)";
     [Parameter] public bool InitiallyExpanded { get; set; } = true;
+    [Parameter] public EventCallback<RfqDrawingPartNumberUx> OnPartNumberDeleted { get; set; }
+    [Parameter] public EventCallback<RfqDrawingPartNumberUx> OnPartNumberUpdated { get; set; }
 
     private bool IsExpanded { get; set; }
 

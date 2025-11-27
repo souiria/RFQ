@@ -25,28 +25,57 @@
         <Columns>
             <TemplateColumn CellClass="d-flex justify-start">
                 <CellTemplate>
-                    <MudIconButton Size="@Size.Small" 
-                                  Icon="@Icons.Material.Outlined.Search"
-                                   OnClick="@(()=> OnSearch(context.Item))" />
+                    <MudTooltip Text="Search Part Number">
+                        <MudIconButton Size="@Size.Small"
+                                       Color="Color.Primary"
+                                       Icon="@Icons.Material.Filled.Search"
+                                       aria-label="search"
+                                       OnClick="@(async () => await OnSearch(context.Item))" />
+                    </MudTooltip>
+                    <MudTooltip Text="Edit Part Number">
+                        <MudIconButton Size="@Size.Small"
+                                       Color="Color.Primary"
+                                       Icon="@Icons.Material.Filled.Edit"
+                                       aria-label="edit"
+                                       OnClick="@(async () => await OnEdit(context.Item))" />
+                    </MudTooltip>
+                    <MudTooltip Text="Flip Part Number">
+                        <MudIconButton Size="@Size.Small"
+                                       Color="Color.Primary"
+                                       Icon="@Icons.Material.Filled.SwapVert"
+                                       aria-label="flip"
+                                       OnClick="@(async () => await OnFlip(context.Item))" />
+                    </MudTooltip>
+                    <MudTooltip Text="Delete Part Number">
+                        <MudIconButton Size="@Size.Small"
+                                       Color="Color.Primary"
+                                       Icon="@Icons.Material.Filled.Delete"
+                                       aria-label="delete"
+                                       OnClick="@(async () => await OnDelete(context.Item))" />
+                    </MudTooltip>
                 </CellTemplate>
             </TemplateColumn>
             <PropertyColumn Property="x => x.RowId" Title="ID" Editable="false" />
             <PropertyColumn Property="x => x.OriginalPartNumber" Title="Original P/N" />
-            <PropertyColumn Property="x => x.OriginalPartNumberPrice" Title="Original Price" Format="C2">
+            <PropertyColumn Property="x => x.OriginalPartNumberPrice"
+                            Title="Original Price"
+                            Format="0.#####">
                 <EditTemplate>
                     <MudNumericField @bind-Value="context.Item.OriginalPartNumberPrice" 
-                                    Format="N2" 
+                                    Format="0.#####" 
                                     Adornment="Adornment.Start" 
                                     AdornmentText="$" 
                                     Margin="@Margin.Dense" />
                 </EditTemplate>
             </PropertyColumn>
             <PropertyColumn Property="x => x.SwappedPartNumber" Title="Swapped P/N" />
-            <PropertyColumn Property="x => x.SwappedPartNumberPrice" Title="Swapped Price" Format="C2">
+            <PropertyColumn Property="x => x.SwappedPartNumberPrice"
+                            Title="Swapped Price"
+                            Format="0.#####">
                 <EditTemplate>
-                    <MudNumericField @bind-Value="context.Item.SwappedPartNumberPrice" 
-                                    Format="N2" 
-                                    Adornment="Adornment.Start" 
+                    <MudNumericField @bind-Value="context.Item.SwappedPartNumberPrice"
+                                     Format="0.#####"
+                                     Adornment="Adornment.Start" 
                                     AdornmentText="$" 
                                     Margin="@Margin.Dense" />
                 </EditTemplate>
@@ -86,7 +115,9 @@
 </style>
 
 @code {
-    [Parameter] public IEnumerable<RfqDrawingPartNumberUx> PartNumbers { get; set; } = new List<RfqDrawingPartNumberUx>();
+    [Parameter] public IEnumerable<RfqDrawingPartNumberUx?> PartNumbers { get; set; } = new List<RfqDrawingPartNumberUx>();
+    [Parameter] public EventCallback<RfqDrawingPartNumberUx> OnPartNumberDeleted { get; set; }
+    [Parameter] public EventCallback<RfqDrawingPartNumberUx> OnPartNumberUpdated { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -108,81 +139,383 @@
     {
         //_events.Insert(0, $"Event = CommittedItemChanges, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
     }
+    // private async Task OnSearch(RfqDrawingPartNumberUx item)
+    // {
+    //     if (item == null)
+    //     {
+    //         Logger.GenericLogInformation($"No part number found for null item...");
+    //         await DialogService.ShowMessageBox("Search Part Number", $"No part number found for null item...");
+    //         return;
+    //     }
+
+    //     Logger.GenericLogInformation($"Searching for part number: {item.OriginalPartNumber}");
+
+    //     var cleanedUpPn = item.OriginalPartNumber?.Replace("-", "").Replace(" ", "").ToUpperInvariant();
+    //     if (string.IsNullOrEmpty(cleanedUpPn))
+    //     {
+    //         Logger.GenericLogInformation($"No valid part number found for item with Row ID: {item.RowId}");
+    //         await DialogService.ShowMessageBox("Search Part Number", $"No valid part number found for item with Row ID: {item.RowId}");
+    //         return;
+    //     }
+
+    //     try
+    //     {
+    //         // Call SearchEmacsContainsCustomerPn
+    //         SearchResultUx response = await RfqUxClientService.SearchEmacsContainsCustomerPn(cleanedUpPn);
+
+    //         if (response.IsSuccessful && 0 <= response.StringList.Count)
+    //         {
+    //             Logger.GenericLogInformation($"Search successful: {response.StringList.Count} results found");
+
+    //             // Show custom dialog with MudList
+    //             DialogParameters parameters = new DialogParameters
+    //             {
+    //                 { "SearchedPartNumber", item },
+    //                 { "SearchResults", response.StringList.ToList() },
+    //             };
+
+    //             DialogOptions options = new DialogOptions
+    //             {
+    //                 MaxWidth = MaxWidth.Medium,
+    //                 FullWidth = true,
+    //                 CloseOnEscapeKey = true,
+    //                 BackdropClick = false
+    //             };
+
+    //             await DialogService.ShowAsync<SearchResultsDialog>(
+    //                 "Search Results",
+    //                 parameters,
+    //                 options
+    //             );
+    //         }
+    //         else
+    //         {
+    //             string message = $"No results found for part number: {item.OriginalPartNumber}";
+    //             Logger.GenericLogInformation(message);
+
+    //             // Show empty results dialog
+    //             DialogParameters parameters = new DialogParameters
+    //             {
+    //                 { "SearchedPartNumber", item.OriginalPartNumber },
+    //                 { "SearchResults", new List<string?>() },
+    //             };
+
+    //             DialogOptions options = new DialogOptions
+    //             {
+    //                 MaxWidth = MaxWidth.Medium,
+    //                 FullWidth = true,
+    //                 CloseOnEscapeKey = true,
+    //                 BackdropClick = false
+    //             };
+
+    //             await DialogService.ShowAsync<SearchResultsDialog>(
+    //                 "Search Results",
+    //                 parameters,
+    //                 options
+    //             );
+    //         }
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Logger.GenericLogError($"Error searching for part number: {item.OriginalPartNumber}", ex);
+    //         await DialogService.ShowMessageBox(
+    //             "Error",
+    //             $"An error occurred while searching: {ex.Message}"
+    //         );
+    //     }
+    // }
     private async Task OnSearch(RfqDrawingPartNumberUx item)
     {
-        await Task.Delay(1);
-        if(item != null)
+        if (item == null)
         {
-            Logger.GenericLogInformation($"Searching for part number: {item.OriginalPartNumber}");
+            Logger.GenericLogInformation($"No part number found for null item...");
+            await DialogService.ShowMessageBox("Search Part Number", $"No part number found for null item...");
+            return;
+        }
 
-            try
+        Logger.GenericLogInformation($"Searching for part number: {item.OriginalPartNumber}");
+
+        var cleanedUpPn = item.OriginalPartNumber?.Replace("-", "").Replace(" ", "").ToUpperInvariant();
+        if (string.IsNullOrEmpty(cleanedUpPn))
+        {
+            Logger.GenericLogInformation($"No valid part number found for item with Row ID: {item.RowId}");
+            await DialogService.ShowMessageBox("Search Part Number", $"No valid part number found for item with Row ID: {item.RowId}");
+            return;
+        }
+
+        try
+        {
+            // Call SearchEmacsContainsCustomerPn
+            SearchResultUx response = await RfqUxClientService.SearchEmacsContainsCustomerPn(cleanedUpPn);
+
+            if (response.IsSuccessful && 0 <= response.StringList.Count)
             {
-                // Call FilterRFQBySumitomoPartNumber
-                FilterGrpcResponse response = await RfqUxClientService.FilterByRequestTypeAsync(
-                    RfqManagerFilterType.FilterRFQBySumitomoPartNumber,
-                    item.OriginalPartNumber
+                Logger.GenericLogInformation($"Search successful: {response.StringList.Count} results found");
+
+                // Show custom dialog with MudList
+                DialogParameters parameters = new DialogParameters
+            {
+                { "SearchedPartNumber", item },
+                { "SearchResults", response.StringList.ToList() },
+            };
+
+                DialogOptions options = new DialogOptions
+                {
+                    MaxWidth = MaxWidth.Large,
+                    FullWidth = true,
+                    CloseOnEscapeKey = true,
+                    BackdropClick = false
+                };
+
+                IDialogReference dialog = await DialogService.ShowAsync<SearchResultsDialog>(
+                    "Search Results",
+                    parameters,
+                    options
                 );
 
-                if (response.Success 
-                    && response.StringList != null
-                    && response.StringList.Count > 0)
-                {
-                    // Build results message
-                    System.Text.StringBuilder messageBuilder = new System.Text.StringBuilder();
-                    messageBuilder.AppendLine($"Found {response.StringList.Count} result(s) for part number: {item.OriginalPartNumber}");
-                    messageBuilder.AppendLine();
-                    
-                    // Display Sumitomo Part Numbers and Prices
-                    for (int i = 0; i < response.StringList.Count; i++)
-                    {
-                        string partNumber = response.StringList[i] ?? "N/A";
-                        // string price = "N/A";
-                        
-                        // Check if we have corresponding price data
-                        // if (response.DoubleList != null && i < response.DoubleList.Count)
-                        // {
-                        //     double? priceValue = response.DoubleList[i]?.Value;
-                        //     price = priceValue.HasValue ? $"${priceValue.Value:N2}" : "N/A";
-                        // }
-                        
-                        messageBuilder.AppendLine($"Part #{i + 1}:");
-                        messageBuilder.AppendLine($"  Sumitomo Number: {partNumber}");
-                        // messageBuilder.AppendLine($"  Price: {price}");
-                        messageBuilder.AppendLine();
-                    }
+                // Wait for dialog result
+                DialogResult? result = await dialog.Result;
 
-                    Logger.GenericLogInformation($"Search successful: {response.StringList.Count} results found");
-                    
-                    // Display results in dialog
-                    await DialogService.ShowMessageBox(
-                        "Search Results", 
-                        messageBuilder.ToString(),
-                        yesText: "OK"
-                    );
+                if (result != null && !result.Canceled && result.Data is RfqDrawingPartNumberUx updatedItem)
+                {
+                    try
+                    {
+                        Logger.GenericLogInformation($"NPR data applied to part number: {updatedItem.OriginalPartNumber}");
+
+                        // Call the service to update the part number
+                        bool success = await RfqUxClientService.UpdateRfqDrawingPartNumber(updatedItem);
+
+                        if (success)
+                        {
+                            // Update the original item's properties with the updated values
+                            item.SwappedPartNumber = updatedItem.SwappedPartNumber;
+                            item.SwappedPartNumberPrice = updatedItem.SwappedPartNumberPrice;
+                            item.PriceSource = updatedItem.PriceSource;
+                            item.IsExactMatch = updatedItem.IsExactMatch;
+                            item.IsSwapped = updatedItem.IsSwapped;
+                            item.Comments = updatedItem.Comments;
+                            item.IsMatched = updatedItem.IsMatched;
+
+                            Logger.GenericLogInformation($"Successfully updated part number with NPR data: {updatedItem.OriginalPartNumber}");
+                            Snackbar.Add($"Part number {updatedItem.OriginalPartNumber} updated with NPR data", Severity.Success);
+
+                            // Notify parent component to refresh and potentially move between lists
+                            await OnPartNumberUpdated.InvokeAsync(updatedItem);
+
+                            StateHasChanged();
+                        }
+                        else
+                        {
+                            Logger.GenericLogInformation($"Failed to update part number: {updatedItem.OriginalPartNumber}");
+                            Snackbar.Add($"Failed to update part number {updatedItem.OriginalPartNumber}", Severity.Error);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.GenericLogError($"Error updating part number with NPR data: {updatedItem.OriginalPartNumber}", ex);
+                        Snackbar.Add($"Error updating part number: {ex.Message}", Severity.Error);
+                    }
                 }
                 else
                 {
-                    string message = response.Success 
-                        ? $"No results found for part number: {item.OriginalPartNumber}"
-                        : $"Search failed for part number: {item.OriginalPartNumber}";
+                    Logger.GenericLogInformation("Search dialog was closed without applying NPR data");
+                }
+            }
+            else
+            {
+                string message = $"No results found for part number: {item.OriginalPartNumber}";
+                Logger.GenericLogInformation(message);
+
+                // Show empty results dialog
+                DialogParameters parameters = new DialogParameters
+            {
+                { "SearchedPartNumber", item },
+                { "SearchResults", new List<string?>() },
+            };
+
+                DialogOptions options = new DialogOptions
+                {
+                    MaxWidth = MaxWidth.Large,
+                    FullWidth = true,
+                    CloseOnEscapeKey = true,
+                    BackdropClick = false
+                };
+
+                await DialogService.ShowAsync<SearchResultsDialog>(
+                    "Search Results",
+                    parameters,
+                    options
+                );
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError($"Error searching for part number: {item.OriginalPartNumber}", ex);
+            await DialogService.ShowMessageBox(
+                "Error",
+                $"An error occurred while searching: {ex.Message}"
+            );
+        }
+    }
+    private async Task OnFlip(RfqDrawingPartNumberUx item)
+    {
+        await Task.Delay(1);
+        if (item == null)
+        {
+            Logger.GenericLogInformation("Flip called with null item");
+            return;
+        }
+
+        item.IsExactMatch = true;
+        item.IsMatched = true;
+
+        StateHasChanged();
+    }
+    private async Task OnEdit(RfqDrawingPartNumberUx item)
+    {
+        if (item == null)
+        {
+            Logger.GenericLogInformation("Edit called with null item");
+            return;
+        }
+
+        DialogParameters parameters = new DialogParameters
+        {
+            { "OriginalItem", item }
+        };
+
+        DialogOptions options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true,
+            CloseOnEscapeKey = true,
+            BackdropClick = false
+        };
+
+        IDialogReference dialog = await DialogService.ShowAsync<EditPartNumberDialog>(
+            "Edit Part Number",
+            parameters,
+            options
+        );
+
+        DialogResult? result = await dialog.Result;
+
+        if (result != null && !result.Canceled && result.Data is RfqDrawingPartNumberUx editedItem)
+        {
+            try
+            {
+                Logger.GenericLogInformation($"Updating part number: {editedItem.OriginalPartNumber} (Row ID: {editedItem.RowId})");
+
+                // Call the service to update the part number
+                bool success = await RfqUxClientService.UpdateRfqDrawingPartNumber(editedItem);
+
+                if (success)
+                {
+                    // Update the original item with edited values
+                    item.OriginalPartNumber = editedItem.OriginalPartNumber;
+                    item.OriginalPartNumberPrice = editedItem.OriginalPartNumberPrice;
+                    item.SwappedPartNumber = editedItem.SwappedPartNumber;
+                    item.SwappedPartNumberPrice = editedItem.SwappedPartNumberPrice;
+                    item.PriceSource = editedItem.PriceSource;
+                    item.IsExactMatch = editedItem.IsExactMatch;
+                    item.IsSwapped = editedItem.IsSwapped;
+                    item.Comments = editedItem.Comments;
+                    item.IsMatched = editedItem.IsMatched;
+
+                    Logger.GenericLogInformation($"Successfully updated part number: {editedItem.OriginalPartNumber}");
+                    Snackbar.Add($"Part number {editedItem.OriginalPartNumber} updated successfully", Severity.Success);
                     
-                    Logger.GenericLogInformation(message);
-                    await DialogService.ShowMessageBox("Search Results", message);
+                    // Notify parent component
+                    await OnPartNumberUpdated.InvokeAsync(editedItem);
+                    
+                    StateHasChanged();
+                }
+                else
+                {
+                    Logger.GenericLogInformation($"Failed to update part number: {editedItem.OriginalPartNumber}");
+                    Snackbar.Add($"Failed to update part number {editedItem.OriginalPartNumber}", Severity.Error);
                 }
             }
             catch (Exception ex)
             {
-                Logger.GenericLogError($"Error searching for part number: {item.OriginalPartNumber}", ex);
+                Logger.GenericLogError($"Error updating part number: {editedItem.OriginalPartNumber}", ex);
                 await DialogService.ShowMessageBox(
-                    "Error", 
-                    $"An error occurred while searching: {ex.Message}"
+                    "Error",
+                    $"An error occurred while updating the part number: {ex.Message}"
                 );
             }
         }
         else
         {
-            Logger.GenericLogInformation($"No part number found for null item...");
-            await DialogService.ShowMessageBox("Search Part Number", $"No part number found for null item...");
+            Logger.GenericLogInformation($"Edit cancelled for part number: {item.OriginalPartNumber}");
+        }
+    }
+    private async Task OnDelete(RfqDrawingPartNumberUx item)
+    {
+        if (item == null)
+        {
+            Logger.GenericLogInformation("Delete called with null item");
+            return;
+        }
+
+        // Build confirmation message with part number details
+        System.Text.StringBuilder messageBuilder = new System.Text.StringBuilder();
+        messageBuilder.AppendLine("Are you sure you want to delete this part number?");
+        messageBuilder.AppendLine();
+        messageBuilder.AppendLine($"Row ID: {item.RowId}");
+        messageBuilder.AppendLine($"RFQ ID: {item.RfqId}");
+        messageBuilder.AppendLine($"Original Part Number: {item.OriginalPartNumber ?? "N/A"}");
+        messageBuilder.AppendLine($"Original Price: {(item.OriginalPartNumberPrice.HasValue ? $"${item.OriginalPartNumberPrice.Value:N2}" : "N/A")}");
+        messageBuilder.AppendLine($"Swapped Part Number: {item.SwappedPartNumber ?? "N/A"}");
+        messageBuilder.AppendLine($"Swapped Price: {(item.SwappedPartNumberPrice.HasValue ? $"${item.SwappedPartNumberPrice.Value:N2}" : "N/A")}");
+        messageBuilder.AppendLine($"Price Source: {item.PriceSource ?? "N/A"}");
+        messageBuilder.AppendLine($"Is Exact Match: {(item.IsExactMatch.HasValue ? item.IsExactMatch.Value.ToString() : "N/A")}");
+        messageBuilder.AppendLine($"Is Swapped: {(item.IsSwapped.HasValue ? item.IsSwapped.Value.ToString() : "N/A")}");
+        messageBuilder.AppendLine($"Is Matched: {item.IsMatched}");
+        messageBuilder.AppendLine($"Comments: {item.Comments ?? "N/A"}");
+
+        bool? result = await DialogService.ShowMessageBox(
+            "Confirm Delete",
+            messageBuilder.ToString(),
+            yesText: "Delete",
+            cancelText: "Cancel"
+        );
+
+        if (result == true)
+        {
+            try
+            {
+                Logger.GenericLogInformation($"Deleting part number: {item.OriginalPartNumber} (Row ID: {item.RowId})");
+
+                // Call the service to delete the part number
+                bool success = await RfqUxClientService.DeleteRfqDrawingPartNumber(item);
+
+                if (success)
+                {
+                    Logger.GenericLogInformation($"Successfully deleted part number: {item.OriginalPartNumber}");
+                    Snackbar.Add($"Part number {item.OriginalPartNumber} deleted successfully", Severity.Success);
+
+                    // Notify parent component to remove the item
+                    await OnPartNumberDeleted.InvokeAsync(item);
+                }
+                else
+                {
+                    Logger.GenericLogInformation($"Failed to delete part number: {item.OriginalPartNumber}");
+                    Snackbar.Add($"Failed to delete part number {item.OriginalPartNumber}", Severity.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.GenericLogError($"Error deleting part number: {item.OriginalPartNumber}", ex);
+                await DialogService.ShowMessageBox(
+                    "Error",
+                    $"An error occurred while deleting the part number: {ex.Message}"
+                );
+            }
+        }
+        else
+        {
+            Logger.GenericLogInformation($"Delete cancelled for part number: {item.OriginalPartNumber}");
         }
     }
 }

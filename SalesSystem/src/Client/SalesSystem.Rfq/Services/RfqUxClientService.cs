@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging;
+using MudBlazor;
 using SharedModels.Filtering;
 
 namespace SalesSystem.Rfq.Services
@@ -315,6 +317,46 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
+        public async Task<bool> UpdateRfqDrawingPartNumber(RfqDrawingPartNumberUx partNumberUx)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+            await Task.Delay(1);
+            try
+            {
+                //UpdateRfqDrawingPartNumberRequest request = new UpdateRfqDrawingPartNumberRequest();
+                //request.PartNumber = partNumberUx.ToGrpc();
+
+                //UpdateRfqDrawingPartNumberResponse response = await _Client.UpdateRfqDrawingPartNumberGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                //return response.Success;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in UpdateRfqDrawingPartNumber for PartNumber: {partNumberUx.OriginalPartNumber}", ex);
+                throw;
+            }
+        }
+        public async Task<bool> DeleteRfqDrawingPartNumber(RfqDrawingPartNumberUx partNumberUx)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+            await Task.Delay(1);
+            try
+            {
+                //DeleteRfqDrawingPartNumberRequest request = new DeleteRfqDrawingPartNumberRequest();
+                //request.PartNumber = partNumberUx.ToGrpc();
+
+                //DeleteRfqDrawingPartNumberResponse response = await _Client.DeleteRfqDrawingPartNumberGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                //return response.Success;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in DeleteRfqDrawingPartNumber for PartNumber: {partNumberUx.OriginalPartNumber}", ex);
+                throw;
+            }
+        }
         #endregion
 
         #region Rfq Reasons
@@ -393,6 +435,102 @@ namespace SalesSystem.Rfq.Services
             catch (Exception ex)
             {
                 _Logger?.GenericLogError($"Error in UploadParts for project: {projectId}, file: {file.Name}", ex);
+                throw;
+            }
+        }
+        #endregion
+
+        #region Searching
+        public async Task<SearchResultUx> SearchEmacsContainsCustomerPn(string customerPartNumber)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+            await Task.Delay(1);
+            try
+            {
+                // Call FilterRFQBySumitomoPartNumber
+                FilterGrpcResponse response = await FilterByRequestTypeAsync(
+                    RfqManagerFilterType.FilterEmacsByContainingPartNumber,
+                    customerPartNumber
+                );
+
+                if (response.Success
+                    && response.StringList != null
+                    && 0 <= response.StringList.Count)
+                {
+                    SearchResultUx r = response.ToUx();
+                    return r;
+                }
+                else
+                {
+                    SearchResultUx r = new SearchResultUx();
+                    return r;
+                }
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in SearchEmacsContainsCustomerPn", ex);
+                throw;
+            }
+        }
+        public async Task<SearchResultUx> SearchAdssSewsePn(string sewsePartNumber)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+            await Task.Delay(1);
+            try
+            {
+                // Call FilterRFQBySumitomoPartNumber
+                FilterGrpcResponse response = await FilterByRequestTypeAsync(
+                    RfqManagerFilterType.FilterAdssBySumitomoPartNumber,
+                    sewsePartNumber
+                );
+
+                if (response.Success
+                    && response.StringList != null
+                    && 0 <= response.StringList.Count)
+                {
+                    SearchResultUx r = response.ToUx();
+                    return r;
+                }
+                else
+                {
+                    SearchResultUx r = new SearchResultUx();
+                    return r;
+                }
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in SearchAdssSewsePn", ex);
+                throw;
+            }
+        }
+        public async Task<SearchResultUx> SearchNprSewsePn(string sewsePartNumber)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+            await Task.Delay(1);
+            try
+            {
+                // Call FilterRFQBySumitomoPartNumber
+                FilterGrpcResponse response = await FilterByRequestTypeAsync(
+                    RfqManagerFilterType.FilterNPRBySumitomoPartNumber,
+                    sewsePartNumber
+                );
+
+                if (response.Success
+                    && response.StringList != null
+                    && 0 <= response.StringList.Count)
+                {
+                    SearchResultUx r = response.ToUx();
+                    return r;
+                }
+                else
+                {
+                    SearchResultUx r = new SearchResultUx();
+                    return r;
+                }
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in SearchNprSewsePn", ex);
                 throw;
             }
         }

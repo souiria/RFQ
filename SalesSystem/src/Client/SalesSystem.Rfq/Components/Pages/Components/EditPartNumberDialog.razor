@@ -1,0 +1,139 @@
+@using SalesSystem.Rfq.Models
+@using MudBlazor
+
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="_form" @bind-IsValid="_isValid">
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="EditedItem.OriginalPartNumber"
+                                  Label="Original Part Number"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  Required="true"
+                                  RequiredError="Original part number is required" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudNumericField @bind-Value="EditedItem.OriginalPartNumberPrice"
+                                     Label="Original Price"
+                                     Variant="Variant.Outlined"
+                                     Margin="Margin.Dense"
+                                     Format="0.#####"
+                                     Adornment="Adornment.Start"
+                                     AdornmentText="$"
+                                     Min="0m" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="EditedItem.SwappedPartNumber"
+                                  Label="Swapped Part Number"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudNumericField @bind-Value="EditedItem.SwappedPartNumberPrice"
+                                     Label="Swapped Price"
+                                     Variant="Variant.Outlined"
+                                     Margin="Margin.Dense"
+                                     Format="0.#####"
+                                     Adornment="Adornment.Start"
+                                     AdornmentText="$"
+                                     Min="0m" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="EditedItem.PriceSource"
+                                  Label="Price Source"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense" />
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudCheckBox @bind-Value="EditedItem.IsExactMatch"
+                                 Label="Is Exact Match"
+                                 Color="Color.Primary"
+                                 Dense="true" />
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudCheckBox @bind-Value="EditedItem.IsSwapped"
+                                 Label="Is Swapped"
+                                 Color="Color.Primary"
+                                 Dense="true" />
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudCheckBox @bind-Value="EditedItem.IsMatched"
+                                 Label="Is Matched"
+                                 Color="Color.Primary"
+                                 Dense="true" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="EditedItem.Comments"
+                                  Label="Comments"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  Lines="3"
+                                  MaxLength="500" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField Value="@EditedItem.RowId.ToString()"
+                                  Label="Row ID"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  ReadOnly="true"
+                                  Disabled="true" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField Value="@EditedItem.RfqId.ToString()"
+                                  Label="RFQ ID"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  ReadOnly="true"
+                                  Disabled="true" />
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel" Color="Color.Default">Cancel</MudButton>
+        <MudButton OnClick="Save" Color="Color.Primary" Variant="Variant.Filled" Disabled="!_isValid">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter] public RfqDrawingPartNumberUx OriginalItem { get; set; } = null!;
+
+    private RfqDrawingPartNumberUx EditedItem { get; set; } = new();
+    private MudForm _form = null!;
+    private bool _isValid;
+
+    protected override void OnInitialized()
+    {
+        // Create a copy of the original item to edit
+        EditedItem = new RfqDrawingPartNumberUx
+        {
+            RowId = OriginalItem.RowId,
+            RfqId = OriginalItem.RfqId,
+            OriginalPartNumber = OriginalItem.OriginalPartNumber,
+            OriginalPartNumberPrice = OriginalItem.OriginalPartNumberPrice,
+            SwappedPartNumber = OriginalItem.SwappedPartNumber,
+            SwappedPartNumberPrice = OriginalItem.SwappedPartNumberPrice,
+            PriceSource = OriginalItem.PriceSource,
+            IsExactMatch = OriginalItem.IsExactMatch,
+            IsSwapped = OriginalItem.IsSwapped,
+            Comments = OriginalItem.Comments,
+            IsMatched = OriginalItem.IsMatched
+        };
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task Save()
+    {
+        await _form.Validate();
+        if (_isValid)
+        {
+            MudDialog.Close(DialogResult.Ok(EditedItem));
+        }
+    }
+}
