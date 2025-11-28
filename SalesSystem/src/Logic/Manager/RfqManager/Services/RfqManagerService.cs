@@ -201,11 +201,11 @@
                 // Call the Rfq service to get RFQ reasons
                 await Task.Delay(1);
                 RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
-                GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-                grpcRequestParameter.Position = request.Position;
-                grpcRequestParameter.Take = request.Take;
-                grpcRequestParameter.RequestType = request.RequestType;
-                rfqReasonRequest.GrpcRequestParameter = grpcRequestParameter;
+                RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                rfqGrpcRequestParameter.Position = request.Position;
+                rfqGrpcRequestParameter.Take = request.Take;
+                rfqGrpcRequestParameter.RequestType = request.RequestType;
+                rfqReasonRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
 
                 ListRfqReasonGrpc rfqReasons = _RfqClient.ReadRfqReasonGrpc(rfqReasonRequest);
                 GetRfqReasonsGrpcResponse response = new GetRfqReasonsGrpcResponse();
@@ -231,12 +231,12 @@
 
                 long rowId = request.RowId;
 
-                GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-                grpcRequestParameter.RequestType = 3;
+                RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                rfqGrpcRequestParameter.RequestType = 3;
 
                 RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
                 rfqProjectRequest.RowId = rowId;
-                rfqProjectRequest.GrpcRequestParameter = grpcRequestParameter;
+                rfqProjectRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
                 RfqCrudGrpcResponse grpcResponse =  _RfqClient.DeleteRfqProjectByRowIdGrpc(rfqProjectRequest);
                 bool result = grpcResponse.SaveSuccess;
           
@@ -271,22 +271,22 @@
 
                 // Prepare RFQ project request
                 RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
-                GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-                grpcRequestParameter.Position = request.Position;
-                grpcRequestParameter.Take = request.Take;
-                grpcRequestParameter.RequestType = 1;
-                rfqProjectRequest.GrpcRequestParameter = grpcRequestParameter;
+                RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                rfqGrpcRequestParameter.Position = request.Position;
+                rfqGrpcRequestParameter.Take = request.Take;
+                rfqGrpcRequestParameter.RequestType = 1;
+                rfqProjectRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
 
                 // Fetch RFQ projects
                 ListRfqProjectGrpc rfqProjects = _RfqClient.ReadRfqProjectGrpc(rfqProjectRequest);
 
                 // Fetch RFQ reasons
                 RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
-                GrpcRequestParameter reasonRequestParameter = new GrpcRequestParameter();
+                RfqGrpcRequestParameter reasonRequestParameter = new RfqGrpcRequestParameter();
                 reasonRequestParameter.Position = 0;
                 reasonRequestParameter.Take = 100;
                 reasonRequestParameter.RequestType = 1;
-                rfqReasonRequest.GrpcRequestParameter = reasonRequestParameter;
+                rfqReasonRequest.RfqGrpcRequestParameter = reasonRequestParameter;
 
                 ListRfqReasonGrpc rfqReasons = _RfqClient.ReadRfqReasonGrpc(rfqReasonRequest);
 
@@ -392,11 +392,11 @@
                 await Task.Delay(1);
 
                 // Prepare RFQ project request
-                GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-                grpcRequestParameter.RequestType = 2;
+                RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                rfqGrpcRequestParameter.RequestType = 2;
 
                 RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
-                rfqProjectRequest.GrpcRequestParameter = grpcRequestParameter;
+                rfqProjectRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
                 rfqProjectRequest.RowId = request.RowId;
 
                 // Fetch RFQ project
@@ -404,11 +404,11 @@
 
                 // Fetch RFQ reasons
                 RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
-                GrpcRequestParameter reasonRequestParameter = new GrpcRequestParameter();
+                RfqGrpcRequestParameter reasonRequestParameter = new RfqGrpcRequestParameter();
                 reasonRequestParameter.Position = 0;
                 reasonRequestParameter.Take = 100;
                 reasonRequestParameter.RequestType = 1;
-                rfqReasonRequest.GrpcRequestParameter = reasonRequestParameter;
+                rfqReasonRequest.RfqGrpcRequestParameter = reasonRequestParameter;
 
                 ListRfqReasonGrpc rfqReasons = _RfqClient.ReadRfqReasonGrpc(rfqReasonRequest);
 
@@ -458,10 +458,10 @@
                     .ToDictionary(v => v.Id, v => v.VehicleName);
 
                 // Prepare response
-                //RfqFilterRequest grpcRequestParameter = new RfqFilterRequest();
-                //grpcRequestParameter.DatabaseList = "RfqProjectGrpc";
-                //grpcRequestParameter.FilterExpression = $"RowId != null && RowId == {request.RowId}";
-                //RfqFilterResponse rfqProjects = _RfqClient.FilterRfqGrpc(grpcRequestParameter);
+                //RfqFilterRequest RfqGrpcRequestParameter = new RfqFilterRequest();
+                //RfqGrpcRequestParameter.DatabaseList = "RfqProjectGrpc";
+                //RfqGrpcRequestParameter.FilterExpression = $"RowId != null && RowId == {request.RowId}";
+                //RfqFilterResponse rfqProjects = _RfqClient.FilterRfqGrpc(RfqGrpcRequestParameter);
 
                 GetRfqProjectByIdGrpcResponse response = new GetRfqProjectByIdGrpcResponse();
 
@@ -524,10 +524,10 @@
             {
                 await Task.Delay(1);
 
-                RfqFilterRequest grpcRequestParameter = new RfqFilterRequest();
-                grpcRequestParameter.DatabaseList = "RfqProjectGrpc";
-                grpcRequestParameter.FilterExpression = $"RfqId != null && RfqId == {request.RfqId}";
-                RfqFilterResponse rfqParts = _RfqClient.FilterRfqGrpc(grpcRequestParameter);
+                RfqFilterRequest rfqGrpcRequestParameter = new RfqFilterRequest();
+                rfqGrpcRequestParameter.DatabaseList = "RfqProjectGrpc";
+                rfqGrpcRequestParameter.FilterExpression = $"RfqId != null && RfqId == {request.RfqId}";
+                RfqFilterResponse rfqParts = _RfqClient.FilterRfqGrpc(rfqGrpcRequestParameter);
 
                 GetRfqDrawingPartNumbersByRfqIdGrpcResponse response = new GetRfqDrawingPartNumbersByRfqIdGrpcResponse();
 
@@ -712,9 +712,9 @@
             rfqProject.VehicleVolume = request.Project.VehicleVolume;
             rfqProject.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
 
-            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-            rfqProjectRequest.GrpcRequestParameter = grpcRequestParameter;
-            rfqProjectRequest.GrpcRequestParameter.RequestType = 70;
+            RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            rfqProjectRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
+            rfqProjectRequest.RfqGrpcRequestParameter.RequestType = 70;
             rfqProjectRequest.RfqProjectGrpcsToCreate.Add(rfqProject);
             RfqCrudGrpcResponse createResponse = _RfqClient.CreateRfqProjectGrpc(rfqProjectRequest);
             if (createResponse.SaveSuccess == false)
@@ -747,8 +747,8 @@
                 rfqProject.VehicleVolume = request.Project.VehicleVolume;
 
                 RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
-                rfqProjectRequest.GrpcRequestParameter = new GrpcRequestParameter();
-                rfqProjectRequest.GrpcRequestParameter.RequestType = 80; 
+                rfqProjectRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                rfqProjectRequest.RfqGrpcRequestParameter.RequestType = 80; 
                 rfqProjectRequest.RfqProjectGrpcsToUpdate.Add(rfqProject);
 
                 RfqCrudGrpcResponse updateResponse = _RfqClient.UpdateRfqProjectGrpc(rfqProjectRequest);
@@ -791,8 +791,8 @@
         RfqCrudGrpcResponse CreateRfqDrawingPartNumbers(string projectId, List<CustomerParts> customerParts)
         {
             RfqDrawingPartNumbersGrpcRequest partRequest = new RfqDrawingPartNumbersGrpcRequest();
-            partRequest.GrpcRequestParameter = new GrpcRequestParameter();
-            partRequest.GrpcRequestParameter.RequestType = 70;
+            partRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            partRequest.RfqGrpcRequestParameter.RequestType = 70;
             foreach (CustomerParts customerPart in customerParts)
             {
                 RfqDrawingPartNumbersGrpc part = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber1);

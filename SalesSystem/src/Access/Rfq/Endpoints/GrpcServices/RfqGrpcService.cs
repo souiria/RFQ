@@ -25,7 +25,7 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<ListRfqDrawingPartNumbersGrpc> ReadRfqDrawingPartNumbersGrpc(RfqDrawingPartNumbersGrpcRequest request, ServerCallContext context) //
         {
             _Logger.GenericLogInformation("ReadRfqDrawingPartNumbersGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
@@ -33,9 +33,9 @@ namespace Rfq.Endpoints.GrpcServices
 
             RequestType requestType = RequestType.None;
 
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -58,7 +58,7 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<RfqCrudGrpcResponse> CreateRfqDrawingPartNumbersGrpc(RfqDrawingPartNumbersGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("CreateRfqDrawingPartNumbersGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
@@ -66,9 +66,9 @@ namespace Rfq.Endpoints.GrpcServices
 
             RequestType requestType = RequestType.None;
 
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request. RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -106,16 +106,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<RfqCrudGrpcResponse> UpdateRfqDrawingPartNumbersGrpc(RfqDrawingPartNumbersGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("UpdateRfqDrawingPartNumbersGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -152,16 +152,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<ListRfqProjectGrpc> ReadRfqProjectGrpc(RfqProjectGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("ReadRfqProjectGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -183,16 +183,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<RfqCrudGrpcResponse> CreateRfqProjectGrpc(RfqProjectGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("CreateRfqProjectGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -231,16 +231,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateRfqProjectGrpc starting");
          
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             //RequestType requestType = RequestType.Update;
-            //if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            //if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             //{
-            //    requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+            //    requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             //}
             //else
             //{
@@ -310,16 +310,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<ListRfqNotesGrpc> ReadRfqNotesGrpc(RfqNotesGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("ReadRfqNotesGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -343,16 +343,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<RfqCrudGrpcResponse> CreateRfqNotesGrpc(RfqNotesGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("CreateRfqNotesGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -390,16 +390,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<RfqCrudGrpcResponse> UpdateRfqNotesGrpc(RfqNotesGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("UpdateRfqProjectGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -431,16 +431,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<ListRfqReasonGrpc> ReadRfqReasonGrpc(RfqReasonGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("ReadRfqReasonGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -463,16 +463,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<RfqCrudGrpcResponse> CreateRfqReasonGrpc(RfqReasonGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("CreateRfqReasonGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -510,16 +510,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<RfqCrudGrpcResponse> UpdateRfqReasonGrpc(RfqReasonGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("UpdateRfqReasonGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -556,16 +556,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<ListDsiBendGrpc> ReadDsiBendGrpc(DsiBendGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("ReadDsiBendGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -589,16 +589,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<RfqCrudGrpcResponse> CreateDsiBendGrpc(DsiBendGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("CreateDsiBendGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -636,16 +636,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<RfqCrudGrpcResponse> UpdateDsiBendGrpc(DsiBendGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("UpdateDsiBendGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -683,16 +683,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<ListDsiBranchConfigurationGrpc> ReadDsiBranchConfigurationGrpc(DsiBranchConfigurationGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("ReadDsiBranchConfigurationGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -716,16 +716,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<RfqCrudGrpcResponse> CreateDsiBranchConfigurationGrpc(DsiBranchConfigurationGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("CreateDsiBranchConfigurationGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -763,16 +763,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<RfqCrudGrpcResponse> UpdateDsiBranchConfigurationGrpc(DsiBranchConfigurationGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("UpdateDsiBranchConfigurationGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -810,16 +810,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<ListDsiBranchConfigurationBendAssociationGrpc> ReadDsiBranchConfigurationBendAssociationGrpc(DsiBranchConfigurationBendAssociationGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("ReadDsiBranchConfigurationBendAssociationGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -843,16 +843,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<RfqCrudGrpcResponse> CreateDsiBranchConfigurationBendAssociationGrpc(DsiBranchConfigurationBendAssociationGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("CreateDsiBranchConfigurationBendAssociationGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -890,16 +890,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<RfqCrudGrpcResponse> UpdateDsiBranchConfigurationBendAssociationGrpc(DsiBranchConfigurationBendAssociationGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("UpdateDsiBranchConfigurationBendAssociationGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -937,16 +937,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<ListDsiBranchInsulationGrpc> ReadDsiBranchInsulationGrpc(DsiBranchInsulationGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("ReadDsiBranchInsulationGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -970,16 +970,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<RfqCrudGrpcResponse> CreateDsiBranchInsulationGrpc(DsiBranchInsulationGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("CreateDsiBranchInsulationGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1017,16 +1017,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<RfqCrudGrpcResponse> UpdateDsiBranchInsulationGrpc(DsiBranchInsulationGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("UpdateDsiBranchInsulationGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1064,16 +1064,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<ListDsiBranchInsulationThroughNodeGrpc> ReadDsiBranchInsulationThroughNodeGrpc(DsiBranchInsulationThroughNodeGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("ReadDsiBranchInsulationThroughNodeGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1097,16 +1097,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<RfqCrudGrpcResponse> CreateDsiBranchInsulationThroughNodeGrpc(DsiBranchInsulationThroughNodeGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("CreateDsiBranchInsulationThroughNodeGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1144,16 +1144,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<RfqCrudGrpcResponse> UpdateDsiBranchInsulationThroughNodeGrpc(DsiBranchInsulationThroughNodeGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("UpdateDsiBranchInsulationThroughNodeGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1191,16 +1191,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<ListDsiCavityMappingGrpc> ReadDsiCavityMappingGrpc(DsiCavityMappingGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("ReadDsiCavityMappingGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1224,16 +1224,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<RfqCrudGrpcResponse> CreateDsiCavityMappingGrpc(DsiCavityMappingGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("CreateDsiCavityMappingGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1271,16 +1271,16 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<RfqCrudGrpcResponse> UpdateDsiCavityMappingGrpc(DsiCavityMappingGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("UpdateDsiCavityMappingGrpc starting");
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1319,16 +1319,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiCircuitOptionGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1351,16 +1351,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiCircuitOptionGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1400,16 +1400,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiCircuitOptionGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1449,16 +1449,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiCentreStripGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1481,16 +1481,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiCentreStripGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1530,16 +1530,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiCentreStripGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1579,16 +1579,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiComponentGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1611,16 +1611,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiComponentGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1660,16 +1660,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiComponentGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1709,16 +1709,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiCompositeDetailGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1741,16 +1741,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiCompositeDetailGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1790,16 +1790,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiCompositeDetailGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1839,16 +1839,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiCompositeDetailCircuitOptionAssociationGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1871,16 +1871,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiCompositeDetailCircuitOptionAssociationGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1920,16 +1920,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiCompositeDetailCircuitOptionAssociationGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -1969,16 +1969,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiCompositeOptionGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2001,16 +2001,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiCompositeOptionGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2050,16 +2050,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiCompositeOptionGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2099,16 +2099,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiHarnessGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2131,16 +2131,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiHarnessGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2180,16 +2180,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiHarnessGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2229,16 +2229,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiHarnessScopeGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2261,16 +2261,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiHarnessScopeGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2310,16 +2310,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiHarnessScopeGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2355,20 +2355,20 @@ namespace Rfq.Endpoints.GrpcServices
 
         #region DsiHarnessScopeScopeAssociation
 
-        public async override Task<ListDsiHarnessScopeScopeAssociationGrpc> ReadDsiHarnessScopeScopeAssociationGrpc(DsiHarnessScopeScopeAssociationGrpcRequest request, ServerCallContext context)
+        public override async Task<ListDsiHarnessScopeScopeAssociationGrpc> ReadDsiHarnessScopeScopeAssociationGrpc(DsiHarnessScopeScopeAssociationGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("ReadDsiHarnessScopeScopeAssociationGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2391,16 +2391,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiHarnessScopeScopeAssociationGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2440,16 +2440,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiHarnessScopeScopeAssociationGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2489,16 +2489,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiManualBomQuantityGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2521,16 +2521,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiManualBomQuantityGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2570,16 +2570,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiManualBomQuantityGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2619,16 +2619,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiMidWireComponentGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2651,16 +2651,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiMidWireComponentGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2700,16 +2700,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiMidWireComponentGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2749,16 +2749,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiModuleChildDetailGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2781,16 +2781,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiModuleChildDetailGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2830,16 +2830,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiModuleChildDetailGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2879,16 +2879,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiModuleCompatibilityGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2911,16 +2911,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiModuleCompatibilityGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -2960,16 +2960,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiModuleCompatibilityGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3009,16 +3009,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiMulticoreSpecificationGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3041,16 +3041,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiMulticoreSpecificationGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3090,16 +3090,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiMulticoreSpecificationGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3139,16 +3139,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiPinMappingGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3171,16 +3171,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiPinMappingGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3220,16 +3220,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiPinMappingGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3269,16 +3269,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiPinMappingCavityMappingAssociationGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3301,16 +3301,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiPinMappingCavityMappingAssociationGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3350,16 +3350,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiPinMappingCavityMappingAssociationGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3399,16 +3399,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiScopeGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3431,16 +3431,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiScopeGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3480,16 +3480,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiScopeGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3529,16 +3529,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiSupplierGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3561,16 +3561,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiSupplierGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3610,16 +3610,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiSupplierGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3659,16 +3659,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiTransformedCompositeDetailGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3691,16 +3691,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiTransformedCompositeDetailGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3740,16 +3740,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiTransformedCompositeDetailGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3789,16 +3789,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiTransformedModuleChildDetailGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3821,16 +3821,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiTransformedModuleChildDetailGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3870,16 +3870,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiTransformedModuleChildDetailGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3919,16 +3919,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiTransformedHarnessGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -3951,16 +3951,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiTransformedHarnessGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -4000,16 +4000,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiTransformedHarnessGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -4049,16 +4049,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiUnitOfMeasureGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -4081,16 +4081,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiUnitOfMeasureGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -4130,16 +4130,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiUnitOfMeasureGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -4179,16 +4179,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiWireMulticoreMarkerGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -4211,16 +4211,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiWireMulticoreMarkerGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -4260,16 +4260,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiWireMulticoreMarkerGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -4309,16 +4309,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiWireSpecificationGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -4341,16 +4341,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiWireSpecificationGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -4390,16 +4390,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiWireSpecificationGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -4439,16 +4439,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("ReadDsiWireThroughNodeGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -4471,16 +4471,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("CreateDsiWireThroughNodeGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {
@@ -4520,16 +4520,16 @@ namespace Rfq.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("UpdateDsiWireThroughNodeGrpc starting");
 
-            if (request == null || request.GrpcRequestParameter == null)
+            if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
                 throw new RpcException(status);
             }
 
             RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.GrpcRequestParameter.RequestType))
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
             {
-                requestType = (RequestType)request.GrpcRequestParameter.RequestType;
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
             }
             else
             {

@@ -172,5 +172,8 @@
         Task<bool> UpdateCompositeComponents(CompositeComponentGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> DeleteCompositeComponents(CompositeComponentGrpcRequest request, CancellationToken cancellationToken);
         #endregion
+
+        Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig,
+            Action<IEnumerable<T>> setResponseCollection, CancellationToken cancellationToken);
     }
 }

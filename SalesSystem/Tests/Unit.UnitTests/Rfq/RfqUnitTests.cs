@@ -39,9 +39,9 @@ namespace Unit.Tests.Rfq
         public void GetRfqDrawingPartNumbersGrpcTest_Success()
         {
             RfqDrawingPartNumbersGrpcRequest drawingPartNumbersGrpcRequest = new RfqDrawingPartNumbersGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
-            drawingPartNumbersGrpcRequest.GrpcRequestParameter = requestParameter;
-            drawingPartNumbersGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
+            drawingPartNumbersGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            drawingPartNumbersGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadRfqDrawingPartNumbersGrpc));
 
             Task<ListRfqDrawingPartNumbersGrpc> getRfqDrawingPartNumbersGrpcReply = _GrpcService.ReadRfqDrawingPartNumbersGrpc(drawingPartNumbersGrpcRequest, serverCallContext);
@@ -86,9 +86,9 @@ namespace Unit.Tests.Rfq
         public void GetRfqProjectGrpcTest_Success()
         {
             RfqProjectGrpcRequest drawingPartNumbersGrpcRequest = new RfqProjectGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = ((int)RequestType.Read);
-            drawingPartNumbersGrpcRequest.GrpcRequestParameter = requestParameter;
+            drawingPartNumbersGrpcRequest.RfqGrpcRequestParameter = requestParameter;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadRfqProjectGrpc));
 
             Task<ListRfqProjectGrpc> getRfqProjectGrpcReply = _GrpcService.ReadRfqProjectGrpc(drawingPartNumbersGrpcRequest, serverCallContext);
@@ -135,9 +135,9 @@ namespace Unit.Tests.Rfq
         public void GetRfqNotesGrpcTest_Success()
         {
             RfqNotesGrpcRequest notesGrpcRequest = new RfqNotesGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            notesGrpcRequest.GrpcRequestParameter = requestParameter;
+            notesGrpcRequest.RfqGrpcRequestParameter = requestParameter;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadRfqNotesGrpc));
 
             Task<ListRfqNotesGrpc> getRfqNotesGrpcReply = _GrpcService.ReadRfqNotesGrpc(notesGrpcRequest, serverCallContext);
@@ -184,10 +184,10 @@ namespace Unit.Tests.Rfq
         public void GetRfqReasonGrpcTest_Success()
         {
             RfqReasonGrpcRequest reasonGrpcRequest = new RfqReasonGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadRfqReasonGrpc));
 
             Task<ListRfqReasonGrpc> getRfqReasonGrpcReply = _GrpcService.ReadRfqReasonGrpc(reasonGrpcRequest, serverCallContext);
@@ -235,10 +235,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiBendGrpcTest_Success()
         {
             DsiBendGrpcRequest reasonGrpcRequest = new DsiBendGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiBendGrpc));
 
             Task<ListDsiBendGrpc> getDsiBendGrpcReply = _GrpcService.ReadDsiBendGrpc(reasonGrpcRequest, serverCallContext);
@@ -285,10 +285,10 @@ namespace Unit.Tests.Rfq
         public void FilterDsiBranchConfigurationGrpcTest_Success()
         {
             DsiBranchConfigurationGrpcRequest reasonGrpcRequest = new DsiBranchConfigurationGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiBranchConfigurationGrpc));
 
             Task<ListDsiBranchConfigurationGrpc> filterDsiBranchConfigurationGrpcReply = _GrpcService.ReadDsiBranchConfigurationGrpc(reasonGrpcRequest, serverCallContext);
@@ -335,10 +335,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiBranchConfigurationBendAssociationGrpcTest_Success()
         {
             DsiBranchConfigurationBendAssociationGrpcRequest reasonGrpcRequest = new DsiBranchConfigurationBendAssociationGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiBranchConfigurationBendAssociationGrpc));
 
             Task<ListDsiBranchConfigurationBendAssociationGrpc> getDsiBranchConfigurationBendAssociationGrpcReply = _GrpcService.ReadDsiBranchConfigurationBendAssociationGrpc(reasonGrpcRequest, serverCallContext);
@@ -385,10 +385,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiBranchInsulationGrpcTest_Success()
         {
             DsiBranchInsulationGrpcRequest reasonGrpcRequest = new DsiBranchInsulationGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiBranchInsulationGrpc));
 
             Task<ListDsiBranchInsulationGrpc> getDsiBranchInsulationGrpcReply = _GrpcService.ReadDsiBranchInsulationGrpc(reasonGrpcRequest, serverCallContext);
@@ -433,9 +433,9 @@ namespace Unit.Tests.Rfq
         //public void CreateDsiBranchInsulationGrpcTest_Success()
         //{
         //    DsiBranchInsulationGrpcRequest reasonGrpcRequest = new DsiBranchInsulationGrpcRequest();
-        //    GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+        //    RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
         //    requestParameter.RequestType = ((int)RequestType.Create);
-        //    reasonGrpcRequest.GrpcRequestParameter = requestParameter;
+        //    reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
         //    DsiBranchInsulationGrpc bendGrpc = new DsiBranchInsulationGrpc();
         //    reasonGrpcRequest.DsiBranchInsulationGrpcsToCreate.Add(bendGrpc);
         //    ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateDsiBranchInsulationGrpc));
@@ -453,10 +453,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiBranchInsulationThroughNodeGrpcTest_Success()
         {
             DsiBranchInsulationThroughNodeGrpcRequest reasonGrpcRequest = new DsiBranchInsulationThroughNodeGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiBranchInsulationThroughNodeGrpc));
 
             Task<ListDsiBranchInsulationThroughNodeGrpc> getDsiBranchInsulationThroughNodeGrpcReply = _GrpcService.ReadDsiBranchInsulationThroughNodeGrpc(reasonGrpcRequest, serverCallContext);
@@ -501,9 +501,9 @@ namespace Unit.Tests.Rfq
         //public void CreateDsiBranchInsulationThroughNodeGrpcTest_Success()
         //{
         //    DsiBranchInsulationThroughNodeGrpcRequest reasonGrpcRequest = new DsiBranchInsulationThroughNodeGrpcRequest();
-        //    GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+        //    RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
         //    requestParameter.RequestType = ((int)RequestType.Create);
-        //    reasonGrpcRequest.GrpcRequestParameter = requestParameter;
+        //    reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
         //    DsiBranchInsulationThroughNodeGrpc bendGrpc = new DsiBranchInsulationThroughNodeGrpc();
         //    bendGrpc.Bend = "TestBend";
         //    reasonGrpcRequest.DsiBranchInsulationThroughNodeGrpcsToCreate.Add(bendGrpc);
@@ -522,10 +522,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiCavityMappingGrpcTest_Success()
         {
             DsiCavityMappingGrpcRequest reasonGrpcRequest = new DsiCavityMappingGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiCavityMappingGrpc));
 
             Task<ListDsiCavityMappingGrpc> getDsiCavityMappingGrpcReply = _GrpcService.ReadDsiCavityMappingGrpc(reasonGrpcRequest, serverCallContext);
@@ -570,9 +570,9 @@ namespace Unit.Tests.Rfq
         //public void CreateDsiCavityMappingGrpcTest_Success()
         //{
         //    DsiCavityMappingGrpcRequest reasonGrpcRequest = new DsiCavityMappingGrpcRequest();
-        //    GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+        //    RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
         //    requestParameter.RequestType = ((int)RequestType.Create);
-        //    reasonGrpcRequest.GrpcRequestParameter = requestParameter;
+        //    reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
         //    DsiCavityMappingGrpc bendGrpc = new DsiCavityMappingGrpc();
         //    bendGrpc.Bend = "TestBend";
         //    reasonGrpcRequest.DsiCavityMappingGrpcsToCreate.Add(bendGrpc);
@@ -591,10 +591,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiCircuitOptionGrpcTest_Success()
         {
             DsiCircuitOptionGrpcRequest reasonGrpcRequest = new DsiCircuitOptionGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiCircuitOptionGrpc));
             Task<ListDsiCircuitOptionGrpc> getDsiCircuitOptionGrpcReply = _GrpcService.ReadDsiCircuitOptionGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getDsiCircuitOptionGrpcReply.Result.DsiCircuitOptionGrpcs, Is.Not.Null);
@@ -639,10 +639,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiHarnessGrpcTest_Success()
         {
             DsiHarnessGrpcRequest reasonGrpcRequest = new DsiHarnessGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiHarnessGrpc));
 
             Task<ListDsiHarnessGrpc> getDsiHarnessGrpcReply = _GrpcService.ReadDsiHarnessGrpc(reasonGrpcRequest, serverCallContext);
@@ -688,10 +688,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiCompositeDetailGrpcTest_Success()
         {
             DsiCompositeDetailGrpcRequest reasonGrpcRequest = new DsiCompositeDetailGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiCompositeDetailGrpc));
 
             Task<ListDsiCompositeDetailGrpc> getDsiCompositeDetailGrpcReply = _GrpcService.ReadDsiCompositeDetailGrpc(reasonGrpcRequest, serverCallContext);
@@ -737,10 +737,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiCompositeDetailCircuitOptionAssociationGrpcTest_Success()
         {
             DsiCompositeDetailCircuitOptionAssociationGrpcRequest reasonGrpcRequest = new DsiCompositeDetailCircuitOptionAssociationGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiCompositeDetailCircuitOptionAssociationGrpc));
 
             Task<ListDsiCompositeDetailCircuitOptionAssociationGrpc> getReply = _GrpcService.ReadDsiCompositeDetailCircuitOptionAssociationGrpc(reasonGrpcRequest, serverCallContext);
@@ -784,10 +784,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiModuleChildDetailGrpcTest_Success()
         {
             DsiModuleChildDetailGrpcRequest reasonGrpcRequest = new DsiModuleChildDetailGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiModuleChildDetailGrpc));
 
             Task<ListDsiModuleChildDetailGrpc> getReply = _GrpcService.ReadDsiModuleChildDetailGrpc(reasonGrpcRequest, serverCallContext);
@@ -833,10 +833,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiCentreStripGrpcTest_Success()
         {
             DsiCentreStripGrpcRequest reasonGrpcRequest = new DsiCentreStripGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiCentreStripGrpc));
 
             Task<ListDsiCentreStripGrpc> getDsiCentreStripGrpcReply = _GrpcService.ReadDsiCentreStripGrpc(reasonGrpcRequest, serverCallContext);
@@ -882,10 +882,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiComponentGrpcTest_Success()
         {
             DsiComponentGrpcRequest reasonGrpcRequest = new DsiComponentGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiComponentGrpc));
 
             Task<ListDsiComponentGrpc> getDsiComponentGrpcReply = _GrpcService.ReadDsiComponentGrpc(reasonGrpcRequest, serverCallContext);
@@ -931,10 +931,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiCompositeOptionGrpcTest_Success()
         {
             DsiCompositeOptionGrpcRequest reasonGrpcRequest = new DsiCompositeOptionGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiCompositeOptionGrpc));
 
             Task<ListDsiCompositeOptionGrpc> getDsiCompositeOptionGrpcReply = _GrpcService.ReadDsiCompositeOptionGrpc(reasonGrpcRequest, serverCallContext);
@@ -980,10 +980,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiHarnessScopeGrpcTest_Success()
         {
             DsiHarnessScopeGrpcRequest reasonGrpcRequest = new DsiHarnessScopeGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiHarnessScopeGrpc));
 
             Task<ListDsiHarnessScopeGrpc> getDsiHarnessScopeGrpcReply = _GrpcService.ReadDsiHarnessScopeGrpc(reasonGrpcRequest, serverCallContext);
@@ -1029,10 +1029,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiHarnessScopeScopeAssociationGrpcTest_Success()
         {
             DsiHarnessScopeScopeAssociationGrpcRequest reasonGrpcRequest = new DsiHarnessScopeScopeAssociationGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiHarnessScopeScopeAssociationGrpc));
 
             Task<ListDsiHarnessScopeScopeAssociationGrpc> getReply = _GrpcService.ReadDsiHarnessScopeScopeAssociationGrpc(reasonGrpcRequest, serverCallContext);
@@ -1076,10 +1076,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiManualBomQuantityGrpcTest_Success()
         {
             DsiManualBomQuantityGrpcRequest reasonGrpcRequest = new DsiManualBomQuantityGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiManualBomQuantityGrpc));
 
             Task<ListDsiManualBomQuantityGrpc> getDsiManualBomQuantityGrpcReply = _GrpcService.ReadDsiManualBomQuantityGrpc(reasonGrpcRequest, serverCallContext);
@@ -1125,10 +1125,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiMidWireComponentGrpcTest_Success()
         {
             DsiMidWireComponentGrpcRequest reasonGrpcRequest = new DsiMidWireComponentGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiMidWireComponentGrpc));
 
             Task<ListDsiMidWireComponentGrpc> getDsiMidWireComponentGrpcReply = _GrpcService.ReadDsiMidWireComponentGrpc(reasonGrpcRequest, serverCallContext);
@@ -1174,10 +1174,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiModuleCompatibilityGrpcTest_Success()
         {
             DsiModuleCompatibilityGrpcRequest reasonGrpcRequest = new DsiModuleCompatibilityGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiModuleCompatibilityGrpc));
 
             Task<ListDsiModuleCompatibilityGrpc> getDsiModuleCompatibilityGrpcReply = _GrpcService.ReadDsiModuleCompatibilityGrpc(reasonGrpcRequest, serverCallContext);
@@ -1223,10 +1223,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiMulticoreSpecificationGrpcTest_Success()
         {
             DsiMulticoreSpecificationGrpcRequest reasonGrpcRequest = new DsiMulticoreSpecificationGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiMulticoreSpecificationGrpc));
 
             Task<ListDsiMulticoreSpecificationGrpc> getReply = _GrpcService.ReadDsiMulticoreSpecificationGrpc(reasonGrpcRequest, serverCallContext);
@@ -1272,10 +1272,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiPinMappingGrpcTest_Success()
         {
             DsiPinMappingGrpcRequest reasonGrpcRequest = new DsiPinMappingGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiPinMappingGrpc));
 
             Task<ListDsiPinMappingGrpc> getDsiPinMappingGrpcReply = _GrpcService.ReadDsiPinMappingGrpc(reasonGrpcRequest, serverCallContext);
@@ -1321,10 +1321,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiPinMappingCavityMappingAssociationGrpcTest_Success()
         {
             DsiPinMappingCavityMappingAssociationGrpcRequest reasonGrpcRequest = new DsiPinMappingCavityMappingAssociationGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiPinMappingCavityMappingAssociationGrpc));
 
             Task<ListDsiPinMappingCavityMappingAssociationGrpc> getReply = _GrpcService.ReadDsiPinMappingCavityMappingAssociationGrpc(reasonGrpcRequest, serverCallContext);
@@ -1370,10 +1370,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiScopeGrpcTest_Success()
         {
             DsiScopeGrpcRequest reasonGrpcRequest = new DsiScopeGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiScopeGrpc));
 
             Task<ListDsiScopeGrpc> getDsiScopeGrpcReply = _GrpcService.ReadDsiScopeGrpc(reasonGrpcRequest, serverCallContext);
@@ -1419,10 +1419,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiSupplierGrpcTest_Success()
         {
             DsiSupplierGrpcRequest reasonGrpcRequest = new DsiSupplierGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiSupplierGrpc));
 
             Task<ListDsiSupplierGrpc> getDsiSupplierGrpcReply = _GrpcService.ReadDsiSupplierGrpc(reasonGrpcRequest, serverCallContext);
@@ -1468,10 +1468,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiTransformedCompositeDetailGrpcTest_Success()
         {
             DsiTransformedCompositeDetailGrpcRequest reasonGrpcRequest = new DsiTransformedCompositeDetailGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiTransformedCompositeDetailGrpc));
 
             Task<ListDsiTransformedCompositeDetailGrpc> getReply = _GrpcService.ReadDsiTransformedCompositeDetailGrpc(reasonGrpcRequest, serverCallContext);
@@ -1517,10 +1517,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiTransformedHarnessGrpcTest_Success()
         {
             DsiTransformedHarnessGrpcRequest reasonGrpcRequest = new DsiTransformedHarnessGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiTransformedHarnessGrpc));
 
             Task<ListDsiTransformedHarnessGrpc> getReply = _GrpcService.ReadDsiTransformedHarnessGrpc(reasonGrpcRequest, serverCallContext);
@@ -1566,10 +1566,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiTransformedModuleChildDetailGrpcTest_Success()
         {
             DsiTransformedModuleChildDetailGrpcRequest reasonGrpcRequest = new DsiTransformedModuleChildDetailGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiTransformedModuleChildDetailGrpc));
 
             Task<ListDsiTransformedModuleChildDetailGrpc> getReply = _GrpcService.ReadDsiTransformedModuleChildDetailGrpc(reasonGrpcRequest, serverCallContext);
@@ -1615,10 +1615,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiUnitOfMeasureGrpcTest_Success()
         {
             DsiUnitOfMeasureGrpcRequest reasonGrpcRequest = new DsiUnitOfMeasureGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiUnitOfMeasureGrpc));
 
             Task<ListDsiUnitOfMeasureGrpc> getReply = _GrpcService.ReadDsiUnitOfMeasureGrpc(reasonGrpcRequest, serverCallContext);
@@ -1665,10 +1665,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiWireMulticoreMarkerGrpcTest_Success()
         {
             DsiWireMulticoreMarkerGrpcRequest reasonGrpcRequest = new DsiWireMulticoreMarkerGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiWireMulticoreMarkerGrpc));
 
             Task<ListDsiWireMulticoreMarkerGrpc> getReply = _GrpcService.ReadDsiWireMulticoreMarkerGrpc(reasonGrpcRequest, serverCallContext);
@@ -1714,10 +1714,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiWireSpecificationGrpcTest_Success()
         {
             DsiWireSpecificationGrpcRequest reasonGrpcRequest = new DsiWireSpecificationGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiWireSpecificationGrpc));
 
             Task<ListDsiWireSpecificationGrpc> getReply = _GrpcService.ReadDsiWireSpecificationGrpc(reasonGrpcRequest, serverCallContext);
@@ -1763,10 +1763,10 @@ namespace Unit.Tests.Rfq
         public void GetDsiWireThroughNodeGrpcTest_Success()
         {
             DsiWireThroughNodeGrpcRequest reasonGrpcRequest = new DsiWireThroughNodeGrpcRequest();
-            GrpcRequestParameter requestParameter = new GrpcRequestParameter();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
             requestParameter.RequestType = (int)RequestType.Read;
-            reasonGrpcRequest.GrpcRequestParameter = requestParameter;
-            reasonGrpcRequest.GrpcRequestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiWireThroughNodeGrpc));
 
             Task<ListDsiWireThroughNodeGrpc> getReply = _GrpcService.ReadDsiWireThroughNodeGrpc(reasonGrpcRequest, serverCallContext);

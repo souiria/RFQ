@@ -295,11 +295,54 @@
             _ServiceProvider = serviceProvider;
             if (testing)
             {
-                _ClipTypeGrpcs = SampleCDbAccessDataService.PopulateClipTypeInitData();
-                _CoverTypeGrpcs = SampleCDbAccessDataService.PopulateCoverTypeInitData();
-                _CrimpingProcessTypeGrpcs = SampleCDbAccessDataService.PopulateCrimpingProcessTypeInitData();
-                _CompositeComponentGrpcs = SampleCDbAccessDataService.PopulateCompositeComponentInitData();
+                PopulateSampleData();
             }
+        }
+
+        public async Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig, Action<IEnumerable<T>> setResponseCollection,
+        CancellationToken cancellationToken)
+        {
+            Expression<Func<T, bool>> filterExpression = DynamicExpressionParser.ParseLambda<T, bool>(parsingConfig, false, filterExpressionString);
+            Func<T, bool> compiledExpression = filterExpression.Compile();
+            IEnumerable<T> filteredList = new List<T>();
+            filteredList = await Filter(compiledExpression, cancellationToken);
+            setResponseCollection(filteredList);
+        }
+
+        public async Task<IEnumerable<T>> Filter<T>(Func<T, bool> func, CancellationToken cancellationToken)
+        {
+            return await Task.Run(() =>
+            {
+                return typeof(T).Name.ToUpperInvariant() switch
+                {
+                    "CLIPTYPEGRPC" => _ClipTypeGrpcs.ClipTypeGrpcs.Cast<T>().Where(func).ToList(),
+                    "COVERTYPEGRPC" => _CoverTypeGrpcs.CoverTypeGrpcs.Cast<T>().Where(func).ToList(),
+                    "FILETYPEGRPC" => _FileTypeGrpcs.FileTypeGrpcs.Cast<T>().Where(func).ToList(),
+                    "FUSETYPEGRPC" => _FuseTypeGrpcs.FuseTypeGrpcs.Cast<T>().Where(func).ToList(),
+                    "MATERIALTYPEGRPC" => _MaterialTypeGrpcs.MaterialTypeGrpcs.Cast<T>().Where(func).ToList(),
+                    "MISCELLANEOUSCOMPONENTTYPEGRPC" => _MiscellaneousComponentGrpcs.MiscellaneousComponentGrpcs.Cast<T>().Where(func).ToList(),
+                    "PARTNERGRPC" => _PartnerGrpcs.PartnerGrpcs.Cast<T>().Where(func).ToList(),
+                    "PERSONGRPC" => _PersonGrpcs.PersonGrpcs.Cast<T>().Where(func).ToList(),
+                    "TEMPERATURERANGEGRPC" => _TemperatureRangeGrpcs.TemperatureRangeGrpcs.Cast<T>().Where(func).ToList(),
+                    "TERMINALFAMILYGRPC" => _TerminalFamilyGrpcs.TerminalFamilyGrpcs.Cast<T>().Where(func).ToList(),
+                    "TERMINALSIZEGRPC" => _TerminalSizeGrpcs.TerminalSizeGrpcs.Cast<T>().Where(func).ToList(),
+                    "TYPECODEGRPC" => _TypeCodeGrpcs.TypeCodeGrpcs.Cast<T>().Where(func).ToList(),
+                    "WATERPROOFTYPEGRPC" => _WaterproofTypeGrpcs.WaterproofTypeGrpcs.Cast<T>().Where(func).ToList(),
+                    "WIREPROTECTIONTYPEGRPC" => _WireProtectionTypeGrpcs.WireProtectionTypeGrpcs.Cast<T>().Where(func).ToList(),
+                    "WIRETYPEGRPC" => _WireTypeGrpcs.WireTypeGrpcs.Cast<T>().Where(func).ToList(),
+                    "PARTNUMBERGRPC" => _PartNumberGrpcs.PartNumberGrpcs.Cast<T>().Where(func).ToList(),
+                    "MISCELLANEOUSCOMPONENTGRPC" => _MiscellaneousComponentGrpcs.MiscellaneousComponentGrpcs.Cast<T>().Where(func).ToList(),
+                    _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
+                };
+            }, cancellationToken);
+        }
+
+        void PopulateSampleData()
+        {
+            _ClipTypeGrpcs = SampleCDbAccessDataService.PopulateClipTypeInitData();
+            _CoverTypeGrpcs = SampleCDbAccessDataService.PopulateCoverTypeInitData();
+            _CrimpingProcessTypeGrpcs = SampleCDbAccessDataService.PopulateCrimpingProcessTypeInitData();
+            _CompositeComponentGrpcs = SampleCDbAccessDataService.PopulateCompositeComponentInitData();
         }
     }
 }

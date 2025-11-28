@@ -744,7 +744,7 @@
             }
 
             ListRfqProjectGrpc responseList = new ListRfqProjectGrpc();
-            //List<RfqProjectGrpc> projects = _ListRfqProjects.RfqProjects.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            //List<RfqProjectGrpc> projects = _ListRfqProjects.RfqProjects.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
             List<RfqProjectGrpc> projects = _ListRfqProjectsGrpc.RfqProjects.Where(x => x.RowId == request.RowId).ToList();
 
             if (projects != null)
@@ -854,7 +854,7 @@
             }
 
             ListRfqNotesGrpc responseList = new ListRfqNotesGrpc();
-            List<RfqNotesGrpc> projects = _ListRfqNotesGrpc.RfqNotes.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            List<RfqNotesGrpc> projects = _ListRfqNotesGrpc.RfqNotes.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
             if (projects != null)
             {
                 responseList.RfqNotes.AddRange(projects);
@@ -963,7 +963,7 @@
             }
 
             ListRfqReasonGrpc responseList = new ListRfqReasonGrpc();
-            List<RfqReasonGrpc> projects = _ListRfqReasonsGrpc.RfqReasons.Where(x => x.RowId == reason.GrpcRequestParameter.IntValue).ToList();
+            List<RfqReasonGrpc> projects = _ListRfqReasonsGrpc.RfqReasons.Where(x => x.RowId == reason.RfqGrpcRequestParameter.IntValue).ToList();
             if (projects != null)
             {
                 responseList.RfqReasons.AddRange(projects);
@@ -1072,7 +1072,7 @@
             }
 
             ListDsiBendGrpc responseList = new ListDsiBendGrpc();
-            List<DsiBendGrpc> bends = _ListDsiBendsGrpc.DsiBends.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            List<DsiBendGrpc> bends = _ListDsiBendsGrpc.DsiBends.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
             if (bends != null)
             {
                 responseList.DsiBends.AddRange(bends);
@@ -1181,7 +1181,7 @@
             }
 
             ListDsiBranchConfigurationGrpc responseList = new ListDsiBranchConfigurationGrpc();
-            List<DsiBranchConfigurationGrpc> banchConfigurations = _ListDsiBranchConfigurationsGrpc.DsiBranchConfigurations.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            List<DsiBranchConfigurationGrpc> banchConfigurations = _ListDsiBranchConfigurationsGrpc.DsiBranchConfigurations.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
             if (banchConfigurations != null)
             {
                 responseList.DsiBranchConfigurations.AddRange(banchConfigurations);
@@ -1290,7 +1290,7 @@
             }
 
             ListDsiBranchConfigurationBendAssociationGrpc responseList = new ListDsiBranchConfigurationBendAssociationGrpc();
-            List<DsiBranchConfigurationBendAssociationGrpc> banchConfigurations = _ListDsiBranchConfigurationBendAssociationsGrpc.DsiBranchConfigurationBendAssociations.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            List<DsiBranchConfigurationBendAssociationGrpc> banchConfigurations = _ListDsiBranchConfigurationBendAssociationsGrpc.DsiBranchConfigurationBendAssociations.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
             if (banchConfigurations != null)
             {
                 responseList.DsiBranchConfigurationBendAssociations.AddRange(banchConfigurations);
@@ -1399,7 +1399,7 @@
             }
 
             ListDsiBranchInsulationGrpc responseList = new ListDsiBranchInsulationGrpc();
-            List<DsiBranchInsulationGrpc> banchConfigurations = _ListDsiBranchInsulationsGrpc.DsiBranchInsulations.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            List<DsiBranchInsulationGrpc> banchConfigurations = _ListDsiBranchInsulationsGrpc.DsiBranchInsulations.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
             if (banchConfigurations != null)
             {
                 responseList.DsiBranchInsulations.AddRange(banchConfigurations);
@@ -1508,7 +1508,7 @@
             }
 
             ListDsiBranchInsulationThroughNodeGrpc responseList = new ListDsiBranchInsulationThroughNodeGrpc();
-            List<DsiBranchInsulationThroughNodeGrpc> banchConfigurations = _ListDsiBranchInsulationThroughNodesGrpc.DsiBranchInsulationThroughNodes.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            List<DsiBranchInsulationThroughNodeGrpc> banchConfigurations = _ListDsiBranchInsulationThroughNodesGrpc.DsiBranchInsulationThroughNodes.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
             if (banchConfigurations != null)
             {
                 responseList.DsiBranchInsulationThroughNodes.AddRange(banchConfigurations);
@@ -1617,7 +1617,7 @@
             }
 
             ListDsiCavityMappingGrpc responseList = new ListDsiCavityMappingGrpc();
-            List<DsiCavityMappingGrpc> banchConfigurations = _ListDsiCavityMappings.DsiCavityMappingGrpcs.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            List<DsiCavityMappingGrpc> banchConfigurations = _ListDsiCavityMappings.DsiCavityMappingGrpcs.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
             if (banchConfigurations != null)
             {
                 responseList.DsiCavityMappingGrpcs.AddRange(banchConfigurations);
@@ -1716,7 +1716,7 @@
 
             ListDsiCentreStripGrpc responseList = new ListDsiCentreStripGrpc();
             List<DsiCentreStripGrpc> matches = _ListDsiCentreStripGrpc.DsiCentreStripGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             if (matches != null)
             {
@@ -1812,7 +1812,7 @@
 
             ListDsiCircuitOptionGrpc responseList = new ListDsiCircuitOptionGrpc();
             List<DsiCircuitOptionGrpc> matches = _ListDsiCircuitOptionGrpc.DsiCircuitOptionGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiCircuitOptionGrpcs.AddRange(matches);
             return responseList;
@@ -1900,7 +1900,7 @@
 
             ListDsiComponentGrpc responseList = new ListDsiComponentGrpc();
             List<DsiComponentGrpc> matches = _ListDsiComponentGrpc.DsiComponentGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiComponentGrpcs.AddRange(matches);
             return responseList;
@@ -1988,7 +1988,7 @@
 
             ListDsiCompositeDetailGrpc responseList = new ListDsiCompositeDetailGrpc();
             List<DsiCompositeDetailGrpc> matches = _ListDsiCompositeDetailGrpc.DsiCompositeDetailGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiCompositeDetailGrpcs.AddRange(matches);
             return responseList;
@@ -2076,7 +2076,7 @@
 
             ListDsiCompositeDetailCircuitOptionAssociationGrpc responseList = new ListDsiCompositeDetailCircuitOptionAssociationGrpc();
             List<DsiCompositeDetailCircuitOptionAssociationGrpc> matches = _ListDsiCompositeDetailCircuitOptionAssociationGrpc.DsiCompositeDetailCircuitOptionAssociationGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiCompositeDetailCircuitOptionAssociationGrpcs.AddRange(matches);
             return responseList;
@@ -2164,7 +2164,7 @@
 
             ListDsiCompositeOptionGrpc responseList = new ListDsiCompositeOptionGrpc();
             List<DsiCompositeOptionGrpc> matches = _ListDsiCompositeOptionGrpc.DsiCompositeOptionGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiCompositeOptionGrpcs.AddRange(matches);
             return responseList;
@@ -2252,7 +2252,7 @@
 
             ListDsiHarnessGrpc responseList = new ListDsiHarnessGrpc();
             List<DsiHarnessGrpc> matches = _ListDsiHarnessGrpc.DsiHarnessGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiHarnessGrpcs.AddRange(matches);
             return responseList;
@@ -2340,7 +2340,7 @@
 
             ListDsiHarnessScopeGrpc responseList = new ListDsiHarnessScopeGrpc();
             List<DsiHarnessScopeGrpc> matches = _ListDsiHarnessScopeGrpc.DsiHarnessScopeGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiHarnessScopeGrpcs.AddRange(matches);
             return responseList;
@@ -2428,7 +2428,7 @@
 
             ListDsiHarnessScopeScopeAssociationGrpc responseList = new ListDsiHarnessScopeScopeAssociationGrpc();
             List<DsiHarnessScopeScopeAssociationGrpc> matches = _ListDsiHarnessScopeScopeAssociationGrpc.DsiHarnessScopeScopeAssociationGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiHarnessScopeScopeAssociationGrpcs.AddRange(matches);
             return responseList;
@@ -2521,7 +2521,7 @@
 
             ListDsiManualBomQuantityGrpc responseList = new ListDsiManualBomQuantityGrpc();
             List<DsiManualBomQuantityGrpc> matches = _ListDsiManualBomQuantityGrpc.DsiManualBomQuantityGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiManualBomQuantityGrpcs.AddRange(matches);
             return responseList;
@@ -2609,7 +2609,7 @@
 
             ListDsiMidWireComponentGrpc responseList = new ListDsiMidWireComponentGrpc();
             List<DsiMidWireComponentGrpc> matches = _ListDsiMidWireComponentGrpc.DsiMidWireComponentGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiMidWireComponentGrpcs.AddRange(matches);
             return responseList;
@@ -2697,7 +2697,7 @@
 
             ListDsiModuleChildDetailGrpc responseList = new ListDsiModuleChildDetailGrpc();
             List<DsiModuleChildDetailGrpc> matches = _ListDsiModuleChildDetailGrpc.DsiModuleChildDetailGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiModuleChildDetailGrpcs.AddRange(matches);
             return responseList;
@@ -2785,7 +2785,7 @@
 
             ListDsiModuleCompatibilityGrpc responseList = new ListDsiModuleCompatibilityGrpc();
             List<DsiModuleCompatibilityGrpc> matches = _ListDsiModuleCompatibilityGrpc.DsiModuleCompatibilityGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiModuleCompatibilityGrpcs.AddRange(matches);
             return responseList;
@@ -2873,7 +2873,7 @@
 
             ListDsiMulticoreSpecificationGrpc responseList = new ListDsiMulticoreSpecificationGrpc();
             List<DsiMulticoreSpecificationGrpc> matches = _ListDsiMulticoreSpecificationGrpc.DsiMulticoreSpecificationGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiMulticoreSpecificationGrpcs.AddRange(matches);
             return responseList;
@@ -2961,7 +2961,7 @@
 
             ListDsiPinMappingGrpc responseList = new ListDsiPinMappingGrpc();
             List<DsiPinMappingGrpc> matches = _ListDsiPinMappingGrpc.DsiPinMappingGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiPinMappingGrpcs.AddRange(matches);
             return responseList;
@@ -3049,7 +3049,7 @@
 
             ListDsiPinMappingCavityMappingAssociationGrpc responseList = new ListDsiPinMappingCavityMappingAssociationGrpc();
             List<DsiPinMappingCavityMappingAssociationGrpc> matches = _ListDsiPinMappingCavityMappingAssociationGrpc.DsiPinMappingCavityMappingAssociationGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiPinMappingCavityMappingAssociationGrpcs.AddRange(matches);
             return responseList;
@@ -3137,7 +3137,7 @@
 
             ListDsiScopeGrpc responseList = new ListDsiScopeGrpc();
             List<DsiScopeGrpc> matches = _ListDsiScopeGrpc.DsiScopeGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiScopeGrpcs.AddRange(matches);
             return responseList;
@@ -3225,7 +3225,7 @@
 
             ListDsiSupplierGrpc responseList = new ListDsiSupplierGrpc();
             List<DsiSupplierGrpc> matches = _ListDsiSupplierGrpc.DsiSupplierGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiSupplierGrpcs.AddRange(matches);
             return responseList;
@@ -3313,7 +3313,7 @@
 
             ListDsiTransformedCompositeDetailGrpc responseList = new ListDsiTransformedCompositeDetailGrpc();
             List<DsiTransformedCompositeDetailGrpc> matches = _ListDsiTransformedCompositeDetailGrpc.DsiTransformedCompositeDetailGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiTransformedCompositeDetailGrpcs.AddRange(matches);
             return responseList;
@@ -3401,7 +3401,7 @@
 
             ListDsiTransformedHarnessGrpc responseList = new ListDsiTransformedHarnessGrpc();
             List<DsiTransformedHarnessGrpc> matches = _ListDsiTransformedHarnessGrpc.DsiTransformedHarnessGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiTransformedHarnessGrpcs.AddRange(matches);
             return responseList;
@@ -3489,7 +3489,7 @@
 
             ListDsiTransformedModuleChildDetailGrpc responseList = new ListDsiTransformedModuleChildDetailGrpc();
             List<DsiTransformedModuleChildDetailGrpc> matches = _ListDsiTransformedModuleChildDetailGrpc.DsiTransformedModuleChildDetailGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiTransformedModuleChildDetailGrpcs.AddRange(matches);
             return responseList;
@@ -3577,7 +3577,7 @@
 
             ListDsiUnitOfMeasureGrpc responseList = new ListDsiUnitOfMeasureGrpc();
             List<DsiUnitOfMeasureGrpc> matches = _ListDsiUnitOfMeasureGrpc.DsiUnitOfMeasureGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiUnitOfMeasureGrpcs.AddRange(matches);
             return responseList;
@@ -3665,7 +3665,7 @@
 
             ListDsiWireMulticoreMarkerGrpc responseList = new ListDsiWireMulticoreMarkerGrpc();
             List<DsiWireMulticoreMarkerGrpc> matches = _ListDsiWireMulticoreMarkerGrpc.DsiWireMulticoreMarkerGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiWireMulticoreMarkerGrpcs.AddRange(matches);
             return responseList;
@@ -3753,7 +3753,7 @@
 
             ListDsiWireSpecificationGrpc responseList = new ListDsiWireSpecificationGrpc();
             List<DsiWireSpecificationGrpc> matches = _ListDsiWireSpecificationGrpc.DsiWireSpecificationGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiWireSpecificationGrpcs.AddRange(matches);
             return responseList;
@@ -3841,7 +3841,7 @@
 
             ListDsiWireThroughNodeGrpc responseList = new ListDsiWireThroughNodeGrpc();
             List<DsiWireThroughNodeGrpc> matches = _ListDsiWireThroughNodeGrpc.DsiWireThroughNodeGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiWireThroughNodeGrpcs.AddRange(matches);
             return responseList;
