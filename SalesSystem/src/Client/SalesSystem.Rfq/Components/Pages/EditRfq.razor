@@ -143,6 +143,15 @@ else
                                            Disabled="@(MatchedParts.Count == 0)">
                                     Flip All
                                 </MudButton>
+                                <MudButton Color="Color.Dark"
+                                           OnClick="@ShowDatasetStatusAsync"
+                                           Variant="Variant.Filled"
+                                           Size="Size.Small"
+                                           StartIcon="@Icons.Material.Filled.Assessment"
+                                           FullWidth="false"
+                                           Disabled="@(TotalParts == 0)">
+                                    Status
+                                </MudButton>
                             </MudStack>
                         </MudItem>
                         <MudItem>
@@ -226,6 +235,9 @@ else
     // Search All state tracking
     private bool _isSearchingAll = false;
     private CancellationTokenSource? _searchCancellationTokenSource;
+
+    // Helper property for total parts count
+    private int TotalParts => MatchedParts.Count + UnmatchedParts.Count;
 
     // Form related
     bool IsLoading { get; set; } = true;
@@ -719,6 +731,41 @@ else
             _isSearchingAll = false;
             _searchCancellationTokenSource?.Dispose();
             _searchCancellationTokenSource = null;
+        }
+    }
+    #endregion
+
+    #region Status
+    private async Task ShowDatasetStatusAsync()
+    {
+        try
+        {
+            Logger.GenericLogInformation($"EditRfq.ShowDatasetStatusAsync - Displaying status for {TotalParts} parts ({MatchedParts.Count} matched, {UnmatchedParts.Count} unmatched)");
+
+            DialogParameters statusParams = new DialogParameters
+            {
+                { "MatchedParts", MatchedParts },
+                { "UnmatchedParts", UnmatchedParts }
+            };
+
+            DialogOptions statusOptions = new DialogOptions
+            {
+                MaxWidth = MaxWidth.Large,
+                FullWidth = true,
+                CloseOnEscapeKey = true,
+                BackdropClick = false
+            };
+
+            await DialogService.ShowAsync<DatasetStatusDialog>(
+                "Dataset Status",
+                statusParams,
+                statusOptions
+            );
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError("EditRfq.ShowDatasetStatusAsync - Error showing dataset status", ex);
+            Snackbar.Add($"Error displaying status: {ex.Message}", Severity.Error);
         }
     }
     #endregion

@@ -6,11 +6,11 @@ namespace SalesSystem.Rfq.Models
     {
         // Move initialization to static constructor to fix IDESIGN102.
         // Remove explicit accessibility modifier to fix IDE0040.
-        static readonly List<RfqDrawingPartNumberUx> _TestList;
+        // static readonly List<RfqDrawingPartNumberUx> _TestList;
 
         static RfqDrawingPartNumberUx()
         {
-            _TestList = new List<RfqDrawingPartNumberUx>();
+            // _TestList = new List<RfqDrawingPartNumberUx>();
             //GenerateTestData();
         }
 
@@ -79,7 +79,7 @@ namespace SalesSystem.Rfq.Models
         //    }
         //}
 
-        public static IReadOnlyList<RfqDrawingPartNumberUx> TestList => _TestList.AsReadOnly();
+        // public static IReadOnlyList<RfqDrawingPartNumberUx> TestList => _TestList.AsReadOnly();
         public long RowId
         { get; set; }
         public long RfqId

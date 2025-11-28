@@ -9,7 +9,8 @@
         /// <returns></returns>
         public static IServiceCollection AddRfqUxServices(this IServiceCollection services)
         {
-            services.AddSingleton<RfqUxClientService>();
+            services.AddScoped<RfqUxClientService>();
+            services.AddScoped<CsvExportService>();
             return services;
         }
     }

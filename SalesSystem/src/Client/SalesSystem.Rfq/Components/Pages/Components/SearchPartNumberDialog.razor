@@ -3,7 +3,7 @@
 @using System.Text.Json
 
 @inject ISnackbar Snackbar
-@inject ILogger<SearchResultsDialog> Logger
+@inject ILogger<SearchPartNumberDialog> Logger
 @inject IDialogService DialogService
 @inject RfqUxClientService RfqUxClientService
 @inject CustomAuthenticationStateProvider GetAuthenticationStateAsync
@@ -11,15 +11,15 @@
 <MudDialog>
     <DialogContent>
         <MudText Typo="Typo.h6" Class="mb-4">
-            Found @SearchResults.Count result(s) for part number: @(SearchedPartNumber?.OriginalPartNumber ?? "N/A")
+            Found @SewsePartNumbers.Count result(s) for part number: @(SearchedPartNumber?.OriginalPartNumber ?? "N/A")
         </MudText>
 
-        @if (SearchResults.Count > 0)
+        @if (SewsePartNumbers.Count > 0)
         {
             <MudList T="string"
                      SelectionMode="SelectionMode.SingleSelection"
                      Dense="true">
-                @foreach (var (partNumber, index) in SearchResults.Select((pn, idx) => (pn, idx)))
+                @foreach (var (partNumber, index) in SewsePartNumbers.Select((pn, idx) => (pn, idx)))
                 {
                     <MudListItem>
                         <MudPaper Elevation="2" Class="pa-3 mb-2">
@@ -123,8 +123,10 @@
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
 
     [Parameter] public RfqDrawingPartNumberUx? SearchedPartNumber { get; set; }
-    [Parameter] public List<string?> SearchResults { get; set; } = new();
-    [Parameter] public List<decimal?> Prices { get; set; } = new();
+    [Parameter] public List<string?> SewsePartNumbers { get; set; } = new();  // a list of sewse part numbers corresponding to SearchedPartNumber in Emacs
+    // [Parameter] public List<decimal?> Prices { get; set; } = new();
+    
+    public List<MatchedPartNumberUx> MatchedPartNumbers { get; set; } = new();
 
     private Dictionary<int, PartImageData> _partImages = new();
     private Dictionary<int, bool> _loadingImageStates = new();
@@ -165,10 +167,10 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && SearchResults.Count > 0)
+        if (firstRender && SewsePartNumbers.Count > 0)
         {
             // Start loading images and NPR data for all parts in parallel
-            var loadTasks = SearchResults
+            var loadTasks = SewsePartNumbers
                 .Select((partNumber, index) => Task.WhenAll(
                     LoadPartImageAsync(partNumber, index),
                     LoadNprDataAsync(partNumber, index)
@@ -261,12 +263,11 @@
                     .Select(d => Math.Round((decimal)d, 5, MidpointRounding.AwayFromZero))
                     .ToList() ?? new List<decimal>();
 
-                _nprResults[index] = new NprResultData
-                {
-                    PartNumbers = nprPartNumbers,
-                    Prices = nprPrices
-                };
-
+                NprResultData nprResultData = new NprResultData();
+                nprResultData.PartNumbers.AddRange(nprPartNumbers);
+                nprResultData.Prices.AddRange(nprPrices);
+                _nprResults[index] = nprResultData;
+                
                 Logger.GenericLogInformation($"Successfully loaded NPR data for part number: {partNumber}, Found: {nprPartNumbers.Count} NPR parts");
             }
             else
@@ -348,7 +349,7 @@
 
     private bool HasImage(int index)
     {
-        return _partImages.ContainsKey(index) && _partImages[index].ImageBytes.Length > 0;
+        return _partImages.ContainsKey(index) && _partImages[index].ImageBytes.ToArray().Length > 0; // Fix: Changed Length() to Length
     }
 
     private bool IsLoadingImage(int index)
@@ -382,7 +383,7 @@
         {
             return new List<string>();
         }
-        return _nprResults[index].PartNumbers;
+        return _nprResults[index].PartNumbers.ToList();
     }
 
     private bool HasNprPrice(int index, int nprIndex)
@@ -417,7 +418,7 @@
         }
 
         var imageData = _partImages[index];
-        string base64Image = Convert.ToBase64String(imageData.ImageBytes);
+        string base64Image = Convert.ToBase64String(imageData.ImageBytes.ToArray());
         return $"data:{imageData.MimeType};base64,{base64Image}";
     }
 
@@ -426,15 +427,4 @@
         MudDialog.Close();
     }
 
-    private class PartImageData
-    {
-        public byte[] ImageBytes { get; set; } = Array.Empty<byte>();
-        public string MimeType { get; set; } = "image/png";
-    }
-
-    private class NprResultData
-    {
-        public List<string> PartNumbers { get; set; } = new();
-        public List<decimal> Prices { get; set; } = new();
-    }
 }

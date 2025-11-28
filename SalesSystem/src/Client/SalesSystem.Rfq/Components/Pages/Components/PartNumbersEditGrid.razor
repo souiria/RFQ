@@ -139,91 +139,7 @@
     {
         //_events.Insert(0, $"Event = CommittedItemChanges, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
     }
-    // private async Task OnSearch(RfqDrawingPartNumberUx item)
-    // {
-    //     if (item == null)
-    //     {
-    //         Logger.GenericLogInformation($"No part number found for null item...");
-    //         await DialogService.ShowMessageBox("Search Part Number", $"No part number found for null item...");
-    //         return;
-    //     }
 
-    //     Logger.GenericLogInformation($"Searching for part number: {item.OriginalPartNumber}");
-
-    //     var cleanedUpPn = item.OriginalPartNumber?.Replace("-", "").Replace(" ", "").ToUpperInvariant();
-    //     if (string.IsNullOrEmpty(cleanedUpPn))
-    //     {
-    //         Logger.GenericLogInformation($"No valid part number found for item with Row ID: {item.RowId}");
-    //         await DialogService.ShowMessageBox("Search Part Number", $"No valid part number found for item with Row ID: {item.RowId}");
-    //         return;
-    //     }
-
-    //     try
-    //     {
-    //         // Call SearchEmacsContainsCustomerPn
-    //         SearchResultUx response = await RfqUxClientService.SearchEmacsContainsCustomerPn(cleanedUpPn);
-
-    //         if (response.IsSuccessful && 0 <= response.StringList.Count)
-    //         {
-    //             Logger.GenericLogInformation($"Search successful: {response.StringList.Count} results found");
-
-    //             // Show custom dialog with MudList
-    //             DialogParameters parameters = new DialogParameters
-    //             {
-    //                 { "SearchedPartNumber", item },
-    //                 { "SearchResults", response.StringList.ToList() },
-    //             };
-
-    //             DialogOptions options = new DialogOptions
-    //             {
-    //                 MaxWidth = MaxWidth.Medium,
-    //                 FullWidth = true,
-    //                 CloseOnEscapeKey = true,
-    //                 BackdropClick = false
-    //             };
-
-    //             await DialogService.ShowAsync<SearchResultsDialog>(
-    //                 "Search Results",
-    //                 parameters,
-    //                 options
-    //             );
-    //         }
-    //         else
-    //         {
-    //             string message = $"No results found for part number: {item.OriginalPartNumber}";
-    //             Logger.GenericLogInformation(message);
-
-    //             // Show empty results dialog
-    //             DialogParameters parameters = new DialogParameters
-    //             {
-    //                 { "SearchedPartNumber", item.OriginalPartNumber },
-    //                 { "SearchResults", new List<string?>() },
-    //             };
-
-    //             DialogOptions options = new DialogOptions
-    //             {
-    //                 MaxWidth = MaxWidth.Medium,
-    //                 FullWidth = true,
-    //                 CloseOnEscapeKey = true,
-    //                 BackdropClick = false
-    //             };
-
-    //             await DialogService.ShowAsync<SearchResultsDialog>(
-    //                 "Search Results",
-    //                 parameters,
-    //                 options
-    //             );
-    //         }
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Logger.GenericLogError($"Error searching for part number: {item.OriginalPartNumber}", ex);
-    //         await DialogService.ShowMessageBox(
-    //             "Error",
-    //             $"An error occurred while searching: {ex.Message}"
-    //         );
-    //     }
-    // }
     private async Task OnSearch(RfqDrawingPartNumberUx item)
     {
         if (item == null)
@@ -254,10 +170,10 @@
 
                 // Show custom dialog with MudList
                 DialogParameters parameters = new DialogParameters
-            {
-                { "SearchedPartNumber", item },
-                { "SearchResults", response.StringList.ToList() },
-            };
+                {
+                    { "SearchedPartNumber", item },
+                    { "SewsePartNumbers", response.StringList.ToList() },
+                };
 
                 DialogOptions options = new DialogOptions
                 {
@@ -267,7 +183,7 @@
                     BackdropClick = false
                 };
 
-                IDialogReference dialog = await DialogService.ShowAsync<SearchResultsDialog>(
+                IDialogReference dialog = await DialogService.ShowAsync<SearchPartNumberDialog>(
                     "Search Results",
                     parameters,
                     options
@@ -328,10 +244,10 @@
 
                 // Show empty results dialog
                 DialogParameters parameters = new DialogParameters
-            {
-                { "SearchedPartNumber", item },
-                { "SearchResults", new List<string?>() },
-            };
+                {
+                    { "SearchedPartNumber", item },
+                    { "SearchResults", new List<string?>() },
+                };
 
                 DialogOptions options = new DialogOptions
                 {
@@ -341,7 +257,7 @@
                     BackdropClick = false
                 };
 
-                await DialogService.ShowAsync<SearchResultsDialog>(
+                await DialogService.ShowAsync<SearchPartNumberDialog>(
                     "Search Results",
                     parameters,
                     options

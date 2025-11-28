@@ -1,0 +1,248 @@
+@using SalesSystem.Rfq.Models
+@using MudBlazor
+@using SalesSystem.Rfq.Services
+@using Microsoft.JSInterop
+
+@inject IJSRuntime JSRuntime
+@inject ISnackbar Snackbar
+@inject ILogger<DatasetStatusDialog> Logger
+@inject IDialogService DialogService
+@inject CsvExportService CsvExportService
+
+<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.h5" Class="mb-4" Align="Align.Center">
+            Dataset Status Summary
+        </MudText>
+
+        <MudGrid>
+            <!-- Overview Statistics -->
+            <MudItem xs="12">
+                <MudText Typo="Typo.h6" Class="mb-3">Overview</MudText>
+            </MudItem>
+
+            <MudItem xs="12" sm="4">
+                <MudPaper Elevation="3" Class="pa-4 text-center">
+                    <MudText Typo="Typo.h3" Color="Color.Primary">@TotalParts</MudText>
+                    <MudText Typo="Typo.body1">Total Parts</MudText>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="4">
+                <MudPaper Elevation="3" Class="pa-4 text-center">
+                    <MudText Typo="Typo.h3" Color="Color.Success">@MatchedCount</MudText>
+                    <MudText Typo="Typo.body1">Matched (@MatchedPercentage%)</MudText>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="4">
+                <MudPaper Elevation="3" Class="pa-4 text-center">
+                    <MudText Typo="Typo.h3" Color="Color.Warning">@UnmatchedCount</MudText>
+                    <MudText Typo="Typo.body1">Unmatched (@UnmatchedPercentage%)</MudText>
+                </MudPaper>
+            </MudItem>
+
+            <!-- Progress Bar -->
+            <MudItem xs="12" Class="mt-4">
+                <MudText Typo="Typo.body1" Class="mb-2">Match Progress</MudText>
+                <MudProgressLinear Color="Color.Success"
+                                   Value="@MatchedPercentage"
+                                   Size="Size.Large"
+                                   Class="mb-2" />
+                <div class="d-flex justify-space-between">
+                    <MudText Typo="Typo.caption" Color="Color.Success">@MatchedPercentage% Matched</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Warning">@UnmatchedPercentage% Unmatched</MudText>
+                </div>
+            </MudItem>
+
+            <!-- Price Summary -->
+            <MudItem xs="12" Class="mt-4">
+                <MudText Typo="Typo.h6" Class="mb-3">Price Summary</MudText>
+            </MudItem>
+
+            <MudItem xs="12" sm="6">
+                <MudPaper Elevation="2" Class="pa-3">
+                    <MudText Typo="Typo.h6" Color="Color.Info">@TotalOriginalPrice.ToString("C2")</MudText>
+                    <MudText Typo="Typo.body2">Total Original Price</MudText>
+                    <MudText Typo="Typo.caption">@PartsWithOriginalPrice parts with pricing</MudText>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="6">
+                <MudPaper Elevation="2" Class="pa-3">
+                    <MudText Typo="Typo.h6" Color="Color.Success">@TotalSwappedPrice.ToString("C2")</MudText>
+                    <MudText Typo="Typo.body2">Total Matched Price</MudText>
+                    <MudText Typo="Typo.caption">@PartsWithSwappedPrice parts with NPR pricing</MudText>
+                </MudPaper>
+            </MudItem>
+
+            <!-- Price Difference -->
+            @if (PriceDifference != 0)
+            {
+                <MudItem xs="12" Class="mt-2">
+                    <MudPaper Elevation="2" Class="pa-3">
+                        <div class="d-flex align-center">
+                            <MudText Typo="Typo.h6"
+                                     Color="@(PriceDifference >= 0 ? Color.Error : Color.Success)"
+                                     Class="mr-2">
+                                @PriceDifference.ToString("C2")
+                            </MudText>
+                            <MudIcon Icon="@(PriceDifference >= 0 ? Icons.Material.Filled.TrendingUp : Icons.Material.Filled.TrendingDown)"
+                                     Color="@(PriceDifference >= 0 ? Color.Error : Color.Success)" />
+                            <MudText Typo="Typo.body1" Class="ml-2">
+                                Price Difference (@PriceDifferencePercentage% @(PriceDifference >= 0 ? "increase" : "savings"))
+                            </MudText>
+                        </div>
+                    </MudPaper>
+                </MudItem>
+            }
+
+            <!-- Additional Stats -->
+            @if (MultiMatchCount > 0)
+            {
+                <MudItem xs="12" Class="mt-4">
+                    <MudAlert Severity="Severity.Info" Dense="true">
+                        <MudText Typo="Typo.body2">
+                            <strong>@MultiMatchCount</strong> part(s) have multiple NPR matches available
+                        </MudText>
+                    </MudAlert>
+                </MudItem>
+            }
+
+            <!-- Parts by Price Source -->
+            @if (PriceSourceBreakdown.Count > 0)
+            {
+                <MudItem xs="12" Class="mt-4">
+                    <MudText Typo="Typo.h6" Class="mb-3">Parts by Price Source</MudText>
+                    @foreach (var source in PriceSourceBreakdown)
+                    {
+                        <MudChip T="string"
+                                 Color="Color.Default"
+                                 Size="Size.Small"
+                                 Class="ma-1">
+                            @source.Key: @source.Value
+                        </MudChip>
+                    }
+                </MudItem>
+            }
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="ExportToCsv"
+                   Color="Color.Success"
+                   Variant="Variant.Filled"
+                   StartIcon="@Icons.Material.Filled.Download"
+                   Disabled="@_isExporting">
+            @if (_isExporting)
+            {
+                <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+                <span class="ml-2">Exporting...</span>
+            }
+            else
+            {
+                <span>Export CSV</span>
+            }
+        </MudButton>
+        <MudButton OnClick="Close" Color="Color.Primary" Variant="Variant.Filled">
+            Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter] public List<RfqDrawingPartNumberUx?> MatchedParts { get; set; } = new();
+    [Parameter] public List<RfqDrawingPartNumberUx?> UnmatchedParts { get; set; } = new();
+
+    private bool _isExporting = false;
+
+    private int TotalParts => MatchedParts.Count + UnmatchedParts.Count;
+    private int MatchedCount => MatchedParts.Count;
+    private int UnmatchedCount => UnmatchedParts.Count;
+    private double MatchedPercentage => TotalParts > 0 ? Math.Round((MatchedCount * 100.0) / TotalParts, 1) : 0;
+    private double UnmatchedPercentage => TotalParts > 0 ? Math.Round((UnmatchedCount * 100.0) / TotalParts, 1) : 0;
+
+    private decimal TotalOriginalPrice =>
+        MatchedParts.Concat(UnmatchedParts)
+                   .Where(p => p?.OriginalPartNumberPrice.HasValue == true)
+                   .Sum(p => p!.OriginalPartNumberPrice!.Value);
+
+    private decimal TotalSwappedPrice =>
+        MatchedParts.Where(p => p?.SwappedPartNumberPrice.HasValue == true)
+                   .Sum(p => p!.SwappedPartNumberPrice!.Value);
+
+    private int PartsWithOriginalPrice =>
+        MatchedParts.Concat(UnmatchedParts)
+                   .Count(p => p?.OriginalPartNumberPrice.HasValue == true);
+
+    private int PartsWithSwappedPrice =>
+        MatchedParts.Count(p => p?.SwappedPartNumberPrice.HasValue == true);
+
+    private decimal PriceDifference => TotalSwappedPrice - TotalOriginalPrice;
+
+    private double PriceDifferencePercentage =>
+        TotalOriginalPrice > 0 ? Math.Round(Math.Abs((double)PriceDifference / (double)TotalOriginalPrice) * 100, 1) : 0;
+
+    private int MultiMatchCount =>
+        MatchedParts.Count(p => p?.MultiMatch == true);
+
+    private Dictionary<string, int> PriceSourceBreakdown =>
+        MatchedParts.Where(p => !string.IsNullOrWhiteSpace(p?.PriceSource))
+                   .GroupBy(p => p!.PriceSource!)
+                   .ToDictionary(g => g.Key, g => g.Count());
+    private IJSObjectReference? _module;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                _module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/FileDownload.js");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERROR initializing file download JS module: {ex.Message}");
+            }
+        }
+    }
+
+    private async Task ExportToCsv()
+    {
+        if (_isExporting || TotalParts == 0)
+            return;
+
+        _isExporting = true;
+        StateHasChanged();
+
+        try
+        {
+            Logger.LogInformation($"DatasetStatusDialog.ExportToCsv - Starting export of {TotalParts} parts ({MatchedCount} matched, {UnmatchedCount} unmatched)");
+
+            // Fix: Convert to Collection<T> as required by method signature
+            var matchedCollection = new System.Collections.ObjectModel.Collection<RfqDrawingPartNumberUx?>(MatchedParts);
+            var unmatchedCollection = new System.Collections.ObjectModel.Collection<RfqDrawingPartNumberUx?>(UnmatchedParts);
+
+            await CsvExportService.ExportPartNumbersToCsvAsync(matchedCollection, unmatchedCollection, "RFQ_Dataset_Export");
+
+            Snackbar.Add($"Successfully exported {TotalParts} parts to CSV", Severity.Success);
+            Logger.LogInformation($"DatasetStatusDialog.ExportToCsv - Export completed successfully");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "DatasetStatusDialog.ExportToCsv - Error exporting data to CSV");
+            Snackbar.Add($"Error exporting data: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isExporting = false;
+            StateHasChanged();
+        }
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+}
