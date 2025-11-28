@@ -1,4 +1,6 @@
-﻿namespace RfqModule.Services
+﻿using System.Text.RegularExpressions;
+
+namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {
@@ -843,7 +845,7 @@
             EmacsFilterRequestGrpc emacsRequest = new EmacsFilterRequestGrpc();
             Collection<CombinedPartsGrpc> filteredList = new Collection<CombinedPartsGrpc>();
             FilterGrpcResponse response = new FilterGrpcResponse();
-            string[] parametersToSearch = ["UniformCustomerNumber", "UniformSupplierNumber", "UniformSumitomoNumber"];
+            string[] parametersToSearch = ["CustomerNumber", "SupplierNumber", "SumitomoNumber"];
             foreach (string parameter in parametersToSearch)
             {
                 EmacsFilterResponseGrpc partNumberResponse = FilterSumitomoNumber<EmacsFilterResponseGrpc>(request.StringValue, parameter, "==");
@@ -871,9 +873,12 @@
             Collection<CombinedPartsGrpc> filteredList = new Collection<CombinedPartsGrpc>();
             FilterGrpcResponse response = new FilterGrpcResponse();
             string[] parametersToSearch = ["UniformCustomerNumber", "UniformSupplierNumber", "UniformSumitomoNumber"];
+            Regex regexFilter = new Regex("(?:[^a-z0-9 ]|(?<=['\"])s)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+            string uniformStringValue = regexFilter.Replace(request.StringValue, String.Empty);
+            uniformStringValue = uniformStringValue.ToUpperInvariant().Trim();
             foreach (string parameter in parametersToSearch)
             {
-                EmacsFilterResponseGrpc partNumberResponse = FilterSumitomoNumber<EmacsFilterResponseGrpc>(request.StringValue, parameter, ".Contains");
+                EmacsFilterResponseGrpc partNumberResponse = FilterSumitomoNumber<EmacsFilterResponseGrpc>(uniformStringValue, parameter, ".Contains");
                 if (partNumberResponse.ListCombinedPartsGrpc != null)
                 {
                     filteredList = ExtractEmacsResponseData<CombinedPartsGrpc>(partNumberResponse);
