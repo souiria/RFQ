@@ -317,6 +317,7 @@
                 {
                     "CLIPTYPEGRPC" => _ClipTypeGrpcs.ClipTypeGrpcs.Cast<T>().Where(func).ToList(),
                     "COVERTYPEGRPC" => _CoverTypeGrpcs.CoverTypeGrpcs.Cast<T>().Where(func).ToList(),
+                    "CRIMPINGPROCESSTYPEGRPC" => _CrimpingProcessTypeGrpcs.CrimpingProcessTypeGrpcs.Cast<T>().Where(func).ToList(),
                     "FILETYPEGRPC" => _FileTypeGrpcs.FileTypeGrpcs.Cast<T>().Where(func).ToList(),
                     "FUSETYPEGRPC" => _FuseTypeGrpcs.FuseTypeGrpcs.Cast<T>().Where(func).ToList(),
                     "MATERIALTYPEGRPC" => _MaterialTypeGrpcs.MaterialTypeGrpcs.Cast<T>().Where(func).ToList(),
@@ -330,7 +331,10 @@
                     "WATERPROOFTYPEGRPC" => _WaterproofTypeGrpcs.WaterproofTypeGrpcs.Cast<T>().Where(func).ToList(),
                     "WIREPROTECTIONTYPEGRPC" => _WireProtectionTypeGrpcs.WireProtectionTypeGrpcs.Cast<T>().Where(func).ToList(),
                     "WIRETYPEGRPC" => _WireTypeGrpcs.WireTypeGrpcs.Cast<T>().Where(func).ToList(),
+                    "FILENAMEGRPC" => _FileNameGrpcs.FileNameGrpcs.Cast<T>().Where(func).ToList(),
                     "PARTNUMBERGRPC" => _PartNumberGrpcs.PartNumberGrpcs.Cast<T>().Where(func).ToList(),
+                    "TAGGRPC" => _TagGrpcs.TagGrpcs.Cast<T>().Where(func).ToList(),
+                    "COMPOSITECOMPONENTGRPC" => _CompositeComponentGrpcs.CompositeComponentGrpcs.Cast<T>().Where(func).ToList(),
                     "MISCELLANEOUSCOMPONENTGRPC" => _MiscellaneousComponentGrpcs.MiscellaneousComponentGrpcs.Cast<T>().Where(func).ToList(),
                     _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
                 };

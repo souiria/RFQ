@@ -161,7 +161,7 @@ namespace Unit.Tests.CDb
 
         [Test]
         [Category("Unit")]
-        public void GetByIdClipTypeGrpcNewTest()
+        public void GetByIdClipTypeGrpcTest()
         {
             // Arrange
             CdbFilterRequestGrpc request = new CdbFilterRequestGrpc();
@@ -226,7 +226,7 @@ namespace Unit.Tests.CDb
 
         [Test]
         [Category("Unit")]
-        public void GetByCodeClipTypeGrpcNewTest()
+        public void GetByCodeClipTypeGrpcTest()
         {
             // Arrange
             CdbFilterRequestGrpc request = new CdbFilterRequestGrpc();

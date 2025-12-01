@@ -46,6 +46,16 @@
                     returnResponse.IsSuccess = true;
                 }, context.CancellationToken);
                 break;
+                case "CRIMPINGPROCESSTYPEGRPC":
+                await _CDbAccessService.HandleFilterCase<CrimpingProcessTypeGrpc>(filterExpression, parsingConfig,
+                filterList =>
+                {
+                    ListCrimpingProcessTypeGrpc returnList = new ListCrimpingProcessTypeGrpc();
+                    returnList.CrimpingProcessTypeGrpcs.AddRange(filterList);
+                    returnResponse.ListCrimpingProcessTypes = returnList;
+                    returnResponse.IsSuccess = true;
+                }, context.CancellationToken);
+                break;
                 case "FILETYPEGRPC":
                 await _CDbAccessService.HandleFilterCase<FileTypeGrpc>(filterExpression, parsingConfig,
                 filterList =>
@@ -176,6 +186,16 @@
                     returnResponse.IsSuccess = true;
                 }, context.CancellationToken);
                 break;
+                case "FILENAMEGRPC":
+                await _CDbAccessService.HandleFilterCase<FileNameGrpc>(filterExpression, parsingConfig,
+                filterList =>
+                {
+                    ListFileNameGrpc returnList = new ListFileNameGrpc();
+                    returnList.FileNameGrpcs.AddRange(filterList);
+                    returnResponse.ListFileNames = returnList;
+                    returnResponse.IsSuccess = true;
+                }, context.CancellationToken);
+                break;
                 case "PARTNUMBERGRPC":
                 await _CDbAccessService.HandleFilterCase<PartNumberGrpc>(filterExpression, parsingConfig,
                 filterList =>
@@ -183,6 +203,26 @@
                     ListPartNumberGrpc returnList = new ListPartNumberGrpc();
                     returnList.PartNumberGrpcs.AddRange(filterList);
                     returnResponse.ListPartNumbers = returnList;
+                    returnResponse.IsSuccess = true;
+                }, context.CancellationToken);
+                break;
+                case "TAGGRPC":
+                await _CDbAccessService.HandleFilterCase<TagGrpc>(filterExpression, parsingConfig,
+                filterList =>
+                {
+                    ListTagGrpc returnList = new ListTagGrpc();
+                    returnList.TagGrpcs.AddRange(filterList);
+                    returnResponse.ListTags = returnList;
+                    returnResponse.IsSuccess = true;
+                }, context.CancellationToken);
+                break;
+                case "COMPOSITECOMPONENTGRPC":
+                await _CDbAccessService.HandleFilterCase<CompositeComponentGrpc>(filterExpression, parsingConfig,
+                filterList =>
+                {
+                    ListCompositeComponentGrpc returnList = new ListCompositeComponentGrpc();
+                    returnList.CompositeComponentGrpcs.AddRange(filterList);
+                    returnResponse.ListCompositeComponents = returnList;
                     returnResponse.IsSuccess = true;
                 }, context.CancellationToken);
                 break;
