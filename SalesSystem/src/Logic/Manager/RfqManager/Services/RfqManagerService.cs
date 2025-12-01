@@ -1049,11 +1049,11 @@ namespace RfqModule.Services
             string filterExpression = string.Empty;
             if (filterOpperator == "==")
             {
-                filterExpression = $"{filterType} != null && {filterType}.ToUpperInvariant() {filterOpperator} \"{partNumber}\"";
+                filterExpression = $"{filterType} != null && {filterType}.ToUpperInvariant() {filterOpperator} \"{partNumber.ToUpperInvariant()}\"";
             }
             else if (filterOpperator == ".Contains")
             {
-                filterExpression = $"{filterType} != null && {filterType}.ToUpperInvariant(){filterOpperator}(\"{partNumber}\")";
+                filterExpression = $"{filterType} != null && {filterType}.ToUpperInvariant(){filterOpperator}(\"{partNumber.ToUpperInvariant()}\")";
             }
             else
             {
