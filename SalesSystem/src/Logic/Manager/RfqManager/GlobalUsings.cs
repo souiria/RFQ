@@ -7,6 +7,7 @@ global using Grpc.Core;
 global using Logging;
 global using Master;
 global using static Master.Master;
+global using Microsoft.Extensions.Logging;  
 global using NPR;
 global using Rfq;
 global using RfqModule.Data.Time;

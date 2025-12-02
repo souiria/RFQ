@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace RfqModule.Endpoints.GrpcServices
+﻿namespace RfqModule.Endpoints.GrpcServices
 {
     public class RfqGrpcService : RfqModule.RfqModuleBase
     {
