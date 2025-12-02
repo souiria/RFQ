@@ -346,6 +346,29 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
+        public async Task<UpdateRfqDrawingPartNumbersGrpcResponse> UpdateRfqDrawingPartNumbersAsync(IEnumerable<RfqDrawingPartNumber> parts)
+{
+    using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+
+    try
+    {
+        // Build the request
+        UpdateRfqDrawingPartNumbersGrpcRequest request = new UpdateRfqDrawingPartNumbersGrpcRequest();
+        request.RfqDrawingPartNumbersGrpcsToUpdate.AddRange(parts);
+
+        // Call the gRPC client
+        UpdateRfqDrawingPartNumbersGrpcResponse response =
+            await _Client.UpdateRfqDrawingPartNumbersGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+        return response;
+    }
+    catch (Exception ex)
+    {
+        _Logger?.GenericLogError("Error in UpdateRfqDrawingPartNumbersAsync", ex);
+        throw;
+    }
+}
+
         public async Task<RfqCrudResponse> DeleteRfqProjectByRowIdAsync(long rowId)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);

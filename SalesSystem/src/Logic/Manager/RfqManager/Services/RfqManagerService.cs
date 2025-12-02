@@ -504,7 +504,46 @@
                 throw;
             }
         }
+        public async Task<UpdateRfqDrawingPartNumbersGrpcResponse> UpdateRfqDrawingPartNumbers(UpdateRfqDrawingPartNumbersGrpcRequest request)
+        {
+            try
+            {
+                await Task.Delay(1);
 
+                // Map each incoming part into a gRPC DTO
+                List<RfqDrawingPartNumbersGrpc> partsToUpdate = new List<RfqDrawingPartNumbersGrpc>();
+                foreach (RfqDrawingPartNumber part in request.RfqDrawingPartNumbersGrpcsToUpdate)
+                {
+                    RfqDrawingPartNumbersGrpc grpcPart = new RfqDrawingPartNumbersGrpc();
+                    grpcPart.RowId = part.RowId;
+                    grpcPart.RfqId = part.RfqId;
+                    grpcPart.OriginalPartNumber = part.OriginalPartNumber;
+                    grpcPart.OriginalPartNumberPrice = part.OriginalPartNumberPrice;
+                    grpcPart.SwappedPartNumber = part.SwappedPartNumber;
+                    grpcPart.SwappedPartNumberPrice = part.SwappedPartNumberPrice;
+                    grpcPart.PriceSource = part.PriceSource;
+                    grpcPart.IsExactMatch = part.IsExactMatch;
+                    grpcPart.IsSwapped = part.IsSwapped;
+                    grpcPart.Comments = part.Comments;
+                    partsToUpdate.Add(grpcPart);
+                }
+
+                RfqDrawingPartNumbersGrpcRequest rfqProjectRequest = new RfqDrawingPartNumbersGrpcRequest();
+                rfqProjectRequest.GrpcRequestParameter = new GrpcRequestParameter();
+                rfqProjectRequest.GrpcRequestParameter.RequestType = 80;
+                rfqProjectRequest.RfqDrawingPartNumbersGrpcsToUpdate.Add(partsToUpdate);
+                RfqCrudGrpcResponse updateResponse = _RfqClient.UpdateRfqDrawingPartNumbersGrpc(rfqProjectRequest);
+                UpdateRfqDrawingPartNumbersGrpcResponse response = new UpdateRfqDrawingPartNumbersGrpcResponse();
+                response.Success = updateResponse.SaveSuccess;
+                response.Message = updateResponse.Message;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError("Error Updating RFQ drawing part numbers", ex);
+                throw;
+            }
+        }
         public async Task<GetRfqDrawingPartNumbersByRfqIdGrpcResponse> GetRfqDrawingPartNumbersByRfqIdGrpc(GetRfqDrawingPartNumbersByRfqIdGrpcRequest request)
         {
             try

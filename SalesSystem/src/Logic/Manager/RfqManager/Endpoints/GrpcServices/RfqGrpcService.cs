@@ -1,4 +1,6 @@
-﻿namespace RfqModule.Endpoints.GrpcServices
+﻿using Microsoft.Extensions.Logging;
+
+namespace RfqModule.Endpoints.GrpcServices
 {
     public class RfqGrpcService : RfqModule.RfqModuleBase
     {
@@ -125,6 +127,14 @@
                     break;
             }
 
+            return response;
+        }
+        public override async Task<UpdateRfqDrawingPartNumbersGrpcResponse> UpdateRfqDrawingPartNumbersGrpc(
+            UpdateRfqDrawingPartNumbersGrpcRequest request,
+            ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("UpdateRfqDrawingPartNumbersGrpc starting");
+            UpdateRfqDrawingPartNumbersGrpcResponse response = await _RfqManagerService.UpdateRfqDrawingPartNumbers(request);
             return response;
         }
     }
