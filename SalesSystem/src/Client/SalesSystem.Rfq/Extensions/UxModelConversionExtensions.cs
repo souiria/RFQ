@@ -76,8 +76,28 @@ namespace SalesSystem.Rfq.Extensions
 
             uxModel.RowId = dto.RowId;
             uxModel.RfqId = dto.RfqId;
-            uxModel.OriginalPartNumber = dto.OriginalPartNumber;
-            uxModel.OriginalPartNumberPrice = dto.OriginalPartNumberPrice != 0 ? Convert.ToDecimal(dto.OriginalPartNumberPrice) : null;
+            string[]? ar = dto.OriginalPartNumber?.Split('|');
+            if(ar is not null && 0 <= ar.Length)
+            {
+                switch(ar.Length)
+                {
+                    case 1:
+                        uxModel.CustomerPartNumber = ar[0] ?? "N/A";
+                        uxModel.DrawingPartNumber = "N/A";
+                        break;
+                    case 2:
+                        uxModel.CustomerPartNumber = ar[0] ?? "N/A";
+                        uxModel.DrawingPartNumber = ar[1] ?? "N/A";
+                        break;
+                }
+            }
+            else
+            {
+                uxModel.CustomerPartNumber = dto.OriginalPartNumber;
+                uxModel.DrawingPartNumber = "N/A";
+            }
+
+            uxModel.DrawingPartNumberPrice = dto.OriginalPartNumberPrice != 0 ? Convert.ToDecimal(dto.OriginalPartNumberPrice) : null;
             uxModel.SwappedPartNumber = dto.SwappedPartNumber;
             uxModel.SwappedPartNumberPrice = dto.SwappedPartNumberPrice != 0 ? Convert.ToDecimal(dto.SwappedPartNumberPrice) : null;
             uxModel.PriceSource = dto.PriceSource;

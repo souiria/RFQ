@@ -456,7 +456,7 @@ else
                     // Update via service
                     await RfqUxClientService.UpdateRfqDrawingPartNumber(part);
 
-                    Logger.GenericLogInformation($"EditRfq.FlipAllMatchedPartsAsync - Flipped part: {part.OriginalPartNumber}");
+                    Logger.GenericLogInformation($"EditRfq.FlipAllMatchedPartsAsync - Flipped part: {part.CustomerPartNumber}/{part.DrawingPartNumber}/");
                 }
             }
 
@@ -571,7 +571,7 @@ else
             int multiMatchCount = 0;
 
             // Process each unmatched part
-            foreach (var part in UnmatchedParts.ToList())
+            foreach (RfqDrawingPartNumberUx? part in UnmatchedParts.ToList())
             {
                 if (_searchCancellationTokenSource.Token.IsCancellationRequested)
                 {
@@ -579,29 +579,33 @@ else
                     break;
                 }
 
-                if (part == null || string.IsNullOrWhiteSpace(part.OriginalPartNumber))
+                if (part == null || string.IsNullOrWhiteSpace(part.CustomerPartNumber))
                 {
                     continue;
                 }
 
-                string currentPartNumber = part.OriginalPartNumber;
+                string currentPartNumber = part.CustomerPartNumber;
                 Logger.GenericLogInformation($"EditRfq.SearchAllUnmatchedPartsAsync - Searching part {processedCount + 1}/{totalCount}: {currentPartNumber}");
 
                 try
                 {
                     // Clean up part number
-                    string cleanedUpPn = part.OriginalPartNumber.Replace("-", "").Replace(" ", "").ToUpperInvariant();
+                    string cleanedUpPn = part.CustomerPartNumber.Replace("-", "").Replace(" ", "").ToUpperInvariant();
 
                     // Search EMACS for Sumitomo part numbers
-                    SearchResultUx emacsResponse = await RfqUxClientService.SearchEmacsContainsCustomerPn(cleanedUpPn);
+                    SearchResultUx emacsExactResponse = await RfqUxClientService.SearchEmacsExactCustomerPn(cleanedUpPn);
+                    SearchResultUx emacsContainsResponse = await RfqUxClientService.SearchEmacsContainsCustomerPn(cleanedUpPn);
 
                     totalSearched++;
-
-                    if (emacsResponse.IsSuccessful && emacsResponse.StringList != null && emacsResponse.StringList.Count > 0)
+                    // first try exact match
+                    if (emacsExactResponse.IsSuccessful && emacsExactResponse.StringList != null && emacsExactResponse.StringList.Count > 0)
                     {
                         // Get the first Sumitomo part number
-                        string? sumitomoPartNumber = emacsResponse.StringList.FirstOrDefault();
+                        string? sumitomoPartNumber = emacsExactResponse.StringList.FirstOrDefault();
+                        // Add all exactly matched part numbers
+                        part.MatchedPartNumbers.AddRange(emacsExactResponse.ToMatchedPartNumbersList(true));
 
+                        // now search for prices in NPR
                         if (!string.IsNullOrWhiteSpace(sumitomoPartNumber))
                         {
                             // Search NPR for pricing
@@ -621,13 +625,17 @@ else
                                 bool hasMultipleMatches = nprResponse.StringList.Count > 1;
 
                                 // Update part with NPR data
-                                part.SwappedPartNumber = nprPartNumber;
-                                part.SwappedPartNumberPrice = nprPrice;
+                                part.DrawingPartNumber = nprPartNumber;
+                                part.DrawingPartNumberPrice = nprPrice;
+                                // part.SwappedPartNumber = nprPartNumber;
+                                // part.SwappedPartNumberPrice = nprPrice;
                                 part.PriceSource = "NPR";
                                 part.IsExactMatch = true;
                                 part.IsMatched = true;
                                 part.IsSwapped = false;
                                 part.MultiMatch = hasMultipleMatches;
+                                // add all the matches in the nprsearch list to the first of the MatchedPartNumbers
+                                part.MatchedPartNumbers[0].NprSearchResults.AddRange(nprResponse.ToNprSearchResultsList());
 
                                 if (hasMultipleMatches)
                                 {
@@ -644,7 +652,9 @@ else
                                     NprPartNumber = nprPartNumber,
                                     NprPrice = nprPrice,
                                     MultiMatch = hasMultipleMatches,
-                                    MatchCount = nprResponse.StringList.Count
+                                    MatchCount = nprResponse.StringList.Count,
+                                    NprSearchResults0 = part.MatchedPartNumbers[0].NprSearchResults
+
                                 };
 
                                 string commentJson = System.Text.Json.JsonSerializer.Serialize(commentData, new System.Text.Json.JsonSerializerOptions
@@ -667,7 +677,100 @@ else
                                 partsToMove.Add(part);
                                 totalMatched++;
 
-                                Logger.GenericLogInformation($"EditRfq.SearchAllUnmatchedPartsAsync - Matched part: {currentPartNumber} -> {nprPartNumber} (${nprPrice:F5}) - MultiMatch: {hasMultipleMatches}");
+                                Logger.GenericLogInformation($"EditRfq.SearchAllUnmatchedPartsAsync - Matched contains part: {currentPartNumber} -> {nprPartNumber} (${nprPrice:F5}) - MultiMatch: {hasMultipleMatches}");
+                            }
+                            else
+                            {
+                                totalUnmatched++;
+                                Logger.GenericLogInformation($"EditRfq.SearchAllUnmatchedPartsAsync - No NPR data found for: {currentPartNumber}");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // totalUnmatched++;
+                        Logger.GenericLogInformation($"EditRfq.SearchAllUnmatchedPartsAsync - No EMACS results for: {currentPartNumber}");
+                    }
+
+                    // no exact match, try contains
+                    if (emacsContainsResponse.IsSuccessful && emacsContainsResponse.StringList != null && emacsContainsResponse.StringList.Count > 0)
+                    {
+                        // Get the first Sumitomo part number
+                        string? sumitomoPartNumber = emacsContainsResponse.StringList.FirstOrDefault();
+                        // Add all contains matched part numbers
+                        part.MatchedPartNumbers.AddRange(emacsContainsResponse.ToMatchedPartNumbersList(false));
+
+                        if (!string.IsNullOrWhiteSpace(sumitomoPartNumber))
+                        {
+                            // Search NPR for pricing
+                            SearchResultUx nprResponse = await RfqUxClientService.SearchNprSewsePn(sumitomoPartNumber);
+
+                            if (nprResponse.IsSuccessful &&
+                                nprResponse.StringList != null &&
+                                nprResponse.StringList.Count > 0 &&
+                                nprResponse.DoubleList != null &&
+                                nprResponse.DoubleList.Count > 0)
+                            {
+                                // Get the first NPR part and price
+                                string nprPartNumber = nprResponse.StringList[0];
+                                decimal nprPrice = Math.Round((decimal)nprResponse.DoubleList[0], 5, MidpointRounding.AwayFromZero);
+
+                                // Check if there are multiple matches
+                                bool hasMultipleMatches = nprResponse.StringList.Count > 1;
+
+                                // Update part with NPR data
+                                part.DrawingPartNumber = nprPartNumber;
+                                part.DrawingPartNumberPrice = nprPrice;
+                                // part.SwappedPartNumber = nprPartNumber;
+                                // part.SwappedPartNumberPrice = nprPrice;
+                                part.PriceSource = "NPR";
+                                part.IsExactMatch = true;
+                                part.IsMatched = true;
+                                part.IsSwapped = false;
+                                part.MultiMatch = hasMultipleMatches;
+                                // add all the matches in the nprsearch list to the first of the MatchedPartNumbers
+                                part.MatchedPartNumbers[0].NprSearchResults.AddRange(nprResponse.ToNprSearchResultsList());
+
+                                if (hasMultipleMatches)
+                                {
+                                    multiMatchCount++;
+                                }
+
+                                // Add audit comment
+                                var commentData = new
+                                {
+                                    User = "System",
+                                    Timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                                    Action = "AutoSearch_NPR_Applied",
+                                    SumitomoPartNumber = sumitomoPartNumber,
+                                    NprPartNumber = nprPartNumber,
+                                    NprPrice = nprPrice,
+                                    MultiMatch = hasMultipleMatches,
+                                    MatchCount = nprResponse.StringList.Count,
+                                    NprSearchResults0 = part.MatchedPartNumbers[0].NprSearchResults
+                                };
+
+                                string commentJson = System.Text.Json.JsonSerializer.Serialize(commentData, new System.Text.Json.JsonSerializerOptions
+                                {
+                                    WriteIndented = false
+                                });
+
+                                if (string.IsNullOrWhiteSpace(part.Comments))
+                                {
+                                    part.Comments = commentJson;
+                                }
+                                else
+                                {
+                                    part.Comments += $"; {commentJson}";
+                                }
+
+                                // Update via service
+                                await RfqUxClientService.UpdateRfqDrawingPartNumber(part);
+
+                                partsToMove.Add(part);
+                                totalMatched++;
+
+                                Logger.GenericLogInformation($"EditRfq.SearchAllUnmatchedPartsAsync - Matched contains part: {currentPartNumber} -> {nprPartNumber} (${nprPrice:F5}) - MultiMatch: {hasMultipleMatches}");
                             }
                             else
                             {
@@ -829,19 +932,19 @@ else
             if (deletedItem.IsMatched)
             {
                 MatchedParts.Remove(deletedItem);
-                Logger.GenericLogInformation($"EditRfq.HandlePartNumberDeleted - Removed matched part: {deletedItem.OriginalPartNumber}");
+                Logger.GenericLogInformation($"EditRfq.HandlePartNumberDeleted - Removed matched part: {deletedItem.CustomerPartNumber}");
             }
             else
             {
                 UnmatchedParts.Remove(deletedItem);
-                Logger.GenericLogInformation($"EditRfq.HandlePartNumberDeleted - Removed unmatched part: {deletedItem.OriginalPartNumber}");
+                Logger.GenericLogInformation($"EditRfq.HandlePartNumberDeleted - Removed unmatched part: {deletedItem.CustomerPartNumber}");
             }
 
             StateHasChanged();
         }
         catch (Exception ex)
         {
-            Logger.GenericLogError($"EditRfq.HandlePartNumberDeleted - Error handling deletion of part: {deletedItem.OriginalPartNumber}", ex);
+            Logger.GenericLogError($"EditRfq.HandlePartNumberDeleted - Error handling deletion of part: {deletedItem.CustomerPartNumber}", ex);
         }
 
         await Task.CompletedTask;
@@ -865,14 +968,14 @@ else
                 // Move from unmatched to matched
                 UnmatchedParts.Remove(unmatchedItem);
                 MatchedParts.Add(updatedItem);
-                Logger.GenericLogInformation($"EditRfq.HandlePartNumberUpdated - Moved part to matched: {updatedItem.OriginalPartNumber}");
+                Logger.GenericLogInformation($"EditRfq.HandlePartNumberUpdated - Moved part to matched: {updatedItem.CustomerPartNumber}");
             }
             else if (!updatedItem.IsMatched && isInMatchedList)
             {
                 // Move from matched to unmatched
                 MatchedParts.Remove(matchedItem);
                 UnmatchedParts.Add(updatedItem);
-                Logger.GenericLogInformation($"EditRfq.HandlePartNumberUpdated - Moved part to unmatched: {updatedItem.OriginalPartNumber}");
+                Logger.GenericLogInformation($"EditRfq.HandlePartNumberUpdated - Moved part to unmatched: {updatedItem.CustomerPartNumber}");
             }
             else if (isInMatchedList)
             {
@@ -882,7 +985,7 @@ else
                 {
                     MatchedParts[index] = updatedItem;
                 }
-                Logger.GenericLogInformation($"EditRfq.HandlePartNumberUpdated - Updated matched part: {updatedItem.OriginalPartNumber}");
+                Logger.GenericLogInformation($"EditRfq.HandlePartNumberUpdated - Updated matched part: {updatedItem.CustomerPartNumber}");
             }
             else if (isInUnmatchedList)
             {
@@ -892,7 +995,7 @@ else
                 {
                     UnmatchedParts[index] = updatedItem;
                 }
-                Logger.GenericLogInformation($"EditRfq.HandlePartNumberUpdated - Updated unmatched part: {updatedItem.OriginalPartNumber}");
+                Logger.GenericLogInformation($"EditRfq.HandlePartNumberUpdated - Updated unmatched part: {updatedItem.CustomerPartNumber}");
             }
 
             // Force UI refresh
@@ -900,7 +1003,7 @@ else
         }
         catch (Exception ex)
         {
-            Logger.GenericLogError($"EditRfq.HandlePartNumberUpdated - Error handling update of part: {updatedItem.OriginalPartNumber}", ex);
+            Logger.GenericLogError($"EditRfq.HandlePartNumberUpdated - Error handling update of part: {updatedItem.CustomerPartNumber}", ex);
         }
 
         await Task.CompletedTask;

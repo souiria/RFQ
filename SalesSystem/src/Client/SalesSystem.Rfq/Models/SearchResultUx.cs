@@ -10,6 +10,50 @@
     //    repeated google.protobuf.StringValue StringList2 = 5;
 
     //}
+    public static class SearchResultUxExtensions
+    {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
+        public static List<NprSearchResult> ToNprSearchResultsList(this SearchResultUx searchResult)
+        {
+            if (searchResult is null
+                || searchResult.StringList is null
+                || searchResult.DoubleList is null
+                || searchResult.StringList.Count != searchResult.DoubleList.Count)
+            {
+                throw new ArgumentException("SearchResultUxExtensions.ToMatchedPartNumbes: Invalid search result data");
+            }
+
+            List<NprSearchResult> nprPartSearchResults = new List<NprSearchResult>();
+            for (int i = 0; i < searchResult.StringList.Count; i++)
+            {
+                NprSearchResult nprPartSearchResult = new NprSearchResult();
+                nprPartSearchResult.SewsePartNumber = searchResult.StringList[i];
+                nprPartSearchResult.Price = Math.Round((decimal)searchResult.DoubleList[i], 5, MidpointRounding.AwayFromZero); // Convert.ToDecimal(searchResult.DoubleList[i]);
+                nprPartSearchResults.Add(nprPartSearchResult);
+            }
+
+            return nprPartSearchResults;
+        }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
+        public static List<MatchedPartNumberUx> ToMatchedPartNumbersList(this SearchResultUx searchResult, bool isExactMatch=false)
+        {
+            if (searchResult is null || searchResult.StringList is null)
+            {
+                throw new ArgumentException("SearchResultUxExtensions.ToMatchedPartNumbersList: Invalid search result data");
+            }
+
+            List<MatchedPartNumberUx> matchedPartNumbers = new List<MatchedPartNumberUx>();
+            for (int i = 0; i < searchResult.StringList.Count; i++)
+            {
+                MatchedPartNumberUx nprPartSearchResult = new MatchedPartNumberUx();
+                nprPartSearchResult.SewsePartNumber = searchResult.StringList[i];
+                nprPartSearchResult.IsExactMatch = isExactMatch;
+                matchedPartNumbers.Add(nprPartSearchResult);
+            }
+
+            return matchedPartNumbers;  
+        }
+    }
     public class SearchResultUx
     {
         public Collection<string> StringList

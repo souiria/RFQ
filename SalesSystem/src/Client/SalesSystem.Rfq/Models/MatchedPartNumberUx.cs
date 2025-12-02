@@ -6,17 +6,23 @@ namespace SalesSystem.Rfq.Models
 {
     public class MatchedPartNumberUx
     {
+        public int Index 
+        { get; set; }
+        public bool IsExactMatch
+        { get; set; }
         public string? SewsePartNumber
         { get; set; }
         public PartImageData? PartImage
         { get; set; }
-        public ReadOnlyCollection<NprSearchResult> NprSearchResults 
-        { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
+        public List<NprSearchResult> NprSearchResults 
+        { get; }
+        public bool HasImage => PartImage != null && 0 <= PartImage.ImageBytes.Count;
         public MatchedPartNumberUx()
         {
-            List<NprSearchResult> partsData = new();
+            IsExactMatch = false;
             SewsePartNumber = string.Empty;
-            NprSearchResults = new ReadOnlyCollection<NprSearchResult>(partsData);
+            NprSearchResults = new List<NprSearchResult>();
             PartImage = new PartImageData();
         }
     }
@@ -47,6 +53,12 @@ namespace SalesSystem.Rfq.Models
         { get; set; }
         public decimal? Price 
         { get; set; }
+
+        public NprSearchResult()
+        {
+            SewsePartNumber = string.Empty;
+            Price = 0;
+        }
     }
 
     public class NprResultData

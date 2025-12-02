@@ -333,7 +333,7 @@ namespace SalesSystem.Rfq.Services
             }
             catch (Exception ex)
             {
-                _Logger?.GenericLogError($"Error in UpdateRfqDrawingPartNumber for PartNumber: {partNumberUx.OriginalPartNumber}", ex);
+                _Logger?.GenericLogError($"Error in UpdateRfqDrawingPartNumber for PartNumber: {partNumberUx.CustomerPartNumber}/{partNumberUx.DrawingPartNumber}", ex);
                 throw;
             }
         }
@@ -353,7 +353,7 @@ namespace SalesSystem.Rfq.Services
             }
             catch (Exception ex)
             {
-                _Logger?.GenericLogError($"Error in DeleteRfqDrawingPartNumber for PartNumber: {partNumberUx.OriginalPartNumber}", ex);
+                _Logger?.GenericLogError($"Error in DeleteRfqDrawingPartNumber for PartNumber: {partNumberUx.CustomerPartNumber}/{partNumberUx.DrawingPartNumber}", ex);
                 throw;
             }
         }
@@ -441,6 +441,37 @@ namespace SalesSystem.Rfq.Services
         #endregion
 
         #region Searching
+        public async Task<SearchResultUx> SearchEmacsExactCustomerPn(string customerPartNumber)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+            await Task.Delay(1);
+            try
+            {
+                // Call FilterRFQByExactCustomerPartNumber
+                FilterGrpcResponse response = await FilterByRequestTypeAsync(
+                    RfqManagerFilterType.FilterEmacsByExactPartNumber,
+                    customerPartNumber
+                );
+
+                if (response.Success
+                    && response.StringList != null
+                    && 0 <= response.StringList.Count)
+                {
+                    SearchResultUx r = response.ToUx();
+                    return r;
+                }
+                else
+                {
+                    SearchResultUx r = new SearchResultUx();
+                    return r;
+                }
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in SearchEmacsExactCustomerPn", ex);
+                throw;
+            }
+        }
         public async Task<SearchResultUx> SearchEmacsContainsCustomerPn(string customerPartNumber)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);

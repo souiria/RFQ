@@ -165,8 +165,8 @@
 
     private decimal TotalOriginalPrice =>
         MatchedParts.Concat(UnmatchedParts)
-                   .Where(p => p?.OriginalPartNumberPrice.HasValue == true)
-                   .Sum(p => p!.OriginalPartNumberPrice!.Value);
+                   .Where(p => p?.DrawingPartNumberPrice.HasValue == true)
+                   .Sum(p => p!.DrawingPartNumberPrice!.Value);
 
     private decimal TotalSwappedPrice =>
         MatchedParts.Where(p => p?.SwappedPartNumberPrice.HasValue == true)
@@ -174,7 +174,7 @@
 
     private int PartsWithOriginalPrice =>
         MatchedParts.Concat(UnmatchedParts)
-                   .Count(p => p?.OriginalPartNumberPrice.HasValue == true);
+                   .Count(p => p?.DrawingPartNumberPrice.HasValue == true);
 
     private int PartsWithSwappedPrice =>
         MatchedParts.Count(p => p?.SwappedPartNumberPrice.HasValue == true);

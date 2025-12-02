@@ -11,56 +11,52 @@
 <MudDialog>
     <DialogContent>
         <MudText Typo="Typo.h6" Class="mb-4">
-            Found @SewsePartNumbers.Count result(s) for part number: @(SearchedPartNumber?.OriginalPartNumber ?? "N/A")
+            Found @SearchedPartNumber?.MatchedPartNumbers.Count result(s) for part number: @(SearchedPartNumber?.CustomerPartNumber ?? "N/A")
         </MudText>
 
-        @if (SewsePartNumbers.Count > 0)
+        @if (SearchedPartNumber?.MatchedPartNumbers.Count > 0)
         {
             <MudList T="string"
                      SelectionMode="SelectionMode.SingleSelection"
                      Dense="true">
-                @foreach (var (partNumber, index) in SewsePartNumbers.Select((pn, idx) => (pn, idx)))
+                @foreach (MatchedPartNumberUx partNumber in SearchedPartNumber.MatchedPartNumbers)
                 {
                     <MudListItem>
                         <MudPaper Elevation="2" Class="pa-3 mb-2">
                             <MudGrid>
-                                <MudItem xs="12" sm="@(HasImage(index) ? 8 : 12)">
+                                <MudItem xs="12" sm="@(partNumber.HasImage ? 8 : 12)">
                                     <MudText Typo="Typo.subtitle2" Color="Color.Primary">
-                                        Part #@(index + 1)
+                                        Part #@(partNumber.Index + 1)
                                     </MudText>
                                     <MudText Typo="Typo.body2">
-                                        <strong>Sumitomo Number:</strong> @(partNumber ?? "N/A")
+                                        <strong>Sumitomo Number:</strong> @(partNumber.SewsePartNumber ?? "N/A")
                                     </MudText>
 
                                     @* NPR Results Section *@
-                                    @if (IsLoadingNprData(index))
+                                    @if (IsLoadingNprData(partNumber.Index))
                                     {
                                         <MudProgressLinear Color="Color.Secondary" Indeterminate="true" Class="mt-2 mb-1" Size="Size.Small" />
                                         <MudText Typo="Typo.caption" Class="ml-4">Loading NPR data...</MudText>
                                     }
-                                    else if (HasNprResults(index))
+                                    else if (HasNprResults(partNumber.Index))
                                     {
                                         <div class="ml-4 mt-2">
                                             <MudText Typo="Typo.body2" Color="Color.Secondary">
                                                 <strong>NPR Results:</strong>
                                             </MudText>
                                             <MudList T="string" Dense="true" Padding="false" Class="ml-2">
-                                                @foreach (var (nprPart, nprIndex) in GetNprResults(index).Select((np, ni) => (np, ni)))
+                                                @foreach (NprSearchResult nprSearchResult in partNumber.NprSearchResults)
                                                 {
                                                     <MudListItem Dense="true" Gutters="false">
                                                         <div class="d-flex align-center justify-space-between">
                                                             <MudText Typo="Typo.body2" Class="ml-2 flex-grow-1">
-                                                                • @nprPart
-                                                                @if (HasNprPrice(index, nprIndex))
-                                                                {
-                                                                    <span> - <strong>@($"${GetNprPrice(index, nprIndex):N5}")</strong></span>
-                                                                }
+                                                                • @nprSearchResult.SewsePartNumber - $@nprSearchResult.Price
                                                             </MudText>
                                                             <MudButton Variant="Variant.Filled"
                                                                        Color="Color.Success"
                                                                        Size="Size.Small"
                                                                        StartIcon="@Icons.Material.Filled.Check"
-                                                                       OnClick="@(() => ApplyNprData(nprPart, GetNprPrice(index, nprIndex)))"
+                                                                       OnClick="@(() => ApplyNprData(nprSearchResult))"
                                                                        Class="ml-2">
                                                                 Apply
                                                             </MudButton>
@@ -70,33 +66,33 @@
                                             </MudList>
                                         </div>
                                     }
-                                    else if (HasNprError(index))
+                                    else if (HasNprError(partNumber.Index))
                                     {
                                         <MudAlert Severity="Severity.Warning" Dense="true" Class="mt-2 ml-4">
                                             Failed to load NPR data
                                         </MudAlert>
                                     }
 
-                                    @if (IsLoadingImage(index))
+                                    @if (IsLoadingImage(partNumber.Index))
                                     {
                                         <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mt-2" />
                                         <MudText Typo="Typo.caption" Class="mt-1">Loading image...</MudText>
                                     }
-                                    else if (HasImageError(index))
+                                    else if (HasImageError(partNumber.Index))
                                     {
                                         <MudAlert Severity="Severity.Warning" Dense="true" Class="mt-2">
                                             Failed to load image
                                         </MudAlert>
                                     }
                                 </MudItem>
-                                @if (HasImage(index))
+                                @if (partNumber.HasImage)
                                 {
                                     <MudItem xs="12" sm="4" Class="d-flex justify-center align-center">
-                                        <MudImage Src="@GetImageSource(index)"
+                                        <MudImage Src="@GetImageSource(partNumber.Index)"
                                                   Alt="Part Image"
                                                   Elevation="3"
                                                   Class="rounded"
-                                                  Style="max-width: 100%; max-height: 200px; object-fit: contain;" />
+                                                  Style="max-width: 100%; max-height: 96px; object-fit: contain;" />
                                     </MudItem>
                                 }
                             </MudGrid>
@@ -123,16 +119,10 @@
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
 
     [Parameter] public RfqDrawingPartNumberUx? SearchedPartNumber { get; set; }
-    [Parameter] public List<string?> SewsePartNumbers { get; set; } = new();  // a list of sewse part numbers corresponding to SearchedPartNumber in Emacs
-    // [Parameter] public List<decimal?> Prices { get; set; } = new();
-    
-    public List<MatchedPartNumberUx> MatchedPartNumbers { get; set; } = new();
 
-    private Dictionary<int, PartImageData> _partImages = new();
     private Dictionary<int, bool> _loadingImageStates = new();
     private Dictionary<int, bool> _imageErrorStates = new();
 
-    private Dictionary<int, NprResultData> _nprResults = new();
     private Dictionary<int, bool> _loadingNprStates = new();
     private Dictionary<int, bool> _nprErrorStates = new();
 
@@ -167,13 +157,15 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && SewsePartNumbers.Count > 0)
+        if (firstRender 
+            && SearchedPartNumber != null
+            && SearchedPartNumber.MatchedPartNumbers.Count > 0)
         {
             // Start loading images and NPR data for all parts in parallel
-            var loadTasks = SewsePartNumbers
-                .Select((partNumber, index) => Task.WhenAll(
-                    LoadPartImageAsync(partNumber, index),
-                    LoadNprDataAsync(partNumber, index)
+            var loadTasks = SearchedPartNumber.MatchedPartNumbers
+                .Select((matchedPart) => Task.WhenAll(
+                    LoadPartImageAsync(matchedPart),
+                    LoadNprDataAsync(matchedPart)
                 ))
                 .ToList();
 
@@ -184,22 +176,22 @@
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    private async Task LoadPartImageAsync(string? partNumber, int index)
+    private async Task LoadPartImageAsync(MatchedPartNumberUx matchedPartNumber)
     {
-        if (string.IsNullOrWhiteSpace(partNumber))
+        if (string.IsNullOrWhiteSpace(matchedPartNumber.SewsePartNumber))
         {
             return;
         }
 
         try
         {
-            _loadingImageStates[index] = true;
-            _imageErrorStates[index] = false;
+            _loadingImageStates[matchedPartNumber.Index] = true;
+            _imageErrorStates[matchedPartNumber.Index] = false;
             await InvokeAsync(StateHasChanged);
 
-            Logger.GenericLogInformation($"Loading image for part number: {partNumber}");
+            Logger.GenericLogInformation($"Loading image for part number: {matchedPartNumber.SewsePartNumber}");
 
-            SearchResultUx response = await RfqUxClientService.SearchAdssSewsePn(partNumber);
+            SearchResultUx response = await RfqUxClientService.SearchAdssSewsePn(matchedPartNumber.SewsePartNumber);
 
             if (response.IsSuccessful &&
                 response.ByteList != null &&
@@ -211,47 +203,47 @@
                 byte[] imageBytes = response.ByteList[0];
                 string mimeType = response.StringList2[0] ?? "image/png";
 
-                _partImages[index] = new PartImageData
+                matchedPartNumber.PartImage = new PartImageData
                 {
                     ImageBytes = imageBytes,
                     MimeType = mimeType
                 };
 
-                Logger.GenericLogInformation($"Successfully loaded image for part number: {partNumber}, Size: {imageBytes.Length} bytes, Type: {mimeType}");
+                Logger.GenericLogInformation($"Successfully loaded image for part number: {matchedPartNumber.SewsePartNumber}, Size: {imageBytes.Length} bytes, Type: {mimeType}");
             }
             else
             {
-                Logger.GenericLogInformation($"No image found for part number: {partNumber}");
+                Logger.GenericLogInformation($"No image found for part number: {matchedPartNumber.SewsePartNumber}");
             }
         }
         catch (Exception ex)
         {
-            Logger.GenericLogError($"Error loading image for part number: {partNumber}", ex);
-            _imageErrorStates[index] = true;
+            Logger.GenericLogError($"Error loading image for part number: {matchedPartNumber.SewsePartNumber}", ex);
+            _imageErrorStates[matchedPartNumber.Index] = true;
         }
         finally
         {
-            _loadingImageStates[index] = false;
+            _loadingImageStates[matchedPartNumber.Index] = false;
             await InvokeAsync(StateHasChanged);
         }
     }
 
-    private async Task LoadNprDataAsync(string? partNumber, int index)
+    private async Task LoadNprDataAsync(MatchedPartNumberUx matchedPartNumber)
     {
-        if (string.IsNullOrWhiteSpace(partNumber))
+        if (string.IsNullOrWhiteSpace(matchedPartNumber.SewsePartNumber))
         {
             return;
         }
 
         try
         {
-            _loadingNprStates[index] = true;
-            _nprErrorStates[index] = false;
+            _loadingNprStates[matchedPartNumber.Index] = true;
+            _nprErrorStates[matchedPartNumber.Index] = false;
             await InvokeAsync(StateHasChanged);
 
-            Logger.GenericLogInformation($"Loading NPR data for part number: {partNumber}");
+            Logger.GenericLogInformation($"Loading NPR data for part number: {matchedPartNumber.SewsePartNumber}");
 
-            SearchResultUx response = await RfqUxClientService.SearchNprSewsePn(partNumber);
+            SearchResultUx response = await RfqUxClientService.SearchNprSewsePn(matchedPartNumber.SewsePartNumber);
 
             if (response.IsSuccessful &&
                 response.StringList != null &&
@@ -263,31 +255,37 @@
                     .Select(d => Math.Round((decimal)d, 5, MidpointRounding.AwayFromZero))
                     .ToList() ?? new List<decimal>();
 
-                NprResultData nprResultData = new NprResultData();
-                nprResultData.PartNumbers.AddRange(nprPartNumbers);
-                nprResultData.Prices.AddRange(nprPrices);
-                _nprResults[index] = nprResultData;
-                
-                Logger.GenericLogInformation($"Successfully loaded NPR data for part number: {partNumber}, Found: {nprPartNumbers.Count} NPR parts");
+                int index = 0;
+                foreach (string nprPartNumber in nprPartNumbers)
+                {
+                    NprSearchResult nprResult = new NprSearchResult
+                    {
+                        SewsePartNumber = nprPartNumber,
+                        Price = (index < nprPrices.Count) ? nprPrices[index] : 0
+                    };
+                    matchedPartNumber.NprSearchResults.Add(nprResult);
+                }
+                                
+                Logger.GenericLogInformation($"Successfully loaded NPR data for part number: {matchedPartNumber.SewsePartNumber}, Found: {nprPartNumbers.Count} NPR parts"); // Updated part number reference
             }
             else
             {
-                Logger.GenericLogInformation($"No NPR data found for part number: {partNumber}");
+                Logger.GenericLogInformation($"No NPR data found for part number: {matchedPartNumber.SewsePartNumber}");
             }
         }
         catch (Exception ex)
         {
-            Logger.GenericLogError($"Error loading NPR data for part number: {partNumber}", ex);
-            _nprErrorStates[index] = true;
+            Logger.GenericLogError($"Error loading NPR data for part number: {matchedPartNumber.SewsePartNumber}", ex);
+            _nprErrorStates[matchedPartNumber.Index] = true;
         }
         finally
         {
-            _loadingNprStates[index] = false;
+            _loadingNprStates[matchedPartNumber.Index] = false; // updated from index to matchedPartNumber.Index
             await InvokeAsync(StateHasChanged);
         }
     }
 
-    private async Task ApplyNprData(string nprPartNumber, decimal nprPrice)
+    private async Task ApplyNprData(NprSearchResult nprSearchResult)
     {
         await Task.Delay(1);
         if (SearchedPartNumber == null)
@@ -299,11 +297,11 @@
 
         try
         {
-            Logger.GenericLogInformation($"Applying NPR data: Part={nprPartNumber}, Price={nprPrice:F5}");
+            Logger.GenericLogInformation($"Applying NPR data: Part={nprSearchResult.SewsePartNumber}, Price={nprSearchResult.Price:F5}");
 
             // Update the part number with NPR data - price already has proper precision
-            SearchedPartNumber.SwappedPartNumber = nprPartNumber;
-            SearchedPartNumber.SwappedPartNumberPrice = nprPrice;
+            SearchedPartNumber.DrawingPartNumber = nprSearchResult.SewsePartNumber;
+            SearchedPartNumber.DrawingPartNumberPrice = nprSearchResult.Price;
             SearchedPartNumber.PriceSource = "NPR";
             SearchedPartNumber.IsExactMatch = true;
             SearchedPartNumber.IsMatched = true;
@@ -315,8 +313,10 @@
                 User = _currentUser,
                 Timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
                 Action = "NPR_Applied",
-                NprPartNumber = nprPartNumber,
-                NprPrice = nprPrice
+                CustomerPartNumber = SearchedPartNumber.CustomerPartNumber,
+                DrawingPartNumber = SearchedPartNumber.DrawingPartNumber,
+                NprPartNumber = nprSearchResult.SewsePartNumber,
+                NprPrice = nprSearchResult.Price
             };
 
             string commentJson = JsonSerializer.Serialize(commentData, new JsonSerializerOptions
@@ -334,22 +334,23 @@
                 SearchedPartNumber.Comments += $"; {commentJson}";
             }
 
-            Logger.GenericLogInformation($"Successfully applied NPR data to part number: {SearchedPartNumber.OriginalPartNumber}, Price={nprPrice:F5}");
-            Snackbar.Add($"Applied NPR part: {nprPartNumber} (${nprPrice:N5})", Severity.Success);
+            Logger.GenericLogInformation($"Successfully applied NPR data to part number: {SearchedPartNumber.CustomerPartNumber}/{SearchedPartNumber.DrawingPartNumber}, Price={nprSearchResult.Price:F5}");
+            Snackbar.Add($"Applied NPR part: {nprSearchResult.SewsePartNumber} (${nprSearchResult.Price:N5})", Severity.Success);
 
             // Close the dialog and return the updated part number
             MudDialog.Close(DialogResult.Ok(SearchedPartNumber));
         }
         catch (Exception ex)
         {
-            Logger.GenericLogError($"Error applying NPR data: {nprPartNumber}", ex);
+            Logger.GenericLogError($"Error applying NPR data: {nprSearchResult.SewsePartNumber}", ex);
             Snackbar.Add($"Error applying NPR data: {ex.Message}", Severity.Error);
         }
     }
 
     private bool HasImage(int index)
     {
-        return _partImages.ContainsKey(index) && _partImages[index].ImageBytes.ToArray().Length > 0; // Fix: Changed Length() to Length
+        var matchedPart = SearchedPartNumber?.MatchedPartNumbers.FirstOrDefault(p => p.Index == index);
+        return matchedPart?.PartImage != null && matchedPart.PartImage.ImageBytes != null && matchedPart.PartImage.ImageBytes.Count > 0;
     }
 
     private bool IsLoadingImage(int index)
@@ -364,7 +365,8 @@
 
     private bool HasNprResults(int index)
     {
-        return _nprResults.ContainsKey(index) && _nprResults[index].PartNumbers.Count > 0;
+        var matchedPart = SearchedPartNumber?.MatchedPartNumbers.FirstOrDefault(p => p.Index == index);
+        return matchedPart?.NprSearchResults != null && matchedPart.NprSearchResults.Count > 0;
     }
 
     private bool IsLoadingNprData(int index)
@@ -379,45 +381,43 @@
 
     private List<string> GetNprResults(int index)
     {
-        if (!_nprResults.ContainsKey(index))
-        {
-            return new List<string>();
-        }
-        return _nprResults[index].PartNumbers.ToList();
+        var matchedPart = SearchedPartNumber?.MatchedPartNumbers.FirstOrDefault(p => p.Index == index);
+        return matchedPart?.NprSearchResults.Select(r => r.SewsePartNumber ?? string.Empty).ToList() ?? new List<string>();
     }
 
     private bool HasNprPrice(int index, int nprIndex)
     {
-        if (!_nprResults.ContainsKey(index))
+        var matchedPart = SearchedPartNumber?.MatchedPartNumbers.FirstOrDefault(p => p.Index == index);
+        if (matchedPart?.NprSearchResults == null)
         {
             return false;
         }
-        var nprData = _nprResults[index];
-        return nprIndex < nprData.Prices.Count && nprData.Prices[nprIndex] > 0;
+        return nprIndex < matchedPart.NprSearchResults.Count && matchedPart.NprSearchResults[nprIndex].Price.HasValue && matchedPart.NprSearchResults[nprIndex].Price > 0;
     }
 
-    private decimal GetNprPrice(int index, int nprIndex)
+    private decimal? GetNprPrice(int index, int nprIndex)
     {
-        if (!_nprResults.ContainsKey(index))
+        var matchedPart = SearchedPartNumber?.MatchedPartNumbers.FirstOrDefault(p => p.Index == index);
+        if (matchedPart?.NprSearchResults == null)
         {
-            return 0;
+            return null; // Change 0 to null
         }
-        var nprData = _nprResults[index];
-        if (nprIndex < nprData.Prices.Count)
+        if (nprIndex < matchedPart.NprSearchResults.Count && matchedPart.NprSearchResults[nprIndex].Price.HasValue)
         {
-            return nprData.Prices[nprIndex];
+            return matchedPart.NprSearchResults[nprIndex].Price;
         }
         return 0;
     }
 
     private string GetImageSource(int index)
     {
-        if (!_partImages.ContainsKey(index))
+        var matchedPart = SearchedPartNumber?.MatchedPartNumbers.FirstOrDefault(p => p.Index == index);
+        if (matchedPart?.PartImage == null || matchedPart.PartImage.ImageBytes == null)
         {
             return string.Empty;
         }
 
-        var imageData = _partImages[index];
+        var imageData = matchedPart.PartImage;
         string base64Image = Convert.ToBase64String(imageData.ImageBytes.ToArray());
         return $"data:{imageData.MimeType};base64,{base64Image}";
     }

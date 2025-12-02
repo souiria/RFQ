@@ -21,7 +21,9 @@
                  FixedHeader="true"
                  Height="calc(100% - 16px)"
                  Class="mud-grid-no-scroll-x"
-                 Style="flex: 1 1 auto; min-height: 0; overflow-y: auto; margin: 8px 0;">
+                 Style="flex: 1 1 auto; min-height: 0; overflow-y: auto; margin: 8px 0;"
+                 RowStyleFunc="@RowStyleFunc"
+                 ColumnResizeMode="ResizeMode.Column">
         <Columns>
             <TemplateColumn CellClass="d-flex justify-start">
                 <CellTemplate>
@@ -56,21 +58,22 @@
                 </CellTemplate>
             </TemplateColumn>
             <PropertyColumn Property="x => x.RowId" Title="ID" Editable="false" />
-            <PropertyColumn Property="x => x.OriginalPartNumber" Title="Original P/N" />
-            <PropertyColumn Property="x => x.OriginalPartNumberPrice"
-                            Title="Original Price"
+            <PropertyColumn Property="x => x.CustomerPartNumber" Title="Customer P/N" />
+            <PropertyColumn Property="x => x.DrawingPartNumber" Title="Drawing P/N" />
+            <PropertyColumn Property="x => x.DrawingPartNumberPrice"
+                            Title="Drawing P/N Price"
                             Format="0.#####">
                 <EditTemplate>
-                    <MudNumericField @bind-Value="context.Item.OriginalPartNumberPrice" 
+                    <MudNumericField @bind-Value="context.Item.DrawingPartNumberPrice" 
                                     Format="0.#####" 
                                     Adornment="Adornment.Start" 
                                     AdornmentText="$" 
                                     Margin="@Margin.Dense" />
                 </EditTemplate>
             </PropertyColumn>
-            <PropertyColumn Property="x => x.SwappedPartNumber" Title="Swapped P/N" />
+            <PropertyColumn Property="x => x.SwappedPartNumber" Title="Dummy/Alt. P/N" />
             <PropertyColumn Property="x => x.SwappedPartNumberPrice"
-                            Title="Swapped Price"
+                            Title="Dummy/Alt. P/N Price"
                             Format="0.#####">
                 <EditTemplate>
                     <MudNumericField @bind-Value="context.Item.SwappedPartNumberPrice"
@@ -91,13 +94,13 @@
                     <MudCheckBox @bind-Value="context.Item.IsSwapped" Dense="true" />
                 </EditTemplate>
             </PropertyColumn>
-            <PropertyColumn Property="x => x.Comments" Title="Comments">
+@*             <PropertyColumn Property="x => x.Comments" Title="Comments">
                 <EditTemplate>
                     <MudTextField @bind-Value="context.Item.Comments" 
                                  Lines="2" 
                                  Margin="@Margin.Dense" />
                 </EditTemplate>
-            </PropertyColumn>
+            </PropertyColumn> *@
         </Columns>
     </MudDataGrid>
 </div>
@@ -122,6 +125,19 @@
     protected override async Task OnInitializedAsync()
     {
         await Task.Delay(1);
+    }
+
+    private string RowStyleFunc(RfqDrawingPartNumberUx item, int index)
+    {
+        if (item?.IsMatched == true && item?.IsExactMatch == true)
+        {
+            return "background-color: lightgreen;";
+        }
+        else if (item?.IsMatched == true && item?.IsExactMatch == false)
+        {
+            return "background-color: lightyellow;"; // Changed color to light yellow for partial matches
+        }
+        return string.Empty;
     }
 
     // events
@@ -149,9 +165,13 @@
             return;
         }
 
-        Logger.GenericLogInformation($"Searching for part number: {item.OriginalPartNumber}");
+        // Just in case this was previously searched
+        item.MatchedPartNumbers.Clear();
+        item.Comments = "";
 
-        var cleanedUpPn = item.OriginalPartNumber?.Replace("-", "").Replace(" ", "").ToUpperInvariant();
+        Logger.GenericLogInformation($"Searching for part number: {item.CustomerPartNumber}");
+
+        var cleanedUpPn = item.CustomerPartNumber?.Replace("-", "").Replace(" ", "").ToUpperInvariant();
         if (string.IsNullOrEmpty(cleanedUpPn))
         {
             Logger.GenericLogInformation($"No valid part number found for item with Row ID: {item.RowId}");
@@ -162,17 +182,64 @@
         try
         {
             // Call SearchEmacsContainsCustomerPn
-            SearchResultUx response = await RfqUxClientService.SearchEmacsContainsCustomerPn(cleanedUpPn);
-
-            if (response.IsSuccessful && 0 <= response.StringList.Count)
+            if(item.CustomerPartNumber == null)
             {
-                Logger.GenericLogInformation($"Search successful: {response.StringList.Count} results found");
+                Logger.GenericLogInformation("CustomerPartNumber is null");
+                return;
+            }
+            SearchResultUx responseExact = await RfqUxClientService.SearchEmacsExactCustomerPn(item.CustomerPartNumber);
+            SearchResultUx responseContains = await RfqUxClientService.SearchEmacsContainsCustomerPn(cleanedUpPn);
+
+
+            if ((responseContains.IsSuccessful && 0 <= responseContains.StringList.Count)
+            || (responseExact.IsSuccessful && 0 <= responseExact.StringList.Count))
+            {
+                Logger.GenericLogInformation($"Item {item.CustomerPartNumber} exact matches: {responseExact.StringList.Count}");
+                Logger.GenericLogInformation($"Item {item.CustomerPartNumber} contains matches: {responseContains.StringList.Count}");
 
                 // Show custom dialog with MudList
+                int index = 0;
+                // look for exact matches first
+                foreach (string pn in responseExact.StringList)
+                {
+                    var matchedPartNumber = new MatchedPartNumberUx();
+                    matchedPartNumber.IsExactMatch = true;  // exact match
+                    matchedPartNumber.Index = index++;
+                    matchedPartNumber.SewsePartNumber = pn;
+
+                    item.MatchedPartNumbers.Add(matchedPartNumber);
+                }
+                
+                var commentData = new
+                {
+                    User = "System",
+                    Timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                    Action = "AutoSearch_NPR_Applied",
+                    ExactMatchPartNumbers = responseExact.StringList,
+                    ContainsMatchPartNumbers = new List<string>()
+                };
+
+                // then look
+                foreach(string pn in responseContains.StringList)
+                {
+                    var matchedPartNumber = new MatchedPartNumberUx();
+                    matchedPartNumber.IsExactMatch = false; // partial match
+                    matchedPartNumber.Index = index++;
+                    matchedPartNumber.SewsePartNumber = pn;
+
+                    item.MatchedPartNumbers.Add(matchedPartNumber);
+                }
+
+                commentData.ContainsMatchPartNumbers.AddRange(responseContains.StringList);
+
+                item.Comments = System.Text.Json.JsonSerializer.Serialize(commentData, new System.Text.Json.JsonSerializerOptions
+                {
+                    WriteIndented = false
+                }); ;
+
                 DialogParameters parameters = new DialogParameters
                 {
                     { "SearchedPartNumber", item },
-                    { "SewsePartNumbers", response.StringList.ToList() },
                 };
 
                 DialogOptions options = new DialogOptions
@@ -196,7 +263,7 @@
                 {
                     try
                     {
-                        Logger.GenericLogInformation($"NPR data applied to part number: {updatedItem.OriginalPartNumber}");
+                        Logger.GenericLogInformation($"NPR data applied to part number: {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber}");
 
                         // Call the service to update the part number
                         bool success = await RfqUxClientService.UpdateRfqDrawingPartNumber(updatedItem);
@@ -204,6 +271,8 @@
                         if (success)
                         {
                             // Update the original item's properties with the updated values
+                            item.DrawingPartNumber = updatedItem.DrawingPartNumber;
+                            item.DrawingPartNumberPrice = updatedItem.DrawingPartNumberPrice;
                             item.SwappedPartNumber = updatedItem.SwappedPartNumber;
                             item.SwappedPartNumberPrice = updatedItem.SwappedPartNumberPrice;
                             item.PriceSource = updatedItem.PriceSource;
@@ -212,8 +281,8 @@
                             item.Comments = updatedItem.Comments;
                             item.IsMatched = updatedItem.IsMatched;
 
-                            Logger.GenericLogInformation($"Successfully updated part number with NPR data: {updatedItem.OriginalPartNumber}");
-                            Snackbar.Add($"Part number {updatedItem.OriginalPartNumber} updated with NPR data", Severity.Success);
+                            Logger.GenericLogInformation($"Successfully updated part number with NPR data: {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber}");
+                            Snackbar.Add($"Part number {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber} updated with NPR data", Severity.Success);
 
                             // Notify parent component to refresh and potentially move between lists
                             await OnPartNumberUpdated.InvokeAsync(updatedItem);
@@ -222,13 +291,13 @@
                         }
                         else
                         {
-                            Logger.GenericLogInformation($"Failed to update part number: {updatedItem.OriginalPartNumber}");
-                            Snackbar.Add($"Failed to update part number {updatedItem.OriginalPartNumber}", Severity.Error);
+                            Logger.GenericLogInformation($"Failed to update part number: {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber}");
+                            Snackbar.Add($"Failed to update part number {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber}", Severity.Error);
                         }
                     }
                     catch (Exception ex)
                     {
-                        Logger.GenericLogError($"Error updating part number with NPR data: {updatedItem.OriginalPartNumber}", ex);
+                        Logger.GenericLogError($"Error updating part number with NPR data: {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber}", ex);
                         Snackbar.Add($"Error updating part number: {ex.Message}", Severity.Error);
                     }
                 }
@@ -239,7 +308,7 @@
             }
             else
             {
-                string message = $"No results found for part number: {item.OriginalPartNumber}";
+                string message = $"No results found for part number: {item.CustomerPartNumber}";
                 Logger.GenericLogInformation(message);
 
                 // Show empty results dialog
@@ -266,7 +335,7 @@
         }
         catch (Exception ex)
         {
-            Logger.GenericLogError($"Error searching for part number: {item.OriginalPartNumber}", ex);
+            Logger.GenericLogError($"Error searching for part number: {item.CustomerPartNumber}/{item.DrawingPartNumber}", ex);
             await DialogService.ShowMessageBox(
                 "Error",
                 $"An error occurred while searching: {ex.Message}"
@@ -320,7 +389,7 @@
         {
             try
             {
-                Logger.GenericLogInformation($"Updating part number: {editedItem.OriginalPartNumber} (Row ID: {editedItem.RowId})");
+                Logger.GenericLogInformation($"Updating part number: {editedItem.CustomerPartNumber}/{editedItem.DrawingPartNumber} (Row ID: {editedItem.RowId})");
 
                 // Call the service to update the part number
                 bool success = await RfqUxClientService.UpdateRfqDrawingPartNumber(editedItem);
@@ -328,8 +397,8 @@
                 if (success)
                 {
                     // Update the original item with edited values
-                    item.OriginalPartNumber = editedItem.OriginalPartNumber;
-                    item.OriginalPartNumberPrice = editedItem.OriginalPartNumberPrice;
+                    item.DrawingPartNumber = editedItem.DrawingPartNumber;
+                    item.DrawingPartNumberPrice = editedItem.DrawingPartNumberPrice;
                     item.SwappedPartNumber = editedItem.SwappedPartNumber;
                     item.SwappedPartNumberPrice = editedItem.SwappedPartNumberPrice;
                     item.PriceSource = editedItem.PriceSource;
@@ -338,8 +407,8 @@
                     item.Comments = editedItem.Comments;
                     item.IsMatched = editedItem.IsMatched;
 
-                    Logger.GenericLogInformation($"Successfully updated part number: {editedItem.OriginalPartNumber}");
-                    Snackbar.Add($"Part number {editedItem.OriginalPartNumber} updated successfully", Severity.Success);
+                    Logger.GenericLogInformation($"Successfully updated part number: {editedItem.CustomerPartNumber}/{editedItem.DrawingPartNumber}");
+                    Snackbar.Add($"Part number {editedItem.CustomerPartNumber}/{editedItem.DrawingPartNumber} updated successfully", Severity.Success);
                     
                     // Notify parent component
                     await OnPartNumberUpdated.InvokeAsync(editedItem);
@@ -348,13 +417,13 @@
                 }
                 else
                 {
-                    Logger.GenericLogInformation($"Failed to update part number: {editedItem.OriginalPartNumber}");
-                    Snackbar.Add($"Failed to update part number {editedItem.OriginalPartNumber}", Severity.Error);
+                    Logger.GenericLogInformation($"Failed to update part number: {editedItem.CustomerPartNumber}/{editedItem.DrawingPartNumber}");
+                    Snackbar.Add($"Failed to update part number {editedItem.CustomerPartNumber}/{editedItem.DrawingPartNumber}", Severity.Error);
                 }
             }
             catch (Exception ex)
             {
-                Logger.GenericLogError($"Error updating part number: {editedItem.OriginalPartNumber}", ex);
+                Logger.GenericLogError($"Error updating part number: {editedItem.CustomerPartNumber}/{editedItem.DrawingPartNumber}", ex);
                 await DialogService.ShowMessageBox(
                     "Error",
                     $"An error occurred while updating the part number: {ex.Message}"
@@ -363,7 +432,7 @@
         }
         else
         {
-            Logger.GenericLogInformation($"Edit cancelled for part number: {item.OriginalPartNumber}");
+            Logger.GenericLogInformation($"Edit cancelled for part number: {item.CustomerPartNumber}");
         }
     }
     private async Task OnDelete(RfqDrawingPartNumberUx item)
@@ -380,10 +449,11 @@
         messageBuilder.AppendLine();
         messageBuilder.AppendLine($"Row ID: {item.RowId}");
         messageBuilder.AppendLine($"RFQ ID: {item.RfqId}");
-        messageBuilder.AppendLine($"Original Part Number: {item.OriginalPartNumber ?? "N/A"}");
-        messageBuilder.AppendLine($"Original Price: {(item.OriginalPartNumberPrice.HasValue ? $"${item.OriginalPartNumberPrice.Value:N2}" : "N/A")}");
-        messageBuilder.AppendLine($"Swapped Part Number: {item.SwappedPartNumber ?? "N/A"}");
-        messageBuilder.AppendLine($"Swapped Price: {(item.SwappedPartNumberPrice.HasValue ? $"${item.SwappedPartNumberPrice.Value:N2}" : "N/A")}");
+        messageBuilder.AppendLine($"Customer Part Number: {item.CustomerPartNumber ?? "N/A"}");
+        messageBuilder.AppendLine($"Drawing Part Number: {item.DrawingPartNumber ?? "N/A"}");
+        messageBuilder.AppendLine($"Drawing Part Number Price: {(item.DrawingPartNumberPrice.HasValue ? $"${item.DrawingPartNumberPrice.Value:N5}" : "N/A")}");
+        messageBuilder.AppendLine($"Dummy/Alt. Part Number: {item.SwappedPartNumber ?? "N/A"}");
+        messageBuilder.AppendLine($"Dummy/Alt. Price: {(item.SwappedPartNumberPrice.HasValue ? $"${item.SwappedPartNumberPrice.Value:N5}" : "N/A")}");
         messageBuilder.AppendLine($"Price Source: {item.PriceSource ?? "N/A"}");
         messageBuilder.AppendLine($"Is Exact Match: {(item.IsExactMatch.HasValue ? item.IsExactMatch.Value.ToString() : "N/A")}");
         messageBuilder.AppendLine($"Is Swapped: {(item.IsSwapped.HasValue ? item.IsSwapped.Value.ToString() : "N/A")}");
@@ -401,28 +471,28 @@
         {
             try
             {
-                Logger.GenericLogInformation($"Deleting part number: {item.OriginalPartNumber} (Row ID: {item.RowId})");
+                Logger.GenericLogInformation($"Deleting part number: {item.CustomerPartNumber}/{item.DrawingPartNumber} (Row ID: {item.RowId})");
 
                 // Call the service to delete the part number
                 bool success = await RfqUxClientService.DeleteRfqDrawingPartNumber(item);
 
                 if (success)
                 {
-                    Logger.GenericLogInformation($"Successfully deleted part number: {item.OriginalPartNumber}");
-                    Snackbar.Add($"Part number {item.OriginalPartNumber} deleted successfully", Severity.Success);
+                    Logger.GenericLogInformation($"Successfully deleted part number: {item.CustomerPartNumber}/{item.DrawingPartNumber}");
+                    Snackbar.Add($"Part number {item.CustomerPartNumber}/{item.DrawingPartNumber} deleted successfully", Severity.Success);
 
                     // Notify parent component to remove the item
                     await OnPartNumberDeleted.InvokeAsync(item);
                 }
                 else
                 {
-                    Logger.GenericLogInformation($"Failed to delete part number: {item.OriginalPartNumber}");
-                    Snackbar.Add($"Failed to delete part number {item.OriginalPartNumber}", Severity.Error);
+                    Logger.GenericLogInformation($"Failed to delete part number: {item.CustomerPartNumber}/{item.DrawingPartNumber}");
+                    Snackbar.Add($"Failed to delete part number {item.CustomerPartNumber}/{item.DrawingPartNumber}", Severity.Error);
                 }
             }
             catch (Exception ex)
             {
-                Logger.GenericLogError($"Error deleting part number: {item.OriginalPartNumber}", ex);
+                Logger.GenericLogError($"Error deleting part number: {item.CustomerPartNumber}/{item.DrawingPartNumber}", ex);
                 await DialogService.ShowMessageBox(
                     "Error",
                     $"An error occurred while deleting the part number: {ex.Message}"
@@ -431,7 +501,7 @@
         }
         else
         {
-            Logger.GenericLogInformation($"Delete cancelled for part number: {item.OriginalPartNumber}");
+            Logger.GenericLogInformation($"Delete cancelled for part number: {item.CustomerPartNumber}/{item.DrawingPartNumber}");
         }
     }
 }

@@ -4,90 +4,23 @@ namespace SalesSystem.Rfq.Models
 {
     public class RfqDrawingPartNumberUx
     {
-        // Move initialization to static constructor to fix IDESIGN102.
-        // Remove explicit accessibility modifier to fix IDE0040.
-        // static readonly List<RfqDrawingPartNumberUx> _TestList;
-
-        static RfqDrawingPartNumberUx()
-        {
-            // _TestList = new List<RfqDrawingPartNumberUx>();
-            //GenerateTestData();
-        }
-
         public RfqDrawingPartNumberUx()
         {
             IsMatched = false;
             MultiMatch = false;
+            MatchedPartNumbers = new List<MatchedPartNumberUx>();
         }
 
-        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
-        //static void GenerateTestData()
-        //{
-        //    Random random = new Random();
-        //    string[] partPrefixes = new[] { "ABC", "XYZ", "DEF", "GHI", "JKL", "MNO", "PQR", "STU", "VWX" };
-        //    string[] priceSources = new[] { "Supplier A", "Supplier B", "Internal", "Market Price", "Catalog", "Quote" };
-        //    string[] comments = new[]
-        //    { 
-        //        "Standard replacement", "Special order required", "Limited availability", 
-        //        "Exact match found", "Alternative part suggested", "Price negotiable",
-        //        "Bulk discount available", "Lead time 2 weeks", "Custom manufacturing"
-        //    };
-
-        //    // Generate 50 items with IsMatched = true
-        //    for (int i = 1; i <= 50; i++)
-        //    {
-        //        decimal originalPrice = (decimal)(random.NextDouble() * 1000 + 10);
-        //        decimal? swappedPrice = 0.3 <= random.NextDouble() ? (decimal)(originalPrice * (0.8m + (decimal)random.NextDouble() * 0.4m)) : (decimal?)null;
-
-        //        RfqDrawingPartNumberUx newRfqPartNumber = new RfqDrawingPartNumberUx();
-        //        newRfqPartNumber.RowId = i;
-        //        newRfqPartNumber.RfqId = random.Next(1000, 9999);
-        //        newRfqPartNumber.OriginalPartNumber = $"{partPrefixes[random.Next(partPrefixes.Length)]}-{random.Next(1000, 9999)}-{random.Next(100, 999)}";
-        //        newRfqPartNumber.OriginalPartNumberPrice = Math.Round(originalPrice, 2);
-        //        newRfqPartNumber.SwappedPartNumber = swappedPrice.HasValue ? $"{partPrefixes[random.Next(partPrefixes.Length)]}-{random.Next(1000, 9999)}-{random.Next(100, 999)}" : null;
-        //        newRfqPartNumber.SwappedPartNumberPrice = swappedPrice.HasValue ? Math.Round(swappedPrice.Value, 2) : null;
-        //        newRfqPartNumber.PriceSource = priceSources[random.Next(priceSources.Length)];
-        //        newRfqPartNumber.IsExactMatch = 0.5 <= random.NextDouble();
-        //        newRfqPartNumber.IsSwapped = swappedPrice.HasValue;
-        //        newRfqPartNumber.Comments = 0.3 <= random.NextDouble() ? comments[random.Next(comments.Length)] : null;
-        //        newRfqPartNumber.IsMatched = true;
-
-        //        _TestList.Add(newRfqPartNumber);
-        //    }
-
-        //    // Generate 50 items with IsMatched = false
-        //    for (int i = 51; i <= 100; i++)
-        //    {
-        //        decimal originalPrice = (decimal)(random.NextDouble() * 1000 + 10);
-        //        bool hasSwapped = 0.7 <= random.NextDouble(); // Lower chance for unmatched items
-        //        decimal? swappedPrice = hasSwapped ? (decimal)(originalPrice * (0.8m + (decimal)random.NextDouble() * 0.4m)) : (decimal?)null;
-
-        //        _TestList.Add(new RfqDrawingPartNumberUx
-        //        {
-        //            RowId = i,
-        //            RfqId = random.Next(1000, 9999),
-        //            OriginalPartNumber = $"{partPrefixes[random.Next(partPrefixes.Length)]}-{random.Next(1000, 9999)}-{random.Next(100, 999)}",
-        //            OriginalPartNumberPrice = Math.Round(originalPrice, 2),
-        //            SwappedPartNumber = hasSwapped ? $"{partPrefixes[random.Next(partPrefixes.Length)]}-{random.Next(1000, 9999)}-{random.Next(100, 999)}" : null,
-        //            SwappedPartNumberPrice = hasSwapped ? Math.Round(swappedPrice ?? 0.0m, 2) : null,
-        //            PriceSource = priceSources[random.Next(priceSources.Length)],
-        //            IsExactMatch = 0.8 <= random.NextDouble(), // Lower chance for unmatched items
-        //            IsSwapped = hasSwapped,
-        //            Comments = 0.3 <= random.NextDouble() ? comments[random.Next(comments.Length)] : null,
-        //            IsMatched = false
-        //        });
-        //    }
-        //}
-
-        // public static IReadOnlyList<RfqDrawingPartNumberUx> TestList => _TestList.AsReadOnly();
         public long RowId
         { get; set; }
         public long RfqId
         { get; set; }
-        public string? OriginalPartNumber
+        public string? CustomerPartNumber
+        { get; set; }
+        public string? DrawingPartNumber
         { get; set; }
         [Column(TypeName = "decimal(12, 5)")]
-        public decimal? OriginalPartNumberPrice
+        public decimal? DrawingPartNumberPrice
         { get; set; }
         public string? SwappedPartNumber            
         { get; set; }
@@ -106,6 +39,10 @@ namespace SalesSystem.Rfq.Models
         { get; set; }
         public bool MultiMatch
         { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
+        public List<MatchedPartNumberUx> MatchedPartNumbers
+        { get; }
     }
 }
 

@@ -34,8 +34,8 @@ namespace SalesSystem.Rfq.Services
                     record.RowId = part!.RowId;
                     record.RfqId = part.RfqId;
                     record.Category = "Matched";
-                    record.OriginalPartNumber = part.OriginalPartNumber;
-                    record.OriginalPartNumberPrice = part.OriginalPartNumberPrice;
+                    record.OriginalPartNumber = part.DrawingPartNumber;
+                    record.OriginalPartNumberPrice = part.DrawingPartNumberPrice;
                     record.SwappedPartNumber = part.SwappedPartNumber;
                     record.SwappedPartNumberPrice = part.SwappedPartNumberPrice;
                     record.PriceSource = part.PriceSource;
@@ -43,7 +43,7 @@ namespace SalesSystem.Rfq.Services
                     record.IsSwapped = part.IsSwapped;
                     record.IsMatched = part.IsMatched;
                     record.MultiMatch = part.MultiMatch;
-                    record.PriceDifference = part.SwappedPartNumberPrice - part.OriginalPartNumberPrice;
+                    record.PriceDifference = part.SwappedPartNumberPrice - part.DrawingPartNumberPrice;
                     record.Comments = part.Comments;
 
                     exportData.Add(record);
@@ -57,8 +57,8 @@ namespace SalesSystem.Rfq.Services
                     record.RowId = part!.RowId;
                     record.RfqId = part.RfqId;
                     record.Category = "Unmatched";
-                    record.OriginalPartNumber = part.OriginalPartNumber;
-                    record.OriginalPartNumberPrice = part.OriginalPartNumberPrice;
+                    record.OriginalPartNumber = part.DrawingPartNumber;
+                    record.OriginalPartNumberPrice = part.DrawingPartNumberPrice;
                     record.SwappedPartNumber = part.SwappedPartNumber;
                     record.SwappedPartNumberPrice = part.SwappedPartNumberPrice;
                     record.PriceSource = part.PriceSource;
@@ -66,7 +66,7 @@ namespace SalesSystem.Rfq.Services
                     record.IsSwapped = part.IsSwapped;
                     record.IsMatched = part.IsMatched;
                     record.MultiMatch = part.MultiMatch;
-                    record.PriceDifference = part.SwappedPartNumberPrice - part.OriginalPartNumberPrice;
+                    record.PriceDifference = part.SwappedPartNumberPrice - part.DrawingPartNumberPrice;
                     record.Comments = part.Comments;
                     exportData.Add(record);
                 }

@@ -5,17 +5,25 @@
     <DialogContent>
         <MudForm @ref="_form" @bind-IsValid="_isValid">
             <MudGrid>
-                <MudItem xs="12" sm="6">
-                    <MudTextField @bind-Value="EditedItem.OriginalPartNumber"
+                <MudItem xs="12" sm="4">
+                    <MudTextField @bind-Value="EditedItem.CustomerPartNumber"
+                                  Label="Customer Part Number"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  Required="true"
+                                  RequiredError="Original part number is required" />
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudTextField @bind-Value="EditedItem.DrawingPartNumber"
                                   Label="Original Part Number"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
                                   Required="true"
                                   RequiredError="Original part number is required" />
                 </MudItem>
-                <MudItem xs="12" sm="6">
-                    <MudNumericField @bind-Value="EditedItem.OriginalPartNumberPrice"
-                                     Label="Original Price"
+                <MudItem xs="12" sm="4">
+                    <MudNumericField @bind-Value="EditedItem.DrawingPartNumberPrice"
+                                     Label="Drawing P/N Price"
                                      Variant="Variant.Outlined"
                                      Margin="Margin.Dense"
                                      Format="0.#####"
@@ -25,13 +33,13 @@
                 </MudItem>
                 <MudItem xs="12" sm="6">
                     <MudTextField @bind-Value="EditedItem.SwappedPartNumber"
-                                  Label="Swapped Part Number"
+                                  Label="Dummy/Alt. Part Number"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
                     <MudNumericField @bind-Value="EditedItem.SwappedPartNumberPrice"
-                                     Label="Swapped Price"
+                                     Label="Dummy/Alt. P/N Price"
                                      Variant="Variant.Outlined"
                                      Margin="Margin.Dense"
                                      Format="0.#####"
@@ -111,8 +119,9 @@
         {
             RowId = OriginalItem.RowId,
             RfqId = OriginalItem.RfqId,
-            OriginalPartNumber = OriginalItem.OriginalPartNumber,
-            OriginalPartNumberPrice = OriginalItem.OriginalPartNumberPrice,
+            CustomerPartNumber = OriginalItem.CustomerPartNumber,
+            DrawingPartNumber = OriginalItem.DrawingPartNumber,
+            DrawingPartNumberPrice = OriginalItem.DrawingPartNumberPrice,
             SwappedPartNumber = OriginalItem.SwappedPartNumber,
             SwappedPartNumberPrice = OriginalItem.SwappedPartNumberPrice,
             PriceSource = OriginalItem.PriceSource,
