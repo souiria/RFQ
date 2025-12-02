@@ -15,7 +15,7 @@ namespace Integration.Tests.Transformation
             _Model = DocumentTransformer.ConvertDsiFile(_File);
         }
 
-        [Test]
+        //[Test]
         //public void TestGetHarnessNameInformation()
         //{
         //    Assert.That(_Model.Harness, Is.Not.Null);
@@ -110,7 +110,7 @@ namespace Integration.Tests.Transformation
             Assert.That(_Model.Harness.AdditionalComments, equalConstraint);
         }
 
-        [Test]
+        //[Test]
         //public void TestGetHarnessCircuitInformantion()
         //{
         //    Assert.That(_Model.CompositeDetailList, Is.Not.Null);
