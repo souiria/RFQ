@@ -127,5 +127,13 @@
 
             return response;
         }
+        public override async Task<UpdateRfqDrawingPartNumbersGrpcResponse> UpdateRfqDrawingPartNumbersGrpc(
+            UpdateRfqDrawingPartNumbersGrpcRequest request,
+            ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("UpdateRfqDrawingPartNumbersGrpc starting");
+            UpdateRfqDrawingPartNumbersGrpcResponse response = await _RfqManagerService.UpdateRfqDrawingPartNumbers(request);
+            return response;
+        }
     }
 }

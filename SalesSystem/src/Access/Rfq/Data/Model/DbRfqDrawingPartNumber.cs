@@ -22,10 +22,18 @@
         { get; set; }
         public string? Comments
         { get; set; }
-        public string? SumitomoPartNumber
-        { get; set; }
-        public string? SupplierPartNumber
-        { get; set; }
+        string? _SumitomoPartNumber;
+        public string SumitomoPartNumber
+        {
+            get => string.IsNullOrEmpty(_SumitomoPartNumber) ? "0000000" : _SumitomoPartNumber;
+            set => _SumitomoPartNumber = string.IsNullOrEmpty(value) ? "0000000" : value;
+        }
+         string? _SupplierPartNumber;
+        public string SupplierPartNumber
+        {
+            get => string.IsNullOrEmpty(_SupplierPartNumber) ? "0000000" : _SupplierPartNumber;
+            set => _SupplierPartNumber = string.IsNullOrEmpty(value) ? "0000000" : value;
+        }
         public Guid? NprId
         { get; set; }
         public DbRfqProject? RfqProject

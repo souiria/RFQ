@@ -1,5 +1,6 @@
 ﻿global using System.Collections.ObjectModel;
 global using System.Globalization;
+global using System.Text.RegularExpressions;
 global using CPD;
 global using Emacs;
 global using Google.Protobuf.WellKnownTypes;
@@ -7,6 +8,7 @@ global using Grpc.Core;
 global using Logging;
 global using Master;
 global using static Master.Master;
+global using Microsoft.Extensions.Logging;  
 global using NPR;
 global using Rfq;
 global using RfqModule.Data.Time;

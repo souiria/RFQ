@@ -26,7 +26,9 @@ service RfqModule {
   rpc GetRfqProjectByIdGrpc (GetRfqProjectByIdGrpcRequest) returns (GetRfqProjectByIdGrpcResponse);
   rpc UpdateRfqProjectGrpc (UpdateRfqProjectGrpcRequest) returns (UpdateRfqProjectGrpcResponse);
   rpc GetRfqDrawingPartNumbersByRfqIdGrpc (GetRfqDrawingPartNumbersByRfqIdGrpcRequest) returns (GetRfqDrawingPartNumbersByRfqIdGrpcResponse);
-    rpc DeleteRfqProjectByRowIdGrpc (RfqProjectRequest) returns (RfqCrudResponse);
+   rpc DeleteRfqProjectByRowIdGrpc (RfqProjectRequest) returns (RfqCrudResponse);
+   rpc UpdateRfqDrawingPartNumbersGrpc (UpdateRfqDrawingPartNumbersGrpcRequest) returns (UpdateRfqDrawingPartNumbersGrpcResponse);
+
 }
 
 // The request message containing the user's name.
@@ -194,7 +196,10 @@ message GetRfqProjectByIdGrpcResponse {
 message UpdateRfqProjectGrpcRequest {
   RfqProject Project = 1;
 }
-
+message UpdateRfqDrawingPartNumbersGrpcRequest {
+  RfqDrawingPartNumber GrpcRequestParameter = 1;
+  repeated RfqDrawingPartNumber RfqDrawingPartNumbersGrpcsToUpdate = 2;
+}
 message UpdateRfqProjectGrpcResponse {
   bool Success = 1;
   string Message = 2;
@@ -211,7 +216,10 @@ message UpdateRfqProjectGrpcResponse {
   bool IsSwapped = 9;
   string Comments = 10;
 }
-
+message UpdateRfqDrawingPartNumbersGrpcResponse {
+  bool Success = 1;
+  string Message = 2;
+}
 message GetRfqDrawingPartNumbersByRfqIdGrpcRequest {
 
   int64 RfqId = 1;
