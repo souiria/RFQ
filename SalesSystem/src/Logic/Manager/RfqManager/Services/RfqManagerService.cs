@@ -542,8 +542,8 @@
                 }
 
                 RfqDrawingPartNumbersGrpcRequest rfqProjectRequest = new RfqDrawingPartNumbersGrpcRequest();
-                rfqProjectRequest.GrpcRequestParameter = new GrpcRequestParameter();
-                rfqProjectRequest.GrpcRequestParameter.RequestType = 80;
+                rfqProjectRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                rfqProjectRequest.RfqGrpcRequestParameter.RequestType = 80;
                 rfqProjectRequest.RfqDrawingPartNumbersGrpcsToUpdate.Add(partsToUpdate);
                 RfqCrudGrpcResponse updateResponse = _RfqClient.UpdateRfqDrawingPartNumbersGrpc(rfqProjectRequest);
                 UpdateRfqDrawingPartNumbersGrpcResponse response = new UpdateRfqDrawingPartNumbersGrpcResponse();
