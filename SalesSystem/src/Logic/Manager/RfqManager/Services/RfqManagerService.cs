@@ -882,7 +882,7 @@
             EmacsFilterRequestGrpc emacsRequest = new EmacsFilterRequestGrpc();
             Collection<CombinedPartsGrpc> filteredList = new Collection<CombinedPartsGrpc>();
             FilterGrpcResponse response = new FilterGrpcResponse();
-            string[] parametersToSearch = ["UniformCustomerNumber", "UniformSupplierNumber", "UniformSumitomoNumber"];
+            string[] parametersToSearch = ["CustomerNumber", "SupplierNumber", "SumitomoNumber"];
             foreach (string parameter in parametersToSearch)
             {
                 EmacsFilterResponseGrpc partNumberResponse = FilterSumitomoNumber<EmacsFilterResponseGrpc>(request.StringValue, parameter, "==");
@@ -910,9 +910,12 @@
             Collection<CombinedPartsGrpc> filteredList = new Collection<CombinedPartsGrpc>();
             FilterGrpcResponse response = new FilterGrpcResponse();
             string[] parametersToSearch = ["UniformCustomerNumber", "UniformSupplierNumber", "UniformSumitomoNumber"];
+            Regex regexFilter = new Regex("(?:[^a-z0-9 ]|(?<=['\"])s)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+            string uniformStringValue = regexFilter.Replace(request.StringValue, String.Empty);
+            uniformStringValue = uniformStringValue.ToUpperInvariant().Trim();
             foreach (string parameter in parametersToSearch)
             {
-                EmacsFilterResponseGrpc partNumberResponse = FilterSumitomoNumber<EmacsFilterResponseGrpc>(request.StringValue, parameter, ".Contains");
+                EmacsFilterResponseGrpc partNumberResponse = FilterSumitomoNumber<EmacsFilterResponseGrpc>(uniformStringValue, parameter, ".Contains");
                 if (partNumberResponse.ListCombinedPartsGrpc != null)
                 {
                     filteredList = ExtractEmacsResponseData<CombinedPartsGrpc>(partNumberResponse);
@@ -1083,11 +1086,11 @@
             string filterExpression = string.Empty;
             if (filterOpperator == "==")
             {
-                filterExpression = $"{filterType} != null && {filterType} {filterOpperator} \"{partNumber}\"";
+                filterExpression = $"{filterType} != null && {filterType}.ToUpperInvariant() {filterOpperator} \"{partNumber.ToUpperInvariant()}\"";
             }
             else if (filterOpperator == ".Contains")
             {
-                filterExpression = $"{filterType} != null && {filterType}{filterOpperator}(\"{partNumber}\")";
+                filterExpression = $"{filterType} != null && {filterType}.ToUpperInvariant(){filterOpperator}(\"{partNumber.ToUpperInvariant()}\")";
             }
             else
             {

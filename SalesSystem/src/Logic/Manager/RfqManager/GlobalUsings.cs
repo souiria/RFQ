@@ -1,5 +1,6 @@
 ﻿global using System.Collections.ObjectModel;
 global using System.Globalization;
+global using System.Text.RegularExpressions;
 global using CPD;
 global using Emacs;
 global using Google.Protobuf.WellKnownTypes;
