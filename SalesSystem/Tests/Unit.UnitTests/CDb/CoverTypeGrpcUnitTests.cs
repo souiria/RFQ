@@ -2,6 +2,7 @@
 using CDb.Endpoints.GrpcServices;
 using CDb.Enums;
 using CDb.Services;
+using NUnit.Framework.Internal;
 
 namespace Unit.Tests.CDb
 {

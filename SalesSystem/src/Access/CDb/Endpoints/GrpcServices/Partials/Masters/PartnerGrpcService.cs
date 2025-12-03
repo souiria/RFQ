@@ -81,27 +81,6 @@
                     return response;
                 }
 
-                case RequestType.ReadByIsActive:
-                {
-                    CancellationToken cancellationToken = context.CancellationToken;
-                    ListPartnerGrpc response = await _CDbAccessService.ReadManyPartners(request, cancellationToken);
-                    return response;
-                }
-
-                case RequestType.ReadByCode:
-                {
-                    CancellationToken cancellationToken = context.CancellationToken;
-                    ListPartnerGrpc response = await _CDbAccessService.ReadManyPartners(request, cancellationToken);
-                    return response;
-                }
-
-                case RequestType.ReadById:
-                {
-                    CancellationToken cancellationToken = context.CancellationToken;
-                    ListPartnerGrpc response = await _CDbAccessService.ReadPartnerById(request, cancellationToken);
-                    return response;
-                }
-
                 default:
                 {
                     Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for getting fuse types.");

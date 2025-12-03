@@ -55,7 +55,7 @@ namespace Unit.Tests.CDb
         {
             CdbFilterRequestGrpc filterRequest = new CdbFilterRequestGrpc();
             filterRequest.DatabaseList = "CRIMPINGPROCESSTYPEGRPC";
-            filterRequest.FilterExpression = "Id != null && Id == \"5c427cea-d05e-42b1-871e-6e2ed2a5ace9\"";
+            filterRequest.FilterExpression = "Id != null && Id == \"5C427CEA-D05E-42B1-871E-6E2ED2A5ACE9\"";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterCdbDataGrpc));
             Task<CdbFilterResponseGrpc> crimpingProcessTypeGrpc = _GrpcService.FilterCdbDataGrpc(filterRequest, serverCallContext);
             NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(1);
