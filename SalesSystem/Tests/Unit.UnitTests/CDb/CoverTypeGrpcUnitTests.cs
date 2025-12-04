@@ -56,7 +56,8 @@ namespace Unit.Tests.CDb
         {
             CdbFilterRequestGrpc filterRequest = new CdbFilterRequestGrpc();
             filterRequest.DatabaseList = "COVERTYPEGRPC";
-            filterRequest.FilterExpression = "Id != null && Id == \"3a15c6ae-3b7f-4f55-b566-01cd29630901\"";
+            string testId = ("3a15c6ae-3b7f-4f55-b566-01cd29630901").ToUpperInvariant();
+            filterRequest.FilterExpression = $"Id != null && Id == \"{testId}\"";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterCdbDataGrpc));
 
             Task<CdbFilterResponseGrpc> coverTypeGrpc = _GrpcService.FilterCdbDataGrpc(filterRequest, serverCallContext);
@@ -98,7 +99,8 @@ namespace Unit.Tests.CDb
             Assert.That(coverTypeGrpc.Result.ListCoverTypes.CoverTypeGrpcs, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(1);
             Assert.That(coverTypeGrpc.Result.ListCoverTypes.CoverTypeGrpcs.Count, equalConstraint);
-            NUnit.Framework.Constraints.EqualConstraint codeConstraint = Is.EqualTo("37c995eb-8556-4ff9-b2b9-a2bcd7de234b");
+            string testId = ("37c995eb-8556-4ff9-b2b9-a2bcd7de234b").ToUpperInvariant();
+            NUnit.Framework.Constraints.EqualConstraint codeConstraint = Is.EqualTo(testId);
             Assert.That(coverTypeGrpc.Result.ListCoverTypes.CoverTypeGrpcs.First().Id, codeConstraint);
         }
 

@@ -3,6 +3,7 @@ using CDb.Endpoints.GrpcServices;
 using CDb.Enums;
 using CDb.Services;
 
+
 namespace Unit.Tests.CDb
 {
     class CrimpingProcessTypeGrpcUnitTests
@@ -31,8 +32,8 @@ namespace Unit.Tests.CDb
             Task<HelloReply> helloReply = _GrpcService.SayHello(request, serverCallContext);
 
             string replyString = "Hello TestName";
-            NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(replyString);
             Assert.That(helloReply, Is.Not.Null);
+            EqualConstraint equalConstraint = Is.EqualTo(replyString);
             Assert.That(helloReply.Result.Message, equalConstraint);
         }
 
@@ -46,21 +47,43 @@ namespace Unit.Tests.CDb
             request.GrpcRequestParameter = new GrpcRequestParameter();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadCrimpingProcessTypeGrpc));
             Task<ListCrimpingProcessTypeGrpc> crimpingProcessTypeGrpc = _GrpcService.ReadCrimpingProcessTypeGrpc(request, serverCallContext);
-            NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(5);
+            EqualConstraint equalConstraint = Is.EqualTo(5);
         }
 
         [Test]
         [Category("Unit")]
         public void GetCrimpingProcessTypeByIdGrpcTest_Success()
         {
+            // First, get all CrimpingProcessTypes to find a valid ID
+            CrimpingProcessTypeGrpcRequest getAllRequest = new CrimpingProcessTypeGrpcRequest();
+            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
+            grpcRequestParameter.RequestType = (int)RequestType.ReadAll;
+            getAllRequest.GrpcRequestParameter = grpcRequestParameter;
+            ServerCallContext getAllContext = CreateServerContext(nameof(_GrpcService.ReadCrimpingProcessTypeGrpc));
+            
+            Task<ListCrimpingProcessTypeGrpc> allResponse = _GrpcService.ReadCrimpingProcessTypeGrpc(getAllRequest, getAllContext);
+            
+            // Ensure we have at least one CrimpingProcessType in the database
+            GreaterThanConstraint gtConstraint = Is.GreaterThan(0);
+            Assert.That(allResponse.Result.CrimpingProcessTypeGrpcs.Count, gtConstraint, 
+                "No CrimpingProcessTypes found in database for testing");
+            
+            // Get the first CrimpingProcessType's ID for our filter test
+            string validId = allResponse.Result.CrimpingProcessTypeGrpcs[0].Id;
+            
+            // Now test the filter with a valid ID
             CdbFilterRequestGrpc filterRequest = new CdbFilterRequestGrpc();
             filterRequest.DatabaseList = "CRIMPINGPROCESSTYPEGRPC";
-            filterRequest.FilterExpression = "Id != null && Id == \"5C427CEA-D05E-42B1-871E-6E2ED2A5ACE9\"";
+            filterRequest.FilterExpression = $"Id != null && Id == \"{validId}\"";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterCdbDataGrpc));
+            
             Task<CdbFilterResponseGrpc> crimpingProcessTypeGrpc = _GrpcService.FilterCdbDataGrpc(filterRequest, serverCallContext);
-            NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(1);
+
+            EqualConstraint equalConstraint = Is.EqualTo(1);
             Assert.That(crimpingProcessTypeGrpc, Is.Not.Null);
             Assert.That(crimpingProcessTypeGrpc.Result.ListCrimpingProcessTypes.CrimpingProcessTypeGrpcs.Count, equalConstraint);
+            EqualConstraint equalToValidId = Is.EqualTo(validId);
+            Assert.That(crimpingProcessTypeGrpc.Result.ListCrimpingProcessTypes.CrimpingProcessTypeGrpcs[0].Id, equalToValidId);
         }
 
         [Test]
