@@ -3,7 +3,6 @@ using CDb.Endpoints.GrpcServices;
 using CDb.Enums;
 using CDb.Services;
 
-
 namespace Unit.Tests.CDb
 {
     class CrimpingProcessTypeGrpcUnitTests
@@ -95,7 +94,7 @@ namespace Unit.Tests.CDb
             filterRequest.FilterExpression = "Id != null && Id == \"00000000-0000-0000-0000-000000000000\"";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterCdbDataGrpc));
             Task<CdbFilterResponseGrpc> crimpingProcessTypeGrpc = _GrpcService.FilterCdbDataGrpc(filterRequest, serverCallContext);
-            NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(0);
+            EqualConstraint equalConstraint = Is.EqualTo(0);
             Assert.That(crimpingProcessTypeGrpc, Is.Not.Null);
             Assert.That(crimpingProcessTypeGrpc.Result.ListCrimpingProcessTypes.CrimpingProcessTypeGrpcs.Count, equalConstraint);
         }

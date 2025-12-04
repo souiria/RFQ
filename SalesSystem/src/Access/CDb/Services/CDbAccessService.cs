@@ -347,6 +347,8 @@
             _CoverTypeGrpcs = SampleCDbAccessDataService.PopulateCoverTypeInitData();
             _CrimpingProcessTypeGrpcs = SampleCDbAccessDataService.PopulateCrimpingProcessTypeInitData();
             _CompositeComponentGrpcs = SampleCDbAccessDataService.PopulateCompositeComponentInitData();
+            _FileTypeGrpcs = SampleCDbAccessDataService.PopulateFileTypeInitData();
+            _WireTypeGrpcs = SampleCDbAccessDataService.PopulateSampleWireTypeInitData();
         }
     }
 }

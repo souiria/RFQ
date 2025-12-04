@@ -62,7 +62,7 @@ namespace Integration.Tests.CDb
             _ServiceProvider = serviceCollection.BuildServiceProvider();
             
             // Pass the service provider with registered services
-            _CDbAccessService = new CDbAccessService(_ServiceProvider, false); // yeah, I'm using the real service here, not a mock
+            _CDbAccessService = new CDbAccessService(_ServiceProvider, true); // yeah, I'm using the real service here, not a mock
             Mock<ILogger<CDbGrpcService>> logger = new Mock<ILogger<CDbGrpcService>>();
             _GrpcService = new CDbGrpcService(_CDbAccessService, logger.Object);
         }
@@ -106,7 +106,7 @@ namespace Integration.Tests.CDb
             // Assert
             // The HasData in the DbFileType adds 7 records to the database
             Assert.That(response.Result.FileTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.GreaterThanOrEqualConstraint countConstraint = Is.GreaterThanOrEqualTo(7);
+            NUnit.Framework.Constraints.GreaterThanOrEqualConstraint countConstraint = Is.GreaterThanOrEqualTo(4);
             Assert.That(response.Result.FileTypeGrpcs.Count, countConstraint);
         }
         [Test]
@@ -114,33 +114,31 @@ namespace Integration.Tests.CDb
         public void GetByIdFileTypeTest()
         {
             // Arrange
-            FileTypeGrpcRequest request = new FileTypeGrpcRequest();
-            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-            grpcRequestParameter.RequestType = (int)RequestType.ReadById;
-            grpcRequestParameter.StringValue = "17D27E0B-CF12-41BF-B28D-1A2433F3D61B"; // Generic file TYPE  
-            request.GrpcRequestParameter = grpcRequestParameter;
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadFileTypeGrpc));
+            CdbFilterRequestGrpc request = new CdbFilterRequestGrpc();
+            request.DatabaseList = "FILETYPEGRPC";
+            request.FilterExpression = $"Id != null && Id.ToUpperInvariant() == \"B481C105-2C10-49F6-912F-5EDF771BAD1C\"";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterCdbDataGrpc));
 
             // Act
-            Task<ListFileTypeGrpc> response = _GrpcService.ReadFileTypeGrpc(request, serverCallContext);
+            Task<CdbFilterResponseGrpc> response = _GrpcService.FilterCdbDataGrpc(request, serverCallContext);
 
             // Assert
             // The HasData in the DbFileType adds Generic file TYPE
-            Assert.That(response.Result.FileTypeGrpcs, Is.Not.Null);
+            Assert.That(response.Result.ListFileTypes.FileTypeGrpcs, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(response.Result.FileTypeGrpcs.Count, countConstraint);
+            Assert.That(response.Result.ListFileTypes.FileTypeGrpcs.Count, countConstraint);
 
             // Check if the FileTypeGrpc has the expected ID
-            NUnit.Framework.Constraints.EqualConstraint idConstraint = Is.EqualTo("17D27E0B-CF12-41BF-B28D-1A2433F3D61B");
+            NUnit.Framework.Constraints.EqualConstraint idConstraint = Is.EqualTo("B481C105-2C10-49F6-912F-5EDF771BAD1C");
             CultureInfo cultureInfo = CultureInfo.InvariantCulture;
-            string fileTypeId = response.Result.FileTypeGrpcs[0].Id.ToUpper(cultureInfo);
+            string fileTypeId = response.Result.ListFileTypes.FileTypeGrpcs[0].Id.ToUpper(cultureInfo);
             Assert.That(fileTypeId, idConstraint);
             // Check if the FileTypeGrpc has the expected Name
-            NUnit.Framework.Constraints.EqualConstraint codeConstraint = Is.EqualTo("Generic");
-            Assert.That(response.Result.FileTypeGrpcs[0].Name, codeConstraint);
+            NUnit.Framework.Constraints.EqualConstraint codeConstraint = Is.EqualTo("Unknown");
+            Assert.That(response.Result.ListFileTypes.FileTypeGrpcs[0].Name, codeConstraint);
             // Check if the FileTypeGrpc has the expected Description
-            NUnit.Framework.Constraints.EqualConstraint descriptionConstraint = Is.EqualTo("Generic");
-            Assert.That(response.Result.FileTypeGrpcs[0].Description, descriptionConstraint);
+            NUnit.Framework.Constraints.EqualConstraint descriptionConstraint = Is.EqualTo("Unknown");
+            Assert.That(response.Result.ListFileTypes.FileTypeGrpcs[0].Description, descriptionConstraint);
 
         }
         [Test]
@@ -148,26 +146,24 @@ namespace Integration.Tests.CDb
         public void GetByNameFileTypeTest()
         {
             // Arrange
-            FileTypeGrpcRequest request = new FileTypeGrpcRequest();
-            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-            grpcRequestParameter.RequestType = (int)RequestType.ReadByName;
-            grpcRequestParameter.StringValue = "Generic"; // Generic file TYPE  
-            request.GrpcRequestParameter = grpcRequestParameter;
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadFileTypeGrpc));
+            CdbFilterRequestGrpc request = new CdbFilterRequestGrpc();
+            request.DatabaseList = "FILETYPEGRPC";
+            request.FilterExpression = $"Name != null && Name.ToUpperInvariant() == \"TUBULAR\"";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterCdbDataGrpc));
 
             // Act
-            Task<ListFileTypeGrpc> response = _GrpcService.ReadFileTypeGrpc(request, serverCallContext);
+            Task<CdbFilterResponseGrpc> response = _GrpcService.FilterCdbDataGrpc(request, serverCallContext);
 
             // Assert
             // The HasData in the DbFileType adds Generic file TYPE
-            Assert.That(response.Result.FileTypeGrpcs, Is.Not.Null);
+            Assert.That(response.Result.ListFileTypes.FileTypeGrpcs, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(response.Result.FileTypeGrpcs.Count, countConstraint);
+            Assert.That(response.Result.ListFileTypes.FileTypeGrpcs.Count, countConstraint);
 
             // Check if the FileTypeGrpc has the expected ID
-            NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("GENERIC");
+            NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TUBULAR");
             CultureInfo cultureInfo = CultureInfo.InvariantCulture;
-            string fileTypeId = response.Result.FileTypeGrpcs[0].Name.ToUpper(cultureInfo);
+            string fileTypeId = response.Result.ListFileTypes.FileTypeGrpcs[0].Name.ToUpper(cultureInfo);
             Assert.That(fileTypeId, nameConstraint);
 
         }

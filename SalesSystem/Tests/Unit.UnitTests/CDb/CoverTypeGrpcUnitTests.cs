@@ -31,7 +31,7 @@ namespace Unit.Tests.CDb
             Task<HelloReply> helloReply = _GrpcService.SayHello(request, serverCallContext);
 
             string replyString = "Hello TestName";
-            NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(replyString);
+            EqualConstraint equalConstraint = Is.EqualTo(replyString);
             Assert.That(helloReply, Is.Not.Null);
             Assert.That(helloReply.Result.Message, equalConstraint);
         }
@@ -47,7 +47,7 @@ namespace Unit.Tests.CDb
             
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadCoverTypeGrpc));
             Task<ListCoverTypeGrpc> coverTypeGrpc = _GrpcService.ReadCoverTypeGrpc(request, serverCallContext);
-            NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(5);
+            EqualConstraint equalConstraint = Is.EqualTo(5);
         }
 
         [Test]
@@ -63,9 +63,9 @@ namespace Unit.Tests.CDb
             Task<CdbFilterResponseGrpc> coverTypeGrpc = _GrpcService.FilterCdbDataGrpc(filterRequest, serverCallContext);
 
             Assert.That(coverTypeGrpc.Result.ListCoverTypes.CoverTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(1);
+            EqualConstraint equalConstraint = Is.EqualTo(1);
             Assert.That(coverTypeGrpc.Result.ListCoverTypes.CoverTypeGrpcs.Count, equalConstraint);
-            NUnit.Framework.Constraints.EqualConstraint codeConstraint = Is.EqualTo("Unknown");
+            EqualConstraint codeConstraint = Is.EqualTo("Unknown");
             Assert.That(coverTypeGrpc.Result.ListCoverTypes.CoverTypeGrpcs.First().Code, codeConstraint);
         }
 
@@ -81,7 +81,7 @@ namespace Unit.Tests.CDb
             Task<CdbFilterResponseGrpc> coverTypeGrpc = _GrpcService.FilterCdbDataGrpc(filterRequest, serverCallContext);
 
             Assert.That(coverTypeGrpc.Result.ListCoverTypes.CoverTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(0);
+            EqualConstraint equalConstraint = Is.EqualTo(0);
             Assert.That(coverTypeGrpc.Result.ListCoverTypes.CoverTypeGrpcs.Count, equalConstraint);
         }
 
@@ -97,10 +97,10 @@ namespace Unit.Tests.CDb
             Task<CdbFilterResponseGrpc> coverTypeGrpc = _GrpcService.FilterCdbDataGrpc(filterRequest, serverCallContext);
 
             Assert.That(coverTypeGrpc.Result.ListCoverTypes.CoverTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(1);
+            EqualConstraint equalConstraint = Is.EqualTo(1);
             Assert.That(coverTypeGrpc.Result.ListCoverTypes.CoverTypeGrpcs.Count, equalConstraint);
             string testId = ("37c995eb-8556-4ff9-b2b9-a2bcd7de234b").ToUpperInvariant();
-            NUnit.Framework.Constraints.EqualConstraint codeConstraint = Is.EqualTo(testId);
+            EqualConstraint codeConstraint = Is.EqualTo(testId);
             Assert.That(coverTypeGrpc.Result.ListCoverTypes.CoverTypeGrpcs.First().Id, codeConstraint);
         }
 
@@ -116,7 +116,7 @@ namespace Unit.Tests.CDb
             Task<CdbFilterResponseGrpc> coverTypeGrpc = _GrpcService.FilterCdbDataGrpc(filterRequest, serverCallContext);
 
             Assert.That(coverTypeGrpc.Result.ListCoverTypes.CoverTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(0);
+            EqualConstraint equalConstraint = Is.EqualTo(0);
             Assert.That(coverTypeGrpc.Result.ListCoverTypes.CoverTypeGrpcs.Count, equalConstraint);
         }
 

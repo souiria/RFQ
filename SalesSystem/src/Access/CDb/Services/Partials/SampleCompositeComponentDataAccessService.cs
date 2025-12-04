@@ -35,7 +35,7 @@
             clipComponent.Issue = "Test clip";
             clipComponent.ComponentStatus = ComponentStatus.CurrentValid;
             // Set properties for the clip component
-            clipComponent.ClipTypeId = Guid.Parse("ae91f78c-654d-47ff-bb66-7f1a7fd700cf");
+            clipComponent.ClipTypeId = Guid.Parse("AE91F78C-654D-47FF-BB66-7F1A7FD700CF");
             clipComponent.TieType = TieType.BO;
             clipComponent.DimensionCode = "D1";
             clipComponent.ThicknessCode = "T1";
