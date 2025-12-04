@@ -1,6 +1,8 @@
 @using SalesSystem.Rfq.Models
 @using MudBlazor
 
+@inject IDialogService DialogService
+
 <MudDialog>
     <DialogContent>
         <MudForm @ref="_form" @bind-IsValid="_isValid">
@@ -99,6 +101,20 @@
         </MudForm>
     </DialogContent>
     <DialogActions>
+        <MudButton OnClick="PickDummy" 
+                   Color="Color.Secondary" 
+                   Variant="Variant.Filled"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   Style="margin-right: 8px;">
+            Pick Dummy
+        </MudButton>
+        <MudButton OnClick="CreateNpr" 
+                   Color="Color.Info" 
+                   Variant="Variant.Filled"
+                   StartIcon="@Icons.Material.Filled.NoteAdd"
+                   Style="margin-right: auto;">
+            Create NPR
+        </MudButton>
         <MudButton OnClick="Cancel" Color="Color.Default">Cancel</MudButton>
         <MudButton OnClick="Save" Color="Color.Primary" Variant="Variant.Filled" Disabled="!_isValid">Save</MudButton>
     </DialogActions>
@@ -130,6 +146,63 @@
             Comments = OriginalItem.Comments,
             IsMatched = OriginalItem.IsMatched
         };
+    }
+
+    private async Task PickDummy()
+    {
+        DialogOptions options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true,
+            CloseOnEscapeKey = true,
+            BackdropClick = false
+        };
+
+        IDialogReference dialog = await DialogService.ShowAsync<PickDummyPartDialog>(
+            "Pick Dummy Part",
+            options
+        );
+
+        DialogResult? result = await dialog.Result;
+
+        if (result != null && !result.Canceled && result.Data is PickDummyPartDialog.DummyPartData dummyData)
+        {
+            // Update the EditedItem with dummy part data
+            EditedItem.SwappedPartNumber = dummyData.PartNumber;
+            EditedItem.SwappedPartNumberPrice = dummyData.Price;
+            EditedItem.IsSwapped = true;
+            EditedItem.IsExactMatch = false;
+            EditedItem.IsMatched = false;
+            EditedItem.PriceSource = "Dummy";
+
+            // Force UI refresh
+            StateHasChanged();
+        }
+    }
+
+    private async Task CreateNpr()
+    {
+        DialogOptions options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true,
+            CloseOnEscapeKey = true,
+            BackdropClick = false
+        };
+
+        IDialogReference dialog = await DialogService.ShowAsync<CreateNprDialog>(
+            "Create NPR",
+            options
+        );
+
+        DialogResult? result = await dialog.Result;
+
+        if (result != null && !result.Canceled && result.Data is CreateNprDialog.NprData nprData)
+        {
+            // For now, do not assign the information
+            // TODO: Handle NPR data assignment when requirements are defined
+            // nprData.NprNumber and nprData.NprDate are available here
+        }
     }
 
     private void Cancel()

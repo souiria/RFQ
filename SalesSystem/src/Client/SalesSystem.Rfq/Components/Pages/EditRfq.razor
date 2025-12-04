@@ -132,8 +132,21 @@ else
                                            StartIcon="@Icons.Material.Filled.TravelExplore"
                                            FullWidth="false"
                                            Disabled="@(UnmatchedParts.Count == 0 || _isSearchingAll)">
+                                    Npr All
+                                </MudButton>
+                                <MudButton Color="Color.Info"
+                                           OnClick="@NprAllUnmatchedPartsAsync"
+                                           Variant="Variant.Filled"
+                                           Size="Size.Small"
+                                           StartIcon="@Icons.Material.Filled.TravelExplore"
+                                           FullWidth="false"
+                                           Disabled="@(UnmatchedParts.Count == 0 || _isSearchingAll)">
                                     Search All
                                 </MudButton>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem>
+                            <MudStack>
                                 <MudButton Color="Color.Secondary"
                                            OnClick="@FlipAllMatchedPartsAsync"
                                            Variant="Variant.Filled"
@@ -196,7 +209,7 @@ else
                     <div class="d-flex flex-column" style="height: calc(100vh - 364px); overflow: hidden;">
                         @* Unmatched Parts Section *@
                         <PartNumberSection PartNumbers="@UnmatchedParts"
-                                           Label="Unmatched Parts"
+                                           Label="In progress"
                                            BackgroundColor="var(--mud-palette-warning)"
                                            InitiallyExpanded="true"
                                            OnPartNumberDeleted="@HandlePartNumberDeleted"
@@ -205,7 +218,7 @@ else
                         <MudDivider Style="margin: 4px 0;" />
                         @* Matched Parts Section *@
                         <PartNumberSection PartNumbers="@MatchedParts"
-                                           Label="Matched Parts"
+                                           Label="Completed"
                                            BackgroundColor="var(--mud-palette-success)"
                                            InitiallyExpanded="false"
                                            OnPartNumberDeleted="@HandlePartNumberDeleted"
@@ -521,6 +534,16 @@ else
     #endregion
 
     #region Search All
+
+    private async Task NprAllUnmatchedPartsAsync()
+    {
+        if (UnmatchedParts.Count == 0)
+        {
+            Snackbar.Add("No unmatched parts to search", Severity.Info);
+            return;
+        }
+        await Task.Delay(1);
+    }
     private async Task SearchAllUnmatchedPartsAsync()
     {
         if (UnmatchedParts.Count == 0)
@@ -724,7 +747,7 @@ else
                                 // part.SwappedPartNumber = nprPartNumber;
                                 // part.SwappedPartNumberPrice = nprPrice;
                                 part.PriceSource = "NPR";
-                                part.IsExactMatch = true;
+                                part.IsExactMatch = false;
                                 part.IsMatched = true;
                                 part.IsSwapped = false;
                                 part.MultiMatch = hasMultipleMatches;

@@ -137,6 +137,10 @@
         {
             return "background-color: lightyellow;"; // Changed color to light yellow for partial matches
         }
+        else if (item?.IsMatched == false && item?.IsSwapped == true)
+        {
+            return "background-color: lightblue;"; // Changed color to light yellow for partial matches
+        }
         return string.Empty;
     }
 
@@ -342,6 +346,7 @@
             );
         }
     }
+
     private async Task OnFlip(RfqDrawingPartNumberUx item)
     {
         await Task.Delay(1);
@@ -356,6 +361,7 @@
 
         StateHasChanged();
     }
+
     private async Task OnEdit(RfqDrawingPartNumberUx item)
     {
         if (item == null)
@@ -435,6 +441,7 @@
             Logger.GenericLogInformation($"Edit cancelled for part number: {item.CustomerPartNumber}");
         }
     }
+
     private async Task OnDelete(RfqDrawingPartNumberUx item)
     {
         if (item == null)
