@@ -14,6 +14,7 @@ import "Tag.proto";
 
 // Components
 import "CompositeComponent.proto";
+import "Components/MiscellaneousComponent.proto";
 
 // Masters
 import "Masters/ClipType.proto";
@@ -149,6 +150,7 @@ service CDbService {
 	rpc UpdateCompositeComponentGrpc (CompositeComponentGrpcRequest) returns (CDbCrudGrpcResponse);
 	rpc DeleteCompositeComponentGrpc (CompositeComponentGrpcRequest) returns (CDbCrudGrpcResponse);
 
+	rpc FilterCdbDataGrpc (CdbFilterRequestGrpc) returns (CdbFilterResponseGrpc);
 }
 
 // The request message containing the user's name.
@@ -159,4 +161,34 @@ message HelloRequest {
 // The response message containing the greetings.
 message HelloReply {
 	string Message = 1;
+}
+
+message CdbFilterRequestGrpc {
+	string DatabaseList = 1;
+    string FilterExpression = 2;
+}
+
+message CdbFilterResponseGrpc {
+	bool IsSuccess = 1;
+	ListClipTypeGrpc ListClipTypes = 2;
+	ListCoverTypeGrpc ListCoverTypes = 3;
+	ListCrimpingProcessTypeGrpc ListCrimpingProcessTypes = 4;
+	ListFileTypeGrpc ListFileTypes = 5;
+	ListFuseTypeGrpc ListFuseTypes = 6;
+	ListMaterialTypeGrpc ListMaterialTypes = 7;
+	ListMiscellaneousComponentTypeGrpc ListMiscellaneousComponentTypes = 8;
+	ListPartnerGrpc ListPartners = 9;
+	ListPersonGrpc ListPersons = 10;
+	ListTemperatureRangeGrpc ListTemperatureRanges = 11;
+	ListTerminalFamilyGrpc ListTerminalFamilies = 12;
+	ListTerminalSizeGrpc ListTerminalSizes = 13;
+	ListTypeCodeGrpc ListTypeCodes = 14;
+	ListWaterproofTypeGrpc ListWaterproofTypes = 15;
+	ListWireProtectionTypeGrpc ListWireProtectionTypes = 16;
+	ListWireTypeGrpc ListWireTypes = 17;
+	ListFileNameGrpc ListFileNames = 18;
+	ListPartNumberGrpc ListPartNumbers = 19;
+	ListTagGrpc ListTags = 20;
+	ListCompositeComponentGrpc ListCompositeComponents = 21;
+	ListMiscellaneousComponentGrpc ListMiscellaneousComponents = 22;
 }

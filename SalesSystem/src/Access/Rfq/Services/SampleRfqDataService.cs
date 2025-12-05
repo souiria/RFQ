@@ -53,6 +53,7 @@
                 rfqProjectGrpc.RfqResponseDeadline = DateTime.UtcNow.ToTimestamp();
                 rfqProjectGrpc.CarModelGuid = $"CarModelGuid{i}";
                 rfqProjectGrpc.VehicleVolume = i;
+                rfqProjectGrpc.IsActive = true;
                 listRfqProjectGrpc.RfqProjects.Add(rfqProjectGrpc);
             }
 
@@ -65,6 +66,7 @@
             fixedRfqProjectGrpc.RfqResponseDeadline = DateTime.UtcNow.ToTimestamp();
             fixedRfqProjectGrpc.CarModelGuid = $"TetstCarModelGuid";
             fixedRfqProjectGrpc.VehicleVolume = 6;
+            fixedRfqProjectGrpc.IsActive = true;
             listRfqProjectGrpc.RfqProjects.Add(fixedRfqProjectGrpc);
             return listRfqProjectGrpc;
         }

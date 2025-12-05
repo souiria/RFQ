@@ -32,26 +32,6 @@
                     return response;
                 }
 
-                case RequestType.ReadByIsActive:
-                {
-                    CancellationToken cancellationToken = context.CancellationToken;
-                    ListPartNumberGrpc response = await _CDbAccessService.ReadManyPartNumbers(request, cancellationToken);
-                    return response;
-                }
-
-                case RequestType.ReadById:
-                {
-                    CancellationToken cancellationToken = context.CancellationToken;
-                    ListPartNumberGrpc response = await _CDbAccessService.ReadPartNumberById(request, cancellationToken);
-                    return response;
-                }
-
-                case RequestType.ReadByName:
-                {
-                    CancellationToken cancellationToken = context.CancellationToken;
-                    ListPartNumberGrpc response = await _CDbAccessService.ReadManyPartNumbers(request, cancellationToken);
-                    return response;
-                }
                 default:
                 {
                     Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for getting clip types.");

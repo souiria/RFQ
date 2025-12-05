@@ -81,19 +81,21 @@ namespace Unit.Tests.Emacs
 
         [Test]
         [Category("Unit")]
-        public void GetPartCategoryDetailByCategoryCode_Success()
+        public void FilterPartCategoryDetailByCategoryCode_Success()
         {
-            PartCategoryDetailByCategoryCodeGrpcRequest request = new PartCategoryDetailByCategoryCodeGrpcRequest();
-            request.CategoryCode = "TestCategoryCode";
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPartCategoryDetailGrpcByCategoryCode));
+            EmacsFilterRequestGrpc request = new EmacsFilterRequestGrpc();
+            request.DatabaseList = "PartCategoryDetailGrpc";
+            request.FilterExpression = "CategoryCode != null && CategoryCode == \"TestCategoryCode\"";
 
-            Task<ListPartCategoryDetailGrpc> getCombinedPartsGrpcReply = _GrpcService.GetPartCategoryDetailGrpcByCategoryCode(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterEmacsDataGrpc));
 
-            Assert.That(getCombinedPartsGrpcReply.Result.PartCategoryDetailGrpc, Is.Not.Null);
+            Task<EmacsFilterResponseGrpc> filterCombinedPartsGrpcReply = _GrpcService.FilterEmacsDataGrpc(request, serverCallContext);
+
+            Assert.That(filterCombinedPartsGrpcReply.Result.ListPartCategoryDetailGrpc.PartCategoryDetailGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCombinedPartsGrpcReply.Result.PartCategoryDetailGrpc.Count, countConstraint);
+            Assert.That(filterCombinedPartsGrpcReply.Result.ListPartCategoryDetailGrpc.PartCategoryDetailGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint categoryCodeConstraint = Is.EqualTo("TestCategoryCode");
-            Assert.That(getCombinedPartsGrpcReply.Result.PartCategoryDetailGrpc.First().CategoryCode, categoryCodeConstraint);
+            Assert.That(filterCombinedPartsGrpcReply.Result.ListPartCategoryDetailGrpc.PartCategoryDetailGrpc.First().CategoryCode, categoryCodeConstraint);
         }
         #endregion
 
@@ -114,22 +116,23 @@ namespace Unit.Tests.Emacs
 
         [Test]
         [Category("Unit")]
-        public void GetPartClassDetailByClasses_Success()
+        public void FilterPartClassDetailByClasses_Success()
         {
-            PartClassDetailByClassesGrpcRequest request = new PartClassDetailByClassesGrpcRequest();
-            request.Class1 = "TestClass1";
-            request.Class2 = 0;
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPartClassDetailGrpcByClasses));
+            EmacsFilterRequestGrpc request = new EmacsFilterRequestGrpc();
+            request.DatabaseList = "PartClassDetailGrpc";
+            request.FilterExpression = "Class1 != null && Class2 != null && Class1 == \"TestClass1\" && Class2 == \"0\"";
 
-            Task<ListPartClassDetailGrpc> getCombinedPartsGrpcReply = _GrpcService.GetPartClassDetailGrpcByClasses(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterEmacsDataGrpc));
 
-            Assert.That(getCombinedPartsGrpcReply.Result.PartClassDetailGrpc, Is.Not.Null);
+            Task<EmacsFilterResponseGrpc> filterCombinedPartsGrpcReply = _GrpcService.FilterEmacsDataGrpc(request, serverCallContext);
+
+            Assert.That(filterCombinedPartsGrpcReply.Result.ListPartClassDetailGrpc.PartClassDetailGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCombinedPartsGrpcReply.Result.PartClassDetailGrpc.Count, countConstraint);
+            Assert.That(filterCombinedPartsGrpcReply.Result.ListPartClassDetailGrpc.PartClassDetailGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint class1Constraint = Is.EqualTo("TestClass1");
             NUnit.Framework.Constraints.EqualConstraint class2Constraint = Is.EqualTo(0);
-            Assert.That(getCombinedPartsGrpcReply.Result.PartClassDetailGrpc.First().Class1, class1Constraint);
-            Assert.That(getCombinedPartsGrpcReply.Result.PartClassDetailGrpc.First().Class2, class2Constraint);
+            Assert.That(filterCombinedPartsGrpcReply.Result.ListPartClassDetailGrpc.PartClassDetailGrpc.First().Class1, class1Constraint);
+            Assert.That(filterCombinedPartsGrpcReply.Result.ListPartClassDetailGrpc.PartClassDetailGrpc.First().Class2, class2Constraint);
         }
 
         #endregion
@@ -151,20 +154,22 @@ namespace Unit.Tests.Emacs
 
         [Test]
         [Category("Unit")]
-        public void GetPartGroupsGrpcByPartGroup_Success()
+        public void FilterPartGroupsGrpcByPartGroup_Success()
         {
             CancellationToken token = CancellationToken.None;
-            PartGroupsByPartGroupGrpcRequest request = new PartGroupsByPartGroupGrpcRequest();
-            request.PartGroup = "TestPartGroup";
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPartGroupsGrpcByPartGroup));
 
-            Task<ListPartGroupsGrpc> getCombinedPartsGrpcReply = _GrpcService.GetPartGroupsGrpcByPartGroup(request, serverCallContext);
+            EmacsFilterRequestGrpc request = new EmacsFilterRequestGrpc();
+            request.DatabaseList = "PartGroupsGrpc";
+            request.FilterExpression = "PartGroup != null && PartGroup == \"TestPartGroup\"";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterEmacsDataGrpc));
 
-            Assert.That(getCombinedPartsGrpcReply.Result.PartGroupsGrpc, Is.Not.Null);
+            Task<EmacsFilterResponseGrpc> filterCombinedPartsGrpcReply = _GrpcService.FilterEmacsDataGrpc(request, serverCallContext);
+
+            Assert.That(filterCombinedPartsGrpcReply.Result.ListPartGroupsGrpc.PartGroupsGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCombinedPartsGrpcReply.Result.PartGroupsGrpc.Count, countConstraint);
+            Assert.That(filterCombinedPartsGrpcReply.Result.ListPartGroupsGrpc.PartGroupsGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint partGroupsConstraint = Is.EqualTo("TestPartGroup");
-            Assert.That(getCombinedPartsGrpcReply.Result.PartGroupsGrpc.First().PartGroup, partGroupsConstraint);
+            Assert.That(filterCombinedPartsGrpcReply.Result.ListPartGroupsGrpc.PartGroupsGrpc.First().PartGroup, partGroupsConstraint);
         }
         #endregion
 
@@ -185,19 +190,20 @@ namespace Unit.Tests.Emacs
 
         [Test]
         [Category("Unit")]
-        public void GetPartGroupsConstByGroup3_Success()
+        public void FilterPartGroupsConstByGroup3_Success()
         {
-            PartGroupsConstByGroup3GrpcRequest request = new PartGroupsConstByGroup3GrpcRequest();
-            request.Group3 = "TestCode";
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPartGroupsConstGrpcByGroup3));
+            EmacsFilterRequestGrpc request = new EmacsFilterRequestGrpc();
+            request.DatabaseList = "PartGroupsConstGrpc";
+            request.FilterExpression = "Code != null && Code == \"TestCode\"";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterEmacsDataGrpc));
 
-            Task<ListPartGroupsConstGrpc> getCombinedPartsGrpcReply = _GrpcService.GetPartGroupsConstGrpcByGroup3(request, serverCallContext);
+            Task<EmacsFilterResponseGrpc> filterCombinedPartsGrpcReply = _GrpcService.FilterEmacsDataGrpc(request, serverCallContext);
 
-            Assert.That(getCombinedPartsGrpcReply.Result.PartGroupsConstGrpc, Is.Not.Null);
+            Assert.That(filterCombinedPartsGrpcReply.Result.ListPartGroupsConstGrpc.PartGroupsConstGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCombinedPartsGrpcReply.Result.PartGroupsConstGrpc.Count, countConstraint);
+            Assert.That(filterCombinedPartsGrpcReply.Result.ListPartGroupsConstGrpc.PartGroupsConstGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint partGroupsConstraint = Is.EqualTo("TestCode");
-            Assert.That(getCombinedPartsGrpcReply.Result.PartGroupsConstGrpc.First().Code, partGroupsConstraint);
+            Assert.That(filterCombinedPartsGrpcReply.Result.ListPartGroupsConstGrpc.PartGroupsConstGrpc.First().Code, partGroupsConstraint);
         }
         #endregion
 
@@ -234,19 +240,20 @@ namespace Unit.Tests.Emacs
 
         [Test]
         [Category("Unit")]
-        public void GetColourCodeGrpcByColorCode_Success()
+        public void FilterColourCodeGrpcByColorCode_Success()
         {
-            GetColourCodeByColorCodeGrpcRequest request = new GetColourCodeByColorCodeGrpcRequest();
-            request.ColorCode = "TestClMk";
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetColourCodeGrpcByColorCode));
+            EmacsFilterRequestGrpc request = new EmacsFilterRequestGrpc();
+            request.DatabaseList = "ColourCodeGrpc";
+            request.FilterExpression = "ClMk != null && ClMk == \"TestClMk\"";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterEmacsDataGrpc));
 
-            Task<ListColourCodeGrpc> getColourCodeGrpcReply = _GrpcService.GetColourCodeGrpcByColorCode(request, serverCallContext);
+            Task<EmacsFilterResponseGrpc> filterColourCodeGrpcReply = _GrpcService.FilterEmacsDataGrpc(request, serverCallContext);
 
-            Assert.That(getColourCodeGrpcReply.Result.ColourCodeGrpc, Is.Not.Null);
+            Assert.That(filterColourCodeGrpcReply.Result.ListColourCodeGrpc.ColourCodeGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getColourCodeGrpcReply.Result.ColourCodeGrpc.Count, countConstraint);
+            Assert.That(filterColourCodeGrpcReply.Result.ListColourCodeGrpc.ColourCodeGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint colorCodeConstraint = Is.EqualTo("TestClMk");
-            Assert.That(getColourCodeGrpcReply.Result.ColourCodeGrpc.First().ClMk, colorCodeConstraint);
+            Assert.That(filterColourCodeGrpcReply.Result.ListColourCodeGrpc.ColourCodeGrpc.First().ClMk, colorCodeConstraint);
         }
         #endregion
 
@@ -267,19 +274,20 @@ namespace Unit.Tests.Emacs
 
         [Test]
         [Category("Unit")]
-        public void GetMaterialGroupsByMaterialGroupId_Success()
+        public void FilterMaterialGroupsByMaterialGroupId_Success()
         {
-            GetMaterialGroupsByMaterialGroupIdGrpcRequest request = new GetMaterialGroupsByMaterialGroupIdGrpcRequest();
-            request.MaterialGroup = "TestMaterialGroup";
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetMaterialGroupsGrpcByMaterialGroupId));
+            EmacsFilterRequestGrpc request = new EmacsFilterRequestGrpc();
+            request.DatabaseList = "MaterialGroupsGrpc";
+            request.FilterExpression = "MaterialGroup != null && MaterialGroup == \"TestMaterialGroup\"";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterEmacsDataGrpc));
 
-            Task<ListMaterialGroupsGrpc> getMaterialGroupDataReply = _GrpcService.GetMaterialGroupsGrpcByMaterialGroupId(request, serverCallContext);
+            Task<EmacsFilterResponseGrpc> filterMaterialGroupDataReply = _GrpcService.FilterEmacsDataGrpc(request, serverCallContext);
 
-            Assert.That(getMaterialGroupDataReply.Result.MaterialGroupsGrpc, Is.Not.Null);
+            Assert.That(filterMaterialGroupDataReply.Result.ListMaterialGroupsGrpc.MaterialGroupsGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getMaterialGroupDataReply.Result.MaterialGroupsGrpc.Count, countConstraint);
+            Assert.That(filterMaterialGroupDataReply.Result.ListMaterialGroupsGrpc.MaterialGroupsGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint materialGroupConstraint = Is.EqualTo("TestMaterialGroup");
-            Assert.That(getMaterialGroupDataReply.Result.MaterialGroupsGrpc.First().MaterialGroup, materialGroupConstraint);
+            Assert.That(filterMaterialGroupDataReply.Result.ListMaterialGroupsGrpc.MaterialGroupsGrpc.First().MaterialGroup, materialGroupConstraint);
         }
         #endregion
 
@@ -300,22 +308,22 @@ namespace Unit.Tests.Emacs
 
         [Test]
         [Category("Unit")]
-        public void GetMaterialTypesByMaterials_Success()
+        public void FilterMaterialTypesByMaterials_Success()
         {
-            GetMaterialTypesByMaterialsGrpcRequest request = new GetMaterialTypesByMaterialsGrpcRequest();
-            request.MaterialType = "TestMaterialType";
-            request.MaterialGroup = "TestMaterialGroup";
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetMaterialTypesGrpcByMaterials));
+            EmacsFilterRequestGrpc request = new EmacsFilterRequestGrpc();
+            request.DatabaseList = "MaterialTypesGrpc";
+            request.FilterExpression = "MaterialType != null && MaterialGroup != null && MaterialType == \"TestMaterialType\" && MaterialGroup == \"TestMaterialGroup\"";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterEmacsDataGrpc));
 
-            Task<ListMaterialTypesGrpc> getMaterialTypeDataReply = _GrpcService.GetMaterialTypesGrpcByMaterials(request, serverCallContext);
+            Task<EmacsFilterResponseGrpc> filterMaterialTypeDataReply = _GrpcService.FilterEmacsDataGrpc(request, serverCallContext);
 
-            Assert.That(getMaterialTypeDataReply.Result.MaterialTypesGrpc, Is.Not.Null);
+            Assert.That(filterMaterialTypeDataReply.Result.ListMaterialTypesGrpc.MaterialTypesGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getMaterialTypeDataReply.Result.MaterialTypesGrpc.Count, countConstraint);
+            Assert.That(filterMaterialTypeDataReply.Result.ListMaterialTypesGrpc.MaterialTypesGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint materialTypeConstraint = Is.EqualTo("TestMaterialType");
             NUnit.Framework.Constraints.EqualConstraint materialGroupConstraint = Is.EqualTo("TestMaterialGroup");
-            Assert.That(getMaterialTypeDataReply.Result.MaterialTypesGrpc.First().MaterialType, materialTypeConstraint);
-            Assert.That(getMaterialTypeDataReply.Result.MaterialTypesGrpc.First().MaterialGroup, materialGroupConstraint);
+            Assert.That(filterMaterialTypeDataReply.Result.ListMaterialTypesGrpc.MaterialTypesGrpc.First().MaterialType, materialTypeConstraint);
+            Assert.That(filterMaterialTypeDataReply.Result.ListMaterialTypesGrpc.MaterialTypesGrpc.First().MaterialGroup, materialGroupConstraint);
         }
         #endregion
 
@@ -384,124 +392,130 @@ namespace Unit.Tests.Emacs
 
         [Test]
         [Category("Unit")]
-        public void GetPARTMSGrpcByClass_Success()
+        public void FilterPARTMSGrpcByClass_Success()
         {
-            GetPARTMSGrpcByClassGrpcRequest request = new GetPARTMSGrpcByClassGrpcRequest();
-            request.Class1 = "TestClassDetailGroupCode";
-            request.Class2 = 0;
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPARTMSGrpcByClass));
+            EmacsFilterRequestGrpc request = new EmacsFilterRequestGrpc();
+            request.DatabaseList = "PARTMSGrpc";
+            request.FilterExpression = "ClassDetailGroupCode != null && ClassDetailId != null && ClassDetailGroupCode == \"TestClassDetailGroupCode\" && ClassDetailId == \"0\"";
 
-            Task<ListPARTMSGrpc> getPARTMSGrpcReply = _GrpcService.GetPARTMSGrpcByClass(request, serverCallContext);
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterEmacsDataGrpc));
 
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc, Is.Not.Null);
+            Task<EmacsFilterResponseGrpc> filterPARTMSGrpcReply = _GrpcService.FilterEmacsDataGrpc(request, serverCallContext);
+
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.Count, countConstraint);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint class1Constraint = Is.EqualTo("TestClassDetailGroupCode");
             NUnit.Framework.Constraints.EqualConstraint class2Constraint = Is.EqualTo("0");
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.First().ClassDetailGroupCode, class1Constraint);
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.First().ClassDetailId, class2Constraint);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc.First().ClassDetailGroupCode, class1Constraint);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc.First().ClassDetailId, class2Constraint);
         }
 
         [Test]
         [Category("Unit")]
         public void GetPARTMSGrpcByColorCode_Success()
         {
-            GetPARTMSGrpcByColorCodeGrpcRequest request = new GetPARTMSGrpcByColorCodeGrpcRequest();
-            request.ColorCode = "TestColorCode";
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPARTMSGrpcByColorCode));
+            EmacsFilterRequestGrpc request = new EmacsFilterRequestGrpc();
+            request.DatabaseList = "PARTMSGrpc";
+            request.FilterExpression = "ColorCode != null && ColorCode == \"TestColorCode\"";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterEmacsDataGrpc));
 
-            Task<ListPARTMSGrpc> getPARTMSGrpcReply = _GrpcService.GetPARTMSGrpcByColorCode(request, serverCallContext);
+            Task<EmacsFilterResponseGrpc> filterPARTMSGrpcReply = _GrpcService.FilterEmacsDataGrpc(request, serverCallContext);
 
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc, Is.Not.Null);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.Count, countConstraint);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint colorConstraint = Is.EqualTo("TestColorCode");
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.First().ColorCode, colorConstraint);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc.First().ColorCode, colorConstraint);
         }
 
         [Test]
         [Category("Unit")]
-        public void GetPARTMSGrpcByMaterial_Success()
+        public void FilterPARTMSGrpcByMaterial_Success()
         {
-            GetPARTMSGrpcByMaterialGrpcRequest request = new GetPARTMSGrpcByMaterialGrpcRequest();
-            request.MaterialGroup = "TestMaterialGroupId";
-            request.MaterialType = "TestMaterialTypeId";
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPARTMSGrpcByMaterial));
+            EmacsFilterRequestGrpc request = new EmacsFilterRequestGrpc();
+            request.DatabaseList = "PARTMSGrpc";
+            request.FilterExpression = "MaterialGroupId != null && MaterialTypeId != null && MaterialGroupId == \"TestMaterialGroupId\" && MaterialTypeId == \"TestMaterialTypeId\"";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterEmacsDataGrpc));
 
-            Task<ListPARTMSGrpc> getPARTMSGrpcReply = _GrpcService.GetPARTMSGrpcByMaterial(request, serverCallContext);
+            Task<EmacsFilterResponseGrpc> filterPARTMSGrpcReply = _GrpcService.FilterEmacsDataGrpc(request, serverCallContext);
 
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc, Is.Not.Null);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.Count, countConstraint);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint materialGroupConstraint = Is.EqualTo("TestMaterialGroupId");
             NUnit.Framework.Constraints.EqualConstraint materialTypeConstraint = Is.EqualTo("TestMaterialTypeId");
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.First().MaterialGroupId, materialGroupConstraint);
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.First().MaterialTypeId, materialTypeConstraint);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc.First().MaterialGroupId, materialGroupConstraint);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc.First().MaterialTypeId, materialTypeConstraint);
         }
 
         [Test]
         [Category("Unit")]
-        public void GetPARTMSGrpcByMaterialGroup_Success()
+        public void FilterPARTMSGrpcByMaterialGroup_Success()
         {
-            GetPARTMSGrpcByMaterialGroupGrpcRequest request = new GetPARTMSGrpcByMaterialGroupGrpcRequest();
-            request.MaterialGroup = "TestMaterialGroupId";
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPARTMSGrpcByMaterialGroup));
+            EmacsFilterRequestGrpc request = new EmacsFilterRequestGrpc();
+            request.DatabaseList = "PARTMSGrpc";
+            request.FilterExpression = "MaterialGroupId != null && MaterialGroupId == \"TestMaterialGroupId\"";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterEmacsDataGrpc));
 
-            Task<ListPARTMSGrpc> getPARTMSGrpcReply = _GrpcService.GetPARTMSGrpcByMaterialGroup(request, serverCallContext);
+            Task<EmacsFilterResponseGrpc> filterPARTMSGrpcReply = _GrpcService.FilterEmacsDataGrpc(request, serverCallContext);
 
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc, Is.Not.Null);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.Count, countConstraint);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint materialGroupConstraint = Is.EqualTo("TestMaterialGroupId");
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.First().MaterialGroupId, materialGroupConstraint);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc.First().MaterialGroupId, materialGroupConstraint);
         }
         [Test]
         [Category("Unit")]
-        public void GetPARTMSGrpcByPartGroup_Success()
+        public void FilterPARTMSGrpcByPartGroup_Success()
         {
-            GetPARTMSGrpcByPartGroupGrpcRequest request = new GetPARTMSGrpcByPartGroupGrpcRequest();
-            request.PartGroup = "TestClassDetailGroupCode";
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPARTMSGrpcByPartGroup));
+            EmacsFilterRequestGrpc request = new EmacsFilterRequestGrpc();
+            request.DatabaseList = "PARTMSGrpc";
+            request.FilterExpression = "ClassDetailGroupCode != null && ClassDetailGroupCode == \"TestClassDetailGroupCode\"";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterEmacsDataGrpc));
 
-            Task<ListPARTMSGrpc> getPARTMSGrpcReply = _GrpcService.GetPARTMSGrpcByPartGroup(request, serverCallContext);
+            Task<EmacsFilterResponseGrpc> filterPARTMSGrpcReply = _GrpcService.FilterEmacsDataGrpc(request, serverCallContext);
 
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc, Is.Not.Null);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.Count, countConstraint);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint partGroupConstraint = Is.EqualTo("TestClassDetailGroupCode");
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.First().ClassDetailGroupCode, partGroupConstraint);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc.First().ClassDetailGroupCode, partGroupConstraint);
         }
         [Test]
         [Category("Unit")]
-        public void GetPARTMSGrpcByCatogoryCode_Success()
+        public void FilterPARTMSGrpcByCategoryCode_Success()
         {
-            GetPARTMSGrpcByCategoryCodeGrpcRequest request = new GetPARTMSGrpcByCategoryCodeGrpcRequest();
-            request.CatogoryCode = "TestCategoryCode";
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPARTMSGrpcByCategoryCode));
+            EmacsFilterRequestGrpc request = new EmacsFilterRequestGrpc();
+            request.DatabaseList = "PARTMSGrpc";
+            request.FilterExpression = "CategoryCode != null && CategoryCode == \"TestCategoryCode\"";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterEmacsDataGrpc));
 
-            Task<ListPARTMSGrpc> getPARTMSGrpcReply = _GrpcService.GetPARTMSGrpcByCategoryCode(request, serverCallContext);
+            Task<EmacsFilterResponseGrpc> filterPARTMSGrpcReply = _GrpcService.FilterEmacsDataGrpc(request, serverCallContext);
 
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc, Is.Not.Null);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.Count, countConstraint);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint catogoryCodeConstraint = Is.EqualTo("TestCategoryCode");
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.First().CategoryCode, catogoryCodeConstraint);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc.First().CategoryCode, catogoryCodeConstraint);
         }
         [Test]
         [Category("Unit")]
-        public void GetPARTMSGrpcByPartGroupsConstCode_Success()
+        public void FilterPARTMSGrpcByPartGroupsConstCode_Success()
         {
-            GetPARTMSGrpcByPartGroupsConstCodeGrpcRequest request = new GetPARTMSGrpcByPartGroupsConstCodeGrpcRequest();
-            request.PartGroupsConstCode = "TestGroup3";
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetPARTMSGrpcByPartGroupsConstCode));
+            EmacsFilterRequestGrpc request = new EmacsFilterRequestGrpc();
+            request.DatabaseList = "PARTMSGrpc";
+            request.FilterExpression = "Group3 != null && Group3 == \"TestGroup3\"";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterEmacsDataGrpc));
 
-            Task<ListPARTMSGrpc> getPARTMSGrpcReply = _GrpcService.GetPARTMSGrpcByPartGroupsConstCode(request, serverCallContext);
+            Task<EmacsFilterResponseGrpc> filterPARTMSGrpcReply = _GrpcService.FilterEmacsDataGrpc(request, serverCallContext);
 
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc, Is.Not.Null);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.Count, countConstraint);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc.Count, countConstraint);
             NUnit.Framework.Constraints.EqualConstraint catogoryCodeConstraint = Is.EqualTo("TestGroup3");
-            Assert.That(getPARTMSGrpcReply.Result.PARTMSGrpc.First().Group3, catogoryCodeConstraint);
+            Assert.That(filterPARTMSGrpcReply.Result.ListPARTMSGrpc.PARTMSGrpc.First().Group3, catogoryCodeConstraint);
         }
         #endregion
 
