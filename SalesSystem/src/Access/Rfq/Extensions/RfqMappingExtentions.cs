@@ -19,6 +19,8 @@
             data.SumitomoPartNumber = entity.SumitomoPartNumber;
             data.SupplierPartNumber = entity.SupplierPartNumber;
             data.NprId = entity.NprId?.ToString();
+            data.CustomerPartNumber = entity.CustomerPartNumber;
+            data.NprRequest = entity.NprRequest;
             return data;
         }
 
@@ -38,6 +40,8 @@
             data.SumitomoPartNumber = grpc.SumitomoPartNumber;
             data.SupplierPartNumber = grpc.SupplierPartNumber;
             data.NprId = string.IsNullOrEmpty(grpc.NprId) ? null : Guid.Parse(grpc.NprId);
+            data.CustomerPartNumber = grpc.CustomerPartNumber;
+            data.NprRequest = grpc.NprRequest;
             return data;
         }
         #endregion

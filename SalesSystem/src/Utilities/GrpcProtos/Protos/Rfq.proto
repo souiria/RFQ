@@ -209,6 +209,8 @@ message RfqDrawingPartNumbersGrpc {
   google.protobuf.StringValue SumitomoPartNumber = 11;
   google.protobuf.StringValue SupplierPartNumber = 12;
   google.protobuf.StringValue NprId = 13;
+  google.protobuf.StringValue CustomerPartNumber = 14;
+  google.protobuf.StringValue NprRequest = 15;
 }
 
 message ListRfqDrawingPartNumbersGrpc {
