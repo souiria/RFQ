@@ -81,27 +81,6 @@
                     return response;
                 }
 
-                case RequestType.ReadByIsActive:
-                {
-                    CancellationToken cancellationToken = context.CancellationToken;
-                    ListTerminalFamilyGrpc response = await _CDbAccessService.ReadManyTerminalFamilys(request, cancellationToken);
-                    return response;
-                }
-
-                case RequestType.ReadByCode:
-                {
-                    CancellationToken cancellationToken = context.CancellationToken;
-                    ListTerminalFamilyGrpc response = await _CDbAccessService.ReadManyTerminalFamilys(request, cancellationToken);
-                    return response;
-                }
-
-                case RequestType.ReadById:
-                {
-                    CancellationToken cancellationToken = context.CancellationToken;
-                    ListTerminalFamilyGrpc response = await _CDbAccessService.ReadTerminalFamilyById(request, cancellationToken);
-                    return response;
-                }
-
                 default:
                 {
                     Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for getting terminal families.");

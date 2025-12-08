@@ -167,7 +167,7 @@ message HelloReply {
 }
 
 // Shared request parameter message
-message GrpcRequestParameter {
+message RfqGrpcRequestParameter {
 	int32 RequestType = 1;
 	int32 Position = 2;
 	int32 Take = 3;
@@ -188,11 +188,11 @@ message RfqCrudGrpcResponse {
 }
 
 message RfqDrawingPartNumbersGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbersGrpcsToCreate = 2;
   repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbersGrpcsToUpdate = 3;
   repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbersGrpcsToDelete = 4;
-   int64 RfqId = 5;
+  int64 RfqId = 5;
 }
 
 message RfqDrawingPartNumbersGrpc {
@@ -209,6 +209,8 @@ message RfqDrawingPartNumbersGrpc {
   google.protobuf.StringValue SumitomoPartNumber = 11;
   google.protobuf.StringValue SupplierPartNumber = 12;
   google.protobuf.StringValue NprId = 13;
+  google.protobuf.StringValue CustomerPartNumber = 14;
+  google.protobuf.StringValue NprRequest = 15;
 }
 
 message ListRfqDrawingPartNumbersGrpc {
@@ -216,7 +218,7 @@ message ListRfqDrawingPartNumbersGrpc {
 }
 
 message RfqProjectGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated RfqProjectGrpc RfqProjectGrpcsToCreate = 2;
   repeated RfqProjectGrpc RfqProjectGrpcsToUpdate = 3;
   repeated RfqProjectGrpc RfqProjectGrpcsToDelete = 4;
@@ -247,7 +249,7 @@ message ListRfqProjectGrpc {
 }
 
 message RfqNotesGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated RfqNotesGrpc RfqNotesGrpcsToCreate = 2;
   repeated RfqNotesGrpc RfqNotesGrpcsToUpdate = 3;
   repeated RfqNotesGrpc RfqNotesGrpcsToDelete = 4;
@@ -266,7 +268,7 @@ message ListRfqNotesGrpc {
 }
 
 message RfqReasonGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated RfqReasonGrpc RfqReasonGrpcsToCreate = 2;
   repeated RfqReasonGrpc RfqReasonGrpcsToUpdate = 3;
   repeated RfqReasonGrpc RfqReasonGrpcsToDelete = 4;
@@ -283,7 +285,7 @@ message ListRfqReasonGrpc {
 }
 
 message DsiBendGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiBendGrpc DsiBendGrpcsToCreate = 2;
   repeated DsiBendGrpc DsiBendGrpcsToUpdate = 3;
   repeated DsiBendGrpc DsiBendGrpcsToDelete = 4;
@@ -304,7 +306,7 @@ message ListDsiBendGrpc {
 }
 
 message DsiBranchConfigurationGrpcRequest {
-   GrpcRequestParameter GrpcRequestParameter = 1;
+   RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
    repeated DsiBranchConfigurationGrpc DsiBranchConfigurationGrpcsToCreate = 2;
    repeated DsiBranchConfigurationGrpc DsiBranchConfigurationGrpcsToUpdate = 3;
    repeated DsiBranchConfigurationGrpc DsiBranchConfigurationGrpcsToDelete = 4;
@@ -338,7 +340,7 @@ message ListDsiBranchConfigurationGrpc {
 }
 
 message DsiBranchConfigurationBendAssociationGrpcRequest {
-   GrpcRequestParameter GrpcRequestParameter = 1;
+   RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
    repeated DsiBranchConfigurationBendAssociationGrpc DsiBranchConfigurationBendAssociationGrpcsToCreate = 2;
    repeated DsiBranchConfigurationBendAssociationGrpc DsiBranchConfigurationBendAssociationGrpcsToUpdate = 3;
    repeated DsiBranchConfigurationBendAssociationGrpc DsiBranchConfigurationBendAssociationGrpcsToDelete = 4;
@@ -359,7 +361,7 @@ message ListDsiBranchConfigurationBendAssociationGrpc {
 }
 
 message DsiBranchInsulationGrpcRequest {
-   GrpcRequestParameter GrpcRequestParameter = 1;
+   RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
    repeated DsiBranchInsulationGrpc DsiBranchInsulationGrpcsToCreate = 2;
    repeated DsiBranchInsulationGrpc DsiBranchInsulationGrpcsToUpdate = 3;
    repeated DsiBranchInsulationGrpc DsiBranchInsulationGrpcsToDelete = 4;
@@ -416,7 +418,7 @@ message ListDsiBranchInsulationGrpc {
 }
 
 message DsiBranchInsulationThroughNodeGrpcRequest {
-   GrpcRequestParameter GrpcRequestParameter = 1;
+   RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
    repeated DsiBranchInsulationThroughNodeGrpc DsiBranchInsulationThroughNodeGrpcsToCreate = 2;
    repeated DsiBranchInsulationThroughNodeGrpc DsiBranchInsulationThroughNodeGrpcsToUpdate = 3;
    repeated DsiBranchInsulationThroughNodeGrpc DsiBranchInsulationThroughNodeGrpcsToDelete = 4;
@@ -441,7 +443,7 @@ message ListDsiBranchInsulationThroughNodeGrpc {
 }
 
 message DsiCavityMappingGrpcRequest {
-   GrpcRequestParameter GrpcRequestParameter = 1;
+   RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
    repeated DsiCavityMappingGrpc DsiCavityMappingGrpcsToCreate = 2;
    repeated DsiCavityMappingGrpc DsiCavityMappingGrpcsToUpdate = 3;
    repeated DsiCavityMappingGrpc DsiCavityMappingGrpcsToDelete = 4;
@@ -462,7 +464,7 @@ message ListDsiCavityMappingGrpc {
 }
 
 message DsiCentreStripGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiCentreStripGrpc DsiCentreStripGrpcsToCreate = 2;
   repeated DsiCentreStripGrpc DsiCentreStripGrpcsToUpdate = 3;
   repeated DsiCentreStripGrpc DsiCentreStripGrpcsToDelete = 4;
@@ -490,7 +492,7 @@ message ListDsiCentreStripGrpc {
 }
 
 message DsiCircuitOptionGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiCircuitOptionGrpc DsiCircuitOptionGrpcsToCreate = 2;
   repeated DsiCircuitOptionGrpc DsiCircuitOptionGrpcsToUpdate = 3;
   repeated DsiCircuitOptionGrpc DsiCircuitOptionGrpcsToDelete = 4;
@@ -511,7 +513,7 @@ message ListDsiCircuitOptionGrpc {
 }
 
 message DsiComponentGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiComponentGrpc DsiComponentGrpcsToCreate = 2;
   repeated DsiComponentGrpc DsiComponentGrpcsToUpdate = 3;
   repeated DsiComponentGrpc DsiComponentGrpcsToDelete = 4;
@@ -563,7 +565,7 @@ message ListDsiComponentGrpc {
 
 
 message DsiCompositeDetailGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiCompositeDetailGrpc DsiCompositeDetailGrpcsToCreate = 2;
   repeated DsiCompositeDetailGrpc DsiCompositeDetailGrpcsToUpdate = 3;
   repeated DsiCompositeDetailGrpc DsiCompositeDetailGrpcsToDelete = 4;
@@ -621,7 +623,7 @@ message ListDsiCompositeDetailGrpc {
 }
 
 message DsiCompositeDetailCircuitOptionAssociationGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiCompositeDetailCircuitOptionAssociationGrpc DsiCompositeDetailCircuitOptionAssociationGrpcsToCreate = 2;
   repeated DsiCompositeDetailCircuitOptionAssociationGrpc DsiCompositeDetailCircuitOptionAssociationGrpcsToUpdate = 3;
   repeated DsiCompositeDetailCircuitOptionAssociationGrpc DsiCompositeDetailCircuitOptionAssociationGrpcsToDelete = 4;
@@ -642,7 +644,7 @@ message ListDsiCompositeDetailCircuitOptionAssociationGrpc {
 }
 
 message DsiCompositeOptionGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiCompositeOptionGrpc DsiCompositeOptionGrpcsToCreate = 2;
   repeated DsiCompositeOptionGrpc DsiCompositeOptionGrpcsToUpdate = 3;
   repeated DsiCompositeOptionGrpc DsiCompositeOptionGrpcsToDelete = 4;
@@ -665,7 +667,7 @@ message ListDsiCompositeOptionGrpc {
 }
 
 message DsiHarnessGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiHarnessGrpc DsiHarnessGrpcsToCreate = 2;
   repeated DsiHarnessGrpc DsiHarnessGrpcsToUpdate = 3;
   repeated DsiHarnessGrpc DsiHarnessGrpcsToDelete = 4;
@@ -727,7 +729,7 @@ message ListDsiHarnessGrpc {
 }
 
 message DsiHarnessScopeGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiHarnessScopeGrpc DsiHarnessScopeGrpcsToCreate = 2;
   repeated DsiHarnessScopeGrpc DsiHarnessScopeGrpcsToUpdate = 3;
   repeated DsiHarnessScopeGrpc DsiHarnessScopeGrpcsToDelete = 4;
@@ -753,7 +755,7 @@ message ListDsiHarnessScopeGrpc {
 }
 
 message DsiHarnessScopeScopeAssociationGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiHarnessScopeScopeAssociationGrpc DsiHarnessScopeScopeAssociationGrpcsToCreate = 2;
   repeated DsiHarnessScopeScopeAssociationGrpc DsiHarnessScopeScopeAssociationGrpcsToUpdate = 3;
   repeated DsiHarnessScopeScopeAssociationGrpc DsiHarnessScopeScopeAssociationGrpcsToDelete = 4;
@@ -774,7 +776,7 @@ message ListDsiHarnessScopeScopeAssociationGrpc {
 }
 
 message DsiManualBomQuantityGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiManualBomQuantityGrpc DsiManualBomQuantityGrpcsToCreate = 2;
   repeated DsiManualBomQuantityGrpc DsiManualBomQuantityGrpcsToUpdate = 3;
   repeated DsiManualBomQuantityGrpc DsiManualBomQuantityGrpcsToDelete = 4;
@@ -797,7 +799,7 @@ message ListDsiManualBomQuantityGrpc {
 }
 
 message DsiMidWireComponentGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiMidWireComponentGrpc DsiMidWireComponentGrpcsToCreate = 2;
   repeated DsiMidWireComponentGrpc DsiMidWireComponentGrpcsToUpdate = 3;
   repeated DsiMidWireComponentGrpc DsiMidWireComponentGrpcsToDelete = 4;
@@ -824,7 +826,7 @@ message ListDsiMidWireComponentGrpc {
 }
 
 message DsiModuleChildDetailGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiModuleChildDetailGrpc DsiModuleChildDetailGrpcsToCreate = 2;
   repeated DsiModuleChildDetailGrpc DsiModuleChildDetailGrpcsToUpdate = 3;
   repeated DsiModuleChildDetailGrpc DsiModuleChildDetailGrpcsToDelete = 4;
@@ -882,7 +884,7 @@ message ListDsiModuleChildDetailGrpc {
 }
 
 message DsiModuleCompatibilityGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiModuleCompatibilityGrpc DsiModuleCompatibilityGrpcsToCreate = 2;
   repeated DsiModuleCompatibilityGrpc DsiModuleCompatibilityGrpcsToUpdate = 3;
   repeated DsiModuleCompatibilityGrpc DsiModuleCompatibilityGrpcsToDelete = 4;
@@ -905,7 +907,7 @@ message ListDsiModuleCompatibilityGrpc {
 }
 
 message DsiMulticoreSpecificationGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiMulticoreSpecificationGrpc DsiMulticoreSpecificationGrpcsToCreate = 2;
   repeated DsiMulticoreSpecificationGrpc DsiMulticoreSpecificationGrpcsToUpdate = 3;
   repeated DsiMulticoreSpecificationGrpc DsiMulticoreSpecificationGrpcsToDelete = 4;
@@ -950,7 +952,7 @@ message ListDsiMulticoreSpecificationGrpc {
 }
 
 message DsiPinMappingGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiPinMappingGrpc DsiPinMappingGrpcsToCreate = 2;
   repeated DsiPinMappingGrpc DsiPinMappingGrpcsToUpdate = 3;
   repeated DsiPinMappingGrpc DsiPinMappingGrpcsToDelete = 4;
@@ -978,7 +980,7 @@ message ListDsiPinMappingGrpc {
 }
 
 message DsiPinMappingCavityMappingAssociationGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiPinMappingCavityMappingAssociationGrpc DsiPinMappingCavityMappingAssociationGrpcsToCreate = 2;
   repeated DsiPinMappingCavityMappingAssociationGrpc DsiPinMappingCavityMappingAssociationGrpcsToUpdate = 3;
   repeated DsiPinMappingCavityMappingAssociationGrpc DsiPinMappingCavityMappingAssociationGrpcsToDelete = 4;
@@ -1000,7 +1002,7 @@ message ListDsiPinMappingCavityMappingAssociationGrpc {
 }
 
 message DsiScopeGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiScopeGrpc DsiScopeGrpcsToCreate = 2;
   repeated DsiScopeGrpc DsiScopeGrpcsToUpdate = 3;
   repeated DsiScopeGrpc DsiScopeGrpcsToDelete = 4;
@@ -1020,7 +1022,7 @@ message ListDsiScopeGrpc {
 }
 
 message DsiSupplierGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiSupplierGrpc DsiSupplierGrpcsToCreate = 2;
   repeated DsiSupplierGrpc DsiSupplierGrpcsToUpdate = 3;
   repeated DsiSupplierGrpc DsiSupplierGrpcsToDelete = 4;
@@ -1046,7 +1048,7 @@ message ListDsiSupplierGrpc {
 }
 
 message DsiTransformedCompositeDetailGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiTransformedCompositeDetailGrpc DsiTransformedCompositeDetailGrpcsToCreate = 2;
   repeated DsiTransformedCompositeDetailGrpc DsiTransformedCompositeDetailGrpcsToUpdate = 3;
   repeated DsiTransformedCompositeDetailGrpc DsiTransformedCompositeDetailGrpcsToDelete = 4;
@@ -1103,7 +1105,7 @@ message ListDsiTransformedCompositeDetailGrpc {
 }
 
 message DsiTransformedHarnessGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiTransformedHarnessGrpc DsiTransformedHarnessGrpcsToCreate = 2;
   repeated DsiTransformedHarnessGrpc DsiTransformedHarnessGrpcsToUpdate = 3;
   repeated DsiTransformedHarnessGrpc DsiTransformedHarnessGrpcsToDelete = 4;
@@ -1164,7 +1166,7 @@ message ListDsiTransformedHarnessGrpc {
 }
 
 message DsiTransformedModuleChildDetailGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiTransformedModuleChildDetailGrpc DsiTransformedModuleChildDetailGrpcsToCreate = 2;
   repeated DsiTransformedModuleChildDetailGrpc DsiTransformedModuleChildDetailGrpcsToUpdate = 3;
   repeated DsiTransformedModuleChildDetailGrpc DsiTransformedModuleChildDetailGrpcsToDelete = 4;
@@ -1222,7 +1224,7 @@ message ListDsiTransformedModuleChildDetailGrpc {
 }
 
 message DsiUnitOfMeasureGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiUnitOfMeasureGrpc DsiUnitOfMeasureGrpcsToCreate = 2;
   repeated DsiUnitOfMeasureGrpc DsiUnitOfMeasureGrpcsToUpdate = 3;
   repeated DsiUnitOfMeasureGrpc DsiUnitOfMeasureGrpcsToDelete = 4;
@@ -1240,7 +1242,7 @@ message ListDsiUnitOfMeasureGrpc {
 }
 
 message DsiWireMulticoreMarkerGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiWireMulticoreMarkerGrpc DsiWireMulticoreMarkerGrpcsToCreate = 2;
   repeated DsiWireMulticoreMarkerGrpc DsiWireMulticoreMarkerGrpcsToUpdate = 3;
   repeated DsiWireMulticoreMarkerGrpc DsiWireMulticoreMarkerGrpcsToDelete = 4;
@@ -1268,7 +1270,7 @@ message ListDsiWireMulticoreMarkerGrpc {
 
 
 message DsiWireSpecificationGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiWireSpecificationGrpc DsiWireSpecificationGrpcsToCreate = 2;
   repeated DsiWireSpecificationGrpc DsiWireSpecificationGrpcsToUpdate = 3;
   repeated DsiWireSpecificationGrpc DsiWireSpecificationGrpcsToDelete = 4;
@@ -1320,7 +1322,7 @@ message ListDsiWireSpecificationGrpc {
 }
 
 message DsiWireThroughNodeGrpcRequest {
-  GrpcRequestParameter GrpcRequestParameter = 1;
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiWireThroughNodeGrpc DsiWireThroughNodeGrpcsToCreate = 2;
   repeated DsiWireThroughNodeGrpc DsiWireThroughNodeGrpcsToUpdate = 3;
   repeated DsiWireThroughNodeGrpc DsiWireThroughNodeGrpcsToDelete = 4;
@@ -1356,4 +1358,35 @@ message RfqFilterResponse {
 	ListRfqNotesGrpc ListRfqNotesGrpc = 3;
 	ListRfqReasonGrpc ListRfqReasonGrpc = 4;
 	ListRfqDrawingPartNumbersGrpc ListRfqDrawingPartNumbersGrpc = 5;
+	ListDsiBendGrpc ListDsiBendGrpc = 6;
+	ListDsiBranchConfigurationGrpc ListDsiBranchConfigurationGrpc = 7;
+	ListDsiBranchConfigurationBendAssociationGrpc ListDsiBranchConfigurationBendAssociationGrpc = 9;
+	ListDsiBranchInsulationGrpc ListDsiBranchInsulationGrpc = 10;
+	ListDsiBranchInsulationThroughNodeGrpc ListDsiBranchInsulationThroughNodeGrpc = 11;
+	ListDsiCavityMappingGrpc ListDsiCavityMappingGrpc = 12;
+	ListDsiCentreStripGrpc ListDsiCentreStripGrpc = 13;
+	ListDsiCircuitOptionGrpc ListDsiCircuitOptionGrpc = 14;
+	ListDsiComponentGrpc ListDsiComponentGrpc = 15;
+	ListDsiCompositeDetailGrpc ListDsiCompositeDetailGrpc = 16;
+	ListDsiCompositeDetailCircuitOptionAssociationGrpc ListDsiCompositeDetailCircuitOptionAssociationGrpc = 17;
+	ListDsiCompositeOptionGrpc ListDsiCompositeOptionGrpc = 18;
+	ListDsiHarnessGrpc ListDsiHarnessGrpc = 19;
+	ListDsiHarnessScopeGrpc ListDsiHarnessScopeGrpc = 20;
+	ListDsiHarnessScopeScopeAssociationGrpc ListDsiHarnessScopeScopeAssociationGrpc = 21;
+	ListDsiManualBomQuantityGrpc ListDsiManualBomQuantityGrpc = 22;
+	ListDsiMidWireComponentGrpc ListDsiMidWireComponentGrpc = 23;
+	ListDsiModuleChildDetailGrpc ListDsiModuleChildDetailGrpc = 24;
+	ListDsiModuleCompatibilityGrpc ListDsiModuleCompatibilityGrpc = 25;
+	ListDsiMulticoreSpecificationGrpc ListDsiMulticoreSpecificationGrpc = 26;
+	ListDsiPinMappingGrpc ListDsiPinMappingGrpc = 27;
+	ListDsiPinMappingCavityMappingAssociationGrpc ListDsiPinMappingCavityMappingAssociationGrpc = 28;
+	ListDsiScopeGrpc ListDsiScopeGrpc = 29;
+	ListDsiSupplierGrpc ListDsiSupplierGrpc = 30;
+	ListDsiTransformedCompositeDetailGrpc ListDsiTransformedCompositeDetailGrpc = 31;
+	ListDsiTransformedHarnessGrpc ListDsiTransformedHarnessGrpc = 32;
+	ListDsiTransformedModuleChildDetailGrpc ListDsiTransformedModuleChildDetailGrpc = 33;
+	ListDsiUnitOfMeasureGrpc ListDsiUnitOfMeasureGrpc = 34;
+	ListDsiWireMulticoreMarkerGrpc ListDsiWireMulticoreMarkerGrpc = 35;
+	ListDsiWireSpecificationGrpc ListDsiWireSpecificationGrpc = 36;
+	ListDsiWireThroughNodeGrpc ListDsiWireThroughNodeGrpc = 37;
 }

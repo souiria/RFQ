@@ -31,27 +31,6 @@
                     ListCompositeComponentGrpc response = await _CDbAccessService.ReadAllCompositeComponents(cancellationToken);
                     return response;
                 }
-
-                case RequestType.ReadByIsActive:
-                {
-                    CancellationToken cancellationToken = context.CancellationToken;
-                    ListCompositeComponentGrpc response = await _CDbAccessService.ReadManyCompositeComponents(request, cancellationToken);
-                    return response;
-                }
-
-                case RequestType.ReadById:
-                {
-                    CancellationToken cancellationToken = context.CancellationToken;
-                    ListCompositeComponentGrpc response = await _CDbAccessService.ReadCompositeComponentsById(request, cancellationToken);
-                    return response;
-                }
-
-                case RequestType.ReadByComponentSheetNumber:
-                {
-                    CancellationToken cancellationToken = context.CancellationToken;
-                    ListCompositeComponentGrpc response = await _CDbAccessService.ReadCompositeComponentsBySheetNumber(request, cancellationToken);
-                    return response;
-                }
                 default:
                 {
                     Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for getting clip types.");

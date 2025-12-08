@@ -6,39 +6,39 @@
 
         #region RfqDrawingPartNumbers
 
-        ListRfqDrawingPartNumbersGrpc _ListRfqDrawingPartNumbers;
+        ListRfqDrawingPartNumbersGrpc _ListRfqDrawingPartNumbersGrpc;
         #endregion
 
         #region RfqProject
-        ListRfqProjectGrpc _ListRfqProjects;
+        ListRfqProjectGrpc _ListRfqProjectsGrpc;
         #endregion
 
         #region RfqNotes
-        ListRfqNotesGrpc _ListRfqNotes;
+        ListRfqNotesGrpc _ListRfqNotesGrpc;
         #endregion
 
         #region RfqReason
-        ListRfqReasonGrpc _ListRfqReasons;
+        ListRfqReasonGrpc _ListRfqReasonsGrpc;
         #endregion
 
         #region DsiBend
-        ListDsiBendGrpc _ListDsiBends;
+        ListDsiBendGrpc _ListDsiBendsGrpc;
         #endregion
 
         #region DsiBranchConfiguration
-        ListDsiBranchConfigurationGrpc _ListDsiBranchConfigurations;
+        ListDsiBranchConfigurationGrpc _ListDsiBranchConfigurationsGrpc;
         #endregion
 
         #region DsiBranchConfigurationBendAssociation
-        ListDsiBranchConfigurationBendAssociationGrpc _ListDsiBranchConfigurationBendAssociations;
+        ListDsiBranchConfigurationBendAssociationGrpc _ListDsiBranchConfigurationBendAssociationsGrpc;
         #endregion
 
         #region DsiBranchInsulation
-        ListDsiBranchInsulationGrpc _ListDsiBranchInsulations;
+        ListDsiBranchInsulationGrpc _ListDsiBranchInsulationsGrpc;
         #endregion
 
         #region DsiBranchInsulationThroughNode
-        ListDsiBranchInsulationThroughNodeGrpc _ListDsiBranchInsulationThroughNodes;
+        ListDsiBranchInsulationThroughNodeGrpc _ListDsiBranchInsulationThroughNodesGrpc;
         #endregion
 
         #region DsiCavityMapping
@@ -345,63 +345,63 @@
         {
             #region RfqDrawingPartNumbers
 
-            _ListRfqDrawingPartNumbers = new ListRfqDrawingPartNumbersGrpc();
+            _ListRfqDrawingPartNumbersGrpc = new ListRfqDrawingPartNumbersGrpc();
             _RfqDrawingPartNumbersRefreshInProgress = false;
 
             #endregion
 
             #region RfqProject
 
-            _ListRfqProjects = new ListRfqProjectGrpc();
+            _ListRfqProjectsGrpc = new ListRfqProjectGrpc();
             _RfqProjectRefreshInProgress = false;
 
             #endregion
 
             #region RfqNotes
 
-            _ListRfqNotes = new ListRfqNotesGrpc();
+            _ListRfqNotesGrpc = new ListRfqNotesGrpc();
             _RfqNotesRefreshInProgress = false;
 
             #endregion
 
             #region RfqReason
 
-            _ListRfqReasons = new ListRfqReasonGrpc();
+            _ListRfqReasonsGrpc = new ListRfqReasonGrpc();
             _RfqReasonRefreshInProgress = false;
 
             #endregion
 
             #region DsiBend
 
-            _ListDsiBends = new ListDsiBendGrpc();
+            _ListDsiBendsGrpc = new ListDsiBendGrpc();
             _DsiBendRefreshInProgress = false;
 
             #endregion
 
             #region DsiBranchConfiguration
 
-            _ListDsiBranchConfigurations = new ListDsiBranchConfigurationGrpc();
+            _ListDsiBranchConfigurationsGrpc = new ListDsiBranchConfigurationGrpc();
             _DsiBranchConfigurationRefreshInProgress = false;
 
             #endregion
 
             #region DsiBranchConfigurationBendAssociation
 
-            _ListDsiBranchConfigurationBendAssociations = new ListDsiBranchConfigurationBendAssociationGrpc();
+            _ListDsiBranchConfigurationBendAssociationsGrpc = new ListDsiBranchConfigurationBendAssociationGrpc();
             _DsiBranchConfigurationBendAssociationRefreshInProgress = false;
 
             #endregion
 
             #region DsiBranchInsulation
 
-            _ListDsiBranchInsulations = new ListDsiBranchInsulationGrpc();
+            _ListDsiBranchInsulationsGrpc = new ListDsiBranchInsulationGrpc();
             _DsiBranchInsulationRefreshInProgress = false;
 
             #endregion
 
             #region DsiBranchInsulationThroughNode
 
-            _ListDsiBranchInsulationThroughNodes = new ListDsiBranchInsulationThroughNodeGrpc();
+            _ListDsiBranchInsulationThroughNodesGrpc = new ListDsiBranchInsulationThroughNodeGrpc();
             _DsiBranchInsulationThroughNodeRefreshInProgress = false;
 
             #endregion
@@ -557,21 +557,21 @@
         public async Task<ListRfqDrawingPartNumbersGrpc> GetAllRfqDrawingPartNumbers(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListRfqDrawingPartNumbers.RfqDrawingPartNumbers.Any())
+            if (_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Any())
             {
-                return _ListRfqDrawingPartNumbers;
+                return _ListRfqDrawingPartNumbersGrpc;
             }
             else
             {
                 await PopulateRfqDrawingPartNumbers(cancellationToken);
-                return _ListRfqDrawingPartNumbers;
+                return _ListRfqDrawingPartNumbersGrpc;
             }
         }
 
-        public async Task<ListRfqDrawingPartNumbersGrpc> GetRfqDrawingPartNumbersByRowId(RfqDrawingPartNumbersGrpcRequest request, CancellationToken cancellationToken)
+        public async Task<ListRfqDrawingPartNumbersGrpc> GetRfqDrawingPartNumbersByRowId(RfqDrawingPartNumbersGrpcRequest request, CancellationToken cancellationToken) //
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListRfqDrawingPartNumbers.RfqDrawingPartNumbers.Any())
+            if (_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Any())
             {
             }
             else
@@ -580,7 +580,7 @@
             }
 
             ListRfqDrawingPartNumbersGrpc responseList = new ListRfqDrawingPartNumbersGrpc();
-            List<RfqDrawingPartNumbersGrpc> projects = _ListRfqDrawingPartNumbers.RfqDrawingPartNumbers.Where(x => x.RfqId == request.RfqId).ToList();
+            List<RfqDrawingPartNumbersGrpc> projects = _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Where(x => x.RfqId == request.RfqId).ToList();
    
             if (projects != null)
             {
@@ -602,6 +602,14 @@
 
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
+                foreach(RfqDrawingPartNumbersGrpc part in request.RfqDrawingPartNumbersGrpcsToCreate)
+                {
+                    if(_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Any(x => x.OriginalPartNumber == part.OriginalPartNumber))
+                    {
+                        request.RfqDrawingPartNumbersGrpcsToCreate.Remove(part);
+                    }
+                }
+
                 ICommandHandler<RfqDrawingPartNumberCommand, List<DbRfqDrawingPartNumber>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<RfqDrawingPartNumberCommand, List<DbRfqDrawingPartNumber>>>();
                 RfqDrawingPartNumberCommand command = new RfqDrawingPartNumberCommand(CommandType.Create, request.RfqDrawingPartNumbersGrpcsToCreate);
                 Result<List<DbRfqDrawingPartNumber>> result = await handler.Handle(command, cancellationToken);
@@ -609,7 +617,7 @@
                 {
                     List<DbRfqDrawingPartNumber> createdComponents = result.Value;
                     List<RfqDrawingPartNumbersGrpc> updatedGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
-                    _ListRfqDrawingPartNumbers.RfqDrawingPartNumbers.AddRange(updatedGrpcComponents);
+                    _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.AddRange(updatedGrpcComponents);
                     responseList.RfqDrawingPartNumbers.AddRange(updatedGrpcComponents);
                     return responseList;
                 }
@@ -638,16 +646,16 @@
                 {
                     foreach (RfqDrawingPartNumbersGrpc updatedComponent in request.RfqDrawingPartNumbersGrpcsToUpdate)
                     {
-                        RfqDrawingPartNumbersGrpc? foundItem = _ListRfqDrawingPartNumbers.RfqDrawingPartNumbers.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
+                        RfqDrawingPartNumbersGrpc? foundItem = _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
                         if (foundItem == null)
                         {
                             continue;
                         }
 
-                        int index = _ListRfqDrawingPartNumbers.RfqDrawingPartNumbers.IndexOf(foundItem);
+                        int index = _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.IndexOf(foundItem);
                         if (index != -1)
                         {
-                            _ListRfqDrawingPartNumbers.RfqDrawingPartNumbers[index] = updatedComponent;
+                            _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers[index] = updatedComponent;
                         }
                     }
 
@@ -687,18 +695,18 @@
                 entity.IsActive = false;
 
          
-                    await dbContext.SaveChangesAsync(cancellationToken);
+                await dbContext.SaveChangesAsync(cancellationToken);
 
-                    RfqProjectGrpc updated = entity.FromEntity();
+                RfqProjectGrpc updated = entity.FromEntity();
 
-                    // Update local cache
-                    RfqProjectGrpc? cached = _ListRfqProjects.RfqProjects.FirstOrDefault(p => p.RowId == updated.RowId);
-                    if (cached != null)
-                    {
-                        cached.IsActive = false;
-                    }
+                // Update local cache
+                RfqProjectGrpc? cached = _ListRfqProjectsGrpc.RfqProjects.FirstOrDefault(p => p.RowId == updated.RowId);
+                if (cached != null)
+                {
+                    cached.IsActive = false;
+                }
 
-                    responseList.RfqProjects.Add(updated);
+                responseList.RfqProjects.Add(updated);
                
                 return responseList;
             }
@@ -708,14 +716,14 @@
         {
             await Task.Delay(1, cancellationToken);
 
-            if (!_ListRfqProjects.RfqProjects.Any())
+            if (!_ListRfqProjectsGrpc.RfqProjects.Any())
             {
                 await PopulateRfqProjects(cancellationToken);
             }
 
             ListRfqProjectGrpc activeProjectsList = new ListRfqProjectGrpc();
 
-            List<RfqProjectGrpc> activeProjects = _ListRfqProjects.RfqProjects
+            List<RfqProjectGrpc> activeProjects = _ListRfqProjectsGrpc.RfqProjects
                 .Where(p => p.IsActive != null && p.IsActive.Value)
                 .ToList();
 
@@ -727,7 +735,7 @@
         public async Task<ListRfqProjectGrpc> GetRfqProjectByRowId(RfqProjectGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListRfqProjects.RfqProjects.Any())
+            if (_ListRfqProjectsGrpc.RfqProjects.Any())
             {
             }
             else
@@ -736,8 +744,8 @@
             }
 
             ListRfqProjectGrpc responseList = new ListRfqProjectGrpc();
-            //List<RfqProjectGrpc> projects = _ListRfqProjects.RfqProjects.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
-            List<RfqProjectGrpc> projects = _ListRfqProjects.RfqProjects.Where(x => x.RowId == request.RowId).ToList();
+            //List<RfqProjectGrpc> projects = _ListRfqProjects.RfqProjects.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
+            List<RfqProjectGrpc> projects = _ListRfqProjectsGrpc.RfqProjects.Where(x => x.RowId == request.RowId).ToList();
 
             if (projects != null)
             {
@@ -766,7 +774,7 @@
                 {
                     List<DbRfqProject> createdProjects = result.Value;
                     List<RfqProjectGrpc> updatedGrpcProjects = createdProjects.Select(p => p.FromEntity()).ToList();
-                    _ListRfqProjects.RfqProjects.AddRange(updatedGrpcProjects);
+                    _ListRfqProjectsGrpc.RfqProjects.AddRange(updatedGrpcProjects);
                     responseList.RfqProjects.AddRange(updatedGrpcProjects);
                     return responseList;
                 }
@@ -795,16 +803,16 @@
                 {
                     foreach (RfqProjectGrpc updatedComponent in request.RfqProjectGrpcsToUpdate)
                     {
-                        RfqProjectGrpc? foundItem = _ListRfqProjects.RfqProjects.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
+                        RfqProjectGrpc? foundItem = _ListRfqProjectsGrpc.RfqProjects.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
                         if (foundItem == null)
                         {
                             continue;
                         }
 
-                        int index = _ListRfqProjects.RfqProjects.IndexOf(foundItem);
+                        int index = _ListRfqProjectsGrpc.RfqProjects.IndexOf(foundItem);
                         if (index != -1)
                         {
-                            _ListRfqProjects.RfqProjects[index] = updatedComponent;
+                            _ListRfqProjectsGrpc.RfqProjects[index] = updatedComponent;
                         }
                     }
 
@@ -823,21 +831,21 @@
         public async Task<ListRfqNotesGrpc> GetAllRfqNotes(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListRfqNotes.RfqNotes.Any())
+            if (_ListRfqNotesGrpc.RfqNotes.Any())
             {
-                return _ListRfqNotes;
+                return _ListRfqNotesGrpc;
             }
             else
             {
                 await PopulateRfqNotes(cancellationToken);
-                return _ListRfqNotes;
+                return _ListRfqNotesGrpc;
             }
         }
 
         public async Task<ListRfqNotesGrpc> GetRfqNotesByRowId(RfqNotesGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListRfqNotes.RfqNotes.Any())
+            if (_ListRfqNotesGrpc.RfqNotes.Any())
             {
             }
             else
@@ -846,7 +854,7 @@
             }
 
             ListRfqNotesGrpc responseList = new ListRfqNotesGrpc();
-            List<RfqNotesGrpc> projects = _ListRfqNotes.RfqNotes.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            List<RfqNotesGrpc> projects = _ListRfqNotesGrpc.RfqNotes.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
             if (projects != null)
             {
                 responseList.RfqNotes.AddRange(projects);
@@ -874,7 +882,7 @@
                 {
                     List<DbRfqNotes> createdComponents = result.Value;
                     List<RfqNotesGrpc> updatedGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
-                    _ListRfqNotes.RfqNotes.AddRange(updatedGrpcComponents);
+                    _ListRfqNotesGrpc.RfqNotes.AddRange(updatedGrpcComponents);
                     responseList.RfqNotes.AddRange(updatedGrpcComponents);
                     return responseList;
                 }
@@ -903,16 +911,16 @@
                 {
                     foreach (RfqNotesGrpc updatedComponent in request.RfqNotesGrpcsToUpdate)
                     {
-                        RfqNotesGrpc? foundItem = _ListRfqNotes.RfqNotes.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
+                        RfqNotesGrpc? foundItem = _ListRfqNotesGrpc.RfqNotes.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
                         if (foundItem == null)
                         {
                             continue;
                         }
 
-                        int index = _ListRfqNotes.RfqNotes.IndexOf(foundItem);
+                        int index = _ListRfqNotesGrpc.RfqNotes.IndexOf(foundItem);
                         if (index != -1)
                         {
-                            _ListRfqNotes.RfqNotes[index] = updatedComponent;
+                            _ListRfqNotesGrpc.RfqNotes[index] = updatedComponent;
                         }
                     }
 
@@ -932,21 +940,21 @@
         public async Task<ListRfqReasonGrpc> GetAllRfqReasons(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListRfqReasons.RfqReasons.Any())
+            if (_ListRfqReasonsGrpc.RfqReasons.Any())
             {
-                return _ListRfqReasons;
+                return _ListRfqReasonsGrpc;
             }
             else
             {
                 await PopulateRfqReasons(cancellationToken);
-                return _ListRfqReasons;
+                return _ListRfqReasonsGrpc;
             }
         }
 
         public async Task<ListRfqReasonGrpc> GetRfqReasonsByRowId(RfqReasonGrpcRequest reason, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListRfqReasons.RfqReasons.Any())
+            if (_ListRfqReasonsGrpc.RfqReasons.Any())
             {
             }
             else
@@ -955,7 +963,7 @@
             }
 
             ListRfqReasonGrpc responseList = new ListRfqReasonGrpc();
-            List<RfqReasonGrpc> projects = _ListRfqReasons.RfqReasons.Where(x => x.RowId == reason.GrpcRequestParameter.IntValue).ToList();
+            List<RfqReasonGrpc> projects = _ListRfqReasonsGrpc.RfqReasons.Where(x => x.RowId == reason.RfqGrpcRequestParameter.IntValue).ToList();
             if (projects != null)
             {
                 responseList.RfqReasons.AddRange(projects);
@@ -983,7 +991,7 @@
                 {
                     List<DbRfqReason> createdComponents = result.Value;
                     List<RfqReasonGrpc> updatedGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
-                    _ListRfqReasons.RfqReasons.AddRange(updatedGrpcComponents);
+                    _ListRfqReasonsGrpc.RfqReasons.AddRange(updatedGrpcComponents);
                     responseList.RfqReasons.AddRange(updatedGrpcComponents);
                     return responseList;
                 }
@@ -1012,16 +1020,16 @@
                 {
                     foreach (RfqReasonGrpc updatedComponent in request.RfqReasonGrpcsToUpdate)
                     {
-                        RfqReasonGrpc? foundItem = _ListRfqReasons.RfqReasons.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
+                        RfqReasonGrpc? foundItem = _ListRfqReasonsGrpc.RfqReasons.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
                         if (foundItem == null)
                         {
                             continue;
                         }
 
-                        int index = _ListRfqReasons.RfqReasons.IndexOf(foundItem);
+                        int index = _ListRfqReasonsGrpc.RfqReasons.IndexOf(foundItem);
                         if (index != -1)
                         {
-                            _ListRfqReasons.RfqReasons[index] = updatedComponent;
+                            _ListRfqReasonsGrpc.RfqReasons[index] = updatedComponent;
                         }
                     }
 
@@ -1041,21 +1049,21 @@
         public async Task<ListDsiBendGrpc> GetAllDsiBends(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListRfqReasons.RfqReasons.Any())
+            if (_ListRfqReasonsGrpc.RfqReasons.Any())
             {
-                return _ListDsiBends;
+                return _ListDsiBendsGrpc;
             }
             else
             {
                 await PopulateRfqReasons(cancellationToken);
-                return _ListDsiBends;
+                return _ListDsiBendsGrpc;
             }
         }
 
         public async Task<ListDsiBendGrpc> GetDsiBendsByRowId(DsiBendGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListDsiBends.DsiBends.Any())
+            if (_ListDsiBendsGrpc.DsiBends.Any())
             {
             }
             else
@@ -1064,7 +1072,7 @@
             }
 
             ListDsiBendGrpc responseList = new ListDsiBendGrpc();
-            List<DsiBendGrpc> bends = _ListDsiBends.DsiBends.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            List<DsiBendGrpc> bends = _ListDsiBendsGrpc.DsiBends.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
             if (bends != null)
             {
                 responseList.DsiBends.AddRange(bends);
@@ -1092,7 +1100,7 @@
                 {
                     List<DbDsiBend> createdComponents = result.Value;
                     List<DsiBendGrpc> updatedGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
-                    _ListDsiBends.DsiBends.AddRange(updatedGrpcComponents);
+                    _ListDsiBendsGrpc.DsiBends.AddRange(updatedGrpcComponents);
                     responseList.DsiBends.AddRange(updatedGrpcComponents);
                     return responseList;
                 }
@@ -1121,16 +1129,16 @@
                 {
                     foreach (DsiBendGrpc updatedComponent in request.DsiBendGrpcsToUpdate)
                     {
-                        DsiBendGrpc? foundItem = _ListDsiBends.DsiBends.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
+                        DsiBendGrpc? foundItem = _ListDsiBendsGrpc.DsiBends.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
                         if (foundItem == null)
                         {
                             continue;
                         }
 
-                        int index = _ListDsiBends.DsiBends.IndexOf(foundItem);
+                        int index = _ListDsiBendsGrpc.DsiBends.IndexOf(foundItem);
                         if (index != -1)
                         {
-                            _ListDsiBends.DsiBends[index] = updatedComponent;
+                            _ListDsiBendsGrpc.DsiBends[index] = updatedComponent;
                         }
                     }
 
@@ -1150,21 +1158,21 @@
         public async Task<ListDsiBranchConfigurationGrpc> GetAllDsiBranchConfigurations(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListRfqReasons.RfqReasons.Any())
+            if (_ListRfqReasonsGrpc.RfqReasons.Any())
             {
-                return _ListDsiBranchConfigurations;
+                return _ListDsiBranchConfigurationsGrpc;
             }
             else
             {
                 await PopulateRfqReasons(cancellationToken);
-                return _ListDsiBranchConfigurations;
+                return _ListDsiBranchConfigurationsGrpc;
             }
         }
 
         public async Task<ListDsiBranchConfigurationGrpc> GetDsiBranchConfigurationsByRowId(DsiBranchConfigurationGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListDsiBranchConfigurations.DsiBranchConfigurations.Any())
+            if (_ListDsiBranchConfigurationsGrpc.DsiBranchConfigurations.Any())
             {
             }
             else
@@ -1173,7 +1181,7 @@
             }
 
             ListDsiBranchConfigurationGrpc responseList = new ListDsiBranchConfigurationGrpc();
-            List<DsiBranchConfigurationGrpc> banchConfigurations = _ListDsiBranchConfigurations.DsiBranchConfigurations.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            List<DsiBranchConfigurationGrpc> banchConfigurations = _ListDsiBranchConfigurationsGrpc.DsiBranchConfigurations.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
             if (banchConfigurations != null)
             {
                 responseList.DsiBranchConfigurations.AddRange(banchConfigurations);
@@ -1201,7 +1209,7 @@
                 {
                     List<DbDsiBranchConfiguration> createdComponents = result.Value;
                     List<DsiBranchConfigurationGrpc> updatedGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
-                    _ListDsiBranchConfigurations.DsiBranchConfigurations.AddRange(updatedGrpcComponents);
+                    _ListDsiBranchConfigurationsGrpc.DsiBranchConfigurations.AddRange(updatedGrpcComponents);
                     responseList.DsiBranchConfigurations.AddRange(updatedGrpcComponents);
                     return responseList;
                 }
@@ -1230,16 +1238,16 @@
                 {
                     foreach (DsiBranchConfigurationGrpc updatedComponent in request.DsiBranchConfigurationGrpcsToUpdate)
                     {
-                        DsiBranchConfigurationGrpc? foundItem = _ListDsiBranchConfigurations.DsiBranchConfigurations.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
+                        DsiBranchConfigurationGrpc? foundItem = _ListDsiBranchConfigurationsGrpc.DsiBranchConfigurations.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
                         if (foundItem == null)
                         {
                             continue;
                         }
 
-                        int index = _ListDsiBranchConfigurations.DsiBranchConfigurations.IndexOf(foundItem);
+                        int index = _ListDsiBranchConfigurationsGrpc.DsiBranchConfigurations.IndexOf(foundItem);
                         if (index != -1)
                         {
-                            _ListDsiBranchConfigurations.DsiBranchConfigurations[index] = updatedComponent;
+                            _ListDsiBranchConfigurationsGrpc.DsiBranchConfigurations[index] = updatedComponent;
                         }
                     }
 
@@ -1259,21 +1267,21 @@
         public async Task<ListDsiBranchConfigurationBendAssociationGrpc> GetAllDsiBranchConfigurationBendAssociations(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListRfqReasons.RfqReasons.Any())
+            if (_ListRfqReasonsGrpc.RfqReasons.Any())
             {
-                return _ListDsiBranchConfigurationBendAssociations;
+                return _ListDsiBranchConfigurationBendAssociationsGrpc;
             }
             else
             {
                 await PopulateRfqReasons(cancellationToken);
-                return _ListDsiBranchConfigurationBendAssociations;
+                return _ListDsiBranchConfigurationBendAssociationsGrpc;
             }
         }
 
         public async Task<ListDsiBranchConfigurationBendAssociationGrpc> GetDsiBranchConfigurationBendAssociationsByRowId(DsiBranchConfigurationBendAssociationGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListDsiBranchConfigurationBendAssociations.DsiBranchConfigurationBendAssociations.Any())
+            if (_ListDsiBranchConfigurationBendAssociationsGrpc.DsiBranchConfigurationBendAssociations.Any())
             {
             }
             else
@@ -1282,7 +1290,7 @@
             }
 
             ListDsiBranchConfigurationBendAssociationGrpc responseList = new ListDsiBranchConfigurationBendAssociationGrpc();
-            List<DsiBranchConfigurationBendAssociationGrpc> banchConfigurations = _ListDsiBranchConfigurationBendAssociations.DsiBranchConfigurationBendAssociations.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            List<DsiBranchConfigurationBendAssociationGrpc> banchConfigurations = _ListDsiBranchConfigurationBendAssociationsGrpc.DsiBranchConfigurationBendAssociations.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
             if (banchConfigurations != null)
             {
                 responseList.DsiBranchConfigurationBendAssociations.AddRange(banchConfigurations);
@@ -1310,7 +1318,7 @@
                 {
                     List<DbDsiBranchConfigurationBendAssociation> createdComponents = result.Value;
                     List<DsiBranchConfigurationBendAssociationGrpc> updatedGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
-                    _ListDsiBranchConfigurationBendAssociations.DsiBranchConfigurationBendAssociations.AddRange(updatedGrpcComponents);
+                    _ListDsiBranchConfigurationBendAssociationsGrpc.DsiBranchConfigurationBendAssociations.AddRange(updatedGrpcComponents);
                     responseList.DsiBranchConfigurationBendAssociations.AddRange(updatedGrpcComponents);
                     return responseList;
                 }
@@ -1339,16 +1347,16 @@
                 {
                     foreach (DsiBranchConfigurationBendAssociationGrpc updatedComponent in request.DsiBranchConfigurationBendAssociationGrpcsToUpdate)
                     {
-                        DsiBranchConfigurationBendAssociationGrpc? foundItem = _ListDsiBranchConfigurationBendAssociations.DsiBranchConfigurationBendAssociations.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
+                        DsiBranchConfigurationBendAssociationGrpc? foundItem = _ListDsiBranchConfigurationBendAssociationsGrpc.DsiBranchConfigurationBendAssociations.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
                         if (foundItem == null)
                         {
                             continue;
                         }
 
-                        int index = _ListDsiBranchConfigurationBendAssociations.DsiBranchConfigurationBendAssociations.IndexOf(foundItem);
+                        int index = _ListDsiBranchConfigurationBendAssociationsGrpc.DsiBranchConfigurationBendAssociations.IndexOf(foundItem);
                         if (index != -1)
                         {
-                            _ListDsiBranchConfigurationBendAssociations.DsiBranchConfigurationBendAssociations[index] = updatedComponent;
+                            _ListDsiBranchConfigurationBendAssociationsGrpc.DsiBranchConfigurationBendAssociations[index] = updatedComponent;
                         }
                     }
 
@@ -1368,21 +1376,21 @@
         public async Task<ListDsiBranchInsulationGrpc> GetAllDsiBranchInsulations(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListRfqReasons.RfqReasons.Any())
+            if (_ListRfqReasonsGrpc.RfqReasons.Any())
             {
-                return _ListDsiBranchInsulations;
+                return _ListDsiBranchInsulationsGrpc;
             }
             else
             {
                 await PopulateRfqReasons(cancellationToken);
-                return _ListDsiBranchInsulations;
+                return _ListDsiBranchInsulationsGrpc;
             }
         }
 
         public async Task<ListDsiBranchInsulationGrpc> GetDsiBranchInsulationsByRowId(DsiBranchInsulationGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListDsiBranchInsulations.DsiBranchInsulations.Any())
+            if (_ListDsiBranchInsulationsGrpc.DsiBranchInsulations.Any())
             {
             }
             else
@@ -1391,7 +1399,7 @@
             }
 
             ListDsiBranchInsulationGrpc responseList = new ListDsiBranchInsulationGrpc();
-            List<DsiBranchInsulationGrpc> banchConfigurations = _ListDsiBranchInsulations.DsiBranchInsulations.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            List<DsiBranchInsulationGrpc> banchConfigurations = _ListDsiBranchInsulationsGrpc.DsiBranchInsulations.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
             if (banchConfigurations != null)
             {
                 responseList.DsiBranchInsulations.AddRange(banchConfigurations);
@@ -1419,7 +1427,7 @@
                 {
                     List<DbDsiBranchInsulation> createdComponents = result.Value;
                     List<DsiBranchInsulationGrpc> updatedGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
-                    _ListDsiBranchInsulations.DsiBranchInsulations.AddRange(updatedGrpcComponents);
+                    _ListDsiBranchInsulationsGrpc.DsiBranchInsulations.AddRange(updatedGrpcComponents);
                     responseList.DsiBranchInsulations.AddRange(updatedGrpcComponents);
                     return responseList;
                 }
@@ -1448,16 +1456,16 @@
                 {
                     foreach (DsiBranchInsulationGrpc updatedComponent in request.DsiBranchInsulationGrpcsToUpdate)
                     {
-                        DsiBranchInsulationGrpc? foundItem = _ListDsiBranchInsulations.DsiBranchInsulations.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
+                        DsiBranchInsulationGrpc? foundItem = _ListDsiBranchInsulationsGrpc.DsiBranchInsulations.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
                         if (foundItem == null)
                         {
                             continue;
                         }
 
-                        int index = _ListDsiBranchInsulations.DsiBranchInsulations.IndexOf(foundItem);
+                        int index = _ListDsiBranchInsulationsGrpc.DsiBranchInsulations.IndexOf(foundItem);
                         if (index != -1)
                         {
-                            _ListDsiBranchInsulations.DsiBranchInsulations[index] = updatedComponent;
+                            _ListDsiBranchInsulationsGrpc.DsiBranchInsulations[index] = updatedComponent;
                         }
                     }
 
@@ -1477,21 +1485,21 @@
         public async Task<ListDsiBranchInsulationThroughNodeGrpc> GetAllDsiBranchInsulationThroughNodes(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListRfqReasons.RfqReasons.Any())
+            if (_ListRfqReasonsGrpc.RfqReasons.Any())
             {
-                return _ListDsiBranchInsulationThroughNodes;
+                return _ListDsiBranchInsulationThroughNodesGrpc;
             }
             else
             {
                 await PopulateRfqReasons(cancellationToken);
-                return _ListDsiBranchInsulationThroughNodes;
+                return _ListDsiBranchInsulationThroughNodesGrpc;
             }
         }
 
         public async Task<ListDsiBranchInsulationThroughNodeGrpc> GetDsiBranchInsulationThroughNodesByRowId(DsiBranchInsulationThroughNodeGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListDsiBranchInsulationThroughNodes.DsiBranchInsulationThroughNodes.Any())
+            if (_ListDsiBranchInsulationThroughNodesGrpc.DsiBranchInsulationThroughNodes.Any())
             {
             }
             else
@@ -1500,7 +1508,7 @@
             }
 
             ListDsiBranchInsulationThroughNodeGrpc responseList = new ListDsiBranchInsulationThroughNodeGrpc();
-            List<DsiBranchInsulationThroughNodeGrpc> banchConfigurations = _ListDsiBranchInsulationThroughNodes.DsiBranchInsulationThroughNodes.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            List<DsiBranchInsulationThroughNodeGrpc> banchConfigurations = _ListDsiBranchInsulationThroughNodesGrpc.DsiBranchInsulationThroughNodes.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
             if (banchConfigurations != null)
             {
                 responseList.DsiBranchInsulationThroughNodes.AddRange(banchConfigurations);
@@ -1528,7 +1536,7 @@
                 {
                     List<DbDsiBranchInsulationThroughNode> createdComponents = result.Value;
                     List<DsiBranchInsulationThroughNodeGrpc> updatedGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
-                    _ListDsiBranchInsulationThroughNodes.DsiBranchInsulationThroughNodes.AddRange(updatedGrpcComponents);
+                    _ListDsiBranchInsulationThroughNodesGrpc.DsiBranchInsulationThroughNodes.AddRange(updatedGrpcComponents);
                     responseList.DsiBranchInsulationThroughNodes.AddRange(updatedGrpcComponents);
                     return responseList;
                 }
@@ -1557,16 +1565,16 @@
                 {
                     foreach (DsiBranchInsulationThroughNodeGrpc updatedComponent in request.DsiBranchInsulationThroughNodeGrpcsToUpdate)
                     {
-                        DsiBranchInsulationThroughNodeGrpc? foundItem = _ListDsiBranchInsulationThroughNodes.DsiBranchInsulationThroughNodes.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
+                        DsiBranchInsulationThroughNodeGrpc? foundItem = _ListDsiBranchInsulationThroughNodesGrpc.DsiBranchInsulationThroughNodes.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
                         if (foundItem == null)
                         {
                             continue;
                         }
 
-                        int index = _ListDsiBranchInsulationThroughNodes.DsiBranchInsulationThroughNodes.IndexOf(foundItem);
+                        int index = _ListDsiBranchInsulationThroughNodesGrpc.DsiBranchInsulationThroughNodes.IndexOf(foundItem);
                         if (index != -1)
                         {
-                            _ListDsiBranchInsulationThroughNodes.DsiBranchInsulationThroughNodes[index] = updatedComponent;
+                            _ListDsiBranchInsulationThroughNodesGrpc.DsiBranchInsulationThroughNodes[index] = updatedComponent;
                         }
                     }
 
@@ -1586,7 +1594,7 @@
         public async Task<ListDsiCavityMappingGrpc> GetAllDsiCavityMappings(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListRfqReasons.RfqReasons.Any())
+            if (_ListRfqReasonsGrpc.RfqReasons.Any())
             {
                 return _ListDsiCavityMappings;
             }
@@ -1609,7 +1617,7 @@
             }
 
             ListDsiCavityMappingGrpc responseList = new ListDsiCavityMappingGrpc();
-            List<DsiCavityMappingGrpc> banchConfigurations = _ListDsiCavityMappings.DsiCavityMappingGrpcs.Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+            List<DsiCavityMappingGrpc> banchConfigurations = _ListDsiCavityMappings.DsiCavityMappingGrpcs.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
             if (banchConfigurations != null)
             {
                 responseList.DsiCavityMappingGrpcs.AddRange(banchConfigurations);
@@ -1708,7 +1716,7 @@
 
             ListDsiCentreStripGrpc responseList = new ListDsiCentreStripGrpc();
             List<DsiCentreStripGrpc> matches = _ListDsiCentreStripGrpc.DsiCentreStripGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             if (matches != null)
             {
@@ -1804,7 +1812,7 @@
 
             ListDsiCircuitOptionGrpc responseList = new ListDsiCircuitOptionGrpc();
             List<DsiCircuitOptionGrpc> matches = _ListDsiCircuitOptionGrpc.DsiCircuitOptionGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiCircuitOptionGrpcs.AddRange(matches);
             return responseList;
@@ -1892,7 +1900,7 @@
 
             ListDsiComponentGrpc responseList = new ListDsiComponentGrpc();
             List<DsiComponentGrpc> matches = _ListDsiComponentGrpc.DsiComponentGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiComponentGrpcs.AddRange(matches);
             return responseList;
@@ -1980,7 +1988,7 @@
 
             ListDsiCompositeDetailGrpc responseList = new ListDsiCompositeDetailGrpc();
             List<DsiCompositeDetailGrpc> matches = _ListDsiCompositeDetailGrpc.DsiCompositeDetailGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiCompositeDetailGrpcs.AddRange(matches);
             return responseList;
@@ -2068,7 +2076,7 @@
 
             ListDsiCompositeDetailCircuitOptionAssociationGrpc responseList = new ListDsiCompositeDetailCircuitOptionAssociationGrpc();
             List<DsiCompositeDetailCircuitOptionAssociationGrpc> matches = _ListDsiCompositeDetailCircuitOptionAssociationGrpc.DsiCompositeDetailCircuitOptionAssociationGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiCompositeDetailCircuitOptionAssociationGrpcs.AddRange(matches);
             return responseList;
@@ -2156,7 +2164,7 @@
 
             ListDsiCompositeOptionGrpc responseList = new ListDsiCompositeOptionGrpc();
             List<DsiCompositeOptionGrpc> matches = _ListDsiCompositeOptionGrpc.DsiCompositeOptionGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiCompositeOptionGrpcs.AddRange(matches);
             return responseList;
@@ -2244,7 +2252,7 @@
 
             ListDsiHarnessGrpc responseList = new ListDsiHarnessGrpc();
             List<DsiHarnessGrpc> matches = _ListDsiHarnessGrpc.DsiHarnessGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiHarnessGrpcs.AddRange(matches);
             return responseList;
@@ -2332,7 +2340,7 @@
 
             ListDsiHarnessScopeGrpc responseList = new ListDsiHarnessScopeGrpc();
             List<DsiHarnessScopeGrpc> matches = _ListDsiHarnessScopeGrpc.DsiHarnessScopeGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiHarnessScopeGrpcs.AddRange(matches);
             return responseList;
@@ -2420,7 +2428,7 @@
 
             ListDsiHarnessScopeScopeAssociationGrpc responseList = new ListDsiHarnessScopeScopeAssociationGrpc();
             List<DsiHarnessScopeScopeAssociationGrpc> matches = _ListDsiHarnessScopeScopeAssociationGrpc.DsiHarnessScopeScopeAssociationGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiHarnessScopeScopeAssociationGrpcs.AddRange(matches);
             return responseList;
@@ -2513,7 +2521,7 @@
 
             ListDsiManualBomQuantityGrpc responseList = new ListDsiManualBomQuantityGrpc();
             List<DsiManualBomQuantityGrpc> matches = _ListDsiManualBomQuantityGrpc.DsiManualBomQuantityGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiManualBomQuantityGrpcs.AddRange(matches);
             return responseList;
@@ -2601,7 +2609,7 @@
 
             ListDsiMidWireComponentGrpc responseList = new ListDsiMidWireComponentGrpc();
             List<DsiMidWireComponentGrpc> matches = _ListDsiMidWireComponentGrpc.DsiMidWireComponentGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiMidWireComponentGrpcs.AddRange(matches);
             return responseList;
@@ -2689,7 +2697,7 @@
 
             ListDsiModuleChildDetailGrpc responseList = new ListDsiModuleChildDetailGrpc();
             List<DsiModuleChildDetailGrpc> matches = _ListDsiModuleChildDetailGrpc.DsiModuleChildDetailGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiModuleChildDetailGrpcs.AddRange(matches);
             return responseList;
@@ -2777,7 +2785,7 @@
 
             ListDsiModuleCompatibilityGrpc responseList = new ListDsiModuleCompatibilityGrpc();
             List<DsiModuleCompatibilityGrpc> matches = _ListDsiModuleCompatibilityGrpc.DsiModuleCompatibilityGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiModuleCompatibilityGrpcs.AddRange(matches);
             return responseList;
@@ -2865,7 +2873,7 @@
 
             ListDsiMulticoreSpecificationGrpc responseList = new ListDsiMulticoreSpecificationGrpc();
             List<DsiMulticoreSpecificationGrpc> matches = _ListDsiMulticoreSpecificationGrpc.DsiMulticoreSpecificationGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiMulticoreSpecificationGrpcs.AddRange(matches);
             return responseList;
@@ -2953,7 +2961,7 @@
 
             ListDsiPinMappingGrpc responseList = new ListDsiPinMappingGrpc();
             List<DsiPinMappingGrpc> matches = _ListDsiPinMappingGrpc.DsiPinMappingGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiPinMappingGrpcs.AddRange(matches);
             return responseList;
@@ -3041,7 +3049,7 @@
 
             ListDsiPinMappingCavityMappingAssociationGrpc responseList = new ListDsiPinMappingCavityMappingAssociationGrpc();
             List<DsiPinMappingCavityMappingAssociationGrpc> matches = _ListDsiPinMappingCavityMappingAssociationGrpc.DsiPinMappingCavityMappingAssociationGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiPinMappingCavityMappingAssociationGrpcs.AddRange(matches);
             return responseList;
@@ -3129,7 +3137,7 @@
 
             ListDsiScopeGrpc responseList = new ListDsiScopeGrpc();
             List<DsiScopeGrpc> matches = _ListDsiScopeGrpc.DsiScopeGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiScopeGrpcs.AddRange(matches);
             return responseList;
@@ -3217,7 +3225,7 @@
 
             ListDsiSupplierGrpc responseList = new ListDsiSupplierGrpc();
             List<DsiSupplierGrpc> matches = _ListDsiSupplierGrpc.DsiSupplierGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiSupplierGrpcs.AddRange(matches);
             return responseList;
@@ -3305,7 +3313,7 @@
 
             ListDsiTransformedCompositeDetailGrpc responseList = new ListDsiTransformedCompositeDetailGrpc();
             List<DsiTransformedCompositeDetailGrpc> matches = _ListDsiTransformedCompositeDetailGrpc.DsiTransformedCompositeDetailGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiTransformedCompositeDetailGrpcs.AddRange(matches);
             return responseList;
@@ -3393,7 +3401,7 @@
 
             ListDsiTransformedHarnessGrpc responseList = new ListDsiTransformedHarnessGrpc();
             List<DsiTransformedHarnessGrpc> matches = _ListDsiTransformedHarnessGrpc.DsiTransformedHarnessGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiTransformedHarnessGrpcs.AddRange(matches);
             return responseList;
@@ -3481,7 +3489,7 @@
 
             ListDsiTransformedModuleChildDetailGrpc responseList = new ListDsiTransformedModuleChildDetailGrpc();
             List<DsiTransformedModuleChildDetailGrpc> matches = _ListDsiTransformedModuleChildDetailGrpc.DsiTransformedModuleChildDetailGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiTransformedModuleChildDetailGrpcs.AddRange(matches);
             return responseList;
@@ -3569,7 +3577,7 @@
 
             ListDsiUnitOfMeasureGrpc responseList = new ListDsiUnitOfMeasureGrpc();
             List<DsiUnitOfMeasureGrpc> matches = _ListDsiUnitOfMeasureGrpc.DsiUnitOfMeasureGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiUnitOfMeasureGrpcs.AddRange(matches);
             return responseList;
@@ -3657,7 +3665,7 @@
 
             ListDsiWireMulticoreMarkerGrpc responseList = new ListDsiWireMulticoreMarkerGrpc();
             List<DsiWireMulticoreMarkerGrpc> matches = _ListDsiWireMulticoreMarkerGrpc.DsiWireMulticoreMarkerGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiWireMulticoreMarkerGrpcs.AddRange(matches);
             return responseList;
@@ -3745,7 +3753,7 @@
 
             ListDsiWireSpecificationGrpc responseList = new ListDsiWireSpecificationGrpc();
             List<DsiWireSpecificationGrpc> matches = _ListDsiWireSpecificationGrpc.DsiWireSpecificationGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiWireSpecificationGrpcs.AddRange(matches);
             return responseList;
@@ -3833,7 +3841,7 @@
 
             ListDsiWireThroughNodeGrpc responseList = new ListDsiWireThroughNodeGrpc();
             List<DsiWireThroughNodeGrpc> matches = _ListDsiWireThroughNodeGrpc.DsiWireThroughNodeGrpcs
-                .Where(x => x.RowId == request.GrpcRequestParameter.IntValue).ToList();
+                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
 
             responseList.DsiWireThroughNodeGrpcs.AddRange(matches);
             return responseList;
@@ -3922,8 +3930,8 @@
                     }
                     else
                     {
-                        _ListRfqDrawingPartNumbers.RfqDrawingPartNumbers.Clear();
-                        _ListRfqDrawingPartNumbers.RfqDrawingPartNumbers.AddRange(results.Value);
+                        _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Clear();
+                        _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.AddRange(results.Value);
                     }
 
                     _RfqDrawingPartNumbersRefreshInProgress = false;
@@ -3952,8 +3960,8 @@
                     }
                     else
                     {
-                        _ListRfqProjects.RfqProjects.Clear();
-                        _ListRfqProjects.RfqProjects.AddRange(results.Value);
+                        _ListRfqProjectsGrpc.RfqProjects.Clear();
+                        _ListRfqProjectsGrpc.RfqProjects.AddRange(results.Value);
                     }
 
                     _RfqProjectRefreshInProgress = false;
@@ -3982,8 +3990,8 @@
                     }
                     else
                     {
-                        _ListRfqNotes.RfqNotes.Clear();
-                        _ListRfqNotes.RfqNotes.AddRange(results.Value);
+                        _ListRfqNotesGrpc.RfqNotes.Clear();
+                        _ListRfqNotesGrpc.RfqNotes.AddRange(results.Value);
                     }
 
                     _RfqNotesRefreshInProgress = false;
@@ -4013,8 +4021,8 @@
                     }
                     else
                     {
-                        _ListRfqReasons.RfqReasons.Clear();
-                        _ListRfqReasons.RfqReasons.AddRange(results.Value);
+                        _ListRfqReasonsGrpc.RfqReasons.Clear();
+                        _ListRfqReasonsGrpc.RfqReasons.AddRange(results.Value);
                     }
 
                     _RfqReasonRefreshInProgress = false;
@@ -4045,8 +4053,8 @@
                     }
                     else
                     {
-                        _ListDsiBends.DsiBends.Clear();
-                        _ListDsiBends.DsiBends.AddRange(results.Value);
+                        _ListDsiBendsGrpc.DsiBends.Clear();
+                        _ListDsiBendsGrpc.DsiBends.AddRange(results.Value);
                     }
 
                     _DsiBendRefreshInProgress = false;
@@ -4077,8 +4085,8 @@
                     }
                     else
                     {
-                        _ListDsiBranchConfigurations.DsiBranchConfigurations.Clear();
-                        _ListDsiBranchConfigurations.DsiBranchConfigurations.AddRange(results.Value);
+                        _ListDsiBranchConfigurationsGrpc.DsiBranchConfigurations.Clear();
+                        _ListDsiBranchConfigurationsGrpc.DsiBranchConfigurations.AddRange(results.Value);
                     }
 
                     _DsiBranchConfigurationRefreshInProgress = false;
@@ -4109,8 +4117,8 @@
                     }
                     else
                     {
-                        _ListDsiBranchConfigurationBendAssociations.DsiBranchConfigurationBendAssociations.Clear();
-                        _ListDsiBranchConfigurationBendAssociations.DsiBranchConfigurationBendAssociations.AddRange(results.Value);
+                        _ListDsiBranchConfigurationBendAssociationsGrpc.DsiBranchConfigurationBendAssociations.Clear();
+                        _ListDsiBranchConfigurationBendAssociationsGrpc.DsiBranchConfigurationBendAssociations.AddRange(results.Value);
                     }
 
                     _DsiBranchConfigurationBendAssociationRefreshInProgress = false;
@@ -4141,8 +4149,8 @@
                     }
                     else
                     {
-                        _ListDsiBranchInsulations.DsiBranchInsulations.Clear();
-                        _ListDsiBranchInsulations.DsiBranchInsulations.AddRange(results.Value);
+                        _ListDsiBranchInsulationsGrpc.DsiBranchInsulations.Clear();
+                        _ListDsiBranchInsulationsGrpc.DsiBranchInsulations.AddRange(results.Value);
                     }
 
                     _DsiBranchInsulationRefreshInProgress = false;
@@ -4173,8 +4181,8 @@
                     }
                     else
                     {
-                        _ListDsiBranchInsulationThroughNodes.DsiBranchInsulationThroughNodes.Clear();
-                        _ListDsiBranchInsulationThroughNodes.DsiBranchInsulationThroughNodes.AddRange(results.Value);
+                        _ListDsiBranchInsulationThroughNodesGrpc.DsiBranchInsulationThroughNodes.Clear();
+                        _ListDsiBranchInsulationThroughNodesGrpc.DsiBranchInsulationThroughNodes.AddRange(results.Value);
                     }
 
                     _DsiBranchInsulationThroughNodeRefreshInProgress = false;
@@ -4986,27 +4994,58 @@
         {
             return await Task.Run(() =>
             {
-                return typeof(T).Name switch
+                return typeof(T).Name.ToUpperInvariant() switch
                 {
-                    "RfqDrawingPartNumbersGrpc" => _ListRfqDrawingPartNumbers.RfqDrawingPartNumbers.Cast<T>().Where(func).ToList(),
-                    "RfqReasonsGrpc" => _ListRfqReasons.RfqReasons.Cast<T>().Where(func).ToList(),
-                    "RfqNotesGrpc" => _ListRfqNotes.RfqNotes.Cast<T>().Where(func).ToList(),
-                    "RfqProjects" => _ListRfqProjects.RfqProjects.Cast<T>().Where(func).ToList(),
+                    "RFQDRAWINGPARTNUMBERSGRPC" => _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Cast<T>().Where(func).ToList(),
+                    "RFQREASONGRPC" => _ListRfqReasonsGrpc.RfqReasons.Cast<T>().Where(func).ToList(),
+                    "RFQNOTESGRPC" => _ListRfqNotesGrpc.RfqNotes.Cast<T>().Where(func).ToList(),
+                    "RFQPROJECTGRPC" => _ListRfqProjectsGrpc.RfqProjects.Cast<T>().Where(func).ToList(),
+                    "DSIBENDGRPC" => _ListDsiBendsGrpc.DsiBends.Cast<T>().Where(func).ToList(),
+                    "DSIBRANCHCONFIGURATIONGRPC" => _ListDsiBranchConfigurationsGrpc.DsiBranchConfigurations.Cast<T>().Where(func).ToList(),
+                    "DSIBRANCHCONFIGURATIONBENDASSOCIATIONGRPC" => _ListDsiBranchConfigurationBendAssociationsGrpc.DsiBranchConfigurationBendAssociations.Cast<T>().Where(func).ToList(),
+                    "DSIBRANCHINSULATIONGRPC" => _ListDsiBranchInsulationsGrpc.DsiBranchInsulations.Cast<T>().Where(func).ToList(),
+                    "DSIBRANCHINSULATIONTHROUGHNODEGRPC" => _ListDsiBranchInsulationThroughNodesGrpc.DsiBranchInsulationThroughNodes.Cast<T>().Where(func).ToList(),
+                    "DSICAVITYMAPPINGGRPC" => _ListDsiCavityMappings.DsiCavityMappingGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSICENTRESTRIPGRPC" => _ListDsiCentreStripGrpc.DsiCentreStripGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSICIRCUITOPTIONGRPC" => _ListDsiCircuitOptionGrpc.DsiCircuitOptionGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSICOMPONENTGRPC" => _ListDsiComponentGrpc.DsiComponentGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSICOMPOSITEDETAILGRPC" => _ListDsiCompositeDetailGrpc.DsiCompositeDetailGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSICOMPOSITEDETAILCIRCUITOPTIONASSOCIATIONGRPC" => _ListDsiCompositeDetailCircuitOptionAssociationGrpc.DsiCompositeDetailCircuitOptionAssociationGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSICOMPOSITEOPTIONGRPC" => _ListDsiCompositeOptionGrpc.DsiCompositeOptionGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSIHARNESSGRPC" => _ListDsiHarnessGrpc.DsiHarnessGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSIHARNESSSCOPEGRPC" => _ListDsiHarnessScopeGrpc.DsiHarnessScopeGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSIHARNESSSCOPESCOPEASSOCIATIONGRPC" => _ListDsiHarnessScopeScopeAssociationGrpc.DsiHarnessScopeScopeAssociationGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSIMANUALBOMQUANTITYGRPC" => _ListDsiManualBomQuantityGrpc.DsiManualBomQuantityGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSIMIDWIRECOMPONENTGRPC" => _ListDsiMidWireComponentGrpc.DsiMidWireComponentGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSIMODULECHILDDETAILGRPC" => _ListDsiModuleChildDetailGrpc.DsiModuleChildDetailGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSIMODULECOMPATIBILITYGRPC" => _ListDsiModuleCompatibilityGrpc.DsiModuleCompatibilityGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSIMULTICORESPECIFICATIONGRPC" => _ListDsiMulticoreSpecificationGrpc.DsiMulticoreSpecificationGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSIPINMAPPINGGRPC" => _ListDsiPinMappingGrpc.DsiPinMappingGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSIPINMAPPINGCAVITYMAPPINGASSOCIATIONGRPC" => _ListDsiPinMappingCavityMappingAssociationGrpc.DsiPinMappingCavityMappingAssociationGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSISCOPEGRPC" => _ListDsiScopeGrpc.DsiScopeGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSISUPPLIERGRPC" => _ListDsiSupplierGrpc.DsiSupplierGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSITRANSFORMEDCOMPOSITEDETAILGRPC" => _ListDsiTransformedCompositeDetailGrpc.DsiTransformedCompositeDetailGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSITRANSFORMEDHARNESSGRPC" => _ListDsiTransformedHarnessGrpc.DsiTransformedHarnessGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSITRANSFORMEDMODULECHILDDETAILGRPC" => _ListDsiTransformedModuleChildDetailGrpc.DsiTransformedModuleChildDetailGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSIUNITOFMEASUREGRPC" => _ListDsiUnitOfMeasureGrpc.DsiUnitOfMeasureGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSIWIREMULTICOREMARKERGRPC" => _ListDsiWireMulticoreMarkerGrpc.DsiWireMulticoreMarkerGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSIWIRESPECIFICATIONGRPC" => _ListDsiWireSpecificationGrpc.DsiWireSpecificationGrpcs.Cast<T>().Where(func).ToList(),
+                    "DSIWIRETHROUGHNODEGRPC" => _ListDsiWireThroughNodeGrpc.DsiWireThroughNodeGrpcs.Cast<T>().Where(func).ToList(),
                     _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
                 };
             }, cancellationToken);
         }
         void PopulateSampleData()
         {
-            _ListRfqDrawingPartNumbers = SampleRfqDataService.PopulateRfqDrawingPartNumbersGrpc();
-            _ListRfqProjects = SampleRfqDataService.PopulateRfqProjectGrpc();
-            _ListRfqNotes = SampleRfqDataService.PopulateRfqNotesGrpc();
-            _ListRfqReasons = SampleRfqDataService.PopulateRfqReasonGrpc();
-            _ListDsiBends = SampleRfqDataService.PopulateDsiBendGrpc();
-            _ListDsiBranchConfigurations = SampleRfqDataService.PopulateDsiBranchConfigurationGrpc();
-            _ListDsiBranchConfigurationBendAssociations = SampleRfqDataService.PopulateDsiBranchConfigurationBendAssociationGrpc();
-            _ListDsiBranchInsulations = SampleRfqDataService.PopulateDsiBranchInsulationGrpc();
-            _ListDsiBranchInsulationThroughNodes = SampleRfqDataService.PopulateDsiBranchInsulationThroughNodeGrpc();
+            _ListRfqDrawingPartNumbersGrpc = SampleRfqDataService.PopulateRfqDrawingPartNumbersGrpc();
+            _ListRfqProjectsGrpc = SampleRfqDataService.PopulateRfqProjectGrpc();
+            _ListRfqNotesGrpc = SampleRfqDataService.PopulateRfqNotesGrpc();
+            _ListRfqReasonsGrpc = SampleRfqDataService.PopulateRfqReasonGrpc();
+            _ListDsiBendsGrpc = SampleRfqDataService.PopulateDsiBendGrpc();
+            _ListDsiBranchConfigurationsGrpc = SampleRfqDataService.PopulateDsiBranchConfigurationGrpc();
+            _ListDsiBranchConfigurationBendAssociationsGrpc = SampleRfqDataService.PopulateDsiBranchConfigurationBendAssociationGrpc();
+            _ListDsiBranchInsulationsGrpc = SampleRfqDataService.PopulateDsiBranchInsulationGrpc();
+            _ListDsiBranchInsulationThroughNodesGrpc = SampleRfqDataService.PopulateDsiBranchInsulationThroughNodeGrpc();
             _ListDsiCavityMappings = SampleRfqDataService.PopulateDsiCavityMappingGrpc();
             _ListDsiCircuitOptionGrpc = SampleRfqDataService.PopulateDsiCircuitOptionGrpc();
             _ListDsiCentreStripGrpc = SampleRfqDataService.PopulateDsiCentreStripGrpc();

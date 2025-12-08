@@ -167,9 +167,9 @@
         {
             return await Task.Run(() =>
             {
-                return typeof(T).Name switch
+                return typeof(T).Name.ToUpperInvariant() switch
                 {
-                    "MatSuppMstViewGrpc" => _ListMatSuppMstView.MatSuppMstViewGrpc.Cast<T>().Where(func).ToList(),
+                    "MATSUPPMSTVIEWGRPC" => _ListMatSuppMstView.MatSuppMstViewGrpc.Cast<T>().Where(func).ToList(),
                     _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
                 };
             }, cancellationToken);

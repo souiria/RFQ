@@ -89,39 +89,44 @@
                 await Task.Delay(1);
                 _Projects.Clear();
                 GetProjectAssociationsByCustomerIdResponse response = new GetProjectAssociationsByCustomerIdResponse();
-                CustomerLocationByCustomerIdGrpcRequest locationRequest = new CustomerLocationByCustomerIdGrpcRequest();
-                locationRequest.CustomerId = request.CustomerId.ToUpperInvariant();
-                ListCustomerLocationGrpc locations = _MasterClient.GetCustomerLocationGrpcByCustomerId(locationRequest);
-                if (locations.CustomerLocationGrpc.Count <= 0)
+                MastersFilterRequestGrpc filterRequest = new MastersFilterRequestGrpc();
+                filterRequest.DatabaseList = "CUSTOMERLOCATIONGRPC";
+                filterRequest.FilterExpression = $"CustomerId != null && CustomerId == \"{request.CustomerId.ToUpperInvariant()}\"";
+                MastersFilterResponseGrpc locations = _MasterClient.FilterMasterDataGrpc(filterRequest);
+                List<CustomerLocationGrpc> extractedLocations = ExtractMastersResponseData<CustomerLocationGrpc>(locations).ToList();
+                if (extractedLocations.Count <= 0)
                 {
                     response.Message = "No locations found for customer";
                     response.Success = false;
                     return response;
                 }
 
-                foreach (CustomerLocationGrpc? location in locations.CustomerLocationGrpc)
+                foreach (CustomerLocationGrpc? location in extractedLocations)
                 {
-                    CustomerProjectAssociationByLocationIdGrpcRequest customerProjectRequest = new CustomerProjectAssociationByLocationIdGrpcRequest();
-                    customerProjectRequest.LocationId = location.Id.ToUpperInvariant();
-                    ListCustomerProjectAssociationGrpc customerProjectAssociations = _MasterClient.GetCustomerProjectAssociationGrpcByLocationId(customerProjectRequest);
+                    filterRequest.DatabaseList = "CUSTOMERPROJECTASSOCIATIONGRPC";
+                    filterRequest.FilterExpression = $"CustomerGuid != null && CustomerGuid == \"{location.Id.ToUpperInvariant()}\"";
+                    MastersFilterResponseGrpc projectAssociations = _MasterClient.FilterMasterDataGrpc(filterRequest);
+                    List<CustomerProjectAssociationGrpc> extractedProjectAssociations = ExtractMastersResponseData<CustomerProjectAssociationGrpc>(projectAssociations).ToList();
 
-                    foreach (CustomerProjectAssociationGrpc? customerProjectAssociation in customerProjectAssociations.CustomerProjectAssociationGrpc)
+                    foreach (CustomerProjectAssociationGrpc? customerProjectAssociation in extractedProjectAssociations)
                     {
                         if (customerProjectAssociation.ProjectGuid == null)
                         {
                             continue;
                         }
 
-                        ProjectByIdGrpcRequest projectRequest = new ProjectByIdGrpcRequest();
-                        projectRequest.Id = customerProjectAssociation.ProjectGuid.ToUpperInvariant();
-                        ListProjectGrpc projects = _MasterClient.GetProjectGrpcById(projectRequest);
-                        if(projects.ProjectGrpc.Count <= 0)
+                        filterRequest.DatabaseList = "PROJECTGRPC";
+                        filterRequest.FilterExpression = $"Id != null && Id == \"{customerProjectAssociation.ProjectGuid.ToUpperInvariant()}\"";
+                        MastersFilterResponseGrpc projects = _MasterClient.FilterMasterDataGrpc(filterRequest);
+                        List<ProjectGrpc> extractedProjects = ExtractMastersResponseData<ProjectGrpc>(projects).ToList();
+
+                        if(extractedProjects.Count <= 0)
                         {
                             continue;
                         }
 
-                        _Projects.AddRange(projects.ProjectGrpc);
-                        foreach (ProjectGrpc? project in projects.ProjectGrpc)
+                        _Projects.AddRange(extractedProjects);
+                        foreach (ProjectGrpc? project in extractedProjects)
                         {
                             ProjectAssociation projectAssociation = new ProjectAssociation();
                             projectAssociation.CustomerLocationGuid = location.Id.ToUpperInvariant();
@@ -196,11 +201,11 @@
                 // Call the Rfq service to get RFQ reasons
                 await Task.Delay(1);
                 RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
-                GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-                grpcRequestParameter.Position = request.Position;
-                grpcRequestParameter.Take = request.Take;
-                grpcRequestParameter.RequestType = request.RequestType;
-                rfqReasonRequest.GrpcRequestParameter = grpcRequestParameter;
+                RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                rfqGrpcRequestParameter.Position = request.Position;
+                rfqGrpcRequestParameter.Take = request.Take;
+                rfqGrpcRequestParameter.RequestType = request.RequestType;
+                rfqReasonRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
 
                 ListRfqReasonGrpc rfqReasons = _RfqClient.ReadRfqReasonGrpc(rfqReasonRequest);
                 GetRfqReasonsGrpcResponse response = new GetRfqReasonsGrpcResponse();
@@ -226,12 +231,12 @@
 
                 long rowId = request.RowId;
 
-                GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-                grpcRequestParameter.RequestType = 3;
+                RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                rfqGrpcRequestParameter.RequestType = 3;
 
                 RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
                 rfqProjectRequest.RowId = rowId;
-                rfqProjectRequest.GrpcRequestParameter = grpcRequestParameter;
+                rfqProjectRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
                 RfqCrudGrpcResponse grpcResponse =  _RfqClient.DeleteRfqProjectByRowIdGrpc(rfqProjectRequest);
                 bool result = grpcResponse.SaveSuccess;
           
@@ -266,22 +271,22 @@
 
                 // Prepare RFQ project request
                 RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
-                GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-                grpcRequestParameter.Position = request.Position;
-                grpcRequestParameter.Take = request.Take;
-                grpcRequestParameter.RequestType = 1;
-                rfqProjectRequest.GrpcRequestParameter = grpcRequestParameter;
+                RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                rfqGrpcRequestParameter.Position = request.Position;
+                rfqGrpcRequestParameter.Take = request.Take;
+                rfqGrpcRequestParameter.RequestType = 1;
+                rfqProjectRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
 
                 // Fetch RFQ projects
                 ListRfqProjectGrpc rfqProjects = _RfqClient.ReadRfqProjectGrpc(rfqProjectRequest);
 
                 // Fetch RFQ reasons
                 RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
-                GrpcRequestParameter reasonRequestParameter = new GrpcRequestParameter();
+                RfqGrpcRequestParameter reasonRequestParameter = new RfqGrpcRequestParameter();
                 reasonRequestParameter.Position = 0;
                 reasonRequestParameter.Take = 100;
                 reasonRequestParameter.RequestType = 1;
-                rfqReasonRequest.GrpcRequestParameter = reasonRequestParameter;
+                rfqReasonRequest.RfqGrpcRequestParameter = reasonRequestParameter;
 
                 ListRfqReasonGrpc rfqReasons = _RfqClient.ReadRfqReasonGrpc(rfqReasonRequest);
 
@@ -387,11 +392,11 @@
                 await Task.Delay(1);
 
                 // Prepare RFQ project request
-                GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-                grpcRequestParameter.RequestType = 2;
+                RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                rfqGrpcRequestParameter.RequestType = 2;
 
                 RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
-                rfqProjectRequest.GrpcRequestParameter = grpcRequestParameter;
+                rfqProjectRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
                 rfqProjectRequest.RowId = request.RowId;
 
                 // Fetch RFQ project
@@ -399,11 +404,11 @@
 
                 // Fetch RFQ reasons
                 RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
-                GrpcRequestParameter reasonRequestParameter = new GrpcRequestParameter();
+                RfqGrpcRequestParameter reasonRequestParameter = new RfqGrpcRequestParameter();
                 reasonRequestParameter.Position = 0;
                 reasonRequestParameter.Take = 100;
                 reasonRequestParameter.RequestType = 1;
-                rfqReasonRequest.GrpcRequestParameter = reasonRequestParameter;
+                rfqReasonRequest.RfqGrpcRequestParameter = reasonRequestParameter;
 
                 ListRfqReasonGrpc rfqReasons = _RfqClient.ReadRfqReasonGrpc(rfqReasonRequest);
 
@@ -453,13 +458,21 @@
                     .ToDictionary(v => v.Id, v => v.VehicleName);
 
                 // Prepare response
+                //RfqFilterRequest RfqGrpcRequestParameter = new RfqFilterRequest();
+                //RfqGrpcRequestParameter.DatabaseList = "RfqProjectGrpc";
+                //RfqGrpcRequestParameter.FilterExpression = $"RowId != null && RowId == {request.RowId}";
+                //RfqFilterResponse rfqProjects = _RfqClient.FilterRfqGrpc(RfqGrpcRequestParameter);
+
                 GetRfqProjectByIdGrpcResponse response = new GetRfqProjectByIdGrpcResponse();
+
+                //int projectCount = rfqProjects.ListRfqProjectGrpc.RfqProjects.Count;
 
                 int projectCount = rfqProjects.RfqProjects.Count;
                 bool hasProjects = 0 < projectCount;
 
                 if (hasProjects)
                 {
+                    //RfqProjectGrpc grpcProject = rfqProjects.ListRfqProjectGrpc.RfqProjects.First();
                     RfqProjectGrpc grpcProject = rfqProjects.RfqProjects.First();
                     RfqProject mappedProject = grpcProject.ToRfqProject();
 
@@ -504,31 +517,66 @@
                 throw;
             }
         }
+        public async Task<UpdateRfqDrawingPartNumbersGrpcResponse> UpdateRfqDrawingPartNumbers(UpdateRfqDrawingPartNumbersGrpcRequest request)
+        {
+            try
+            {
+                await Task.Delay(1);
 
+                // Map each incoming part into a gRPC DTO
+                List<RfqDrawingPartNumbersGrpc> partsToUpdate = new List<RfqDrawingPartNumbersGrpc>();
+                foreach (RfqDrawingPartNumber part in request.RfqDrawingPartNumbersGrpcsToUpdate)
+                {
+                    RfqDrawingPartNumbersGrpc grpcPart = new RfqDrawingPartNumbersGrpc();
+                    grpcPart.RowId = part.RowId;
+                    grpcPart.RfqId = part.RfqId;
+                    grpcPart.OriginalPartNumber = part.OriginalPartNumber;
+                    grpcPart.OriginalPartNumberPrice = part.OriginalPartNumberPrice;
+                    grpcPart.SwappedPartNumber = part.SwappedPartNumber;
+                    grpcPart.SwappedPartNumberPrice = part.SwappedPartNumberPrice;
+                    grpcPart.PriceSource = part.PriceSource;
+                    grpcPart.IsExactMatch = part.IsExactMatch;
+                    grpcPart.IsSwapped = part.IsSwapped;
+                    grpcPart.Comments = part.Comments;
+                    partsToUpdate.Add(grpcPart);
+                }
+
+                RfqDrawingPartNumbersGrpcRequest rfqProjectRequest = new RfqDrawingPartNumbersGrpcRequest();
+                rfqProjectRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                rfqProjectRequest.RfqGrpcRequestParameter.RequestType = 80;
+                rfqProjectRequest.RfqDrawingPartNumbersGrpcsToUpdate.Add(partsToUpdate);
+                RfqCrudGrpcResponse updateResponse = _RfqClient.UpdateRfqDrawingPartNumbersGrpc(rfqProjectRequest);
+                UpdateRfqDrawingPartNumbersGrpcResponse response = new UpdateRfqDrawingPartNumbersGrpcResponse();
+                response.Success = updateResponse.SaveSuccess;
+                response.Message = updateResponse.Message;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError("Error Updating RFQ drawing part numbers", ex);
+                throw;
+            }
+        }
         public async Task<GetRfqDrawingPartNumbersByRfqIdGrpcResponse> GetRfqDrawingPartNumbersByRfqIdGrpc(GetRfqDrawingPartNumbersByRfqIdGrpcRequest request)
         {
             try
             {
                 await Task.Delay(1);
 
-                GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-                grpcRequestParameter.RequestType = 2;
-
-                RfqDrawingPartNumbersGrpcRequest rfqDrawingRequest = new RfqDrawingPartNumbersGrpcRequest();
-                rfqDrawingRequest.GrpcRequestParameter = grpcRequestParameter;
-                rfqDrawingRequest.RfqId = request.RfqId;
-
-                ListRfqDrawingPartNumbersGrpc rfqParts = _RfqClient.ReadRfqDrawingPartNumbersGrpc(rfqDrawingRequest);
+                RfqFilterRequest rfqGrpcRequestParameter = new RfqFilterRequest();
+                rfqGrpcRequestParameter.DatabaseList = "RfqProjectGrpc";
+                rfqGrpcRequestParameter.FilterExpression = $"RfqId != null && RfqId == {request.RfqId}";
+                RfqFilterResponse rfqParts = _RfqClient.FilterRfqGrpc(rfqGrpcRequestParameter);
 
                 GetRfqDrawingPartNumbersByRfqIdGrpcResponse response = new GetRfqDrawingPartNumbersByRfqIdGrpcResponse();
 
-                int partCount = rfqParts.RfqDrawingPartNumbers.Count;
+                int partCount = rfqParts.ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Count;
                 bool hasParts = !(partCount <= 0);
                 if (hasParts)
                 {
                     List<RfqDrawingPartNumber> mappedParts = new List<RfqDrawingPartNumber>();
 
-                    foreach (RfqDrawingPartNumbersGrpc grpcPart in rfqParts.RfqDrawingPartNumbers)
+                    foreach (RfqDrawingPartNumbersGrpc grpcPart in rfqParts.ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers)
                     {
                         RfqDrawingPartNumber mappedPart = grpcPart.ToRfqDrawingPartNumber();
                         mappedParts.Add(mappedPart);
@@ -703,9 +751,9 @@
             rfqProject.VehicleVolume = request.Project.VehicleVolume;
             rfqProject.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
 
-            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-            rfqProjectRequest.GrpcRequestParameter = grpcRequestParameter;
-            rfqProjectRequest.GrpcRequestParameter.RequestType = 70;
+            RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            rfqProjectRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
+            rfqProjectRequest.RfqGrpcRequestParameter.RequestType = 70;
             rfqProjectRequest.RfqProjectGrpcsToCreate.Add(rfqProject);
             RfqCrudGrpcResponse createResponse = _RfqClient.CreateRfqProjectGrpc(rfqProjectRequest);
             if (createResponse.SaveSuccess == false)
@@ -738,8 +786,8 @@
                 rfqProject.VehicleVolume = request.Project.VehicleVolume;
 
                 RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
-                rfqProjectRequest.GrpcRequestParameter = new GrpcRequestParameter();
-                rfqProjectRequest.GrpcRequestParameter.RequestType = 80; 
+                rfqProjectRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                rfqProjectRequest.RfqGrpcRequestParameter.RequestType = 80; 
                 rfqProjectRequest.RfqProjectGrpcsToUpdate.Add(rfqProject);
 
                 RfqCrudGrpcResponse updateResponse = _RfqClient.UpdateRfqProjectGrpc(rfqProjectRequest);
@@ -782,8 +830,8 @@
         RfqCrudGrpcResponse CreateRfqDrawingPartNumbers(string projectId, List<CustomerParts> customerParts)
         {
             RfqDrawingPartNumbersGrpcRequest partRequest = new RfqDrawingPartNumbersGrpcRequest();
-            partRequest.GrpcRequestParameter = new GrpcRequestParameter();
-            partRequest.GrpcRequestParameter.RequestType = 70;
+            partRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            partRequest.RfqGrpcRequestParameter.RequestType = 70;
             foreach (CustomerParts customerPart in customerParts)
             {
                 RfqDrawingPartNumbersGrpc part = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber1);
@@ -843,7 +891,7 @@
             EmacsFilterRequestGrpc emacsRequest = new EmacsFilterRequestGrpc();
             Collection<CombinedPartsGrpc> filteredList = new Collection<CombinedPartsGrpc>();
             FilterGrpcResponse response = new FilterGrpcResponse();
-            string[] parametersToSearch = ["UniformCustomerNumber", "UniformSupplierNumber", "UniformSumitomoNumber"];
+            string[] parametersToSearch = ["CustomerNumber", "SupplierNumber", "SumitomoNumber"];
             foreach (string parameter in parametersToSearch)
             {
                 EmacsFilterResponseGrpc partNumberResponse = FilterSumitomoNumber<EmacsFilterResponseGrpc>(request.StringValue, parameter, "==");
@@ -871,9 +919,12 @@
             Collection<CombinedPartsGrpc> filteredList = new Collection<CombinedPartsGrpc>();
             FilterGrpcResponse response = new FilterGrpcResponse();
             string[] parametersToSearch = ["UniformCustomerNumber", "UniformSupplierNumber", "UniformSumitomoNumber"];
+            Regex regexFilter = new Regex("(?:[^a-z0-9 ]|(?<=['\"])s)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+            string uniformStringValue = regexFilter.Replace(request.StringValue, String.Empty);
+            uniformStringValue = uniformStringValue.ToUpperInvariant().Trim();
             foreach (string parameter in parametersToSearch)
             {
-                EmacsFilterResponseGrpc partNumberResponse = FilterSumitomoNumber<EmacsFilterResponseGrpc>(request.StringValue, parameter, ".Contains");
+                EmacsFilterResponseGrpc partNumberResponse = FilterSumitomoNumber<EmacsFilterResponseGrpc>(uniformStringValue, parameter, ".Contains");
                 if (partNumberResponse.ListCombinedPartsGrpc != null)
                 {
                     filteredList = ExtractEmacsResponseData<CombinedPartsGrpc>(partNumberResponse);
@@ -1025,6 +1076,24 @@
 
             return results;
         }
+        Collection<TItem> ExtractMastersResponseData<TItem>(MastersFilterResponseGrpc response)
+        {
+            Collection<TItem> results = new Collection<TItem>();
+
+            TryExtractList(response.CurrencyGrpcList?.CurrencyGrpc, results);
+            TryExtractList(response.CustomerGrpcList?.CustomerGrpc, results);
+            TryExtractList(response.CustomerLocationGrpcList?.CustomerLocationGrpc, results);
+            TryExtractList(response.CustomerSalesEntityGrpcList?.CustomerSalesEntityGrpc, results);
+            TryExtractList(response.CustomerProjectAssociationGrpcList?.CustomerProjectAssociationGrpc, results);
+            TryExtractList(response.CustomerBusinessUserAssociationGrpcList?.CustomerBusinessUserAssociationGrpc, results);
+            TryExtractList(response.MilestoneGrpcList?.MilestoneGrpc, results);
+            TryExtractList(response.PlatformGrpcList?.PlatformGrpc, results);
+            TryExtractList(response.ProgramGrpcList?.ProgramGrpc, results);
+            TryExtractList(response.ProjectGrpcList?.ProjectGrpc, results);
+            TryExtractList(response.VehicleGrpcList?.VehicleGrpc, results);
+
+            return results;
+        }
         bool TryExtractList<TItem, T>(IEnumerable<TItem>? items, Collection<T> results) where TItem : class
         {
             if (items != null && typeof(T) == typeof(TItem))
@@ -1044,11 +1113,11 @@
             string filterExpression = string.Empty;
             if (filterOpperator == "==")
             {
-                filterExpression = $"{filterType} != null && {filterType} {filterOpperator} \"{partNumber}\"";
+                filterExpression = $"{filterType} != null && {filterType}.ToUpperInvariant() {filterOpperator} \"{partNumber.ToUpperInvariant()}\"";
             }
             else if (filterOpperator == ".Contains")
             {
-                filterExpression = $"{filterType} != null && {filterType}{filterOpperator}(\"{partNumber}\")";
+                filterExpression = $"{filterType} != null && {filterType}.ToUpperInvariant(){filterOpperator}(\"{partNumber.ToUpperInvariant()}\")";
             }
             else
             {
@@ -1078,7 +1147,7 @@
                 case "RfqFilterResponse":
                 RfqFilterRequest rfqRequest = new RfqFilterRequest();
                 rfqRequest.FilterExpression = filterExpression;
-                rfqRequest.DatabaseList = "RfqDrawingPartNumberGrpc";
+                rfqRequest.DatabaseList = "RfqDrawingPartNumbersGrpc";
                 RfqFilterResponse filterRfqResponse = _RfqClient.FilterRfqGrpc(rfqRequest);
                 return (T)(object)filterRfqResponse;
                 default:

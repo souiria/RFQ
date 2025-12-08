@@ -400,21 +400,6 @@
                 return _ListPartClassDetail;
             }
         }
-        public async Task<ListPartClassDetailGrpc> GetPartClassDetailByClasses(string class1, double class2, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListPartClassDetail.PartClassDetailGrpc.Any())
-            {
-                List<PartClassDetailGrpc> filteredList = _ListPartClassDetail.PartClassDetailGrpc.Where(x => x.Class1 == class1 && x.Class2 == class2).ToList();
-                _FilteredListPartClassDetail.PartClassDetailGrpc.AddRange(filteredList);
-                return _FilteredListPartClassDetail;
-            }
-            else
-            {
-                await PopulatePartClassDetailAsync(cancellationToken);
-                return _FilteredListPartClassDetail;
-            }
-        }
         #endregion
 
         #region PartGroups
@@ -432,22 +417,6 @@
                 return _ListPartGroups;
             }
         }
-
-        public async Task<ListPartGroupsGrpc> GetPartGroupsByPartGroup(string partGroup, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListPartGroups.PartGroupsGrpc.Any())
-            {
-                List<PartGroupsGrpc> filteredList = _ListPartGroups.PartGroupsGrpc.Where(x => x.PartGroup == partGroup).ToList();
-                _FilteredListPartGroups.PartGroupsGrpc.AddRange(filteredList);
-                return _FilteredListPartGroups;
-            }
-            else
-            {
-                await PopulatePartGroupsAsync(cancellationToken);
-                return _FilteredListPartGroups;
-            }
-        }
         #endregion
 
         #region PartGroupsConst
@@ -463,22 +432,6 @@
             {
                 await PopulatePartGroupsConstAsync(cancellationToken);
                 return _ListPartGroupsConst;
-            }
-        }
-
-        public async Task<ListPartGroupsConstGrpc> GetAllPartGroupsConstByGroup3(string group3 ,CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListPartGroupsConst.PartGroupsConstGrpc.Any())
-            {
-                List<PartGroupsConstGrpc> filteredList = _ListPartGroupsConst.PartGroupsConstGrpc.Where(x => x.Code == group3).ToList();
-                _FilteredListPartGroupsConst.PartGroupsConstGrpc.AddRange(filteredList);
-                return _FilteredListPartGroupsConst;
-            }
-            else
-            {
-                await PopulatePartGroupsConstAsync(cancellationToken);
-                return _FilteredListPartGroupsConst;
             }
         }
         #endregion
@@ -513,22 +466,6 @@
                 return _ListColourCode;
             }
         }
-
-        public async Task<ListColourCodeGrpc> GetColourCodeByColorCode(string colorCode, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListColourCode.ColourCodeGrpc.Any())
-            {
-                List<ColourCodeGrpc> filteredList = _ListColourCode.ColourCodeGrpc.Where(x => x.ClMk == colorCode).ToList();
-                _FilteredListColourCode.ColourCodeGrpc.AddRange(filteredList);
-                return _FilteredListColourCode;
-            }
-            else
-            {
-                await PopulateColourCodeAsync(cancellationToken);
-                return _FilteredListColourCode;
-            }
-        }
         #endregion
 
         #region MaterialGroups
@@ -545,21 +482,6 @@
                 return _ListMaterialGroups;
             }
         }
-        public async Task<ListMaterialGroupsGrpc> GetMaterialGroupsByMaterialGroupId(string materialGroupId, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListMaterialGroups.MaterialGroupsGrpc.Any())
-            {
-                List<MaterialGroupsGrpc> filteredList = _ListMaterialGroups.MaterialGroupsGrpc.Where(x => x.MaterialGroup == materialGroupId).ToList();
-                _FilteredListMaterialGroups.MaterialGroupsGrpc.AddRange(filteredList);
-                return _FilteredListMaterialGroups;
-            }
-            else
-            {
-                await PopulateMaterialGroupsAsync(cancellationToken);
-                return _FilteredListMaterialGroups;
-            }
-        }
         #endregion
 
         #region MaterialTypes
@@ -574,21 +496,6 @@
             {
                 await PopulateMaterialTypesAsync(cancellationToken);
                 return _ListMaterialTypes;
-            }
-        }
-        public async Task<ListMaterialTypesGrpc> GetMaterialTypesByMaterials(string materialGroup, string materialType ,CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListMaterialTypes.MaterialTypesGrpc.Any())
-            {
-                List<MaterialTypesGrpc> filteredList = _ListMaterialTypes.MaterialTypesGrpc.Where(x => x.MaterialGroup == materialGroup && x.MaterialType == materialType).ToList();
-                _FilteredListMaterialTypes.MaterialTypesGrpc.AddRange(filteredList);
-                return _FilteredListMaterialTypes;
-            }
-            else
-            {
-                await PopulateMaterialTypesAsync(cancellationToken);
-                return _FilteredListMaterialTypes;
             }
         }
         #endregion
@@ -669,122 +576,6 @@
             {
                 await PopulatePARTMSAsync(cancellationToken);
                 return _ListPARTMS;
-            }
-        }
-
-        public async Task<ListPARTMSGrpc> GetPARTMSGrpcByClass(string class1, double class2, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListPARTMS.PARTMSGrpc.Any())
-            {
-                _FilteredListPARTMS.PARTMSGrpc.Clear();
-                CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("en-GB");
-                string class2String = class2.ToString(cultureInfo);
-                List<PARTMSGrpc> filteredList = _ListPARTMS.PARTMSGrpc.Where(x => x.ClassDetailGroupCode == class1 && x.ClassDetailId == class2String).ToList();
-                _FilteredListPARTMS.PARTMSGrpc.AddRange(filteredList);
-                return _FilteredListPARTMS;
-            }
-            else
-            {
-                await PopulatePARTMSAsync(cancellationToken);
-                return _FilteredListPARTMS;
-            }
-        }
-
-        public async Task<ListPARTMSGrpc> GetPARTMSGrpcByColorCode(string colorCode, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListPARTMS.PARTMSGrpc.Any())
-            {
-                _FilteredListPARTMS.PARTMSGrpc.Clear();
-                List<PARTMSGrpc> filteredList = _ListPARTMS.PARTMSGrpc.Where(x => x.ColorCode == colorCode).ToList();
-                _FilteredListPARTMS.PARTMSGrpc.AddRange(filteredList);
-                return _FilteredListPARTMS;
-            }
-            else
-            {
-                await PopulatePARTMSAsync(cancellationToken);
-                return _FilteredListPARTMS;
-            }
-        }
-        public async Task<ListPARTMSGrpc> GetPARTMSGrpcByMaterial(string materialGroup, string materialType, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListPARTMS.PARTMSGrpc.Any())
-            {
-                _FilteredListPARTMS.PARTMSGrpc.Clear();
-                List<PARTMSGrpc> filteredList = _ListPARTMS.PARTMSGrpc.Where(x => x.MaterialGroupId == materialGroup && x.MaterialTypeId == materialType).ToList();
-                _FilteredListPARTMS.PARTMSGrpc.AddRange(filteredList);
-                return _FilteredListPARTMS;
-            }
-            else
-            {
-                await PopulatePARTMSAsync(cancellationToken);
-                return _FilteredListPARTMS;
-            }
-        }
-        public async Task<ListPARTMSGrpc> GetPARTMSGrpcByMaterialGroup(string materialGroup, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListPARTMS.PARTMSGrpc.Any())
-            {
-                _FilteredListPARTMS.PARTMSGrpc.Clear();
-                List<PARTMSGrpc> filteredList = _ListPARTMS.PARTMSGrpc.Where(x => x.MaterialGroupId == materialGroup).ToList();
-                _FilteredListPARTMS.PARTMSGrpc.AddRange(filteredList);
-                return _FilteredListPARTMS;
-            }
-            else
-            {
-                await PopulatePARTMSAsync(cancellationToken);
-                return _FilteredListPARTMS;
-            }
-        }
-        public async Task<ListPARTMSGrpc> GetPARTMSGrpcByPartGroup(string partGroup, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListPARTMS.PARTMSGrpc.Any())
-            {
-                _FilteredListPARTMS.PARTMSGrpc.Clear();
-                List<PARTMSGrpc> filteredList = _ListPARTMS.PARTMSGrpc.Where(x => x.ClassDetailGroupCode == partGroup).ToList();
-                _FilteredListPARTMS.PARTMSGrpc.AddRange(filteredList);
-                return _FilteredListPARTMS;
-            }
-            else
-            {
-                await PopulatePARTMSAsync(cancellationToken);
-                return _FilteredListPARTMS;
-            }
-        }
-        public async Task<ListPARTMSGrpc> GetPARTMSGrpcByCategoryCode(string catogoryCode, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListPARTMS.PARTMSGrpc.Any())
-            {
-                _FilteredListPARTMS.PARTMSGrpc.Clear();
-                List<PARTMSGrpc> filteredList = _ListPARTMS.PARTMSGrpc.Where(x => x.CategoryCode == catogoryCode).ToList();
-                _FilteredListPARTMS.PARTMSGrpc.AddRange(filteredList);
-                return _FilteredListPARTMS;
-            }
-            else
-            {
-                await PopulatePARTMSAsync(cancellationToken);
-                return _FilteredListPARTMS;
-            }
-        }
-        public async Task<ListPARTMSGrpc> GetPARTMSGrpcByPartGroupsConstCode(string partGroupsConstCode, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListPARTMS.PARTMSGrpc.Any())
-            {
-                _FilteredListPARTMS.PARTMSGrpc.Clear();
-                List<PARTMSGrpc> filteredList = _ListPARTMS.PARTMSGrpc.Where(x => x.Group3 == partGroupsConstCode).ToList();
-                _FilteredListPARTMS.PARTMSGrpc.AddRange(filteredList);
-                return _FilteredListPARTMS;
-            }
-            else
-            {
-                await PopulatePARTMSAsync(cancellationToken);
-                return _FilteredListPARTMS;
             }
         }
         #endregion
@@ -1243,22 +1034,22 @@
         {
             return await Task.Run(() =>
             {
-                return typeof(T).Name switch
+                return typeof(T).Name.ToUpperInvariant() switch
                 {
-                    "CombinedPartsGrpc" => _ListCombinedParts.CombinedPartsGrpc.Cast<T>().Where(func).ToList(),
-                    "PartCategoryDetailGrpc" => _ListPartCatogoryDetail.PartCategoryDetailGrpc.Cast<T>().Where(func).ToList(),
-                    "PartClassDetailGrpc" => _ListPartClassDetail.PartClassDetailGrpc.Cast<T>().Where(func).ToList(),
-                    "PartGroupsGrpc" => _ListPartGroups.PartGroupsGrpc.Cast<T>().Where(func).ToList(),
-                    "PartGroupsConstGrpc" => _ListPartGroupsConst.PartGroupsConstGrpc.Cast<T>().Where(func).ToList(),
-                    "CustomerDataGrpc" => _ListCustomerData.CustomerDataGrpc.Cast<T>().Where(func).ToList(),
-                    "ColourCodeGrpc" => _ListColourCode.ColourCodeGrpc.Cast<T>().Where(func).ToList(),
-                    "MaterialGroupsGrpc" => _ListMaterialGroups.MaterialGroupsGrpc.Cast<T>().Where(func).ToList(),
-                    "MaterialTypesGrpc" => _ListMaterialTypes.MaterialTypesGrpc.Cast<T>().Where(func).ToList(),
-                    "NPACustomerGrpc" => _ListNPACustomer.NPACustomerGrpc.Cast<T>().Where(func).ToList(),
-                    "NPASupplierGrpc" => _ListNPASupplier.NPASupplierGrpc.Cast<T>().Where(func).ToList(),
-                    "SuppliersGrpc" => _ListSuppliers.SuppliersGrpc.Cast<T>().Where(func).ToList(),
-                    "EmacsRFIViewGrpc" => _ListEmacsRFIView.EmacsRFIViewGrpc.Cast<T>().Where(func).ToList(),
-                    "PARTMSGrpc" => _ListPARTMS.PARTMSGrpc.Cast<T>().Where(func).ToList(),
+                    "COMBINEDPARTSGRPC" => _ListCombinedParts.CombinedPartsGrpc.Cast<T>().Where(func).ToList(),
+                    "PARTCATEGORYDETAILGRPC" => _ListPartCatogoryDetail.PartCategoryDetailGrpc.Cast<T>().Where(func).ToList(),
+                    "PARTCLASSDETAILGRPC" => _ListPartClassDetail.PartClassDetailGrpc.Cast<T>().Where(func).ToList(),
+                    "PARTGROUPSGRPC" => _ListPartGroups.PartGroupsGrpc.Cast<T>().Where(func).ToList(),
+                    "PARTGROUPSCONSTGRPC" => _ListPartGroupsConst.PartGroupsConstGrpc.Cast<T>().Where(func).ToList(),
+                    "CUSTOMERDATAGRPC" => _ListCustomerData.CustomerDataGrpc.Cast<T>().Where(func).ToList(),
+                    "COLOURCODEGRPC" => _ListColourCode.ColourCodeGrpc.Cast<T>().Where(func).ToList(),
+                    "MATERIALGROUPSGRPC" => _ListMaterialGroups.MaterialGroupsGrpc.Cast<T>().Where(func).ToList(),
+                    "MATERIALTYPESGRPC" => _ListMaterialTypes.MaterialTypesGrpc.Cast<T>().Where(func).ToList(),
+                    "NPACUSTOMERGRPC" => _ListNPACustomer.NPACustomerGrpc.Cast<T>().Where(func).ToList(),
+                    "NPASUPPLIERGRPC" => _ListNPASupplier.NPASupplierGrpc.Cast<T>().Where(func).ToList(),
+                    "SUPPLIERSGRPC" => _ListSuppliers.SuppliersGrpc.Cast<T>().Where(func).ToList(),
+                    "EMACSRFIVIEWGRPC" => _ListEmacsRFIView.EmacsRFIViewGrpc.Cast<T>().Where(func).ToList(),
+                    "PARTMSGRPC" => _ListPARTMS.PARTMSGrpc.Cast<T>().Where(func).ToList(),
                     _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
                 };
             }, cancellationToken);

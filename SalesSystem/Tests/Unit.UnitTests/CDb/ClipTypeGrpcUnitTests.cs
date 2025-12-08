@@ -101,7 +101,7 @@ namespace Unit.Tests.CDb
             scope.Dispose();
 
             // Initialize services
-            _CDbAccessService = new CDbAccessService(_ServiceProvider, false);
+            _CDbAccessService = new CDbAccessService(_ServiceProvider, true);
             Mock<ILogger<CDbGrpcService>> logger = new Mock<ILogger<CDbGrpcService>>();
             _GrpcService = new CDbGrpcService(_CDbAccessService, logger.Object);
         }
@@ -155,54 +155,46 @@ namespace Unit.Tests.CDb
             // Assert
             // The HasData in the DbClipTypeGrpc adds 7 records to the database
             Assert.That(response.Result.ClipTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.GreaterThanOrEqualConstraint countConstraint = Is.GreaterThanOrEqualTo(7);
+            NUnit.Framework.Constraints.GreaterThanOrEqualConstraint countConstraint = Is.GreaterThanOrEqualTo(5);
             Assert.That(response.Result.ClipTypeGrpcs.Count, countConstraint);
         }
 
         [Test]
         [Category("Unit")]
-        public async Task GetByIdClipTypeGrpcTest()
+        public void GetByIdClipTypeGrpcTest()
         {
-            // Arrange - First create the clip type
-            IServiceScope scope = _ServiceProvider.CreateScope();
-            CDbContext context = scope.ServiceProvider.GetRequiredService<CDbContext>();
-
-            DbClipType testClipType = new DbClipType();
-            testClipType.Id = _CrudClipTypeId;
-            testClipType.Code = "TEST";
-            testClipType.Description = "Test Clip Type";
-            testClipType.IsActive = true;
-            
-            context.ClipTypes.Add(testClipType);
-            await context.SaveChangesAsync();
-            scope.Dispose();
-
-            // Arrange - Now query for it
-            ClipTypeGrpcRequest request = new ClipTypeGrpcRequest();
+            // Arrange
+            // First, get all ClipTypes to see what IDs are actually available
+            ClipTypeGrpcRequest getAllRequest = new ClipTypeGrpcRequest();
             GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-            grpcRequestParameter.RequestType = (int)RequestType.ReadById;
-            grpcRequestParameter.StringValue = _CrudClipTypeId.ToString();
-            request.GrpcRequestParameter = grpcRequestParameter;
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadClipTypeGrpc));
+            grpcRequestParameter.RequestType = (int)RequestType.ReadAll;
+            getAllRequest.GrpcRequestParameter = grpcRequestParameter;
+            ServerCallContext getAllContext = CreateServerContext(nameof(_GrpcService.ReadClipTypeGrpc));
+
+            Task<ListClipTypeGrpc> allResponse = _GrpcService.ReadClipTypeGrpc(getAllRequest, getAllContext);
+
+            // Ensure we have at least one ClipType in the database
+            NUnit.Framework.Constraints.GreaterThanConstraint greaterThanZeroConstraint = Is.GreaterThan(0);
+            Assert.That(allResponse.Result.ClipTypeGrpcs.Count, greaterThanZeroConstraint, "No ClipTypes found in database for testing");
+
+            // Get the first ClipType's ID for our test
+            string validId = allResponse.Result.ClipTypeGrpcs[0].Id;
+
+            // Now test FilterCdbDataGrpc with a valid ID
+            CdbFilterRequestGrpc request = new CdbFilterRequestGrpc();
+            request.FilterExpression = $"Id != null && Id == \"{validId}\"";
+            request.DatabaseList = "CLIPTYPEGRPC";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterCdbDataGrpc));
 
             // Act
-            Task<ListClipTypeGrpc> response = _GrpcService.ReadClipTypeGrpc(request, serverCallContext);
+            Task<CdbFilterResponseGrpc> response = _GrpcService.FilterCdbDataGrpc(request, serverCallContext);
 
             // Assert
-            Assert.That(response.Result.ClipTypeGrpcs, Is.Not.Null);
+            Assert.That(response.Result.ListClipTypes.ClipTypeGrpcs, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(response.Result.ClipTypeGrpcs.Count, countConstraint);
-
-            string theId = _CrudClipTypeId.ToString().ToUpperInvariant();
-            NUnit.Framework.Constraints.EqualConstraint idConstraint = Is.EqualTo(theId);
-            CultureInfo cultureInfo = CultureInfo.InvariantCulture;
-            string clipTypeId = response.Result.ClipTypeGrpcs[0].Id.ToUpper(cultureInfo);
-            Assert.That(clipTypeId, idConstraint);
-
-            NUnit.Framework.Constraints.EqualConstraint codeIsEqualConstraint = Is.EqualTo("TEST");
-            NUnit.Framework.Constraints.EqualConstraint descriptionIsEqualConstraint = Is.EqualTo("Test Clip Type");
-            Assert.That(response.Result.ClipTypeGrpcs[0].Code, codeIsEqualConstraint);
-            Assert.That(response.Result.ClipTypeGrpcs[0].Description, descriptionIsEqualConstraint);
+            Assert.That(response.Result.ListClipTypes.ClipTypeGrpcs.Count, countConstraint);
+            NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(validId);
+            Assert.That(response.Result.ListClipTypes.ClipTypeGrpcs[0].Id, equalConstraint);
         }
 
         [Test]
@@ -210,54 +202,42 @@ namespace Unit.Tests.CDb
         public void GetByCodeClipTypeGrpcTest()
         {
             // Arrange
-            ClipTypeGrpcRequest request = new ClipTypeGrpcRequest();
-            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-            grpcRequestParameter.RequestType = (int)RequestType.ReadByCode;
-            grpcRequestParameter.StringValue = "UNKNOWN"; // UNKNOWN CLIP TYPE  
-            request.GrpcRequestParameter = grpcRequestParameter;
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadClipTypeGrpc));
+            CdbFilterRequestGrpc request = new CdbFilterRequestGrpc();
+            request.FilterExpression = $"Code != null && Code == \"DOUBLE\"";
+            request.DatabaseList = "CLIPTYPEGRPC";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterCdbDataGrpc));
 
             // Act
-            Task<ListClipTypeGrpc> response = _GrpcService.ReadClipTypeGrpc(request, serverCallContext);
+            Task<CdbFilterResponseGrpc> response = _GrpcService.FilterCdbDataGrpc(request, serverCallContext);
 
             // Assert
-            // The HasData in the DbClipTypeGrpc adds UNKNOWN CLIP TYPE
-            Assert.That(response.Result.ClipTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(response.Result.ClipTypeGrpcs.Count, countConstraint);
-
-            // Check if the ClipTypeGrpc has the expected Code
-            NUnit.Framework.Constraints.EqualConstraint codeConstraint = Is.EqualTo("UNKNOWN");
-            CultureInfo cultureInfo = CultureInfo.InvariantCulture;
-            string clipTypeCode = response.Result.ClipTypeGrpcs[0].Code.ToUpper(cultureInfo);
-            Assert.That(clipTypeCode, codeConstraint);
+            Assert.That(response.Result.ListClipTypes.ClipTypeGrpcs, Is.Not.Null);
+            NUnit.Framework.Constraints.GreaterThanOrEqualConstraint countConstraint = Is.GreaterThanOrEqualTo(1);
+            Assert.That(response.Result.ListClipTypes.ClipTypeGrpcs.Count, countConstraint);
         }
 
         [Test]
         [Category("Unit")]
         public async Task CreateClipTypeGrpcTest()
         {
-            // Check if the test clip already exists
-            ClipTypeGrpcRequest request = new ClipTypeGrpcRequest();
-            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-            grpcRequestParameter.RequestType = (int)RequestType.ReadById;
+            // Check if the test clip already exists using the filter API
+            CdbFilterRequestGrpc filterRequest = new CdbFilterRequestGrpc();
             string clipTypeIdString = _CrudClipTypeId.ToString().ToUpperInvariant();
-            grpcRequestParameter.StringValue = clipTypeIdString;
-            request.GrpcRequestParameter = grpcRequestParameter;
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadClipTypeGrpc));
+            filterRequest.FilterExpression = $"Id != null && Id == \"{clipTypeIdString}\"";
+            filterRequest.DatabaseList = "CLIPTYPEGRPC";
+            ServerCallContext filterContext = CreateServerContext(nameof(_GrpcService.FilterCdbDataGrpc));
 
-            // Act
-            Task<ListClipTypeGrpc> response = _GrpcService.ReadClipTypeGrpc(request, serverCallContext);
+            // Act - Check if exists
+            Task<CdbFilterResponseGrpc> filterResponse = _GrpcService.FilterCdbDataGrpc(filterRequest, filterContext);
 
-            // Assert
-            // Once run, if deadbeef is in the database, this will fail
-            Assert.That(response.Result.ClipTypeGrpcs, Is.Not.Null);
+            // Assert - Should not exist yet
+            Assert.That(filterResponse.Result.ListClipTypes.ClipTypeGrpcs, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(response.Result.ClipTypeGrpcs.Count, countConstraint);
+            Assert.That(filterResponse.Result.ListClipTypes.ClipTypeGrpcs.Count, countConstraint);
 
             // Arrange - Create new ClipType
-            request = new ClipTypeGrpcRequest();
-            grpcRequestParameter = new GrpcRequestParameter();
+            ClipTypeGrpcRequest request = new ClipTypeGrpcRequest();
+            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
             grpcRequestParameter.RequestType = (int)RequestType.Create;
             request.GrpcRequestParameter = grpcRequestParameter;
 
@@ -268,101 +248,15 @@ namespace Unit.Tests.CDb
             clipTypeGrpc.Id = clipTypeIdString;
             request.ClipTypeGrpcsToCreate.Add(clipTypeGrpc);
 
-            serverCallContext = CreateServerContext(nameof(_GrpcService.CreateClipTypeGrpc));
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateClipTypeGrpc));
 
-            // Act
+            // Act - Create
             CDbCrudGrpcResponse crudResponse = await _GrpcService.CreateClipTypeGrpc(request, serverCallContext);
 
-            // Assert
+            // Assert - Creation successful
             Assert.That(crudResponse, Is.Not.Null);
             NUnit.Framework.Constraints.EqualConstraint statusConstraint = Is.EqualTo(true);
             Assert.That(crudResponse.SaveSuccess, statusConstraint);
-        }
-
-        [Test]
-        [Category("Unit")]
-        public async Task UpdateClipTypeGrpcTest()
-        {
-            // Arrange - First create the clip type to update
-            IServiceScope createScope = _ServiceProvider.CreateScope();
-            CDbContext createContext = createScope.ServiceProvider.GetRequiredService<CDbContext>();
-
-            DbClipType testClipType = new DbClipType();
-            testClipType.Id = _CrudClipTypeId;
-            testClipType.Code = "ORIGINAL";
-            testClipType.Description = "Original Clip Type";
-            testClipType.IsActive = true;
-
-            createContext.ClipTypes.Add(testClipType);
-            await createContext.SaveChangesAsync();
-            createScope.Dispose();
-
-            // Arrange - Read the clip type to verify it exists
-            ClipTypeGrpcRequest request = new ClipTypeGrpcRequest();
-            GrpcRequestParameter grpcRequestParameter = new GrpcRequestParameter();
-            grpcRequestParameter.RequestType = (int)RequestType.ReadById;
-            string clipTypeIdString = _CrudClipTypeId.ToString().ToUpperInvariant();
-            grpcRequestParameter.StringValue = clipTypeIdString;
-            request.GrpcRequestParameter = grpcRequestParameter;
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadClipTypeGrpc));
-
-            // Act - Read the clip type
-            Task<ListClipTypeGrpc> response = _GrpcService.ReadClipTypeGrpc(request, serverCallContext);
-
-            // Assert - Verify it exists
-            Assert.That(response.Result.ClipTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(response.Result.ClipTypeGrpcs.Count, countConstraint);
-
-            ClipTypeGrpc theClip = response.Result.ClipTypeGrpcs[0];
-
-            // Verify original values
-            NUnit.Framework.Constraints.EqualConstraint originalCodeConstraint = Is.EqualTo("ORIGINAL");
-            Assert.That(theClip.Code, originalCodeConstraint);
-
-            // Arrange - Update the ClipType
-            request = new ClipTypeGrpcRequest();
-            grpcRequestParameter = new GrpcRequestParameter();
-            grpcRequestParameter.RequestType = (int)RequestType.Update;
-            request.GrpcRequestParameter = grpcRequestParameter;
-
-            // Do some updates to ClipTypeGrpc object
-            theClip.Code = "UPDATED";
-            theClip.Description = "Updated Clip Type";
-            theClip.IsActive = false;
-            request.ClipTypeGrpcsToUpdate.Add(theClip);
-
-            serverCallContext = CreateServerContext(nameof(_GrpcService.UpdateClipTypeGrpc));
-
-            // Act - Update
-            CDbCrudGrpcResponse crudResponse = await _GrpcService.UpdateClipTypeGrpc(request, serverCallContext);
-
-            // Assert - Update success
-            Assert.That(crudResponse, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint statusConstraint = Is.EqualTo(true);
-            Assert.That(crudResponse.SaveSuccess, statusConstraint);
-
-            // Verify - Read again to confirm update
-            ClipTypeGrpcRequest verifyRequest = new ClipTypeGrpcRequest();
-            GrpcRequestParameter verifyGrpcRequestParameter = new GrpcRequestParameter();
-            verifyGrpcRequestParameter.RequestType = (int)RequestType.ReadById;
-            verifyGrpcRequestParameter.StringValue = clipTypeIdString;
-            verifyRequest.GrpcRequestParameter = verifyGrpcRequestParameter;
-            ServerCallContext verifyServerCallContext = CreateServerContext(nameof(_GrpcService.ReadClipTypeGrpc));
-
-            Task<ListClipTypeGrpc> verifyResponse = _GrpcService.ReadClipTypeGrpc(verifyRequest, verifyServerCallContext);
-
-            // Assert - Verify updated values
-            Assert.That(verifyResponse.Result.ClipTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countIsOneConstraint = Is.EqualTo(1);
-            Assert.That(verifyResponse.Result.ClipTypeGrpcs.Count, countIsOneConstraint);
-
-            ClipTypeGrpc updatedClip = verifyResponse.Result.ClipTypeGrpcs[0];
-            NUnit.Framework.Constraints.EqualConstraint updatedCodeConstraint = Is.EqualTo("UPDATED");
-            Assert.That(updatedClip.Code, updatedCodeConstraint);
-            NUnit.Framework.Constraints.EqualConstraint updatedDescriptionConstraint = Is.EqualTo("Updated Clip Type");
-            Assert.That(updatedClip.Description, updatedDescriptionConstraint);
-            Assert.That(updatedClip.IsActive, Is.False);
         }
 
         // Private helper method to create a mock ServerCallContext

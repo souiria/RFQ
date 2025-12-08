@@ -220,6 +220,7 @@
             }
         }
 
+        //how do we want to handle case
         public async Task<ListCustomerGrpc> GetCustomerBusinessUnitsByUserId(string id, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -270,23 +271,6 @@
             }
         }
 
-        public async Task<ListCustomerLocationGrpc> GetCustomerLocationsById(string id ,CancellationToken cancellationToken)
-        {
-            await Task.Delay(0, cancellationToken);
-            _FilteredLocations.CustomerLocationGrpc.Clear();
-            if (_CustomerLocations.CustomerLocationGrpc.Any())
-            {
-                List<CustomerLocationGrpc> filteredLocations = _CustomerLocations.CustomerLocationGrpc.Where(x => x.Id.ToUpperInvariant() == id.ToUpperInvariant()).ToList();
-                _FilteredLocations.CustomerLocationGrpc.AddRange(filteredLocations);
-                return _FilteredLocations;
-            }
-            else
-            {
-                await PopulateCustomerLocationsAsync(cancellationToken);
-                return _FilteredLocations;
-            }
-        }
-
         public async Task<ListCustomerLocationGrpc> GetCustomerLocationsByUserId(string userId ,CancellationToken cancellationToken)
         {
             await Task.Delay(0, cancellationToken);
@@ -321,24 +305,7 @@
                 await PopulateCustomerBusinessUserAssociationsAsync(cancellationToken);
                 return _FilteredLocations;
             }
-        }
-
-        public async Task<ListCustomerLocationGrpc> GetCustomerLocationsByCustomerId(string customerId ,CancellationToken cancellationToken)
-        {
-            await Task.Delay(0, cancellationToken);
-            _FilteredLocations.CustomerLocationGrpc.Clear();
-            if (_CustomerLocations.CustomerLocationGrpc.Any())
-            {
-                List<CustomerLocationGrpc> filteredLocations = _CustomerLocations.CustomerLocationGrpc.Where(x => x.CustomerBusinessHierarchyGuid.ToUpperInvariant() == customerId.ToUpperInvariant()).ToList();
-                _FilteredLocations.CustomerLocationGrpc.AddRange(filteredLocations);
-                return _FilteredLocations;
-            }
-            else
-            {
-                await PopulateCustomerLocationsAsync(cancellationToken);
-                return _FilteredLocations;
-            }
-        }   
+        } 
 
         public async Task<ListCustomerProjectAssociationGrpc> GetAllCustomerProjectAssociations(CancellationToken cancellationToken)
         {
@@ -361,7 +328,16 @@
             if (_CustomerProjectAssociations.CustomerProjectAssociationGrpc.Any() && _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Any())
             {
                 string upperUserId = userId.ToUpperInvariant();
-                CustomerBusinessUserAssociationGrpc? user = GetCustomerBusinessUserAssociationsByUserId(upperUserId, cancellationToken).Result.CustomerBusinessUserAssociationGrpc.FirstOrDefault();
+                ParsingConfig parsingConfig = new ParsingConfig();
+                CustomerBusinessUserAssociationGrpc? user = new CustomerBusinessUserAssociationGrpc();
+                await HandleFilterCase<CustomerBusinessUserAssociationGrpc>($"UserGuid != null && UserGuid == \"{upperUserId}\"", parsingConfig, 
+                    filterList =>
+                    {
+                        ListCustomerBusinessUserAssociationGrpc returnList = new ListCustomerBusinessUserAssociationGrpc();
+                        returnList.CustomerBusinessUserAssociationGrpc.AddRange(filterList);
+                        user = returnList.CustomerBusinessUserAssociationGrpc.FirstOrDefault();
+                    }, cancellationToken);
+                
                 if (user != null)
                 {
                     if (user.CustomerBusinessHierarchyList != null)
@@ -398,23 +374,6 @@
             }
         }
 
-        public async Task<ListCustomerProjectAssociationGrpc> GetCustomerProjectAssociationsByLocationId(string locationId ,CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            _FilteredCustomerProjectAssociations.CustomerProjectAssociationGrpc.Clear();
-            if (_CustomerProjectAssociations.CustomerProjectAssociationGrpc.Any())
-            {
-                List<CustomerProjectAssociationGrpc> filteredProjects = _CustomerProjectAssociations.CustomerProjectAssociationGrpc.Where(x => x.CustomerLocationGuid.ToUpperInvariant() == locationId.ToUpperInvariant()).ToList();
-                _FilteredCustomerProjectAssociations.CustomerProjectAssociationGrpc.AddRange(filteredProjects);
-                return _FilteredCustomerProjectAssociations;
-            }
-            else
-            {
-                await PopulateCustomerProjectAssociationsAsync(cancellationToken);
-                return _FilteredCustomerProjectAssociations;
-            }
-        }   
-
         public async Task<ListCustomerSalesEntityGrpc> GetAllCustomerSalesEntities(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -429,28 +388,6 @@
             }
         }
 
-        public async Task<ListCustomerSalesEntityGrpc> GetAllCustomerSalesByUserIdEntities(string userId ,CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            _FilteredCustomerSalesEntities.CustomerSalesEntityGrpc.Clear();
-            if (_CustomerSalesEntities.CustomerSalesEntityGrpc.Any())
-            {
-                ListCustomerLocationGrpc locations = await GetCustomerLocationsByUserId(userId, cancellationToken);
-                foreach(CustomerLocationGrpc location in locations.CustomerLocationGrpc)
-                {
-                    List<CustomerSalesEntityGrpc> salesByLocation = _CustomerSalesEntities.CustomerSalesEntityGrpc.Where(x => x.CustomerHierarchyGuid.ToUpperInvariant() == location.Id.ToUpperInvariant()).ToList();
-                    _FilteredCustomerSalesEntities.CustomerSalesEntityGrpc.AddRange(salesByLocation);
-                }
-
-                return _FilteredCustomerSalesEntities;
-            }
-            else
-            {
-                await PopulateCustomerSalesEntitiesAsync(cancellationToken);
-                return _FilteredCustomerSalesEntities;
-            }
-        }
-
         public async Task<ListCustomerBusinessUserAssociationGrpc> GetCustomerBusinessUserAssociations(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -462,22 +399,6 @@
             {
                 await PopulateCustomerBusinessUserAssociationsAsync(cancellationToken);
                 return _CustomerBusinessUserAssociations;
-            }
-        }
-        public async Task<ListCustomerBusinessUserAssociationGrpc> GetCustomerBusinessUserAssociationsByUserId(string userId, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            _FilteredCustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Clear();
-            if (_CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Any())
-            {
-                List<CustomerBusinessUserAssociationGrpc> filteredCustomerBusinessUserAssociationGrpc = _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Where(x => x.UserGuid.ToUpperInvariant() == userId.ToUpperInvariant()).ToList();
-                _FilteredCustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.AddRange(filteredCustomerBusinessUserAssociationGrpc);
-                return _FilteredCustomerBusinessUserAssociations;
-            }
-            else
-            {
-                await PopulateCustomerBusinessUserAssociationsAsync(cancellationToken);
-                return _FilteredCustomerBusinessUserAssociations;
             }
         }
 
@@ -498,22 +419,6 @@
                 return _Platforms;
             }
         }
-        public async Task<ListPlatformGrpc> GetPlatformsById(string id ,CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_Platforms.PlatformGrpc.Any())
-            {
-                _FilteredPlatforms.PlatformGrpc.Clear();
-                List<PlatformGrpc> filteredPlatforms = _Platforms.PlatformGrpc.Where(x => x.Id.ToUpperInvariant() == id.ToUpperInvariant()).ToList();
-                _FilteredPlatforms.PlatformGrpc.AddRange(filteredPlatforms);
-                return _FilteredPlatforms;
-            }
-            else
-            {
-                await PopulatePlatformsAsync(cancellationToken);
-                return _FilteredPlatforms;
-            }
-        }
 
         public async Task<ListProgramGrpc> GetAllPrograms(CancellationToken cancellationToken)
         {
@@ -526,22 +431,6 @@
             {
                 await PopulateProgramsAsync(cancellationToken);
                 return _Programs;
-            }
-        }
-        public async Task<ListProgramGrpc> GetProgramsById(string id,CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_Programs.ProgramGrpc.Any())
-            {
-                _FilteredPrograms.ProgramGrpc.Clear();
-                List<ProgramGrpc> filteredPrograms = _Programs.ProgramGrpc.Where(x => x.Id.ToUpperInvariant() == id.ToUpperInvariant()).ToList();
-                _FilteredPrograms.ProgramGrpc.AddRange(filteredPrograms);
-                return _FilteredPrograms;
-            }
-            else
-            {
-                await PopulateProgramsAsync(cancellationToken);
-                return _FilteredPrograms;
             }
         }
 
@@ -559,23 +448,6 @@
             }
         }
 
-        public async Task<ListProjectGrpc> GetProjectsById(string id, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_Projects.ProjectGrpc.Any())
-            {
-                _FilteredProjects.ProjectGrpc.Clear();
-                List<ProjectGrpc> filteredProjects = _Projects.ProjectGrpc.Where(x => x.Id.ToUpperInvariant() == id.ToUpperInvariant()).ToList();
-                _FilteredProjects.ProjectGrpc.AddRange(filteredProjects);
-                return _FilteredProjects;
-            }
-            else
-            {
-                await PopulateProjectsAsync(cancellationToken);
-                return _FilteredProjects;
-            }
-        }
-
         public async Task<ListMilestoneGrpc> GetAllMilestones(CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -587,23 +459,6 @@
             {
                 await PopulateMilestonesAsync(cancellationToken);
                 return _Milestones;
-            }
-        }
-
-        public async Task<ListMilestoneGrpc> GetMilestonesById(string id ,CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_Milestones.MilestoneGrpc.Any())
-            {
-                _FilteredMilestones.MilestoneGrpc.Clear();
-                List<MilestoneGrpc> filteredMilestones = _Milestones.MilestoneGrpc.Where(x => x.Id.ToUpperInvariant() == id.ToUpperInvariant()).ToList();
-                _FilteredMilestones.MilestoneGrpc.AddRange(filteredMilestones);
-                return _FilteredMilestones;
-            }
-            else
-            {
-                await PopulateMilestonesAsync(cancellationToken);
-                return _FilteredMilestones;
             }
         }
 
@@ -622,40 +477,6 @@
             {
                 await PopulateVehiclesAsync(cancellationToken);
                 return _Vehicles;
-            }
-        }
-
-        public async Task<ListVehicleGrpc> GetVehiclesById(string id, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_Vehicles.VehicleGrpc.Any())
-            {
-                _FilteredVehicles.VehicleGrpc.Clear();
-                List<VehicleGrpc> filteredVehicles = _Vehicles.VehicleGrpc.Where(x => x.Id.ToUpperInvariant() == id.ToUpperInvariant()).ToList();
-                _FilteredVehicles.VehicleGrpc.AddRange(filteredVehicles);
-                return _FilteredVehicles;
-            }
-            else
-            {
-                await PopulateVehiclesAsync(cancellationToken);
-                return _FilteredVehicles;
-            }
-        }
-
-        public async Task<ListVehicleGrpc> GetVehiclesByDisplay(string vehicleDisplay , CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_Vehicles.VehicleGrpc.Any())
-            {
-                _FilteredVehicles.VehicleGrpc.Clear();
-                List<VehicleGrpc> filteredVehicles = _Vehicles.VehicleGrpc.Where(x => x.VehicleDisplay == vehicleDisplay).ToList();
-                _FilteredVehicles.VehicleGrpc.AddRange(filteredVehicles);
-                return _FilteredVehicles;
-            }
-            else
-            {
-                await PopulateVehiclesAsync(cancellationToken);
-                return _FilteredVehicles;
             }
         }
 
@@ -994,6 +815,38 @@
         #endregion
 
         #endregion
+
+        public async Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig, Action<IEnumerable<T>> setResponseCollection,
+        CancellationToken cancellationToken)
+        {
+            Expression<Func<T, bool>> filterExpression = DynamicExpressionParser.ParseLambda<T, bool>(parsingConfig, false, filterExpressionString);
+            Func<T, bool> compiledExpression = filterExpression.Compile();
+            IEnumerable<T> filteredList = new List<T>();
+            filteredList = await Filter(compiledExpression, cancellationToken);
+            setResponseCollection(filteredList);
+        }
+
+        public async Task<IEnumerable<T>> Filter<T>(Func<T, bool> func, CancellationToken cancellationToken)
+        {
+            return await Task.Run(() =>
+            {
+                return typeof(T).Name.ToUpperInvariant() switch
+                {
+                    "CURRENCYGRPC" => _Currencies.CurrencyGrpc.Cast<T>().Where(func).ToList(),
+                    "CUSTOMERGRPC" => _Customers.CustomerGrpc.Cast<T>().Where(func).ToList(),
+                    "CUSTOMERLOCATIONGRPC" => _CustomerLocations.CustomerLocationGrpc.Cast<T>().Where(func).ToList(),
+                    "CUSTOMERSALESENTITYGRPC" => _CustomerSalesEntities.CustomerSalesEntityGrpc.Cast<T>().Where(func).ToList(),
+                    "CUSTOMERPROJECTASSOCIATIONGRPC" => _CustomerProjectAssociations.CustomerProjectAssociationGrpc.Cast<T>().Where(func).ToList(),
+                    "CUSTOMERBUSINESSUSERASSOCIATIONGRPC" => _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Cast<T>().Where(func).ToList(),
+                    "MILESTONEGRPC" => _Milestones.MilestoneGrpc.Cast<T>().Where(func).ToList(),
+                    "PLATFORMGRPC" => _Platforms.PlatformGrpc.Cast<T>().Where(func).ToList(),
+                    "PROGRAMGRPC" => _Programs.ProgramGrpc.Cast<T>().Where(func).ToList(),
+                    "PROJECTGRPC" => _Projects.ProjectGrpc.Cast<T>().Where(func).ToList(),
+                    "VEHICLEGRPC" => _Vehicles.VehicleGrpc.Cast<T>().Where(func).ToList(),
+                    _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
+                };
+            }, cancellationToken);
+        }
 
         void PopulateSampleData()
         {

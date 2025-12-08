@@ -35,12 +35,6 @@ namespace Master.Endpoints.GrpcServices
                 await responseStream.WriteAsync(result);
             }
         }
-
-        public override async Task<ListCurrencyGrpc> GetCurrencyGrpcById(CurrencyByIdGrpcRequest request, ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("GetCurrencyGrpcById starting");
-            return await _MasterAccessService.GetCurrenciesById(request.Id, context.CancellationToken);
-        }
         #endregion
 
         #region Customer
@@ -75,16 +69,6 @@ namespace Master.Endpoints.GrpcServices
             ListCustomerLocationGrpc results = await _MasterAccessService.GetAllCustomerLocations(context.CancellationToken);
         }
 
-        public override async Task<ListCustomerLocationGrpc> GetCustomerLocationGrpcById(CustomerLocationByIdGrpcRequest request, ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("GetCustomerLocationGrpcById starting");
-            return await _MasterAccessService.GetCustomerLocationsById(request.Id, context.CancellationToken);
-        }
-        public override async Task<ListCustomerLocationGrpc> GetCustomerLocationGrpcByCustomerId(CustomerLocationByCustomerIdGrpcRequest request, ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("GetCustomerLocationGrpcById starting");
-            return await _MasterAccessService.GetCustomerLocationsByCustomerId(request.CustomerId, context.CancellationToken);
-        }
         public override async Task<ListCustomerLocationGrpc> GetCustomerLocationGrpcByUserId(CustomerLocationByUserIdGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetCustomerLocationGrpcByUserId starting");
@@ -103,12 +87,6 @@ namespace Master.Endpoints.GrpcServices
             ListCustomerSalesEntityGrpc results = await _MasterAccessService.GetAllCustomerSalesEntities(context.CancellationToken);
         }
 
-        public override async Task<ListCustomerSalesEntityGrpc> GetCustomerSalesEntityGrpcByUserId(CustomerSalesEntityByUserIdGrpcRequest request, ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("GetCustomerSalesEntityGrpcByUserId starting");
-            return await _MasterAccessService.GetAllCustomerSalesByUserIdEntities(request.UserId, context.CancellationToken);
-        }
-
         public override async Task<ListCustomerProjectAssociationGrpc> GetCustomerProjectAssociationGrpc(CustomerProjectAssociationGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetCustomerProjectAssociationGrpc starting");
@@ -117,13 +95,7 @@ namespace Master.Endpoints.GrpcServices
         public override async Task<ListCustomerProjectAssociationGrpc> GetCustomerProjectAssociationGrpcByUserId(CustomerProjectAssociationByUserIdGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetCustomerProjectAssociationGrpcByUserId starting");
-            return await _MasterAccessService.GetAllCustomerProjectAssociationsByUserId(request.UserId ,context.CancellationToken);
-        }
-
-        public override async Task<ListCustomerProjectAssociationGrpc> GetCustomerProjectAssociationGrpcByLocationId(CustomerProjectAssociationByLocationIdGrpcRequest request, ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("GetCustomerProjectAssociationGrpcByLocationId starting");
-            return await _MasterAccessService.GetCustomerProjectAssociationsByLocationId(request.LocationId, context.CancellationToken);
+            return await _MasterAccessService.GetAllCustomerProjectAssociationsByUserId(request.UserId, context.CancellationToken);
         }
 
         public override async Task GetCustomerProjectAssociationGrpcStream(CustomerProjectAssociationGrpcRequest request, IServerStreamWriter<CustomerProjectAssociationGrpc> responseStream, ServerCallContext context)
@@ -136,11 +108,6 @@ namespace Master.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("GetCustomerBusinessUserAssociationGrpc starting");
             return await _MasterAccessService.GetCustomerBusinessUserAssociations(context.CancellationToken);
-        }
-        public override async Task<ListCustomerBusinessUserAssociationGrpc> GetCustomerBusinessUserAssociationGrpcByUserId(CustomerBusinessUserAssociationByUserIdGrpcRequest request, ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("GetCustomerBusinessUserAssociationGrpcByUserId starting");
-            return await _MasterAccessService.GetCustomerBusinessUserAssociationsByUserId(request.UserId, context.CancellationToken);
         }
 
         public override async Task GetCustomerBusinessUserAssociationGrpcStream(CustomerBusinessUserAssociationGrpcRequest request, IServerStreamWriter<CustomerBusinessUserAssociationGrpc> responseStream, ServerCallContext context)
@@ -163,12 +130,6 @@ namespace Master.Endpoints.GrpcServices
             _Logger.GenericLogInformation("GetPlatformGrpcStream starting");
             ListPlatformGrpc results = await _MasterAccessService.GetAllPlatforms(context.CancellationToken);
         }
-        public override async Task<ListPlatformGrpc> GetPlatformGrpcById(PlatformByIdGrpcRequest request, ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("GetPlatformGrpcById starting");
-            return await _MasterAccessService.GetPlatformsById(request.Id, context.CancellationToken);
-        }
-
         public override async Task<ListProgramGrpc> GetProgramGrpc(ProgramGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetProgramGrpc starting");
@@ -179,12 +140,6 @@ namespace Master.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("GetProgramGrpcStream starting");
             ListProgramGrpc results = await _MasterAccessService.GetAllPrograms(context.CancellationToken);
-        }
-
-        public override async Task<ListProgramGrpc> GetProgramGrpcById(ProgramByIdGrpcRequest request, ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("GetProgramGrpcById starting");
-            return await _MasterAccessService.GetProgramsById(request.Id , context.CancellationToken);
         }
 
         public override async Task<ListProjectGrpc> GetProjectGrpc(ProjectGrpcRequest request, ServerCallContext context)
@@ -198,11 +153,7 @@ namespace Master.Endpoints.GrpcServices
             _Logger.GenericLogInformation("GetProjectGrpcStream starting");
             ListProjectGrpc results = await _MasterAccessService.GetAllProjects(context.CancellationToken);
         }
-        public override async Task<ListProjectGrpc> GetProjectGrpcById(ProjectByIdGrpcRequest request, ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("GetProjectGrpcById starting");
-            return await _MasterAccessService.GetProjectsById(request.Id, context.CancellationToken);
-        }
+
         public override async Task<ListMilestoneGrpc> GetMilestoneGrpc(MilestoneGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetMilestoneGrpc starting");
@@ -213,12 +164,6 @@ namespace Master.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("GetMilestoneGrpcStream starting");
             ListMilestoneGrpc results = await _MasterAccessService.GetAllMilestones(context.CancellationToken);
-        }
-
-        public override async Task<ListMilestoneGrpc> GetMilestoneGrpcById(MilestoneByIdGrpcRequest request, ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("GetMilestoneGrpcById starting");
-            return await _MasterAccessService.GetMilestonesById(request.Id, context.CancellationToken);
         }
 
         #endregion
@@ -236,18 +181,132 @@ namespace Master.Endpoints.GrpcServices
             _Logger.GenericLogInformation("GetVehicleGrpcStream starting");
             ListVehicleGrpc results = await _MasterAccessService.GetAllVehicles(context.CancellationToken);
         }
-        public override async Task<ListVehicleGrpc> GetVehicleGrpcById(VehicleByIdGrpcRequest request, ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("GetVehicleGrpcById starting");
-            return await _MasterAccessService.GetVehiclesById(request.Id ,context.CancellationToken);
-        }
-
-        public override async Task<ListVehicleGrpc> GetVehicleGrpcByDisplay(VehicleByDisplayGrpcRequest request, ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("GetVehicleGrpcByDisplay starting");
-            return await _MasterAccessService.GetVehiclesByDisplay(request.VehicleDisplay ,context.CancellationToken);
-        }
 
         #endregion
+
+        public override async Task<MastersFilterResponseGrpc> FilterMasterDataGrpc(MastersFilterRequestGrpc request, ServerCallContext context)
+        {
+            ParsingConfig parsingConfig = new ParsingConfig();
+            string filterExpressionString = request.FilterExpression;
+
+            MastersFilterResponseGrpc returnResponse = new MastersFilterResponseGrpc();
+
+            switch (request.DatabaseList.ToUpperInvariant())
+            {
+                case "CURRENCYGRPC":
+                await _MasterAccessService.HandleFilterCase<CurrencyGrpc>(filterExpressionString, parsingConfig,
+                filterList =>
+                {
+                    ListCurrencyGrpc returnList = new ListCurrencyGrpc();
+                    returnList.CurrencyGrpc.AddRange(filterList);
+                    returnResponse.CurrencyGrpcList = returnList;
+                    returnResponse.Success = true;
+                }, context.CancellationToken);
+                break;
+                case "CUSTOMERGRPC":
+                await _MasterAccessService.HandleFilterCase<CustomerGrpc>(filterExpressionString, parsingConfig,
+                filterList =>
+                {
+                    ListCustomerGrpc returnList = new ListCustomerGrpc();
+                    returnList.CustomerGrpc.AddRange(filterList);
+                    returnResponse.CustomerGrpcList = returnList;
+                    returnResponse.Success = true;
+                }, context.CancellationToken);
+                break;
+                case "CUSTOMERLOCATIONGRPC":
+                await _MasterAccessService.HandleFilterCase<CustomerLocationGrpc>(filterExpressionString, parsingConfig,
+                filterList =>
+                {
+                    ListCustomerLocationGrpc returnList = new ListCustomerLocationGrpc();
+                    returnList.CustomerLocationGrpc.AddRange(filterList);
+                    returnResponse.CustomerLocationGrpcList = returnList;
+                    returnResponse.Success = true;
+                }, context.CancellationToken);
+                break;
+                case "CUSTOMERSALESENTITYGRPC":
+                await _MasterAccessService.HandleFilterCase<CustomerSalesEntityGrpc>(filterExpressionString, parsingConfig,
+                filterList =>
+                {
+                    ListCustomerSalesEntityGrpc returnList = new ListCustomerSalesEntityGrpc();
+                    returnList.CustomerSalesEntityGrpc.AddRange(filterList);
+                    returnResponse.CustomerSalesEntityGrpcList = returnList;
+                    returnResponse.Success = true;
+                }, context.CancellationToken);
+                break;
+                case "CUSTOMERPROJECTASSOCIATIONGRPC":
+                await _MasterAccessService.HandleFilterCase<CustomerProjectAssociationGrpc>(filterExpressionString, parsingConfig,
+                filterList =>
+                {
+                    ListCustomerProjectAssociationGrpc returnList = new ListCustomerProjectAssociationGrpc();
+                    returnList.CustomerProjectAssociationGrpc.AddRange(filterList);
+                    returnResponse.CustomerProjectAssociationGrpcList = returnList;
+                    returnResponse.Success = true;
+                }, context.CancellationToken);
+                break;
+                case "CUSTOMERBUSINESSUSERASSOCIATIONGRPC":
+                await _MasterAccessService.HandleFilterCase<CustomerBusinessUserAssociationGrpc>(filterExpressionString, parsingConfig,
+                filterList =>
+                {
+                    ListCustomerBusinessUserAssociationGrpc returnList = new ListCustomerBusinessUserAssociationGrpc();
+                    returnList.CustomerBusinessUserAssociationGrpc.AddRange(filterList);
+                    returnResponse.CustomerBusinessUserAssociationGrpcList = returnList;
+                    returnResponse.Success = true;
+                }, context.CancellationToken);
+                break;
+                case "MILESTONEGRPC":
+                await _MasterAccessService.HandleFilterCase<MilestoneGrpc>(filterExpressionString, parsingConfig,
+                filterList =>
+                {
+                    ListMilestoneGrpc returnList = new ListMilestoneGrpc();
+                    returnList.MilestoneGrpc.AddRange(filterList);
+                    returnResponse.MilestoneGrpcList = returnList;
+                    returnResponse.Success = true;
+                }, context.CancellationToken);
+                break;
+                case "PLATFORMGRPC":
+                await _MasterAccessService.HandleFilterCase<PlatformGrpc>(filterExpressionString, parsingConfig,
+                filterList =>
+                {
+                    ListPlatformGrpc returnList = new ListPlatformGrpc();
+                    returnList.PlatformGrpc.AddRange(filterList);
+                    returnResponse.PlatformGrpcList = returnList;
+                    returnResponse.Success = true;
+                }, context.CancellationToken);
+                break;
+                case "PROGRAMGRPC":
+                await _MasterAccessService.HandleFilterCase<ProgramGrpc>(filterExpressionString, parsingConfig,
+                filterList =>
+                {
+                    ListProgramGrpc returnList = new ListProgramGrpc();
+                    returnList.ProgramGrpc.AddRange(filterList);
+                    returnResponse.ProgramGrpcList = returnList;
+                    returnResponse.Success = true;
+                }, context.CancellationToken);
+                break;
+                case "PROJECTGRPC":
+                await _MasterAccessService.HandleFilterCase<ProjectGrpc>(filterExpressionString, parsingConfig,
+                filterList =>
+                {
+                    ListProjectGrpc returnList = new ListProjectGrpc();
+                    returnList.ProjectGrpc.AddRange(filterList);
+                    returnResponse.ProjectGrpcList = returnList;
+                    returnResponse.Success = true;
+                }, context.CancellationToken);
+                break;
+                case "VEHICLEGRPC":
+                await _MasterAccessService.HandleFilterCase<VehicleGrpc>(filterExpressionString, parsingConfig,
+                filterList =>
+                {
+                    ListVehicleGrpc returnList = new ListVehicleGrpc();
+                    returnList.VehicleGrpc.AddRange(filterList);
+                    returnResponse.VehicleGrpcList = returnList;
+                    returnResponse.Success = true;
+                }, context.CancellationToken);
+                break;
+
+            }
+
+            return returnResponse;
+        }
     }
 }
