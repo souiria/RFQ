@@ -36,6 +36,10 @@
         }
         public Guid? NprId
         { get; set; }
+        public string? CustomerPartNumber
+        { get; set; }
+        public string? NprRequest
+        { get; set; }
         public DbRfqProject? RfqProject
         { get; set; }
     }
