@@ -28,7 +28,7 @@
 }
 else
 {
-    <MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Edit RFI/RFQ</MudText>
+    <MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Edit RFI/RFQ @RfqProject.RfqNumber</MudText>
     <MudGrid Class="position-fixed">
         <MudItem xs="12">
             <MudPaper Class="d-flex flex-row" Style="height:150px;">
@@ -626,7 +626,7 @@ else
                         // Get the first Sumitomo part number
                         string? sumitomoPartNumber = emacsExactResponse.StringList.FirstOrDefault();
                         // Add all exactly matched part numbers
-                        part.CompletedPartNumbers.AddRange(emacsExactResponse.ToCompletedPartNumbersList(true));
+                        part.MatchedPartNumbers.AddRange(emacsExactResponse.ToCompletedPartNumbersList(true));
 
                         // now search for prices in NPR
                         if (!string.IsNullOrWhiteSpace(sumitomoPartNumber))
@@ -655,8 +655,8 @@ else
                                 part.IsCompleted = true;  // Set to true ONLY for exact matches
                                 part.IsSwapped = false;
                                 part.MultiMatch = hasMultipleMatches;
-                                // add all the matches in the nprsearch list to the first of the CompletedPartNumbers
-                                part.CompletedPartNumbers[0].NprSearchResults.AddRange(nprResponse.ToNprSearchResultsList());
+                                // add all the matches in the nprsearch list to the first of the MatchedPartNumbers
+                                part.MatchedPartNumbers[0].NprSearchResults.AddRange(nprResponse.ToNprSearchResultsList());
 
                                 if (hasMultipleMatches)
                                 {
@@ -675,7 +675,7 @@ else
                                     NprPrice = nprPrice,
                                     MultiMatch = hasMultipleMatches,
                                     MatchCount = nprResponse.StringList.Count,
-                                    NprSearchResults0 = part.CompletedPartNumbers[0].NprSearchResults
+                                    NprSearchResults0 = part.MatchedPartNumbers[0].NprSearchResults
                                 };
 
                                 string commentJson = System.Text.Json.JsonSerializer.Serialize(commentData, new System.Text.Json.JsonSerializerOptions
@@ -719,7 +719,7 @@ else
                         // Get the first Sumitomo part number
                         string? sumitomoPartNumber = emacsContainsResponse.StringList.FirstOrDefault();
                         // Add all contains matched part numbers
-                        part.CompletedPartNumbers.AddRange(emacsContainsResponse.ToCompletedPartNumbersList(false));
+                        part.MatchedPartNumbers.AddRange(emacsContainsResponse.ToCompletedPartNumbersList(false));
 
                         if (!string.IsNullOrWhiteSpace(sumitomoPartNumber))
                         {
@@ -747,8 +747,8 @@ else
                                 part.IsCompleted = false;  // Keep false for contains matches
                                 part.IsSwapped = false;
                                 part.MultiMatch = hasMultipleMatches;
-                                // add all the matches in the nprsearch list to the first of the CompletedPartNumbers
-                                part.CompletedPartNumbers[0].NprSearchResults.AddRange(nprResponse.ToNprSearchResultsList());
+                                // add all the matches in the nprsearch list to the first of the MatchedPartNumbers
+                                part.MatchedPartNumbers[0].NprSearchResults.AddRange(nprResponse.ToNprSearchResultsList());
 
                                 if (hasMultipleMatches)
                                 {
@@ -767,7 +767,7 @@ else
                                     NprPrice = nprPrice,
                                     MultiMatch = hasMultipleMatches,
                                     MatchCount = nprResponse.StringList.Count,
-                                    NprSearchResults0 = part.CompletedPartNumbers[0].NprSearchResults
+                                    NprSearchResults0 = part.MatchedPartNumbers[0].NprSearchResults
                                 };
 
                                 string commentJson = System.Text.Json.JsonSerializer.Serialize(commentData, new System.Text.Json.JsonSerializerOptions

@@ -8,7 +8,7 @@ namespace SalesSystem.Rfq.Models
         {
             IsCompleted = false;
             MultiMatch = false;
-            CompletedPartNumbers = new List<MatchedPartNumberUx>();
+            MatchedPartNumbers = new List<MatchedPartNumberUx>();
         }
 
         public long RowId
@@ -41,7 +41,7 @@ namespace SalesSystem.Rfq.Models
         { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
-        public List<MatchedPartNumberUx> CompletedPartNumbers
+        public List<MatchedPartNumberUx> MatchedPartNumbers
         { get; }
     }
 }

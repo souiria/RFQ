@@ -24,7 +24,7 @@ namespace SalesSystem.Rfq.Extensions
         #endregion
 
         #region RfqProjectUx Conversion
-        public static RfqProjectUx? ToUx(this RfqProject rfqProject)
+        public static RfqProjectUx? ToUx(this RfqProject? rfqProject)
         {
             if (rfqProject == null)
             {
@@ -43,6 +43,32 @@ namespace SalesSystem.Rfq.Extensions
             uxModel.VehicleVolume = rfqProject.VehicleVolume;
 
             return uxModel;
+        }
+        public static RfqProject ToDto(this RfqProjectUx uxModel)
+        {
+            if (uxModel == null)
+            {
+                throw new ArgumentNullException(nameof(uxModel));
+            }
+
+            RfqProject dto = new RfqProject();
+
+            dto.RowId = uxModel.RowId;
+            dto.RfqNumber = uxModel.RfqNumber;
+            dto.CustomerBusinessUnitGuid = uxModel.CustomerBusinessUnitId.Trim().ToUpperInvariant();
+            dto.CustomerLocationGuid = uxModel.CustomerLocationId.Trim().ToUpperInvariant();
+            dto.ProjectGuid = uxModel.ProjectId.Trim().ToUpperInvariant();
+            dto.RfqReasonId = uxModel.RfqReasonId;
+            if (uxModel.RfqResponseDeadline.HasValue)
+            {
+                DateTime utc = uxModel.RfqResponseDeadline.Value.ToUniversalTime();
+                dto.RfqResponseDeadline = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(utc);
+            }
+
+            dto.CarModelGuid = uxModel.CarModelId.Trim().ToUpperInvariant();
+            dto.VehicleVolume = uxModel.VehicleVolume;
+
+            return dto;
         }
         #endregion
 
@@ -76,38 +102,65 @@ namespace SalesSystem.Rfq.Extensions
 
             uxModel.RowId = dto.RowId;
             uxModel.RfqId = dto.RfqId;
-            string[]? ar = dto.OriginalPartNumber?.Split('|');
-            if(ar is not null && 0 <= ar.Length)
+            if(!string.IsNullOrEmpty(dto.OriginalPartNumber) 
+                && string.IsNullOrEmpty(dto.SumitomoPartNumber))
             {
-                switch(ar.Length)
-                {
-                    case 1:
-                        uxModel.CustomerPartNumber = ar[0] ?? "N/A";
-                        uxModel.DrawingPartNumber = "N/A";
-                        break;
-                    case 2:
-                        uxModel.CustomerPartNumber = ar[0] ?? "N/A";
-                        uxModel.DrawingPartNumber = ar[1] ?? "N/A";
-                        break;
-                }
+                uxModel.CustomerPartNumber = dto.OriginalPartNumber;
+                uxModel.DrawingPartNumber = string.Empty;
             }
             else
             {
                 uxModel.CustomerPartNumber = dto.OriginalPartNumber;
-                uxModel.DrawingPartNumber = "N/A";
+                uxModel.DrawingPartNumber = dto.SumitomoPartNumber;
             }
 
             uxModel.DrawingPartNumberPrice = dto.OriginalPartNumberPrice != 0 ? Convert.ToDecimal(dto.OriginalPartNumberPrice) : null;
             uxModel.SwappedPartNumber = dto.SwappedPartNumber;
             uxModel.SwappedPartNumberPrice = dto.SwappedPartNumberPrice != 0 ? Convert.ToDecimal(dto.SwappedPartNumberPrice) : null;
             uxModel.PriceSource = dto.PriceSource;
-            uxModel.IsExactMatch = dto.IsExactMatch;
-            uxModel.IsSwapped = dto.IsSwapped;
+            if (dto.IsSwapped)
+            {
+                uxModel.IsExactMatch = false;
+                uxModel.IsSwapped = true;
+                uxModel.IsCompleted = false;
+            }
+            else if (dto.IsExactMatch && !dto.IsSwapped)
+            {
+                uxModel.IsExactMatch = true;
+                uxModel.IsSwapped = false;
+                uxModel.IsCompleted = true;
+            }
+            else
+            {
+                uxModel.IsExactMatch = false;
+                uxModel.IsSwapped = false;
+                uxModel.IsCompleted = false;
+            }
+
             uxModel.Comments = dto.Comments;
 
-            uxModel.IsCompleted = dto.IsExactMatch;
-
             return uxModel;
+        }
+        public static RfqDrawingPartNumber ToDto(this RfqDrawingPartNumberUx uxModel)
+        {
+            if (uxModel == null)
+            {
+                throw new ArgumentNullException(nameof(uxModel));
+            }
+
+            RfqDrawingPartNumber dto = new RfqDrawingPartNumber();
+
+            dto.RowId = uxModel.RowId;
+            dto.RfqId = uxModel.RfqId;
+            dto.OriginalPartNumber = $"{uxModel.CustomerPartNumber}|{uxModel.DrawingPartNumber}";
+            dto.OriginalPartNumberPrice = uxModel.DrawingPartNumberPrice.HasValue ? Convert.ToDouble(uxModel.DrawingPartNumberPrice.Value) : 0;
+            dto.SwappedPartNumber = uxModel.SwappedPartNumber;
+            dto.SwappedPartNumberPrice = uxModel.SwappedPartNumberPrice.HasValue ? Convert.ToDouble(uxModel.SwappedPartNumberPrice.Value) : 0;
+            dto.PriceSource = uxModel.PriceSource;
+            dto.IsExactMatch = uxModel.IsExactMatch ?? false;
+            dto.IsSwapped = uxModel.IsSwapped ?? false;
+            dto.Comments = uxModel.Comments;
+            return dto;
         }
         #endregion
         #region SearchResultUx

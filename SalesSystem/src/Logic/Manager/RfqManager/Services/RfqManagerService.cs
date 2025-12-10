@@ -393,15 +393,22 @@
                 await Task.Delay(1);
 
                 // Prepare RFQ project request
-                RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
-                rfqGrpcRequestParameter.RequestType = 2;
+                //RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                //rfqGrpcRequestParameter.RequestType = 2;
 
-                RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
-                rfqProjectRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
-                rfqProjectRequest.RowId = request.RowId;
+                //RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
+                //rfqProjectRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
+                //rfqProjectRequest.RowId = request.RowId;
+
+                GetRfqProjectByIdGrpcResponse response = new();
 
                 // Fetch RFQ project
-                ListRfqProjectGrpc rfqProjects = _RfqClient.ReadRfqProjectGrpc(rfqProjectRequest);
+                //ListRfqProjectGrpc rfqProjects = _RfqClient.ReadRfqProjectGrpc(rfqProjectRequest);
+                RfqFilterRequest rfqGrpcRequestParameter = new RfqFilterRequest();
+                rfqGrpcRequestParameter.DatabaseList = "RfqProjectGrpc".ToUpperInvariant();
+                rfqGrpcRequestParameter.FilterExpression = $"RowId != null && RowId == {request.RowId}";
+                RfqFilterResponse filterResponse = _RfqClient.FilterRfqGrpc(rfqGrpcRequestParameter);
+                List<RfqProjectGrpc> rfqProjects = filterResponse.ListRfqProjectGrpc.RfqProjects.ToList();
 
                 // Fetch RFQ reasons
                 RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
@@ -458,15 +465,12 @@
                     .Where(v => v.Id != null && v.VehicleName != null)
                     .ToDictionary(v => v.Id, v => v.VehicleName);
 
-                // Prepare response
-                GetRfqProjectByIdGrpcResponse response = new GetRfqProjectByIdGrpcResponse();
-
-                int projectCount = rfqProjects.RfqProjects.Count;
+                int projectCount = rfqProjects.Count;
                 bool hasProjects = 0 < projectCount;
 
                 if (hasProjects)
                 {
-                    RfqProjectGrpc grpcProject = rfqProjects.RfqProjects.First();
+                    RfqProjectGrpc grpcProject = rfqProjects.First();
                     RfqProject mappedProject = grpcProject.ToRfqProject();
 
                     // Attach reason title
@@ -765,12 +769,19 @@
 
         public async Task<UpdateRfqProjectGrpcResponse> UpdateRfqProject(UpdateRfqProjectGrpcRequest request)
         {
+            if(request.Project == null
+                || string.IsNullOrEmpty(request.Project.RfqNumber))
+            {
+                throw new ArgumentNullException(nameof(request), "Project or RFQ Number cannot be null");
+            }
+
             try
             {
                 await Task.Delay(1);
 
                 RfqProjectGrpc rfqProject = new RfqProjectGrpc();
                 rfqProject.RowId = request.Project.RowId;
+                rfqProject.RfqNumber = request.Project.RfqNumber; // it is needed to identify the record to update
                 rfqProject.CustomerBusinessUnitGuid = request.Project.CustomerBusinessUnitGuid.ToUpperInvariant();
                 rfqProject.CustomerLocationGuid = request.Project.CustomerLocationGuid.ToUpperInvariant();
                 rfqProject.ProjectGuid = request.Project.ProjectGuid.ToUpperInvariant();

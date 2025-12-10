@@ -213,14 +213,15 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-        public async Task<UpdateRfqProjectGrpcResponse> UpdateRfqProjectAsync(RfqProject project)
+        public async Task<UpdateRfqProjectGrpcResponse> UpdateRfqProjectAsync(RfqProjectUx project)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+            RfqProject projectDto = project.ToDto();
 
             try
             {
                 UpdateRfqProjectGrpcRequest request = new UpdateRfqProjectGrpcRequest();
-                request.Project = project;
+                request.Project = projectDto;
 
                 UpdateRfqProjectGrpcResponse response = await _Client.UpdateRfqProjectGrpcAsync(request, cancellationToken: timeoutCts.Token);
 
@@ -232,28 +233,37 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-        public async Task<UpdateRfqDrawingPartNumbersGrpcResponse> UpdateRfqDrawingPartNumbersAsync(IEnumerable<RfqDrawingPartNumber> parts)
-{
-    using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+        public async Task<UpdateRfqDrawingPartNumbersGrpcResponse> UpdateRfqDrawingPartNumbersAsync(IEnumerable<RfqDrawingPartNumberUx?> parts)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+            List<RfqDrawingPartNumber> partsDto = new List<RfqDrawingPartNumber>();
+            foreach (RfqDrawingPartNumberUx? part in parts)
+            {
+                if (part != null)
+                {
+                    RfqDrawingPartNumber dto = part.ToDto();
+                    partsDto.Add(dto);
+                }
+            }
 
-    try
-    {
-        // Build the request
-        UpdateRfqDrawingPartNumbersGrpcRequest request = new UpdateRfqDrawingPartNumbersGrpcRequest();
-        request.RfqDrawingPartNumbersGrpcsToUpdate.AddRange(parts);
+            try
+            {
+                // Build the request
+                UpdateRfqDrawingPartNumbersGrpcRequest request = new UpdateRfqDrawingPartNumbersGrpcRequest();
+                request.RfqDrawingPartNumbersGrpcsToUpdate.AddRange(partsDto);
 
-        // Call the gRPC client
-        UpdateRfqDrawingPartNumbersGrpcResponse response =
-            await _Client.UpdateRfqDrawingPartNumbersGrpcAsync(request, cancellationToken: timeoutCts.Token);
+                // Call the gRPC client
+                UpdateRfqDrawingPartNumbersGrpcResponse response =
+                    await _Client.UpdateRfqDrawingPartNumbersGrpcAsync(request, cancellationToken: timeoutCts.Token);
 
-        return response;
-    }
-    catch (Exception ex)
-    {
-        _Logger?.GenericLogError("Error in UpdateRfqDrawingPartNumbersAsync", ex);
-        throw;
-    }
-}
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError("Error in UpdateRfqDrawingPartNumbersAsync", ex);
+                throw;
+            }
+        }
 
         public async Task<RfqCrudResponse> DeleteRfqProjectByRowIdAsync(long rowId)
         {

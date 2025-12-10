@@ -63,36 +63,16 @@
             <PropertyColumn Property="x => x.DrawingPartNumberPrice"
                             Title="Drawing P/N Price"
                             Format="0.#####">
-                <EditTemplate>
-                    <MudNumericField @bind-Value="context.Item.DrawingPartNumberPrice" 
-                                    Format="0.#####" 
-                                    Adornment="Adornment.Start" 
-                                    AdornmentText="$" 
-                                    Margin="@Margin.Dense" />
-                </EditTemplate>
             </PropertyColumn>
             <PropertyColumn Property="x => x.SwappedPartNumber" Title="Dummy/Alt. P/N" />
             <PropertyColumn Property="x => x.SwappedPartNumberPrice"
                             Title="Dummy/Alt. P/N Price"
                             Format="0.#####">
-                <EditTemplate>
-                    <MudNumericField @bind-Value="context.Item.SwappedPartNumberPrice"
-                                     Format="0.#####"
-                                     Adornment="Adornment.Start" 
-                                    AdornmentText="$" 
-                                    Margin="@Margin.Dense" />
-                </EditTemplate>
             </PropertyColumn>
             <PropertyColumn Property="x => x.PriceSource" Title="Price Source" />
             <PropertyColumn Property="x => x.IsExactMatch" Title="Exact Match">
-                <EditTemplate>
-                    <MudCheckBox @bind-Value="context.Item.IsExactMatch" Dense="true" />
-                </EditTemplate>
             </PropertyColumn>
             <PropertyColumn Property="x => x.IsSwapped" Title="Swapped">
-                <EditTemplate>
-                    <MudCheckBox @bind-Value="context.Item.IsSwapped" Dense="true" />
-                </EditTemplate>
             </PropertyColumn>
 @*             <PropertyColumn Property="x => x.Comments" Title="Comments">
                 <EditTemplate>
@@ -170,7 +150,7 @@
         }
 
         // Just in case this was previously searched
-        item.CompletedPartNumbers.Clear();
+        item.MatchedPartNumbers.Clear();
         item.Comments = "";
 
         Logger.GenericLogInformation($"Searching for part number: {item.CustomerPartNumber}");
@@ -211,7 +191,7 @@
                     matchedPartNumber.Index = index++;
                     matchedPartNumber.SewsePartNumber = pn;
 
-                    item.CompletedPartNumbers.Add(matchedPartNumber);
+                    item.MatchedPartNumbers.Add(matchedPartNumber);
                 }
                 
                 var commentData = new
@@ -231,7 +211,7 @@
                     matchedPartNumber.Index = index++;
                     matchedPartNumber.SewsePartNumber = pn;
 
-                    item.CompletedPartNumbers.Add(matchedPartNumber);
+                    item.MatchedPartNumbers.Add(matchedPartNumber);
                 }
 
                 commentData.ContainsMatchPartNumbers.AddRange(responseContains.StringList);

@@ -11,15 +11,15 @@
 <MudDialog>
     <DialogContent>
         <MudText Typo="Typo.h6" Class="mb-4">
-            Found @SearchedPartNumber?.CompletedPartNumbers.Count result(s) for part number: @(SearchedPartNumber?.CustomerPartNumber ?? "N/A")
+            Found @SearchedPartNumber?.MatchedPartNumbers.Count result(s) for part number: @(SearchedPartNumber?.CustomerPartNumber ?? "N/A")
         </MudText>
 
-        @if (SearchedPartNumber?.CompletedPartNumbers.Count > 0)
+        @if (SearchedPartNumber?.MatchedPartNumbers.Count > 0)
         {
             <MudList T="string"
                      SelectionMode="SelectionMode.SingleSelection"
                      Dense="true">
-                @foreach (MatchedPartNumberUx partNumber in SearchedPartNumber.CompletedPartNumbers)
+                @foreach (MatchedPartNumberUx partNumber in SearchedPartNumber.MatchedPartNumbers)
                 {
                     <MudListItem Style="@GetListItemStyle(partNumber.IsExactMatch)">
                         <MudPaper Elevation="2" Class="pa-3 mb-2">
@@ -159,10 +159,10 @@
     {
         if (firstRender
             && SearchedPartNumber != null
-            && SearchedPartNumber.CompletedPartNumbers.Count > 0)
+            && SearchedPartNumber.MatchedPartNumbers.Count > 0)
         {
             // Start loading images and NPR data for all parts in parallel
-            var loadTasks = SearchedPartNumber.CompletedPartNumbers
+            var loadTasks = SearchedPartNumber.MatchedPartNumbers
                 .Select((matchedPart) => Task.WhenAll(
                     LoadPartImageAsync(matchedPart),
                     LoadNprDataAsync(matchedPart)
@@ -356,7 +356,7 @@
 
     private bool HasImage(int index)
     {
-        var matchedPart = SearchedPartNumber?.CompletedPartNumbers.FirstOrDefault(p => p.Index == index);
+        var matchedPart = SearchedPartNumber?.MatchedPartNumbers.FirstOrDefault(p => p.Index == index);
         return matchedPart?.PartImage != null && matchedPart.PartImage.ImageBytes != null && matchedPart.PartImage.ImageBytes.Count > 0;
     }
 
@@ -372,7 +372,7 @@
 
     private bool HasNprResults(int index)
     {
-        var matchedPart = SearchedPartNumber?.CompletedPartNumbers.FirstOrDefault(p => p.Index == index);
+        var matchedPart = SearchedPartNumber?.MatchedPartNumbers.FirstOrDefault(p => p.Index == index);
         return matchedPart?.NprSearchResults != null && matchedPart.NprSearchResults.Count > 0;
     }
 
@@ -388,13 +388,13 @@
 
     private List<string> GetNprResults(int index)
     {
-        var matchedPart = SearchedPartNumber?.CompletedPartNumbers.FirstOrDefault(p => p.Index == index);
+        var matchedPart = SearchedPartNumber?.MatchedPartNumbers.FirstOrDefault(p => p.Index == index);
         return matchedPart?.NprSearchResults.Select(r => r.SewsePartNumber ?? string.Empty).ToList() ?? new List<string>();
     }
 
     private bool HasNprPrice(int index, int nprIndex)
     {
-        var matchedPart = SearchedPartNumber?.CompletedPartNumbers.FirstOrDefault(p => p.Index == index);
+        var matchedPart = SearchedPartNumber?.MatchedPartNumbers.FirstOrDefault(p => p.Index == index);
         if (matchedPart?.NprSearchResults == null)
         {
             return false;
@@ -404,7 +404,7 @@
 
     private decimal? GetNprPrice(int index, int nprIndex)
     {
-        var matchedPart = SearchedPartNumber?.CompletedPartNumbers.FirstOrDefault(p => p.Index == index);
+        var matchedPart = SearchedPartNumber?.MatchedPartNumbers.FirstOrDefault(p => p.Index == index);
         if (matchedPart?.NprSearchResults == null)
         {
             return null; // Change 0 to null
@@ -418,7 +418,7 @@
 
     private string GetImageSource(int index)
     {
-        var matchedPart = SearchedPartNumber?.CompletedPartNumbers.FirstOrDefault(p => p.Index == index);
+        var matchedPart = SearchedPartNumber?.MatchedPartNumbers.FirstOrDefault(p => p.Index == index);
         if (matchedPart?.PartImage == null || matchedPart.PartImage.ImageBytes == null)
         {
             return string.Empty;

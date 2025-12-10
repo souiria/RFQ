@@ -156,7 +156,7 @@ namespace Unit.Tests.CDb
                 int saveResult = await context.SaveChangesAsync();
 
                 // Assert - Save operation
-                NUnit.Framework.Constraints.EqualConstraint equalTo1 = Is.EqualTo(1);
+                EqualConstraint equalTo1 = Is.EqualTo(1);
                 Assert.That(saveResult, equalTo1, "Should save one record");
             }
 
@@ -170,11 +170,11 @@ namespace Unit.Tests.CDb
 
                 // Assert - Retrieved data
                 Assert.That(retrievedCable, Is.Not.Null, "Cable should be retrieved");
-                NUnit.Framework.Constraints.EqualConstraint equalToTestCable = Is.EqualTo("TEST-CABLE-001");
+                EqualConstraint equalToTestCable = Is.EqualTo("TEST-CABLE-001");
                 Assert.That(retrievedCable.Name, equalToTestCable);
-                NUnit.Framework.Constraints.EqualConstraint equalToTypeCable = Is.EqualTo(ComponentType.Cable);
+                EqualConstraint equalToTypeCable = Is.EqualTo(ComponentType.Cable);
                 Assert.That(retrievedCable.ComponentType, equalToTypeCable);
-                NUnit.Framework.Constraints.EqualConstraint equalToWireCount4 = Is.EqualTo(4);
+                EqualConstraint equalToWireCount4 = Is.EqualTo(4);
                 Assert.That(retrievedCable.WireCount, equalToWireCount4);
                 Assert.That(retrievedCable.IsShielded, Is.True);
             }
@@ -235,7 +235,7 @@ namespace Unit.Tests.CDb
                 int updateResult = await updateContext.SaveChangesAsync();
 
                 // Assert
-                NUnit.Framework.Constraints.EqualConstraint equalTo1 = Is.EqualTo(1);
+                EqualConstraint equalTo1 = Is.EqualTo(1);
                 Assert.That(updateResult, equalTo1, "Should update one record");
             }
 
@@ -248,13 +248,13 @@ namespace Unit.Tests.CDb
                     .FirstOrDefaultAsync(c => c.Id == _TestCableId2);
 
                 Assert.That(updatedCable, Is.Not.Null, "Updated cable should not be null");
-                NUnit.Framework.Constraints.EqualConstraint equalToUpdatedName = Is.EqualTo(updatedName);
+                EqualConstraint equalToUpdatedName = Is.EqualTo(updatedName);
                 Assert.That(updatedCable.Name, equalToUpdatedName);
-                NUnit.Framework.Constraints.EqualConstraint equalToUpdatedComment = Is.EqualTo(updatedComment);
+                EqualConstraint equalToUpdatedComment = Is.EqualTo(updatedComment);
                 Assert.That(updatedCable.Comment, equalToUpdatedComment);
-                NUnit.Framework.Constraints.EqualConstraint equalToColorB = Is.EqualTo(ColorType.B);
+                EqualConstraint equalToColorB = Is.EqualTo(ColorType.B);
                 Assert.That(updatedCable.Color, equalToColorB);
-                NUnit.Framework.Constraints.EqualConstraint equalToWireCount8 = Is.EqualTo(8);
+                EqualConstraint equalToWireCount8 = Is.EqualTo(8);
                 Assert.That(updatedCable.WireCount, equalToWireCount8);
             }
         }
@@ -411,7 +411,7 @@ namespace Unit.Tests.CDb
                 int saveResult = await context.SaveChangesAsync();
 
                 // Assert
-                NUnit.Framework.Constraints.EqualConstraint equalTo3 = Is.EqualTo(3);
+                EqualConstraint equalTo3 = Is.EqualTo(3);
                 Assert.That(saveResult, equalTo3, "Should save three records");
             }
 
@@ -420,7 +420,7 @@ namespace Unit.Tests.CDb
             {
                 CDbContext verifyContext = scope.ServiceProvider.GetRequiredService<CDbContext>();
                 int count = await verifyContext.Cables.CountAsync();
-                NUnit.Framework.Constraints.GreaterThanOrEqualConstraint greaterThanOrEqualTo3 = Is.GreaterThanOrEqualTo(3);
+                GreaterThanOrEqualConstraint greaterThanOrEqualTo3 = Is.GreaterThanOrEqualTo(3);
                 Assert.That(count, greaterThanOrEqualTo3, "Should have at least 3 cables in database");
             }
         }
@@ -501,7 +501,7 @@ namespace Unit.Tests.CDb
 
                 // Assert
                 Assert.That(redCables, Is.Not.Null);
-                NUnit.Framework.Constraints.EqualConstraint equalTo2 = Is.EqualTo(2);
+                EqualConstraint equalTo2 = Is.EqualTo(2);
                 Assert.That(redCables.Count, equalTo2, "Should find exactly 2 red cables");
                 bool redCablesAllRed = redCables.All(c => c.Color == ColorType.R);
                 Assert.That(redCablesAllRed, Is.True, "All cables should be red");
