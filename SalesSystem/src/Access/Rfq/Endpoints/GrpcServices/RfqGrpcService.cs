@@ -1,4 +1,6 @@
-﻿namespace Rfq.Endpoints.GrpcServices
+﻿using System.Linq.Dynamic.Core.Exceptions;
+
+namespace Rfq.Endpoints.GrpcServices
 {
     public class RfqGrpcService : Rfq.RfqBase
     {
@@ -45,6 +47,8 @@
             {
                 case RequestType.Read:
                 return await _RfqAccessService.GetAllRfqDrawingPartNumbers(context.CancellationToken);
+                case RequestType.ReadByRowId:
+                return await _RfqAccessService.GetRfqDrawingPartNumbersByRowId(request, context.CancellationToken);
                 default:
                 {
                     Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -172,6 +176,8 @@
             {
                 case RequestType.Read:
                 return await _RfqAccessService.GetAllRfqProjects(context.CancellationToken);
+                case RequestType.ReadByRowId:
+                return await _RfqAccessService.GetRfqProjectByRowId(request, context.CancellationToken);
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
                 throw new RpcException(status);
@@ -4566,7 +4572,7 @@
             _Logger.GenericLogInformation("FilterRfqGrpc starting");
             ParsingConfig parsingConfig = new ParsingConfig();
             RfqFilterResponse returnResponse = new RfqFilterResponse();
-            switch (request.DatabaseList)
+            switch (request.DatabaseList.ToUpperInvariant())
             {
                 case "RFQDRAWINGPARTNUMBERSGRPC":
                 await _RfqAccessService.HandleFilterCase<RfqDrawingPartNumbersGrpc>(
@@ -4580,15 +4586,24 @@
                     }, context.CancellationToken);
                 break;
                 case "RFQPROJECTGRPC":
-                await _RfqAccessService.HandleFilterCase<RfqProjectGrpc>(
-                    request.FilterExpression, parsingConfig,
-                    filterlist =>
-                    {
-                        ListRfqProjectGrpc returnList = new ListRfqProjectGrpc();
-                        returnList.RfqProjects.AddRange(filterlist);
-                        returnResponse.ListRfqProjectGrpc = returnList;
-                        returnResponse.Success = true;
-                    }, context.CancellationToken);
+                try
+                {
+                    await _RfqAccessService.HandleFilterCase<RfqProjectGrpc>(
+                        request.FilterExpression, parsingConfig,
+                        filterlist =>
+                        {
+                            ListRfqProjectGrpc returnList = new ListRfqProjectGrpc();
+                            returnList.RfqProjects.AddRange(filterlist);
+                            returnResponse.ListRfqProjectGrpc = returnList;
+                            returnResponse.Success = true;
+                        }, context.CancellationToken);
+                }
+                catch (ParseException ex)
+                {
+                    _Logger.GenericLogError($" RfqGrpcService.FilterRfqGrpc filter parsing failed. Expression: '{request.FilterExpression}'. Error: {ex.Message}", ex);
+                    throw;
+                }
+
                 break;
                 case "RFQNOTESGRPC":
                 await _RfqAccessService.HandleFilterCase<RfqNotesGrpc>(
