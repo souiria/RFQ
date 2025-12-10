@@ -105,7 +105,7 @@ namespace SalesSystem.Rfq.Extensions
             uxModel.IsSwapped = dto.IsSwapped;
             uxModel.Comments = dto.Comments;
 
-            uxModel.IsMatched = dto.IsExactMatch;
+            uxModel.IsCompleted = dto.IsExactMatch;
 
             return uxModel;
         }

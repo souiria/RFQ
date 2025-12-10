@@ -22,7 +22,7 @@ namespace SalesSystem.Rfq.Models
         { get; set; }
         public bool? IsSwapped 
         { get; set; }
-        public bool IsMatched 
+        public bool IsCompleted 
         { get; set; }
         public bool MultiMatch 
         { get; set; }

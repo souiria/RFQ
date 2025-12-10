@@ -6,9 +6,9 @@ namespace SalesSystem.Rfq.Models
     {
         public RfqDrawingPartNumberUx()
         {
-            IsMatched = false;
+            IsCompleted = false;
             MultiMatch = false;
-            MatchedPartNumbers = new List<MatchedPartNumberUx>();
+            CompletedPartNumbers = new List<MatchedPartNumberUx>();
         }
 
         public long RowId
@@ -35,13 +35,13 @@ namespace SalesSystem.Rfq.Models
         { get; set; }
         public string? Comments
         { get; set; }
-        public bool IsMatched
+        public bool IsCompleted
         { get; set; }
         public bool MultiMatch
         { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
-        public List<MatchedPartNumberUx> MatchedPartNumbers
+        public List<MatchedPartNumberUx> CompletedPartNumbers
         { get; }
     }
 }

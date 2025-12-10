@@ -41,7 +41,7 @@ namespace SalesSystem.Rfq.Services
                     record.PriceSource = part.PriceSource;
                     record.IsExactMatch = part.IsExactMatch;
                     record.IsSwapped = part.IsSwapped;
-                    record.IsMatched = part.IsMatched;
+                    record.IsCompleted = part.IsCompleted;
                     record.MultiMatch = part.MultiMatch;
                     record.PriceDifference = part.SwappedPartNumberPrice - part.DrawingPartNumberPrice;
                     record.Comments = part.Comments;
@@ -64,7 +64,7 @@ namespace SalesSystem.Rfq.Services
                     record.PriceSource = part.PriceSource;
                     record.IsExactMatch = part.IsExactMatch;
                     record.IsSwapped = part.IsSwapped;
-                    record.IsMatched = part.IsMatched;
+                    record.IsCompleted = part.IsCompleted;
                     record.MultiMatch = part.MultiMatch;
                     record.PriceDifference = part.SwappedPartNumberPrice - part.DrawingPartNumberPrice;
                     record.Comments = part.Comments;
@@ -135,7 +135,7 @@ namespace SalesSystem.Rfq.Services
                     csv.WriteField(record.PriceSource ?? "");
                     csv.WriteField(record.IsExactMatch?.ToString() ?? "");
                     csv.WriteField(record.IsSwapped?.ToString() ?? "");
-                    csv.WriteField(record.IsMatched ? "yes" : "no");
+                    csv.WriteField(record.IsCompleted ? "yes" : "no");
                     csv.WriteField(record.MultiMatch ? "yes" : "no" );
                     csv.WriteField(record.PriceDifference?.ToString("0.#####") ?? "");
                     csv.WriteField(record.Comments ?? "");

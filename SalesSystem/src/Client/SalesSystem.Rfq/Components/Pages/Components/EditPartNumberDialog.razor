@@ -68,7 +68,7 @@
                                  Dense="true" />
                 </MudItem>
                 <MudItem xs="12" sm="4">
-                    <MudCheckBox @bind-Value="EditedItem.IsMatched"
+                    <MudCheckBox @bind-Value="EditedItem.IsCompleted"
                                  Label="Is Matched"
                                  Color="Color.Primary"
                                  Dense="true" />
@@ -144,7 +144,7 @@
             IsExactMatch = OriginalItem.IsExactMatch,
             IsSwapped = OriginalItem.IsSwapped,
             Comments = OriginalItem.Comments,
-            IsMatched = OriginalItem.IsMatched
+            IsCompleted = OriginalItem.IsCompleted
         };
     }
 
@@ -172,7 +172,7 @@
             EditedItem.SwappedPartNumberPrice = dummyData.Price;
             EditedItem.IsSwapped = true;
             EditedItem.IsExactMatch = false;
-            EditedItem.IsMatched = false;
+            EditedItem.IsCompleted = false;
             EditedItem.PriceSource = "Dummy";
 
             // Force UI refresh

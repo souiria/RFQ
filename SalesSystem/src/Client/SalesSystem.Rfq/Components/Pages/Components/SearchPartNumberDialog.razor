@@ -11,22 +11,22 @@
 <MudDialog>
     <DialogContent>
         <MudText Typo="Typo.h6" Class="mb-4">
-            Found @SearchedPartNumber?.MatchedPartNumbers.Count result(s) for part number: @(SearchedPartNumber?.CustomerPartNumber ?? "N/A")
+            Found @SearchedPartNumber?.CompletedPartNumbers.Count result(s) for part number: @(SearchedPartNumber?.CustomerPartNumber ?? "N/A")
         </MudText>
 
-        @if (SearchedPartNumber?.MatchedPartNumbers.Count > 0)
+        @if (SearchedPartNumber?.CompletedPartNumbers.Count > 0)
         {
             <MudList T="string"
                      SelectionMode="SelectionMode.SingleSelection"
                      Dense="true">
-                @foreach (MatchedPartNumberUx partNumber in SearchedPartNumber.MatchedPartNumbers)
+                @foreach (MatchedPartNumberUx partNumber in SearchedPartNumber.CompletedPartNumbers)
                 {
-                    <MudListItem>
+                    <MudListItem Style="@GetListItemStyle(partNumber.IsExactMatch)">
                         <MudPaper Elevation="2" Class="pa-3 mb-2">
                             <MudGrid>
                                 <MudItem xs="12" sm="@(partNumber.HasImage ? 8 : 12)">
                                     <MudText Typo="Typo.subtitle2" Color="Color.Primary">
-                                        Part #@(partNumber.Index + 1)
+                                        Part #@(partNumber.Index + 1) @(partNumber.IsExactMatch ? "(Exact Match)" : "(Contains Match)")
                                     </MudText>
                                     <MudText Typo="Typo.body2">
                                         <strong>Sumitomo Number:</strong> @(partNumber.SewsePartNumber ?? "N/A")
@@ -157,12 +157,12 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender 
+        if (firstRender
             && SearchedPartNumber != null
-            && SearchedPartNumber.MatchedPartNumbers.Count > 0)
+            && SearchedPartNumber.CompletedPartNumbers.Count > 0)
         {
             // Start loading images and NPR data for all parts in parallel
-            var loadTasks = SearchedPartNumber.MatchedPartNumbers
+            var loadTasks = SearchedPartNumber.CompletedPartNumbers
                 .Select((matchedPart) => Task.WhenAll(
                     LoadPartImageAsync(matchedPart),
                     LoadNprDataAsync(matchedPart)
@@ -174,6 +174,13 @@
         }
 
         await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private string GetListItemStyle(bool isExactMatch)
+    {
+        return isExactMatch
+            ? "background-color: lightgreen;"
+            : "background-color: lightyellow;";
     }
 
     private async Task LoadPartImageAsync(MatchedPartNumberUx matchedPartNumber)
@@ -265,7 +272,7 @@
                     };
                     matchedPartNumber.NprSearchResults.Add(nprResult);
                 }
-                                
+
                 Logger.GenericLogInformation($"Successfully loaded NPR data for part number: {matchedPartNumber.SewsePartNumber}, Found: {nprPartNumbers.Count} NPR parts"); // Updated part number reference
             }
             else
@@ -303,9 +310,9 @@
             SearchedPartNumber.DrawingPartNumber = nprSearchResult.SewsePartNumber;
             SearchedPartNumber.DrawingPartNumberPrice = nprSearchResult.Price;
             SearchedPartNumber.PriceSource = "NPR";
-            SearchedPartNumber.IsExactMatch = true;
-            SearchedPartNumber.IsMatched = true;
-            SearchedPartNumber.IsSwapped = false;
+            // SearchedPartNumber.IsExactMatch = true;
+            SearchedPartNumber.IsCompleted = true;
+            // SearchedPartNumber.IsSwapped = false;
 
             // Create comment JSON with current user and UTC timestamp
             var commentData = new
@@ -349,7 +356,7 @@
 
     private bool HasImage(int index)
     {
-        var matchedPart = SearchedPartNumber?.MatchedPartNumbers.FirstOrDefault(p => p.Index == index);
+        var matchedPart = SearchedPartNumber?.CompletedPartNumbers.FirstOrDefault(p => p.Index == index);
         return matchedPart?.PartImage != null && matchedPart.PartImage.ImageBytes != null && matchedPart.PartImage.ImageBytes.Count > 0;
     }
 
@@ -365,7 +372,7 @@
 
     private bool HasNprResults(int index)
     {
-        var matchedPart = SearchedPartNumber?.MatchedPartNumbers.FirstOrDefault(p => p.Index == index);
+        var matchedPart = SearchedPartNumber?.CompletedPartNumbers.FirstOrDefault(p => p.Index == index);
         return matchedPart?.NprSearchResults != null && matchedPart.NprSearchResults.Count > 0;
     }
 
@@ -381,13 +388,13 @@
 
     private List<string> GetNprResults(int index)
     {
-        var matchedPart = SearchedPartNumber?.MatchedPartNumbers.FirstOrDefault(p => p.Index == index);
+        var matchedPart = SearchedPartNumber?.CompletedPartNumbers.FirstOrDefault(p => p.Index == index);
         return matchedPart?.NprSearchResults.Select(r => r.SewsePartNumber ?? string.Empty).ToList() ?? new List<string>();
     }
 
     private bool HasNprPrice(int index, int nprIndex)
     {
-        var matchedPart = SearchedPartNumber?.MatchedPartNumbers.FirstOrDefault(p => p.Index == index);
+        var matchedPart = SearchedPartNumber?.CompletedPartNumbers.FirstOrDefault(p => p.Index == index);
         if (matchedPart?.NprSearchResults == null)
         {
             return false;
@@ -397,7 +404,7 @@
 
     private decimal? GetNprPrice(int index, int nprIndex)
     {
-        var matchedPart = SearchedPartNumber?.MatchedPartNumbers.FirstOrDefault(p => p.Index == index);
+        var matchedPart = SearchedPartNumber?.CompletedPartNumbers.FirstOrDefault(p => p.Index == index);
         if (matchedPart?.NprSearchResults == null)
         {
             return null; // Change 0 to null
@@ -411,7 +418,7 @@
 
     private string GetImageSource(int index)
     {
-        var matchedPart = SearchedPartNumber?.MatchedPartNumbers.FirstOrDefault(p => p.Index == index);
+        var matchedPart = SearchedPartNumber?.CompletedPartNumbers.FirstOrDefault(p => p.Index == index);
         if (matchedPart?.PartImage == null || matchedPart.PartImage.ImageBytes == null)
         {
             return string.Empty;

@@ -20,7 +20,7 @@
                 || searchResult.DoubleList is null
                 || searchResult.StringList.Count != searchResult.DoubleList.Count)
             {
-                throw new ArgumentException("SearchResultUxExtensions.ToMatchedPartNumbes: Invalid search result data");
+                throw new ArgumentException("SearchResultUxExtensions.ToCompletedPartNumbes: Invalid search result data");
             }
 
             List<NprSearchResult> nprPartSearchResults = new List<NprSearchResult>();
@@ -35,11 +35,11 @@
             return nprPartSearchResults;
         }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
-        public static List<MatchedPartNumberUx> ToMatchedPartNumbersList(this SearchResultUx searchResult, bool isExactMatch=false)
+        public static List<MatchedPartNumberUx> ToCompletedPartNumbersList(this SearchResultUx searchResult, bool isExactMatch=false)
         {
             if (searchResult is null || searchResult.StringList is null)
             {
-                throw new ArgumentException("SearchResultUxExtensions.ToMatchedPartNumbersList: Invalid search result data");
+                throw new ArgumentException("SearchResultUxExtensions.ToCompletedPartNumbersList: Invalid search result data");
             }
 
             List<MatchedPartNumberUx> matchedPartNumbers = new List<MatchedPartNumberUx>();

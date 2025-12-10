@@ -129,15 +129,15 @@
 
     private string RowStyleFunc(RfqDrawingPartNumberUx item, int index)
     {
-        if (item?.IsMatched == true && item?.IsExactMatch == true)
+        if (item?.IsCompleted == true && item?.IsExactMatch == true)
         {
             return "background-color: lightgreen;";
         }
-        else if (item?.IsMatched == true && item?.IsExactMatch == false)
+        else if (item?.IsCompleted == true && item?.IsExactMatch == false)
         {
             return "background-color: lightyellow;"; // Changed color to light yellow for partial matches
         }
-        else if (item?.IsMatched == false && item?.IsSwapped == true)
+        else if (item?.IsCompleted == false && item?.IsSwapped == true)
         {
             return "background-color: lightblue;"; // Changed color to light yellow for partial matches
         }
@@ -170,7 +170,7 @@
         }
 
         // Just in case this was previously searched
-        item.MatchedPartNumbers.Clear();
+        item.CompletedPartNumbers.Clear();
         item.Comments = "";
 
         Logger.GenericLogInformation($"Searching for part number: {item.CustomerPartNumber}");
@@ -211,7 +211,7 @@
                     matchedPartNumber.Index = index++;
                     matchedPartNumber.SewsePartNumber = pn;
 
-                    item.MatchedPartNumbers.Add(matchedPartNumber);
+                    item.CompletedPartNumbers.Add(matchedPartNumber);
                 }
                 
                 var commentData = new
@@ -223,7 +223,7 @@
                     ContainsMatchPartNumbers = new List<string>()
                 };
 
-                // then look
+                // then look for partial matches
                 foreach(string pn in responseContains.StringList)
                 {
                     var matchedPartNumber = new MatchedPartNumberUx();
@@ -231,7 +231,7 @@
                     matchedPartNumber.Index = index++;
                     matchedPartNumber.SewsePartNumber = pn;
 
-                    item.MatchedPartNumbers.Add(matchedPartNumber);
+                    item.CompletedPartNumbers.Add(matchedPartNumber);
                 }
 
                 commentData.ContainsMatchPartNumbers.AddRange(responseContains.StringList);
@@ -283,7 +283,7 @@
                             item.IsExactMatch = updatedItem.IsExactMatch;
                             item.IsSwapped = updatedItem.IsSwapped;
                             item.Comments = updatedItem.Comments;
-                            item.IsMatched = updatedItem.IsMatched;
+                            item.IsCompleted = updatedItem.IsCompleted;
 
                             Logger.GenericLogInformation($"Successfully updated part number with NPR data: {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber}");
                             Snackbar.Add($"Part number {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber} updated with NPR data", Severity.Success);
@@ -357,7 +357,7 @@
         }
 
         item.IsExactMatch = true;
-        item.IsMatched = true;
+        item.IsCompleted = true;
 
         StateHasChanged();
     }
@@ -411,7 +411,7 @@
                     item.IsExactMatch = editedItem.IsExactMatch;
                     item.IsSwapped = editedItem.IsSwapped;
                     item.Comments = editedItem.Comments;
-                    item.IsMatched = editedItem.IsMatched;
+                    item.IsCompleted = editedItem.IsCompleted;
 
                     Logger.GenericLogInformation($"Successfully updated part number: {editedItem.CustomerPartNumber}/{editedItem.DrawingPartNumber}");
                     Snackbar.Add($"Part number {editedItem.CustomerPartNumber}/{editedItem.DrawingPartNumber} updated successfully", Severity.Success);
@@ -464,7 +464,7 @@
         messageBuilder.AppendLine($"Price Source: {item.PriceSource ?? "N/A"}");
         messageBuilder.AppendLine($"Is Exact Match: {(item.IsExactMatch.HasValue ? item.IsExactMatch.Value.ToString() : "N/A")}");
         messageBuilder.AppendLine($"Is Swapped: {(item.IsSwapped.HasValue ? item.IsSwapped.Value.ToString() : "N/A")}");
-        messageBuilder.AppendLine($"Is Matched: {item.IsMatched}");
+        messageBuilder.AppendLine($"Is Matched: {item.IsCompleted}");
         messageBuilder.AppendLine($"Comments: {item.Comments ?? "N/A"}");
 
         bool? result = await DialogService.ShowMessageBox(
