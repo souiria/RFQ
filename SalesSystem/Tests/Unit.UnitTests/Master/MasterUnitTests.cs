@@ -103,31 +103,33 @@ namespace Unit.Tests.Master
         [Category("Unit")]
         public void FilterCustomerGrpcByIdTest_Success()
         {
-            CustomerByUserIdGrpcRequest customerByIdGrpcRequest = new CustomerByUserIdGrpcRequest();
-            customerByIdGrpcRequest.Id = "83853662-6D20-41B0-B6AC-FD3271406B6B";
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerGrpcByUserId));
+            MastersFilterRequestGrpc filterRequest = new MastersFilterRequestGrpc();
+            filterRequest.DatabaseList = "CustomerGrpc".ToUpperInvariant();
+            filterRequest.FilterExpression = $"Id != null && Id == \"04707931-2CFF-4B2C-8FBD-BEF614C6A99A\"";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterMasterDataGrpc));
 
-            Task<ListCustomerGrpc> getCustomerGrpcByIdReply = _GrpcService.GetCustomerGrpcByUserId(customerByIdGrpcRequest, serverCallContext);
+            Task<MastersFilterResponseGrpc> getCustomerGrpcByIdReply = _GrpcService.FilterMasterDataGrpc(filterRequest, serverCallContext);
 
-            Assert.That(getCustomerGrpcByIdReply.Result.CustomerGrpc, Is.Not.Null);
+            Assert.That(getCustomerGrpcByIdReply.Result.CustomerGrpcList.CustomerGrpc, Is.Not.Null);
             EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCustomerGrpcByIdReply.Result.CustomerGrpc.Count, countConstraint);
+            Assert.That(getCustomerGrpcByIdReply.Result.CustomerGrpcList.CustomerGrpc.Count, countConstraint);
             EqualConstraint nameConstraint = Is.EqualTo("04707931-2CFF-4B2C-8FBD-BEF614C6A99A");
-            Assert.That(getCustomerGrpcByIdReply.Result.CustomerGrpc.First().Id, nameConstraint);
+            Assert.That(getCustomerGrpcByIdReply.Result.CustomerGrpcList.CustomerGrpc.First().Id, nameConstraint);
         }
 
         [Test]
         [Category("Unit")]
         public void FilterCustomerGrpcByIdTest_Fail()
         {
-            CustomerByUserIdGrpcRequest customerByIdGrpcRequest = new CustomerByUserIdGrpcRequest();
-            customerByIdGrpcRequest.Id = Guid.NewGuid().ToString();
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerGrpcByUserId));
+            MastersFilterRequestGrpc filterRequest = new MastersFilterRequestGrpc();
+            filterRequest.DatabaseList = "CustomerGrpc".ToUpperInvariant();
+            filterRequest.FilterExpression = $"Id != null && Id == \"{Guid.NewGuid()}\"";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterMasterDataGrpc));
 
-            Task<ListCustomerGrpc> getCustomerGrpcByIdReply = _GrpcService.GetCustomerGrpcByUserId(customerByIdGrpcRequest, serverCallContext);
+            Task<MastersFilterResponseGrpc> getCustomerGrpcByIdReply = _GrpcService.FilterMasterDataGrpc(filterRequest, serverCallContext);
 
             EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getCustomerGrpcByIdReply.Result.CustomerGrpc.Count, countConstraint);
+            Assert.That(getCustomerGrpcByIdReply.Result.CustomerGrpcList.CustomerGrpc.Count, countConstraint);
         }
 
         [Test]
@@ -175,39 +177,6 @@ namespace Unit.Tests.Master
 
             EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterCustomerLocationGrpcByIdReply.Result.CustomerLocationGrpcList.CustomerLocationGrpc.Count, countConstraint);
-        }
-
-        [Test]
-        [Category("Unit")]
-        public void GetCustomerLocationGrpcByUserIdTest_Success()
-        {
-            CustomerLocationByUserIdGrpcRequest customerLocationByUserIdGrpcRequest = new CustomerLocationByUserIdGrpcRequest();
-            customerLocationByUserIdGrpcRequest.UserId = "83853662-6D20-41B0-B6AC-FD3271406B6B";
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerLocationGrpcByUserId));
-
-            Task<ListCustomerLocationGrpc> getCustomerLocationGrpcByUserIdReply = _GrpcService.GetCustomerLocationGrpcByUserId(customerLocationByUserIdGrpcRequest, serverCallContext);
-
-            Assert.That(getCustomerLocationGrpcByUserIdReply.Result.CustomerLocationGrpc, Is.Not.Null);
-            EqualConstraint countConstraint = Is.EqualTo(1);
-            Assert.That(getCustomerLocationGrpcByUserIdReply.Result.CustomerLocationGrpc.Count, countConstraint);
-            EqualConstraint nameConstraint = Is.EqualTo("TESTCUSTOMERNAME");
-            Assert.That(getCustomerLocationGrpcByUserIdReply.Result.CustomerLocationGrpc.First().CustomerName, nameConstraint);
-            EqualConstraint idConstraint = Is.EqualTo("3759C3B6-ACEB-475E-9BA3-74F13E441E2D");
-            Assert.That(getCustomerLocationGrpcByUserIdReply.Result.CustomerLocationGrpc.First().Id, idConstraint);
-        }
-
-        [Test]
-        [Category("Unit")]
-        public void GetCustomerLocationGrpcByUserIdTest_Fails()
-        {
-            CustomerLocationByUserIdGrpcRequest customerLocationByUserIdGrpcRequest = new CustomerLocationByUserIdGrpcRequest();
-            customerLocationByUserIdGrpcRequest.UserId = Guid.NewGuid().ToString();
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetCustomerLocationGrpcByUserId));
-
-            Task<ListCustomerLocationGrpc> getCustomerLocationGrpcByUserIdReply = _GrpcService.GetCustomerLocationGrpcByUserId(customerLocationByUserIdGrpcRequest, serverCallContext);
-
-            EqualConstraint countConstraint = Is.EqualTo(0);
-            Assert.That(getCustomerLocationGrpcByUserIdReply.Result.CustomerLocationGrpc.Count, countConstraint);
         }
 
         [Test]
