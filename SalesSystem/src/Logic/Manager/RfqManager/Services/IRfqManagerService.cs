@@ -23,5 +23,7 @@
         Task<FilterGrpcResponse> FilterCPDBySumitomoPartNumber(FilterGrpcRequest request);
         Task<FilterGrpcResponse> FilterRFQBySumitomoPartNumber(FilterGrpcRequest request);
         Task<UpdateRfqDrawingPartNumbersGrpcResponse> UpdateRfqDrawingPartNumbers(UpdateRfqDrawingPartNumbersGrpcRequest request);
+        Task<GetCustomerLocationsByUserIdResponse> GetCustomerLocationsByUserId(string userId);
+        Task<GetCustomerBusinessUnitsByUserIdResponse> GetCustomerBusinessUnitsByUserId(string userId);
     }
 }

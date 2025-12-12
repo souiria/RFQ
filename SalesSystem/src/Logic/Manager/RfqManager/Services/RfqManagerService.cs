@@ -91,9 +91,9 @@
                 GetProjectAssociationsByCustomerIdResponse response = new GetProjectAssociationsByCustomerIdResponse();
                 MastersFilterRequestGrpc filterRequest = new MastersFilterRequestGrpc();
                 filterRequest.DatabaseList = "CUSTOMERLOCATIONGRPC";
-                filterRequest.FilterExpression = $"CustomerId != null && CustomerId == \"{request.CustomerId.ToUpperInvariant()}\"";
+                filterRequest.FilterExpression = $"CustomerBusinessHierarchyGuid != null && CustomerBusinessHierarchyGuid.ToUpperInvariant() == \"{request.CustomerId.ToUpperInvariant()}\"";
                 MastersFilterResponseGrpc locations = _MasterClient.FilterMasterDataGrpc(filterRequest);
-                List<CustomerLocationGrpc> extractedLocations = ExtractMastersResponseData<CustomerLocationGrpc>(locations).ToList();
+                List<Master.CustomerLocationGrpc> extractedLocations = ExtractMastersResponseData<Master.CustomerLocationGrpc>(locations).ToList();                
                 if (extractedLocations.Count <= 0)
                 {
                     response.Message = "No locations found for customer";
@@ -101,14 +101,14 @@
                     return response;
                 }
 
-                foreach (CustomerLocationGrpc? location in extractedLocations)
+                foreach (Master.CustomerLocationGrpc? location in extractedLocations)
                 {
-                    filterRequest.DatabaseList = "CUSTOMERPROJECTASSOCIATIONGRPC";
-                    filterRequest.FilterExpression = $"CustomerGuid != null && CustomerGuid == \"{location.Id.ToUpperInvariant()}\"";
+                    filterRequest.DatabaseList = "CUSTOMERPROJEcTASSOCIATIONGRPC";
+                    filterRequest.FilterExpression = $"CustomerLocationGuid != null && CustomerLocationGuid.ToUpperInvariant() == \"{location.Id.ToUpperInvariant()}\"";
                     MastersFilterResponseGrpc projectAssociations = _MasterClient.FilterMasterDataGrpc(filterRequest);
-                    List<CustomerProjectAssociationGrpc> extractedProjectAssociations = ExtractMastersResponseData<CustomerProjectAssociationGrpc>(projectAssociations).ToList();
+                    List<Master.CustomerProjectAssociationGrpc> extractedProjectAssociations = ExtractMastersResponseData<Master.CustomerProjectAssociationGrpc>(projectAssociations).ToList();
 
-                    foreach (CustomerProjectAssociationGrpc? customerProjectAssociation in extractedProjectAssociations)
+                    foreach (Master.CustomerProjectAssociationGrpc? customerProjectAssociation in extractedProjectAssociations)
                     {
                         if (customerProjectAssociation.ProjectGuid == null)
                         {
@@ -116,7 +116,7 @@
                         }
 
                         filterRequest.DatabaseList = "PROJECTGRPC";
-                        filterRequest.FilterExpression = $"Id != null && Id == \"{customerProjectAssociation.ProjectGuid.ToUpperInvariant()}\"";
+                        filterRequest.FilterExpression = $"Id != null && Id.ToUpperInvariant() == \"{customerProjectAssociation.ProjectGuid.ToUpperInvariant()}\"";
                         MastersFilterResponseGrpc projects = _MasterClient.FilterMasterDataGrpc(filterRequest);
                         List<ProjectGrpc> extractedProjects = ExtractMastersResponseData<ProjectGrpc>(projects).ToList();
 
@@ -868,6 +868,92 @@
             return part;
         }
 
+        public async Task<GetCustomerLocationsByUserIdResponse> GetCustomerLocationsByUserId(string userId)
+        {
+            await Task.Delay(0);
+            MastersFilterRequestGrpc mastersFilterRequestGrpc = new MastersFilterRequestGrpc();
+            mastersFilterRequestGrpc.DatabaseList = "CUSTOMERBUSINESSUSERASSOCIATIONGRPC";
+            mastersFilterRequestGrpc.FilterExpression = $"UserGuid != null && UserGuid.ToUpperInvariant() == \"{userId.ToUpperInvariant()}\"";
+
+            MastersFilterResponseGrpc associationFilter = _MasterClient.FilterMasterDataGrpc(mastersFilterRequestGrpc);
+            List<Master.CustomerBusinessUserAssociationGrpc> userList = ExtractMastersResponseData<Master.CustomerBusinessUserAssociationGrpc>(associationFilter).ToList();
+            Master.CustomerBusinessUserAssociationGrpc? user = userList.FirstOrDefault();
+            List<Master.CustomerLocationGrpc> filteredLocations = new List<Master.CustomerLocationGrpc>();
+            GetCustomerLocationsByUserIdResponse response = new GetCustomerLocationsByUserIdResponse();
+            if (user == null)
+            {
+                return response;
+            }
+
+            if (user.CustomerBusinessHierarchyList == null)
+            {
+                return response;
+            }
+
+            List<CustomerLocationGrpc>? userLocations = JsonConvert.DeserializeObject<List<CustomerLocationGrpc>>(user.CustomerBusinessHierarchyList);
+            if (userLocations == null)
+            {
+                return response;
+            }
+
+            foreach (CustomerLocationGrpc userLocation in userLocations)
+            {
+                if (userLocation.IsActive == true)
+                {
+                    mastersFilterRequestGrpc.DatabaseList = "CUSTOMERLOCATIONGRPC";
+                    mastersFilterRequestGrpc.FilterExpression = $"CustomerBusinessHierarchyGuid != null && CustomerBusinessHierarchyGuid.ToUpperInvariant() == \"{userLocation.CustomerBusinessHierarchyGuid.ToUpperInvariant()}\"";
+                    MastersFilterResponseGrpc locationsFilter = _MasterClient.FilterMasterDataGrpc(mastersFilterRequestGrpc);
+                    List<Master.CustomerLocationGrpc> customerLocations = ExtractMastersResponseData<Master.CustomerLocationGrpc>(locationsFilter).ToList();
+                    foreach (Master.CustomerLocationGrpc location in customerLocations)
+                    {
+                        CustomerLocationGrpc customerLocationGrpc = location.ToCustomerLocation();
+                        response.CustomerLocations.Add(customerLocationGrpc);
+                    }
+                }
+            }
+
+            return response;
+        }
+
+        public async Task<GetCustomerBusinessUnitsByUserIdResponse> GetCustomerBusinessUnitsByUserId(string userId)
+        {
+            await Task.Delay(1);
+            GetCustomerBusinessUnitsByUserIdResponse response = new GetCustomerBusinessUnitsByUserIdResponse();
+            MastersFilterRequestGrpc mastersFilterRequestGrpc = new MastersFilterRequestGrpc();
+            mastersFilterRequestGrpc.DatabaseList = "CUSTOMERBUSINESSUSERASSOCIATIONGRPC";
+            mastersFilterRequestGrpc.FilterExpression = $"UserGuid != null && UserGuid.ToUpperInvariant() == \"{userId.ToUpperInvariant()}\"";
+            MastersFilterResponseGrpc assiciationFilter = _MasterClient.FilterMasterDataGrpc(mastersFilterRequestGrpc);
+            List<Master.CustomerBusinessUserAssociationGrpc> businessUserAssociation = ExtractMastersResponseData<Master.CustomerBusinessUserAssociationGrpc>(assiciationFilter).ToList();
+            Master.CustomerBusinessUserAssociationGrpc? userAssociation = businessUserAssociation.FirstOrDefault();
+            if (userAssociation == null || userAssociation.CustomerBusinessHierarchyList == null)
+            {
+                return response;
+            }
+
+            List<CustomerBuisnessHirarchyListDto>? associatedCustomers = JsonConvert.DeserializeObject<List<CustomerBuisnessHirarchyListDto>>(userAssociation.CustomerBusinessHierarchyList);
+
+            if (associatedCustomers == null)
+            {
+                return response;
+            }
+
+            foreach (CustomerBuisnessHirarchyListDto customer in associatedCustomers)
+            {
+                if (customer.IsActive == true)
+                {
+                    mastersFilterRequestGrpc.DatabaseList = "CUSTOMERGRPC";
+                    mastersFilterRequestGrpc.FilterExpression = $"Id != null && Id.ToUpperInvariant() == \"{customer.CustomerBusinessHierarchyGuid.ToString().ToUpperInvariant()}\"";
+                    MastersFilterResponseGrpc customerFilter = _MasterClient.FilterMasterDataGrpc(mastersFilterRequestGrpc);
+                    foreach (Master.CustomerGrpc masterCustomer in customerFilter.CustomerGrpcList.CustomerGrpc)
+                    {
+                        CustomerGrpc customerGrpc = masterCustomer.ToCustomerGrpc();
+                        response.Customers.Add(customerGrpc);
+                    }
+                }
+            }
+
+            return response;
+        }
         #region Filtering
 
         public Task<FilterGrpcResponse> FilterByCustomerId(FilterGrpcRequest request)

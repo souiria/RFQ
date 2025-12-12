@@ -185,23 +185,6 @@
             }
         }
 
-        public async Task<ListCurrencyGrpc> GetCurrenciesById(string id ,CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_Currencies.CurrencyGrpc.Any())
-            {
-                _FilteredCurrencies.CurrencyGrpc.Clear();
-                List<CurrencyGrpc> filteredList = _Currencies.CurrencyGrpc.Where(x => x.Id.ToUpperInvariant() == id.ToUpperInvariant()).ToList();
-                _FilteredCurrencies.CurrencyGrpc.AddRange(filteredList);
-                return _FilteredCurrencies;
-            }
-            else
-            {
-                await PopulateCurrenciesAsync(cancellationToken);
-                return _FilteredCurrencies;
-            }
-        }
-
         #endregion
 
         #region Customer
@@ -220,43 +203,6 @@
             }
         }
 
-        //how do we want to handle case
-        public async Task<ListCustomerGrpc> GetCustomerBusinessUnitsByUserId(string id, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            _FilteredCustomers.CustomerGrpc.Clear();
-            if (_Customers.CustomerGrpc.Any() && _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Any())
-            {
-                CustomerBusinessUserAssociationGrpc? userAssociation = _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Where(x => x.UserGuid.ToUpperInvariant() == id.ToUpperInvariant()).FirstOrDefault();
-                if(userAssociation == null || userAssociation.CustomerBusinessHierarchyList == null)
-                {
-                    return _FilteredCustomers;
-                }
-
-                List<CustomerBuisnessHirarchyListDto>? associatedCustomers = JsonConvert.DeserializeObject<List<CustomerBuisnessHirarchyListDto>>(userAssociation.CustomerBusinessHierarchyList);
-                if (associatedCustomers == null)
-                {
-                    return _FilteredCustomers;
-                }
-
-                foreach (CustomerBuisnessHirarchyListDto customer in associatedCustomers)
-                {
-                    if (customer.IsActive == true)
-                    {
-                        List<CustomerGrpc> filteredCustomers = _Customers.CustomerGrpc.Where(x => x.Id.ToUpperInvariant() == customer.CustomerBusinessHierarchyGuid.ToString().ToUpperInvariant()).ToList();
-                        _FilteredCustomers.CustomerGrpc.AddRange(filteredCustomers);
-                    }
-                }
-
-                return _FilteredCustomers;
-            }
-            else
-            {
-                await PopulateCustomersAsync(cancellationToken);
-                return _FilteredCustomers;
-            }
-        }
-
         public async Task<ListCustomerLocationGrpc> GetAllCustomerLocations(CancellationToken cancellationToken)
         {
             await Task.Delay(0, cancellationToken);
@@ -270,42 +216,6 @@
                 return _CustomerLocations;
             }
         }
-
-        public async Task<ListCustomerLocationGrpc> GetCustomerLocationsByUserId(string userId ,CancellationToken cancellationToken)
-        {
-            await Task.Delay(0, cancellationToken);
-            _FilteredLocations.CustomerLocationGrpc.Clear();
-            if (_CustomerLocations.CustomerLocationGrpc.Any() && _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Any())
-            {
-                CustomerBusinessUserAssociationGrpc? user = _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Where(x => x.UserGuid.ToUpperInvariant() == userId.ToUpperInvariant()).FirstOrDefault();
-                if (user != null)
-                {
-                    if (user.CustomerBusinessHierarchyList != null)
-                    {
-                        List<CustomerLocationGrpc>? userLocations = JsonConvert.DeserializeObject<List<CustomerLocationGrpc>>(user.CustomerBusinessHierarchyList);
-                        if (userLocations != null)
-                        {
-                            foreach (CustomerLocationGrpc location in userLocations)
-                            {
-                                if (location.IsActive == true)
-                                {
-                                    List<CustomerLocationGrpc> filteredLocations = _CustomerLocations.CustomerLocationGrpc.Where(x => x.CustomerBusinessHierarchyGuid == location.CustomerBusinessHierarchyGuid).ToList();
-                                    _FilteredLocations.CustomerLocationGrpc.AddRange(filteredLocations);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                return _FilteredLocations;
-            }
-            else
-            {
-                await PopulateCustomerLocationsAsync(cancellationToken);
-                await PopulateCustomerBusinessUserAssociationsAsync(cancellationToken);
-                return _FilteredLocations;
-            }
-        } 
 
         public async Task<ListCustomerProjectAssociationGrpc> GetAllCustomerProjectAssociations(CancellationToken cancellationToken)
         {
@@ -330,7 +240,7 @@
                 string upperUserId = userId.ToUpperInvariant();
                 ParsingConfig parsingConfig = new ParsingConfig();
                 CustomerBusinessUserAssociationGrpc? user = new CustomerBusinessUserAssociationGrpc();
-                await HandleFilterCase<CustomerBusinessUserAssociationGrpc>($"UserGuid != null && UserGuid == \"{upperUserId}\"", parsingConfig, 
+                await HandleFilterCase<CustomerBusinessUserAssociationGrpc>($"UserGuid != null && UserGuid.ToUpperInvariant() == \"{upperUserId}\"", parsingConfig, 
                     filterList =>
                     {
                         ListCustomerBusinessUserAssociationGrpc returnList = new ListCustomerBusinessUserAssociationGrpc();

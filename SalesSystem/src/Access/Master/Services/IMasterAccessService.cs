@@ -4,17 +4,14 @@
     {
         #region Currency
         Task<ListCurrencyGrpc> GetAllCurrencies(CancellationToken cancellationToken);
-        Task<ListCurrencyGrpc> GetCurrenciesById(string id ,CancellationToken cancellationToken);
         Task<bool> PopulateCurrenciesAsync(CancellationToken cancellationToken);
         #endregion
 
         #region Customer
 
         Task<ListCustomerGrpc> GetAllCustomerBusinessUnits(CancellationToken cancellationToken);
-        Task<ListCustomerGrpc> GetCustomerBusinessUnitsByUserId(string id ,CancellationToken cancellationToken);
         Task<bool> PopulateCustomersAsync(CancellationToken cancellationToken);
         Task<ListCustomerLocationGrpc> GetAllCustomerLocations(CancellationToken cancellationToken);
-        Task<ListCustomerLocationGrpc> GetCustomerLocationsByUserId(string userId, CancellationToken cancellationToken);
         Task<bool> PopulateCustomerLocationsAsync(CancellationToken cancellationToken);
         Task<ListCustomerProjectAssociationGrpc> GetAllCustomerProjectAssociations(CancellationToken cancellationToken);
         Task<ListCustomerProjectAssociationGrpc> GetAllCustomerProjectAssociationsByUserId(string userId,CancellationToken cancellationToken);
