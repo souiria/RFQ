@@ -291,8 +291,6 @@
                 reasonRequestParameter.Take = 100;
                 reasonRequestParameter.RequestType = 1;
                 rfqReasonRequest.RfqGrpcRequestParameter = reasonRequestParameter;
-
-                //ListRfqReasonGrpc rfqReasons = _RfqClient.ReadRfqReasonGrpc(rfqReasonRequest);
                 RfqFilterRequest reasonFilterRequest = new RfqFilterRequest();
                 reasonFilterRequest.DatabaseList = "RFQREASONGRPC";
                 reasonFilterRequest.FilterExpression = "ReasonTitle != null && ReasonTitle != \"\"";
@@ -405,7 +403,6 @@
                 filterRequest.FilterExpression = $"RowId == {request.RowId}";
                 RfqFilterResponse filterResponse = _RfqClient.FilterRfqGrpc(filterRequest);
                 ListRfqProjectGrpc rfqProjects = filterResponse.ListRfqProjectGrpc ?? new ListRfqProjectGrpc();
-                //ListRfqReasonGrpc rfqReasons = _RfqClient.ReadRfqReasonGrpc(rfqReasonRequest);
                 RfqFilterRequest reasonFilterRequest = new RfqFilterRequest();
                 reasonFilterRequest.DatabaseList = "RFQREASONGRPC";
                 reasonFilterRequest.FilterExpression = "ReasonTitle != null && ReasonTitle != \"\"";
