@@ -23,23 +23,30 @@
                 </MudText>
             </MudItem>
 
-            <MudItem xs="12" sm="4">
+            <MudItem xs="12" sm="3">
                 <MudPaper Elevation="2" Class="pa-3 text-center">
                     <MudText Typo="Typo.h4" Color="Color.Info">@_totalSearched</MudText>
                     <MudText Typo="Typo.body2">Total Searched</MudText>
                 </MudPaper>
             </MudItem>
 
-            <MudItem xs="12" sm="4">
+            <MudItem xs="12" sm="3">
                 <MudPaper Elevation="2" Class="pa-3 text-center">
-                    <MudText Typo="Typo.h4" Color="Color.Success">@_totalMatched</MudText>
-                    <MudText Typo="Typo.body2">Matched</MudText>
+                    <MudText Typo="Typo.h4" Color="Color.Success">@_exactMatched</MudText>
+                    <MudText Typo="Typo.body2">Exact Matched</MudText>
                 </MudPaper>
             </MudItem>
 
-            <MudItem xs="12" sm="4">
+            <MudItem xs="12" sm="3">
                 <MudPaper Elevation="2" Class="pa-3 text-center">
-                    <MudText Typo="Typo.h4" Color="Color.Warning">@_totalUnmatched</MudText>
+                    <MudText Typo="Typo.h4" Color="Color.Warning">@_containsMatched</MudText>
+                    <MudText Typo="Typo.body2">Contains Matched</MudText>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="3">
+                <MudPaper Elevation="2" Class="pa-3 text-center">
+                    <MudText Typo="Typo.h4" Color="Color.Error">@_totalUnmatched</MudText>
                     <MudText Typo="Typo.body2">Unmatched</MudText>
                 </MudPaper>
             </MudItem>
@@ -74,7 +81,8 @@
     private int _totalCount;
     private int _processedCount;
     private int _totalSearched;
-    private int _totalMatched;
+    private int _exactMatched;
+    private int _containsMatched;
     private int _totalUnmatched;
     private int _multiMatchCount;
     private string _currentPartNumber = string.Empty;
@@ -87,13 +95,11 @@
     {
         if (ProgressState != null)
         {
-                                                                                                                                                                                                                                                                                                                                                                    // Fix: Use a compatible event handler signature
             ProgressState.StateChanged += ProgressState_StateChanged;
             UpdateState();
         }
     }
 
-    // Fix: Add a compatible event handler for StateChanged
     private void ProgressState_StateChanged(object? sender, EventArgs e)
     {
         UpdateState();
@@ -104,7 +110,8 @@
         _totalCount = ProgressState.TotalCount;
         _processedCount = ProgressState.ProcessedCount;
         _totalSearched = ProgressState.TotalSearched;
-        _totalMatched = ProgressState.TotalMatched;
+        _exactMatched = ProgressState.ExactMatched;
+        _containsMatched = ProgressState.ContainsMatched;
         _totalUnmatched = ProgressState.TotalUnmatched;
         _multiMatchCount = ProgressState.MultiMatchCount;
         _currentPartNumber = ProgressState.CurrentPartNumber;
@@ -124,7 +131,6 @@
     {
         if (ProgressState != null)
         {
-            // Fix: Unsubscribe using the correct handler
             ProgressState.StateChanged -= ProgressState_StateChanged;
         }
     }

@@ -111,6 +111,8 @@ else
                         <MudDatePicker Label="Date Format"
                                        @bind-Date="RfqProject.RfqResponseDeadline"
                                        DateFormat="dd.MM.yyyy" />
+                        <MudCheckBox Label="Is Active"
+                                     @bind-Value="RfqProject.IsActive" />
                     </MudStack>
                 </MudPaper>
 
@@ -126,7 +128,7 @@ else
                         <MudItem>
                             <MudStack>
                                 <MudButton Color="Color.Info"
-                                           OnClick="@SearchAllInProgressPartsAsync"
+                                           OnClick="@SearchAllPartNumbersAsync"
                                            Variant="Variant.Filled"
                                            Size="Size.Small"
                                            StartIcon="@Icons.Material.Filled.TravelExplore"
@@ -143,6 +145,15 @@ else
                                            Disabled="@(InProgressParts.Count == 0 || _isSearchingAll)">
                                     Npr All
                                 </MudButton>
+                                <MudButton Color="Color.Secondary"
+                                           OnClick="@ClearPartNumbersAsync"
+                                           Variant="Variant.Filled"
+                                           Size="Size.Small"
+                                           StartIcon="@Icons.Material.Filled.Delete"
+                                           FullWidth="false"
+                                           Disabled="@(TotalParts == 0)">
+                                    Clear P/Ns
+                                </MudButton>
                             </MudStack>
                         </MudItem>
                         <MudItem>
@@ -155,6 +166,15 @@ else
                                            FullWidth="false"
                                            Disabled="@(CompletedParts.Count == 0)">
                                     Flip All
+                                </MudButton>
+                                <MudButton Color="Color.Secondary"
+                                           OnClick="@DeleteRfqAsync"
+                                           Variant="Variant.Filled"
+                                           Size="Size.Small"
+                                           StartIcon="@Icons.Material.Filled.Delete"
+                                           FullWidth="false"
+                                           Disabled="@(TotalParts == 0)">
+                                    Delete Rfq
                                 </MudButton>
                                 <MudButton Color="Color.Dark"
                                            OnClick="@ShowDatasetStatusAsync"
@@ -178,12 +198,12 @@ else
                                     Reload
                                 </MudButton>
                                 <MudButton Color="Color.Primary"
-                                           OnClick="@RefreshDataAsync"
+                                           OnClick="@SaveDataAsync"
                                            Variant="Variant.Filled"
                                            Size="Size.Small"
-                                           StartIcon="@Icons.Material.Filled.Refresh"
+                                           StartIcon="@Icons.Material.Filled.Save"
                                            FullWidth="false">
-                                    Refresh
+                                    Update
                                 </MudButton>
                                 <MudButton Color="Color.Primary"
                                            OnClick="@UploadFilesAsync"
@@ -322,10 +342,6 @@ else
             Func<string, Task<int>> stringAsyncService = RfqUxClientService.GetProjectAssociationsByCustomerIdAsync;
             (long timing, int count) = await stringAsyncService.TimeAsyncStringIntService(rfqProject.CustomerBusinessUnitGuid);
             Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded {count} customerProjectAssociations for CustomerBusinessUnitGuid {rfqProject.CustomerBusinessUnitGuid} in {timing}ms");
-            // foreach (var item in RfqUxClientService.CustomerProjectAssociations)
-            // {
-            //     Logger.GenericLogInformation($"{item.Id}, {item.ProjectId}, {item.ProjectName}, {item.CustomerId}, {item.CustomerName}");
-            // }
         }
 
         RfqProject = rfqProject.ToUx();
@@ -381,13 +397,6 @@ else
     {
         if (!string.IsNullOrWhiteSpace(RfqProject!.CustomerBusinessUnitId))
         {
-            // CustomerUx? customer = RfqUxClientService.Customers.FirstOrDefault(c => c.Id == value);
-
-            // if (customer != null)
-            // {
-            //     await RfqUxClientService.GetProjectAssociationsByCustomerIdAsync(customer.Id);
-            //     StateHasChanged();
-            // }
             CustomerUx? customer = RfqUxClientService.Customers.FirstOrDefault(c => c?.CustomerBusinessGroupName == customerBusinessGroupName);
 
             if (customer != null && Guid.TryParse(customer.Id, out Guid customerId))
@@ -463,7 +472,6 @@ else
                 if (part != null)
                 {
                     part.IsExactMatch = false;
-                    part.IsCompleted = false;
                     partsToFlip.Add(part);
 
                     // Update via service
@@ -519,11 +527,247 @@ else
         }
     }
 
-    private async Task RefreshDataAsync()
+    // private async Task DeletePNsAsync()
+    // {
+    //     if (TotalParts == 0)
+    //     {
+    //         Snackbar.Add("No part numbers to delete", Severity.Info);
+    //         Logger.GenericLogInformation("EditRfq.DeletePNsAsync - No parts available to delete");
+    //         return;
+    //     }
+
+    //     // Show confirmation dialog
+    //     bool? confirm = await DialogService.ShowMessageBox(
+    //         "Confirm Delete All",
+    //         $"Are you sure you want to delete ALL {TotalParts} part number(s)? This action cannot be undone.",
+    //         yesText: "Delete All",
+    //         cancelText: "Cancel"
+    //     );
+
+    //     if (confirm != true)
+    //     {
+    //         Logger.GenericLogInformation("EditRfq.DeletePNsAsync - User cancelled delete operation");
+    //         return;
+    //     }
+
+    //     List<RfqDrawingPartNumberUx?> allParts = new();
+    //     allParts.AddRange(CompletedParts);
+    //     allParts.AddRange(InProgressParts);
+
+    //     CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
+    //     try
+    //     {
+    //         Logger.GenericLogInformation($"EditRfq.DeletePNsAsync - Starting deletion of {allParts.Count} part numbers");
+
+    //         int totalCount = allParts.Count;
+
+    //         // Create progress state
+    //         var progressState = new DeleteProgressState(totalCount, cancellationTokenSource);
+
+    //         // Create progress dialog parameters
+    //         DialogParameters progressParams = new DialogParameters
+    //         {
+    //             { "ProgressState", progressState }
+    //         };
+
+    //         DialogOptions progressOptions = new DialogOptions
+    //         {
+    //             MaxWidth = MaxWidth.Medium,
+    //             FullWidth = true,
+    //             CloseOnEscapeKey = false,
+    //             BackdropClick = false
+    //         };
+
+    //         IDialogReference progressDialog = await DialogService.ShowAsync<DeleteProgressDialog>(
+    //             "Delete Progress",
+    //             progressParams,
+    //             progressOptions
+    //         );
+
+    //         int processedCount = 0;
+    //         int successCount = 0;
+    //         int failedCount = 0;
+
+    //         // Process each part number
+    //         foreach (RfqDrawingPartNumberUx? part in allParts.ToList())
+    //         {
+    //             if (cancellationTokenSource.Token.IsCancellationRequested)
+    //             {
+    //                 Logger.GenericLogInformation("EditRfq.DeletePNsAsync - Delete cancelled by user");
+    //                 return;
+    //             }
+
+    //             if (part == null)
+    //             {
+    //                 continue;
+    //             }
+
+    //             string currentPartNumber = $"{part.CustomerPartNumber}/{part.DrawingPartNumber}";
+    //             Logger.GenericLogInformation($"EditRfq.DeletePNsAsync - Deleting part {processedCount + 1}/{totalCount}: {currentPartNumber}");
+
+    //             try
+    //             {
+    //                 // Call the service to delete the part number
+    //                 bool success = await RfqUxClientService.DeleteRfqDrawingPartNumber(part);
+
+    //                 if (success)
+    //                 {
+    //                     successCount++;
+    //                     Logger.GenericLogInformation($"EditRfq.DeletePNsAsync - Successfully deleted: {currentPartNumber}");
+    //                 }
+    //                 else
+    //                 {
+    //                     failedCount++;
+    //                     Logger.GenericLogInformation($"EditRfq.DeletePNsAsync - Failed to delete: {currentPartNumber}");
+    //                 }
+    //             }
+    //             catch (Exception ex)
+    //             {
+    //                 failedCount++;
+    //                 Logger.GenericLogError($"EditRfq.DeletePNsAsync - Error deleting part: {currentPartNumber}", ex);
+    //             }
+
+    //             processedCount++;
+
+    //             // Update progress state
+    //             progressState.UpdateProgress(
+    //                 processedCount,
+    //                 successCount,
+    //                 failedCount,
+    //                 currentPartNumber
+    //             );
+    //         }
+
+    //         // Mark as complete
+    //         progressState.Complete();
+
+    //         // Clear the lists
+    //         if (successCount > 0)
+    //         {
+    //             CompletedParts.Clear();
+    //             InProgressParts.Clear();
+    //         }
+
+    //         Logger.GenericLogInformation($"EditRfq.DeletePNsAsync - Delete complete. Processed: {processedCount}, Success: {successCount}, Failed: {failedCount}");
+
+    //         // Close progress dialog after a short delay
+    //         await Task.Delay(2000);
+    //         progressDialog.Close();
+
+    //         if (failedCount == 0)
+    //         {
+    //             Snackbar.Add($"Successfully deleted all {successCount} part number(s)", Severity.Success);
+    //         }
+    //         else
+    //         {
+    //             Snackbar.Add($"Deleted {successCount} part number(s), {failedCount} failed", Severity.Warning);
+    //         }
+
+    //         StateHasChanged();
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Logger.GenericLogError($"EditRfq.DeletePNsAsync - Unexpected error during data deletion {ex.Message}", ex);
+    //         Snackbar.Add($"Error deleting part numbers: {ex.Message}", Severity.Error);
+    //     }
+    //     finally
+    //     {
+    //         cancellationTokenSource?.Dispose();
+    //     }
+    // }
+
+    private async Task ClearPartNumbersAsync()
     {
+        await Task.Delay(1);
+
+        // Show confirmation dialog
+        bool? confirm = await DialogService.ShowMessageBox(
+            "Confirm Clear all P/Ns",
+            $"Are you sure you want to clear ALL {TotalParts} part number(s)?",
+            yesText: "Clear All",
+            cancelText: "Cancel"
+        );
+
+        if (confirm == true)
+        {
+            Logger.GenericLogInformation("EditRfq.DeletePNsAsync - User cancelled clear P/Ns operation");
+            CompletedParts.Clear();
+            InProgressParts.Clear();
+            StateHasChanged();
+
+            return;
+        }
+    }
+    private async Task DeleteRfqAsync()
+    {
+        // Show confirmation dialog
+        bool? confirm = await DialogService.ShowMessageBox(
+            $"Confirm deleting RFQ {RfqProject!.RfqNumber}",
+            $"Are you sure you want to also delete ALL {TotalParts} part number(s) linked to this RFQ? This action cannot be undone.",
+            yesText: "Delete All",
+            cancelText: "Cancel"
+        );
+
+        if (confirm != true)
+        {
+            Logger.GenericLogInformation("EditRfq.DeleteRfqAsync - User cancelled delete operation");
+            return;
+        }
+
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
+        try
+        {
+            var result = await RfqUxClientService.DeleteRfqProjectByRowIdAsync(RfqProject!.RowId);
+            if (result.SaveSuccess)
+            {
+                Snackbar.Add($"Successfully deleted RFQ {RfqProject.RfqNumber} and all linked part numbers", Severity.Success);
+                Logger.GenericLogInformation($"EditRfq.DeleteRfqAsync - Successfully deleted RFQ {RfqProject.RfqNumber} and all linked part numbers");
+            }
+            else
+            {
+                Snackbar.Add($"Error deleting RFQ {RfqProject.RfqNumber}", Severity.Error);
+                Logger.GenericLogInformation($"EditRfq.DeleteRfqAsync - Error deleting RFQ {RfqProject.RfqNumber}");
+            }
+
+            NavigationManager.NavigateTo("/");
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError($"EditRfq.DeletePNsAsync - Unexpected error during data deletion {ex.Message}", ex);
+            Snackbar.Add($"Error deleting part numbers: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            cancellationTokenSource?.Dispose();
+        }
+    }
+
+    private async Task SaveDataAsync()
+    {
+
+        List<RfqDrawingPartNumberUx?> allParts = new();
+        allParts.AddRange(CompletedParts);
+        allParts.AddRange(InProgressParts);
+
         await Task.Delay(0);
         try
         {
+            var partsUpdateResult = await RfqUxClientService.UpdateRfqDrawingPartNumbersAsync(allParts);
+            var rfqUpdateResult = await RfqUxClientService.UpdateRfqProjectAsync(RfqProject!);
+            if(partsUpdateResult.Success && rfqUpdateResult.Success)
+            {
+                Snackbar.Add("Data refreshed successfully", Severity.Success);
+                Logger.GenericLogInformation("EditRfq.SaveDataAsync - Data refreshed successfully");
+            }
+            else
+            {
+                Snackbar.Add("Error refreshing data", Severity.Error);
+                Logger.GenericLogInformation("EditRfq.SaveDataAsync - Error refreshing data");
+            }
             StateHasChanged();
         }
         catch (Exception ex)
@@ -543,7 +787,7 @@ else
         }
         await Task.Delay(1);
     }
-    private async Task SearchAllInProgressPartsAsync()
+    private async Task SearchAllPartNumbersAsync()
     {
         if (InProgressParts.Count == 0)
         {
@@ -652,7 +896,6 @@ else
                                 part.DrawingPartNumberPrice = nprPrice;
                                 part.PriceSource = "NPR";
                                 part.IsExactMatch = true;
-                                part.IsCompleted = true;  // Set to true ONLY for exact matches
                                 part.IsSwapped = false;
                                 part.MultiMatch = hasMultipleMatches;
                                 // add all the matches in the nprsearch list to the first of the MatchedPartNumbers
@@ -744,7 +987,6 @@ else
                                 part.DrawingPartNumberPrice = nprPrice;
                                 part.PriceSource = "NPR";
                                 part.IsExactMatch = false;
-                                part.IsCompleted = false;  // Keep false for contains matches
                                 part.IsSwapped = false;
                                 part.MultiMatch = hasMultipleMatches;
                                 // add all the matches in the nprsearch list to the first of the MatchedPartNumbers
@@ -818,7 +1060,8 @@ else
                     processedCount,
                     totalSearched,
                     totalCompleted,
-                    totalInProgress,
+                    totalInProgress - totalCompleted,
+                    totalSearched - totalCompleted - (totalInProgress - totalCompleted),
                     multiMatchCount,
                     currentPartNumber
                 );

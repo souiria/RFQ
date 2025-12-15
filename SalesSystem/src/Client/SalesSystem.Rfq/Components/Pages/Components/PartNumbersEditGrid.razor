@@ -41,13 +41,6 @@
                                        aria-label="edit"
                                        OnClick="@(async () => await OnEdit(context.Item))" />
                     </MudTooltip>
-                    <MudTooltip Text="Flip Part Number">
-                        <MudIconButton Size="@Size.Small"
-                                       Color="Color.Primary"
-                                       Icon="@Icons.Material.Filled.SwapVert"
-                                       aria-label="flip"
-                                       OnClick="@(async () => await OnFlip(context.Item))" />
-                    </MudTooltip>
                     <MudTooltip Text="Delete Part Number">
                         <MudIconButton Size="@Size.Small"
                                        Color="Color.Primary"
@@ -109,17 +102,17 @@
 
     private string RowStyleFunc(RfqDrawingPartNumberUx item, int index)
     {
-        if (item?.IsCompleted == true && item?.IsExactMatch == true)
+        if (item?.IsCompleted == true)
         {
             return "background-color: lightgreen;";
         }
-        else if (item?.IsCompleted == true && item?.IsExactMatch == false)
+        else if (item?.IsCompleted == false && item?.MultiMatch == true)
         {
             return "background-color: lightyellow;"; // Changed color to light yellow for partial matches
         }
         else if (item?.IsCompleted == false && item?.IsSwapped == true)
         {
-            return "background-color: lightblue;"; // Changed color to light yellow for partial matches
+            return "background-color: lightblue;"; // Changed color to light blue for swapped items
         }
         return string.Empty;
     }
@@ -183,7 +176,15 @@
 
                 // Show custom dialog with MudList
                 int index = 0;
+
+                var commentData = new RfqDrawingPartNumberUxSearchResult();
+                commentData.User = "System";
+                commentData.Timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
+                commentData.Action = "AutoSearch_NPR_Applied";
+
                 // look for exact matches first
+                var exactMatches = responseExact.StringList.ToRfqDrawingPartNumberUxList(true);
+                commentData.ExactMatchPartNumbers.AddRange(exactMatches);
                 foreach (string pn in responseExact.StringList)
                 {
                     var matchedPartNumber = new MatchedPartNumberUx();
@@ -193,33 +194,20 @@
 
                     item.MatchedPartNumbers.Add(matchedPartNumber);
                 }
-                
-                var commentData = new
-                {
-                    User = "System",
-                    Timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
-                    Action = "AutoSearch_NPR_Applied",
-                    ExactMatchPartNumbers = responseExact.StringList,
-                    ContainsMatchPartNumbers = new List<string>()
-                };
 
                 // then look for partial matches
-                foreach(string pn in responseContains.StringList)
+                var containsMatches = responseContains.StringList.ToRfqDrawingPartNumberUxList(false);
+                commentData.ContainsMatchPartNumbers.AddRange(containsMatches);
+                foreach (string pn in responseContains.StringList)
                 {
                     var matchedPartNumber = new MatchedPartNumberUx();
-                    matchedPartNumber.IsExactMatch = false; // partial match
+                    matchedPartNumber.IsExactMatch = false;  // exact match
                     matchedPartNumber.Index = index++;
                     matchedPartNumber.SewsePartNumber = pn;
 
                     item.MatchedPartNumbers.Add(matchedPartNumber);
                 }
 
-                commentData.ContainsMatchPartNumbers.AddRange(responseContains.StringList);
-
-                item.Comments = System.Text.Json.JsonSerializer.Serialize(commentData, new System.Text.Json.JsonSerializerOptions
-                {
-                    WriteIndented = false
-                }); ;
 
                 DialogParameters parameters = new DialogParameters
                 {
@@ -263,7 +251,6 @@
                             item.IsExactMatch = updatedItem.IsExactMatch;
                             item.IsSwapped = updatedItem.IsSwapped;
                             item.Comments = updatedItem.Comments;
-                            item.IsCompleted = updatedItem.IsCompleted;
 
                             Logger.GenericLogInformation($"Successfully updated part number with NPR data: {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber}");
                             Snackbar.Add($"Part number {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber} updated with NPR data", Severity.Success);
@@ -327,20 +314,19 @@
         }
     }
 
-    private async Task OnFlip(RfqDrawingPartNumberUx item)
-    {
-        await Task.Delay(1);
-        if (item == null)
-        {
-            Logger.GenericLogInformation("Flip called with null item");
-            return;
-        }
+    // private async Task OnFlip(RfqDrawingPartNumberUx item)
+    // {
+    //     await Task.Delay(1);
+    //     if (item == null)
+    //     {
+    //         Logger.GenericLogInformation("Flip called with null item");
+    //         return;
+    //     }
 
-        item.IsExactMatch = true;
-        item.IsCompleted = true;
+    //     item.IsExactMatch = true;
 
-        StateHasChanged();
-    }
+    //     StateHasChanged();
+    // }
 
     private async Task OnEdit(RfqDrawingPartNumberUx item)
     {
@@ -391,7 +377,6 @@
                     item.IsExactMatch = editedItem.IsExactMatch;
                     item.IsSwapped = editedItem.IsSwapped;
                     item.Comments = editedItem.Comments;
-                    item.IsCompleted = editedItem.IsCompleted;
 
                     Logger.GenericLogInformation($"Successfully updated part number: {editedItem.CustomerPartNumber}/{editedItem.DrawingPartNumber}");
                     Snackbar.Add($"Part number {editedItem.CustomerPartNumber}/{editedItem.DrawingPartNumber} updated successfully", Severity.Success);

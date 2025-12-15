@@ -28,7 +28,7 @@ service RfqModule {
   rpc GetRfqDrawingPartNumbersByRfqIdGrpc (GetRfqDrawingPartNumbersByRfqIdGrpcRequest) returns (GetRfqDrawingPartNumbersByRfqIdGrpcResponse);
 //  rpc UpdateRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequestt) returns (UpdateRfqDrawingPartNumbersGrpcResponse);
   rpc UpdateRfqDrawingPartNumbersGrpc (UpdateRfqDrawingPartNumbersGrpcRequest) returns (UpdateRfqDrawingPartNumbersGrpcResponse);
- rpc DeleteRfqProjectByRowIdGrpc (RfqProjectRequest) returns (RfqCrudResponse);
+  rpc DeleteRfqProjectByRowIdGrpc (RfqProjectRequest) returns (RfqCrudResponse);
   rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
 }
 

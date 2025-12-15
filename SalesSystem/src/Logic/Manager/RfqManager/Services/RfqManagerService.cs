@@ -91,8 +91,12 @@
                 GetProjectAssociationsByCustomerIdResponse response = new GetProjectAssociationsByCustomerIdResponse();
                 MastersFilterRequestGrpc filterRequest = new MastersFilterRequestGrpc();
                 filterRequest.DatabaseList = "CUSTOMERLOCATIONGRPC";
-                //filterRequest.FilterExpression = $"CustomerId != null && CustomerId == \"{request.CustomerId.ToUpperInvariant()}\"";
-                filterRequest.FilterExpression = $"Id != null && Id == \"{request.CustomerId.ToUpperInvariant()}\"";
+#pragma warning disable CA1308
+                // filterRequest.FilterExpression = $"CustomerId != null && CustomerId == \"{request.CustomerId.ToLowerInvariant()}\"";
+                // filterRequest.FilterExpression = $"Id != null && Id == \"{request.CustomerId.ToLowerInvariant()}\"";
+                // filterRequest.FilterExpression = $"CustomerBusinessHierarchyGuid != null && CustomerBusinessHierarchyGuid == \"{request.CustomerId.ToLowerInvariant()}\"";
+                filterRequest.FilterExpression = $"CustomerBusinessHierarchyGuid != null && CustomerBusinessHierarchyGuid.ToUpperInvariant() == \"{request.CustomerId.ToUpperInvariant()}\"";
+#pragma warning restore CA1308
                 MastersFilterResponseGrpc locations = _MasterClient.FilterMasterDataGrpc(filterRequest);
                 List<CustomerLocationGrpc> extractedLocations = ExtractMastersResponseData<CustomerLocationGrpc>(locations).ToList();
                 if (extractedLocations.Count <= 0)
@@ -105,7 +109,10 @@
                 foreach (CustomerLocationGrpc? location in extractedLocations)
                 {
                     filterRequest.DatabaseList = "CUSTOMERPROJECTASSOCIATIONGRPC";
-                    filterRequest.FilterExpression = $"CustomerGuid != null && CustomerGuid == \"{location.Id.ToUpperInvariant()}\"";
+#pragma warning disable CA1308
+                    // filterRequest.FilterExpression = $"CustomerGuid != null && CustomerGuid == \"{location.Id.ToUpperInvariant()}\"";
+                    filterRequest.FilterExpression = $"CustomerLocationGuid != null && CustomerLocationGuid.ToUpperInvariant() == \"{location.Id.ToUpperInvariant()}\"";
+#pragma warning restore CA1308
                     MastersFilterResponseGrpc projectAssociations = _MasterClient.FilterMasterDataGrpc(filterRequest);
                     List<CustomerProjectAssociationGrpc> extractedProjectAssociations = ExtractMastersResponseData<CustomerProjectAssociationGrpc>(projectAssociations).ToList();
 
@@ -117,7 +124,7 @@
                         }
 
                         filterRequest.DatabaseList = "PROJECTGRPC";
-                        filterRequest.FilterExpression = $"Id != null && Id == \"{customerProjectAssociation.ProjectGuid.ToUpperInvariant()}\"";
+                        filterRequest.FilterExpression = $"Id != null && Id.ToUpperInvariant() == \"{customerProjectAssociation.ProjectGuid.ToUpperInvariant()}\"";
                         MastersFilterResponseGrpc projects = _MasterClient.FilterMasterDataGrpc(filterRequest);
                         List<ProjectGrpc> extractedProjects = ExtractMastersResponseData<ProjectGrpc>(projects).ToList();
 
@@ -527,6 +534,7 @@
                     RfqDrawingPartNumbersGrpc grpcPart = new RfqDrawingPartNumbersGrpc();
                     grpcPart.RowId = part.RowId;
                     grpcPart.RfqId = part.RfqId;
+                    grpcPart.SumitomoPartNumber = part.SumitomoPartNumber;
                     grpcPart.OriginalPartNumber = part.OriginalPartNumber;
                     grpcPart.OriginalPartNumberPrice = part.OriginalPartNumberPrice;
                     grpcPart.SwappedPartNumber = part.SwappedPartNumber;

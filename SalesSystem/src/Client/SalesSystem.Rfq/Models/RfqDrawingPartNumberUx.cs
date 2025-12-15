@@ -6,7 +6,6 @@ namespace SalesSystem.Rfq.Models
     {
         public RfqDrawingPartNumberUx()
         {
-            IsCompleted = false;
             MultiMatch = false;
             MatchedPartNumbers = new List<MatchedPartNumberUx>();
         }
@@ -36,7 +35,28 @@ namespace SalesSystem.Rfq.Models
         public string? Comments
         { get; set; }
         public bool IsCompleted
-        { get; set; }
+        {
+            get
+            {
+                if (IsExactMatch == true)
+                {
+                    return true;
+                }
+
+                // Check if drawing part number is set with a price
+                bool hasDrawingPartNumberWithPrice = !string.IsNullOrWhiteSpace(DrawingPartNumber) 
+                    && DrawingPartNumberPrice.HasValue 
+                    && 0 <= DrawingPartNumberPrice;
+
+                // Check if swapped part number is set with a swapped price
+                bool hasSwappedPartNumberWithPrice = !string.IsNullOrWhiteSpace(SwappedPartNumber) 
+                    && SwappedPartNumberPrice.HasValue 
+                    && 0 <= SwappedPartNumberPrice;
+
+                return hasDrawingPartNumberWithPrice || hasSwappedPartNumberWithPrice;
+            }
+        }
+
         public bool MultiMatch
         { get; set; }
 

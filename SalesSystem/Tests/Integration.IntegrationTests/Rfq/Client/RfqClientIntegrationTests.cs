@@ -228,7 +228,6 @@ namespace Integration.Tests.Rfq.Client
             {
                 if (part is not null)
                 {
-                    part.IsCompleted = false;
                     part.IsExactMatch = false;
                     part.IsSwapped = false;
                 }

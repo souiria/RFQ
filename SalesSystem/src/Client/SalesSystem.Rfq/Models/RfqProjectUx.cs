@@ -30,6 +30,8 @@
         { get; set; }
         public int VehicleVolume
         { get; set; }
+        public bool IsActive
+        { get; set; }
         public RfqProjectUx()
         {
             RfqNumber = string.Empty;
@@ -40,6 +42,7 @@
             VehicleVolume = 0;
             ProjectId = string.Empty;
             RfqReasonId = 0;
+            IsActive = false;
         }
     }
 }

@@ -33,6 +33,13 @@
                                      AdornmentText="$"
                                      Min="0m" />
                 </MudItem>
+                @* Pick list from search results stored in the commment after data aseparator *@
+                @if (@EditedItem.MatchedPartNumbers.Count > 0)
+                {
+                    @* MatchedPartNumberUx partNumberUx numbers pick list *@
+
+                }
+                @* End pick list *@
                 <MudItem xs="12" sm="6">
                     <MudTextField @bind-Value="EditedItem.SwappedPartNumber"
                                   Label="Dummy/Alt. Part Number"
@@ -56,19 +63,22 @@
                                   Margin="Margin.Dense" />
                 </MudItem>
                 <MudItem xs="12" sm="4">
-                    <MudCheckBox @bind-Value="EditedItem.IsExactMatch"
+                    <MudCheckBox Value="EditedItem.IsExactMatch"
+                                 ReadOnly="true"    
                                  Label="Is Exact Match"
                                  Color="Color.Primary"
                                  Dense="true" />
                 </MudItem>
                 <MudItem xs="12" sm="4">
-                    <MudCheckBox @bind-Value="EditedItem.IsSwapped"
+                    <MudCheckBox Value="EditedItem.IsSwapped"
+                                 ReadOnly="true"
                                  Label="Is Swapped"
                                  Color="Color.Primary"
                                  Dense="true" />
                 </MudItem>
                 <MudItem xs="12" sm="4">
-                    <MudCheckBox @bind-Value="EditedItem.IsCompleted"
+                    <MudCheckBox Value="EditedItem.IsCompleted"
+                                 ReadOnly="true"
                                  Label="Is Matched"
                                  Color="Color.Primary"
                                  Dense="true" />
@@ -115,6 +125,14 @@
                    Style="margin-right: auto;">
             Create NPR
         </MudButton>
+        <MudButton OnClick="Complete"
+                   Disabled="!EditedItem.IsCompleted"
+                   Color="Color.Info"
+                   Variant="Variant.Filled"
+                   StartIcon="@Icons.Material.Filled.IncompleteCircle"
+                   Style="margin-right: auto;">
+            Complete
+        </MudButton>
         <MudButton OnClick="Cancel" Color="Color.Default">Cancel</MudButton>
         <MudButton OnClick="Save" Color="Color.Primary" Variant="Variant.Filled" Disabled="!_isValid">Save</MudButton>
     </DialogActions>
@@ -143,8 +161,7 @@
             PriceSource = OriginalItem.PriceSource,
             IsExactMatch = OriginalItem.IsExactMatch,
             IsSwapped = OriginalItem.IsSwapped,
-            Comments = OriginalItem.Comments,
-            IsCompleted = OriginalItem.IsCompleted
+            Comments = OriginalItem.Comments
         };
     }
 
@@ -172,7 +189,6 @@
             EditedItem.SwappedPartNumberPrice = dummyData.Price;
             EditedItem.IsSwapped = true;
             EditedItem.IsExactMatch = false;
-            EditedItem.IsCompleted = false;
             EditedItem.PriceSource = "Dummy";
 
             // Force UI refresh
@@ -202,6 +218,53 @@
             // For now, do not assign the information
             // TODO: Handle NPR data assignment when requirements are defined
             // nprData.NprNumber and nprData.NprDate are available here
+        }
+    }
+    private async Task Complete()
+    {
+        await _form.Validate();
+        if (!_isValid)
+        {
+            return;
+        }
+
+        // Check if the part has drawing part number with price OR swapped part number with swapped price
+        bool hasDrawingPartNumberWithPrice = !string.IsNullOrWhiteSpace(EditedItem.DrawingPartNumber) 
+            && EditedItem.DrawingPartNumberPrice.HasValue 
+            && EditedItem.DrawingPartNumberPrice.Value > 0;
+
+        bool hasSwappedPartNumberWithPrice = !string.IsNullOrWhiteSpace(EditedItem.SwappedPartNumber) 
+            && EditedItem.SwappedPartNumberPrice.HasValue 
+            && EditedItem.SwappedPartNumberPrice.Value > 0;
+
+        if (hasDrawingPartNumberWithPrice || hasSwappedPartNumberWithPrice)
+        {
+            // If hasDrawingPartNumberWithPrice
+            if (hasDrawingPartNumberWithPrice)
+            {
+                EditedItem.IsExactMatch = true;
+            }
+
+            // If swapped part number is set with price, mark as swapped
+            if (hasSwappedPartNumberWithPrice)
+            {
+                EditedItem.IsSwapped = true;
+            }
+
+            // Close dialog and return the edited item
+            // The IsCompleted property will automatically return true based on the logic in the model
+            MudDialog.Close(DialogResult.Ok(EditedItem));
+        }
+        else
+        {
+            // Show validation message if neither condition is met
+            await DialogService.ShowMessageBox(
+                "Incomplete Part Number",
+                "To complete this part number, you must have either:\n" +
+                "- A drawing part number with a price, OR\n" +
+                "- A swapped part number with a swapped price",
+                "OK"
+            );
         }
     }
 

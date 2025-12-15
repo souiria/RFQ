@@ -356,12 +356,7 @@ namespace SalesSystem.Rfq.Services
             await Task.Delay(1);
             try
             {
-                //UpdateRfqDrawingPartNumberRequest request = new UpdateRfqDrawingPartNumberRequest();
-                //request.PartNumber = partNumberUx.ToGrpc();
-
-                //UpdateRfqDrawingPartNumberResponse response = await _Client.UpdateRfqDrawingPartNumberGrpcAsync(request, cancellationToken: timeoutCts.Token);
-
-                //return response.Success;
+                
                 return true;
             }
             catch (Exception ex)
@@ -373,16 +368,27 @@ namespace SalesSystem.Rfq.Services
         public async Task<bool> DeleteRfqDrawingPartNumber(RfqDrawingPartNumberUx partNumberUx)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-            await Task.Delay(1);
+            await Task.Delay(0);
             try
             {
-                //DeleteRfqDrawingPartNumberRequest request = new DeleteRfqDrawingPartNumberRequest();
-                //request.PartNumber = partNumberUx.ToGrpc();
+                // Convert to gRPC type inline
+                RfqDrawingPartNumber grpcPartNumber = new RfqDrawingPartNumber();
+                grpcPartNumber.RowId = partNumberUx.RowId;
+                grpcPartNumber.RfqId = partNumberUx.RfqId;
+                grpcPartNumber.OriginalPartNumber = partNumberUx.DrawingPartNumber ?? string.Empty;
+                grpcPartNumber.OriginalPartNumberPrice = partNumberUx.DrawingPartNumberPrice.HasValue ? Convert.ToDouble(partNumberUx.DrawingPartNumberPrice.Value) : 0;
+                grpcPartNumber.SwappedPartNumber = partNumberUx.SwappedPartNumber ?? string.Empty;
+                grpcPartNumber.SwappedPartNumberPrice = partNumberUx.SwappedPartNumberPrice.HasValue ? Convert.ToDouble(partNumberUx.SwappedPartNumberPrice.Value) : 0;
+                grpcPartNumber.PriceSource = partNumberUx.PriceSource ?? string.Empty;
+                grpcPartNumber.IsExactMatch = partNumberUx.IsExactMatch ?? false;
+                grpcPartNumber.IsSwapped = partNumberUx.IsSwapped ?? false;
+                grpcPartNumber.Comments = partNumberUx.Comments ?? string.Empty;
+                grpcPartNumber.SumitomoPartNumber = partNumberUx.CustomerPartNumber ?? string.Empty;
 
-                //DeleteRfqDrawingPartNumberResponse response = await _Client.DeleteRfqDrawingPartNumberGrpcAsync(request, cancellationToken: timeoutCts.Token);
-
-                //return response.Success;
-                return true;
+                // TODO: Implement delete logic once gRPC endpoint is added to RfqModule.proto
+                // For now, return false to indicate deletion is not yet implemented
+                _Logger?.GenericLogInformation($"Delete not yet implemented for PartNumber: {partNumberUx.CustomerPartNumber}/{partNumberUx.DrawingPartNumber}");
+                return false;
             }
             catch (Exception ex)
             {

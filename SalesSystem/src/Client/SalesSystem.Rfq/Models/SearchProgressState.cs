@@ -15,7 +15,9 @@ namespace SalesSystem.Rfq.Models
         { get; private set; }
         public int TotalSearched 
         { get; private set; }
-        public int TotalMatched 
+        public int ExactMatched 
+        { get; private set; }
+        public int ContainsMatched 
         { get; private set; }
         public int TotalUnmatched 
         { get; private set; }
@@ -44,14 +46,16 @@ namespace SalesSystem.Rfq.Models
         public void UpdateProgress(
             int processedCount,
             int totalSearched,
-            int totalMatched,
+            int exactMatched,
+            int containsMatched,
             int totalUnmatched,
             int multiMatchCount,
             string currentPartNumber)
         {
             ProcessedCount = processedCount;
             TotalSearched = totalSearched;
-            TotalMatched = totalMatched;
+            ExactMatched = exactMatched;
+            ContainsMatched = containsMatched;
             TotalUnmatched = totalUnmatched;
             MultiMatchCount = multiMatchCount;
             CurrentPartNumber = currentPartNumber;

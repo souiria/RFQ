@@ -1,4 +1,5 @@
-﻿using Google.Protobuf;
+﻿using System.Globalization;
+using Google.Protobuf;
 
 namespace SalesSystem.Rfq.Extensions
 {
@@ -41,6 +42,7 @@ namespace SalesSystem.Rfq.Extensions
             uxModel.RfqResponseDeadline = rfqProject.RfqResponseDeadline?.ToDateTime();
             uxModel.CarModelId = rfqProject.CarModelGuid.Trim().ToUpperInvariant();
             uxModel.VehicleVolume = rfqProject.VehicleVolume;
+            uxModel.IsActive = rfqProject.IsActive ?? false;
 
             return uxModel;
         }
@@ -67,6 +69,7 @@ namespace SalesSystem.Rfq.Extensions
 
             dto.CarModelGuid = uxModel.CarModelId.Trim().ToUpperInvariant();
             dto.VehicleVolume = uxModel.VehicleVolume;
+            dto.IsActive = uxModel.IsActive;
 
             return dto;
         }
@@ -122,19 +125,16 @@ namespace SalesSystem.Rfq.Extensions
             {
                 uxModel.IsExactMatch = false;
                 uxModel.IsSwapped = true;
-                uxModel.IsCompleted = false;
             }
             else if (dto.IsExactMatch && !dto.IsSwapped)
             {
                 uxModel.IsExactMatch = true;
                 uxModel.IsSwapped = false;
-                uxModel.IsCompleted = true;
             }
             else
             {
                 uxModel.IsExactMatch = false;
                 uxModel.IsSwapped = false;
-                uxModel.IsCompleted = false;
             }
 
             uxModel.Comments = dto.Comments;
@@ -152,13 +152,15 @@ namespace SalesSystem.Rfq.Extensions
 
             dto.RowId = uxModel.RowId;
             dto.RfqId = uxModel.RfqId;
-            dto.OriginalPartNumber = $"{uxModel.CustomerPartNumber}|{uxModel.DrawingPartNumber}";
+            dto.SumitomoPartNumber = uxModel.DrawingPartNumber;
+            dto.OriginalPartNumber = uxModel.CustomerPartNumber;
             dto.OriginalPartNumberPrice = uxModel.DrawingPartNumberPrice.HasValue ? Convert.ToDouble(uxModel.DrawingPartNumberPrice.Value) : 0;
             dto.SwappedPartNumber = uxModel.SwappedPartNumber;
             dto.SwappedPartNumberPrice = uxModel.SwappedPartNumberPrice.HasValue ? Convert.ToDouble(uxModel.SwappedPartNumberPrice.Value) : 0;
             dto.PriceSource = uxModel.PriceSource;
             dto.IsExactMatch = uxModel.IsExactMatch ?? false;
             dto.IsSwapped = uxModel.IsSwapped ?? false;
+            //dto.IsActive = uxModel.IsActive;
             dto.Comments = uxModel.Comments;
             return dto;
         }

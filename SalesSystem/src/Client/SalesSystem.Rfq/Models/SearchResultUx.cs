@@ -56,27 +56,32 @@
     }
     public class SearchResultUx
     {
-        public Collection<string> StringList
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
+        public List<string> StringList
         { get; init; }
 
-        public Collection<int> IntList
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
+        public List<int> IntList
         { get; init; }
-        public Collection<byte[]> ByteList
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
+        public List<byte[]> ByteList
+        { get; init; }
+        
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]  
+        public List<double> DoubleList
         { get; init; }
 
-        public Collection<double> DoubleList
-        { get; init; }
-
-        public Collection<string> StringList2
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
+        public List<string> StringList2
         { get; init; }
 
         public SearchResultUx()
         {
-            StringList = new Collection<string>();
-            IntList = new Collection<int>();
-            ByteList = new Collection<byte[]>();
-            DoubleList = new Collection<double>();
-            StringList2 = new Collection<string>();
+            StringList = new List<string>();
+            IntList = new List<int>();
+            ByteList = new List<byte[]>();
+            DoubleList = new List<double>();
+            StringList2 = new List<string>();
         }
 
         public bool IsSuccessful
