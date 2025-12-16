@@ -206,8 +206,14 @@
                 rfqGrpcRequestParameter.Take = request.Take;
                 rfqGrpcRequestParameter.RequestType = request.RequestType;
                 rfqReasonRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
+                RfqFilterRequest reasonFilterRequest = new RfqFilterRequest();
+                reasonFilterRequest.DatabaseList = "RFQREASONGRPC";
+                reasonFilterRequest.FilterExpression = "ReasonTitle != null && ReasonTitle != \"\"";
 
-                ListRfqReasonGrpc rfqReasons = _RfqClient.ReadRfqReasonGrpc(rfqReasonRequest);
+                RfqFilterResponse reasonFilterResponse = _RfqClient.FilterRfqGrpc(reasonFilterRequest);
+
+                ListRfqReasonGrpc rfqReasons = reasonFilterResponse.ListRfqReasonGrpc ?? new ListRfqReasonGrpc();
+
                 GetRfqReasonsGrpcResponse response = new GetRfqReasonsGrpcResponse();
                 foreach (Rfq.RfqReasonGrpc? reason in rfqReasons.RfqReasons)
                 {
@@ -268,28 +274,30 @@
             try
             {
                 await Task.Delay(1);
+                RfqFilterRequest rfqFilterRequest = new RfqFilterRequest();
 
-                // Prepare RFQ project request
-                RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
-                RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
-                rfqGrpcRequestParameter.Position = request.Position;
-                rfqGrpcRequestParameter.Take = request.Take;
-                rfqGrpcRequestParameter.RequestType = 1;
-                rfqProjectRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
+                rfqFilterRequest.DatabaseList = "RFQPROJECTGRPC";
+                rfqFilterRequest.FilterExpression = "(IsActive == true)";
 
-                // Fetch RFQ projects
-                ListRfqProjectGrpc rfqProjects = _RfqClient.ReadRfqProjectGrpc(rfqProjectRequest);
+                RfqFilterResponse rfqFilterResponse = _RfqClient.FilterRfqGrpc(rfqFilterRequest);
 
-                // Fetch RFQ reasons
+                // Single declaration; no duplicate variable names
+                ListRfqProjectGrpc rfqProjects = rfqFilterResponse.ListRfqProjectGrpc ?? new ListRfqProjectGrpc();
+
+                // Fetch RFQ reasons=
                 RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
                 RfqGrpcRequestParameter reasonRequestParameter = new RfqGrpcRequestParameter();
                 reasonRequestParameter.Position = 0;
                 reasonRequestParameter.Take = 100;
                 reasonRequestParameter.RequestType = 1;
                 rfqReasonRequest.RfqGrpcRequestParameter = reasonRequestParameter;
+                RfqFilterRequest reasonFilterRequest = new RfqFilterRequest();
+                reasonFilterRequest.DatabaseList = "RFQREASONGRPC";
+                reasonFilterRequest.FilterExpression = "ReasonTitle != null && ReasonTitle != \"\"";
 
-                ListRfqReasonGrpc rfqReasons = _RfqClient.ReadRfqReasonGrpc(rfqReasonRequest);
+                RfqFilterResponse reasonFilterResponse = _RfqClient.FilterRfqGrpc(reasonFilterRequest);
 
+                ListRfqReasonGrpc rfqReasons = reasonFilterResponse.ListRfqReasonGrpc ?? new ListRfqReasonGrpc();
                 // Build reason lookup
                 Dictionary<int, string> reasonLookup = rfqReasons.RfqReasons
                     .Where(r => r.RowId != 0 && r.ReasonTitle != null)
@@ -390,27 +398,18 @@
             try
             {
                 await Task.Delay(1);
+                RfqFilterRequest filterRequest = new RfqFilterRequest();
+                filterRequest.DatabaseList = "RFQPROJECTGRPC";
+                filterRequest.FilterExpression = $"RowId == {request.RowId}";
+                RfqFilterResponse filterResponse = _RfqClient.FilterRfqGrpc(filterRequest);
+                ListRfqProjectGrpc rfqProjects = filterResponse.ListRfqProjectGrpc ?? new ListRfqProjectGrpc();
+                RfqFilterRequest reasonFilterRequest = new RfqFilterRequest();
+                reasonFilterRequest.DatabaseList = "RFQREASONGRPC";
+                reasonFilterRequest.FilterExpression = "ReasonTitle != null && ReasonTitle != \"\"";
 
-                // Prepare RFQ project request
-                RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
-                rfqGrpcRequestParameter.RequestType = 2;
+                RfqFilterResponse reasonFilterResponse = _RfqClient.FilterRfqGrpc(reasonFilterRequest);
 
-                RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
-                rfqProjectRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
-                rfqProjectRequest.RowId = request.RowId;
-
-                // Fetch RFQ project
-                ListRfqProjectGrpc rfqProjects = _RfqClient.ReadRfqProjectGrpc(rfqProjectRequest);
-
-                // Fetch RFQ reasons
-                RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
-                RfqGrpcRequestParameter reasonRequestParameter = new RfqGrpcRequestParameter();
-                reasonRequestParameter.Position = 0;
-                reasonRequestParameter.Take = 100;
-                reasonRequestParameter.RequestType = 1;
-                rfqReasonRequest.RfqGrpcRequestParameter = reasonRequestParameter;
-
-                ListRfqReasonGrpc rfqReasons = _RfqClient.ReadRfqReasonGrpc(rfqReasonRequest);
+                ListRfqReasonGrpc rfqReasons = reasonFilterResponse.ListRfqReasonGrpc ?? new ListRfqReasonGrpc();
 
                 Dictionary<int, string> reasonLookup = rfqReasons.RfqReasons
                     .Where(r => r.RowId != 0 && r.ReasonTitle != null)
@@ -456,12 +455,6 @@
                 Dictionary<string, string> vehicleLookup = listVehicleLookup.VehicleGrpc
                     .Where(v => v.Id != null && v.VehicleName != null)
                     .ToDictionary(v => v.Id, v => v.VehicleName);
-
-                // Prepare response
-                //RfqFilterRequest RfqGrpcRequestParameter = new RfqFilterRequest();
-                //RfqGrpcRequestParameter.DatabaseList = "RfqProjectGrpc";
-                //RfqGrpcRequestParameter.FilterExpression = $"RowId != null && RowId == {request.RowId}";
-                //RfqFilterResponse rfqProjects = _RfqClient.FilterRfqGrpc(RfqGrpcRequestParameter);
 
                 GetRfqProjectByIdGrpcResponse response = new GetRfqProjectByIdGrpcResponse();
 
