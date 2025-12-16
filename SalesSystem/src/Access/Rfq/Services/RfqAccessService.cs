@@ -615,10 +615,16 @@
                 Result<List<DbRfqDrawingPartNumber>> result = await handler.Handle(command, cancellationToken);
                 if (result.IsSuccess)
                 {
+#if DEBUG
+                    // invalidate cache and repopulate
+                    _ListRfqDrawingPartNumbersGrpc = new();
+                    await PopulateRfqDrawingPartNumbers(cancellationToken);
+                    responseList.RfqDrawingPartNumbers.AddRange(_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers);
+#else
                     List<DbRfqDrawingPartNumber> createdComponents = result.Value;
                     List<RfqDrawingPartNumbersGrpc> updatedGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
                     _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.AddRange(updatedGrpcComponents);
-                    responseList.RfqDrawingPartNumbers.AddRange(updatedGrpcComponents);
+#endif
                     return responseList;
                 }
                 else
@@ -644,6 +650,12 @@
                 Result<List<DbRfqDrawingPartNumber>> result = await handler.Handle(command, cancellationToken);
                 if (result.IsSuccess)
                 {
+#if DEBUG
+                    // invalidate cache and repopulate
+                    _ListRfqDrawingPartNumbersGrpc = new();
+                    await PopulateRfqDrawingPartNumbers(cancellationToken);
+                    responseList.RfqDrawingPartNumbers.AddRange(_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers);
+#else
                     foreach (RfqDrawingPartNumbersGrpc updatedComponent in request.RfqDrawingPartNumbersGrpcsToUpdate)
                     {
                         RfqDrawingPartNumbersGrpc? foundItem = _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
@@ -658,7 +670,7 @@
                             _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers[index] = updatedComponent;
                         }
                     }
-
+#endif
                     return true;
                 }
                 else
@@ -667,7 +679,7 @@
                 }
             }
         }
-        #endregion
+#endregion
 
         #region RfqProject
         public async Task<ListRfqProjectGrpc> DeleteRfqProjectByRowId(RfqProjectGrpcRequest request, CancellationToken cancellationToken)
@@ -4979,7 +4991,7 @@
 
         //////////////////////////////////////////////////////////////////////////////////////////////
         #endregion
-        #endregion
+#endregion
         public async Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig, Action<IEnumerable<T>> setResponseCollection,
         CancellationToken cancellationToken)
         {

@@ -106,7 +106,7 @@ namespace SalesSystem.Rfq.Extensions
             uxModel.RowId = dto.RowId;
             uxModel.RfqId = dto.RfqId;
             if(!string.IsNullOrEmpty(dto.OriginalPartNumber) 
-                && string.IsNullOrEmpty(dto.SumitomoPartNumber))
+                && (string.IsNullOrEmpty(dto.SumitomoPartNumber) || dto.SumitomoPartNumber == "0000000"))
             {
                 uxModel.CustomerPartNumber = dto.OriginalPartNumber;
                 uxModel.DrawingPartNumber = string.Empty;
@@ -152,16 +152,24 @@ namespace SalesSystem.Rfq.Extensions
 
             dto.RowId = uxModel.RowId;
             dto.RfqId = uxModel.RfqId;
-            dto.SumitomoPartNumber = uxModel.DrawingPartNumber;
             dto.OriginalPartNumber = uxModel.CustomerPartNumber;
+            dto.SumitomoPartNumber = uxModel.DrawingPartNumber;
             dto.OriginalPartNumberPrice = uxModel.DrawingPartNumberPrice.HasValue ? Convert.ToDouble(uxModel.DrawingPartNumberPrice.Value) : 0;
             dto.SwappedPartNumber = uxModel.SwappedPartNumber;
             dto.SwappedPartNumberPrice = uxModel.SwappedPartNumberPrice.HasValue ? Convert.ToDouble(uxModel.SwappedPartNumberPrice.Value) : 0;
             dto.PriceSource = uxModel.PriceSource;
             dto.IsExactMatch = uxModel.IsExactMatch ?? false;
             dto.IsSwapped = uxModel.IsSwapped ?? false;
-            //dto.IsActive = uxModel.IsActive;
-            dto.Comments = uxModel.Comments;
+            // dto.IsActive = uxModel.IsActive;
+            if(!string.IsNullOrEmpty(uxModel.Comments) && uxModel.Comments.Contains("||<<<", StringComparison.OrdinalIgnoreCase))
+            {
+                dto.Comments = uxModel.Comments.Split("||<<<", StringSplitOptions.None)[0];
+            }
+            else
+            {
+                dto.Comments = uxModel.Comments;
+            }
+
             return dto;
         }
         #endregion

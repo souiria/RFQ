@@ -12,8 +12,25 @@
     //}
     public static class SearchResultUxExtensions
     {
+        public static RfqDrawingPartNumberUx ToSinglePartNumber(this SearchResultUx searchResult)
+        {
+            if (searchResult is null
+                || searchResult.StringList is null
+                || searchResult.DoubleList is null
+                || searchResult.StringList.Count != 1
+                || searchResult.DoubleList.Count != 1)
+            {
+                throw new ArgumentException("SearchResultUxExtensions.ToSinglePartNumber: Invalid search result data");
+            }
+
+            RfqDrawingPartNumberUx nprPartSearchResult = new RfqDrawingPartNumberUx();
+            nprPartSearchResult.DrawingPartNumber = searchResult.StringList[0];
+            nprPartSearchResult.DrawingPartNumberPrice = Math.Round((decimal)searchResult.DoubleList[0], 5, MidpointRounding.AwayFromZero); // Convert.ToDecimal(searchResult.DoubleList[0]);
+            return nprPartSearchResult;
+        }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
-        public static List<NprSearchResult> ToNprSearchResultsList(this SearchResultUx searchResult)
+        public static List<RfqDrawingPartNumberUx> ToSearchResultPartNumbers(this SearchResultUx searchResult)
         {
             if (searchResult is null
                 || searchResult.StringList is null
@@ -23,30 +40,31 @@
                 throw new ArgumentException("SearchResultUxExtensions.ToCompletedPartNumbes: Invalid search result data");
             }
 
-            List<NprSearchResult> nprPartSearchResults = new List<NprSearchResult>();
+            List<RfqDrawingPartNumberUx> nprPartSearchResults = new List<RfqDrawingPartNumberUx>();
             for (int i = 0; i < searchResult.StringList.Count; i++)
             {
-                NprSearchResult nprPartSearchResult = new NprSearchResult();
-                nprPartSearchResult.SewsePartNumber = searchResult.StringList[i];
-                nprPartSearchResult.Price = Math.Round((decimal)searchResult.DoubleList[i], 5, MidpointRounding.AwayFromZero); // Convert.ToDecimal(searchResult.DoubleList[i]);
+                RfqDrawingPartNumberUx nprPartSearchResult = new RfqDrawingPartNumberUx();
+                nprPartSearchResult.DrawingPartNumber = searchResult.StringList[i];
+                nprPartSearchResult.DrawingPartNumberPrice = Math.Round((decimal)searchResult.DoubleList[i], 5, MidpointRounding.AwayFromZero); // Convert.ToDecimal(searchResult.DoubleList[i]);
                 nprPartSearchResults.Add(nprPartSearchResult);
             }
 
             return nprPartSearchResults;
         }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
-        public static List<MatchedPartNumberUx> ToCompletedPartNumbersList(this SearchResultUx searchResult, bool isExactMatch=false)
+        public static List<RfqDrawingPartNumberUx> ToCompletedPartNumbersList(this SearchResultUx searchResult, bool isExactMatch=false)
         {
             if (searchResult is null || searchResult.StringList is null)
             {
                 throw new ArgumentException("SearchResultUxExtensions.ToCompletedPartNumbersList: Invalid search result data");
             }
 
-            List<MatchedPartNumberUx> matchedPartNumbers = new List<MatchedPartNumberUx>();
+            List<RfqDrawingPartNumberUx> matchedPartNumbers = new List<RfqDrawingPartNumberUx>();
             for (int i = 0; i < searchResult.StringList.Count; i++)
             {
-                MatchedPartNumberUx nprPartSearchResult = new MatchedPartNumberUx();
-                nprPartSearchResult.SewsePartNumber = searchResult.StringList[i];
+                RfqDrawingPartNumberUx nprPartSearchResult = new RfqDrawingPartNumberUx();
+                nprPartSearchResult.DrawingPartNumber = searchResult.StringList[i];
+                nprPartSearchResult.DrawingPartNumberPrice = Math.Round((decimal)searchResult.DoubleList[i], 5, MidpointRounding.AwayFromZero);
                 nprPartSearchResult.IsExactMatch = isExactMatch;
                 matchedPartNumbers.Add(nprPartSearchResult);
             }

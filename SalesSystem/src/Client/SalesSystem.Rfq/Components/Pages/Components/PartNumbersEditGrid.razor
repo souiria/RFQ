@@ -102,19 +102,15 @@
 
     private string RowStyleFunc(RfqDrawingPartNumberUx item, int index)
     {
-        if (item?.IsCompleted == true)
+        return item?.Status switch
         {
-            return "background-color: lightgreen;";
-        }
-        else if (item?.IsCompleted == false && item?.MultiMatch == true)
-        {
-            return "background-color: lightyellow;"; // Changed color to light yellow for partial matches
-        }
-        else if (item?.IsCompleted == false && item?.IsSwapped == true)
-        {
-            return "background-color: lightblue;"; // Changed color to light blue for swapped items
-        }
-        return string.Empty;
+            RfqDrawingPartNumberStatus.Completed => "background-color: lightgreen;",
+            RfqDrawingPartNumberStatus.ContainsMatch => "background-color: lightyellow;",
+            RfqDrawingPartNumberStatus.ExactMatch => "background-color: lightcoral;",
+            RfqDrawingPartNumberStatus.DummySelected => "background-color: lightblue;",
+            RfqDrawingPartNumberStatus.NprRequested => "background-color: lightmagenta;",
+            _ => string.Empty,
+        };
     }
 
     // events
@@ -143,7 +139,7 @@
         }
 
         // Just in case this was previously searched
-        item.MatchedPartNumbers.Clear();
+        item.SearchResultPartNumbers.Clear();
         item.Comments = "";
 
         Logger.GenericLogInformation($"Searching for part number: {item.CustomerPartNumber}");
@@ -187,12 +183,12 @@
                 commentData.ExactMatchPartNumbers.AddRange(exactMatches);
                 foreach (string pn in responseExact.StringList)
                 {
-                    var matchedPartNumber = new MatchedPartNumberUx();
+                    var matchedPartNumber = new RfqDrawingPartNumberUx();
                     matchedPartNumber.IsExactMatch = true;  // exact match
                     matchedPartNumber.Index = index++;
-                    matchedPartNumber.SewsePartNumber = pn;
+                    matchedPartNumber.DrawingPartNumber = pn;
 
-                    item.MatchedPartNumbers.Add(matchedPartNumber);
+                    item.SearchResultPartNumbers.Add(matchedPartNumber);
                 }
 
                 // then look for partial matches
@@ -200,12 +196,12 @@
                 commentData.ContainsMatchPartNumbers.AddRange(containsMatches);
                 foreach (string pn in responseContains.StringList)
                 {
-                    var matchedPartNumber = new MatchedPartNumberUx();
+                    var matchedPartNumber = new RfqDrawingPartNumberUx();
                     matchedPartNumber.IsExactMatch = false;  // exact match
                     matchedPartNumber.Index = index++;
-                    matchedPartNumber.SewsePartNumber = pn;
+                    matchedPartNumber.DrawingPartNumber = pn;
 
-                    item.MatchedPartNumbers.Add(matchedPartNumber);
+                    item.SearchResultPartNumbers.Add(matchedPartNumber);
                 }
 
 
@@ -251,6 +247,9 @@
                             item.IsExactMatch = updatedItem.IsExactMatch;
                             item.IsSwapped = updatedItem.IsSwapped;
                             item.Comments = updatedItem.Comments;
+
+                            item.SearchResultPartNumbers.Clear();
+                            item.SearchResultPartNumbers.AddRange(updatedItem.SearchResultPartNumbers);
 
                             Logger.GenericLogInformation($"Successfully updated part number with NPR data: {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber}");
                             Snackbar.Add($"Part number {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber} updated with NPR data", Severity.Success);

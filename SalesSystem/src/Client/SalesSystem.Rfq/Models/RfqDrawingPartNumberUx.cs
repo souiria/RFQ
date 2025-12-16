@@ -2,12 +2,24 @@
 
 namespace SalesSystem.Rfq.Models
 {
+    public enum RfqDrawingPartNumberStatus
+    {
+        New = 0,
+        ExactMatch = 10,
+        ContainsMatch = 15,
+        NprSearched = 20,
+        DummySelected = 30,
+        NprRequested = 40,
+        Completed = 50
+    }
+
     public class RfqDrawingPartNumberUx
     {
         public RfqDrawingPartNumberUx()
         {
             MultiMatch = false;
-            MatchedPartNumbers = new List<MatchedPartNumberUx>();
+            SearchResultPartNumbers = new List<RfqDrawingPartNumberUx>();
+            Status = RfqDrawingPartNumberStatus.New;
         }
 
         public long RowId
@@ -21,7 +33,7 @@ namespace SalesSystem.Rfq.Models
         [Column(TypeName = "decimal(12, 5)")]
         public decimal? DrawingPartNumberPrice
         { get; set; }
-        public string? SwappedPartNumber            
+        public string? SwappedPartNumber
         { get; set; }
         [Column(TypeName = "decimal(12, 5)")]
         public decimal? SwappedPartNumberPrice
@@ -44,13 +56,13 @@ namespace SalesSystem.Rfq.Models
                 }
 
                 // Check if drawing part number is set with a price
-                bool hasDrawingPartNumberWithPrice = !string.IsNullOrWhiteSpace(DrawingPartNumber) 
-                    && DrawingPartNumberPrice.HasValue 
+                bool hasDrawingPartNumberWithPrice = !string.IsNullOrWhiteSpace(DrawingPartNumber)
+                    && DrawingPartNumberPrice.HasValue
                     && 0 <= DrawingPartNumberPrice;
 
                 // Check if swapped part number is set with a swapped price
-                bool hasSwappedPartNumberWithPrice = !string.IsNullOrWhiteSpace(SwappedPartNumber) 
-                    && SwappedPartNumberPrice.HasValue 
+                bool hasSwappedPartNumberWithPrice = !string.IsNullOrWhiteSpace(SwappedPartNumber)
+                    && SwappedPartNumberPrice.HasValue
                     && 0 <= SwappedPartNumberPrice;
 
                 return hasDrawingPartNumberWithPrice || hasSwappedPartNumberWithPrice;
@@ -59,10 +71,17 @@ namespace SalesSystem.Rfq.Models
 
         public bool MultiMatch
         { get; set; }
-
+        public int Index
+        { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
-        public List<MatchedPartNumberUx> MatchedPartNumbers
+        public List<RfqDrawingPartNumberUx> SearchResultPartNumbers
         { get; }
+        public PartImageData? PartImage
+        { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
+        public bool HasImage => PartImage != null && 0 <= PartImage.ImageBytes.Count;
+        public RfqDrawingPartNumberStatus Status
+        { get; set; }
     }
 }
 

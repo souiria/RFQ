@@ -55,18 +55,12 @@
         await _form.Validate();
         if (_isValid)
         {
-            var result = new DummyPartData
-            {
-                PartNumber = DummyPartNumber,
-                Price = DummyPrice
-            };
+            var result = new RfqDrawingPartNumberUx();
+
+            result.SwappedPartNumber = DummyPartNumber;
+            result.SwappedPartNumberPrice = DummyPrice;
+
             MudDialog.Close(DialogResult.Ok(result));
         }
-    }
-
-    public class DummyPartData
-    {
-        public string? PartNumber { get; set; }
-        public decimal? Price { get; set; }
     }
 }

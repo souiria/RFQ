@@ -21,37 +21,45 @@
                 <MudText Typo="Typo.h6" Class="mb-3">Overview</MudText>
             </MudItem>
 
-            <MudItem xs="12" sm="4">
+            <MudItem xs="12" sm="3">
                 <MudPaper Elevation="3" Class="pa-4 text-center">
                     <MudText Typo="Typo.h3" Color="Color.Primary">@TotalParts</MudText>
                     <MudText Typo="Typo.body1">Total Parts</MudText>
                 </MudPaper>
             </MudItem>
 
-            <MudItem xs="12" sm="4">
+            <MudItem xs="12" sm="3">
                 <MudPaper Elevation="3" Class="pa-4 text-center">
                     <MudText Typo="Typo.h3" Color="Color.Success">@MatchedCount</MudText>
-                    <MudText Typo="Typo.body1">Matched (@MatchedPercentage%)</MudText>
+                    <MudText Typo="Typo.body1">Completed (@MatchedPercentage%)</MudText>
                 </MudPaper>
             </MudItem>
 
-            <MudItem xs="12" sm="4">
+            <MudItem xs="12" sm="3">
                 <MudPaper Elevation="3" Class="pa-4 text-center">
                     <MudText Typo="Typo.h3" Color="Color.Warning">@UnmatchedCount</MudText>
-                    <MudText Typo="Typo.body1">Unmatched (@UnmatchedPercentage%)</MudText>
+                    <MudText Typo="Typo.body1">In Progress (@UnmatchedPercentage%)</MudText>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="3">
+                <MudPaper Elevation="3" Class="pa-4 text-center">
+                    <MudText Typo="Typo.h3" Color="Color.Info">@AlternativeCount</MudText>
+                    <MudText Typo="Typo.body1">Alternative (@AlternativePercentage%)</MudText>
                 </MudPaper>
             </MudItem>
 
             <!-- Progress Bar -->
             <MudItem xs="12" Class="mt-4">
-                <MudText Typo="Typo.body1" Class="mb-2">Match Progress</MudText>
+                <MudText Typo="Typo.body1" Class="mb-2">Parts Distribution</MudText>
                 <MudProgressLinear Color="Color.Success"
                                    Value="@MatchedPercentage"
                                    Size="Size.Large"
                                    Class="mb-2" />
                 <div class="d-flex justify-space-between">
-                    <MudText Typo="Typo.caption" Color="Color.Success">@MatchedPercentage% Matched</MudText>
-                    <MudText Typo="Typo.caption" Color="Color.Warning">@UnmatchedPercentage% Unmatched</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Success">@MatchedPercentage% Completed</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Info">@AlternativePercentage% Alternative</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Warning">@UnmatchedPercentage% In Progress</MudText>
                 </div>
             </MudItem>
 
@@ -60,42 +68,43 @@
                 <MudText Typo="Typo.h6" Class="mb-3">Price Summary</MudText>
             </MudItem>
 
-            <MudItem xs="12" sm="6">
+            <MudItem xs="12" sm="4">
                 <MudPaper Elevation="2" Class="pa-3">
-                    <MudText Typo="Typo.h6" Color="Color.Info">@TotalOriginalPrice.ToString("C2")</MudText>
-                    <MudText Typo="Typo.body2">Total Original Price</MudText>
-                    <MudText Typo="Typo.caption">@PartsWithOriginalPrice parts with pricing</MudText>
+                    <MudText Typo="Typo.h6" Color="Color.Success">@TotalMatchedPrice.ToString("C2")</MudText>
+                    <MudText Typo="Typo.body2">Total Completed Price</MudText>
+                    <MudText Typo="Typo.caption">@PartsWithMatchedPrice parts with pricing</MudText>
                 </MudPaper>
             </MudItem>
 
-            <MudItem xs="12" sm="6">
+            <MudItem xs="12" sm="4">
                 <MudPaper Elevation="2" Class="pa-3">
-                    <MudText Typo="Typo.h6" Color="Color.Success">@TotalSwappedPrice.ToString("C2")</MudText>
-                    <MudText Typo="Typo.body2">Total Matched Price</MudText>
-                    <MudText Typo="Typo.caption">@PartsWithSwappedPrice parts with NPR pricing</MudText>
+                    <MudText Typo="Typo.h6" Color="Color.Info">@TotalAlternativePrice.ToString("C2")</MudText>
+                    <MudText Typo="Typo.body2">Total Alternative Price</MudText>
+                    <MudText Typo="Typo.caption">@PartsWithAlternativePrice parts with estimated pricing</MudText>
                 </MudPaper>
             </MudItem>
 
-            <!-- Price Difference -->
-            @if (PriceDifference != 0)
-            {
-                <MudItem xs="12" Class="mt-2">
-                    <MudPaper Elevation="2" Class="pa-3">
-                        <div class="d-flex align-center">
-                            <MudText Typo="Typo.h6"
-                                     Color="@(PriceDifference >= 0 ? Color.Error : Color.Success)"
-                                     Class="mr-2">
-                                @PriceDifference.ToString("C2")
-                            </MudText>
-                            <MudIcon Icon="@(PriceDifference >= 0 ? Icons.Material.Filled.TrendingUp : Icons.Material.Filled.TrendingDown)"
-                                     Color="@(PriceDifference >= 0 ? Color.Error : Color.Success)" />
-                            <MudText Typo="Typo.body1" Class="ml-2">
-                                Price Difference (@PriceDifferencePercentage% @(PriceDifference >= 0 ? "increase" : "savings"))
-                            </MudText>
-                        </div>
-                    </MudPaper>
-                </MudItem>
-            }
+            <MudItem xs="12" sm="4">
+                <MudPaper Elevation="2" Class="pa-3">
+                    <MudText Typo="Typo.h6" Color="Color.Default">@TotalUnmatchedPrice.ToString("C2")</MudText>
+                    <MudText Typo="Typo.body2">Total In Progress Price</MudText>
+                    <MudText Typo="Typo.caption">@PartsWithUnmatchedPrice parts with no pricing</MudText>
+                </MudPaper>
+            </MudItem>
+
+            <!-- Price Totals -->
+            <MudItem xs="12" Class="mt-2">
+                <MudPaper Elevation="2" Class="pa-3">
+                    <div class="d-flex align-center justify-space-between">
+                        <MudText Typo="Typo.h6" Color="Color.Primary">
+                            Total Price (All Parts): @TotalPrice.ToString("C2")
+                        </MudText>
+                        <MudText Typo="Typo.body2" Color="Color.Default">
+                            Coverage: @PriceCoveragePercentage% (@PartsWithAnyPrice of @TotalParts parts)
+                        </MudText>
+                    </div>
+                </MudPaper>
+            </MudItem>
 
             <!-- Additional Stats -->
             @if (MultiMatchCount > 0)
@@ -121,6 +130,23 @@
                                  Size="Size.Small"
                                  Class="ma-1">
                             @source.Key: @source.Value
+                        </MudChip>
+                    }
+                </MudItem>
+            }
+
+            <!-- Parts by Status -->
+            @if (StatusBreakdown.Count > 0)
+            {
+                <MudItem xs="12" Class="mt-4">
+                    <MudText Typo="Typo.h6" Class="mb-3">Parts by Status</MudText>
+                    @foreach (var status in StatusBreakdown)
+                    {
+                        <MudChip T="string"
+                                 Color="@GetStatusColor(status.Key)"
+                                 Size="Size.Small"
+                                 Class="ma-1">
+                            @status.Key: @status.Value
                         </MudChip>
                     }
                 </MudItem>
@@ -157,40 +183,94 @@
 
     private bool _isExporting = false;
 
-    private int TotalParts => MatchedParts.Count + UnmatchedParts.Count;
-    private int MatchedCount => MatchedParts.Count;
-    private int UnmatchedCount => UnmatchedParts.Count;
+    // All parts from both lists
+    private List<RfqDrawingPartNumberUx?> AllParts => MatchedParts.Concat(UnmatchedParts).ToList();
+
+    private int TotalParts => AllParts.Count;
+
+    // Matched parts: Parts with DrawingPartNumberPrice set (from both InProgress and Completed datasets)
+    private List<RfqDrawingPartNumberUx?> ActualMatchedParts =>
+        AllParts.Where(p => p?.DrawingPartNumberPrice.HasValue == true && p.DrawingPartNumberPrice.Value > 0).ToList();
+
+    // Alternative parts: Parts with SwappedPartNumberPrice set (from both InProgress and Completed datasets)
+    private List<RfqDrawingPartNumberUx?> ActualAlternativeParts =>
+        AllParts.Where(p => p?.SwappedPartNumberPrice.HasValue == true && p.SwappedPartNumberPrice.Value > 0).ToList();
+
+    // Unmatched parts: Parts without DrawingPartNumberPrice and without SwappedPartNumberPrice
+    private List<RfqDrawingPartNumberUx?> ActualUnmatchedParts =>
+        AllParts.Where(p =>
+            (p?.DrawingPartNumberPrice ?? 0) == 0 &&
+            (p?.SwappedPartNumberPrice ?? 0) == 0).ToList();
+
+    private int MatchedCount => ActualMatchedParts.Count;
+    private int AlternativeCount => ActualAlternativeParts.Count;
+    private int UnmatchedCount => ActualUnmatchedParts.Count;
+
     private double MatchedPercentage => TotalParts > 0 ? Math.Round((MatchedCount * 100.0) / TotalParts, 1) : 0;
+    private double AlternativePercentage => TotalParts > 0 ? Math.Round((AlternativeCount * 100.0) / TotalParts, 1) : 0;
     private double UnmatchedPercentage => TotalParts > 0 ? Math.Round((UnmatchedCount * 100.0) / TotalParts, 1) : 0;
 
-    private decimal TotalOriginalPrice =>
-        MatchedParts.Concat(UnmatchedParts)
-                   .Where(p => p?.DrawingPartNumberPrice.HasValue == true)
-                   .Sum(p => p!.DrawingPartNumberPrice!.Value);
+    // Price calculations
+    private decimal TotalMatchedPrice =>
+        ActualMatchedParts
+            .Where(p => p?.DrawingPartNumberPrice.HasValue == true)
+            .Sum(p => p!.DrawingPartNumberPrice!.Value);
 
-    private decimal TotalSwappedPrice =>
-        MatchedParts.Where(p => p?.SwappedPartNumberPrice.HasValue == true)
-                   .Sum(p => p!.SwappedPartNumberPrice!.Value);
+    private decimal TotalAlternativePrice =>
+        ActualAlternativeParts
+            .Where(p => p?.SwappedPartNumberPrice.HasValue == true)
+            .Sum(p => p!.SwappedPartNumberPrice!.Value);
 
-    private int PartsWithOriginalPrice =>
-        MatchedParts.Concat(UnmatchedParts)
-                   .Count(p => p?.DrawingPartNumberPrice.HasValue == true);
+    private decimal TotalUnmatchedPrice =>
+        ActualUnmatchedParts
+            .Where(p => p?.DrawingPartNumberPrice.HasValue == true)
+            .Sum(p => p!.DrawingPartNumberPrice!.Value);
 
-    private int PartsWithSwappedPrice =>
-        MatchedParts.Count(p => p?.SwappedPartNumberPrice.HasValue == true);
+    private decimal TotalPrice => TotalMatchedPrice + TotalAlternativePrice + TotalUnmatchedPrice;
 
-    private decimal PriceDifference => TotalSwappedPrice - TotalOriginalPrice;
+    private int PartsWithMatchedPrice =>
+        ActualMatchedParts.Count(p => p?.DrawingPartNumberPrice.HasValue == true);
 
-    private double PriceDifferencePercentage =>
-        TotalOriginalPrice > 0 ? Math.Round(Math.Abs((double)PriceDifference / (double)TotalOriginalPrice) * 100, 1) : 0;
+    private int PartsWithAlternativePrice =>
+        ActualAlternativeParts.Count(p => p?.SwappedPartNumberPrice.HasValue == true);
+
+    private int PartsWithUnmatchedPrice =>
+        ActualUnmatchedParts.Count(p => p?.DrawingPartNumberPrice.HasValue == true);
+
+    private int PartsWithAnyPrice =>
+        AllParts.Count(p =>
+            (p?.DrawingPartNumberPrice.HasValue == true && p.DrawingPartNumberPrice.Value > 0) ||
+            (p?.SwappedPartNumberPrice.HasValue == true && p.SwappedPartNumberPrice.Value > 0));
+
+    private double PriceCoveragePercentage =>
+        TotalParts > 0 ? Math.Round((PartsWithAnyPrice * 100.0) / TotalParts, 1) : 0;
 
     private int MultiMatchCount =>
-        MatchedParts.Count(p => p?.MultiMatch == true);
+        AllParts.Count(p => p?.MultiMatch == true);
 
     private Dictionary<string, int> PriceSourceBreakdown =>
-        MatchedParts.Where(p => !string.IsNullOrWhiteSpace(p?.PriceSource))
-                   .GroupBy(p => p!.PriceSource!)
-                   .ToDictionary(g => g.Key, g => g.Count());
+        AllParts.Where(p => !string.IsNullOrWhiteSpace(p?.PriceSource))
+                .GroupBy(p => p!.PriceSource!)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+    private Dictionary<string, int> StatusBreakdown =>
+        AllParts.Where(p => p?.Status != null)
+                .GroupBy(p => p!.Status.ToString())
+                .ToDictionary(g => g.Key, g => g.Count());
+
+    private Color GetStatusColor(string status)
+    {
+        return status switch
+        {
+            nameof(RfqDrawingPartNumberStatus.ExactMatch) => Color.Success,
+            nameof(RfqDrawingPartNumberStatus.ContainsMatch) => Color.Info,
+            nameof(RfqDrawingPartNumberStatus.DummySelected) => Color.Warning,
+            nameof(RfqDrawingPartNumberStatus.NprRequested) => Color.Secondary,
+            // nameof(RfqDrawingPartNumberStatus.NoMatch) => Color.Error,
+            _ => Color.Default
+        };
+    }
+
     private IJSObjectReference? _module;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -218,9 +298,9 @@
 
         try
         {
-            Logger.LogInformation($"DatasetStatusDialog.ExportToCsv - Starting export of {TotalParts} parts ({MatchedCount} matched, {UnmatchedCount} unmatched)");
+            Logger.LogInformation($"DatasetStatusDialog.ExportToCsv - Starting export of {TotalParts} parts (Matched: {MatchedCount}, Alternative: {AlternativeCount}, Unmatched: {UnmatchedCount})");
 
-            // Fix: Convert to Collection<T> as required by method signature
+            // Convert to Collection<T> as required by method signature
             var matchedCollection = new System.Collections.ObjectModel.Collection<RfqDrawingPartNumberUx?>(MatchedParts);
             var unmatchedCollection = new System.Collections.ObjectModel.Collection<RfqDrawingPartNumberUx?>(UnmatchedParts);
 

@@ -20,7 +20,6 @@
                                   Label="Original Part Number"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
-                                  Required="true"
                                   RequiredError="Original part number is required" />
                 </MudItem>
                 <MudItem xs="12" sm="4">
@@ -34,10 +33,45 @@
                                      Min="0m" />
                 </MudItem>
                 @* Pick list from search results stored in the commment after data aseparator *@
-                @if (@EditedItem.MatchedPartNumbers.Count > 0)
+                @if (@EditedItem.SearchResultPartNumbers.Count > 0)
                 {
-                    @* MatchedPartNumberUx partNumberUx numbers pick list *@
-
+                    <MudItem xs="12">
+                        <MudPaper Elevation="2" Class="pa-4">
+                            <MudText Typo="Typo.h6" Class="mb-3">Matched Part Numbers</MudText>
+                            <MudList T="RfqDrawingPartNumberUx" Dense="true">
+                                @foreach (RfqDrawingPartNumberUx matchedPart in EditedItem.SearchResultPartNumbers)
+                                {
+                                    <MudListItem>
+                                        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                                            <div style="flex: 1;">
+                                                <MudText Typo="Typo.body1">
+                                                    <strong>@matchedPart.DrawingPartNumber</strong>
+                                                </MudText>
+                                                <MudText Typo="Typo.body2" Color="Color.Default">
+                                                    Price: @(matchedPart.DrawingPartNumberPrice.HasValue ? matchedPart.DrawingPartNumberPrice.Value.ToString("C5") : "N/A")
+                                                    @if (matchedPart.IsExactMatch == true)
+                                                    {
+                                                        <MudChip T="string"
+                                                                 Size="Size.Small"
+                                                                 Color="Color.Success"
+                                                                 Class="ml-2">Exact Match</MudChip>
+                                                    }
+                                                </MudText>
+                                            </div>
+                                            <MudButton OnClick="@(() => PickMatchedPart(matchedPart))"
+                                                       Color="Color.Primary"
+                                                       Variant="Variant.Filled"
+                                                       Size="Size.Small"
+                                                       StartIcon="@Icons.Material.Filled.CheckCircle">
+                                                Pick
+                                            </MudButton>
+                                        </div>
+                                    </MudListItem>
+                                    <MudDivider />
+                                }
+                            </MudList>
+                        </MudPaper>
+                    </MudItem>
                 }
                 @* End pick list *@
                 <MudItem xs="12" sm="6">
@@ -63,7 +97,7 @@
                                   Margin="Margin.Dense" />
                 </MudItem>
                 <MudItem xs="12" sm="4">
-                    <MudCheckBox Value="EditedItem.IsExactMatch"
+                    <MudCheckBox @bind-Value="EditedItem.IsExactMatch"
                                  ReadOnly="true"    
                                  Label="Is Exact Match"
                                  Color="Color.Primary"
@@ -161,8 +195,22 @@
             PriceSource = OriginalItem.PriceSource,
             IsExactMatch = OriginalItem.IsExactMatch,
             IsSwapped = OriginalItem.IsSwapped,
-            Comments = OriginalItem.Comments
+            Comments = OriginalItem.Comments,
+            Status = OriginalItem.Status
         };
+        EditedItem.SearchResultPartNumbers.AddRange(OriginalItem.SearchResultPartNumbers);
+    }
+
+    private void PickMatchedPart(RfqDrawingPartNumberUx matchedPart)
+    {
+        // Assign the DrawingPartNumber and DrawingPartNumberPrice to the current item
+        EditedItem.DrawingPartNumber = matchedPart.DrawingPartNumber;
+        EditedItem.DrawingPartNumberPrice = matchedPart.DrawingPartNumberPrice;
+        EditedItem.IsExactMatch = matchedPart.IsExactMatch;
+        EditedItem.PriceSource = string.IsNullOrEmpty(matchedPart.PriceSource) ? "Manual" : "NPR";
+
+        // Force UI refresh
+        StateHasChanged();
     }
 
     private async Task PickDummy()
@@ -182,14 +230,15 @@
 
         DialogResult? result = await dialog.Result;
 
-        if (result != null && !result.Canceled && result.Data is PickDummyPartDialog.DummyPartData dummyData)
+        if (result != null && !result.Canceled && result.Data is RfqDrawingPartNumberUx dummyData)
         {
             // Update the EditedItem with dummy part data
-            EditedItem.SwappedPartNumber = dummyData.PartNumber;
-            EditedItem.SwappedPartNumberPrice = dummyData.Price;
+            EditedItem.SwappedPartNumber = dummyData.SwappedPartNumber;
+            EditedItem.SwappedPartNumberPrice = dummyData.SwappedPartNumberPrice;
             EditedItem.IsSwapped = true;
             EditedItem.IsExactMatch = false;
             EditedItem.PriceSource = "Dummy";
+            EditedItem.Status = RfqDrawingPartNumberStatus.DummySelected;
 
             // Force UI refresh
             StateHasChanged();
@@ -215,11 +264,21 @@
 
         if (result != null && !result.Canceled && result.Data is CreateNprDialog.NprData nprData)
         {
-            // For now, do not assign the information
-            // TODO: Handle NPR data assignment when requirements are defined
-            // nprData.NprNumber and nprData.NprDate are available here
+            // Update the EditedItem with dummy part data
+            EditedItem.SwappedPartNumber = nprData.NprNumber;
+            EditedItem.SwappedPartNumberPrice = nprData.NprEstimatedPrice;
+            EditedItem.IsSwapped = true;
+            EditedItem.IsExactMatch = false;
+            EditedItem.PriceSource = "Npr Request";
+            EditedItem.Status = RfqDrawingPartNumberStatus.NprRequested;
+
+            EditedItem.Comments += $"[NPR Created: {nprData.NprNumber}, Date: {nprData.NprDate}] ";
+
+            // Force UI refresh
+            StateHasChanged();
         }
     }
+
     private async Task Complete()
     {
         await _form.Validate();
@@ -242,12 +301,13 @@
             // If hasDrawingPartNumberWithPrice
             if (hasDrawingPartNumberWithPrice)
             {
-                EditedItem.IsExactMatch = true;
+                EditedItem.Status = RfqDrawingPartNumberStatus.ContainsMatch;
             }
-
+             
             // If swapped part number is set with price, mark as swapped
             if (hasSwappedPartNumberWithPrice)
             {
+                EditedItem.Status = RfqDrawingPartNumberStatus.DummySelected;
                 EditedItem.IsSwapped = true;
             }
 

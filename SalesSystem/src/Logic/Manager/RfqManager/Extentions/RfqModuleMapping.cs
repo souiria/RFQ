@@ -100,6 +100,7 @@
             part.IsExactMatch = rfqPartGrpc.IsExactMatch ?? false;
             part.IsSwapped = rfqPartGrpc.IsSwapped ?? false;
             part.Comments = rfqPartGrpc.Comments;
+            part.SumitomoPartNumber = rfqPartGrpc.SumitomoPartNumber;
             return part;
         }
     }
