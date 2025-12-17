@@ -246,9 +246,9 @@ else
                     </div>
                 </MudTabPanel>
                 <MudTabPanel Text="BOM Files">
-                    <div class="d-flex flex-column" sDrawingtyle="height: calc(100vh - 364px)Drawing; overflow: hidden;">
+                    <div class="d-flex flex-column" style="height: calc(100vh - 364px); overflow: hidden;">
                         @* File Cards Section *@
-                        <FileCards @rDrawingef="componentFileCards"
+                        <FileCards @ref="componentFileCards"
                                    FileObjects="FileObjects"
                                    OnRemoveFile="HandleFileRemoval" />
                     </div>
@@ -262,7 +262,7 @@ else
 
     // Reference to the FileManager component
     FileManager? componentFileManager;
-    // FileCards? componentFileCards;
+    FileCards? componentFileCards;
     List<FileObjectUx> FileObjects { get; set; } = new List<FileObjectUx>();
 
     // Search All state tracking
@@ -508,14 +508,142 @@ else
 
     private async Task UploadFilesAsync()
     {
-        await Task.Delay(0);
+        if (FileObjects.Count == 0)
+        {
+            Snackbar.Add("No files to upload", Severity.Info);
+            Logger.GenericLogInformation("EditRfq.UploadFilesAsync - No files available");
+            return;
+        }
+
+        // Create a progress state object that will be shared with the dialog
+        var progressState = new SubmissionProgressState();
+
+        // Initialize progress dialog
+        DialogParameters parameters = new DialogParameters<SubmissionProgressDialog>
+        {
+            { x => x.ProgressState, progressState }
+        };
+
+        DialogOptions options = new DialogOptions()
+        {
+            CloseButton = false,
+            BackdropClick = false,
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true
+        };
+
+        IDialogReference dialog = await DialogService.ShowAsync<SubmissionProgressDialog>("Uploading Files", parameters, options);
+
         try
         {
+            // Checkpoint 1: Validation
+            progressState.UpdateProgress("Validating files...", 0);
+            progressState.SetCheckpointActive(0);
+
+            await Task.Delay(500); // Small delay for UX
+
+            List<FileObjectUx> validFiles = FileObjects.Where(f => f.Status != UxObjectStatus.Deleted && f.IsFileValid).ToList();
+
+            if (validFiles.Count == 0)
+            {
+                progressState.SetError("Validation failed: No valid files", "Please upload at least one valid file.");
+                Logger.GenericLogInformation("EditRfq.UploadFilesAsync - Validation failed: No valid files");
+                return;
+            }
+
+            progressState.SetCheckpointCompleted(0, $"{validFiles.Count} valid file(s) ready for upload");
+            Logger.GenericLogInformation($"EditRfq.UploadFilesAsync - Checkpoint: Validation OK - {validFiles.Count} valid files");
+
+            // Checkpoint 2: Upload Files
+            progressState.UpdateProgress("Uploading files...", 1);
+            progressState.SetCheckpointActive(1);
+
+            bool allOk = true;
+            int fileCount = 0;
+            int skippedCount = 0;
+            int totalFiles = validFiles.Count;
+
+            foreach (FileObjectUx fileObject in validFiles)
+            {
+                try
+                {
+                    if (fileObject.File == null || !fileObject.IsFileValid)
+                    {
+                        skippedCount++;
+                        Logger.GenericLogInformation($"EditRfq.UploadFilesAsync - Skipping invalid file: {fileObject.DisplayName}");
+                        continue;
+                    }
+
+                    fileCount++;
+                    progressState.UpdateProgress($"Uploading file {fileCount} of {totalFiles}: {fileObject.File.Name}", 1);
+
+                    UploadPartsRequestGrpcResponse uploadFileResponse = await RfqUxClientService.UploadPartsAsync(RfqProjectId.ToString(), fileObject.File, 16_000_000);
+                    fileObject.UploadStatus = new FileObjectUploadStatus(uploadFileResponse);
+                    allOk = allOk && uploadFileResponse.Success;
+
+                    Logger.GenericLogInformation($"EditRfq.UploadFilesAsync - Uploaded file {fileObject.File.Name}/{fileObject.File.Size}, {fileObject.UploadStatus.Status}/{fileObject.UploadStatus.Message}");
+                }
+                catch (Exception fileEx)
+                {
+                    Logger.GenericLogError($"EditRfq.UploadFilesAsync - Error uploading file {fileObject.DisplayName}", fileEx);
+                    fileObject.UploadStatus = new FileObjectUploadStatus
+                    {
+                        Status = FileUploadStatus.Failed,
+                        Message = $"Upload error: {fileEx.Message}"
+                    };
+                    allOk = false;
+                }
+            }
+
+            string uploadSummary = skippedCount > 0
+                ? $"Uploaded {fileCount} file(s), skipped {skippedCount} invalid file(s)"
+                : $"Uploaded {fileCount} file(s)";
+
+            progressState.SetCheckpointCompleted(1, uploadSummary);
+            Logger.GenericLogInformation($"EditRfq.UploadFilesAsync - Checkpoint: {uploadSummary}");
+
+            // Checkpoint 3: Reload Data
+            progressState.UpdateProgress("Reloading part numbers...", 2);
+            progressState.SetCheckpointActive(2);
+
+            await Task.Delay(500); // Small delay for UX
+
+            // Reload the part numbers to get the newly uploaded data
+            await LoadRfqAndPartNumbersAsync();
+
+            progressState.SetCheckpointCompleted(2, "Data reloaded successfully");
+            Logger.GenericLogInformation("EditRfq.UploadFilesAsync - Checkpoint: Data reloaded");
+
+            // Checkpoint 4: Finalize
+            progressState.UpdateProgress("Finalizing upload...", 3);
+            progressState.SetCheckpointActive(3);
+
+            await Task.Delay(500); // Small delay for UX
+
+            progressState.SetCheckpointCompleted(3, "Upload completed");
+            Logger.GenericLogInformation($"EditRfq.UploadFilesAsync - Checkpoint: Upload finalized, success: {allOk}");
+
+            // Final update
+            progressState.SetCompleted(allOk ? "File upload completed successfully!" : "File upload completed with some errors", !allOk);
+
             StateHasChanged();
+
+            if (allOk)
+            {
+                Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+                Snackbar.Add("Files uploaded successfully!", Severity.Success);
+            }
+            else
+            {
+                Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+                Snackbar.Add("Files uploaded with some errors. Please check the file status.", Severity.Warning);
+            }
         }
         catch (Exception ex)
         {
-            Logger.GenericLogError($"EditRfq.UploadFilesAsync - Unexpected error during file load {ex.Message}", ex);
+            Logger.GenericLogError("EditRfq.UploadFilesAsync - Unexpected error during file upload", ex);
+            progressState.SetError("An unexpected error occurred", $"Error: {ex.Message}", isCompleted: true);
+            Snackbar.Add($"Error uploading files: {ex.Message}", Severity.Error);
         }
     }
 
@@ -787,15 +915,109 @@ else
     #endregion
 
     #region Search All
+  
     private async Task NprAllInProgressPartsAsync()
     {
         if (InProgressParts.Count == 0)
         {
-            Snackbar.Add("No unmatched parts to search", Severity.Info);
+            Snackbar.Add("No unmatched parts to process for NPR", Severity.Info);
+            Logger.GenericLogInformation("EditRfq.NprAllInProgressPartsAsync - No parts available");
             return;
         }
-        await Task.Delay(1);
+
+        try
+        {
+            // Show confirmation dialog
+            bool? confirm = await DialogService.ShowMessageBox(
+                "Confirm NPR All",
+                $"Are you sure you want to create NPR requests for all {InProgressParts.Count} unmatched part(s)? This will move them to completed with NPR details.",
+                yesText: "Create NPR for All",
+                cancelText: "Cancel"
+            );
+
+            if (confirm != true)
+            {
+                Logger.GenericLogInformation("EditRfq.NprAllInProgressPartsAsync - User cancelled NPR operation");
+                return;
+            }
+
+            Logger.GenericLogInformation($"EditRfq.NprAllInProgressPartsAsync - Creating NPR for {InProgressParts.Count} unmatched parts");
+
+            List<RfqDrawingPartNumberUx> partsToMove = new List<RfqDrawingPartNumberUx>();
+
+            // Calculate next month's date range
+            DateTime now = DateTime.Now;
+            DateTime nextMonthStart = new DateTime(now.Year, now.Month, 1).AddMonths(1);
+            int daysInNextMonth = DateTime.DaysInMonth(nextMonthStart.Year, nextMonthStart.Month);
+
+            // Process each unmatched part
+            foreach (RfqDrawingPartNumberUx? part in InProgressParts.ToList())
+            {
+                if (part != null)
+                {
+                    // Generate random NPR number (NPR + 6 random digits) using RandomNumberGenerator
+                    int nprDigits = System.Security.Cryptography.RandomNumberGenerator.GetInt32(100000, 1000000);
+                    string nprNumber = $"NPR{nprDigits}";
+
+                    // Generate random date in next month (1 to last day of month) using RandomNumberGenerator
+                    int randomDay = System.Security.Cryptography.RandomNumberGenerator.GetInt32(1, daysInNextMonth + 1);
+                    DateTime nprDate = new DateTime(nextMonthStart.Year, nextMonthStart.Month, randomDay);
+
+                    // Generate random estimated price between 0.1 and 0.25 with 6 decimal places using RandomNumberGenerator
+                    // Generate random bytes and convert to decimal in range [0.1, 0.25]
+                    byte[] randomBytes = new byte[4];
+                    System.Security.Cryptography.RandomNumberGenerator.Fill(randomBytes);
+                    uint randomUInt = BitConverter.ToUInt32(randomBytes, 0);
+                    double normalizedValue = (double)randomUInt / uint.MaxValue; // Value between 0.0 and 1.0
+                    decimal nprEstimatedPrice = Math.Round((decimal)(normalizedValue * 0.15 + 0.1), 6);
+
+                    // Update part with NPR details
+                    part.SwappedPartNumber = nprNumber;
+                    part.SwappedPartNumberPrice = nprEstimatedPrice;
+                    part.IsSwapped = true;
+                    part.IsExactMatch = false;
+                    part.PriceSource = "Npr Request";
+                    part.Status = RfqDrawingPartNumberStatus.NprRequested;
+
+                    // Add NPR details to comments
+                    string nprComment = $"[NPR Created: {nprNumber}, Date: {nprDate:yyyy-MM-dd}, Est. Price: {nprEstimatedPrice:C6}]";
+                    if (string.IsNullOrWhiteSpace(part.Comments))
+                    {
+                        part.Comments = nprComment;
+                    }
+                    else
+                    {
+                        part.Comments += $" {nprComment}";
+                    }
+
+                    // Update via service
+                    await RfqUxClientService.UpdateRfqDrawingPartNumber(part);
+
+                    partsToMove.Add(part);
+
+                    Logger.GenericLogInformation($"EditRfq.NprAllInProgressPartsAsync - Created NPR for part: {part.CustomerPartNumber} -> {nprNumber} (Date: {nprDate:yyyy-MM-dd}, Price: {nprEstimatedPrice:C6})");
+                }
+            }
+
+            // Move all processed parts from InProgressParts to CompletedParts
+            foreach (RfqDrawingPartNumberUx part in partsToMove)
+            {
+                InProgressParts.Remove(part);
+                CompletedParts.Add(part);
+            }
+
+            Snackbar.Add($"Successfully created NPR requests for {partsToMove.Count} part(s) and moved to completed", Severity.Success);
+            Logger.GenericLogInformation($"EditRfq.NprAllInProgressPartsAsync - Successfully processed {partsToMove.Count} parts with NPR");
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError("EditRfq.NprAllInProgressPartsAsync - Error creating NPR for parts", ex);
+            Snackbar.Add($"Error creating NPR requests: {ex.Message}", Severity.Error);
+        }
     }
+
     private async Task SearchAllPartNumbersAsync()
     {
         if (InProgressParts.Count == 0)

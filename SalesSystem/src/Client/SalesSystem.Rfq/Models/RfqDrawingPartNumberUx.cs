@@ -20,6 +20,9 @@ namespace SalesSystem.Rfq.Models
             MultiMatch = false;
             SearchResultPartNumbers = new List<RfqDrawingPartNumberUx>();
             Status = RfqDrawingPartNumberStatus.New;
+            IsExactMatch  = false;
+            IsSwapped = false;
+            MultiMatch = false; 
         }
 
         public long RowId

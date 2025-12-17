@@ -875,7 +875,8 @@
             part.SwappedPartNumber = "";
             part.SwappedPartNumberPrice = 0;
             part.PriceSource = "";
-            part.IsExactMatch = true;
+            // part.IsExactMatch = true;
+            part.IsExactMatch = false; // assume no exact match on upload
             part.IsSwapped = false;
             part.Comments = "";
             return part;
