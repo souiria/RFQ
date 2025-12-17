@@ -40,6 +40,8 @@
         { get; set; }
         public string? NprRequest
         { get; set; }
+        public RfqDrawingPartNumberStatus? Status 
+        { get; set; }
         public DbRfqProject? RfqProject
         { get; set; }
     }
