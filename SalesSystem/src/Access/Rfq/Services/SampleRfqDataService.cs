@@ -19,6 +19,10 @@
                 rfqDrawingPartNumbersGrpc.IsExactMatch = false;
                 rfqDrawingPartNumbersGrpc.IsSwapped = true;
                 rfqDrawingPartNumbersGrpc.Comments = $"Comments{i}";
+                rfqDrawingPartNumbersGrpc.SumitomoPartNumber = $"SumitomoPartNumber{i}";
+                rfqDrawingPartNumbersGrpc.CustomerPartNumber = $"CustomerPartNumber{i}";
+                rfqDrawingPartNumbersGrpc.NprId = $"NprId{i}";
+                rfqDrawingPartNumbersGrpc.Status = 0;
                 listRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Add(rfqDrawingPartNumbersGrpc);
             }
 
@@ -33,6 +37,10 @@
             fixedrfqDrawingPartNumbersGrpc.IsExactMatch = false;
             fixedrfqDrawingPartNumbersGrpc.IsSwapped = true;
             fixedrfqDrawingPartNumbersGrpc.Comments = $"TestComments";
+            fixedrfqDrawingPartNumbersGrpc.SumitomoPartNumber = $"TestSumitomoPartNumber";
+            fixedrfqDrawingPartNumbersGrpc.CustomerPartNumber = $"CustomerPartNumber";
+            fixedrfqDrawingPartNumbersGrpc.NprId = $"TestNprId";
+            fixedrfqDrawingPartNumbersGrpc.Status = 0;
             listRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Add(fixedrfqDrawingPartNumbersGrpc);
             return listRfqDrawingPartNumbersGrpc;
         }
