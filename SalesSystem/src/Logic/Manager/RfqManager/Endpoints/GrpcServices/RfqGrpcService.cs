@@ -24,7 +24,8 @@
             GetAllCustomersGrpcResponse response = await _RfqManagerService.GetAllCustomersGrpc(request);
             return response;
         }
-        public override async Task<GetCustomersByUserIdGrpcResponse> GetCustomersByUserIdGrpc(GetCustomersByUserIdGrpcRequest request, ServerCallContext context)
+        public override async Task<GetCustomersByUserIdGrpcResponse> 
+            GetCustomersByUserIdGrpc(GetCustomersByUserIdGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetCustomersByUserIdGrpc starting");
             GetCustomersByUserIdGrpcResponse response = await _RfqManagerService.GetCustomersByUserIdGrpc(request);
@@ -86,6 +87,21 @@
             _Logger.GenericLogInformation("DeleteRfqProjectByRowIdGrpc starting");
             return await _RfqManagerService.DeleteRfqProjectByRowIdGrpc(request);
         }
+
+        public override async Task<GetCustomerLocationsByUserIdResponse> GetCustomerLocationsByUserIdGrpc(GetCustomerLocationsByUserIdRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetCustomerLocationsByUserId starting");
+            GetCustomerLocationsByUserIdResponse response = await _RfqManagerService.GetCustomerLocationsByUserId(request.UserId);
+            return response;
+        }
+
+        public override async Task<GetCustomerBusinessUnitsByUserIdResponse> GetCustomerBusinessUnitsByUserIdGrpc(GetCustomerBusinessUnitsByUserIdRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetCustomerBusinessUnitsByUserId starting");
+            GetCustomerBusinessUnitsByUserIdResponse response = await _RfqManagerService.GetCustomerBusinessUnitsByUserId(request.UserId);
+            return response;
+        }
+
         public override async Task<FilterGrpcResponse> FilterGrpc(FilterGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("FilterGrpc starting");

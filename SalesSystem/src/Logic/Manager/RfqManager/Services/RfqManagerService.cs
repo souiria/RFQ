@@ -1,4 +1,7 @@
-﻿namespace RfqModule.Services
+﻿using Google.Protobuf.Collections;
+using Microsoft.AspNetCore.Components.Web.Virtualization;
+
+namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {
@@ -91,14 +94,9 @@
                 GetProjectAssociationsByCustomerIdResponse response = new GetProjectAssociationsByCustomerIdResponse();
                 MastersFilterRequestGrpc filterRequest = new MastersFilterRequestGrpc();
                 filterRequest.DatabaseList = "CUSTOMERLOCATIONGRPC";
-#pragma warning disable CA1308
-                // filterRequest.FilterExpression = $"CustomerId != null && CustomerId == \"{request.CustomerId.ToLowerInvariant()}\"";
-                // filterRequest.FilterExpression = $"Id != null && Id == \"{request.CustomerId.ToLowerInvariant()}\"";
-                // filterRequest.FilterExpression = $"CustomerBusinessHierarchyGuid != null && CustomerBusinessHierarchyGuid == \"{request.CustomerId.ToLowerInvariant()}\"";
                 filterRequest.FilterExpression = $"CustomerBusinessHierarchyGuid != null && CustomerBusinessHierarchyGuid.ToUpperInvariant() == \"{request.CustomerId.ToUpperInvariant()}\"";
-#pragma warning restore CA1308
                 MastersFilterResponseGrpc locations = _MasterClient.FilterMasterDataGrpc(filterRequest);
-                List<CustomerLocationGrpc> extractedLocations = ExtractMastersResponseData<CustomerLocationGrpc>(locations).ToList();
+                List<Master.CustomerLocationGrpc> extractedLocations = ExtractMastersResponseData<Master.CustomerLocationGrpc>(locations).ToList();                
                 if (extractedLocations.Count <= 0)
                 {
                     response.Message = "No locations found for customer";
@@ -106,17 +104,14 @@
                     return response;
                 }
 
-                foreach (CustomerLocationGrpc? location in extractedLocations)
+                foreach (Master.CustomerLocationGrpc? location in extractedLocations)
                 {
-                    filterRequest.DatabaseList = "CUSTOMERPROJECTASSOCIATIONGRPC";
-#pragma warning disable CA1308
-                    // filterRequest.FilterExpression = $"CustomerGuid != null && CustomerGuid == \"{location.Id.ToUpperInvariant()}\"";
+                    filterRequest.DatabaseList = "CUSTOMERPROJEcTASSOCIATIONGRPC";
                     filterRequest.FilterExpression = $"CustomerLocationGuid != null && CustomerLocationGuid.ToUpperInvariant() == \"{location.Id.ToUpperInvariant()}\"";
-#pragma warning restore CA1308
                     MastersFilterResponseGrpc projectAssociations = _MasterClient.FilterMasterDataGrpc(filterRequest);
-                    List<CustomerProjectAssociationGrpc> extractedProjectAssociations = ExtractMastersResponseData<CustomerProjectAssociationGrpc>(projectAssociations).ToList();
+                    List<Master.CustomerProjectAssociationGrpc> extractedProjectAssociations = ExtractMastersResponseData<Master.CustomerProjectAssociationGrpc>(projectAssociations).ToList();
 
-                    foreach (CustomerProjectAssociationGrpc? customerProjectAssociation in extractedProjectAssociations)
+                    foreach (Master.CustomerProjectAssociationGrpc? customerProjectAssociation in extractedProjectAssociations)
                     {
                         if (customerProjectAssociation.ProjectGuid == null)
                         {
@@ -214,8 +209,14 @@
                 rfqGrpcRequestParameter.Take = request.Take;
                 rfqGrpcRequestParameter.RequestType = request.RequestType;
                 rfqReasonRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
+                RfqFilterRequest reasonFilterRequest = new RfqFilterRequest();
+                reasonFilterRequest.DatabaseList = "RFQREASONGRPC";
+                reasonFilterRequest.FilterExpression = "ReasonTitle != null && ReasonTitle != \"\"";
 
-                ListRfqReasonGrpc rfqReasons = _RfqClient.ReadRfqReasonGrpc(rfqReasonRequest);
+                RfqFilterResponse reasonFilterResponse = _RfqClient.FilterRfqGrpc(reasonFilterRequest);
+
+                ListRfqReasonGrpc rfqReasons = reasonFilterResponse.ListRfqReasonGrpc ?? new ListRfqReasonGrpc();
+
                 GetRfqReasonsGrpcResponse response = new GetRfqReasonsGrpcResponse();
                 foreach (Rfq.RfqReasonGrpc? reason in rfqReasons.RfqReasons)
                 {
@@ -276,28 +277,30 @@
             try
             {
                 await Task.Delay(1);
+                RfqFilterRequest rfqFilterRequest = new RfqFilterRequest();
 
-                // Prepare RFQ project request
-                RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
-                RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
-                rfqGrpcRequestParameter.Position = request.Position;
-                rfqGrpcRequestParameter.Take = request.Take;
-                rfqGrpcRequestParameter.RequestType = 1;
-                rfqProjectRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
+                rfqFilterRequest.DatabaseList = "RFQPROJECTGRPC";
+                rfqFilterRequest.FilterExpression = "(IsActive == true)";
 
-                // Fetch RFQ projects
-                ListRfqProjectGrpc rfqProjects = _RfqClient.ReadRfqProjectGrpc(rfqProjectRequest);
+                RfqFilterResponse rfqFilterResponse = _RfqClient.FilterRfqGrpc(rfqFilterRequest);
 
-                // Fetch RFQ reasons
+                // Single declaration; no duplicate variable names
+                ListRfqProjectGrpc rfqProjects = rfqFilterResponse.ListRfqProjectGrpc ?? new ListRfqProjectGrpc();
+
+                // Fetch RFQ reasons=
                 RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
                 RfqGrpcRequestParameter reasonRequestParameter = new RfqGrpcRequestParameter();
                 reasonRequestParameter.Position = 0;
                 reasonRequestParameter.Take = 100;
                 reasonRequestParameter.RequestType = 1;
                 rfqReasonRequest.RfqGrpcRequestParameter = reasonRequestParameter;
+                RfqFilterRequest reasonFilterRequest = new RfqFilterRequest();
+                reasonFilterRequest.DatabaseList = "RFQREASONGRPC";
+                reasonFilterRequest.FilterExpression = "ReasonTitle != null && ReasonTitle != \"\"";
 
-                ListRfqReasonGrpc rfqReasons = _RfqClient.ReadRfqReasonGrpc(rfqReasonRequest);
+                RfqFilterResponse reasonFilterResponse = _RfqClient.FilterRfqGrpc(reasonFilterRequest);
 
+                ListRfqReasonGrpc rfqReasons = reasonFilterResponse.ListRfqReasonGrpc ?? new ListRfqReasonGrpc();
                 // Build reason lookup
                 Dictionary<int, string> reasonLookup = rfqReasons.RfqReasons
                     .Where(r => r.RowId != 0 && r.ReasonTitle != null)
@@ -398,34 +401,18 @@
             try
             {
                 await Task.Delay(1);
+                RfqFilterRequest filterRequest = new RfqFilterRequest();
+                filterRequest.DatabaseList = "RFQPROJECTGRPC";
+                filterRequest.FilterExpression = $"RowId == {request.RowId}";
+                RfqFilterResponse filterResponse = _RfqClient.FilterRfqGrpc(filterRequest);
+                ListRfqProjectGrpc rfqProjects = filterResponse.ListRfqProjectGrpc ?? new ListRfqProjectGrpc();
+                RfqFilterRequest reasonFilterRequest = new RfqFilterRequest();
+                reasonFilterRequest.DatabaseList = "RFQREASONGRPC";
+                reasonFilterRequest.FilterExpression = "ReasonTitle != null && ReasonTitle != \"\"";
 
-                // Prepare RFQ project request
-                //RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
-                //rfqGrpcRequestParameter.RequestType = 2;
+                RfqFilterResponse reasonFilterResponse = _RfqClient.FilterRfqGrpc(reasonFilterRequest);
 
-                //RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
-                //rfqProjectRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
-                //rfqProjectRequest.RowId = request.RowId;
-
-                GetRfqProjectByIdGrpcResponse response = new();
-
-                // Fetch RFQ project
-                //ListRfqProjectGrpc rfqProjects = _RfqClient.ReadRfqProjectGrpc(rfqProjectRequest);
-                RfqFilterRequest rfqGrpcRequestParameter = new RfqFilterRequest();
-                rfqGrpcRequestParameter.DatabaseList = "RfqProjectGrpc".ToUpperInvariant();
-                rfqGrpcRequestParameter.FilterExpression = $"RowId != null && RowId == {request.RowId}";
-                RfqFilterResponse filterResponse = _RfqClient.FilterRfqGrpc(rfqGrpcRequestParameter);
-                List<RfqProjectGrpc> rfqProjects = filterResponse.ListRfqProjectGrpc.RfqProjects.ToList();
-
-                // Fetch RFQ reasons
-                RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
-                RfqGrpcRequestParameter reasonRequestParameter = new RfqGrpcRequestParameter();
-                reasonRequestParameter.Position = 0;
-                reasonRequestParameter.Take = 100;
-                reasonRequestParameter.RequestType = 1;
-                rfqReasonRequest.RfqGrpcRequestParameter = reasonRequestParameter;
-
-                ListRfqReasonGrpc rfqReasons = _RfqClient.ReadRfqReasonGrpc(rfqReasonRequest);
+                ListRfqReasonGrpc rfqReasons = reasonFilterResponse.ListRfqReasonGrpc ?? new ListRfqReasonGrpc();
 
                 Dictionary<int, string> reasonLookup = rfqReasons.RfqReasons
                     .Where(r => r.RowId != 0 && r.ReasonTitle != null)
@@ -472,12 +459,16 @@
                     .Where(v => v.Id != null && v.VehicleName != null)
                     .ToDictionary(v => v.Id, v => v.VehicleName);
 
-                int projectCount = rfqProjects.Count;
+                GetRfqProjectByIdGrpcResponse response = new GetRfqProjectByIdGrpcResponse();
+
+                //int projectCount = rfqProjects.ListRfqProjectGrpc.RfqProjects.Count;
+
+                int projectCount = rfqProjects.RfqProjects.Count;
                 bool hasProjects = 0 < projectCount;
 
                 if (hasProjects)
                 {
-                    RfqProjectGrpc grpcProject = rfqProjects.First();
+                    RfqProjectGrpc grpcProject = rfqProjects.RfqProjects.First();
                     RfqProject mappedProject = grpcProject.ToRfqProject();
 
                     // Attach reason title
@@ -568,21 +559,31 @@
             {
                 await Task.Delay(1);
 
-                RfqDrawingPartNumbersGrpcRequest rfqGrpcRequestParameter = new RfqDrawingPartNumbersGrpcRequest();
-                rfqGrpcRequestParameter.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
-                rfqGrpcRequestParameter.RfqGrpcRequestParameter.RequestType = 2;
-                rfqGrpcRequestParameter.RfqId = request.RfqId;
-                ListRfqDrawingPartNumbersGrpc rfqParts = await _RfqClient.ReadRfqDrawingPartNumbersGrpcAsync(rfqGrpcRequestParameter);
-
                 GetRfqDrawingPartNumbersByRfqIdGrpcResponse response = new GetRfqDrawingPartNumbersByRfqIdGrpcResponse();
 
-                int partCount = rfqParts.RfqDrawingPartNumbers.Count;
-                bool hasParts = !(partCount <= 0);
+                RfqFilterRequest rfqFilterRequest = new RfqFilterRequest();
+
+                rfqFilterRequest.DatabaseList = "RFQDRAWINGPARTNUMBERSGRPC";
+                rfqFilterRequest.FilterExpression = $"(RfqId != null && RfqId == {request.RfqId})";
+
+                RfqFilterResponse rfqFilterResponse = _RfqClient.FilterRfqGrpc(rfqFilterRequest);
+
+                if(rfqFilterResponse == null
+                    || rfqFilterResponse.ListRfqDrawingPartNumbersGrpc == null
+                    || rfqFilterResponse.ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers == null)
+                {
+                    return response;
+                }
+
+                List<RfqDrawingPartNumbersGrpc> rfqPartNumbers = rfqFilterResponse.ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.ToList();
+
+                int partNumberCount = rfqPartNumbers.Count;
+                bool hasParts = !(partNumberCount <= 0);
                 if (hasParts)
                 {
                     List<RfqDrawingPartNumber> mappedParts = new List<RfqDrawingPartNumber>();
 
-                    foreach (RfqDrawingPartNumbersGrpc grpcPart in rfqParts.RfqDrawingPartNumbers)
+                    foreach (RfqDrawingPartNumbersGrpc grpcPart in rfqPartNumbers)
                     {
                         RfqDrawingPartNumber mappedPart = grpcPart.ToRfqDrawingPartNumber();
                         mappedParts.Add(mappedPart);
@@ -882,6 +883,92 @@
             return part;
         }
 
+        public async Task<GetCustomerLocationsByUserIdResponse> GetCustomerLocationsByUserId(string userId)
+        {
+            await Task.Delay(0);
+            MastersFilterRequestGrpc mastersFilterRequestGrpc = new MastersFilterRequestGrpc();
+            mastersFilterRequestGrpc.DatabaseList = "CUSTOMERBUSINESSUSERASSOCIATIONGRPC";
+            mastersFilterRequestGrpc.FilterExpression = $"UserGuid != null && UserGuid.ToUpperInvariant() == \"{userId.ToUpperInvariant()}\"";
+
+            MastersFilterResponseGrpc associationFilter = _MasterClient.FilterMasterDataGrpc(mastersFilterRequestGrpc);
+            List<Master.CustomerBusinessUserAssociationGrpc> userList = ExtractMastersResponseData<Master.CustomerBusinessUserAssociationGrpc>(associationFilter).ToList();
+            Master.CustomerBusinessUserAssociationGrpc? user = userList.FirstOrDefault();
+            List<Master.CustomerLocationGrpc> filteredLocations = new List<Master.CustomerLocationGrpc>();
+            GetCustomerLocationsByUserIdResponse response = new GetCustomerLocationsByUserIdResponse();
+            if (user == null)
+            {
+                return response;
+            }
+
+            if (user.CustomerBusinessHierarchyList == null)
+            {
+                return response;
+            }
+
+            List<CustomerLocationGrpc>? userLocations = JsonConvert.DeserializeObject<List<CustomerLocationGrpc>>(user.CustomerBusinessHierarchyList);
+            if (userLocations == null)
+            {
+                return response;
+            }
+
+            foreach (CustomerLocationGrpc userLocation in userLocations)
+            {
+                if (userLocation.IsActive == true)
+                {
+                    mastersFilterRequestGrpc.DatabaseList = "CUSTOMERLOCATIONGRPC";
+                    mastersFilterRequestGrpc.FilterExpression = $"CustomerBusinessHierarchyGuid != null && CustomerBusinessHierarchyGuid.ToUpperInvariant() == \"{userLocation.CustomerBusinessHierarchyGuid.ToUpperInvariant()}\"";
+                    MastersFilterResponseGrpc locationsFilter = _MasterClient.FilterMasterDataGrpc(mastersFilterRequestGrpc);
+                    List<Master.CustomerLocationGrpc> customerLocations = ExtractMastersResponseData<Master.CustomerLocationGrpc>(locationsFilter).ToList();
+                    foreach (Master.CustomerLocationGrpc location in customerLocations)
+                    {
+                        CustomerLocationGrpc customerLocationGrpc = location.ToCustomerLocation();
+                        response.CustomerLocations.Add(customerLocationGrpc);
+                    }
+                }
+            }
+
+            return response;
+        }
+
+        public async Task<GetCustomerBusinessUnitsByUserIdResponse> GetCustomerBusinessUnitsByUserId(string userId)
+        {
+            await Task.Delay(1);
+            GetCustomerBusinessUnitsByUserIdResponse response = new GetCustomerBusinessUnitsByUserIdResponse();
+            MastersFilterRequestGrpc mastersFilterRequestGrpc = new MastersFilterRequestGrpc();
+            mastersFilterRequestGrpc.DatabaseList = "CUSTOMERBUSINESSUSERASSOCIATIONGRPC";
+            mastersFilterRequestGrpc.FilterExpression = $"UserGuid != null && UserGuid.ToUpperInvariant() == \"{userId.ToUpperInvariant()}\"";
+            MastersFilterResponseGrpc assiciationFilter = _MasterClient.FilterMasterDataGrpc(mastersFilterRequestGrpc);
+            List<Master.CustomerBusinessUserAssociationGrpc> businessUserAssociation = ExtractMastersResponseData<Master.CustomerBusinessUserAssociationGrpc>(assiciationFilter).ToList();
+            Master.CustomerBusinessUserAssociationGrpc? userAssociation = businessUserAssociation.FirstOrDefault();
+            if (userAssociation == null || userAssociation.CustomerBusinessHierarchyList == null)
+            {
+                return response;
+            }
+
+            List<CustomerBuisnessHirarchyListDto>? associatedCustomers = JsonConvert.DeserializeObject<List<CustomerBuisnessHirarchyListDto>>(userAssociation.CustomerBusinessHierarchyList);
+
+            if (associatedCustomers == null)
+            {
+                return response;
+            }
+
+            foreach (CustomerBuisnessHirarchyListDto customer in associatedCustomers)
+            {
+                if (customer.IsActive == true)
+                {
+                    mastersFilterRequestGrpc.DatabaseList = "CUSTOMERGRPC";
+                    mastersFilterRequestGrpc.FilterExpression = $"Id != null && Id.ToUpperInvariant() == \"{customer.CustomerBusinessHierarchyGuid.ToString().ToUpperInvariant()}\"";
+                    MastersFilterResponseGrpc customerFilter = _MasterClient.FilterMasterDataGrpc(mastersFilterRequestGrpc);
+                    foreach (Master.CustomerGrpc masterCustomer in customerFilter.CustomerGrpcList.CustomerGrpc)
+                    {
+                        CustomerGrpc customerGrpc = masterCustomer.ToCustomerGrpc();
+                        response.Customers.Add(customerGrpc);
+                    }
+                }
+            }
+
+            return response;
+        }
         #region Filtering
 
         public Task<FilterGrpcResponse> FilterByCustomerId(FilterGrpcRequest request)

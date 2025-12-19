@@ -21,6 +21,7 @@
             data.NprId = entity.NprId?.ToString();
             data.CustomerPartNumber = entity.CustomerPartNumber;
             data.NprRequest = entity.NprRequest;
+            data.Status = (int?)entity.Status;
             return data;
         }
 
@@ -42,6 +43,7 @@
             data.NprId = string.IsNullOrEmpty(grpc.NprId) ? null : Guid.Parse(grpc.NprId);
             data.CustomerPartNumber = grpc.CustomerPartNumber;
             data.NprRequest = grpc.NprRequest;
+            data.Status = (RfqDrawingPartNumberStatus)(grpc.Status ?? 0);
             return data;
         }
         #endregion

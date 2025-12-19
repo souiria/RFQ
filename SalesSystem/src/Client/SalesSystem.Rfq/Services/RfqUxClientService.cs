@@ -264,7 +264,6 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-
         public async Task<RfqCrudResponse> DeleteRfqProjectByRowIdAsync(long rowId)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);

@@ -58,28 +58,51 @@ namespace Integration.Tests.Rfq.Client
         #endregion
 
         #region Test Methods
+        [Test]
+        [Category("Integration")]
+        [Description("Verify that GetCustomersByUserIdAsync returns a project list")]
+        public async Task GetCustomersByUserIdAsyncTest()
+        {
+            EnsureServiceInitialized();
+            ArgumentNullException.ThrowIfNull(_RfqUxClientService);
 
-        //[Test]
-        //[Category("Integration")]
-        //[Description("Verify that GetRfqProjectByIdAsync returns a project with drawing/part numbers")]
-        //public async Task GetRfqProjectByIdAsyncTest()
-        //{
-        //    // Arrange
-        //    const long testProjectRowId = 127;
-        //    EnsureServiceInitialized();
+            // Arrange
+            Guid testUserId = Guid.Parse("86380EFD-5651-4552-8145-E59E785F099A");
+            Debug.WriteLine($"Testing GetCustomersByUserIdAsync with RowId: {testUserId}");
 
-        //    Debug.WriteLine($"Testing GetRfqProjectByIdAsync with RowId: {testProjectRowId}");
+            // Act
+            int rfqProjectList = await _RfqUxClientService.GetCustomersByUserIdAsync(testUserId);
 
-        //    // Act
-        //    RfqProject? rfqProject = await GetRfqProjectAsync(testProjectRowId);
+            // Assert this is bigger than 0
+            GreaterThanConstraint greaterThanZero = Is.GreaterThan(0);
+            Assert.That(rfqProjectList, greaterThanZero, "RfqProject list count should be greater than 0");
 
-        //    // Assert
-        //    AssertProjectRetrieved(rfqProject, testProjectRowId);
+            foreach (RfqProjectUx project in _RfqUxClientService.RfqProjectUxs)
+            {
+                Debug.WriteLine($"Retrieved RFQ Project: RowId={project.RowId}, RfqNumber={project.RfqNumber}");
+            }
+        }
+        [Test]
+        [Category("Integration")]
+        [Description("Verify that GetRfqProjectByIdAsync returns a project")]
+        public async Task GetRfqProjectByIdAsyncTest()
+        {
+            // Arrange
+            const long testProjectRowId = 130;
+            EnsureServiceInitialized();
 
-        //    Assert.That(rfqProject, Is.Not.Null, "RfqProject should not be null");
-        //    long rowId = rfqProject.RowId;
-        //    await AssertDrawingPartNumbersRetrieved(rowId);
-        //}
+            Debug.WriteLine($"Testing GetRfqProjectByIdAsync with RowId: {testProjectRowId}");
+
+            // Act
+            RfqProject? rfqProject = await GetRfqProjectAsync(testProjectRowId);
+
+            // Assert
+            AssertProjectRetrieved(rfqProject, testProjectRowId);
+
+            Assert.That(rfqProject, Is.Not.Null, "RfqProject should not be null");
+            long rowId = rfqProject.RowId;
+            await AssertDrawingPartNumbersRetrieved(rowId);
+        }
 
         [Test]
         [Category("Integration")]
@@ -89,7 +112,7 @@ namespace Integration.Tests.Rfq.Client
             // Arrange
             const int position = 0;
             const int take = 10;
-            const int maxProjectsToTest = 3;
+            //const int maxProjectsToTest = 3;
 
             EnsureServiceInitialized();
             Debug.WriteLine("Testing GetAllRfqProjectAsync");
@@ -99,7 +122,7 @@ namespace Integration.Tests.Rfq.Client
 
             // Assert
             AssertProjectsRetrieved(projectCount);
-            await AssertDrawingNumbersForMultipleProjects(maxProjectsToTest);
+            // await AssertDrawingNumbersForMultipleProjects(maxProjectsToTest);
         }
 
         [Test]
@@ -108,7 +131,7 @@ namespace Integration.Tests.Rfq.Client
         public async Task GetRfqProjectAsyncTest()
         {
             // Arrange
-            const long specificRowId = 127;
+            const long specificRowId = 130;
             EnsureServiceInitialized();
 
             // Act

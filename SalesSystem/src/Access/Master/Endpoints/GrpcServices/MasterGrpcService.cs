@@ -54,12 +54,6 @@ namespace Master.Endpoints.GrpcServices
             ListCustomerGrpc results = await _MasterAccessService.GetAllCustomerBusinessUnits(context.CancellationToken);
         }
 
-        public override async Task<ListCustomerGrpc> GetCustomerGrpcByUserId(CustomerByUserIdGrpcRequest request, ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("GetCustomerGrpcById starting");
-            return await _MasterAccessService.GetCustomerBusinessUnitsByUserId(request.Id, context.CancellationToken);
-        }
-
         public override async Task<ListCustomerLocationGrpc> GetCustomerLocationGrpc(CustomerLocationGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetCustomerLocationGrpc starting");
@@ -70,12 +64,6 @@ namespace Master.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("GetCustomerLocationGrpcStream starting");
             ListCustomerLocationGrpc results = await _MasterAccessService.GetAllCustomerLocations(context.CancellationToken);
-        }
-
-        public override async Task<ListCustomerLocationGrpc> GetCustomerLocationGrpcByUserId(CustomerLocationByUserIdGrpcRequest request, ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("GetCustomerLocationGrpcByUserId starting");
-            return await _MasterAccessService.GetCustomerLocationsByUserId(request.UserId, context.CancellationToken);
         }
 
         public override async Task<ListCustomerSalesEntityGrpc> GetCustomerSalesEntityGrpc(CustomerSalesEntityGrpcRequest request, ServerCallContext context)

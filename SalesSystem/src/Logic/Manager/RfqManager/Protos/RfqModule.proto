@@ -28,8 +28,10 @@ service RfqModule {
   rpc GetRfqDrawingPartNumbersByRfqIdGrpc (GetRfqDrawingPartNumbersByRfqIdGrpcRequest) returns (GetRfqDrawingPartNumbersByRfqIdGrpcResponse);
 //  rpc UpdateRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequestt) returns (UpdateRfqDrawingPartNumbersGrpcResponse);
   rpc UpdateRfqDrawingPartNumbersGrpc (UpdateRfqDrawingPartNumbersGrpcRequest) returns (UpdateRfqDrawingPartNumbersGrpcResponse);
-  rpc DeleteRfqProjectByRowIdGrpc (RfqProjectRequest) returns (RfqCrudResponse);
-  rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
+ rpc DeleteRfqProjectByRowIdGrpc (RfqProjectRequest) returns (RfqCrudResponse);
+ rpc GetCustomerLocationsByUserIdGrpc (GetCustomerLocationsByUserIdRequest) returns (GetCustomerLocationsByUserIdResponse);
+ rpc GetCustomerBusinessUnitsByUserIdGrpc (GetCustomerBusinessUnitsByUserIdRequest) returns (GetCustomerBusinessUnitsByUserIdResponse);
+ rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
 }
 
 // The request message containing the user's name.
@@ -261,6 +263,52 @@ message RfqCrudResponse {
   bool SaveSuccess = 1;
   string Message = 2;
   google.protobuf.StringValue StringValue = 3;
+}
+
+message GetCustomerLocationsByUserIdRequest {
+  google.protobuf.StringValue UserId = 1;
+}
+
+message GetCustomerLocationsByUserIdResponse {
+  repeated CustomerLocationGrpc CustomerLocations = 1;
+}
+
+message CustomerLocationGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue CustomerCode = 2;
+    google.protobuf.StringValue CustomerBusinessHierarchyGuid = 3;
+    google.protobuf.StringValue CustomerName = 4;   
+    google.protobuf.BoolValue IsActive = 5;
+}
+
+message GetCustomerBusinessUnitsByUserIdRequest {
+    google.protobuf.StringValue UserId = 1;
+}
+
+message GetCustomerBusinessUnitsByUserIdResponse {
+    repeated CustomerGrpc Customers = 1;
+}
+
+message GetAllCustomerProjectAssociationsByUserIdRequest {
+        google.protobuf.StringValue UserId = 1;
+}
+
+message GetAllCustomerProjectAssociationsByUserIdResponse {
+    repeated CustomerProjectAssociationGrpc CustomerProjectAssociations = 1;
+}
+
+message CustomerProjectAssociationGrpc {
+    string Id = 1;
+    string CustomerLocationGuid = 2;
+    string ProjectGuid = 3;    
+    bool IsActive = 4;
+}
+
+message CustomerBusinessUserAssociationGrpc {
+    string Id = 1;
+    string CustomerBusinessHierarchyList = 2;
+    string UserGuid = 3;    
+    bool IsActive = 4;
 }
 
 message FilterGrpcRequest {

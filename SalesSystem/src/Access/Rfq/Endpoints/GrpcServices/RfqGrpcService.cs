@@ -47,8 +47,6 @@ namespace Rfq.Endpoints.GrpcServices
             {
                 case RequestType.Read:
                 return await _RfqAccessService.GetAllRfqDrawingPartNumbers(context.CancellationToken);
-                case RequestType.ReadByRowId:
-                return await _RfqAccessService.GetRfqDrawingPartNumbersByRowId(request, context.CancellationToken);
                 default:
                 {
                     Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -176,8 +174,6 @@ namespace Rfq.Endpoints.GrpcServices
             {
                 case RequestType.Read:
                 return await _RfqAccessService.GetAllRfqProjects(context.CancellationToken);
-                case RequestType.ReadByRowId:
-                return await _RfqAccessService.GetRfqProjectByRowId(request, context.CancellationToken);
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
                 throw new RpcException(status);

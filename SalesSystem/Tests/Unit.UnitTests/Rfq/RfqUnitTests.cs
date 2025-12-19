@@ -29,7 +29,7 @@ namespace Unit.Tests.Rfq
             Task<HelloReply> helloReply = _GrpcService.SayHello(request, serverCallContext);
 
             string replyString = "Hello TestName";
-            NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(replyString);
+            EqualConstraint equalConstraint = Is.EqualTo(replyString);
             Assert.That(helloReply, Is.Not.Null);
             Assert.That(helloReply.Result.Message, equalConstraint);
         }
@@ -46,7 +46,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListRfqDrawingPartNumbersGrpc> getRfqDrawingPartNumbersGrpcReply = _GrpcService.ReadRfqDrawingPartNumbersGrpc(drawingPartNumbersGrpcRequest, serverCallContext);
             Assert.That(getRfqDrawingPartNumbersGrpcReply.Result.RfqDrawingPartNumbers, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getRfqDrawingPartNumbersGrpcReply.Result.RfqDrawingPartNumbers.Count, countConstraint);
 
         }
@@ -62,9 +62,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> reply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(reply.Result.ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(reply.Result.ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestOriginalPartNumber");
+            EqualConstraint nameConstraint = Is.EqualTo("TestOriginalPartNumber");
             Assert.That(reply.Result.ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.First().OriginalPartNumber, nameConstraint);
         }
         [Test]
@@ -76,7 +76,7 @@ namespace Unit.Tests.Rfq
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterRfqGrpc));
 
             Task<RfqFilterResponse> reply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(reply.Result.ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Count, countConstraint);
         }
         #endregion
@@ -93,7 +93,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListRfqProjectGrpc> getRfqProjectGrpcReply = _GrpcService.ReadRfqProjectGrpc(drawingPartNumbersGrpcRequest, serverCallContext);
             Assert.That(getRfqProjectGrpcReply.Result.RfqProjects, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getRfqProjectGrpcReply.Result.RfqProjects.Count, countConstraint);
 
         }
@@ -109,9 +109,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterRfqProjectByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterRfqProjectByRowIdReply.Result.ListRfqProjectGrpc.RfqProjects, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterRfqProjectByRowIdReply.Result.ListRfqProjectGrpc.RfqProjects.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TestProjectGuid");
+            EqualConstraint nameConstraint = Is.EqualTo("TestProjectGuid");
             Assert.That(filterRfqProjectByRowIdReply.Result.ListRfqProjectGrpc.RfqProjects.First().ProjectGuid, nameConstraint);
         }
 
@@ -125,7 +125,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterRfqProjectByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterRfqProjectByRowIdReply.Result.ListRfqProjectGrpc.RfqProjects.Count, countConstraint);
         }
         #endregion
@@ -142,7 +142,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListRfqNotesGrpc> getRfqNotesGrpcReply = _GrpcService.ReadRfqNotesGrpc(notesGrpcRequest, serverCallContext);
             Assert.That(getRfqNotesGrpcReply.Result.RfqNotes, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getRfqNotesGrpcReply.Result.RfqNotes.Count, countConstraint);
 
         }
@@ -158,9 +158,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterRfqNotesByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterRfqNotesByRowIdReply.Result.ListRfqNotesGrpc.RfqNotes, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterRfqNotesByRowIdReply.Result.ListRfqNotesGrpc.RfqNotes.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint noteConstraint = Is.EqualTo("TestNote");
+            EqualConstraint noteConstraint = Is.EqualTo("TestNote");
             Assert.That(filterRfqNotesByRowIdReply.Result.ListRfqNotesGrpc.RfqNotes.First().Note, noteConstraint);
         }
 
@@ -174,7 +174,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterRfqNotesByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterRfqNotesByRowIdReply.Result.ListRfqNotesGrpc.RfqNotes.Count, countConstraint);
         }
         #endregion
@@ -192,7 +192,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListRfqReasonGrpc> getRfqReasonGrpcReply = _GrpcService.ReadRfqReasonGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getRfqReasonGrpcReply.Result.RfqReasons, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getRfqReasonGrpcReply.Result.RfqReasons.Count, countConstraint);
 
         }
@@ -208,9 +208,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterRfqReasonByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterRfqReasonByRowIdReply.Result.ListRfqReasonGrpc.RfqReasons, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterRfqReasonByRowIdReply.Result.ListRfqReasonGrpc.RfqReasons.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("TestReasonTitle");
+            EqualConstraint reasonConstraint = Is.EqualTo("TestReasonTitle");
             Assert.That(filterRfqReasonByRowIdReply.Result.ListRfqReasonGrpc.RfqReasons.First().ReasonTitle, reasonConstraint);
         }
 
@@ -224,7 +224,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterRfqReasonByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterRfqReasonByRowIdReply.Result.ListRfqReasonGrpc.RfqReasons.Count, countConstraint);
         }
 
@@ -243,7 +243,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiBendGrpc> getDsiBendGrpcReply = _GrpcService.ReadDsiBendGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getDsiBendGrpcReply.Result.DsiBends, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getDsiBendGrpcReply.Result.DsiBends.Count, countConstraint);
 
         }
@@ -259,9 +259,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterDsiBendByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterDsiBendByRowIdReply.Result.ListDsiBendGrpc.DsiBends, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterDsiBendByRowIdReply.Result.ListDsiBendGrpc.DsiBends.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedBend");
+            EqualConstraint reasonConstraint = Is.EqualTo("FixedBend");
             Assert.That(filterDsiBendByRowIdReply.Result.ListDsiBendGrpc.DsiBends.First().Bend, reasonConstraint);
         }
 
@@ -275,7 +275,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> getDsiBendByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(getDsiBendByRowIdReply.Result.ListDsiBendGrpc.DsiBends.Count, countConstraint);
         }
         #endregion
@@ -293,7 +293,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiBranchConfigurationGrpc> filterDsiBranchConfigurationGrpcReply = _GrpcService.ReadDsiBranchConfigurationGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(filterDsiBranchConfigurationGrpcReply.Result.DsiBranchConfigurations, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(filterDsiBranchConfigurationGrpcReply.Result.DsiBranchConfigurations.Count, countConstraint);
 
         }
@@ -309,9 +309,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterDsiBranchConfigurationByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterDsiBranchConfigurationByRowIdReply.Result.ListDsiBranchConfigurationGrpc.DsiBranchConfigurations, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterDsiBranchConfigurationByRowIdReply.Result.ListDsiBranchConfigurationGrpc.DsiBranchConfigurations.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("TestUserModule");
+            EqualConstraint reasonConstraint = Is.EqualTo("TestUserModule");
             Assert.That(filterDsiBranchConfigurationByRowIdReply.Result.ListDsiBranchConfigurationGrpc.DsiBranchConfigurations.First().UserModule, reasonConstraint);
         }
 
@@ -325,7 +325,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterDsiBranchConfigurationByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterDsiBranchConfigurationByRowIdReply.Result.ListDsiBranchConfigurationGrpc.DsiBranchConfigurations.Count, countConstraint);
         }
         #endregion
@@ -343,7 +343,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiBranchConfigurationBendAssociationGrpc> getDsiBranchConfigurationBendAssociationGrpcReply = _GrpcService.ReadDsiBranchConfigurationBendAssociationGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getDsiBranchConfigurationBendAssociationGrpcReply.Result.DsiBranchConfigurationBendAssociations, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getDsiBranchConfigurationBendAssociationGrpcReply.Result.DsiBranchConfigurationBendAssociations.Count, countConstraint);
 
         }
@@ -359,9 +359,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterDsiBranchConfigurationBendAssociationByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterDsiBranchConfigurationBendAssociationByRowIdReply.Result.ListDsiBranchConfigurationBendAssociationGrpc.DsiBranchConfigurationBendAssociations, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterDsiBranchConfigurationBendAssociationByRowIdReply.Result.ListDsiBranchConfigurationBendAssociationGrpc.DsiBranchConfigurationBendAssociations.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("664c3151-c7fc-4e0e-971c-f1712a6342e1");
+            EqualConstraint reasonConstraint = Is.EqualTo("664c3151-c7fc-4e0e-971c-f1712a6342e1");
             Assert.That(filterDsiBranchConfigurationBendAssociationByRowIdReply.Result.ListDsiBranchConfigurationBendAssociationGrpc.DsiBranchConfigurationBendAssociations.First().BendId, reasonConstraint);
         }
 
@@ -375,7 +375,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterDsiBranchConfigurationBendAssociationByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterDsiBranchConfigurationBendAssociationByRowIdReply.Result.ListDsiBranchConfigurationBendAssociationGrpc.DsiBranchConfigurationBendAssociations.Count, countConstraint);
         }
         #endregion
@@ -393,7 +393,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiBranchInsulationGrpc> getDsiBranchInsulationGrpcReply = _GrpcService.ReadDsiBranchInsulationGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getDsiBranchInsulationGrpcReply.Result.DsiBranchInsulations, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getDsiBranchInsulationGrpcReply.Result.DsiBranchInsulations.Count, countConstraint);
 
         }
@@ -409,9 +409,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterDsiBranchInsulationByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterDsiBranchInsulationByRowIdReply.Result.ListDsiBranchInsulationGrpc.DsiBranchInsulations, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterDsiBranchInsulationByRowIdReply.Result.ListDsiBranchInsulationGrpc.DsiBranchInsulations.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedColour");
+            EqualConstraint reasonConstraint = Is.EqualTo("FixedColour");
             Assert.That(filterDsiBranchInsulationByRowIdReply.Result.ListDsiBranchInsulationGrpc.DsiBranchInsulations.First().Colour, reasonConstraint);
         }
 
@@ -425,7 +425,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterDsiBranchInsulationByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterDsiBranchInsulationByRowIdReply.Result.ListDsiBranchInsulationGrpc.DsiBranchInsulations.Count, countConstraint);
         }
 
@@ -439,11 +439,11 @@ namespace Unit.Tests.Rfq
         //    DsiBranchInsulationGrpc bendGrpc = new DsiBranchInsulationGrpc();
         //    reasonGrpcRequest.DsiBranchInsulationGrpcsToCreate.Add(bendGrpc);
         //    ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateDsiBranchInsulationGrpc));
-        //    NUnit.Framework.Constraints.EqualConstraint originalCountConstraint = Is.EqualTo(0);
+        //    EqualConstraint originalCountConstraint = Is.EqualTo(0);
 
         //    Task<ListDsiBranchInsulationGrpc> getDsiBranchInsulationByRowIdReply = _GrpcService.ReadDsiBranchInsulationGrpc(reasonGrpcRequest, serverCallContext);
 
-        //    NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+        //    EqualConstraint countConstraint = Is.EqualTo(1);
         //    Assert.That(getDsiBranchInsulationByRowIdReply.Result.DsiBranchInsulations.Count, countConstraint);
         //}
         #endregion
@@ -461,7 +461,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiBranchInsulationThroughNodeGrpc> getDsiBranchInsulationThroughNodeGrpcReply = _GrpcService.ReadDsiBranchInsulationThroughNodeGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getDsiBranchInsulationThroughNodeGrpcReply.Result.DsiBranchInsulationThroughNodes, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getDsiBranchInsulationThroughNodeGrpcReply.Result.DsiBranchInsulationThroughNodes.Count, countConstraint);
 
         }
@@ -477,9 +477,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterDsiBranchInsulationThroughNodeByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterDsiBranchInsulationThroughNodeByRowIdReply.Result.ListDsiBranchInsulationThroughNodeGrpc.DsiBranchInsulationThroughNodes, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterDsiBranchInsulationThroughNodeByRowIdReply.Result.ListDsiBranchInsulationThroughNodeGrpc.DsiBranchInsulationThroughNodes.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedThroughNode");
+            EqualConstraint reasonConstraint = Is.EqualTo("FixedThroughNode");
             Assert.That(filterDsiBranchInsulationThroughNodeByRowIdReply.Result.ListDsiBranchInsulationThroughNodeGrpc.DsiBranchInsulationThroughNodes.First().ThroughNode, reasonConstraint);
         }
 
@@ -493,7 +493,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterDsiBranchInsulationThroughNodeByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterDsiBranchInsulationThroughNodeByRowIdReply.Result.ListDsiBranchInsulationThroughNodeGrpc.DsiBranchInsulationThroughNodes.Count, countConstraint);
         }
 
@@ -508,11 +508,11 @@ namespace Unit.Tests.Rfq
         //    bendGrpc.Bend = "TestBend";
         //    reasonGrpcRequest.DsiBranchInsulationThroughNodeGrpcsToCreate.Add(bendGrpc);
         //    ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateDsiBranchInsulationThroughNodeGrpc));
-        //    NUnit.Framework.Constraints.EqualConstraint originalCountConstraint = Is.EqualTo(0);
+        //    EqualConstraint originalCountConstraint = Is.EqualTo(0);
 
         //    Task<ListDsiBranchInsulationThroughNodeGrpc> getDsiBranchInsulationThroughNodeByRowIdReply = _GrpcService.ReadDsiBranchInsulationThroughNodeGrpc(reasonGrpcRequest, serverCallContext);
 
-        //    NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+        //    EqualConstraint countConstraint = Is.EqualTo(1);
         //    Assert.That(getDsiBranchInsulationThroughNodeByRowIdReply.Result.DsiBranchInsulationThroughNodes.Count, countConstraint);
         //}
         #endregion
@@ -530,7 +530,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiCavityMappingGrpc> getDsiCavityMappingGrpcReply = _GrpcService.ReadDsiCavityMappingGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getDsiCavityMappingGrpcReply.Result.DsiCavityMappingGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getDsiCavityMappingGrpcReply.Result.DsiCavityMappingGrpcs.Count, countConstraint);
 
         }
@@ -546,9 +546,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterDsiCavityMappingByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterDsiCavityMappingByRowIdReply.Result.ListDsiCavityMappingGrpc.DsiCavityMappingGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterDsiCavityMappingByRowIdReply.Result.ListDsiCavityMappingGrpc.DsiCavityMappingGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedCavityMapping");
+            EqualConstraint reasonConstraint = Is.EqualTo("FixedCavityMapping");
             Assert.That(filterDsiCavityMappingByRowIdReply.Result.ListDsiCavityMappingGrpc.DsiCavityMappingGrpcs.First().CavityMapping, reasonConstraint);
         }
 
@@ -562,7 +562,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterDsiCavityMappingByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterDsiCavityMappingByRowIdReply.Result.ListDsiCavityMappingGrpc.DsiCavityMappingGrpcs.Count, countConstraint);
         }
 
@@ -577,11 +577,11 @@ namespace Unit.Tests.Rfq
         //    bendGrpc.Bend = "TestBend";
         //    reasonGrpcRequest.DsiCavityMappingGrpcsToCreate.Add(bendGrpc);
         //    ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateDsiCavityMappingGrpc));
-        //    NUnit.Framework.Constraints.EqualConstraint originalCountConstraint = Is.EqualTo(0);
+        //    EqualConstraint originalCountConstraint = Is.EqualTo(0);
 
         //    Task<ListDsiCavityMappingGrpc> getDsiCavityMappingByRowIdReply = _GrpcService.ReadDsiCavityMappingGrpc(reasonGrpcRequest, serverCallContext);
 
-        //    NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+        //    EqualConstraint countConstraint = Is.EqualTo(1);
         //    Assert.That(getDsiCavityMappingByRowIdReply.Result.DsiCavityMappingGrpcs.Count, countConstraint);
         //}
         #endregion
@@ -598,7 +598,7 @@ namespace Unit.Tests.Rfq
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadDsiCircuitOptionGrpc));
             Task<ListDsiCircuitOptionGrpc> getDsiCircuitOptionGrpcReply = _GrpcService.ReadDsiCircuitOptionGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getDsiCircuitOptionGrpcReply.Result.DsiCircuitOptionGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getDsiCircuitOptionGrpcReply.Result.DsiCircuitOptionGrpcs.Count, countConstraint);
         }
 
@@ -613,9 +613,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterDsiCircuitOptionByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterDsiCircuitOptionByRowIdReply.Result.ListDsiCircuitOptionGrpc.DsiCircuitOptionGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterDsiCircuitOptionByRowIdReply.Result.ListDsiCircuitOptionGrpc.DsiCircuitOptionGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedCircuitOption");
+            EqualConstraint reasonConstraint = Is.EqualTo("FixedCircuitOption");
             Assert.That(filterDsiCircuitOptionByRowIdReply.Result.ListDsiCircuitOptionGrpc.DsiCircuitOptionGrpcs.First().OptionName, reasonConstraint);
         }
 
@@ -629,7 +629,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterDsiCircuitOptionByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterDsiCircuitOptionByRowIdReply.Result.ListDsiCircuitOptionGrpc.DsiCircuitOptionGrpcs.Count, countConstraint);
         }
         #endregion
@@ -647,7 +647,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiHarnessGrpc> getDsiHarnessGrpcReply = _GrpcService.ReadDsiHarnessGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getDsiHarnessGrpcReply.Result.DsiHarnessGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getDsiHarnessGrpcReply.Result.DsiHarnessGrpcs.Count, countConstraint);
         }
 
@@ -662,9 +662,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterDsiHarnessByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterDsiHarnessByRowIdReply.Result.ListDsiHarnessGrpc.DsiHarnessGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterDsiHarnessByRowIdReply.Result.ListDsiHarnessGrpc.DsiHarnessGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedHarnessA");
+            EqualConstraint reasonConstraint = Is.EqualTo("FixedHarnessA");
             Assert.That(filterDsiHarnessByRowIdReply.Result.ListDsiHarnessGrpc.DsiHarnessGrpcs.First().HarnessName1, reasonConstraint);
         }
 
@@ -678,7 +678,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterDsiHarnessByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterDsiHarnessByRowIdReply.Result.ListDsiHarnessGrpc.DsiHarnessGrpcs.Count, countConstraint);
         }
         #endregion
@@ -696,7 +696,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiCompositeDetailGrpc> getDsiCompositeDetailGrpcReply = _GrpcService.ReadDsiCompositeDetailGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getDsiCompositeDetailGrpcReply.Result.DsiCompositeDetailGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getDsiCompositeDetailGrpcReply.Result.DsiCompositeDetailGrpcs.Count, countConstraint);
         }
 
@@ -711,9 +711,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterDsiCompositeDetailByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterDsiCompositeDetailByRowIdReply.Result.ListDsiCompositeDetailGrpc.DsiCompositeDetailGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterDsiCompositeDetailByRowIdReply.Result.ListDsiCompositeDetailGrpc.DsiCompositeDetailGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedHarnessA");
+            EqualConstraint reasonConstraint = Is.EqualTo("FixedHarnessA");
             Assert.That(filterDsiCompositeDetailByRowIdReply.Result.ListDsiCompositeDetailGrpc.DsiCompositeDetailGrpcs.First().HarnessName1, reasonConstraint);
         }
 
@@ -727,7 +727,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterDsiCompositeDetailByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterDsiCompositeDetailByRowIdReply.Result.ListDsiCompositeDetailGrpc.DsiCompositeDetailGrpcs.Count, countConstraint);
         }
         #endregion
@@ -745,7 +745,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiCompositeDetailCircuitOptionAssociationGrpc> getReply = _GrpcService.ReadDsiCompositeDetailCircuitOptionAssociationGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getReply.Result.DsiCompositeDetailCircuitOptionAssociationGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getReply.Result.DsiCompositeDetailCircuitOptionAssociationGrpcs.Count, countConstraint);
         }
 
@@ -760,7 +760,7 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterByRowIdReply.Result.ListDsiCompositeDetailCircuitOptionAssociationGrpc.DsiCompositeDetailCircuitOptionAssociationGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterByRowIdReply.Result.ListDsiCompositeDetailCircuitOptionAssociationGrpc.DsiCompositeDetailCircuitOptionAssociationGrpcs.Count, countConstraint);
         }
 
@@ -774,7 +774,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterByRowIdReply.Result.ListDsiCompositeDetailCircuitOptionAssociationGrpc.DsiCompositeDetailCircuitOptionAssociationGrpcs.Count, countConstraint);
         }
         #endregion
@@ -792,7 +792,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiModuleChildDetailGrpc> getReply = _GrpcService.ReadDsiModuleChildDetailGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getReply.Result.DsiModuleChildDetailGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getReply.Result.DsiModuleChildDetailGrpcs.Count, countConstraint);
         }
 
@@ -807,9 +807,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterByRowIdReply.Result.ListDsiModuleChildDetailGrpc.DsiModuleChildDetailGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterByRowIdReply.Result.ListDsiModuleChildDetailGrpc.DsiModuleChildDetailGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedModule");
+            EqualConstraint reasonConstraint = Is.EqualTo("FixedModule");
             Assert.That(filterByRowIdReply.Result.ListDsiModuleChildDetailGrpc.DsiModuleChildDetailGrpcs.First().ModuleCode, reasonConstraint);
         }
 
@@ -823,7 +823,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterByRowIdReply.Result.ListDsiModuleChildDetailGrpc.DsiModuleChildDetailGrpcs.Count, countConstraint);
         }
         #endregion
@@ -841,7 +841,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiCentreStripGrpc> getDsiCentreStripGrpcReply = _GrpcService.ReadDsiCentreStripGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getDsiCentreStripGrpcReply.Result.DsiCentreStripGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getDsiCentreStripGrpcReply.Result.DsiCentreStripGrpcs.Count, countConstraint);
         }
 
@@ -856,9 +856,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterDsiCentreStripByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterDsiCentreStripByRowIdReply.Result.ListDsiCentreStripGrpc.DsiCentreStripGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterDsiCentreStripByRowIdReply.Result.ListDsiCentreStripGrpc.DsiCentreStripGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedWire");
+            EqualConstraint reasonConstraint = Is.EqualTo("FixedWire");
             Assert.That(filterDsiCentreStripByRowIdReply.Result.ListDsiCentreStripGrpc.DsiCentreStripGrpcs.First().WireName, reasonConstraint);
         }
 
@@ -872,7 +872,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterDsiCentreStripByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterDsiCentreStripByRowIdReply.Result.ListDsiCentreStripGrpc.DsiCentreStripGrpcs.Count, countConstraint);
         }
         #endregion
@@ -890,7 +890,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiComponentGrpc> getDsiComponentGrpcReply = _GrpcService.ReadDsiComponentGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getDsiComponentGrpcReply.Result.DsiComponentGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getDsiComponentGrpcReply.Result.DsiComponentGrpcs.Count, countConstraint);
         }
 
@@ -905,9 +905,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterDsiComponentByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterDsiComponentByRowIdReply.Result.ListDsiComponentGrpc.DsiComponentGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterDsiComponentByRowIdReply.Result.ListDsiComponentGrpc.DsiComponentGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedWire");
+            EqualConstraint reasonConstraint = Is.EqualTo("FixedWire");
             Assert.That(filterDsiComponentByRowIdReply.Result.ListDsiComponentGrpc.DsiComponentGrpcs.First().WireName, reasonConstraint);
         }
 
@@ -921,7 +921,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterDsiComponentByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterDsiComponentByRowIdReply.Result.ListDsiComponentGrpc.DsiComponentGrpcs.Count, countConstraint);
         }
         #endregion
@@ -939,7 +939,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiCompositeOptionGrpc> getDsiCompositeOptionGrpcReply = _GrpcService.ReadDsiCompositeOptionGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getDsiCompositeOptionGrpcReply.Result.DsiCompositeOptionGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getDsiCompositeOptionGrpcReply.Result.DsiCompositeOptionGrpcs.Count, countConstraint);
         }
 
@@ -954,9 +954,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterDsiCompositeOptionByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterDsiCompositeOptionByRowIdReply.Result.ListDsiCompositeOptionGrpc.DsiCompositeOptionGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterDsiCompositeOptionByRowIdReply.Result.ListDsiCompositeOptionGrpc.DsiCompositeOptionGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedCompositeOption");
+            EqualConstraint reasonConstraint = Is.EqualTo("FixedCompositeOption");
             Assert.That(filterDsiCompositeOptionByRowIdReply.Result.ListDsiCompositeOptionGrpc.DsiCompositeOptionGrpcs.First().OptionName, reasonConstraint);
         }
 
@@ -970,7 +970,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> getDsiCompositeOptionByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(getDsiCompositeOptionByRowIdReply.Result.ListDsiCompositeOptionGrpc.DsiCompositeOptionGrpcs.Count, countConstraint);
         }
         #endregion
@@ -988,7 +988,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiHarnessScopeGrpc> getDsiHarnessScopeGrpcReply = _GrpcService.ReadDsiHarnessScopeGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getDsiHarnessScopeGrpcReply.Result.DsiHarnessScopeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getDsiHarnessScopeGrpcReply.Result.DsiHarnessScopeGrpcs.Count, countConstraint);
         }
 
@@ -1003,9 +1003,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterDsiHarnessScopeByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterDsiHarnessScopeByRowIdReply.Result.ListDsiHarnessScopeGrpc.DsiHarnessScopeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterDsiHarnessScopeByRowIdReply.Result.ListDsiHarnessScopeGrpc.DsiHarnessScopeGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedHarnessA");
+            EqualConstraint reasonConstraint = Is.EqualTo("FixedHarnessA");
             Assert.That(filterDsiHarnessScopeByRowIdReply.Result.ListDsiHarnessScopeGrpc.DsiHarnessScopeGrpcs.First().HarnessName1, reasonConstraint);
         }
 
@@ -1019,7 +1019,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterDsiHarnessScopeByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterDsiHarnessScopeByRowIdReply.Result.ListDsiHarnessScopeGrpc.DsiHarnessScopeGrpcs.Count, countConstraint);
         }
         #endregion
@@ -1037,7 +1037,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiHarnessScopeScopeAssociationGrpc> getReply = _GrpcService.ReadDsiHarnessScopeScopeAssociationGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getReply.Result.DsiHarnessScopeScopeAssociationGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getReply.Result.DsiHarnessScopeScopeAssociationGrpcs.Count, countConstraint);
         }
 
@@ -1052,7 +1052,7 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterByRowIdReply.Result.ListDsiHarnessScopeScopeAssociationGrpc.DsiHarnessScopeScopeAssociationGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterByRowIdReply.Result.ListDsiHarnessScopeScopeAssociationGrpc.DsiHarnessScopeScopeAssociationGrpcs.Count, countConstraint);
         }
 
@@ -1066,7 +1066,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterByRowIdReply.Result.ListDsiHarnessScopeScopeAssociationGrpc.DsiHarnessScopeScopeAssociationGrpcs.Count, countConstraint);
         }
         #endregion
@@ -1084,7 +1084,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiManualBomQuantityGrpc> getDsiManualBomQuantityGrpcReply = _GrpcService.ReadDsiManualBomQuantityGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getDsiManualBomQuantityGrpcReply.Result.DsiManualBomQuantityGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getDsiManualBomQuantityGrpcReply.Result.DsiManualBomQuantityGrpcs.Count, countConstraint);
         }
 
@@ -1099,9 +1099,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterDsiManualBomQuantityByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterDsiManualBomQuantityByRowIdReply.Result.ListDsiManualBomQuantityGrpc, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterDsiManualBomQuantityByRowIdReply.Result.ListDsiManualBomQuantityGrpc.DsiManualBomQuantityGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedModule");
+            EqualConstraint reasonConstraint = Is.EqualTo("FixedModule");
             Assert.That(filterDsiManualBomQuantityByRowIdReply.Result.ListDsiManualBomQuantityGrpc.DsiManualBomQuantityGrpcs.First().ModuleCode, reasonConstraint);
         }
 
@@ -1115,7 +1115,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterDsiManualBomQuantityByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterDsiManualBomQuantityByRowIdReply.Result.ListDsiManualBomQuantityGrpc.DsiManualBomQuantityGrpcs.Count, countConstraint);
         }
         #endregion
@@ -1133,7 +1133,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiMidWireComponentGrpc> getDsiMidWireComponentGrpcReply = _GrpcService.ReadDsiMidWireComponentGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getDsiMidWireComponentGrpcReply.Result.DsiMidWireComponentGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getDsiMidWireComponentGrpcReply.Result.DsiMidWireComponentGrpcs.Count, countConstraint);
         }
 
@@ -1148,9 +1148,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterDsiMidWireComponentByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterDsiMidWireComponentByRowIdReply.Result.ListDsiMidWireComponentGrpc.DsiMidWireComponentGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterDsiMidWireComponentByRowIdReply.Result.ListDsiMidWireComponentGrpc.DsiMidWireComponentGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedWire");
+            EqualConstraint reasonConstraint = Is.EqualTo("FixedWire");
             Assert.That(filterDsiMidWireComponentByRowIdReply.Result.ListDsiMidWireComponentGrpc.DsiMidWireComponentGrpcs.First().WireName, reasonConstraint);
         }
 
@@ -1164,7 +1164,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterDsiMidWireComponentByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterDsiMidWireComponentByRowIdReply.Result.ListDsiMidWireComponentGrpc.DsiMidWireComponentGrpcs.Count, countConstraint);
         }
         #endregion
@@ -1182,7 +1182,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiModuleCompatibilityGrpc> getDsiModuleCompatibilityGrpcReply = _GrpcService.ReadDsiModuleCompatibilityGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getDsiModuleCompatibilityGrpcReply.Result.DsiModuleCompatibilityGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getDsiModuleCompatibilityGrpcReply.Result.DsiModuleCompatibilityGrpcs.Count, countConstraint);
         }
 
@@ -1197,9 +1197,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterDsiModuleCompatibilityByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterDsiModuleCompatibilityByRowIdReply.Result.ListDsiModuleCompatibilityGrpc.DsiModuleCompatibilityGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterDsiModuleCompatibilityByRowIdReply.Result.ListDsiModuleCompatibilityGrpc.DsiModuleCompatibilityGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedRelationship");
+            EqualConstraint reasonConstraint = Is.EqualTo("FixedRelationship");
             Assert.That(filterDsiModuleCompatibilityByRowIdReply.Result.ListDsiModuleCompatibilityGrpc.DsiModuleCompatibilityGrpcs.First().Relationship, reasonConstraint);
         }
 
@@ -1213,7 +1213,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterDsiModuleCompatibilityByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterDsiModuleCompatibilityByRowIdReply.Result.ListDsiModuleCompatibilityGrpc.DsiModuleCompatibilityGrpcs.Count, countConstraint);
         }
         #endregion
@@ -1231,7 +1231,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiMulticoreSpecificationGrpc> getReply = _GrpcService.ReadDsiMulticoreSpecificationGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getReply.Result.DsiMulticoreSpecificationGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getReply.Result.DsiMulticoreSpecificationGrpcs.Count, countConstraint);
         }
 
@@ -1246,9 +1246,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterByRowIdReply.Result.ListDsiMulticoreSpecificationGrpc.DsiMulticoreSpecificationGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterByRowIdReply.Result.ListDsiMulticoreSpecificationGrpc.DsiMulticoreSpecificationGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedMulticore");
+            EqualConstraint reasonConstraint = Is.EqualTo("FixedMulticore");
             Assert.That(filterByRowIdReply.Result.ListDsiMulticoreSpecificationGrpc.DsiMulticoreSpecificationGrpcs.First().MulticoreName, reasonConstraint);
         }
 
@@ -1262,7 +1262,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterByRowIdReply.Result.ListDsiMulticoreSpecificationGrpc.DsiMulticoreSpecificationGrpcs.Count, countConstraint);
         }
         #endregion
@@ -1280,7 +1280,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiPinMappingGrpc> getDsiPinMappingGrpcReply = _GrpcService.ReadDsiPinMappingGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getDsiPinMappingGrpcReply.Result.DsiPinMappingGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getDsiPinMappingGrpcReply.Result.DsiPinMappingGrpcs.Count, countConstraint);
         }
 
@@ -1295,9 +1295,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterDsiPinMappingByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterDsiPinMappingByRowIdReply.Result.ListDsiPinMappingGrpc.DsiPinMappingGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterDsiPinMappingByRowIdReply.Result.ListDsiPinMappingGrpc.DsiPinMappingGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedNodeA");
+            EqualConstraint reasonConstraint = Is.EqualTo("FixedNodeA");
             Assert.That(filterDsiPinMappingByRowIdReply.Result.ListDsiPinMappingGrpc.DsiPinMappingGrpcs.First().Node1, reasonConstraint);
         }
 
@@ -1311,7 +1311,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> getDsiPinMappingByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(getDsiPinMappingByRowIdReply.Result.ListDsiPinMappingGrpc.DsiPinMappingGrpcs.Count, countConstraint);
         }
         #endregion
@@ -1329,7 +1329,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiPinMappingCavityMappingAssociationGrpc> getReply = _GrpcService.ReadDsiPinMappingCavityMappingAssociationGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getReply.Result.DsiPinMappingCavityMappingAssociationGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getReply.Result.DsiPinMappingCavityMappingAssociationGrpcs.Count, countConstraint);
         }
 
@@ -1344,9 +1344,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterByRowIdReply.Result.ListDsiPinMappingCavityMappingAssociationGrpc.DsiPinMappingCavityMappingAssociationGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterByRowIdReply.Result.ListDsiPinMappingCavityMappingAssociationGrpc.DsiPinMappingCavityMappingAssociationGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo(999);
+            EqualConstraint reasonConstraint = Is.EqualTo(999);
             Assert.That(filterByRowIdReply.Result.ListDsiPinMappingCavityMappingAssociationGrpc.DsiPinMappingCavityMappingAssociationGrpcs.First().MappingNumber, reasonConstraint);
         }
 
@@ -1360,7 +1360,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterByRowIdReply.Result.ListDsiPinMappingCavityMappingAssociationGrpc.DsiPinMappingCavityMappingAssociationGrpcs.Count, countConstraint);
         }
         #endregion
@@ -1378,7 +1378,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiScopeGrpc> getDsiScopeGrpcReply = _GrpcService.ReadDsiScopeGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getDsiScopeGrpcReply.Result.DsiScopeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getDsiScopeGrpcReply.Result.DsiScopeGrpcs.Count, countConstraint);
         }
 
@@ -1393,9 +1393,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterDsiScopeByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterDsiScopeByRowIdReply.Result.ListDsiScopeGrpc.DsiScopeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterDsiScopeByRowIdReply.Result.ListDsiScopeGrpc.DsiScopeGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedScope");
+            EqualConstraint reasonConstraint = Is.EqualTo("FixedScope");
             Assert.That(filterDsiScopeByRowIdReply.Result.ListDsiScopeGrpc.DsiScopeGrpcs.First().Scope, reasonConstraint);
         }
 
@@ -1409,7 +1409,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterDsiScopeByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterDsiScopeByRowIdReply.Result.ListDsiScopeGrpc.DsiScopeGrpcs.Count, countConstraint);
         }
         #endregion
@@ -1427,7 +1427,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiSupplierGrpc> getDsiSupplierGrpcReply = _GrpcService.ReadDsiSupplierGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getDsiSupplierGrpcReply.Result.DsiSupplierGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getDsiSupplierGrpcReply.Result.DsiSupplierGrpcs.Count, countConstraint);
         }
 
@@ -1442,9 +1442,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterDsiSupplierByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterDsiSupplierByRowIdReply.Result.ListDsiSupplierGrpc.DsiSupplierGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterDsiSupplierByRowIdReply.Result.ListDsiSupplierGrpc.DsiSupplierGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedSupplier");
+            EqualConstraint reasonConstraint = Is.EqualTo("FixedSupplier");
             Assert.That(filterDsiSupplierByRowIdReply.Result.ListDsiSupplierGrpc.DsiSupplierGrpcs.First().Name, reasonConstraint);
         }
 
@@ -1458,7 +1458,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterDsiSupplierByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterDsiSupplierByRowIdReply.Result.ListDsiSupplierGrpc.DsiSupplierGrpcs.Count, countConstraint);
         }
         #endregion
@@ -1476,7 +1476,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiTransformedCompositeDetailGrpc> getReply = _GrpcService.ReadDsiTransformedCompositeDetailGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getReply.Result.DsiTransformedCompositeDetailGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(5);
+            EqualConstraint countConstraint = Is.EqualTo(5);
             Assert.That(getReply.Result.DsiTransformedCompositeDetailGrpcs.Count, countConstraint);
         }
 
@@ -1491,9 +1491,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterByRowIdReply.Result.ListDsiTransformedCompositeDetailGrpc.DsiTransformedCompositeDetailGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterByRowIdReply.Result.ListDsiTransformedCompositeDetailGrpc.DsiTransformedCompositeDetailGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("HarnessA2");
+            EqualConstraint reasonConstraint = Is.EqualTo("HarnessA2");
             Assert.That(filterByRowIdReply.Result.ListDsiTransformedCompositeDetailGrpc.DsiTransformedCompositeDetailGrpcs.First().HarnessName1, reasonConstraint);
         }
 
@@ -1507,7 +1507,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterByRowIdReply.Result.ListDsiTransformedCompositeDetailGrpc.DsiTransformedCompositeDetailGrpcs.Count, countConstraint);
         }
         #endregion
@@ -1525,7 +1525,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiTransformedHarnessGrpc> getReply = _GrpcService.ReadDsiTransformedHarnessGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getReply.Result.DsiTransformedHarnessGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(5);
+            EqualConstraint countConstraint = Is.EqualTo(5);
             Assert.That(getReply.Result.DsiTransformedHarnessGrpcs.Count, countConstraint);
         }
 
@@ -1540,9 +1540,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterByRowIdReply.Result.ListDsiTransformedHarnessGrpc.DsiTransformedHarnessGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterByRowIdReply.Result.ListDsiTransformedHarnessGrpc.DsiTransformedHarnessGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("HarnessA2");
+            EqualConstraint reasonConstraint = Is.EqualTo("HarnessA2");
             Assert.That(filterByRowIdReply.Result.ListDsiTransformedHarnessGrpc.DsiTransformedHarnessGrpcs.First().HarnessName1, reasonConstraint);
         }
 
@@ -1556,7 +1556,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterByRowIdReply.Result.ListDsiTransformedHarnessGrpc.DsiTransformedHarnessGrpcs.Count, countConstraint);
         }
         #endregion
@@ -1574,7 +1574,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiTransformedModuleChildDetailGrpc> getReply = _GrpcService.ReadDsiTransformedModuleChildDetailGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getReply.Result.DsiTransformedModuleChildDetailGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(5);
+            EqualConstraint countConstraint = Is.EqualTo(5);
             Assert.That(getReply.Result.DsiTransformedModuleChildDetailGrpcs.Count, countConstraint);
         }
 
@@ -1589,9 +1589,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterByRowIdReply.Result.ListDsiTransformedModuleChildDetailGrpc.DsiTransformedModuleChildDetailGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterByRowIdReply.Result.ListDsiTransformedModuleChildDetailGrpc.DsiTransformedModuleChildDetailGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("Module2");
+            EqualConstraint reasonConstraint = Is.EqualTo("Module2");
             Assert.That(filterByRowIdReply.Result.ListDsiTransformedModuleChildDetailGrpc.DsiTransformedModuleChildDetailGrpcs.First().ModuleCode, reasonConstraint);
         }
 
@@ -1605,7 +1605,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterByRowIdReply.Result.ListDsiTransformedModuleChildDetailGrpc.DsiTransformedModuleChildDetailGrpcs.Count, countConstraint);
         }
         #endregion
@@ -1624,7 +1624,7 @@ namespace Unit.Tests.Rfq
             Task<ListDsiUnitOfMeasureGrpc> getReply = _GrpcService.ReadDsiUnitOfMeasureGrpc(reasonGrpcRequest, serverCallContext);
 
             Assert.That(getReply.Result.DsiUnitOfMeasureGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getReply.Result.DsiUnitOfMeasureGrpcs.Count, countConstraint);
         }
 
@@ -1639,9 +1639,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterByRowIdReply.Result.ListDsiUnitOfMeasureGrpc.DsiUnitOfMeasureGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterByRowIdReply.Result.ListDsiUnitOfMeasureGrpc.DsiUnitOfMeasureGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FIX");
+            EqualConstraint reasonConstraint = Is.EqualTo("FIX");
             Assert.That(filterByRowIdReply.Result.ListDsiUnitOfMeasureGrpc.DsiUnitOfMeasureGrpcs.First().Abbreviation, reasonConstraint);
         }
 
@@ -1655,7 +1655,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterByRowIdReply.Result.ListDsiUnitOfMeasureGrpc.DsiUnitOfMeasureGrpcs.Count, countConstraint);
         }
         #endregion
@@ -1673,7 +1673,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiWireMulticoreMarkerGrpc> getReply = _GrpcService.ReadDsiWireMulticoreMarkerGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getReply.Result.DsiWireMulticoreMarkerGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getReply.Result.DsiWireMulticoreMarkerGrpcs.Count, countConstraint);
         }
 
@@ -1688,9 +1688,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterByRowIdReply.Result.ListDsiWireMulticoreMarkerGrpc.DsiWireMulticoreMarkerGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterByRowIdReply.Result.ListDsiWireMulticoreMarkerGrpc.DsiWireMulticoreMarkerGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("FixedItem");
+            EqualConstraint reasonConstraint = Is.EqualTo("FixedItem");
             Assert.That(filterByRowIdReply.Result.ListDsiWireMulticoreMarkerGrpc.DsiWireMulticoreMarkerGrpcs.First().ItemName, reasonConstraint);
         }
 
@@ -1704,7 +1704,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterByRowIdReply.Result.ListDsiWireMulticoreMarkerGrpc.DsiWireMulticoreMarkerGrpcs.Count, countConstraint);
         }
         #endregion
@@ -1722,7 +1722,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiWireSpecificationGrpc> getReply = _GrpcService.ReadDsiWireSpecificationGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getReply.Result.DsiWireSpecificationGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(5);
+            EqualConstraint countConstraint = Is.EqualTo(5);
             Assert.That(getReply.Result.DsiWireSpecificationGrpcs.Count, countConstraint);
         }
 
@@ -1737,9 +1737,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterByRowIdReply.Result.ListDsiWireSpecificationGrpc.DsiWireSpecificationGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterByRowIdReply.Result.ListDsiWireSpecificationGrpc.DsiWireSpecificationGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("Wire2");
+            EqualConstraint reasonConstraint = Is.EqualTo("Wire2");
             Assert.That(filterByRowIdReply.Result.ListDsiWireSpecificationGrpc.DsiWireSpecificationGrpcs.First().WireName, reasonConstraint);
         }
 
@@ -1753,7 +1753,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterByRowIdReply.Result.ListDsiWireSpecificationGrpc.DsiWireSpecificationGrpcs.Count, countConstraint);
         }
         #endregion
@@ -1771,7 +1771,7 @@ namespace Unit.Tests.Rfq
 
             Task<ListDsiWireThroughNodeGrpc> getReply = _GrpcService.ReadDsiWireThroughNodeGrpc(reasonGrpcRequest, serverCallContext);
             Assert.That(getReply.Result.DsiWireThroughNodeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(5);
+            EqualConstraint countConstraint = Is.EqualTo(5);
             Assert.That(getReply.Result.DsiWireThroughNodeGrpcs.Count, countConstraint);
         }
 
@@ -1786,9 +1786,9 @@ namespace Unit.Tests.Rfq
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
             Assert.That(filterByRowIdReply.Result.ListDsiWireThroughNodeGrpc.DsiWireThroughNodeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterByRowIdReply.Result.ListDsiWireThroughNodeGrpc.DsiWireThroughNodeGrpcs.Count, countConstraint);
-            NUnit.Framework.Constraints.EqualConstraint reasonConstraint = Is.EqualTo("Wire2");
+            EqualConstraint reasonConstraint = Is.EqualTo("Wire2");
             Assert.That(filterByRowIdReply.Result.ListDsiWireThroughNodeGrpc.DsiWireThroughNodeGrpcs.First().WireName, reasonConstraint);
         }
 
@@ -1802,7 +1802,7 @@ namespace Unit.Tests.Rfq
 
             Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
 
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(filterByRowIdReply.Result.ListDsiWireThroughNodeGrpc.DsiWireThroughNodeGrpcs.Count, countConstraint);
         }
         #endregion

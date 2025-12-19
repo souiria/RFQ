@@ -568,29 +568,6 @@
             }
         }
 
-        public async Task<ListRfqDrawingPartNumbersGrpc> GetRfqDrawingPartNumbersByRowId(RfqDrawingPartNumbersGrpcRequest request, CancellationToken cancellationToken) //
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Any())
-            {
-            }
-            else
-            {
-                await PopulateRfqDrawingPartNumbers(cancellationToken);
-            }
-
-            ListRfqDrawingPartNumbersGrpc responseList = new ListRfqDrawingPartNumbersGrpc();
-            List<RfqDrawingPartNumbersGrpc> projects = _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Where(x => x.RfqId == request.RfqId).ToList();
-   
-            if (projects != null)
-            {
-                responseList.RfqDrawingPartNumbers.AddRange(projects);
-                return responseList;
-            }
-
-            return responseList;
-        }
-
         public async Task<ListRfqDrawingPartNumbersGrpc> CreateRfqDrawingPartNumbers(RfqDrawingPartNumbersGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -712,7 +689,7 @@
                 }
             }
         }
-#endregion
+        #endregion
 
         #region RfqProject
         public async Task<ListRfqProjectGrpc> DeleteRfqProjectByRowId(RfqProjectGrpcRequest request, CancellationToken cancellationToken)
@@ -775,30 +752,6 @@
             activeProjectsList.RfqProjects.AddRange(activeProjects);
 
             return activeProjectsList;
-        }
-
-        public async Task<ListRfqProjectGrpc> GetRfqProjectByRowId(RfqProjectGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListRfqProjectsGrpc.RfqProjects.Any())
-            {
-            }
-            else
-            {
-                await PopulateRfqProjects(cancellationToken);
-            }
-
-            ListRfqProjectGrpc responseList = new ListRfqProjectGrpc();
-            //List<RfqProjectGrpc> projects = _ListRfqProjects.RfqProjects.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-            List<RfqProjectGrpc> projects = _ListRfqProjectsGrpc.RfqProjects.Where(x => x.RowId == request.RowId).ToList();
-
-            if (projects != null)
-            {
-                responseList.RfqProjects.AddRange(projects);
-                return responseList;
-            }
-
-            return responseList;
         }
 
         public async Task<ListRfqProjectGrpc> CreateRfqProjects(RfqProjectGrpcRequest request, CancellationToken cancellationToken)
@@ -885,28 +838,6 @@
                 await PopulateRfqNotes(cancellationToken);
                 return _ListRfqNotesGrpc;
             }
-        }
-
-        public async Task<ListRfqNotesGrpc> GetRfqNotesByRowId(RfqNotesGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListRfqNotesGrpc.RfqNotes.Any())
-            {
-            }
-            else
-            {
-                await PopulateRfqNotes(cancellationToken);
-            }
-
-            ListRfqNotesGrpc responseList = new ListRfqNotesGrpc();
-            List<RfqNotesGrpc> projects = _ListRfqNotesGrpc.RfqNotes.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-            if (projects != null)
-            {
-                responseList.RfqNotes.AddRange(projects);
-                return responseList;
-            }
-
-            return responseList;
         }
 
         public async Task<ListRfqNotesGrpc> CreateRfqNotes(RfqNotesGrpcRequest request, CancellationToken cancellationToken)
@@ -996,28 +927,6 @@
             }
         }
 
-        public async Task<ListRfqReasonGrpc> GetRfqReasonsByRowId(RfqReasonGrpcRequest reason, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListRfqReasonsGrpc.RfqReasons.Any())
-            {
-            }
-            else
-            {
-                await PopulateRfqReasons(cancellationToken);
-            }
-
-            ListRfqReasonGrpc responseList = new ListRfqReasonGrpc();
-            List<RfqReasonGrpc> projects = _ListRfqReasonsGrpc.RfqReasons.Where(x => x.RowId == reason.RfqGrpcRequestParameter.IntValue).ToList();
-            if (projects != null)
-            {
-                responseList.RfqReasons.AddRange(projects);
-                return responseList;
-            }
-
-            return responseList;
-        }
-
         public async Task<ListRfqReasonGrpc> CreateRfqReason(RfqReasonGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -1103,28 +1012,6 @@
                 await PopulateRfqReasons(cancellationToken);
                 return _ListDsiBendsGrpc;
             }
-        }
-
-        public async Task<ListDsiBendGrpc> GetDsiBendsByRowId(DsiBendGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListDsiBendsGrpc.DsiBends.Any())
-            {
-            }
-            else
-            {
-                await PopulateDsiBends(cancellationToken);
-            }
-
-            ListDsiBendGrpc responseList = new ListDsiBendGrpc();
-            List<DsiBendGrpc> bends = _ListDsiBendsGrpc.DsiBends.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-            if (bends != null)
-            {
-                responseList.DsiBends.AddRange(bends);
-                return responseList;
-            }
-
-            return responseList;
         }
 
         public async Task<ListDsiBendGrpc> CreateDsiBends(DsiBendGrpcRequest request, CancellationToken cancellationToken)
@@ -1214,28 +1101,6 @@
             }
         }
 
-        public async Task<ListDsiBranchConfigurationGrpc> GetDsiBranchConfigurationsByRowId(DsiBranchConfigurationGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListDsiBranchConfigurationsGrpc.DsiBranchConfigurations.Any())
-            {
-            }
-            else
-            {
-                await PopulateDsiBranchConfigurations(cancellationToken);
-            }
-
-            ListDsiBranchConfigurationGrpc responseList = new ListDsiBranchConfigurationGrpc();
-            List<DsiBranchConfigurationGrpc> banchConfigurations = _ListDsiBranchConfigurationsGrpc.DsiBranchConfigurations.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-            if (banchConfigurations != null)
-            {
-                responseList.DsiBranchConfigurations.AddRange(banchConfigurations);
-                return responseList;
-            }
-
-            return responseList;
-        }
-
         public async Task<ListDsiBranchConfigurationGrpc> CreateDsiBranchConfigurations(DsiBranchConfigurationGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -1321,28 +1186,6 @@
                 await PopulateRfqReasons(cancellationToken);
                 return _ListDsiBranchConfigurationBendAssociationsGrpc;
             }
-        }
-
-        public async Task<ListDsiBranchConfigurationBendAssociationGrpc> GetDsiBranchConfigurationBendAssociationsByRowId(DsiBranchConfigurationBendAssociationGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListDsiBranchConfigurationBendAssociationsGrpc.DsiBranchConfigurationBendAssociations.Any())
-            {
-            }
-            else
-            {
-                await PopulateDsiBranchConfigurationBendAssociations(cancellationToken);
-            }
-
-            ListDsiBranchConfigurationBendAssociationGrpc responseList = new ListDsiBranchConfigurationBendAssociationGrpc();
-            List<DsiBranchConfigurationBendAssociationGrpc> banchConfigurations = _ListDsiBranchConfigurationBendAssociationsGrpc.DsiBranchConfigurationBendAssociations.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-            if (banchConfigurations != null)
-            {
-                responseList.DsiBranchConfigurationBendAssociations.AddRange(banchConfigurations);
-                return responseList;
-            }
-
-            return responseList;
         }
 
         public async Task<ListDsiBranchConfigurationBendAssociationGrpc> CreateDsiBranchConfigurationBendAssociations(DsiBranchConfigurationBendAssociationGrpcRequest request, CancellationToken cancellationToken)
@@ -1432,28 +1275,6 @@
             }
         }
 
-        public async Task<ListDsiBranchInsulationGrpc> GetDsiBranchInsulationsByRowId(DsiBranchInsulationGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListDsiBranchInsulationsGrpc.DsiBranchInsulations.Any())
-            {
-            }
-            else
-            {
-                await PopulateDsiBranchInsulations(cancellationToken);
-            }
-
-            ListDsiBranchInsulationGrpc responseList = new ListDsiBranchInsulationGrpc();
-            List<DsiBranchInsulationGrpc> banchConfigurations = _ListDsiBranchInsulationsGrpc.DsiBranchInsulations.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-            if (banchConfigurations != null)
-            {
-                responseList.DsiBranchInsulations.AddRange(banchConfigurations);
-                return responseList;
-            }
-
-            return responseList;
-        }
-
         public async Task<ListDsiBranchInsulationGrpc> CreateDsiBranchInsulations(DsiBranchInsulationGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -1539,28 +1360,6 @@
                 await PopulateRfqReasons(cancellationToken);
                 return _ListDsiBranchInsulationThroughNodesGrpc;
             }
-        }
-
-        public async Task<ListDsiBranchInsulationThroughNodeGrpc> GetDsiBranchInsulationThroughNodesByRowId(DsiBranchInsulationThroughNodeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListDsiBranchInsulationThroughNodesGrpc.DsiBranchInsulationThroughNodes.Any())
-            {
-            }
-            else
-            {
-                await PopulateDsiBranchInsulationThroughNodes(cancellationToken);
-            }
-
-            ListDsiBranchInsulationThroughNodeGrpc responseList = new ListDsiBranchInsulationThroughNodeGrpc();
-            List<DsiBranchInsulationThroughNodeGrpc> banchConfigurations = _ListDsiBranchInsulationThroughNodesGrpc.DsiBranchInsulationThroughNodes.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-            if (banchConfigurations != null)
-            {
-                responseList.DsiBranchInsulationThroughNodes.AddRange(banchConfigurations);
-                return responseList;
-            }
-
-            return responseList;
         }
 
         public async Task<ListDsiBranchInsulationThroughNodeGrpc> CreateDsiBranchInsulationThroughNodes(DsiBranchInsulationThroughNodeGrpcRequest request, CancellationToken cancellationToken)
@@ -1650,28 +1449,6 @@
             }
         }
 
-        public async Task<ListDsiCavityMappingGrpc> GetDsiCavityMappingsByRowId(DsiCavityMappingGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (_ListDsiCavityMappings.DsiCavityMappingGrpcs.Any())
-            {
-            }
-            else
-            {
-                await PopulateDsiCavityMappings(cancellationToken);
-            }
-
-            ListDsiCavityMappingGrpc responseList = new ListDsiCavityMappingGrpc();
-            List<DsiCavityMappingGrpc> banchConfigurations = _ListDsiCavityMappings.DsiCavityMappingGrpcs.Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-            if (banchConfigurations != null)
-            {
-                responseList.DsiCavityMappingGrpcs.AddRange(banchConfigurations);
-                return responseList;
-            }
-
-            return responseList;
-        }
-
         public async Task<ListDsiCavityMappingGrpc> CreateDsiCavityMappings(DsiCavityMappingGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -1751,26 +1528,6 @@
             return _ListDsiCentreStripGrpc;
         }
 
-        public async Task<ListDsiCentreStripGrpc> GetDsiCentreStripsByRowId(DsiCentreStripGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiCentreStripGrpc.DsiCentreStripGrpcs.Any())
-            {
-                await PopulateDsiCentreStrips(cancellationToken);
-            }
-
-            ListDsiCentreStripGrpc responseList = new ListDsiCentreStripGrpc();
-            List<DsiCentreStripGrpc> matches = _ListDsiCentreStripGrpc.DsiCentreStripGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            if (matches != null)
-            {
-                responseList.DsiCentreStripGrpcs.AddRange(matches);
-            }
-
-            return responseList;
-        }
-
         public async Task<ListDsiCentreStripGrpc> CreateDsiCentreStrips(DsiCentreStripGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -1847,22 +1604,6 @@
             return _ListDsiCircuitOptionGrpc;
         }
 
-        public async Task<ListDsiCircuitOptionGrpc> GetDsiCircuitOptionsByRowId(DsiCircuitOptionGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiCircuitOptionGrpc.DsiCircuitOptionGrpcs.Any())
-            {
-                await PopulateDsiCircuitOptions(cancellationToken);
-            }
-
-            ListDsiCircuitOptionGrpc responseList = new ListDsiCircuitOptionGrpc();
-            List<DsiCircuitOptionGrpc> matches = _ListDsiCircuitOptionGrpc.DsiCircuitOptionGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiCircuitOptionGrpcs.AddRange(matches);
-            return responseList;
-        }
-
         public async Task<ListDsiCircuitOptionGrpc> CreateDsiCircuitOptions(DsiCircuitOptionGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -1933,22 +1674,6 @@
         {
             await Task.Delay(1, cancellationToken);
             return _ListDsiComponentGrpc;
-        }
-
-        public async Task<ListDsiComponentGrpc> GetDsiComponentsByRowId(DsiComponentGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiComponentGrpc.DsiComponentGrpcs.Any())
-            {
-                await PopulateDsiComponents(cancellationToken);
-            }
-
-            ListDsiComponentGrpc responseList = new ListDsiComponentGrpc();
-            List<DsiComponentGrpc> matches = _ListDsiComponentGrpc.DsiComponentGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiComponentGrpcs.AddRange(matches);
-            return responseList;
         }
 
         public async Task<ListDsiComponentGrpc> CreateDsiComponents(DsiComponentGrpcRequest request, CancellationToken cancellationToken)
@@ -2023,22 +1748,6 @@
             return _ListDsiCompositeDetailGrpc;
         }
 
-        public async Task<ListDsiCompositeDetailGrpc> GetDsiCompositeDetailsByRowId(DsiCompositeDetailGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiCompositeDetailGrpc.DsiCompositeDetailGrpcs.Any())
-            {
-                await PopulateDsiCompositeDetails(cancellationToken);
-            }
-
-            ListDsiCompositeDetailGrpc responseList = new ListDsiCompositeDetailGrpc();
-            List<DsiCompositeDetailGrpc> matches = _ListDsiCompositeDetailGrpc.DsiCompositeDetailGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiCompositeDetailGrpcs.AddRange(matches);
-            return responseList;
-        }
-
         public async Task<ListDsiCompositeDetailGrpc> CreateDsiCompositeDetails(DsiCompositeDetailGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -2109,22 +1818,6 @@
         {
             await Task.Delay(1, cancellationToken);
             return _ListDsiCompositeDetailCircuitOptionAssociationGrpc;
-        }
-
-        public async Task<ListDsiCompositeDetailCircuitOptionAssociationGrpc> GetDsiCompositeDetailCircuitOptionAssociationsByRowId(DsiCompositeDetailCircuitOptionAssociationGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiCompositeDetailCircuitOptionAssociationGrpc.DsiCompositeDetailCircuitOptionAssociationGrpcs.Any())
-            {
-                await PopulateDsiCompositeDetailCircuitOptionAssociations(cancellationToken);
-            }
-
-            ListDsiCompositeDetailCircuitOptionAssociationGrpc responseList = new ListDsiCompositeDetailCircuitOptionAssociationGrpc();
-            List<DsiCompositeDetailCircuitOptionAssociationGrpc> matches = _ListDsiCompositeDetailCircuitOptionAssociationGrpc.DsiCompositeDetailCircuitOptionAssociationGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiCompositeDetailCircuitOptionAssociationGrpcs.AddRange(matches);
-            return responseList;
         }
 
         public async Task<ListDsiCompositeDetailCircuitOptionAssociationGrpc> CreateDsiCompositeDetailCircuitOptionAssociations(DsiCompositeDetailCircuitOptionAssociationGrpcRequest request, CancellationToken cancellationToken)
@@ -2199,22 +1892,6 @@
             return _ListDsiCompositeOptionGrpc;
         }
 
-        public async Task<ListDsiCompositeOptionGrpc> GetDsiCompositeOptionsByRowId(DsiCompositeOptionGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiCompositeOptionGrpc.DsiCompositeOptionGrpcs.Any())
-            {
-                await PopulateDsiCompositeOptions(cancellationToken);
-            }
-
-            ListDsiCompositeOptionGrpc responseList = new ListDsiCompositeOptionGrpc();
-            List<DsiCompositeOptionGrpc> matches = _ListDsiCompositeOptionGrpc.DsiCompositeOptionGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiCompositeOptionGrpcs.AddRange(matches);
-            return responseList;
-        }
-
         public async Task<ListDsiCompositeOptionGrpc> CreateDsiCompositeOptions(DsiCompositeOptionGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -2285,22 +1962,6 @@
         {
             await Task.Delay(1, cancellationToken);
             return _ListDsiHarnessGrpc;
-        }
-
-        public async Task<ListDsiHarnessGrpc> GetDsiHarnessesByRowId(DsiHarnessGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiHarnessGrpc.DsiHarnessGrpcs.Any())
-            {
-                await PopulateDsiHarnesses(cancellationToken);
-            }
-
-            ListDsiHarnessGrpc responseList = new ListDsiHarnessGrpc();
-            List<DsiHarnessGrpc> matches = _ListDsiHarnessGrpc.DsiHarnessGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiHarnessGrpcs.AddRange(matches);
-            return responseList;
         }
 
         public async Task<ListDsiHarnessGrpc> CreateDsiHarnesses(DsiHarnessGrpcRequest request, CancellationToken cancellationToken)
@@ -2375,22 +2036,6 @@
             return _ListDsiHarnessScopeGrpc;
         }
 
-        public async Task<ListDsiHarnessScopeGrpc> GetDsiHarnessScopesByRowId(DsiHarnessScopeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiHarnessScopeGrpc.DsiHarnessScopeGrpcs.Any())
-            {
-                await PopulateDsiHarnessScopes(cancellationToken);
-            }
-
-            ListDsiHarnessScopeGrpc responseList = new ListDsiHarnessScopeGrpc();
-            List<DsiHarnessScopeGrpc> matches = _ListDsiHarnessScopeGrpc.DsiHarnessScopeGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiHarnessScopeGrpcs.AddRange(matches);
-            return responseList;
-        }
-
         public async Task<ListDsiHarnessScopeGrpc> CreateDsiHarnessScopes(DsiHarnessScopeGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -2461,22 +2106,6 @@
         {
             await Task.Delay(1, cancellationToken);
             return _ListDsiHarnessScopeScopeAssociationGrpc;
-        }
-
-        public async Task<ListDsiHarnessScopeScopeAssociationGrpc> GetDsiHarnessScopeScopeAssociationsByRowId(DsiHarnessScopeScopeAssociationGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiHarnessScopeScopeAssociationGrpc.DsiHarnessScopeScopeAssociationGrpcs.Any())
-            {
-                await PopulateDsiHarnessScopeScopeAssociations(cancellationToken);
-            }
-
-            ListDsiHarnessScopeScopeAssociationGrpc responseList = new ListDsiHarnessScopeScopeAssociationGrpc();
-            List<DsiHarnessScopeScopeAssociationGrpc> matches = _ListDsiHarnessScopeScopeAssociationGrpc.DsiHarnessScopeScopeAssociationGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiHarnessScopeScopeAssociationGrpcs.AddRange(matches);
-            return responseList;
         }
 
         public async Task<ListDsiHarnessScopeScopeAssociationGrpc> CreateDsiHarnessScopeScopeAssociations(DsiHarnessScopeScopeAssociationGrpcRequest request, CancellationToken cancellationToken)
@@ -2556,22 +2185,6 @@
             return _ListDsiManualBomQuantityGrpc;
         }
 
-        public async Task<ListDsiManualBomQuantityGrpc> GetDsiManualBomQuantitiesByRowId(DsiManualBomQuantityGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiManualBomQuantityGrpc.DsiManualBomQuantityGrpcs.Any())
-            {
-                await PopulateDsiManualBomQuantities(cancellationToken);
-            }
-
-            ListDsiManualBomQuantityGrpc responseList = new ListDsiManualBomQuantityGrpc();
-            List<DsiManualBomQuantityGrpc> matches = _ListDsiManualBomQuantityGrpc.DsiManualBomQuantityGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiManualBomQuantityGrpcs.AddRange(matches);
-            return responseList;
-        }
-
         public async Task<ListDsiManualBomQuantityGrpc> CreateDsiManualBomQuantities(DsiManualBomQuantityGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -2642,22 +2255,6 @@
         {
             await Task.Delay(1, cancellationToken);
             return _ListDsiMidWireComponentGrpc;
-        }
-
-        public async Task<ListDsiMidWireComponentGrpc> GetDsiMidWireComponentsByRowId(DsiMidWireComponentGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiMidWireComponentGrpc.DsiMidWireComponentGrpcs.Any())
-            {
-                await PopulateDsiMidWireComponents(cancellationToken);
-            }
-
-            ListDsiMidWireComponentGrpc responseList = new ListDsiMidWireComponentGrpc();
-            List<DsiMidWireComponentGrpc> matches = _ListDsiMidWireComponentGrpc.DsiMidWireComponentGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiMidWireComponentGrpcs.AddRange(matches);
-            return responseList;
         }
 
         public async Task<ListDsiMidWireComponentGrpc> CreateDsiMidWireComponents(DsiMidWireComponentGrpcRequest request, CancellationToken cancellationToken)
@@ -2732,22 +2329,6 @@
             return _ListDsiModuleChildDetailGrpc;
         }
 
-        public async Task<ListDsiModuleChildDetailGrpc> GetDsiModuleChildDetailsByRowId(DsiModuleChildDetailGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiModuleChildDetailGrpc.DsiModuleChildDetailGrpcs.Any())
-            {
-                await PopulateDsiModuleChildDetails(cancellationToken);
-            }
-
-            ListDsiModuleChildDetailGrpc responseList = new ListDsiModuleChildDetailGrpc();
-            List<DsiModuleChildDetailGrpc> matches = _ListDsiModuleChildDetailGrpc.DsiModuleChildDetailGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiModuleChildDetailGrpcs.AddRange(matches);
-            return responseList;
-        }
-
         public async Task<ListDsiModuleChildDetailGrpc> CreateDsiModuleChildDetails(DsiModuleChildDetailGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -2818,22 +2399,6 @@
         {
             await Task.Delay(1, cancellationToken);
             return _ListDsiModuleCompatibilityGrpc;
-        }
-
-        public async Task<ListDsiModuleCompatibilityGrpc> GetDsiModuleCompatibilitiesByRowId(DsiModuleCompatibilityGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiModuleCompatibilityGrpc.DsiModuleCompatibilityGrpcs.Any())
-            {
-                await PopulateDsiModuleCompatibilities(cancellationToken);
-            }
-
-            ListDsiModuleCompatibilityGrpc responseList = new ListDsiModuleCompatibilityGrpc();
-            List<DsiModuleCompatibilityGrpc> matches = _ListDsiModuleCompatibilityGrpc.DsiModuleCompatibilityGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiModuleCompatibilityGrpcs.AddRange(matches);
-            return responseList;
         }
 
         public async Task<ListDsiModuleCompatibilityGrpc> CreateDsiModuleCompatibilities(DsiModuleCompatibilityGrpcRequest request, CancellationToken cancellationToken)
@@ -2908,22 +2473,6 @@
             return _ListDsiMulticoreSpecificationGrpc;
         }
 
-        public async Task<ListDsiMulticoreSpecificationGrpc> GetDsiMulticoreSpecificationsByRowId(DsiMulticoreSpecificationGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiMulticoreSpecificationGrpc.DsiMulticoreSpecificationGrpcs.Any())
-            {
-                await PopulateDsiMulticoreSpecifications(cancellationToken);
-            }
-
-            ListDsiMulticoreSpecificationGrpc responseList = new ListDsiMulticoreSpecificationGrpc();
-            List<DsiMulticoreSpecificationGrpc> matches = _ListDsiMulticoreSpecificationGrpc.DsiMulticoreSpecificationGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiMulticoreSpecificationGrpcs.AddRange(matches);
-            return responseList;
-        }
-
         public async Task<ListDsiMulticoreSpecificationGrpc> CreateDsiMulticoreSpecifications(DsiMulticoreSpecificationGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -2994,22 +2543,6 @@
         {
             await Task.Delay(1, cancellationToken);
             return _ListDsiPinMappingGrpc;
-        }
-
-        public async Task<ListDsiPinMappingGrpc> GetDsiPinMappingsByRowId(DsiPinMappingGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiPinMappingGrpc.DsiPinMappingGrpcs.Any())
-            {
-                await PopulateDsiPinMappings(cancellationToken);
-            }
-
-            ListDsiPinMappingGrpc responseList = new ListDsiPinMappingGrpc();
-            List<DsiPinMappingGrpc> matches = _ListDsiPinMappingGrpc.DsiPinMappingGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiPinMappingGrpcs.AddRange(matches);
-            return responseList;
         }
 
         public async Task<ListDsiPinMappingGrpc> CreateDsiPinMappings(DsiPinMappingGrpcRequest request, CancellationToken cancellationToken)
@@ -3084,22 +2617,6 @@
             return _ListDsiPinMappingCavityMappingAssociationGrpc;
         }
 
-        public async Task<ListDsiPinMappingCavityMappingAssociationGrpc> GetDsiPinMappingCavityMappingAssociationsByRowId(DsiPinMappingCavityMappingAssociationGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiPinMappingCavityMappingAssociationGrpc.DsiPinMappingCavityMappingAssociationGrpcs.Any())
-            {
-                await PopulateDsiPinMappingCavityMappingAssociations(cancellationToken);
-            }
-
-            ListDsiPinMappingCavityMappingAssociationGrpc responseList = new ListDsiPinMappingCavityMappingAssociationGrpc();
-            List<DsiPinMappingCavityMappingAssociationGrpc> matches = _ListDsiPinMappingCavityMappingAssociationGrpc.DsiPinMappingCavityMappingAssociationGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiPinMappingCavityMappingAssociationGrpcs.AddRange(matches);
-            return responseList;
-        }
-
         public async Task<ListDsiPinMappingCavityMappingAssociationGrpc> CreateDsiPinMappingCavityMappingAssociations(DsiPinMappingCavityMappingAssociationGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -3170,22 +2687,6 @@
         {
             await Task.Delay(1, cancellationToken);
             return _ListDsiScopeGrpc;
-        }
-
-        public async Task<ListDsiScopeGrpc> GetDsiScopesByRowId(DsiScopeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiScopeGrpc.DsiScopeGrpcs.Any())
-            {
-                await PopulateDsiScopes(cancellationToken);
-            }
-
-            ListDsiScopeGrpc responseList = new ListDsiScopeGrpc();
-            List<DsiScopeGrpc> matches = _ListDsiScopeGrpc.DsiScopeGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiScopeGrpcs.AddRange(matches);
-            return responseList;
         }
 
         public async Task<ListDsiScopeGrpc> CreateDsiScopes(DsiScopeGrpcRequest request, CancellationToken cancellationToken)
@@ -3260,22 +2761,6 @@
             return _ListDsiSupplierGrpc;
         }
 
-        public async Task<ListDsiSupplierGrpc> GetDsiSuppliersByRowId(DsiSupplierGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiSupplierGrpc.DsiSupplierGrpcs.Any())
-            {
-                await PopulateDsiSuppliers(cancellationToken);
-            }
-
-            ListDsiSupplierGrpc responseList = new ListDsiSupplierGrpc();
-            List<DsiSupplierGrpc> matches = _ListDsiSupplierGrpc.DsiSupplierGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiSupplierGrpcs.AddRange(matches);
-            return responseList;
-        }
-
         public async Task<ListDsiSupplierGrpc> CreateDsiSuppliers(DsiSupplierGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -3346,22 +2831,6 @@
         {
             await Task.Delay(1, cancellationToken);
             return _ListDsiTransformedCompositeDetailGrpc;
-        }
-
-        public async Task<ListDsiTransformedCompositeDetailGrpc> GetDsiTransformedCompositeDetailsByRowId(DsiTransformedCompositeDetailGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiTransformedCompositeDetailGrpc.DsiTransformedCompositeDetailGrpcs.Any())
-            {
-                await PopulateDsiTransformedCompositeDetails(cancellationToken);
-            }
-
-            ListDsiTransformedCompositeDetailGrpc responseList = new ListDsiTransformedCompositeDetailGrpc();
-            List<DsiTransformedCompositeDetailGrpc> matches = _ListDsiTransformedCompositeDetailGrpc.DsiTransformedCompositeDetailGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiTransformedCompositeDetailGrpcs.AddRange(matches);
-            return responseList;
         }
 
         public async Task<ListDsiTransformedCompositeDetailGrpc> CreateDsiTransformedCompositeDetails(DsiTransformedCompositeDetailGrpcRequest request, CancellationToken cancellationToken)
@@ -3436,22 +2905,6 @@
             return _ListDsiTransformedHarnessGrpc;
         }
 
-        public async Task<ListDsiTransformedHarnessGrpc> GetDsiTransformedHarnessesByRowId(DsiTransformedHarnessGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiTransformedHarnessGrpc.DsiTransformedHarnessGrpcs.Any())
-            {
-                await PopulateDsiTransformedHarnesses(cancellationToken);
-            }
-
-            ListDsiTransformedHarnessGrpc responseList = new ListDsiTransformedHarnessGrpc();
-            List<DsiTransformedHarnessGrpc> matches = _ListDsiTransformedHarnessGrpc.DsiTransformedHarnessGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiTransformedHarnessGrpcs.AddRange(matches);
-            return responseList;
-        }
-
         public async Task<ListDsiTransformedHarnessGrpc> CreateDsiTransformedHarnesses(DsiTransformedHarnessGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -3522,22 +2975,6 @@
         {
             await Task.Delay(1, cancellationToken);
             return _ListDsiTransformedModuleChildDetailGrpc;
-        }
-
-        public async Task<ListDsiTransformedModuleChildDetailGrpc> GetDsiTransformedModuleChildDetailsByRowId(DsiTransformedModuleChildDetailGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiTransformedModuleChildDetailGrpc.DsiTransformedModuleChildDetailGrpcs.Any())
-            {
-                await PopulateDsiTransformedModuleChildDetails(cancellationToken);
-            }
-
-            ListDsiTransformedModuleChildDetailGrpc responseList = new ListDsiTransformedModuleChildDetailGrpc();
-            List<DsiTransformedModuleChildDetailGrpc> matches = _ListDsiTransformedModuleChildDetailGrpc.DsiTransformedModuleChildDetailGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiTransformedModuleChildDetailGrpcs.AddRange(matches);
-            return responseList;
         }
 
         public async Task<ListDsiTransformedModuleChildDetailGrpc> CreateDsiTransformedModuleChildDetails(DsiTransformedModuleChildDetailGrpcRequest request, CancellationToken cancellationToken)
@@ -3612,22 +3049,6 @@
             return _ListDsiUnitOfMeasureGrpc;
         }
 
-        public async Task<ListDsiUnitOfMeasureGrpc> GetDsiUnitOfMeasuresByRowId(DsiUnitOfMeasureGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiUnitOfMeasureGrpc.DsiUnitOfMeasureGrpcs.Any())
-            {
-                await PopulateDsiUnitOfMeasures(cancellationToken);
-            }
-
-            ListDsiUnitOfMeasureGrpc responseList = new ListDsiUnitOfMeasureGrpc();
-            List<DsiUnitOfMeasureGrpc> matches = _ListDsiUnitOfMeasureGrpc.DsiUnitOfMeasureGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiUnitOfMeasureGrpcs.AddRange(matches);
-            return responseList;
-        }
-
         public async Task<ListDsiUnitOfMeasureGrpc> CreateDsiUnitOfMeasures(DsiUnitOfMeasureGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -3698,22 +3119,6 @@
         {
             await Task.Delay(1, cancellationToken);
             return _ListDsiWireMulticoreMarkerGrpc;
-        }
-
-        public async Task<ListDsiWireMulticoreMarkerGrpc> GetDsiWireMulticoreMarkersByRowId(DsiWireMulticoreMarkerGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiWireMulticoreMarkerGrpc.DsiWireMulticoreMarkerGrpcs.Any())
-            {
-                await PopulateDsiWireMulticoreMarkers(cancellationToken);
-            }
-
-            ListDsiWireMulticoreMarkerGrpc responseList = new ListDsiWireMulticoreMarkerGrpc();
-            List<DsiWireMulticoreMarkerGrpc> matches = _ListDsiWireMulticoreMarkerGrpc.DsiWireMulticoreMarkerGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiWireMulticoreMarkerGrpcs.AddRange(matches);
-            return responseList;
         }
 
         public async Task<ListDsiWireMulticoreMarkerGrpc> CreateDsiWireMulticoreMarkers(DsiWireMulticoreMarkerGrpcRequest request, CancellationToken cancellationToken)
@@ -3788,22 +3193,6 @@
             return _ListDsiWireSpecificationGrpc;
         }
 
-        public async Task<ListDsiWireSpecificationGrpc> GetDsiWireSpecificationsByRowId(DsiWireSpecificationGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiWireSpecificationGrpc.DsiWireSpecificationGrpcs.Any())
-            {
-                await PopulateDsiWireSpecifications(cancellationToken);
-            }
-
-            ListDsiWireSpecificationGrpc responseList = new ListDsiWireSpecificationGrpc();
-            List<DsiWireSpecificationGrpc> matches = _ListDsiWireSpecificationGrpc.DsiWireSpecificationGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiWireSpecificationGrpcs.AddRange(matches);
-            return responseList;
-        }
-
         public async Task<ListDsiWireSpecificationGrpc> CreateDsiWireSpecifications(DsiWireSpecificationGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -3875,23 +3264,6 @@
             await Task.Delay(1, cancellationToken);
             return _ListDsiWireThroughNodeGrpc;
         }
-
-        public async Task<ListDsiWireThroughNodeGrpc> GetDsiWireThroughNodesByRowId(DsiWireThroughNodeGrpcRequest request, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            if (!_ListDsiWireThroughNodeGrpc.DsiWireThroughNodeGrpcs.Any())
-            {
-                await PopulateDsiWireThroughNodes(cancellationToken);
-            }
-
-            ListDsiWireThroughNodeGrpc responseList = new ListDsiWireThroughNodeGrpc();
-            List<DsiWireThroughNodeGrpc> matches = _ListDsiWireThroughNodeGrpc.DsiWireThroughNodeGrpcs
-                .Where(x => x.RowId == request.RfqGrpcRequestParameter.IntValue).ToList();
-
-            responseList.DsiWireThroughNodeGrpcs.AddRange(matches);
-            return responseList;
-        }
-
         public async Task<ListDsiWireThroughNodeGrpc> CreateDsiWireThroughNodes(DsiWireThroughNodeGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
