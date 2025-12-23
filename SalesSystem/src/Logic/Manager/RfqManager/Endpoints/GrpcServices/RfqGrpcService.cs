@@ -24,12 +24,13 @@
             GetAllCustomersGrpcResponse response = await _RfqManagerService.GetAllCustomersGrpc(request);
             return response;
         }
-        public override async Task<GetCustomersByUserIdGrpcResponse> GetCustomersByUserIdGrpc(GetCustomersByUserIdGrpcRequest request, ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("GetCustomersByUserIdGrpc starting");
-            GetCustomersByUserIdGrpcResponse response = await _RfqManagerService.GetCustomersByUserIdGrpc(request);
-            return response;
-        }
+        //public override async Task<GetCustomersByUserIdGrpcResponse> 
+        //    GetCustomersByUserIdGrpc(GetCustomersByUserIdGrpcRequest request, ServerCallContext context)
+        //{
+        //    _Logger.GenericLogInformation("GetCustomersByUserIdGrpc starting");
+        //    GetCustomersByUserIdGrpcResponse response = await _RfqManagerService.GetCustomersByUserIdGrpc(request);
+        //    return response;
+        //}
 
         public override async Task<GetProjectAssociationsByCustomerIdResponse> GetProjectAssociationsByCustomerId(GetProjectAssociationsByCustomerIdRequest request, ServerCallContext context)
         {

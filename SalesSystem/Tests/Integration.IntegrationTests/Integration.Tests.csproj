@@ -39,6 +39,7 @@
     <ProjectReference Include="..\..\src\Access\NPR\NPR.csproj" />
     <ProjectReference Include="..\..\src\Access\Rfq\Rfq.csproj" />
     <ProjectReference Include="..\..\src\Access\SFS\SFS.csproj" />
+    <ProjectReference Include="..\..\src\Client\SalesSystem.Rfq\SalesSystem.Rfq.csproj" />
     <ProjectReference Include="..\..\src\Logic\Engine\DocumentConversion\Transformation.csproj" />
   </ItemGroup>
 

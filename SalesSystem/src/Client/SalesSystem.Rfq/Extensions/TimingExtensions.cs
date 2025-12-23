@@ -76,6 +76,18 @@ namespace SalesSystem.Rfq.Extensions
 
             return (stopwatch.ElapsedMilliseconds, result);
         }
+        public static async Task<(long elapsedMilliseconds, int count)> TimeAsyncStringIntService(
+            this Func<string, Task<int>> operation,
+            string id)
+        {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            int result = await operation(id);
+
+            stopwatch.Stop();
+
+            return (stopwatch.ElapsedMilliseconds, result);
+        }
         public static async Task<(long elapsedMilliseconds, int count)> TimeAsyncVoidIntService(
             this Func<Task<int>> operation)
         {

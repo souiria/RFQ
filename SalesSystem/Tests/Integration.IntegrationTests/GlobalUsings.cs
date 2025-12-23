@@ -1,4 +1,5 @@
-﻿global using System.Globalization;
+﻿global using System.Diagnostics;
+global using System.Globalization;
 global using System.Linq.Expressions;
 global using System.Reflection;
 global using Google.Protobuf.WellKnownTypes;
@@ -9,3 +10,5 @@ global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 global using Moq;
+global using NUnit.Framework.Constraints;
+

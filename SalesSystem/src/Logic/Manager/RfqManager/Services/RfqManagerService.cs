@@ -36,7 +36,7 @@
         {
             try
             {
-                // Call the Master service to get all customers
+                // Call the Master service to get all masterCustomers
                 await Task.Delay(1);
                 CustomerGrpcRequest getCustomersRequest = new CustomerGrpcRequest();
                 getCustomersRequest.Position = request.Position;
@@ -53,34 +53,34 @@
             }
             catch (Exception ex)
             {
-                _Logger.GenericLogError("Error fetching customers from Master service", ex);
+                _Logger.GenericLogError("Error fetching masterCustomers from Master service", ex);
                 throw;
             }
         }
-        public async Task<GetCustomersByUserIdGrpcResponse> GetCustomersByUserIdGrpc(GetCustomersByUserIdGrpcRequest request)
-        {
-            try
-            {
-                // Call the Master service to get customers
-                await Task.Delay(1);
-                CustomerByUserIdGrpcRequest getCustomersRequest = new CustomerByUserIdGrpcRequest();
-                getCustomersRequest.Id = request.UserId.ToUpperInvariant();
-                ListCustomerGrpc customers = _MasterClient.GetCustomerGrpcByUserId(getCustomersRequest);
-                GetCustomersByUserIdGrpcResponse response = new GetCustomersByUserIdGrpcResponse();
-                foreach (Master.CustomerGrpc? masterCustomer in customers.CustomerGrpc)
-                {
-                    CustomerGrpc customer = masterCustomer.ToCustomerGrpc();
-                    response.Customers.Add(customer);
-                }
+        //public async Task<GetCustomersByUserIdGrpcResponse> GetCustomersByUserIdGrpc(GetCustomersByUserIdGrpcRequest request)
+        //{
+        //    try
+        //    {
+        //        // Call the Master service to get masterCustomers
+        //        await Task.Delay(1);
+        //        CustomerByUserIdGrpcRequest getCustomersRequest = new CustomerByUserIdGrpcRequest();
+        //        getCustomersRequest.Id = request.UserId.ToUpperInvariant();
+        //        ListCustomerGrpc customers = _MasterClient.GetCustomerGrpcByUserId(getCustomersRequest);
+        //        GetCustomersByUserIdGrpcResponse response = new GetCustomersByUserIdGrpcResponse();
+        //        foreach (Master.CustomerGrpc? masterCustomer in customers.CustomerGrpc)
+        //        {
+        //            CustomerGrpc customer = masterCustomer.ToCustomerGrpc();
+        //            response.Customers.Add(customer);
+        //        }
 
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _Logger.GenericLogError("Error fetching customers from Master service", ex);
-                throw;
-            }
-        }
+        //        return response;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _Logger.GenericLogError("Error fetching masterCustomers from Master service", ex);
+        //        throw;
+        //    }
+        //}
 
         public async Task<GetProjectAssociationsByCustomerIdResponse> GetProjectAssociationsByCustomerId(GetProjectAssociationsByCustomerIdRequest request)
         {
@@ -89,11 +89,18 @@
                 await Task.Delay(1);
                 _Projects.Clear();
                 GetProjectAssociationsByCustomerIdResponse response = new GetProjectAssociationsByCustomerIdResponse();
+
                 MastersFilterRequestGrpc filterRequest = new MastersFilterRequestGrpc();
                 filterRequest.DatabaseList = "CUSTOMERLOCATIONGRPC";
+#pragma warning disable CA1308
                 filterRequest.FilterExpression = $"CustomerBusinessHierarchyGuid != null && CustomerBusinessHierarchyGuid.ToUpperInvariant() == \"{request.CustomerId.ToUpperInvariant()}\"";
+#pragma warning restore CA1308
                 MastersFilterResponseGrpc locations = _MasterClient.FilterMasterDataGrpc(filterRequest);
-                List<Master.CustomerLocationGrpc> extractedLocations = ExtractMastersResponseData<Master.CustomerLocationGrpc>(locations).ToList();                
+                // List<CustomerLocationGrpc> extractedLocations = ExtractMastersResponseData<CustomerLocationGrpc>(locations).ToList();
+                List<CustomerLocationGrpc> extractedLocations = locations.CustomerLocationGrpcList.CustomerLocationGrpc
+                    .Select(loc => loc.ToCustomerLocation())
+                    .Where(loc => loc.CustomerBusinessHierarchyGuid != null && loc.CustomerBusinessHierarchyGuid.Equals(request.CustomerId, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
                 if (extractedLocations.Count <= 0)
                 {
                     response.Message = "No locations found for customer";
@@ -101,26 +108,52 @@
                     return response;
                 }
 
-                foreach (Master.CustomerLocationGrpc? location in extractedLocations)
-                {
-                    filterRequest.DatabaseList = "CUSTOMERPROJEcTASSOCIATIONGRPC";
-                    filterRequest.FilterExpression = $"CustomerLocationGuid != null && CustomerLocationGuid.ToUpperInvariant() == \"{location.Id.ToUpperInvariant()}\"";
-                    MastersFilterResponseGrpc projectAssociations = _MasterClient.FilterMasterDataGrpc(filterRequest);
-                    List<Master.CustomerProjectAssociationGrpc> extractedProjectAssociations = ExtractMastersResponseData<Master.CustomerProjectAssociationGrpc>(projectAssociations).ToList();
+                // load innermost loop in memory
+                filterRequest.DatabaseList = "PROJECTGRPC";
+                filterRequest.FilterExpression = $"Id != null";
+                MastersFilterResponseGrpc projects = _MasterClient.FilterMasterDataGrpc(filterRequest);
+                List<ProjectGrpc> allProjects = ExtractMastersResponseData<ProjectGrpc>(projects).ToList();
 
-                    foreach (Master.CustomerProjectAssociationGrpc? customerProjectAssociation in extractedProjectAssociations)
+                // load second loop in memory
+                filterRequest.DatabaseList = "CUSTOMERPROJECTASSOCIATIONGRPC";
+#pragma warning disable CA1308
+                filterRequest.FilterExpression = $"CustomerLocationGuid != null";
+#pragma warning restore CA1308
+                MastersFilterResponseGrpc projectAssociations = _MasterClient.FilterMasterDataGrpc(filterRequest);
+                // List<CustomerProjectAssociationGrpc> allProjectAssociations = ExtractMastersResponseData<CustomerProjectAssociationGrpc>(projectAssociations).ToList();
+                List<CustomerProjectAssociationGrpc> allProjectAssociations = projectAssociations.CustomerProjectAssociationGrpcList.CustomerProjectAssociationGrpc
+                    .Select(assoc => assoc.ToCustomerProjectAssociation())
+                    .Where(assoc => assoc.CustomerLocationGuid != null)
+                    .ToList();
+
+                foreach (CustomerLocationGrpc? location in extractedLocations)
+                {
+                    //                    filterRequest.DatabaseList = "CUSTOMERPROJECTASSOCIATIONGRPC";
+                    //#pragma warning disable CA1308
+                    //                    // filterRequest.FilterExpression = $"CustomerGuid != null && CustomerGuid == \"{location.Id.ToUpperInvariant()}\"";
+                    //                    filterRequest.FilterExpression = $"CustomerLocationGuid != null && CustomerLocationGuid.ToUpperInvariant() == \"{location.Id.ToUpperInvariant()}\"";
+                    //#pragma warning restore CA1308
+                    //                    MastersFilterResponseGrpc projectAssociations = _MasterClient.FilterMasterDataGrpc(filterRequest);
+                    List<CustomerProjectAssociationGrpc> extractedProjectAssociations = allProjectAssociations
+                        .Where(assoc => assoc.CustomerLocationGuid != null && assoc.CustomerLocationGuid.Equals(location.Id, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+
+                    foreach (CustomerProjectAssociationGrpc? customerProjectAssociation in extractedProjectAssociations)
                     {
                         if (customerProjectAssociation.ProjectGuid == null)
                         {
                             continue;
                         }
 
-                        filterRequest.DatabaseList = "PROJECTGRPC";
-                        filterRequest.FilterExpression = $"Id != null && Id.ToUpperInvariant() == \"{customerProjectAssociation.ProjectGuid.ToUpperInvariant()}\"";
-                        MastersFilterResponseGrpc projects = _MasterClient.FilterMasterDataGrpc(filterRequest);
-                        List<ProjectGrpc> extractedProjects = ExtractMastersResponseData<ProjectGrpc>(projects).ToList();
+                        //filterRequest.DatabaseList = "PROJECTGRPC";
+                        //filterRequest.FilterExpression = $"Id != null && Id.ToUpperInvariant() == \"{customerProjectAssociation.ProjectGuid.ToUpperInvariant()}\"";
+                        //MastersFilterResponseGrpc projects = _MasterClient.FilterMasterDataGrpc(filterRequest);
+                        //List<ProjectGrpc> extractedProjects = ExtractMastersResponseData<ProjectGrpc>(projects).ToList();
+                        List<ProjectGrpc> extractedProjects = allProjects
+                            .Where(p => p.Id != null && p.Id.Equals(customerProjectAssociation.ProjectGuid, StringComparison.OrdinalIgnoreCase))
+                            .ToList();
 
-                        if(extractedProjects.Count <= 0)
+                        if (extractedProjects.Count <= 0)
                         {
                             continue;
                         }
@@ -139,6 +172,7 @@
                     }
                 }
 
+                response.Success = true;
                 return response;
             }
             catch (Exception ex)
@@ -303,7 +337,7 @@
                     .Where(r => r.RowId != 0 && r.ReasonTitle != null)
                     .ToDictionary(r => r.RowId, r => r.ReasonTitle);
 
-                // Fetch customers
+                // Fetch masterCustomers
                 GetAllCustomersGrpcRequest customerRequest = new GetAllCustomersGrpcRequest();
                 customerRequest.Position = 0;
                 customerRequest.Take = 1000;
@@ -415,7 +449,7 @@
                     .Where(r => r.RowId != 0 && r.ReasonTitle != null)
                     .ToDictionary(r => r.RowId, r => r.ReasonTitle);
 
-                // Fetch customers
+                // Fetch masterCustomers
                 GetAllCustomersGrpcRequest customerRequest = new GetAllCustomersGrpcRequest();
                 customerRequest.Position = 0;
                 customerRequest.Take = 1000;
@@ -465,7 +499,6 @@
 
                 if (hasProjects)
                 {
-                    //RfqProjectGrpc grpcProject = rfqProjects.ListRfqProjectGrpc.RfqProjects.First();
                     RfqProjectGrpc grpcProject = rfqProjects.RfqProjects.First();
                     RfqProject mappedProject = grpcProject.ToRfqProject();
 
@@ -523,6 +556,7 @@
                     RfqDrawingPartNumbersGrpc grpcPart = new RfqDrawingPartNumbersGrpc();
                     grpcPart.RowId = part.RowId;
                     grpcPart.RfqId = part.RfqId;
+                    grpcPart.SumitomoPartNumber = part.SumitomoPartNumber;
                     grpcPart.OriginalPartNumber = part.OriginalPartNumber;
                     grpcPart.OriginalPartNumberPrice = part.OriginalPartNumberPrice;
                     grpcPart.SwappedPartNumber = part.SwappedPartNumber;
@@ -556,20 +590,31 @@
             {
                 await Task.Delay(1);
 
-                RfqFilterRequest rfqGrpcRequestParameter = new RfqFilterRequest();
-                rfqGrpcRequestParameter.DatabaseList = "RfqProjectGrpc";
-                rfqGrpcRequestParameter.FilterExpression = $"RfqId != null && RfqId == {request.RfqId}";
-                RfqFilterResponse rfqParts = _RfqClient.FilterRfqGrpc(rfqGrpcRequestParameter);
-
                 GetRfqDrawingPartNumbersByRfqIdGrpcResponse response = new GetRfqDrawingPartNumbersByRfqIdGrpcResponse();
 
-                int partCount = rfqParts.ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Count;
-                bool hasParts = !(partCount <= 0);
+                RfqFilterRequest rfqFilterRequest = new RfqFilterRequest();
+
+                rfqFilterRequest.DatabaseList = "RFQDRAWINGPARTNUMBERSGRPC";
+                rfqFilterRequest.FilterExpression = $"(RfqId != null && RfqId == {request.RfqId})";
+
+                RfqFilterResponse rfqFilterResponse = _RfqClient.FilterRfqGrpc(rfqFilterRequest);
+
+                if(rfqFilterResponse == null
+                    || rfqFilterResponse.ListRfqDrawingPartNumbersGrpc == null
+                    || rfqFilterResponse.ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers == null)
+                {
+                    return response;
+                }
+
+                List<RfqDrawingPartNumbersGrpc> rfqPartNumbers = rfqFilterResponse.ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.ToList();
+
+                int partNumberCount = rfqPartNumbers.Count;
+                bool hasParts = !(partNumberCount <= 0);
                 if (hasParts)
                 {
                     List<RfqDrawingPartNumber> mappedParts = new List<RfqDrawingPartNumber>();
 
-                    foreach (RfqDrawingPartNumbersGrpc grpcPart in rfqParts.ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers)
+                    foreach (RfqDrawingPartNumbersGrpc grpcPart in rfqPartNumbers)
                     {
                         RfqDrawingPartNumber mappedPart = grpcPart.ToRfqDrawingPartNumber();
                         mappedParts.Add(mappedPart);
@@ -764,12 +809,19 @@
 
         public async Task<UpdateRfqProjectGrpcResponse> UpdateRfqProject(UpdateRfqProjectGrpcRequest request)
         {
+            if(request.Project == null
+                || string.IsNullOrEmpty(request.Project.RfqNumber))
+            {
+                throw new ArgumentNullException(nameof(request), "Project or RFQ Number cannot be null");
+            }
+
             try
             {
                 await Task.Delay(1);
 
                 RfqProjectGrpc rfqProject = new RfqProjectGrpc();
                 rfqProject.RowId = request.Project.RowId;
+                rfqProject.RfqNumber = request.Project.RfqNumber; // it is needed to identify the record to update
                 rfqProject.CustomerBusinessUnitGuid = request.Project.CustomerBusinessUnitGuid.ToUpperInvariant();
                 rfqProject.CustomerLocationGuid = request.Project.CustomerLocationGuid.ToUpperInvariant();
                 rfqProject.ProjectGuid = request.Project.ProjectGuid.ToUpperInvariant();
@@ -855,7 +907,8 @@
             part.SwappedPartNumber = "";
             part.SwappedPartNumberPrice = 0;
             part.PriceSource = "";
-            part.IsExactMatch = true;
+            // part.IsExactMatch = true;
+            part.IsExactMatch = false; // assume no exact match on upload
             part.IsSwapped = false;
             part.Comments = "";
             return part;
@@ -912,7 +965,15 @@
         {
             await Task.Delay(1);
             GetCustomerBusinessUnitsByUserIdResponse response = new GetCustomerBusinessUnitsByUserIdResponse();
+
             MastersFilterRequestGrpc mastersFilterRequestGrpc = new MastersFilterRequestGrpc();
+            //
+            mastersFilterRequestGrpc.DatabaseList = "CUSTOMERGRPC";
+            mastersFilterRequestGrpc.FilterExpression = $"Id != null";
+            MastersFilterResponseGrpc allCustomersResponse = _MasterClient.FilterMasterDataGrpc(mastersFilterRequestGrpc);
+            List<Master.CustomerGrpc> allCustomers = ExtractMastersResponseData<Master.CustomerGrpc>(allCustomersResponse).ToList();
+
+            // Get all customer business user associations for the specified user
             mastersFilterRequestGrpc.DatabaseList = "CUSTOMERBUSINESSUSERASSOCIATIONGRPC";
             mastersFilterRequestGrpc.FilterExpression = $"UserGuid != null && UserGuid.ToUpperInvariant() == \"{userId.ToUpperInvariant()}\"";
             MastersFilterResponseGrpc assiciationFilter = _MasterClient.FilterMasterDataGrpc(mastersFilterRequestGrpc);
@@ -934,10 +995,16 @@
             {
                 if (customer.IsActive == true)
                 {
-                    mastersFilterRequestGrpc.DatabaseList = "CUSTOMERGRPC";
-                    mastersFilterRequestGrpc.FilterExpression = $"Id != null && Id.ToUpperInvariant() == \"{customer.CustomerBusinessHierarchyGuid.ToString().ToUpperInvariant()}\"";
-                    MastersFilterResponseGrpc customerFilter = _MasterClient.FilterMasterDataGrpc(mastersFilterRequestGrpc);
-                    foreach (Master.CustomerGrpc masterCustomer in customerFilter.CustomerGrpcList.CustomerGrpc)
+                    //mastersFilterRequestGrpc.DatabaseList = "CUSTOMERGRPC";
+                    //mastersFilterRequestGrpc.FilterExpression = $"Id != null && Id.ToUpperInvariant() == \"{customer.CustomerBusinessHierarchyGuid.ToString().ToUpperInvariant()}\"";
+                    //MastersFilterResponseGrpc customerFilter = _MasterClient.FilterMasterDataGrpc(mastersFilterRequestGrpc);
+                    List<Master.CustomerGrpc> userCustomers = allCustomers.Where(c => c.Id != null && c.Id.ToUpperInvariant() == customer.CustomerBusinessHierarchyGuid.ToString().ToUpperInvariant()).ToList();
+                    //foreach (Master.CustomerGrpc masterCustomer in customerFilter.CustomerGrpcList.CustomerGrpc)
+                    //{
+                    //    CustomerGrpc customerGrpc = masterCustomer.ToCustomerGrpc();
+                    //    response.Customers.Add(customerGrpc);
+                    //}
+                    foreach (Master.CustomerGrpc masterCustomer in userCustomers)
                     {
                         CustomerGrpc customerGrpc = masterCustomer.ToCustomerGrpc();
                         response.Customers.Add(customerGrpc);

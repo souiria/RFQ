@@ -1,0 +1,421 @@
+@using SalesSystem.Rfq.Models
+@using MudBlazor
+
+@inject IDialogService DialogService
+@inject ILogger<EditPartNumberDialog> Logger
+@inject RfqUxClientService RfqUxClientService
+
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="_form" @bind-IsValid="_isValid">
+            <MudGrid>
+                <MudItem xs="12" sm="4">
+                    <MudTextField @bind-Value="EditedItem.CustomerPartNumber"
+                                  Label="Customer Part Number"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  Required="true"
+                                  RequiredError="Original part number is required" />
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudTextField @bind-Value="EditedItem.DrawingPartNumber"
+                                  Label="Original Part Number"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  RequiredError="Original part number is required" />
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudNumericField @bind-Value="EditedItem.DrawingPartNumberPrice"
+                                     Label="Drawing P/N Price"
+                                     Variant="Variant.Outlined"
+                                     Margin="Margin.Dense"
+                                     Format="0.#####"
+                                     Adornment="Adornment.Start"
+                                     AdornmentText="$"
+                                     Min="0m" />
+                </MudItem>
+                @* Pick list from search results stored in the commment after data aseparator *@
+                @if (@EditedItem.SearchResultPartNumbers.Count > 0)
+                {
+                    <MudItem xs="12">
+                        <MudPaper Elevation="2" Class="pa-4">
+                            <MudText Typo="Typo.h6" Class="mb-3">Matched Part Numbers</MudText>
+                            <MudList T="RfqDrawingPartNumberUx" Dense="true">
+                                @foreach (RfqDrawingPartNumberUx matchedPart in EditedItem.SearchResultPartNumbers)
+                                {
+                                    <MudListItem>
+                                        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                                            <div style="flex: 1;">
+                                                <MudText Typo="Typo.body1">
+                                                    <strong>@matchedPart.DrawingPartNumber</strong>
+                                                </MudText>
+                                                <MudText Typo="Typo.body2" Color="Color.Default">
+                                                    Price: @(matchedPart.DrawingPartNumberPrice.HasValue ? matchedPart.DrawingPartNumberPrice.Value.ToString("C5") : "N/A")
+                                                    @if (matchedPart.IsExactMatch == true)
+                                                    {
+                                                        <MudChip T="string"
+                                                                 Size="Size.Small"
+                                                                 Color="Color.Success"
+                                                                 Class="ml-2">Exact Match</MudChip>
+                                                    }
+                                                </MudText>
+                                            </div>
+                                            <MudButton OnClick="@(() => ShowMatchedPart(matchedPart))"
+                                                       Color="Color.Primary"
+                                                       Variant="Variant.Filled"
+                                                       Size="Size.Small"
+                                                       StartIcon="@Icons.Material.Filled.Info">
+                                                More info
+                                            </MudButton>
+                                            <MudButton OnClick="@(() => PickMatchedPart(matchedPart))"
+                                                       Color="Color.Primary"
+                                                       Variant="Variant.Filled"
+                                                       Size="Size.Small"
+                                                       StartIcon="@Icons.Material.Filled.CheckCircle">
+                                                Pick
+                                            </MudButton>
+                                        </div>
+                                    </MudListItem>
+                                    <MudDivider />
+                                }
+                            </MudList>
+                        </MudPaper>
+                    </MudItem>
+                }
+                @* End pick list *@
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="EditedItem.SwappedPartNumber"
+                                  Label="Dummy/Alt. Part Number"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudNumericField @bind-Value="EditedItem.SwappedPartNumberPrice"
+                                     Label="Dummy/Alt. P/N Price"
+                                     Variant="Variant.Outlined"
+                                     Margin="Margin.Dense"
+                                     Format="0.#####"
+                                     Adornment="Adornment.Start"
+                                     AdornmentText="$"
+                                     Min="0m" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="EditedItem.PriceSource"
+                                  Label="Price Source"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense" />
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudCheckBox @bind-Value="EditedItem.IsExactMatch"
+                                 ReadOnly="true"    
+                                 Label="Is Exact Match"
+                                 Color="Color.Primary"
+                                 Dense="true" />
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudCheckBox Value="EditedItem.IsSwapped"
+                                 ReadOnly="true"
+                                 Label="Is Swapped"
+                                 Color="Color.Primary"
+                                 Dense="true" />
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudCheckBox Value="EditedItem.IsCompleted"
+                                 ReadOnly="true"
+                                 Label="Is Matched"
+                                 Color="Color.Primary"
+                                 Dense="true" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="EditedItem.Comments"
+                                  Label="Comments"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  Lines="3"
+                                  MaxLength="500" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField Value="@EditedItem.RowId.ToString()"
+                                  Label="Row ID"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  ReadOnly="true"
+                                  Disabled="true" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField Value="@EditedItem.RfqId.ToString()"
+                                  Label="RFQ ID"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  ReadOnly="true"
+                                  Disabled="true" />
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="PickDummy" 
+                   Color="Color.Secondary" 
+                   Variant="Variant.Filled"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   Style="margin-right: 8px;">
+            Pick Dummy
+        </MudButton>
+        <MudButton OnClick="CreateNpr" 
+                   Color="Color.Info" 
+                   Variant="Variant.Filled"
+                   StartIcon="@Icons.Material.Filled.NoteAdd"
+                   Style="margin-right: auto;">
+            Create NPR
+        </MudButton>
+        <MudButton OnClick="Complete"
+                   Disabled="!EditedItem.IsCompleted"
+                   Color="Color.Info"
+                   Variant="Variant.Filled"
+                   StartIcon="@Icons.Material.Filled.IncompleteCircle"
+                   Style="margin-right: auto;">
+            Complete
+        </MudButton>
+        <MudButton OnClick="Cancel" Color="Color.Default">Cancel</MudButton>
+        <MudButton OnClick="Save" Color="Color.Primary" Variant="Variant.Filled" Disabled="!_isValid">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter] public RfqDrawingPartNumberUx OriginalItem { get; set; } = null!;
+
+    private RfqDrawingPartNumberUx EditedItem { get; set; } = new();
+    private MudForm _form = null!;
+    private bool _isValid;
+
+    protected override void OnInitialized()
+    {
+        // Create a copy of the original item to edit
+        EditedItem = new RfqDrawingPartNumberUx
+        {
+            RowId = OriginalItem.RowId,
+            RfqId = OriginalItem.RfqId,
+            CustomerPartNumber = OriginalItem.CustomerPartNumber,
+            DrawingPartNumber = OriginalItem.DrawingPartNumber,
+            DrawingPartNumberPrice = OriginalItem.DrawingPartNumberPrice,
+            SwappedPartNumber = OriginalItem.SwappedPartNumber,
+            SwappedPartNumberPrice = OriginalItem.SwappedPartNumberPrice,
+            PriceSource = OriginalItem.PriceSource,
+            IsExactMatch = OriginalItem.IsExactMatch,
+            IsSwapped = OriginalItem.IsSwapped,
+            Comments = OriginalItem.Comments,
+            Status = OriginalItem.Status
+        };
+        EditedItem.SearchResultPartNumbers.AddRange(OriginalItem.SearchResultPartNumbers);
+    }
+
+    private async Task ShowMatchedPart(RfqDrawingPartNumberUx item)
+    {
+        if (item == null)
+        {
+            Logger.GenericLogInformation($"No part number found for null item...");
+            await DialogService.ShowMessageBox("Search Part Number", $"No part number found for null item...");
+            return;
+        }
+
+        if (item.DrawingPartNumber == null)
+        {
+            Logger.GenericLogInformation("SEWS-E / DrawingPartNumber is null");
+            await DialogService.ShowMessageBox("Search Part Number", "Drawing part number is not available.");
+            return;
+        }
+
+        Logger.GenericLogInformation($"Searching for part number: {item.DrawingPartNumber}");
+
+        try
+        {
+            // Create a copy of the item to avoid reference issues
+            var searchedPartNumber = new RfqDrawingPartNumberUx
+            {
+                CustomerPartNumber = EditedItem.CustomerPartNumber,
+                DrawingPartNumber = item.DrawingPartNumber,
+                DrawingPartNumberPrice = item.DrawingPartNumberPrice,
+                IsExactMatch = item.IsExactMatch,
+                Index = item.Index
+            };
+
+            DialogParameters parameters = new DialogParameters
+            {
+                { "SearchedPartNumber", searchedPartNumber },
+            };
+
+            DialogOptions options = new DialogOptions
+            {
+                MaxWidth = MaxWidth.Large,
+                FullWidth = true,
+                CloseOnEscapeKey = true,
+                BackdropClick = false,
+                NoHeader = false
+            };
+
+            var dialog = await DialogService.ShowAsync<ShowInfoPartNumberDialog>(
+                "More Info",
+                parameters,
+                options
+            );
+
+            var result = await dialog.Result;
+            
+            if (result != null && !result.Canceled && result.Data is RfqDrawingPartNumberUx updatedPart)
+            {
+                // Update the EditedItem with the selected part data
+                PickMatchedPart(updatedPart);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError($"Error searching for part number: {item.CustomerPartNumber}/{item.DrawingPartNumber}", ex);
+            await DialogService.ShowMessageBox(
+                "Error",
+                $"An error occurred while opening the search dialog: {ex.Message}"
+            );
+        }
+    }
+
+    private void PickMatchedPart(RfqDrawingPartNumberUx matchedPart)
+    {
+        // Assign the DrawingPartNumber and DrawingPartNumberPrice to the current item
+        EditedItem.DrawingPartNumber = matchedPart.DrawingPartNumber;
+        EditedItem.DrawingPartNumberPrice = matchedPart.DrawingPartNumberPrice;
+        EditedItem.IsExactMatch = matchedPart.IsExactMatch;
+        EditedItem.PriceSource = string.IsNullOrEmpty(matchedPart.PriceSource) ? "Manual" : "NPR";
+
+        // Force UI refresh
+        StateHasChanged();
+    }
+
+    private async Task PickDummy()
+    {
+        DialogOptions options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true,
+            CloseOnEscapeKey = true,
+            BackdropClick = false
+        };
+
+        IDialogReference dialog = await DialogService.ShowAsync<PickDummyPartDialog>(
+            "Pick Dummy Part",
+            options
+        );
+
+        DialogResult? result = await dialog.Result;
+
+        if (result != null && !result.Canceled && result.Data is RfqDrawingPartNumberUx dummyData)
+        {
+            // Update the EditedItem with dummy part data
+            EditedItem.SwappedPartNumber = dummyData.SwappedPartNumber;
+            EditedItem.SwappedPartNumberPrice = dummyData.SwappedPartNumberPrice;
+            EditedItem.IsSwapped = true;
+            EditedItem.IsExactMatch = false;
+            EditedItem.PriceSource = "Dummy";
+            EditedItem.Status = RfqDrawingPartNumberStatus.DummySelected;
+
+            // Force UI refresh
+            StateHasChanged();
+        }
+    }
+
+    private async Task CreateNpr()
+    {
+        DialogOptions options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true,
+            CloseOnEscapeKey = true,
+            BackdropClick = false
+        };
+
+        IDialogReference dialog = await DialogService.ShowAsync<CreateNprDialog>(
+            "Create NPR",
+            options
+        );
+
+        DialogResult? result = await dialog.Result;
+
+        if (result != null && !result.Canceled && result.Data is CreateNprDialog.NprData nprData)
+        {
+            // Update the EditedItem with dummy part data
+            EditedItem.SwappedPartNumber = nprData.NprNumber;
+            EditedItem.SwappedPartNumberPrice = nprData.NprEstimatedPrice;
+            EditedItem.IsSwapped = true;
+            EditedItem.IsExactMatch = false;
+            EditedItem.PriceSource = "Npr Request";
+            EditedItem.Status = RfqDrawingPartNumberStatus.NprRequested;
+
+            EditedItem.Comments += $"[NPR Created: {nprData.NprNumber}, Date: {nprData.NprDate}] ";
+
+            // Force UI refresh
+            StateHasChanged();
+        }
+    }
+
+    private async Task Complete()
+    {
+        await _form.Validate();
+        if (!_isValid)
+        {
+            return;
+        }
+
+        // Check if the part has drawing part number with price OR swapped part number with swapped price
+        bool hasDrawingPartNumberWithPrice = !string.IsNullOrWhiteSpace(EditedItem.DrawingPartNumber) 
+            && EditedItem.DrawingPartNumberPrice.HasValue 
+            && EditedItem.DrawingPartNumberPrice.Value > 0;
+
+        bool hasSwappedPartNumberWithPrice = !string.IsNullOrWhiteSpace(EditedItem.SwappedPartNumber) 
+            && EditedItem.SwappedPartNumberPrice.HasValue 
+            && EditedItem.SwappedPartNumberPrice.Value > 0;
+
+        if (hasDrawingPartNumberWithPrice || hasSwappedPartNumberWithPrice)
+        {
+            // If hasDrawingPartNumberWithPrice
+            if (hasDrawingPartNumberWithPrice)
+            {
+                EditedItem.Status = RfqDrawingPartNumberStatus.ContainsMatch;
+            }
+             
+            // If swapped part number is set with price, mark as swapped
+            if (hasSwappedPartNumberWithPrice)
+            {
+                EditedItem.Status = RfqDrawingPartNumberStatus.DummySelected;
+                EditedItem.IsSwapped = true;
+            }
+
+            // Close dialog and return the edited item
+            // The IsCompleted property will automatically return true based on the logic in the model
+            MudDialog.Close(DialogResult.Ok(EditedItem));
+        }
+        else
+        {
+            // Show validation message if neither condition is met
+            await DialogService.ShowMessageBox(
+                "Incomplete Part Number",
+                "To complete this part number, you must have either:\n" +
+                "- A drawing part number with a price, OR\n" +
+                "- A swapped part number with a swapped price",
+                "OK"
+            );
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task Save()
+    {
+        await _form.Validate();
+        if (_isValid)
+        {
+            MudDialog.Close(DialogResult.Ok(EditedItem));
+        }
+    }
+}

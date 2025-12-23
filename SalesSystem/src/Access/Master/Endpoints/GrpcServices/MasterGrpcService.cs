@@ -202,14 +202,23 @@ namespace Master.Endpoints.GrpcServices
                 }, context.CancellationToken);
                 break;
                 case "CUSTOMERLOCATIONGRPC":
-                await _MasterAccessService.HandleFilterCase<CustomerLocationGrpc>(filterExpressionString, parsingConfig,
-                filterList =>
+                try
                 {
-                    ListCustomerLocationGrpc returnList = new ListCustomerLocationGrpc();
-                    returnList.CustomerLocationGrpc.AddRange(filterList);
-                    returnResponse.CustomerLocationGrpcList = returnList;
-                    returnResponse.Success = true;
-                }, context.CancellationToken);
+                    await _MasterAccessService.HandleFilterCase<CustomerLocationGrpc>(filterExpressionString, parsingConfig,
+                    filterList =>
+                    {
+                        ListCustomerLocationGrpc returnList = new ListCustomerLocationGrpc();
+                        returnList.CustomerLocationGrpc.AddRange(filterList);
+                        returnResponse.CustomerLocationGrpcList = returnList;
+                        returnResponse.Success = true;
+                    }, context.CancellationToken);
+                }
+                catch (ParseException ex)
+                {
+                    _Logger.GenericLogError($"Filter parsing failed. Expression: '{filterExpressionString}'. Error: {ex.Message}", ex);
+                    throw;
+                }
+
                 break;
                 case "CUSTOMERSALESENTITYGRPC":
                 await _MasterAccessService.HandleFilterCase<CustomerSalesEntityGrpc>(filterExpressionString, parsingConfig,

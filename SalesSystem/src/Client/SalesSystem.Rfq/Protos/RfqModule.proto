@@ -8,7 +8,7 @@ option csharp_namespace = "RfqModule";
 
 package RfqModule;
 
-// The RFQ service definition.
+// The greeting service definition.
 service RfqModule {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply);
@@ -16,7 +16,7 @@ service RfqModule {
   // Uploads a file
   rpc UploadFile (FileUploadRequest) returns (FileUploadResponse);
   rpc GetAllCustomersGrpc (GetAllCustomersGrpcRequest) returns (GetAllCustomersGrpcResponse);
-  rpc GetCustomersByUserIdGrpc (GetCustomersByUserIdGrpcRequest) returns (GetCustomersByUserIdGrpcResponse);
+  //rpc GetCustomersByUserIdGrpc (GetCustomersByUserIdGrpcRequest) returns (GetCustomersByUserIdGrpcResponse);
   rpc GetProjectAssociationsByCustomerId (GetProjectAssociationsByCustomerIdRequest) returns (GetProjectAssociationsByCustomerIdResponse);
   rpc GetRfqReasonsGrpc (GetRfqReasonsGrpcRequest) returns (GetRfqReasonsGrpcResponse);
   rpc GetVehicleByProjectCodeGrpc (GetVehicleByProjectCodeGrpcRequest) returns (GetVehicleByProjectCodeGrpcResponse);
@@ -26,9 +26,12 @@ service RfqModule {
   rpc GetRfqProjectByIdGrpc (GetRfqProjectByIdGrpcRequest) returns (GetRfqProjectByIdGrpcResponse);
   rpc UpdateRfqProjectGrpc (UpdateRfqProjectGrpcRequest) returns (UpdateRfqProjectGrpcResponse);
   rpc GetRfqDrawingPartNumbersByRfqIdGrpc (GetRfqDrawingPartNumbersByRfqIdGrpcRequest) returns (GetRfqDrawingPartNumbersByRfqIdGrpcResponse);
-   rpc DeleteRfqProjectByRowIdGrpc (RfqProjectRequest) returns (RfqCrudResponse);
-   rpc UpdateRfqDrawingPartNumbersGrpc (UpdateRfqDrawingPartNumbersGrpcRequest) returns (UpdateRfqDrawingPartNumbersGrpcResponse);
-
+//  rpc UpdateRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequestt) returns (UpdateRfqDrawingPartNumbersGrpcResponse);
+  rpc UpdateRfqDrawingPartNumbersGrpc (UpdateRfqDrawingPartNumbersGrpcRequest) returns (UpdateRfqDrawingPartNumbersGrpcResponse);
+ rpc DeleteRfqProjectByRowIdGrpc (RfqProjectRequest) returns (RfqCrudResponse);
+ rpc GetCustomerLocationsByUserIdGrpc (GetCustomerLocationsByUserIdRequest) returns (GetCustomerLocationsByUserIdResponse);
+ rpc GetCustomerBusinessUnitsByUserIdGrpc (GetCustomerBusinessUnitsByUserIdRequest) returns (GetCustomerBusinessUnitsByUserIdResponse);
+ rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
 }
 
 // The request message containing the user's name.
@@ -49,6 +52,7 @@ message FileUploadRequest {
 message FileUploadResponse {
   bool success = 1;
   string message = 2;
+  // Additional fields for the response as needed
 }
 
 message GetAllCustomersGrpcRequest {
@@ -61,14 +65,15 @@ message GetAllCustomersGrpcResponse {
     int32 TotalCount = 2;
 }
 
-message GetCustomersByUserIdGrpcRequest {
-	google.protobuf.StringValue UserId = 1;
-}
+//message GetCustomersByUserIdGrpcRequest {
+//	google.protobuf.StringValue UserId = 1;
+//}
 
-message GetCustomersByUserIdGrpcResponse {
-	repeated CustomerGrpc Customers = 1;
-	int32 TotalCount = 2;
-}
+// Shared request parameter message
+//message GetCustomersByUserIdGrpcResponse {
+//	repeated CustomerGrpc Customers = 1;
+//	int32 TotalCount = 2;
+//}
 
 message CustomerGrpc {
     google.protobuf.StringValue Id = 1;
@@ -143,9 +148,9 @@ message RfqProject {
 	google.protobuf.Timestamp RfqResponseDeadline = 7;
 	string CarModelGuid = 8;
 	int32 VehicleVolume = 9;
-	google.protobuf.Timestamp CreatedDate = 10;
-	google.protobuf.BoolValue IsActive = 11;
-	string RfqReasonName= 12;
+    google.protobuf.BoolValue IsActive = 10;
+    google.protobuf.Timestamp CreatedDate = 11;
+    string RfqReasonName= 12;
     string CustomerBusinessGroupCode= 13;
 	string CustomerLocationName= 14;
 	string	ProjectName= 15;
@@ -167,6 +172,7 @@ message CustomerParts {
 
 message CreateRfqProjectGrpcRequest {
   RfqProject Project = 1;
+ 
 }
 
 message CreateRfqProjectGrpcResponse {
@@ -176,13 +182,18 @@ message CreateRfqProjectGrpcResponse {
 }
 
 message GetAllRfqProjectGrpcRequest {
-    int32 Position = 1;
-    int32 Take = 2;
+	int32 RequestType = 1;
+	int32 Position = 2;
+	int32 Take = 3;
+}
+
+message RfqProjectWithReason {
+  RfqProject Project = 1;
+  string RfqReasonTitle = 2;
 }
 
 message GetAllRfqProjectGrpcResponse {
-    repeated RfqProject Projects = 1;
-    int32 TotalCount = 2;
+  repeated RfqProject RfqProjects = 1;
 }
 
 message GetRfqProjectByIdGrpcRequest {
@@ -192,19 +203,22 @@ message GetRfqProjectByIdGrpcRequest {
 message GetRfqProjectByIdGrpcResponse {
   RfqProject Project = 1;
 }
+ 
+enum RequestType {
+  None = 0;
+  Read = 1;
+  ReadByRowId = 2;
+}
 
 message UpdateRfqProjectGrpcRequest {
   RfqProject Project = 1;
 }
-message UpdateRfqDrawingPartNumbersGrpcRequest {
-  RfqDrawingPartNumber GrpcRequestParameter = 1;
-  repeated RfqDrawingPartNumber RfqDrawingPartNumbersGrpcsToUpdate = 2;
-}
+
 message UpdateRfqProjectGrpcResponse {
   bool Success = 1;
   string Message = 2;
-  }
-  message RfqDrawingPartNumber {
+}
+message RfqDrawingPartNumber {
   int64 RowId = 1;
   int64 RfqId = 2;
   string OriginalPartNumber = 3;
@@ -215,20 +229,28 @@ message UpdateRfqProjectGrpcResponse {
   bool IsExactMatch = 8;
   bool IsSwapped = 9;
   string Comments = 10;
+  string SumitomoPartNumber = 11;
 }
 message UpdateRfqDrawingPartNumbersGrpcResponse {
   bool Success = 1;
   string Message = 2;
 }
+message UpdateRfqDrawingPartNumbersGrpcRequest {
+  RfqDrawingPartNumber GrpcRequestParameter = 1;
+  repeated RfqDrawingPartNumber RfqDrawingPartNumbersGrpcsToUpdate = 2;
+}
 message GetRfqDrawingPartNumbersByRfqIdGrpcRequest {
 
   int64 RfqId = 1;
 }
-
+//message RfqDrawingPartNumbersGrpcRequest {
+ // RfqDrawingPartNumber GrpcRequestParameter = 1;
+ // repeated RfqDrawingPartNumber RfqDrawingPartNumbersGrpcsToUpdate = 2;
+//}
 message GetRfqDrawingPartNumbersByRfqIdGrpcResponse {
   repeated RfqDrawingPartNumber Parts = 1;
-      int32 TotalCount = 2;
 }
+
 message RfqProjectRequest {
   RfqProject GrpcRequestParameter = 1;
   repeated RfqProject RfqProjectGrpcsToCreate = 2;
@@ -241,4 +263,71 @@ message RfqCrudResponse {
   bool SaveSuccess = 1;
   string Message = 2;
   google.protobuf.StringValue StringValue = 3;
+}
+
+message GetCustomerLocationsByUserIdRequest {
+  google.protobuf.StringValue UserId = 1;
+}
+
+message GetCustomerLocationsByUserIdResponse {
+  repeated CustomerLocationGrpc CustomerLocations = 1;
+}
+
+message CustomerLocationGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue CustomerCode = 2;
+    google.protobuf.StringValue CustomerBusinessHierarchyGuid = 3;
+    google.protobuf.StringValue CustomerName = 4;   
+    google.protobuf.BoolValue IsActive = 5;
+}
+
+message GetCustomerBusinessUnitsByUserIdRequest {
+    google.protobuf.StringValue UserId = 1;
+}
+
+message GetCustomerBusinessUnitsByUserIdResponse {
+    repeated CustomerGrpc Customers = 1;
+}
+
+message GetAllCustomerProjectAssociationsByUserIdRequest {
+        google.protobuf.StringValue UserId = 1;
+}
+
+message GetAllCustomerProjectAssociationsByUserIdResponse {
+    repeated CustomerProjectAssociationGrpc CustomerProjectAssociations = 1;
+}
+
+message CustomerProjectAssociationGrpc {
+    string Id = 1;
+    string CustomerLocationGuid = 2;
+    string ProjectGuid = 3;    
+    bool IsActive = 4;
+}
+
+message CustomerBusinessUserAssociationGrpc {
+    string Id = 1;
+    string CustomerBusinessHierarchyList = 2;
+    string UserGuid = 3;    
+    bool IsActive = 4;
+}
+
+message FilterGrpcRequest {
+    FilterRequestType FilterRequest = 1;
+    google.protobuf.StringValue StringValue = 2;
+    google.protobuf.Int32Value Int32Value = 3;
+
+}
+
+message FilterGrpcResponse {
+    bool Success = 1;
+    repeated google.protobuf.StringValue StringList = 2;
+    repeated google.protobuf.Int32Value IntList = 3;
+    repeated bytes ByteList = 4;
+    repeated google.protobuf.DoubleValue DoubleList = 6; 
+    repeated google.protobuf.StringValue StringList2 = 5;
+
+}
+
+message FilterRequestType {
+    int32 RequestType = 1;
 }

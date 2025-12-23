@@ -1,0 +1,137 @@
+@using SalesSystem.Rfq.Models
+@using MudBlazor
+@using System.Text.Json
+
+@inject ISnackbar Snackbar
+@inject ILogger<SearchProgressDialog> Logger
+@inject IDialogService DialogService
+
+<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.h6" Class="mb-4">
+            Searching All In Progress Parts
+        </MudText>
+
+        <MudGrid>
+            <MudItem xs="12">
+                <MudProgressLinear Color="Color.Primary"
+                                   Value="@ProgressPercentage"
+                                   Size="Size.Large"
+                                   Class="mb-2" />
+                <MudText Typo="Typo.body2" Align="Align.Center" Class="mb-4">
+                    @_currentPartNumber (@_processedCount of @_totalCount parts)
+                </MudText>
+            </MudItem>
+
+            <MudItem xs="12" sm="3">
+                <MudPaper Elevation="2" Class="pa-3 text-center">
+                    <MudText Typo="Typo.h4" Color="Color.Info">@_totalSearched</MudText>
+                    <MudText Typo="Typo.body2">Total Searched</MudText>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="3">
+                <MudPaper Elevation="2" Class="pa-3 text-center">
+                    <MudText Typo="Typo.h4" Color="Color.Success">@_exactMatched</MudText>
+                    <MudText Typo="Typo.body2">Exact Matched</MudText>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="3">
+                <MudPaper Elevation="2" Class="pa-3 text-center">
+                    <MudText Typo="Typo.h4" Color="Color.Warning">@_containsMatched</MudText>
+                    <MudText Typo="Typo.body2">Contains Matched</MudText>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="3">
+                <MudPaper Elevation="2" Class="pa-3 text-center">
+                    <MudText Typo="Typo.h4" Color="Color.Error">@_totalUnmatched</MudText>
+                    <MudText Typo="Typo.body2">Unmatched</MudText>
+                </MudPaper>
+            </MudItem>
+
+            @if (_multiMatchCount > 0)
+            {
+                <MudItem xs="12">
+                    <MudAlert Severity="Severity.Info" Dense="true">
+                        <MudText Typo="Typo.body2">
+                            <strong>@_multiMatchCount</strong> part(s) have multiple NPR matches
+                        </MudText>
+                    </MudAlert>
+                </MudItem>
+            }
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel"
+                   Color="Color.Secondary"
+                   Variant="Variant.Filled"
+                   Disabled="@(!_canCancel)">
+            @(_isComplete ? "Close" : "Cancel")
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter] public SearchProgressState ProgressState { get; set; } = null!;
+
+    private int _totalCount;
+    private int _processedCount;
+    private int _totalSearched;
+    private int _exactMatched;
+    private int _containsMatched;
+    private int _totalUnmatched;
+    private int _multiMatchCount;
+    private string _currentPartNumber = string.Empty;
+    private bool _isComplete;
+    private bool _canCancel = true;
+
+    private double ProgressPercentage => _totalCount > 0 ? (_processedCount * 100.0 / _totalCount) : 0;
+
+    protected override void OnInitialized()
+    {
+        if (ProgressState != null)
+        {
+            ProgressState.StateChanged += ProgressState_StateChanged;
+            UpdateState();
+        }
+    }
+
+    private void ProgressState_StateChanged(object? sender, EventArgs e)
+    {
+        UpdateState();
+    }
+
+    private void UpdateState()
+    {
+        _totalCount = ProgressState.TotalCount;
+        _processedCount = ProgressState.ProcessedCount;
+        _totalSearched = ProgressState.TotalSearched;
+        _exactMatched = ProgressState.ExactMatched;
+        _containsMatched = ProgressState.ContainsMatched;
+        _totalUnmatched = ProgressState.TotalUnmatched;
+        _multiMatchCount = ProgressState.MultiMatchCount;
+        _currentPartNumber = ProgressState.CurrentPartNumber;
+        _isComplete = ProgressState.IsComplete;
+        _canCancel = ProgressState.CanCancel;
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void Cancel()
+    {
+        ProgressState?.Cancel();
+        MudDialog.Cancel();
+    }
+
+    public void Dispose()
+    {
+        if (ProgressState != null)
+        {
+            ProgressState.StateChanged -= ProgressState_StateChanged;
+        }
+    }
+}

@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="33.1.0" />
     <PackageReference Include="IDesign.Analyzers" Version="1.0.18" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="9.0.6" />
     
@@ -46,11 +47,11 @@
     <Folder Include="wwwroot\assets\fontawesome\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Protobuf Include="Protos\RfqModule.proto">
-      <ProtoRoot>Protos</ProtoRoot>
-      <GrpcServices>Client</GrpcServices>
-    </Protobuf>
-  </ItemGroup>
+	<ItemGroup>
+		<Protobuf Include="Protos\RfqModule.proto">
+			<ProtoRoot>Protos</ProtoRoot>
+			<GrpcServices>Client</GrpcServices>
+		</Protobuf>
+	</ItemGroup>
 
 </Project>

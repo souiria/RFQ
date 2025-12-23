@@ -577,31 +577,70 @@
                 return responseList;
             }
 
-            using (IServiceScope scope = _ServiceProvider.CreateScope())
-            {
-                foreach(RfqDrawingPartNumbersGrpc part in request.RfqDrawingPartNumbersGrpcsToCreate)
-                {
-                    if(_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Any(x => x.OriginalPartNumber == part.OriginalPartNumber))
-                    {
-                        request.RfqDrawingPartNumbersGrpcsToCreate.Remove(part);
-                    }
-                }
+            System.Diagnostics.StackTrace stackTrace = new System.Diagnostics.StackTrace(true);
 
-                ICommandHandler<RfqDrawingPartNumberCommand, List<DbRfqDrawingPartNumber>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<RfqDrawingPartNumberCommand, List<DbRfqDrawingPartNumber>>>();
-                RfqDrawingPartNumberCommand command = new RfqDrawingPartNumberCommand(CommandType.Create, request.RfqDrawingPartNumbersGrpcsToCreate);
-                Result<List<DbRfqDrawingPartNumber>> result = await handler.Handle(command, cancellationToken);
-                if (result.IsSuccess)
+            try
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
+                    // Can you really change a list this way while iterating over it?
+                    //foreach(RfqDrawingPartNumbersGrpc part in request.RfqDrawingPartNumbersGrpcsToCreate)
+                    //{
+                    //    if(_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Any(x => x.OriginalPartNumber == part.OriginalPartNumber))
+                    //    {
+                    //        request.RfqDrawingPartNumbersGrpcsToCreate.Remove(part);
+                    //    }
+                    //}
+                    List<RfqDrawingPartNumbersGrpc> itemsToCreate = new();
+                    foreach (RfqDrawingPartNumbersGrpc? part in request.RfqDrawingPartNumbersGrpcsToCreate)
+                    {
+                        if(!_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Any(x => x.OriginalPartNumber == part.OriginalPartNumber && x.RfqId == part.RfqId))
+                        {
+                            itemsToCreate.Add(part);
+                        }
+                    }
+
+                    if (itemsToCreate.Count == 0)
+                    {
+                        return responseList; // Nothing new to create
+                    }
+
+                    ICommandHandler<RfqDrawingPartNumberCommand, List<DbRfqDrawingPartNumber>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<RfqDrawingPartNumberCommand, List<DbRfqDrawingPartNumber>>>();
+                    //RfqDrawingPartNumberCommand command = new RfqDrawingPartNumberCommand(CommandType.Create, request.RfqDrawingPartNumbersGrpcsToCreate);
+                    RfqDrawingPartNumberCommand command = new RfqDrawingPartNumberCommand(CommandType.Create, itemsToCreate);
+                    Result<List<DbRfqDrawingPartNumber>> result = await handler.Handle(command, cancellationToken);
+
+                    if (result.IsSuccess)
+                    {
+#if DEBUG
+                        _ListRfqDrawingPartNumbersGrpc = new();
+                        await PopulateRfqDrawingPartNumbers(cancellationToken);
+                        responseList.RfqDrawingPartNumbers.AddRange(_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers);
+#else
                     List<DbRfqDrawingPartNumber> createdComponents = result.Value;
                     List<RfqDrawingPartNumbersGrpc> updatedGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
                     _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.AddRange(updatedGrpcComponents);
                     responseList.RfqDrawingPartNumbers.AddRange(updatedGrpcComponents);
+#endif
+                    }
+
                     return responseList;
                 }
-                else
-                {
-                    return responseList;
-                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine($"EEE InvalidOperationException in RfqAccessService.CreateRfqDrawingPartNumbers {ex.Message}, stack trace: {stackTrace}");
+                throw;
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine($"EEE ArgumentNullException in RfqAccessService.CreateRfqDrawingPartNumbers {ex.Message}, stack trace: {stackTrace}");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"EEE Exception in RfqAccessService.CreateRfqDrawingPartNumbers {ex.Message}, stack trace: {stackTrace}");
+                throw;
             }
         }
 
@@ -621,6 +660,12 @@
                 Result<List<DbRfqDrawingPartNumber>> result = await handler.Handle(command, cancellationToken);
                 if (result.IsSuccess)
                 {
+#if DEBUG
+                    // invalidate cache and repopulate
+                    _ListRfqDrawingPartNumbersGrpc = new();
+                    await PopulateRfqDrawingPartNumbers(cancellationToken);
+                    responseList.RfqDrawingPartNumbers.AddRange(_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers);
+#else
                     foreach (RfqDrawingPartNumbersGrpc updatedComponent in request.RfqDrawingPartNumbersGrpcsToUpdate)
                     {
                         RfqDrawingPartNumbersGrpc? foundItem = _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
@@ -635,7 +680,7 @@
                             _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers[index] = updatedComponent;
                         }
                     }
-
+#endif
                     return true;
                 }
                 else
@@ -4351,8 +4396,7 @@
 
         //////////////////////////////////////////////////////////////////////////////////////////////
         #endregion
-
-        #endregion
+#endregion
         public async Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig, Action<IEnumerable<T>> setResponseCollection,
         CancellationToken cancellationToken)
         {
