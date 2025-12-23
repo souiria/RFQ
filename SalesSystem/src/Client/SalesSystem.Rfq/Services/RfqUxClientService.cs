@@ -1,7 +1,3 @@
-using Microsoft.Extensions.Logging;
-using MudBlazor;
-using SharedModels.Filtering;
-
 namespace SalesSystem.Rfq.Services
 {
     public class RfqUxClientService : IDisposable
@@ -470,7 +466,7 @@ namespace SalesSystem.Rfq.Services
                 await file.OpenReadStream(maxAllowedSize: maxAllowedSize).CopyToAsync(memoryStream);
                 byte[] fileData = memoryStream.ToArray();
 
-                request.FileData = Google.Protobuf.ByteString.CopyFrom(fileData);
+                request.FileData = ByteString.CopyFrom(fileData);
 
                 UploadPartsRequestGrpcResponse response = await _Client.UploadPartsGrpcAsync(request, cancellationToken: timeoutCts.Token);
 
@@ -665,7 +661,7 @@ namespace SalesSystem.Rfq.Services
             {
                 FileUploadRequest request = new FileUploadRequest();
                 request.FileName = fileName;
-                request.FileData = Google.Protobuf.ByteString.CopyFrom(fileData);
+                request.FileData = ByteString.CopyFrom(fileData);
 
                 FileUploadResponse response = await _Client.UploadFileAsync(request, cancellationToken: combinedCts.Token);
 

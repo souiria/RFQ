@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace SalesSystem.Rfq.Models
+﻿namespace SalesSystem.Rfq.Models
 {
     public enum RfqDrawingPartNumberStatus
     {

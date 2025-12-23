@@ -1,7 +1,4 @@
-﻿using System.Globalization;
-using Google.Protobuf;
-
-namespace SalesSystem.Rfq.Extensions
+﻿namespace SalesSystem.Rfq.Extensions
 {
     public static class UxModelConversionExtensions
 
@@ -64,7 +61,7 @@ namespace SalesSystem.Rfq.Extensions
             if (uxModel.RfqResponseDeadline.HasValue)
             {
                 DateTime utc = uxModel.RfqResponseDeadline.Value.ToUniversalTime();
-                dto.RfqResponseDeadline = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(utc);
+                dto.RfqResponseDeadline = Timestamp.FromDateTime(utc);
             }
 
             dto.CarModelGuid = uxModel.CarModelId.Trim().ToUpperInvariant();

@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace Rfq.Data.Configuration
+﻿namespace Rfq.Data.Configuration
 {
     public class DbRfqDrawingPartNumbersConfiguration : IEntityTypeConfiguration<DbRfqDrawingPartNumber>
     {

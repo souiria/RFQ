@@ -1,7 +1,4 @@
-﻿using Google.Protobuf.Collections;
-using Microsoft.AspNetCore.Components.Web.Virtualization;
-
-namespace RfqModule.Services
+﻿namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {

@@ -16,19 +16,16 @@
 
         <MudPaper Elevation="2" Class="pa-3 mb-2">
             <MudGrid>
-                <MudText Typo="Typo.subtitle2" Color="Color.Primary">
-                    <strong>Sumitomo Number:</strong> @(SearchedPartNumber?.DrawingPartNumber) @(SearchedPartNumber?.DrawingPartNumberPrice > 0 ? "(Exact Match)" : "(Contains Match)")
-                </MudText>
-
                 @if (SearchedPartNumber?.HasImage == true)
                 {
-                    <MudItem xs="12" sm="4" Class="d-flex justify-center align-center">
-                        <MudImage Src="@GetImageSource()"
-                                    Alt="Part Image"
-                                    Elevation="3"
-                                    Class="rounded"
-                                    Style="max-width: 100%; max-height: 96px; object-fit: contain;" />
+                    <MudItem>
+
                     </MudItem>
+                    <MudImage Src="@GetImageSource()"
+                                Alt="Part Image"
+                                Width="128"
+                                Elevation="3"
+                                Class="rounded p-1 m-1" />
                 }
             </MudGrid>
         </MudPaper>
