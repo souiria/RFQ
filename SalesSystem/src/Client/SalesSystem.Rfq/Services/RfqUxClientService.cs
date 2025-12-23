@@ -115,10 +115,10 @@ namespace SalesSystem.Rfq.Services
 
             try
             {
-                GetCustomersByUserIdGrpcRequest request = new GetCustomersByUserIdGrpcRequest();
+                GetCustomerBusinessUnitsByUserIdRequest request = new GetCustomerBusinessUnitsByUserIdRequest();
                 request.UserId = userId.ToString().ToUpperInvariant();
 
-                GetCustomersByUserIdGrpcResponse response = await _Client.GetCustomersByUserIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
+                GetCustomerBusinessUnitsByUserIdResponse response = await _Client.GetCustomerBusinessUnitsByUserIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
                 _Customers.Clear();
                 List<CustomerUx?> orderedCustomers = response.Customers.Select(x => x.ToUx()).OrderBy(x => x?.CustomerBusinessGroupName).ToList();
                 _Customers.AddRange(orderedCustomers);
@@ -287,6 +287,12 @@ namespace SalesSystem.Rfq.Services
         #endregion
 
         #region Project Associations
+        public async Task<int> GetProjectAssociationsByCustomerIdAsync(Guid customerId)
+        {
+            string id = customerId.ToString().ToUpperInvariant();
+            return await GetProjectAssociationsByCustomerIdAsync(id);
+        }
+
         public async Task<int> GetProjectAssociationsByCustomerIdAsync(string customerId)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);

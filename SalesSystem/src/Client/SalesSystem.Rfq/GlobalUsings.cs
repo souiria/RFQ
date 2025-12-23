@@ -1,5 +1,7 @@
 ﻿global using SalesSystem.Rfq;
 global using SalesSystem.Rfq.Components;
+global using SalesSystem.Rfq.Components.Pages.Components;
+global using SalesSystem.Rfq.Components.Pages.Dialogs;
 global using SalesSystem.Rfq.Enums;
 global using SalesSystem.Rfq.Extensions;
 global using SalesSystem.Rfq.Models;
@@ -8,9 +10,13 @@ global using System.Collections.ObjectModel;
 global using System.ComponentModel;
 global using System.Diagnostics;
 global using System.DirectoryServices.AccountManagement;
+global using Google.Protobuf.WellKnownTypes;
 global using Grpc.Net.Client;
 global using Logging;
+global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.Forms;
+global using MudBlazor;
 global using MudBlazor.Services;
 global using RfqModule;
 global using SharedModels.Global;
+

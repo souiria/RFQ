@@ -1,0 +1,168 @@
+@using SalesSystem.Rfq.Models
+@using MudBlazor
+@using System.Text.Json
+
+@inject ISnackbar Snackbar
+@inject ILogger<ShowInfoPartNumberDialog> Logger
+@inject IDialogService DialogService
+@inject RfqUxClientService RfqUxClientService
+@inject CustomAuthenticationStateProvider GetAuthenticationStateAsync
+
+<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.h6" Class="mb-4">
+            Detail information for: @(SearchedPartNumber?.DrawingPartNumber ?? "N/A")
+        </MudText>
+
+        <MudPaper Elevation="2" Class="pa-3 mb-2">
+            <MudGrid>
+                <MudText Typo="Typo.subtitle2" Color="Color.Primary">
+                    <strong>Sumitomo Number:</strong> @(SearchedPartNumber?.DrawingPartNumber) @(SearchedPartNumber?.DrawingPartNumberPrice > 0 ? "(Exact Match)" : "(Contains Match)")
+                </MudText>
+
+                @if (SearchedPartNumber?.HasImage == true)
+                {
+                    <MudItem xs="12" sm="4" Class="d-flex justify-center align-center">
+                        <MudImage Src="@GetImageSource()"
+                                    Alt="Part Image"
+                                    Elevation="3"
+                                    Class="rounded"
+                                    Style="max-width: 100%; max-height: 96px; object-fit: contain;" />
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudPaper>
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Close" Color="Color.Primary" Variant="Variant.Filled">
+            Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+
+    // This has a DrawingPartNumber set and possibly a DrawingPriceNumber, nothing else
+    [Parameter] public RfqDrawingPartNumberUx? SearchedPartNumber { get; set; }
+
+    private string _currentUser = "Unknown";
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        try
+        {
+            // Get current user
+            var authState = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+            var user = authState.User;
+            if (user.Identity!.IsAuthenticated)
+            {
+                _currentUser = user?.Identity?.Name ?? "NoName";
+                Logger.GenericLogInformation($"User is authenticated: {_currentUser}");
+            }
+            else
+            {
+                _currentUser = "Anonymous";
+                Logger.GenericLogInformation("User is not authenticated.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError("Error getting current user", ex);
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender
+            && SearchedPartNumber != null)
+        {
+            // Start loading images and NPR data for all parts in parallel
+            await LoadPartImageAsync(SearchedPartNumber);
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private string GetListItemStyle(bool isExactMatch)
+    {
+        return isExactMatch
+            ? "background-color: lightgreen;"
+            : "background-color: lightyellow;";
+    }
+
+    private async Task LoadPartImageAsync(RfqDrawingPartNumberUx matchedPartNumber)
+    {
+        if (string.IsNullOrWhiteSpace(matchedPartNumber.DrawingPartNumber))
+        {
+            return;
+        }
+
+        try
+        {
+            await InvokeAsync(StateHasChanged);
+
+            Logger.GenericLogInformation($"Loading image for part number: {matchedPartNumber.DrawingPartNumber}");
+
+            SearchResultUx response = await RfqUxClientService.SearchAdssSewsePn(matchedPartNumber.DrawingPartNumber);
+
+            if (response.IsSuccessful &&
+                response.ByteList != null &&
+                response.ByteList.Count > 0 &&
+                response.StringList2 != null &&
+                response.StringList2.Count > 0)
+            {
+                // Get the first image (assuming ByteList contains complete image byte arrays)
+                byte[] imageBytes = response.ByteList[0];
+                string mimeType = response.StringList2[0] ?? "image/png";
+
+                matchedPartNumber.PartImage = new PartImageData
+                {
+                    ImageBytes = imageBytes,
+                    MimeType = mimeType
+                };
+
+                Logger.GenericLogInformation($"Successfully loaded image for part number: {matchedPartNumber.DrawingPartNumber}, Size: {imageBytes.Length} bytes, Type: {mimeType}");
+            }
+            else
+            {
+                Logger.GenericLogInformation($"No image found for part number: {matchedPartNumber.DrawingPartNumber}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError($"Error loading image for part number: {matchedPartNumber.DrawingPartNumber}", ex);
+        }
+        finally
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private string GetImageSource()
+    {
+        if (SearchedPartNumber?.PartImage == null 
+            || SearchedPartNumber.PartImage.ImageBytes == null)
+        {
+            return string.Empty;
+        }
+
+        var imageData = SearchedPartNumber?.PartImage;
+        if(imageData == null)
+        {
+            return string.Empty;
+        }
+        string? base64Image = Convert.ToBase64String(imageData.ImageBytes.ToArray());
+        return $"data:{imageData.MimeType};base64,{base64Image}";
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+}

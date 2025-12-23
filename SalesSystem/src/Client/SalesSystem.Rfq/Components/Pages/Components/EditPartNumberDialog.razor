@@ -2,6 +2,8 @@
 @using MudBlazor
 
 @inject IDialogService DialogService
+@inject ILogger<EditPartNumberDialog> Logger
+@inject RfqUxClientService RfqUxClientService
 
 <MudDialog>
     <DialogContent>
@@ -58,6 +60,13 @@
                                                     }
                                                 </MudText>
                                             </div>
+                                            <MudButton OnClick="@(() => ShowMatchedPart(matchedPart))"
+                                                       Color="Color.Primary"
+                                                       Variant="Variant.Filled"
+                                                       Size="Size.Small"
+                                                       StartIcon="@Icons.Material.Filled.Info">
+                                                More info
+                                            </MudButton>
                                             <MudButton OnClick="@(() => PickMatchedPart(matchedPart))"
                                                        Color="Color.Primary"
                                                        Variant="Variant.Filled"
@@ -199,6 +208,74 @@
             Status = OriginalItem.Status
         };
         EditedItem.SearchResultPartNumbers.AddRange(OriginalItem.SearchResultPartNumbers);
+    }
+
+    private async Task ShowMatchedPart(RfqDrawingPartNumberUx item)
+    {
+        if (item == null)
+        {
+            Logger.GenericLogInformation($"No part number found for null item...");
+            await DialogService.ShowMessageBox("Search Part Number", $"No part number found for null item...");
+            return;
+        }
+
+        if (item.DrawingPartNumber == null)
+        {
+            Logger.GenericLogInformation("SEWS-E / DrawingPartNumber is null");
+            await DialogService.ShowMessageBox("Search Part Number", "Drawing part number is not available.");
+            return;
+        }
+
+        Logger.GenericLogInformation($"Searching for part number: {item.DrawingPartNumber}");
+
+        try
+        {
+            // Create a copy of the item to avoid reference issues
+            var searchedPartNumber = new RfqDrawingPartNumberUx
+            {
+                CustomerPartNumber = EditedItem.CustomerPartNumber,
+                DrawingPartNumber = item.DrawingPartNumber,
+                DrawingPartNumberPrice = item.DrawingPartNumberPrice,
+                IsExactMatch = item.IsExactMatch,
+                Index = item.Index
+            };
+
+            DialogParameters parameters = new DialogParameters
+            {
+                { "SearchedPartNumber", searchedPartNumber },
+            };
+
+            DialogOptions options = new DialogOptions
+            {
+                MaxWidth = MaxWidth.Large,
+                FullWidth = true,
+                CloseOnEscapeKey = true,
+                BackdropClick = false,
+                NoHeader = false
+            };
+
+            var dialog = await DialogService.ShowAsync<ShowInfoPartNumberDialog>(
+                "More Info",
+                parameters,
+                options
+            );
+
+            var result = await dialog.Result;
+            
+            if (result != null && !result.Canceled && result.Data is RfqDrawingPartNumberUx updatedPart)
+            {
+                // Update the EditedItem with the selected part data
+                PickMatchedPart(updatedPart);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError($"Error searching for part number: {item.CustomerPartNumber}/{item.DrawingPartNumber}", ex);
+            await DialogService.ShowMessageBox(
+                "Error",
+                $"An error occurred while opening the search dialog: {ex.Message}"
+            );
+        }
     }
 
     private void PickMatchedPart(RfqDrawingPartNumberUx matchedPart)

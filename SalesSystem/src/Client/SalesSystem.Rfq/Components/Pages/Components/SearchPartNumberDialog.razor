@@ -161,16 +161,39 @@
             && SearchedPartNumber != null
             && SearchedPartNumber.SearchResultPartNumbers.Count > 0)
         {
-            // Start loading images and NPR data for all parts in parallel
-            var loadTasks = SearchedPartNumber.SearchResultPartNumbers
-                .Select((matchedPart) => Task.WhenAll(
-                    LoadPartImageAsync(matchedPart),
-                    LoadNprDataAsync(matchedPart)
-                ))
-                .ToList();
+            try
+            {
+                // Start loading images and NPR data for all parts in parallel
+                var loadTasks = SearchedPartNumber.SearchResultPartNumbers
+                    .Select((matchedPart) => Task.Run(async () =>
+                    {
+                        try
+                        {
+                            await Task.WhenAll(
+                                LoadPartImageAsync(matchedPart),
+                                LoadNprDataAsync(matchedPart)
+                            );
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.GenericLogError($"Error loading data for part: {matchedPart.DrawingPartNumber}", ex);
+                        }
+                    }))
+                    .ToList();
 
-            // Don't await - let them load in parallel
-            _ = Task.WhenAll(loadTasks);
+                // Don't await - let them load in parallel and handle errors gracefully
+                _ = Task.WhenAll(loadTasks).ContinueWith(t =>
+                {
+                    if (t.IsFaulted)
+                    {
+                        Logger.GenericLogError("Error loading search results data", t.Exception);
+                    }
+                }, TaskScheduler.Default);
+            }
+            catch (Exception ex)
+            {
+                Logger.GenericLogError("Error initializing search results loading", ex);
+            }
         }
 
         await base.OnAfterRenderAsync(firstRender);
