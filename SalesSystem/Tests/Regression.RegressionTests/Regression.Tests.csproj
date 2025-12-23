@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Access\CPD\CPD.csproj" />
+    <ProjectReference Include="..\..\src\Access\Rfq\Rfq.csproj" />
     <ProjectReference Include="..\..\src\Access\SFS\SFS.csproj" />
   </ItemGroup>
 
