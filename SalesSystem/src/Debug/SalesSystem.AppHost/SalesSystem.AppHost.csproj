@@ -21,6 +21,7 @@
     <ProjectReference Include="..\..\Access\Emacs\Emacs.csproj" />
     <ProjectReference Include="..\..\Access\Master\Master.csproj" />
     <ProjectReference Include="..\..\Access\NPR\NPR.csproj" />
+    <ProjectReference Include="..\..\Access\Purchasing\Purchasing.csproj" />
     <ProjectReference Include="..\..\Access\Rfq\Rfq.csproj" />
     <ProjectReference Include="..\..\Access\SFS\SFS.csproj" />
     <ProjectReference Include="..\..\Access\Unit4\Unit4.csproj" />

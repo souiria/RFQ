@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "Purchasing";
+package purchasing;
+
+service Purchasing {
+rpc SayHello (HelloRequest) returns (HelloReply);
+  rpc ReadH1CPDGrpc (H1CPDGrpcRequest) returns (ListH1CPDGrpc);
+  rpc FilterPurchasingGrpc (PurchasingFilterRequest) returns (PurchasingFilterResponse);
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}
+
+message PurchasingGrpcRequestParameter {
+	int32 RequestType = 1;
+	int32 Position = 2;
+	int32 Take = 3;
+	google.protobuf.BoolValue BoolValue = 4;
+	google.protobuf.StringValue StringValue = 5;
+	google.protobuf.Int32Value IntValue = 6;
+	google.protobuf.FloatValue DecimalValue = 7;
+	google.protobuf.Timestamp DateTimeValue = 8;
+}
+
+message H1CPDGrpcRequest {
+	PurchasingGrpcRequestParameter PurchasingGrpcRequestParameter = 1;
+	google.protobuf.StringValue SumitomoNumber = 2; 
+}
+
+message ListH1CPDGrpc {
+	repeated H1CPDGrpc H1CPD = 1;
+}
+
+message H1CPDGrpc {
+	google.protobuf.StringValue SumitomoNumber = 1;
+	google.protobuf.StringValue UniformSumitomoNumber = 2;
+	google.protobuf.StringValue SupplierName = 3;
+	google.protobuf.StringValue SupplierNumber = 4;
+	google.protobuf.StringValue UniformSupplierNumber = 5;
+	google.protobuf.BoolValue MainSupplier = 6;
+	google.protobuf.StringValue CurrencyCode = 7;
+	google.protobuf.StringValue UnitOfMeasure = 8;
+	google.protobuf.DoubleValue Price = 9;
+}
+
+message PurchasingFilterRequest {
+	string DatabaseList = 1;
+    string FilterExpression = 2;
+}
+
+message PurchasingFilterResponse {
+	bool Success = 1;
+	ListH1CPDGrpc ListH1CPDGrpc = 2;
+}
