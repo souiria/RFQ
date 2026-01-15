@@ -1,6 +1,4 @@
-﻿using System.Linq.Dynamic.Core;
-
-namespace Purchasing.Services
+﻿namespace Purchasing.Services
 {
     public interface IPurchasingAccessService
     {

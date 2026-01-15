@@ -1,6 +1,4 @@
-﻿using Rfq;
-
-namespace Purchasing.Endpoints
+﻿namespace Purchasing.Endpoints
 {
     public class PurchasingGrpcService : Purchasing.PurchasingBase
     {
