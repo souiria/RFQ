@@ -30,7 +30,7 @@ namespace Unit.Tests.NPR
             Task<HelloReply> helloReply = _GrpcService.SayHello(request, serverCallContext);
 
             string replyString = "Hello TestName";
-            NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(replyString);
+            EqualConstraint equalConstraint = Is.EqualTo(replyString);
             Assert.That(helloReply, Is.Not.Null);
             Assert.That(helloReply.Result.Message, equalConstraint);
         }
@@ -46,7 +46,7 @@ namespace Unit.Tests.NPR
 
             Task<ListH1NPRViewGrpc> getCurrencyGrpcReply = _GrpcService.GetAllH1NPRViewGrpc(h1NPRViewRequest, serverCallContext);
             Assert.That(getCurrencyGrpcReply.Result.H1NPRViewGrpc, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getCurrencyGrpcReply.Result.H1NPRViewGrpc.Count, countConstraint);
 
         }
