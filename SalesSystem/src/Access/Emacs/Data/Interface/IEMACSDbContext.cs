@@ -30,6 +30,8 @@
         { get; }
         DbSet<DbPARTMS> DbPARTMS
         { get; }
+        DbSet<DbAlternativeParts> DbAlternativeParts
+        { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

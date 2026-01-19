@@ -23,6 +23,7 @@
         public DbSet<DbSuppliers> Suppliers => Set<DbSuppliers>();
         public DbSet<DbEmacsRFIView> EmacsRFIViews => Set<DbEmacsRFIView>();
         public DbSet<DbPARTMS> DbPARTMS => Set<DbPARTMS>();
+        public DbSet<DbAlternativeParts> DbAlternativeParts => Set<DbAlternativeParts>();
 
         #endregion
 

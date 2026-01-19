@@ -141,6 +141,14 @@
         }
         #endregion
 
+        #region AlternateParts
+        public override async Task<ListAlternativePartsGrpc> GetAlternativePartsGrpc(GetAlternativePartsGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetAlternativePartsGrpc starting");
+            return await _EMACSAccessService.GetAllAlternativePartsGrpc(context.CancellationToken);
+        }
+        #endregion
+
         public override async Task<EmacsFilterResponseGrpc> FilterEmacsDataGrpc(EmacsFilterRequestGrpc request, ServerCallContext context)
         {
             ParsingConfig parsingConfig = new ParsingConfig();
@@ -287,6 +295,16 @@
                        ListPARTMSGrpc returnList = new ListPARTMSGrpc();
                        returnList.PARTMSGrpc.AddRange(filterList);
                        returnResponse.ListPARTMSGrpc = returnList;
+                       returnResponse.Success = true;
+                   }, context.CancellationToken);
+                break;
+                case "ALTERNATIVEPARTSGRPC":
+                await _EMACSAccessService.HandleFilterCase<AlternativePartsGrpc>(filterExpressionString, parsingConfig,
+                   filterList =>
+                   {
+                       ListAlternativePartsGrpc returnList = new ListAlternativePartsGrpc();
+                       returnList.AlternativePartsGrpc.AddRange(filterList);
+                       returnResponse.ListAlternativePartsGrpc = returnList;
                        returnResponse.Success = true;
                    }, context.CancellationToken);
                 break;

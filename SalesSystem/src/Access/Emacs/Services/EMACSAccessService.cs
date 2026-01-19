@@ -96,6 +96,12 @@
 
         #endregion
 
+        #region AlternativeParts
+
+        ListAlternativePartsGrpc _ListAlternativeParts;
+
+        #endregion
+
         #endregion
 
         #region Fields and Properties
@@ -195,6 +201,13 @@
 
         IQueryHandler<GetPARTMSQuery, List<PARTMSGrpc>>? _PARTMSHandler;
         bool _PARTMSRefreshInProgress;
+
+        #endregion
+
+        #region AlternativeParts
+
+        IQueryHandler<GetAlternativePartsQuery, List<AlternativePartsGrpc>>? _AlternativePartsHandler;
+        bool _AlternativePartsRefreshInProgress;
 
         #endregion
 
@@ -308,6 +321,13 @@
             _ListPARTMS = new ListPARTMSGrpc();
             _FilteredListPARTMS = new ListPARTMSGrpc();
             _PARTMSRefreshInProgress = false;
+
+            #endregion
+
+            #region AlternativeParts
+
+            _ListAlternativeParts = new ListAlternativePartsGrpc();
+            _AlternativePartsRefreshInProgress = false;
 
             #endregion
 
@@ -576,6 +596,22 @@
             {
                 await PopulatePARTMSAsync(cancellationToken);
                 return _ListPARTMS;
+            }
+        }
+        #endregion
+
+        #region AlternativeParts
+        public async Task<ListAlternativePartsGrpc> GetAllAlternativePartsGrpc(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListAlternativeParts.AlternativePartsGrpc.Any())
+            {
+                return _ListAlternativeParts;
+            }
+            else
+            {
+                await PopulateAlternativePartsAsync(cancellationToken);
+                return _ListAlternativeParts;
             }
         }
         #endregion
@@ -1018,6 +1054,36 @@
         }
         #endregion
 
+        #region AlternativeParts
+        public async Task<bool> PopulateAlternativePartsAsync(CancellationToken cancellationToken)
+        {
+            if (!_AlternativePartsRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _AlternativePartsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAlternativePartsQuery, List<AlternativePartsGrpc>>>();
+                    _AlternativePartsRefreshInProgress = true;
+                    GetAlternativePartsQuery query = new GetAlternativePartsQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<AlternativePartsGrpc>> results = await _AlternativePartsHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _ListAlternativeParts.AlternativePartsGrpc.Clear();
+                        _ListAlternativeParts.AlternativePartsGrpc.AddRange(results.Value);
+                    }
+
+                    _AlternativePartsRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
         #endregion
 
         public async Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig, Action<IEnumerable<T>> setResponseCollection,
@@ -1050,6 +1116,7 @@
                     "SUPPLIERSGRPC" => _ListSuppliers.SuppliersGrpc.Cast<T>().Where(func).ToList(),
                     "EMACSRFIVIEWGRPC" => _ListEmacsRFIView.EmacsRFIViewGrpc.Cast<T>().Where(func).ToList(),
                     "PARTMSGRPC" => _ListPARTMS.PARTMSGrpc.Cast<T>().Where(func).ToList(),
+                    "ALTERNATIVEPARTSGRPC" => _ListAlternativeParts.AlternativePartsGrpc.Cast<T>().Where(func).ToList(),
                     _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
                 };
             }, cancellationToken);
@@ -1070,6 +1137,7 @@
             _ListNPASupplier = SampleEmacsDataService.PopulateNPASupplier();
             _ListSuppliers = SampleEmacsDataService.PopulateSuppliers();
             _ListPARTMS = SampleEmacsDataService.PopulatePARTMS();
+            _ListAlternativeParts = SampleEmacsDataService.PopulateAlternativePartsGrpc();
         }
     }
 }
