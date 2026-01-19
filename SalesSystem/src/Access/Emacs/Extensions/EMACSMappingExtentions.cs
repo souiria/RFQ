@@ -322,5 +322,76 @@
         //    return entity;
         //}
         #endregion
+
+        #region AlternativeParts
+
+        public static AlternativePartsGrpc MapToAlternativePartsGrpc(this DbAlternativeParts entity)
+        {
+            AlternativePartsGrpc data = new AlternativePartsGrpc();
+            data.SumitomoNumber = entity.SumitomoNumber;
+            data.SumitomoDescription = entity.SumitomoDescription;
+            data.MainSupplier = entity.MainSupplier;
+            data.SupplierName = entity.SupplierName;
+            data.SupplierNumber = entity.SupplierNumber;
+            data.Price = (double?)entity.Price;
+            data.CurrencyCode = entity.CurrencyCode;
+            data.UnitOfMeasure = entity.UnitOfMeasure;
+            data.PartGroup = entity.PartGroup;
+            data.GroupDescription = entity.GroupDescription;
+            data.Class1 = entity.Class1;
+            data.Class1Name = entity.Class1Name;
+            data.Class2 = entity.Class2;
+            data.Class2Name = entity.Class2Name;
+            data.ColourCode = entity.ColourCode;
+            data.ColorName = entity.ColorName;
+            data.MaterialGroup = entity.MaterialGroup;
+            data.Expr1 = entity.Expr1;
+            data.MaterialType = entity.MaterialType;
+            data.TypeDescription = entity.TypeDescription;
+            data.CategoryCode = entity.CategoryCode;
+            data.DetailedCategoryCode = entity.DetailedCategoryCode;
+            data.CategoryName = entity.CategoryName;
+            data.PartGroupCode = entity.PartGroupCode;
+            data.Description = entity.Description;
+            data.OldPartClass = entity.OldPartClass;
+            data.OldMaterial = entity.OldMaterial;
+            data.ClassDetailGroupCode = entity.ClassDetailGroupCode;
+            data.ClassDetailId = entity.ClassDetailId;
+            data.MaterialGroupId = entity.MaterialGroupId;
+            data.MaterialTypeId = entity.MaterialTypeId;
+            data.ColorCode = entity.ColorCode;
+            data.NumberOfCavity = entity.NumberOfCavity;
+            data.InsideDiameter = (double?)entity.InsideDiameter;
+            data.WallThickness = (double?)entity.WallThickness;
+            data.Length = (double?)entity.Length;
+            data.WidthOrOutsideDiameter = (double?)entity.WidthOrOutsideDiameter;
+            data.HoleDiameter = entity.HoleDiameter;
+            data.ShrinkRateLength = entity.ShrinkRateLength;
+            data.NumberOfTapingSpots = entity.NumberOfTapingSpots;
+            data.MassOrWeight = (double?)entity.MassOrWeight;
+            data.Quantity = (double?)entity.Quantity;
+            data.UoM = entity.UoM;
+            data.Group1 = entity.Group1;
+            data.Group2 = entity.Group2;
+            data.Group3 = entity.Group3;
+            data.Group4 = entity.Group4;
+            data.Group5 = entity.Group5;
+            data.Group6 = entity.Group6;
+            data.Group7 = entity.Group7;
+            data.Group8 = entity.Group8;
+            data.CustomerId = entity.CustomerId;
+            data.CustomerCode = entity.CustomerCode;
+            data.MassOrWeight2 = (double?)entity.MassOrWeight2;
+            data.L1 = entity.L1;
+            data.L2 = entity.L2;
+            data.L3 = entity.L3;
+            data.PitchWidth = (double?)entity.PitchWidth;
+            data.Tilt = entity.Tilt;
+            data.Grease = entity.Grease;
+            data.CategoryCode2 = entity.CategoryCode2;
+
+            return data;
+        }
+        #endregion
     }
 }

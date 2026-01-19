@@ -408,5 +408,145 @@
         }
         #endregion
 
+        #region AlternativeParts
+
+        public static ListAlternativePartsGrpc PopulateAlternativePartsGrpc()
+        {
+            ListAlternativePartsGrpc listAlternativePartsGrpc = new ListAlternativePartsGrpc();
+            for (int i = 0; i < 5; i++)
+            {
+                AlternativePartsGrpc alternativePartsGrpc = new AlternativePartsGrpc();
+                alternativePartsGrpc.SumitomoNumber = $"SumitomoNumber{i}";
+                alternativePartsGrpc.SumitomoDescription = $"SumitomoDescription{i}";
+                alternativePartsGrpc.MainSupplier = true;
+                alternativePartsGrpc.SupplierName = $"SupplierName{i}";
+                alternativePartsGrpc.SupplierNumber = $"SupplierNumber{i}";
+                alternativePartsGrpc.Price = i;
+                alternativePartsGrpc.CurrencyCode = $"CurrencyCode{i}";
+                alternativePartsGrpc.UnitOfMeasure = $"UnitOfMeasure{i}";
+                alternativePartsGrpc.PartGroup = $"PartGroup{i}";
+                alternativePartsGrpc.GroupDescription = $"GroupDescription{i}";
+                alternativePartsGrpc.Class1 = $"Class1{i}";
+                alternativePartsGrpc.Class1Name = $"Class1Name{i}";
+                alternativePartsGrpc.Class2 = i;
+                alternativePartsGrpc.Class2Name = $"Class2Name{i}";
+                alternativePartsGrpc.ColourCode = $"ColourCode{i}";
+                alternativePartsGrpc.ColorName = $"ColorName{i}";
+                alternativePartsGrpc.MaterialGroup = $"MaterialGroup{i}";
+                alternativePartsGrpc.Expr1 = $"Expr1{i}";
+                alternativePartsGrpc.MaterialType = $"MaterialType{i}";
+                alternativePartsGrpc.TypeDescription = $"TypeDescription{i}";
+                alternativePartsGrpc.CategoryCode = $"CategoryCode{i}";
+                alternativePartsGrpc.DetailedCategoryCode = i;
+                alternativePartsGrpc.CategoryName = $"CategoryName{i}";
+                alternativePartsGrpc.PartGroupCode = $"PartGroupCode{i}";
+                alternativePartsGrpc.Description = $"Description{i}";
+                alternativePartsGrpc.OldPartClass = $"OldPartClass{i}";
+                alternativePartsGrpc.OldMaterial = $"OldMaterial{i}";
+                alternativePartsGrpc.ClassDetailGroupCode = $"ClassDetailGroupCode{i}";
+                alternativePartsGrpc.ClassDetailId = $"ClassDetailId{i}";
+                alternativePartsGrpc.MaterialGroupId = $"MaterialGroupId{i}";
+                alternativePartsGrpc.MaterialTypeId = $"MaterialTypeId{i}";
+                alternativePartsGrpc.ColorCode = $"ColorCode{i}";
+                alternativePartsGrpc.NumberOfCavity = i;
+                alternativePartsGrpc.InsideDiameter = i;
+                alternativePartsGrpc.WallThickness = i;
+                alternativePartsGrpc.Length = i;
+                alternativePartsGrpc.WidthOrOutsideDiameter = i;
+                alternativePartsGrpc.HoleDiameter = i;
+                alternativePartsGrpc.ShrinkRateLength = i;
+                alternativePartsGrpc.NumberOfTapingSpots = i;
+                alternativePartsGrpc.MassOrWeight = i;
+                alternativePartsGrpc.Quantity = i;
+                alternativePartsGrpc.UoM = $"UoM{i}";
+                alternativePartsGrpc.Group1 = $"Group1{i}";
+                alternativePartsGrpc.Group2 = $"Group2{i}";
+                alternativePartsGrpc.Group3 = $"Group3{i}";
+                alternativePartsGrpc.Group4 = $"Group4{i}";
+                alternativePartsGrpc.Group5 = $"Group5{i}";
+                alternativePartsGrpc.Group6 = $"Group6{i}";
+                alternativePartsGrpc.Group7 = $"Group7{i}";
+                alternativePartsGrpc.Group8 = $"Group8{i}";
+                alternativePartsGrpc.CustomerId = $"CustomerId{i}";
+                alternativePartsGrpc.CustomerCode = $"CustomerCode{i}";
+                alternativePartsGrpc.MassOrWeight2 = i;
+                alternativePartsGrpc.L1 = i;
+                alternativePartsGrpc.L2 = i;
+                alternativePartsGrpc.L3 = i;
+                alternativePartsGrpc.PitchWidth = i;
+                alternativePartsGrpc.Tilt = i;
+                alternativePartsGrpc.Grease = i;
+                alternativePartsGrpc.CategoryCode2 = $"CategoryCode2{i}";
+                listAlternativePartsGrpc.AlternativePartsGrpc.Add(alternativePartsGrpc);
+            }
+
+            AlternativePartsGrpc fixedAlternativePartsGrpc = new AlternativePartsGrpc();
+            fixedAlternativePartsGrpc.SumitomoNumber = $"TestSumitomoNumber";
+            fixedAlternativePartsGrpc.SumitomoDescription = $"TestSumitomoDescription";
+            fixedAlternativePartsGrpc.MainSupplier = true;
+            fixedAlternativePartsGrpc.SupplierName = $"TestSupplierName";
+            fixedAlternativePartsGrpc.SupplierNumber = $"TestSupplierNumber";
+            fixedAlternativePartsGrpc.Price = 0;
+            fixedAlternativePartsGrpc.CurrencyCode = $"TestCurrencyCode";
+            fixedAlternativePartsGrpc.UnitOfMeasure = $"TestUnitOfMeasure";
+            fixedAlternativePartsGrpc.PartGroup = $"TestPartGroup";
+            fixedAlternativePartsGrpc.GroupDescription = $"TestGroupDescription";
+            fixedAlternativePartsGrpc.Class1 = $"TestClass1";
+            fixedAlternativePartsGrpc.Class1Name = $"TestClass1Name";
+            fixedAlternativePartsGrpc.Class2 = 0;
+            fixedAlternativePartsGrpc.Class2Name = $"TestClass2Name";
+            fixedAlternativePartsGrpc.ColourCode = $"TestColourCode";
+            fixedAlternativePartsGrpc.ColorName = $"TestColorName";
+            fixedAlternativePartsGrpc.MaterialGroup = $"TestMaterialGroup";
+            fixedAlternativePartsGrpc.Expr1 = $"TestExpr1";
+            fixedAlternativePartsGrpc.MaterialType = $"TestMaterialType";
+            fixedAlternativePartsGrpc.TypeDescription = $"TestTypeDescription";
+            fixedAlternativePartsGrpc.CategoryCode = $"TestCategoryCode";
+            fixedAlternativePartsGrpc.DetailedCategoryCode = 0;
+            fixedAlternativePartsGrpc.CategoryName = $"TestCategoryName";
+            fixedAlternativePartsGrpc.PartGroupCode = $"TestPartGroupCode";
+            fixedAlternativePartsGrpc.Description = $"TestDescription";
+            fixedAlternativePartsGrpc.OldPartClass = $"TestOldPartClass";
+            fixedAlternativePartsGrpc.OldMaterial = $"TestOldMaterial";
+            fixedAlternativePartsGrpc.ClassDetailGroupCode = $"TestClassDetailGroupCode";
+            fixedAlternativePartsGrpc.ClassDetailId = $"TestClassDetailId";
+            fixedAlternativePartsGrpc.MaterialGroupId = $"TestMaterialGroupId";
+            fixedAlternativePartsGrpc.MaterialTypeId = $"TestMaterialTypeId";
+            fixedAlternativePartsGrpc.ColorCode = $"TestColorCode";
+            fixedAlternativePartsGrpc.NumberOfCavity = 0;
+            fixedAlternativePartsGrpc.InsideDiameter = 0;
+            fixedAlternativePartsGrpc.WallThickness = 0;
+            fixedAlternativePartsGrpc.Length = 0;
+            fixedAlternativePartsGrpc.WidthOrOutsideDiameter = 0;
+            fixedAlternativePartsGrpc.HoleDiameter = 0;
+            fixedAlternativePartsGrpc.ShrinkRateLength = 0;
+            fixedAlternativePartsGrpc.NumberOfTapingSpots = 0;
+            fixedAlternativePartsGrpc.MassOrWeight = 0;
+            fixedAlternativePartsGrpc.Quantity = 0;
+            fixedAlternativePartsGrpc.UoM = $"TestUoM";
+            fixedAlternativePartsGrpc.Group1 = $"TestGroup1";
+            fixedAlternativePartsGrpc.Group2 = $"TestGroup2";
+            fixedAlternativePartsGrpc.Group3 = $"TestGroup3";
+            fixedAlternativePartsGrpc.Group4 = $"TestGroup4";
+            fixedAlternativePartsGrpc.Group5 = $"TestGroup5";
+            fixedAlternativePartsGrpc.Group6 = $"TestGroup6";
+            fixedAlternativePartsGrpc.Group7 = $"TestGroup7";
+            fixedAlternativePartsGrpc.Group8 = $"TestGroup8";
+            fixedAlternativePartsGrpc.CustomerId = $"TestCustomerId";
+            fixedAlternativePartsGrpc.CustomerCode = $"TestCustomerCode";
+            fixedAlternativePartsGrpc.MassOrWeight2 = 0;
+            fixedAlternativePartsGrpc.L1 = 0;
+            fixedAlternativePartsGrpc.L2 = 0;
+            fixedAlternativePartsGrpc.L3 = 0;
+            fixedAlternativePartsGrpc.PitchWidth = 0;
+            fixedAlternativePartsGrpc.Tilt = 0;
+            fixedAlternativePartsGrpc.Grease = 0;
+            fixedAlternativePartsGrpc.CategoryCode2 = $"TestCategoryCode2";
+            listAlternativePartsGrpc.AlternativePartsGrpc.Add(fixedAlternativePartsGrpc);
+            return listAlternativePartsGrpc;
+        }
+
+        #endregion
+
     }
 }
