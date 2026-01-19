@@ -87,10 +87,8 @@ using Rfq.Services;
             Assert.That(rfqDrawingPnOriginalNotEmpty, Is.True);
              // ========================================================= 
 
-
             // RFQ NOTES ()
             // ========================================================= 
-
 
             RfqFilterRequest notesFilterRequest;
             notesFilterRequest = new RfqFilterRequest();
