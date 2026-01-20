@@ -294,28 +294,28 @@
     {
         DialogOptions options = new DialogOptions
         {
-            MaxWidth = MaxWidth.Small,
+            MaxWidth = MaxWidth.ExtraExtraLarge,
             FullWidth = true,
             CloseOnEscapeKey = true,
             BackdropClick = false
         };
 
-        IDialogReference dialog = await DialogService.ShowAsync<PickDummyPartDialog>(
+        IDialogReference dialog = await DialogService.ShowAsync<PickAlternativePartDialog>(
             "Pick Dummy Part",
             options
         );
 
         DialogResult? result = await dialog.Result;
 
-        if (result != null && !result.Canceled && result.Data is RfqDrawingPartNumberUx dummyData)
+        if (result != null && !result.Canceled && result.Data is RfqDrawingPartNumberUx alternativePart && alternativePart.SwappedPartNumberPrice > 0.0m)
         {
             // Update the EditedItem with dummy part data
-            EditedItem.SwappedPartNumber = dummyData.SwappedPartNumber;
-            EditedItem.SwappedPartNumberPrice = dummyData.SwappedPartNumberPrice;
+            EditedItem.SwappedPartNumber = alternativePart.SwappedPartNumber;
+            EditedItem.SwappedPartNumberPrice = alternativePart.SwappedPartNumberPrice;
             EditedItem.IsSwapped = true;
             EditedItem.IsExactMatch = false;
-            EditedItem.PriceSource = "Dummy";
-            EditedItem.Status = RfqDrawingPartNumberStatus.DummySelected;
+            EditedItem.PriceSource = "Emacs, alternative part pick";
+            EditedItem.Status = RfqDrawingPartNumberStatus.AlternativePartSelected;
 
             // Force UI refresh
             StateHasChanged();
@@ -384,7 +384,7 @@
             // If swapped part number is set with price, mark as swapped
             if (hasSwappedPartNumberWithPrice)
             {
-                EditedItem.Status = RfqDrawingPartNumberStatus.DummySelected;
+                EditedItem.Status = RfqDrawingPartNumberStatus.AlternativePartSelected;
                 EditedItem.IsSwapped = true;
             }
 

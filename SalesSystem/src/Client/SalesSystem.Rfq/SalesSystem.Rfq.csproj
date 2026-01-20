@@ -12,6 +12,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Components\Pages\Components\PickAlternativePartDialog.razor~RF154c0d67.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CsvHelper" Version="33.1.0" />
     <PackageReference Include="IDesign.Analyzers" Version="1.0.18" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="9.0.6" />

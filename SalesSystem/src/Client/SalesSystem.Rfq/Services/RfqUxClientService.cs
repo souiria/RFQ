@@ -229,37 +229,6 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-        public async Task<UpdateRfqDrawingPartNumbersGrpcResponse> UpdateRfqDrawingPartNumbersAsync(IEnumerable<RfqDrawingPartNumberUx?> parts)
-        {
-            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-            List<RfqDrawingPartNumber> partsDto = new List<RfqDrawingPartNumber>();
-            foreach (RfqDrawingPartNumberUx? part in parts)
-            {
-                if (part != null)
-                {
-                    RfqDrawingPartNumber dto = part.ToDto();
-                    partsDto.Add(dto);
-                }
-            }
-
-            try
-            {
-                // Build the request
-                UpdateRfqDrawingPartNumbersGrpcRequest request = new UpdateRfqDrawingPartNumbersGrpcRequest();
-                request.RfqDrawingPartNumbersGrpcsToUpdate.AddRange(partsDto);
-
-                // Call the gRPC client
-                UpdateRfqDrawingPartNumbersGrpcResponse response =
-                    await _Client.UpdateRfqDrawingPartNumbersGrpcAsync(request, cancellationToken: timeoutCts.Token);
-
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _Logger?.GenericLogError("Error in UpdateRfqDrawingPartNumbersAsync", ex);
-                throw;
-            }
-        }
         public async Task<RfqCrudResponse> DeleteRfqProjectByRowIdAsync(long rowId)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
@@ -288,7 +257,6 @@ namespace SalesSystem.Rfq.Services
             string id = customerId.ToString().ToUpperInvariant();
             return await GetProjectAssociationsByCustomerIdAsync(id);
         }
-
         public async Task<int> GetProjectAssociationsByCustomerIdAsync(string customerId)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
@@ -348,6 +316,37 @@ namespace SalesSystem.Rfq.Services
             catch (Exception ex)
             {
                 _Logger?.GenericLogError($"Error in GetRfqDrawingPartNumbersByRfqId for RfqId: {rfqId}", ex);
+                throw;
+            }
+        }
+        public async Task<UpdateRfqDrawingPartNumbersGrpcResponse> UpdateRfqDrawingPartNumbersAsync(IEnumerable<RfqDrawingPartNumberUx?> parts)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+            List<RfqDrawingPartNumber> partsDto = new List<RfqDrawingPartNumber>();
+            foreach (RfqDrawingPartNumberUx? part in parts)
+            {
+                if (part != null)
+                {
+                    RfqDrawingPartNumber dto = part.ToDto();
+                    partsDto.Add(dto);
+                }
+            }
+
+            try
+            {
+                // Build the request
+                UpdateRfqDrawingPartNumbersGrpcRequest request = new UpdateRfqDrawingPartNumbersGrpcRequest();
+                request.RfqDrawingPartNumbersGrpcsToUpdate.AddRange(partsDto);
+
+                // Call the gRPC client
+                UpdateRfqDrawingPartNumbersGrpcResponse response =
+                    await _Client.UpdateRfqDrawingPartNumbersGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError("Error in UpdateRfqDrawingPartNumbersAsync", ex);
                 throw;
             }
         }
@@ -480,7 +479,7 @@ namespace SalesSystem.Rfq.Services
         }
         #endregion
 
-        #region Searching
+        #region Searching part numbers
         public async Task<SearchResultUx> SearchEmacsExactCustomerPn(string customerPartNumber)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
@@ -672,6 +671,22 @@ namespace SalesSystem.Rfq.Services
                 _Logger?.GenericLogError($"Error in UploadFile for file: {fileName}", ex);
                 throw;
             }
+        }
+        #endregion
+
+        #region Part alternatives
+        public async Task<List<AlternativePartUxModel>> GetAllAlternativePartsAsync()
+        {
+            await Task.Delay(1);
+            List<AlternativePartUxModel> parts;
+            parts = AlternativePartUxModel.GenerateRandomList(); //= new List<AlternativePartUxModel>();
+            return parts;
+        }
+        public async Task<PartInfoUxModel> GetPartInfoAsync(string partNumber)
+        {
+            await Task.Delay(1);
+            PartInfoUxModel part = new PartInfoUxModel(partNumber);
+            return part;
         }
         #endregion
 
