@@ -1,15 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Emacs;
+﻿using Emacs;
 using Emacs.Endpoints.GrpcServices;
 using Emacs.Services;
-using Grpc.Core;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
 
 namespace Regression.Tests.Emac
 {
