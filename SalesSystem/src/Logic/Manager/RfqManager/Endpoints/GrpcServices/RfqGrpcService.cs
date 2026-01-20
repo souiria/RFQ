@@ -102,6 +102,13 @@
             return response;
         }
 
+        public override async Task<GetAlternativePartInfoBySumitomoNumberResponse> GetAlternativePartInfoBySumitomoNumberGrpc(GetAlternativePartInfoBySumitomoNumberRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetAlternativePartInfoBySumitomoNumberGrpc starting");
+            GetAlternativePartInfoBySumitomoNumberResponse response = await _RfqManagerService.GetAlternativePartInfoBySumitomoNumberResponse(request.SumitomoPartNumber);
+            return response;
+        }
+
         public override async Task<FilterGrpcResponse> FilterGrpc(FilterGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("FilterGrpc starting");

@@ -103,5 +103,70 @@
             part.SumitomoPartNumber = rfqPartGrpc.SumitomoPartNumber;
             return part;
         }
+
+        public static RfqAlternativePartsGrpc ToRfqAlternativeParts(this AlternativePartsGrpc alternativeParts)
+        {
+            RfqAlternativePartsGrpc part = new RfqAlternativePartsGrpc();
+            part.SumitomoNumber = alternativeParts.SumitomoNumber;
+            part.SumitomoDescription = alternativeParts.SumitomoDescription;
+            part.MainSupplier = alternativeParts.MainSupplier;
+            part.SupplierName = alternativeParts.SupplierName;
+            part.SupplierNumber = alternativeParts.SupplierNumber;
+            part.Price = alternativeParts.Price;
+            part.CurrencyCode = alternativeParts.CurrencyCode;
+            part.UnitOfMeasure = alternativeParts.UnitOfMeasure;
+            part.PartGroup = alternativeParts.PartGroup;
+            part.GroupDescription = alternativeParts.GroupDescription;
+            part.Class1 = alternativeParts.Class1;
+            part.Class1Name = alternativeParts.Class1Name;
+            part.Class2 = alternativeParts.Class2;
+            part.Class2Name = alternativeParts.Class2Name;
+            part.ColourCode = alternativeParts.ColourCode;
+            part.ColorName = alternativeParts.ColorName;
+            part.MaterialGroup = alternativeParts.MaterialGroup;
+            part.Expr1 = alternativeParts.Expr1;
+            part.MaterialType = alternativeParts.MaterialType;
+            part.TypeDescription = alternativeParts.TypeDescription;
+            part.CategoryCode = alternativeParts.CategoryCode;
+            part.DetailedCategoryCode = alternativeParts.DetailedCategoryCode;
+            part.Description = alternativeParts.Description;
+            part.OldPartClass = alternativeParts.OldPartClass;
+            part.OldMaterial = alternativeParts.OldMaterial;
+            part.ClassDetailGroupCode = alternativeParts.ClassDetailGroupCode;
+            part.ClassDetailId = alternativeParts.ClassDetailId;
+            part.MaterialGroupId = alternativeParts.MaterialGroupId;
+            part.MaterialTypeId = alternativeParts.MaterialTypeId;
+            part.ColorCode = alternativeParts.ColorCode;
+            part.NumberOfCavity = alternativeParts.NumberOfCavity;
+            part.InsideDiameter = alternativeParts.InsideDiameter;
+            part.WallThickness = alternativeParts.WallThickness;
+            part.Length = alternativeParts.Length;
+            part.WidthOrOutsideDiameter = alternativeParts.WidthOrOutsideDiameter;
+            part.HoleDiameter = alternativeParts.HoleDiameter;
+            part.ShrinkRateLength = alternativeParts.ShrinkRateLength;
+            part.NumberOfTapingSpots = alternativeParts.NumberOfTapingSpots;
+            part.MassOrWeight = alternativeParts.MassOrWeight;
+            part.Quantity = alternativeParts.Quantity;
+            part.UoM = alternativeParts.UoM;
+            part.Group1 = alternativeParts.Group1;
+            part.Group2 = alternativeParts.Group2;
+            part.Group3 = alternativeParts.Group3;
+            part.Group4 = alternativeParts.Group4;
+            part.Group5 = alternativeParts.Group5;
+            part.Group6 = alternativeParts.Group6;
+            part.Group7 = alternativeParts.Group7;
+            part.Group8 = alternativeParts.Group8;
+            part.CustomerId = alternativeParts.CustomerId;
+            part.CustomerCode = alternativeParts.CustomerCode;
+            part.MassOrWeight2 = alternativeParts.MassOrWeight2;
+            part.L1 = alternativeParts.L1;
+            part.L2 = alternativeParts.L2;
+            part.L3 = alternativeParts.L3;
+            part.PitchWidth = alternativeParts.PitchWidth;
+            part.Tilt = alternativeParts.Tilt;
+            part.Grease = alternativeParts.Grease;
+            part.CategoryCode2 = alternativeParts.CategoryCode2;
+            return part;
+        }
     }
 }

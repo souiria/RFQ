@@ -45,6 +45,8 @@ service Emacs {
 
   rpc GetAlternativePartsGrpc (GetAlternativePartsGrpcRequest) returns (ListAlternativePartsGrpc);
 
+  rpc GetAlternativePartInfoGrpc (GetAlternativePartInfoGrpcRequest) returns (AlternativePartInfoGrpc);
+
   rpc FilterEmacsDataGrpc (EmacsFilterRequestGrpc) returns (EmacsFilterResponseGrpc);
 }
 
@@ -484,6 +486,25 @@ message AlternativePartsGrpc {
 	google.protobuf.Int32Value Tilt = 59;
 	google.protobuf.Int32Value Grease = 60;
 	google.protobuf.StringValue CategoryCode2 = 61;
+}
+
+message GetAlternativePartInfoGrpcRequest {
+    string PartId = 1;
+}
+
+message AlternativePartInfoGrpc {
+    AlternativePartsGrpc AlternativePartsGrpc = 1;
+    PartImageDataInfo PartImageDataInfo = 2;
+}
+
+message PartImageDataInfo {
+    repeated google.protobuf.StringValue SumitomoPartNumber = 1;
+    repeated PartImageReply PartImage = 2;
+}
+
+message PartImageReply {
+  bytes data = 1;          
+  string content_type = 2; 
 }
 
 message EmacsFilterRequestGrpc {

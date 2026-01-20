@@ -31,6 +31,7 @@ service RfqModule {
  rpc DeleteRfqProjectByRowIdGrpc (RfqProjectRequest) returns (RfqCrudResponse);
  rpc GetCustomerLocationsByUserIdGrpc (GetCustomerLocationsByUserIdRequest) returns (GetCustomerLocationsByUserIdResponse);
  rpc GetCustomerBusinessUnitsByUserIdGrpc (GetCustomerBusinessUnitsByUserIdRequest) returns (GetCustomerBusinessUnitsByUserIdResponse);
+ rpc GetAlternativePartInfoBySumitomoNumberGrpc (GetAlternativePartInfoBySumitomoNumberRequest) returns (GetAlternativePartInfoBySumitomoNumberResponse);    
  rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
 }
 
@@ -309,6 +310,89 @@ message CustomerBusinessUserAssociationGrpc {
     string CustomerBusinessHierarchyList = 2;
     string UserGuid = 3;    
     bool IsActive = 4;
+}
+
+message GetAlternativePartInfoBySumitomoNumberRequest {
+    string SumitomoPartNumber = 1;
+}
+
+message GetAlternativePartInfoBySumitomoNumberResponse {
+    RfqAlternativePartsGrpc AlternativePartsGrpc = 1;
+    RfqPartImageDataInfo PartImageDataInfo = 2;
+}
+
+message RfqAlternativePartsGrpc {
+	google.protobuf.StringValue SumitomoNumber = 1;
+	google.protobuf.StringValue SumitomoDescription = 2;
+	google.protobuf.BoolValue MainSupplier = 3;
+	google.protobuf.StringValue SupplierName = 4;
+	google.protobuf.StringValue SupplierNumber = 5;
+	google.protobuf.DoubleValue Price = 6;
+	google.protobuf.StringValue CurrencyCode = 7;
+	google.protobuf.StringValue UnitOfMeasure = 8;
+	google.protobuf.StringValue PartGroup = 9;
+	google.protobuf.StringValue GroupDescription = 10;
+	google.protobuf.StringValue Class1 = 11;
+	google.protobuf.StringValue Class1Name = 12;
+	google.protobuf.DoubleValue Class2 = 13;
+	google.protobuf.StringValue Class2Name = 14;
+	google.protobuf.StringValue ColourCode = 15;
+	google.protobuf.StringValue ColorName = 16;
+	google.protobuf.StringValue MaterialGroup = 17;
+	google.protobuf.StringValue Expr1 = 18;
+	google.protobuf.StringValue MaterialType = 19;
+	google.protobuf.StringValue TypeDescription = 20;
+	google.protobuf.StringValue CategoryCode = 21;
+	google.protobuf.DoubleValue DetailedCategoryCode = 22;
+	google.protobuf.StringValue CategoryName = 23;
+	google.protobuf.StringValue PartGroupCode = 24;
+	google.protobuf.StringValue Description = 25;
+	google.protobuf.StringValue OldPartClass = 26;
+	google.protobuf.StringValue OldMaterial = 27;
+	google.protobuf.StringValue ClassDetailGroupCode = 28;
+	google.protobuf.StringValue ClassDetailId = 29;
+	google.protobuf.StringValue MaterialGroupId = 30;
+	google.protobuf.StringValue MaterialTypeId = 31;
+	google.protobuf.StringValue ColorCode = 32;
+	google.protobuf.Int32Value NumberOfCavity = 33;
+	google.protobuf.DoubleValue InsideDiameter = 34;
+	google.protobuf.DoubleValue WallThickness = 35;
+	google.protobuf.DoubleValue Length = 36;
+	google.protobuf.DoubleValue WidthOrOutsideDiameter = 37;
+	google.protobuf.Int32Value HoleDiameter = 38;
+	google.protobuf.Int32Value ShrinkRateLength = 39;
+	google.protobuf.Int32Value NumberOfTapingSpots = 40;
+	google.protobuf.DoubleValue MassOrWeight = 41;
+	google.protobuf.DoubleValue Quantity = 42;
+	google.protobuf.StringValue UoM = 43;
+	google.protobuf.StringValue Group1 = 44;
+	google.protobuf.StringValue Group2 = 45;
+	google.protobuf.StringValue Group3 = 46;
+	google.protobuf.StringValue Group4 = 47;
+	google.protobuf.StringValue Group5 = 48;
+	google.protobuf.StringValue Group6 = 49;
+	google.protobuf.StringValue Group7 = 50;
+	google.protobuf.StringValue Group8 = 51;
+	google.protobuf.StringValue CustomerId = 52;
+	google.protobuf.StringValue CustomerCode = 53;
+	google.protobuf.DoubleValue MassOrWeight2 = 54;
+	google.protobuf.Int32Value L1 = 55;
+	google.protobuf.Int32Value L2 = 56;
+	google.protobuf.Int32Value L3 = 57;
+	google.protobuf.DoubleValue PitchWidth = 58;
+	google.protobuf.Int32Value Tilt = 59;
+	google.protobuf.Int32Value Grease = 60;
+	google.protobuf.StringValue CategoryCode2 = 61;
+}
+
+message RfqPartImageDataInfo {
+    repeated google.protobuf.StringValue SumitomoPartNumber = 1;
+    repeated PartImageReply PartImage = 2;
+}
+
+message PartImageReply {
+  bytes data = 1;          
+  string content_type = 2; 
 }
 
 message FilterGrpcRequest {

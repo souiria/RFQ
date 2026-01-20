@@ -25,5 +25,6 @@
         Task<UpdateRfqDrawingPartNumbersGrpcResponse> UpdateRfqDrawingPartNumbers(UpdateRfqDrawingPartNumbersGrpcRequest request);
         Task<GetCustomerLocationsByUserIdResponse> GetCustomerLocationsByUserId(string userId);
         Task<GetCustomerBusinessUnitsByUserIdResponse> GetCustomerBusinessUnitsByUserId(string userId);
+        Task<GetAlternativePartInfoBySumitomoNumberResponse> GetAlternativePartInfoBySumitomoNumberResponse (string sumitomoNumber);
     }
 }
