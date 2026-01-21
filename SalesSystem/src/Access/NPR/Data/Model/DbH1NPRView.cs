@@ -60,7 +60,7 @@
         { get; set; }
         public string? Currency
         { get; set; }
-        public int? Std_Lead_Time
+        public short? Std_Lead_Time
         { get; set; }
         public string? Tariff_Code
         { get; set; }
@@ -96,13 +96,13 @@
         { get; set; }
         public string? Air_Freight_Ref
         { get; set; }
-        public string? Copper_Rate
+        public decimal? Copper_Rate
         { get; set; }
-        public string? Std_Box_Length
+        public decimal? Std_Box_Length
         { get; set; }
-        public string? Height
+        public decimal? Height
         { get; set; }
-        public string? Width
+        public decimal? Width
         { get; set; }
         public int? Pack_Factor
         { get; set; }
@@ -114,7 +114,7 @@
         { get; set; }
         public string? Facility_Nm
         { get; set; }
-        public string? Full_Box_Weight
+        public decimal? Full_Box_Weight
         { get; set; }
         public string? Offer_Date
         { get; set; }

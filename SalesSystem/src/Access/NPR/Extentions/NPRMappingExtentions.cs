@@ -54,10 +54,10 @@
             data.PpapReqLevel = entity.Ppap_Req_Level;
             data.ReqQualDoc = entity.Req_Qual_Doc;
             data.AirFreightRef = entity.Air_Freight_Ref;
-            data.CopperRate = entity.Copper_Rate;
-            data.StdBoxLength = entity.Std_Box_Length;
-            data.Height = entity.Height;
-            data.Width = entity.Width;
+            data.CopperRate = (double?)entity.Copper_Rate;
+            data.StdBoxLength = (double?)entity.Std_Box_Length;
+            data.Height = (double?)entity.Height;
+            data.Width = (double?)entity.Width;
             data.PackFactor = entity.Pack_Factor;
             data.PPAP = entity.PPAP;
             data.Status1 = entity.Status1;

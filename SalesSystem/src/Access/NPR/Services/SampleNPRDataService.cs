@@ -58,9 +58,9 @@
                 h1NPRViewGrpc.PpapReqLevel = $"TestPpapReqLevel{i}";
                 h1NPRViewGrpc.ReqQualDoc = $"TestReqQualDoc{i}";
                 h1NPRViewGrpc.AirFreightRef = $"TestAirFreightRef{i}";
-                h1NPRViewGrpc.CopperRate = $"TestCopperRate{i}";
-                h1NPRViewGrpc.StdBoxLength = $"TestStdBoxLength{i}";
-                h1NPRViewGrpc.Height = $"TestHeight{i}";
+                h1NPRViewGrpc.CopperRate = i;
+                h1NPRViewGrpc.StdBoxLength = i;
+                h1NPRViewGrpc.Height = i;
                 h1NPRViewGrpc.PackFactor = i;
                 h1NPRViewGrpc.PPAP = $"TestPPAP{i}";
                 h1NPRViewGrpc.Status1 = $"TestStatus1{i}";
@@ -126,9 +126,9 @@
             fixedH1NPRViewGrpc.PpapReqLevel = $"TestPpapReqLevel";
             fixedH1NPRViewGrpc.ReqQualDoc = $"TestReqQualDoc";
             fixedH1NPRViewGrpc.AirFreightRef = $"TestAirFreightRef";
-            fixedH1NPRViewGrpc.CopperRate = $"TestCopperRate";
-            fixedH1NPRViewGrpc.StdBoxLength = $"TestStdBoxLength";
-            fixedH1NPRViewGrpc.Height = $"TestHeight";
+            fixedH1NPRViewGrpc.CopperRate = 0;
+            fixedH1NPRViewGrpc.StdBoxLength = 0;
+            fixedH1NPRViewGrpc.Height = 0;
             fixedH1NPRViewGrpc.PackFactor = 0;
             fixedH1NPRViewGrpc.PPAP = $"TestPPAP";
             fixedH1NPRViewGrpc.Status1 = $"TestStatus1";
