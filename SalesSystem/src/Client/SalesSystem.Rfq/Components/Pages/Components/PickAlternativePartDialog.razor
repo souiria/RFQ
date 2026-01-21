@@ -1,0 +1,286 @@
+@using SalesSystem.Rfq.Models
+@using MudBlazor
+
+@inject RfqUxClientService RfqUxClientService
+@inject ILogger<PickAlternativePartDialog> Logger
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.h6" Class="mb-4">
+            Enter Dummy Part Number Information
+        </MudText>
+        <MudForm @ref="_form" @bind-IsValid="_isValid">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudDataGrid T="AlternativePartUxModel"
+                                 @ref="_alternativePartNumbersGrid"
+                                 Items="@_alternativePartNumbersList"
+                                 Virtualize="true"
+                                 FixedHeader="true"
+                                 ItemSize="20f"
+                                 Height="320px"
+                                 Dense="true"
+                                 DragDropColumnReordering="true"
+                                 ApplyDropClassesOnDragStarted="true"
+                                 ColumnResizeMode="ResizeMode.Column"
+                                 SortMode="SortMode.Multiple"
+                                 Hideable="true"
+                                 Filterable="true"
+                                 Groupable="true"
+                                 QuickFilter="@QuickFilter"
+                                 ReadOnly="true"
+                                 Bordered="true"
+                                 ShowMenuIcon="true">
+                        <ToolBarContent>
+                            <MudTooltip Text="Full text search">
+                                <MudTextField @bind-Value="AlternativePartFilter" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                                              AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                            </MudTooltip>
+                            <span>&nbsp;</span>
+                        </ToolBarContent>
+                        <Columns>
+                            <TemplateColumn CellClass="d-flex justify-end" StickyLeft="true">
+                                <CellTemplate>
+                                    <MudStack Row>
+                                        <MudIconButton Size="Size.Small"
+                                                       Icon="@Icons.Material.Filled.Info"
+                                                       aria-label="info"
+                                                       OnClick="@(() => ShowInfo(context.Item))" />
+                                        <MudIconButton Size="Size.Small"
+                                                       Icon="@Icons.Material.Filled.SelectAll"
+                                                       aria-label="select"
+                                                       OnClick="@(() => PickAlternativePart(context.Item))" />
+
+                                    </MudStack>
+                                </CellTemplate>
+                            </TemplateColumn>
+                            <PropertyColumn Property="x => x.SumitomoNumber" Title="Sumitomo Number" StickyLeft="true" />
+                            <PropertyColumn Property="x => x.SumitomoDescription" Title="Description" />
+                            <PropertyColumn Property="x => x.MainSupplier" Title="Main Supplier" />
+                            <PropertyColumn Property="x => x.SupplierName" Title="Supplier Name" />
+                            <PropertyColumn Property="x => x.SupplierNumber" Title="Supplier Number" />
+                            <PropertyColumn Property="x => x.Price" Title="Price" />
+                            <PropertyColumn Property="x => x.CurrencyCode" Title="Currency" />
+                            <PropertyColumn Property="x => x.UnitOfMeasure" Title="Unit" />
+                            <PropertyColumn Property="x => x.PartGroup" Title="Part Group" />
+                            <PropertyColumn Property="x => x.GroupDescription" Title="Group Description" />
+                            <PropertyColumn Property="x => x.Class1" Title="Class 1" />
+                            <PropertyColumn Property="x => x.Class1Name" Title="Class 1 Name" />
+                            <PropertyColumn Property="x => x.Class2" Title="Class 2" />
+                            <PropertyColumn Property="x => x.Class2Name" Title="Class 2 Name" />
+                            <PropertyColumn Property="x => x.ColourCode" Title="Colour Code" />
+                            <PropertyColumn Property="x => x.ColorName" Title="Color Name" />
+                            <PropertyColumn Property="x => x.MaterialGroup" Title="Material Group" />
+                            <PropertyColumn Property="x => x.MaterialType" Title="Material Type" />
+                            <PropertyColumn Property="x => x.TypeDescription" Title="Type Description" />
+                            <PropertyColumn Property="x => x.CategoryCode" Title="Category Code" />
+                            <PropertyColumn Property="x => x.CategoryName" Title="Category Name" />
+                            <PropertyColumn Property="x => x.NumberOfCavity" Title="Number of Cavity" />
+                            <PropertyColumn Property="x => x.InsideDiameter" Title="Inside Diameter" />
+                            <PropertyColumn Property="x => x.WallThickness" Title="Wall Thickness" />
+                            <PropertyColumn Property="x => x.Length" Title="Length" />
+                            <PropertyColumn Property="x => x.WidthOrOutsideDiameter" Title="Width / Outside Diameter" />
+                            <PropertyColumn Property="x => x.MassOrWeight" Title="Mass / Weight" />
+                            <PropertyColumn Property="x => x.Quantity" Title="Quantity" />
+                            <PropertyColumn Property="x => x.UoM" Title="UoM" />
+                            <PropertyColumn Property="x => x.CustomerCode" Title="Customer Code" />
+                            <PropertyColumn Property="x => x.Group1" Title="Group 1" />
+                            <PropertyColumn Property="x => x.Group2" Title="Group 2" />
+                            <PropertyColumn Property="x => x.Group3" Title="Group 3" />
+                            <PropertyColumn Property="x => x.Group4" Title="Group 4" />
+                            <PropertyColumn Property="x => x.Group5" Title="Group 5" />
+                            <PropertyColumn Property="x => x.Group6" Title="Group 6" />
+                            <PropertyColumn Property="x => x.Group7" Title="Group 7" />
+                            <PropertyColumn Property="x => x.Group8" Title="Group 8" />
+                            <PropertyColumn Property="x => x.CustomerId" Title="Customer ID" />
+                            <PropertyColumn Property="x => x.CustomerCode" Title="Customer Code" />
+                            <PropertyColumn Property="x => x.MassOrWeight2" Title="Mass / Weight 2" />
+                            <PropertyColumn Property="x => x.L1" Title="L1" />
+                            <PropertyColumn Property="x => x.L2" Title="L2" />
+                            <PropertyColumn Property="x => x.L3" Title="L3" />
+                            <PropertyColumn Property="x => x.PitchWidth" Title="Pitch Width" />
+                            <PropertyColumn Property="x => x.Tilt" Title="Tilt" />
+                            <PropertyColumn Property="x => x.Grease" Title="Grease" />
+                            <PropertyColumn Property="x => x.CategoryCode2" Title="Category Code 2" />
+                        </Columns>
+                    </MudDataGrid>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="AlternativePartNumber"
+                                  Label="Dummy Part Number"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  Required="true"
+                                  RequiredError="Dummy part number is required" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudNumericField @bind-Value="AlternativePrice"
+                                     Label="Dummy Price"
+                                     Variant="Variant.Outlined"
+                                     Margin="Margin.Dense"
+                                     Format="0.#####"
+                                     Adornment="Adornment.Start"
+                                     AdornmentText="$"
+                                     Min="0m"
+                                     Required="true"
+                                     RequiredError="Dummy price is required" />
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel" Color="Color.Default">Cancel</MudButton>
+        <MudButton OnClick="Apply" Color="Color.Primary" Variant="Variant.Filled" Disabled="!_isValid">OK</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    bool _isLoading;
+    bool IsLoading
+    {
+        get => _isLoading;
+        set => _isLoading = value;
+    }
+
+    string _alternativePartFilter = "";
+    string AlternativePartFilter
+    {
+        get => _alternativePartFilter;
+        set => _alternativePartFilter = value;
+    }
+
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+
+    MudDataGrid<AlternativePartUxModel> _alternativePartNumbersGrid { get; set; } = null!;
+
+    List<AlternativePartUxModel> _alternativePartNumbersList { get; set; } = new();
+
+    private string? AlternativePartNumber { get; set; }
+    private decimal? AlternativePrice { get; set; }
+    private MudForm _form = null!;
+    private bool _isValid;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Load related components
+        try
+        {
+            AlternativePartFilter = "";
+            IsLoading = true;
+            Logger.LogInformation("PickAlternativePartDialog starting up...");
+
+
+            var stopWatch = System.Diagnostics.Stopwatch.StartNew();
+            stopWatch.Start();
+
+            _alternativePartNumbersList = await RfqUxClientService.GetAllAlternativePartsAsync();
+
+            stopWatch.Stop();
+            Logger.LogInformation($"... loaded in {stopWatch.ElapsedMilliseconds} ms");
+            IsLoading = false;
+        }
+        catch (Exception ex)
+        {
+            var stackTrace = new System.Diagnostics.StackTrace(ex, true);
+            var frame = stackTrace.GetFrame(0);
+            var lineNumber = frame?.GetFileLineNumber() ?? 0;
+            var methodName = frame?.GetMethod()?.Name ?? "Unknown";
+
+            Console.WriteLine($"ERROR in PickAlternativePartDialog.OnInitializedAsync at line {lineNumber} in method {methodName}: {ex.Message}");
+            Console.WriteLine($"Full stack trace: {ex.StackTrace}");
+        }
+    }
+
+    private async Task PickAlternativePart(AlternativePartUxModel alternativePart)
+    {
+        await Task.Delay(1);
+        if (string.IsNullOrEmpty(alternativePart.SumitomoNumber))
+        {
+            Snackbar.Add($"Selected part has no SumitomoNumber", Severity.Error);
+            return;
+        }
+
+        if (alternativePart.Price>0)
+        {
+            AlternativePartNumber = alternativePart.SumitomoNumber;
+            AlternativePrice = (decimal)alternativePart.Price;
+            await _form.Validate();
+        }
+        else
+        {
+            Snackbar.Add($"Selected part no price", Severity.Error);
+        }
+        return;
+    }
+
+    private async Task ShowInfo(AlternativePartUxModel alternativePart)
+    {
+        // existing component
+        Logger.LogInformation($"VVV ShowInfo {alternativePart.SumitomoNumber} {alternativePart.SumitomoDescription} {alternativePart.Class1Name}");
+
+        if (string.IsNullOrEmpty(alternativePart.SumitomoNumber))
+        {
+            Snackbar.Add("Alternative part number has no Sumitomo part number!", Severity.Error);
+            return;
+        }
+
+        // show the dialog
+        var parameters = new DialogParameters<ShowInfoAlternativePartNumberDialog> { { x => x.AlternativePartNumber, alternativePart } };
+        var dialog = await DialogService.ShowAsync<ShowInfoAlternativePartNumberDialog>("Alternative Part Information", parameters, new() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseOnEscapeKey = true });
+        var result = await dialog.Result;
+        if (result != null && !result.Canceled)
+        {
+            // picked
+            AlternativePartUxModel? selectedPart = result.Data as AlternativePartUxModel;
+            if(selectedPart != null)
+            {
+                Logger.GenericLogInformation($"Picked action");
+                RfqDrawingPartNumberUx pickResult = new RfqDrawingPartNumberUx();
+
+                pickResult.SwappedPartNumber = selectedPart.SumitomoNumber;
+                pickResult.SwappedPartNumberPrice = (decimal?)selectedPart.Price;
+
+                MudDialog.Close(DialogResult.Ok(result));
+            }
+        }
+        //not picked
+        return;
+    }
+
+
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task Apply()
+    {
+        await _form.Validate();
+        if (_isValid)
+        {
+            var result = new RfqDrawingPartNumberUx();
+
+            result.SwappedPartNumber = AlternativePartNumber;
+            result.SwappedPartNumberPrice = AlternativePrice;
+
+            MudDialog.Close(DialogResult.Ok(result));
+        }
+    }
+
+    // quick filter - filter globally across multiple columns with the same input
+    Func<AlternativePartUxModel, bool> QuickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(AlternativePartFilter))
+            return true;
+
+        if (x.SumitomoNumber?.Contains(AlternativePartFilter, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        // ...
+
+        return false;
+    };
+}

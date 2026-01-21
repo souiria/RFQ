@@ -6,7 +6,7 @@
         ExactMatch = 10,
         ContainsMatch = 15,
         NprSearched = 20,
-        DummySelected = 30,
+        AlternativePartSelected = 30,
         NprRequested = 40,
         Completed = 50
     }

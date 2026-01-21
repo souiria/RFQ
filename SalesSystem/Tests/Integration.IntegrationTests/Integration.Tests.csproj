@@ -47,4 +47,8 @@
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Emacs\Client\" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,246 @@
+@using SalesSystem.Rfq.Models
+@using MudBlazor
+@using System.Text.Json
+
+@inject ISnackbar Snackbar
+@inject ILogger<ShowInfoAlternativePartNumberDialog> Logger
+@inject IDialogService DialogService
+@inject RfqUxClientService RfqUxClientService
+@inject CustomAuthenticationStateProvider GetAuthenticationStateAsync
+
+<MudDialog>
+    <DialogContent>
+        <MudPaper Elevation="2" Class="pa-3 mb-2">
+            <MudGrid>
+                @if (AlternativePartNumber?.HasImage == true)
+                {
+                    <MudItem xs="12" sm="12">
+                        <MudStack Row="true">
+                            <MudImage Src="@AlternativePartNumber.Source"
+                                      Alt="Part Image"
+                                      Width="96"
+                                      Elevation="3"
+                                      Class="rounded p-1 m-1" />
+                            <MudStack>
+                                <MudText Typo="Typo.h6" Class="mb-4">
+                                    Sumitomo Part Number: @(AlternativePartNumber?.SumitomoNumber ?? "N/A")
+                                </MudText>
+                                <MudText Typo="Typo.body2" Class="mb-4">
+                                    Description: @(AlternativePartNumber?.SumitomoDescription ?? "N/A")
+                                </MudText>
+                            </MudStack>
+                        </MudStack>
+                    </MudItem>
+                }
+                else
+                {
+                    <MudItem xs="12" sm="12">
+                        <MudStack Row="true">
+                            <MudImage Src="@PartImageData.NoImage.Source"
+                                      Alt="Part Image"
+                                      Width="96"
+                                      Elevation="3"
+                                      Class="rounded p-1 m-1" />
+                            <MudStack>
+                                <MudText Typo="Typo.h6" Class="mb-4">
+                                    Sumitomo Part Number: @(AlternativePartNumber?.SumitomoNumber ?? "N/A")
+                                </MudText>
+                                <MudText Typo="Typo.body2" Class="mb-4">
+                                    Description: @(AlternativePartNumber?.SumitomoDescription ?? "N/A")
+                                </MudText>
+                            </MudStack>
+                        </MudStack>
+                    </MudItem>
+                }
+                <MudItem xs="12" sm="4">
+                    <MudText Typo="Typo.body1">Main Supplier</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.MainSupplier</MudText>
+                    <MudText Typo="Typo.body1">Supplier Name</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.SupplierName</MudText>
+                    <MudText Typo="Typo.body1">Supplier Number</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.SupplierNumber</MudText>
+                    <MudText Typo="Typo.body1">Price</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.Price</MudText>
+                    <MudText Typo="Typo.body1">Currency Code</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.CurrencyCode</MudText>
+                    <MudText Typo="Typo.body1">Unit Of Measure</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.UnitOfMeasure</MudText>
+                    <MudText Typo="Typo.body1">Part Group</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.PartGroup</MudText>
+                    <MudText Typo="Typo.body1">Group Description</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.GroupDescription</MudText>
+                    <MudText Typo="Typo.body1">Class1</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.Class1</MudText>
+                    <MudText Typo="Typo.body1">Class1 Name</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.Class1Name</MudText>
+                    <MudText Typo="Typo.body1">Class2</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.Class2</MudText>
+                    <MudText Typo="Typo.body1">Class2 Name</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.Class2Name</MudText>
+                    <MudText Typo="Typo.body1">Colour Code</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.ColourCode</MudText>
+                    <MudText Typo="Typo.body1">Color Name</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.ColorName</MudText>
+                    <MudText Typo="Typo.body1">Material Group</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.MaterialGroup</MudText>
+                    <MudText Typo="Typo.body1">Expr1</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.Expr1</MudText>
+                    <MudText Typo="Typo.body1">Material Type</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.MaterialType</MudText>
+                    <MudText Typo="Typo.body1">Type Description</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.TypeDescription</MudText>
+                    <MudText Typo="Typo.body1">Category Code</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.CategoryCode</MudText>
+                    <MudText Typo="Typo.body1">Detailed Category Code</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.DetailedCategoryCode</MudText>
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudText Typo="Typo.body1">Category Name</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.CategoryName</MudText>
+                    <MudText Typo="Typo.body1">Part Group Code</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.PartGroupCode</MudText>
+                    <MudText Typo="Typo.body1">Description</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.Description</MudText>
+                    <MudText Typo="Typo.body1">Old Part Class</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.OldPartClass</MudText>
+                    <MudText Typo="Typo.body1">Old Material</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.OldMaterial</MudText>
+                    <MudText Typo="Typo.body1">Class Detail Group Code</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.ClassDetailGroupCode</MudText>
+                    <MudText Typo="Typo.body1">Class Detail Id</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.ClassDetailId</MudText>
+                    <MudText Typo="Typo.body1">Material Group Id</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.MaterialGroupId</MudText>
+                    <MudText Typo="Typo.body1">Material Type Id</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.MaterialTypeId</MudText>
+                    <MudText Typo="Typo.body1">Color Code</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.ColorCode</MudText>
+                    <MudText Typo="Typo.body1">Number Of Cavity</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.NumberOfCavity</MudText>
+                    <MudText Typo="Typo.body1">Inside Diameter</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.InsideDiameter</MudText>
+                    <MudText Typo="Typo.body1">Wall Thickness</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.WallThickness</MudText>
+                    <MudText Typo="Typo.body1">Length</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.Length</MudText>
+                    <MudText Typo="Typo.body1">Width Or Outside Diameter</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.WidthOrOutsideDiameter</MudText>
+                    <MudText Typo="Typo.body1">Hole Diameter</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.HoleDiameter</MudText>
+                    <MudText Typo="Typo.body1">Shrink Rate Length</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.ShrinkRateLength</MudText>
+                    <MudText Typo="Typo.body1">Number Of Taping Spots</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.NumberOfTapingSpots</MudText>
+                    <MudText Typo="Typo.body1">Mass Or Weight</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.MassOrWeight</MudText>
+                    <MudText Typo="Typo.body1">Quantity</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.Quantity</MudText>
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudText Typo="Typo.body1">UoM</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.UoM</MudText>
+                    <MudText Typo="Typo.body1">Group1</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.Group1</MudText>
+                    <MudText Typo="Typo.body1">Group2</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.Group2</MudText>
+                    <MudText Typo="Typo.body1">Group3</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.Group3</MudText>
+                    <MudText Typo="Typo.body1">Group4</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.Group4</MudText>
+                    <MudText Typo="Typo.body1">Group5</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.Group5</MudText>
+                    <MudText Typo="Typo.body1">Group6</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.Group6</MudText>
+                    <MudText Typo="Typo.body1">Group7</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.Group7</MudText>
+                    <MudText Typo="Typo.body1">Group8</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.Group8</MudText>
+                    <MudText Typo="Typo.body1">Customer Id</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.CustomerId</MudText>
+                    <MudText Typo="Typo.body1">Customer Code</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.CustomerCode</MudText>
+                    <MudText Typo="Typo.body1">Mass Or Weight 2</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.MassOrWeight2</MudText>
+                    <MudText Typo="Typo.body1">L1</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.L1</MudText>
+                    <MudText Typo="Typo.body1">L2</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.L2</MudText>
+                    <MudText Typo="Typo.body1">L3</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.L3</MudText>
+                    <MudText Typo="Typo.body1">Pitch Width</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.PitchWidth</MudText>
+                    <MudText Typo="Typo.body1">Tilt</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.Tilt</MudText>
+                    <MudText Typo="Typo.body1">Grease</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.Grease</MudText>
+                    <MudText Typo="Typo.body1">Category Code 2</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.CategoryCode2</MudText>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Close" Color="Color.Primary" Variant="Variant.Filled">
+            Close
+        </MudButton>
+        <MudButton OnClick="Apply" Color="Color.Primary" Variant="Variant.Filled">Pick this!</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+
+    // This has a DrawingPartNumber set and possibly a DrawingPriceNumber, nothing else
+    [Parameter] public AlternativePartUxModel? AlternativePartNumber { get; set; }
+
+    private string _currentUser = "Unknown";
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        try
+        {
+            // Get current user
+            var authState = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+            var user = authState.User;
+            if (user.Identity!.IsAuthenticated)
+            {
+                _currentUser = user?.Identity?.Name ?? "NoName";
+                Logger.GenericLogInformation($"User is authenticated: {_currentUser}");
+            }
+            else
+            {
+                _currentUser = "Anonymous";
+                Logger.GenericLogInformation("User is not authenticated.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError("Error getting current user", ex);
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender
+            && AlternativePartNumber != null)
+        {
+            // Start loading images and NPR data for all parts in parallel
+            await LoadPartImageAsync(AlternativePartNumber);
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private string GetListItemStyle(bool isExactMatch)
+    {
+        return isExactMatch
+            ? "background-color: lightgreen;"
+            : "background-color: lightyellow;";
+    }
+
+    private async Task LoadPartImageAsync(AlternativePartUxModel alternativePartNumber)
+    {
+        if (string.IsNullOrWhiteSpace(alternativePartNumber.SumitomoNumber))
+        {
+            return;
+        }
+
+        try
+        {
+            await InvokeAsync(StateHasChanged);
+
+            Logger.GenericLogInformation($"Loading image for alternative part number: {alternativePartNumber.SumitomoNumber}");
+
+            SearchResultUx response = await RfqUxClientService.SearchAdssSewsePn(alternativePartNumber.SumitomoNumber);
+
+            if (response.IsSuccessful &&
+                response.ByteList != null &&
+                response.ByteList.Count > 0 &&
+                response.StringList2 != null &&
+                response.StringList2.Count > 0)
+            {
+                // Get the first image (assuming ByteList contains complete image byte arrays)
+                byte[] imageBytes = response.ByteList[0];
+                string mimeType = response.StringList2[0] ?? "image/png";
+
+                alternativePartNumber.PartImage = new PartImageData
+                {
+                    ImageBytes = imageBytes,
+                    MimeType = mimeType
+                };
+                alternativePartNumber.HasImage = true;
+
+                Logger.GenericLogInformation($"Successfully loaded image for part number: {alternativePartNumber.SumitomoNumber}, Size: {imageBytes.Length} bytes, Type: {mimeType}");
+            }
+            else
+            {
+                alternativePartNumber.HasImage = false;
+                Logger.GenericLogInformation($"No image found for part number: {alternativePartNumber.SumitomoNumber}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError($"Error loading image for part number: {alternativePartNumber.SumitomoNumber}", ex);
+        }
+        finally
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task Apply()
+    {
+        await Task.Delay(1);
+        MudDialog.Close(DialogResult.Ok(AlternativePartNumber));
+    }
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+}
