@@ -1,6 +1,4 @@
-﻿using DocumentFormat.OpenXml.Vml;
-
-namespace SalesSystem.Rfq.Models
+﻿namespace SalesSystem.Rfq.Models
 {
     public class AlternativePartUxModel
     {
