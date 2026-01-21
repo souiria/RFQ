@@ -219,30 +219,33 @@
     {
         // existing component
         Logger.LogInformation($"VVV ShowInfo {alternativePart.SumitomoNumber} {alternativePart.SumitomoDescription} {alternativePart.Class1Name}");
-        PartInfoUxModel alternativePartInfo;
 
         if (string.IsNullOrEmpty(alternativePart.SumitomoNumber))
         {
             Snackbar.Add("Alternative part number has no Sumitomo part number!", Severity.Error);
             return;
         }
-        alternativePartInfo = await RfqUxClientService.GetPartInfoAsync(alternativePart.SumitomoNumber);
 
-
-        if (alternativePartInfo != null)
-        {
-            Snackbar.Add($"Alternative part number {alternativePart.SumitomoNumber}/{alternativePart.SumitomoDescription} was found...", Severity.Error);
-            return;
-        }
-        // var parameters = new DialogParameters<AlternativePartUxModel> { { x => x., componentView } };
-        // var dialog = await DialogService.ShowAsync<ComponentInfoDialog>("Component Information", parameters, new() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseOnEscapeKey = true });
-        // var result = await dialog.Result;
-        // if (result != null)
-        // {
-        //     Logger.Information($"VVV ShowInfo returned");
-        // }
         // show the dialog
-        Snackbar.Add($"Showing dialog infor for alternative part number {alternativePart.SumitomoNumber}/{alternativePart.SumitomoDescription}", Severity.Info);
+        var parameters = new DialogParameters<ShowInfoAlternativePartNumberDialog> { { x => x.AlternativePartNumber, alternativePart } };
+        var dialog = await DialogService.ShowAsync<ShowInfoAlternativePartNumberDialog>("Alternative Part Information", parameters, new() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseOnEscapeKey = true });
+        var result = await dialog.Result;
+        if (result != null && !result.Canceled)
+        {
+            // picked
+            AlternativePartUxModel? selectedPart = result.Data as AlternativePartUxModel;
+            if(selectedPart != null)
+            {
+                Logger.GenericLogInformation($"Picked action");
+                RfqDrawingPartNumberUx pickResult = new RfqDrawingPartNumberUx();
+
+                pickResult.SwappedPartNumber = selectedPart.SumitomoNumber;
+                pickResult.SwappedPartNumberPrice = (decimal?)selectedPart.Price;
+
+                MudDialog.Close(DialogResult.Ok(result));
+            }
+        }
+        //not picked
         return;
     }
 
