@@ -1014,6 +1014,39 @@
 
             return response;
         }
+
+        public async Task<GetAlternativePartInfoBySumitomoNumberResponse> GetAlternativePartInfoBySumitomoNumberResponse(string sumitomoNumber)
+        {
+            await Task.Delay(1);
+            GetAlternativePartInfoBySumitomoNumberResponse response = new GetAlternativePartInfoBySumitomoNumberResponse();
+            Collection<AlternativePartsGrpc> alternativePartsFilteredList = new Collection<AlternativePartsGrpc>();
+            Collection<PartImageDataInfo> partImageFilteredList = new Collection<PartImageDataInfo>();
+
+            EmacsFilterRequestGrpc emacsFilterRequestGrpc = new EmacsFilterRequestGrpc();
+            emacsFilterRequestGrpc.DatabaseList = "AlternativePartsGrpc";
+            emacsFilterRequestGrpc.FilterExpression = $"SumitomoNumber != null && SumitomoNumber == \"{sumitomoNumber}\"";
+            EmacsFilterResponseGrpc alternativeParts = _EmacsClient.FilterEmacsDataGrpc(emacsFilterRequestGrpc);
+            if (alternativeParts.ListAlternativePartsGrpc != null)
+            {
+                alternativePartsFilteredList = ExtractEmacsResponseData<AlternativePartsGrpc>(alternativeParts);
+                RfqAlternativePartsGrpc part = alternativePartsFilteredList.First().ToRfqAlternativeParts();
+                response.AlternativePartsGrpc = part;
+            }
+
+            FilterGrpcRequest adssFilterRequest = new FilterGrpcRequest();
+            adssFilterRequest.StringValue = sumitomoNumber;
+            FilterGrpcResponse adssFilterResponse = await FilterAdssBySumitomoPartNumber(adssFilterRequest);
+            RfqPartImageDataInfo rfqPartImageDataInfo = new RfqPartImageDataInfo();
+            PartImageReply partImageReply = new PartImageReply();
+            partImageReply.Data = adssFilterResponse.ByteList.First();
+            partImageReply.ContentType = adssFilterResponse.StringList2.First();
+
+            rfqPartImageDataInfo.PartImage.Add(partImageReply);
+            response.PartImageDataInfo = rfqPartImageDataInfo;
+
+            return response;
+
+        }
         #region Filtering
 
         public Task<FilterGrpcResponse> FilterByCustomerId(FilterGrpcRequest request)
@@ -1192,6 +1225,7 @@
             TryExtractList(response.ListSuppliersGrpc?.SuppliersGrpc, results);
             TryExtractList(response.ListEmacsRFIViewGrpc?.EmacsRFIViewGrpc, results);
             TryExtractList(response.ListPARTMSGrpc?.PARTMSGrpc, results);
+            TryExtractList(response.ListAlternativePartsGrpc?.AlternativePartsGrpc, results);
 
             return results;
         }

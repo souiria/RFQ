@@ -80,10 +80,10 @@ message H1NPRViewGrpc{
 	google.protobuf.StringValue Ppap_Req_Level = 45;
 	google.protobuf.StringValue Req_Qual_Doc = 46;
 	google.protobuf.StringValue Air_Freight_Ref = 47;
-	google.protobuf.StringValue Copper_Rate = 48;
-	google.protobuf.StringValue Std_Box_Length = 49;
-	google.protobuf.StringValue Height = 50;
-	google.protobuf.StringValue Width = 51;
+	google.protobuf.DoubleValue Copper_Rate = 48;
+	google.protobuf.DoubleValue Std_Box_Length = 49;
+	google.protobuf.DoubleValue Height = 50;
+	google.protobuf.DoubleValue Width = 51;
 	google.protobuf.Int32Value Pack_Factor = 52;
 	google.protobuf.StringValue PPAP = 53;
 	google.protobuf.StringValue Status1 = 54;
