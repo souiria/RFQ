@@ -1,15 +1,11 @@
-﻿namespace SalesSystem.Rfq.Models
+﻿using DocumentFormat.OpenXml.Vml;
+
+namespace SalesSystem.Rfq.Models
 {
     public class AlternativePartUxModel
     {
         static readonly Random _Random;
-        static AlternativePartUxModel()
-        {
-            _Random = new();
-        }
-        public AlternativePartUxModel()
-        {
-        }
+
         // Attributes
         public string? SumitomoNumber
         { get; set; }
@@ -194,6 +190,10 @@
         public string? CategoryCode2
         { get; set; }
 
+        // just ux
+        public bool HasImage
+        { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
         public static List<AlternativePartUxModel> GenerateRandomList(int count = 1000)
         {
@@ -268,6 +268,38 @@
             }
 
             return list;
+        }
+        static AlternativePartUxModel()
+        {
+            _Random = new();
+        }
+        public AlternativePartUxModel()
+        {
+            HasImage = false;
+            PartImage = new PartImageData();
+        }
+        public PartImageData PartImage
+        { get; set; }
+        public string Source
+        {
+            get
+            {   
+                //if (AlternativePartNumber?.PartImage == null
+                //    || AlternativePartNumber.PartImage.ImageBytes == null)
+                //{
+                //    return string.Empty;
+                //}
+
+                //var imageData = AlternativePartNumber?.PartImage;
+                //if (imageData == null)
+                //{
+                //    return string.Empty;
+                //}
+                //string? base64Image = Convert.ToBase64String(imageData.ImageBytes.ToArray());
+                return HasImage 
+                    ? $"data:{PartImage.MimeType};base64,{PartImage.Source}"
+                    : $"data:{PartImageData.NoImage.MimeType};base64,{PartImageData.NoImage.Source}";
+            }
         }
     }
 }
