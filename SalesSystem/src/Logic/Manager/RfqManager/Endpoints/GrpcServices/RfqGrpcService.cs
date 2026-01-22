@@ -158,5 +158,11 @@
             UpdateRfqDrawingPartNumbersGrpcResponse response = await _RfqManagerService.UpdateRfqDrawingPartNumbers(request);
             return response;
         }
+        public override async Task<GetAllAlternativePartsGrpcResponse> GetAllAlternativePartsGrpc(GetAllAlternativePartsGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetAllAlternativePartsGrpc starting");
+            GetAllAlternativePartsGrpcResponse response = await _RfqManagerService.GetAllAlternativePartsGrpc(request);
+            return response;
+        }
     }
 }
