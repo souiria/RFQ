@@ -102,7 +102,7 @@
 
         #region AlternativeParts
 
-        Task<ListAlternativePartsGrpc> GetAllAlternativePartsGrpc(CancellationToken cancellationToken);
+        Task<ListAlternativePartsGrpc> GetAllAlternativePartsGrpc(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
 
         Task<bool> PopulateAlternativePartsAsync(CancellationToken cancellationToken);
 
