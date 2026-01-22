@@ -1047,6 +1047,35 @@
             return response;
 
         }
+        public async Task<GetAllAlternativePartsGrpcResponse> GetAllAlternativePartsGrpc(GetAllAlternativePartsGrpcRequest request)
+        {
+            try
+            {
+                await Task.Delay(1);
+                       
+                EmacsFilterRequestGrpc filterRequest = new EmacsFilterRequestGrpc();
+
+                filterRequest.DatabaseList = "ALTERNATIVEPARTSGRPC"; 
+                filterRequest.FilterExpression = "SumitomoNumber != null"; 
+                EmacsFilterResponseGrpc filterResponse = _EmacsClient.FilterEmacsDataGrpc(filterRequest);
+
+                ListAlternativePartsGrpc partsList = filterResponse.ListAlternativePartsGrpc ?? new ListAlternativePartsGrpc();
+  
+                GetAllAlternativePartsGrpcResponse response = new GetAllAlternativePartsGrpcResponse();
+                foreach (AlternativePartsGrpc part in partsList.AlternativePartsGrpc)
+                {
+                    RfqAlternativePartsGrpc alternativePart = part.ToRfqAlternativeParts();
+                    response.AlternativeParts.Add(alternativePart);
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError("Error fetching alternative parts from EMACS service", ex);
+                throw;
+            }
+        }
         #region Filtering
 
         public Task<FilterGrpcResponse> FilterByCustomerId(FilterGrpcRequest request)

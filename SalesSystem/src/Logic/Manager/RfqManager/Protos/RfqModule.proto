@@ -32,6 +32,8 @@ service RfqModule {
  rpc GetCustomerLocationsByUserIdGrpc (GetCustomerLocationsByUserIdRequest) returns (GetCustomerLocationsByUserIdResponse);
  rpc GetCustomerBusinessUnitsByUserIdGrpc (GetCustomerBusinessUnitsByUserIdRequest) returns (GetCustomerBusinessUnitsByUserIdResponse);
  rpc GetAlternativePartInfoBySumitomoNumberGrpc (GetAlternativePartInfoBySumitomoNumberRequest) returns (GetAlternativePartInfoBySumitomoNumberResponse);    
+  rpc GetAllAlternativePartsGrpc (GetAllAlternativePartsGrpcRequest) returns (GetAllAlternativePartsGrpcResponse);
+
  rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
 }
 
@@ -414,4 +416,15 @@ message FilterGrpcResponse {
 
 message FilterRequestType {
     int32 RequestType = 1;
+}
+
+message GetAllAlternativePartsGrpcRequest
+{ 
+int32 position = 1;
+int32 take = 2; 
+string requestType = 3;
+}
+message GetAllAlternativePartsGrpcResponse
+{
+    repeated RfqAlternativePartsGrpc alternativeParts = 1;
 }
