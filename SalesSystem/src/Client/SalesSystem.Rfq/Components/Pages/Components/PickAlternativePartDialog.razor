@@ -16,7 +16,7 @@
                 <MudItem xs="12">
                     <MudDataGrid T="AlternativePartUxModel"
                                  @ref="_alternativePartNumbersGrid"
-                                 Items="@_alternativePartNumbersList"
+                                 Items="@RfqUxClientService.AlternativeParts"
                                  Virtualize="true"
                                  FixedHeader="true"
                                  ItemSize="20f"
@@ -155,8 +155,6 @@
 
     MudDataGrid<AlternativePartUxModel> _alternativePartNumbersGrid { get; set; } = null!;
 
-    List<AlternativePartUxModel> _alternativePartNumbersList { get; set; } = new();
-
     private string? AlternativePartNumber { get; set; }
     private decimal? AlternativePrice { get; set; }
     private MudForm _form = null!;
@@ -175,8 +173,8 @@
             var stopWatch = System.Diagnostics.Stopwatch.StartNew();
             stopWatch.Start();
 
-            _alternativePartNumbersList = await RfqUxClientService.GetAllAlternativePartsAsync();
-
+            await RfqUxClientService.GetAllAlternativePartsAsync();
+            
             stopWatch.Stop();
             Logger.LogInformation($"... loaded in {stopWatch.ElapsedMilliseconds} ms");
             IsLoading = false;

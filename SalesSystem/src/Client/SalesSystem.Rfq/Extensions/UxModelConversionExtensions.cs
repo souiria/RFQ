@@ -170,6 +170,7 @@
             return dto;
         }
         #endregion
+
         #region SearchResultUx
         public static SearchResultUx ToUx(this FilterGrpcResponse searchResult)
         {
@@ -217,7 +218,81 @@
             }
 
             return resultUx;
-        }   
+        }
+        #endregion
+
+        #region AlternativePartUx Conversion
+        public static AlternativePartUxModel ToUx(this RfqAlternativePartsGrpc dto)
+        {
+            AlternativePartUxModel ux = new AlternativePartUxModel();
+
+            ux.SumitomoNumber = dto.SumitomoNumber;
+            ux.SumitomoDescription = dto.SumitomoDescription;
+            ux.MainSupplier = dto.MainSupplier;
+            ux.SupplierName = dto.SupplierName;
+            ux.SupplierNumber = dto.SupplierNumber;
+            ux.Price = dto.Price;
+            ux.CurrencyCode = dto.CurrencyCode;
+            ux.UnitOfMeasure = dto.UnitOfMeasure;
+            ux.PartGroup = dto.PartGroup;
+            ux.GroupDescription = dto.GroupDescription;
+            ux.Class1 = dto.Class1;
+            ux.Class1Name = dto.Class1Name;
+            ux.Class2 = dto.Class2;
+            ux.Class2Name = dto.Class2Name;
+            ux.ColourCode = dto.ColourCode;
+            ux.ColorName = dto.ColorName;
+            ux.MaterialGroup = dto.MaterialGroup;
+            ux.Expr1 = dto.Expr1;
+            ux.MaterialType = dto.MaterialType;
+            ux.TypeDescription = dto.TypeDescription;
+            ux.CategoryCode = dto.CategoryCode;
+            ux.DetailedCategoryCode = dto.DetailedCategoryCode;
+            ux.CategoryName = dto.CategoryName;
+            ux.PartGroupCode = dto.PartGroupCode;
+            ux.Description = dto.Description;
+            ux.OldPartClass = dto.OldPartClass;
+            ux.OldMaterial = dto.OldMaterial;
+            ux.ClassDetailGroupCode = dto.ClassDetailGroupCode;
+            ux.ClassDetailId = dto.ClassDetailId;
+            ux.MaterialGroupId = dto.MaterialGroupId;
+            ux.MaterialTypeId = dto.MaterialTypeId;
+            ux.ColorCode = dto.ColorCode;
+            ux.NumberOfCavity = dto.NumberOfCavity;
+            ux.InsideDiameter = dto.InsideDiameter;
+            ux.WallThickness = dto.WallThickness;
+            ux.Length = dto.Length;
+            ux.WidthOrOutsideDiameter = dto.WidthOrOutsideDiameter;
+            ux.HoleDiameter = dto.HoleDiameter;
+            ux.ShrinkRateLength = dto.ShrinkRateLength;
+            ux.NumberOfTapingSpots = dto.NumberOfTapingSpots;
+            ux.MassOrWeight = dto.MassOrWeight;
+            ux.Quantity = dto.Quantity;
+            ux.UoM = dto.UoM;
+            ux.Group1 = dto.Group1;
+            ux.Group2 = dto.Group2;
+            ux.Group3 = dto.Group3;
+            ux.Group4 = dto.Group4;
+            ux.Group5 = dto.Group5;
+            ux.Group6 = dto.Group6;
+            ux.Group7 = dto.Group7;
+            ux.Group8 = dto.Group8;
+            ux.CustomerId = dto.CustomerId;
+            ux.CustomerCode = dto.CustomerCode;
+            ux.MassOrWeight2 = dto.MassOrWeight2;
+            ux.L1 = dto.L1;
+            ux.L2 = dto.L2;
+            ux.L3 = dto.L3;
+            ux.PitchWidth = dto.PitchWidth;
+            ux.Tilt = dto.Tilt;
+            ux.Grease = dto.Grease;
+            ux.CategoryCode2 = dto.CategoryCode2;
+
+            // UX-only properties can be set here if needed, e.g.:
+            ux.HasImage = false; // or some logic to determine if image exists
+
+            return ux;
+        }
         #endregion
     }
 }

@@ -17,6 +17,7 @@ namespace SalesSystem.Rfq.Services
         List<RfqReasonGrpc> _Reasons;
         List<ProjectAssociationUx> _CustomerProjectAssociations;
         List<string> _QuotationNumbers;
+        List<AlternativePartUxModel> _AlternativeParts;
 
         // Cached data accessors
         public IReadOnlyCollection<RfqDrawingPartNumberUx?> RfqDrawingPartNumbers => _RfqDrawingPartNumbers.AsReadOnly();
@@ -26,6 +27,7 @@ namespace SalesSystem.Rfq.Services
         public IReadOnlyCollection<RfqReasonGrpc> Reasons => _Reasons.AsReadOnly();
         public IReadOnlyCollection<ProjectAssociationUx> CustomerProjectAssociations => _CustomerProjectAssociations.AsReadOnly();
         public IReadOnlyCollection<string> QuotationNumbers => _QuotationNumbers.AsReadOnly();
+        public IReadOnlyCollection<AlternativePartUxModel> AlternativeParts => _AlternativeParts.AsReadOnly();
         public RfqUxClientService(IConfiguration configuration, ILogger<RfqUxClientService>? logger = null)
         {
             _Logger = logger;
@@ -54,6 +56,7 @@ namespace SalesSystem.Rfq.Services
                 "SEWS-25-025-005692"
             };
             _RfqDrawingPartNumbers= new();
+            _AlternativeParts= new();
         }
         #endregion
 
@@ -675,12 +678,45 @@ namespace SalesSystem.Rfq.Services
         #endregion
 
         #region Part alternatives
-        public async Task<List<AlternativePartUxModel>> GetAllAlternativePartsAsync()
+        public async Task<int> GetAllAlternativePartsAsync()
         {
-            await Task.Delay(1);
-            List<AlternativePartUxModel> parts;
-            parts = AlternativePartUxModel.GenerateRandomList(); //= new List<AlternativePartUxModel>();
-            return parts;
+            //await Task.Delay(1);
+            //List<AlternativePartUxModel> parts;
+            //parts = AlternativePartUxModel.GenerateRandomList(); //= new List<AlternativePartUxModel>();
+            //return parts;
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+
+            try
+            {
+                GetAllAlternativePartsGrpcRequest request = new GetAllAlternativePartsGrpcRequest();
+                request.Position = 0;
+                request.Take = 0;
+
+                GetAllAlternativePartsGrpcResponse response = await _Client.GetAllAlternativePartsGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                // ux list
+                _AlternativeParts.Clear();
+                foreach (RfqAlternativePartsGrpc? part in response.AlternativeParts)
+                {
+                    if (0.0 <= part.Price && !string.IsNullOrWhiteSpace(part.SumitomoNumber))
+                    {
+                        continue; // skip parts with no price or empty number
+                    }
+
+                    AlternativePartUxModel? uxModel = part.ToUx();
+                    if (null != uxModel)
+                    {
+                        _AlternativeParts.Add(uxModel);
+                    }
+                }
+
+                return _AlternativeParts.Count;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in GetAllAlternativePartsGrpcAsync ", ex);
+                throw;
+            }
         }
         public async Task<PartInfoUxModel> GetPartInfoAsync(string partNumber)
         {
