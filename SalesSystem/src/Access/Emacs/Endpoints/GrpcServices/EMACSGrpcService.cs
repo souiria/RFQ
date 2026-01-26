@@ -149,7 +149,7 @@ namespace Emacs.Endpoints.GrpcServices
             _Logger.GenericLogInformation($"EMACSAccessService GetAlternativePartsGrpc starting at {request.Position} taking {request.TakeAmount}");
             // Use cts.Token here
             Stopwatch sw  = Stopwatch.StartNew();
-            ListAlternativePartsGrpc parts = await _EMACSAccessService.GetAllAlternativePartsGrpc(context.CancellationToken);
+            ListAlternativePartsGrpc parts = await _EMACSAccessService.GetAllAlternativePartsGrpc(context.CancellationToken, request.Position, request.TakeAmount);
             sw.Stop();
             _Logger.GenericLogInformation($"EMACSAccessService GetAlternativePartsGrpc returning {parts.AlternativePartsGrpc.Count} parts in {sw.ElapsedMilliseconds}ms");
             return parts;

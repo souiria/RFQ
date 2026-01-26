@@ -601,7 +601,7 @@
         #endregion
 
         #region AlternativeParts
-        public async Task<ListAlternativePartsGrpc> GetAllAlternativePartsGrpc(CancellationToken cancellationToken)
+        public async Task<ListAlternativePartsGrpc> GetAllAlternativePartsGrpc(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             TimeSpan ts = TimeSpan.FromSeconds(120);
             using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
@@ -609,7 +609,15 @@
                 await Task.Delay(1, cts.Token);
                 if (_ListAlternativeParts.AlternativePartsGrpc.Any())
                 {
-                    return _ListAlternativeParts;
+                    if(takeAmount <= 0)
+                    {
+                        return _ListAlternativeParts;
+                    }
+
+                    ListAlternativePartsGrpc returnList = new ListAlternativePartsGrpc();
+                    IQueryable<AlternativePartsGrpc> query = _ListAlternativeParts.AlternativePartsGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                    returnList.AlternativePartsGrpc.AddRange(query);
+                    return returnList;
                 }
                 else
                 {
