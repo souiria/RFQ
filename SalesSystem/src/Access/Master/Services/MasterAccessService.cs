@@ -171,12 +171,20 @@
 
         #region Currency
 
-        public async Task<ListCurrencyGrpc> GetAllCurrencies(CancellationToken cancellationToken)
+        public async Task<ListCurrencyGrpc> GetAllCurrencies(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_Currencies.CurrencyGrpc.Any())
             {
-                return _Currencies;
+                if(takeAmount <= 0)
+                {
+                    return _Currencies;
+                }
+
+                ListCurrencyGrpc returnList = new ListCurrencyGrpc();
+                IQueryable<CurrencyGrpc> query = _Currencies.CurrencyGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.CurrencyGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -189,12 +197,20 @@
 
         #region Customer
 
-        public async Task<ListCustomerGrpc> GetAllCustomerBusinessUnits(CancellationToken cancellationToken)
+        public async Task<ListCustomerGrpc> GetAllCustomerBusinessUnits(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_Customers.CustomerGrpc.Any())
             {
-                return _Customers;
+                if (takeAmount <= 0)
+                {
+                    return _Customers;
+                }
+
+                ListCustomerGrpc returnList = new ListCustomerGrpc();
+                IQueryable<CustomerGrpc> query = _Customers.CustomerGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.CustomerGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -203,12 +219,20 @@
             }
         }
 
-        public async Task<ListCustomerLocationGrpc> GetAllCustomerLocations(CancellationToken cancellationToken)
+        public async Task<ListCustomerLocationGrpc> GetAllCustomerLocations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(0, cancellationToken);
             if (_CustomerLocations.CustomerLocationGrpc.Any())
             {
-                return _CustomerLocations;
+                if (takeAmount <= 0)
+                {
+                    return _CustomerLocations;
+                }
+
+                ListCustomerLocationGrpc returnList = new ListCustomerLocationGrpc();
+                IQueryable<CustomerLocationGrpc> query = _CustomerLocations.CustomerLocationGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.CustomerLocationGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -217,12 +241,20 @@
             }
         }
 
-        public async Task<ListCustomerProjectAssociationGrpc> GetAllCustomerProjectAssociations(CancellationToken cancellationToken)
+        public async Task<ListCustomerProjectAssociationGrpc> GetAllCustomerProjectAssociations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_CustomerProjectAssociations.CustomerProjectAssociationGrpc.Any())
             {
-                return _CustomerProjectAssociations;
+                if (takeAmount <= 0)
+                {
+                    return _CustomerProjectAssociations;
+                }
+
+                ListCustomerProjectAssociationGrpc returnList = new ListCustomerProjectAssociationGrpc();
+                IQueryable<CustomerProjectAssociationGrpc> query = _CustomerProjectAssociations.CustomerProjectAssociationGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.CustomerProjectAssociationGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -284,12 +316,20 @@
             }
         }
 
-        public async Task<ListCustomerSalesEntityGrpc> GetAllCustomerSalesEntities(CancellationToken cancellationToken)
+        public async Task<ListCustomerSalesEntityGrpc> GetAllCustomerSalesEntities(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_CustomerSalesEntities.CustomerSalesEntityGrpc.Any())
             {
-                return _CustomerSalesEntities;
+                if (takeAmount <= 0)
+                {
+                    return _CustomerSalesEntities;
+                }
+
+                ListCustomerSalesEntityGrpc returnList = new ListCustomerSalesEntityGrpc();
+                IQueryable<CustomerSalesEntityGrpc> query = _CustomerSalesEntities.CustomerSalesEntityGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.CustomerSalesEntityGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -298,12 +338,20 @@
             }
         }
 
-        public async Task<ListCustomerBusinessUserAssociationGrpc> GetCustomerBusinessUserAssociations(CancellationToken cancellationToken)
+        public async Task<ListCustomerBusinessUserAssociationGrpc> GetCustomerBusinessUserAssociations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Any())
             {
-                return _CustomerBusinessUserAssociations;
+                if (takeAmount <= 0)
+                {
+                    return _CustomerBusinessUserAssociations;
+                }
+
+                ListCustomerBusinessUserAssociationGrpc returnList = new ListCustomerBusinessUserAssociationGrpc();
+                IQueryable<CustomerBusinessUserAssociationGrpc> query = _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.CustomerBusinessUserAssociationGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -316,12 +364,20 @@
 
         #region Project
 
-        public async Task<ListPlatformGrpc> GetAllPlatforms(CancellationToken cancellationToken)
+        public async Task<ListPlatformGrpc> GetAllPlatforms(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_Platforms.PlatformGrpc.Any())
             {
-                return _Platforms;
+                if (takeAmount <= 0)
+                {
+                    return _Platforms;
+                }
+
+                ListPlatformGrpc returnList = new ListPlatformGrpc();
+                IQueryable<PlatformGrpc> query = _Platforms.PlatformGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.PlatformGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -330,12 +386,20 @@
             }
         }
 
-        public async Task<ListProgramGrpc> GetAllPrograms(CancellationToken cancellationToken)
+        public async Task<ListProgramGrpc> GetAllPrograms(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_Programs.ProgramGrpc.Any())
             {
-                return _Programs;
+                if (takeAmount <= 0)
+                {
+                    return _Programs;
+                }
+
+                ListProgramGrpc returnList = new ListProgramGrpc();
+                IQueryable<ProgramGrpc> query = _Programs.ProgramGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.ProgramGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -344,12 +408,20 @@
             }
         }
 
-        public async Task<ListProjectGrpc> GetAllProjects(CancellationToken cancellationToken)
+        public async Task<ListProjectGrpc> GetAllProjects(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_Projects.ProjectGrpc.Any())
             {
-                return _Projects;
+                if (takeAmount <= 0)
+                {
+                    return _Projects;
+                }
+
+                ListProjectGrpc returnList = new ListProjectGrpc();
+                IQueryable<ProjectGrpc> query = _Projects.ProjectGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.ProjectGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -358,12 +430,20 @@
             }
         }
 
-        public async Task<ListMilestoneGrpc> GetAllMilestones(CancellationToken cancellationToken)
+        public async Task<ListMilestoneGrpc> GetAllMilestones(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_Milestones.MilestoneGrpc.Any())
             {
-                return _Milestones;
+                if (takeAmount <= 0)
+                {
+                    return _Milestones;
+                }
+
+                ListMilestoneGrpc returnList = new ListMilestoneGrpc();
+                IQueryable<MilestoneGrpc> query = _Milestones.MilestoneGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.MilestoneGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -376,12 +456,20 @@
 
         #region Vehicle
 
-        public async Task<ListVehicleGrpc> GetAllVehicles(CancellationToken cancellationToken)
+        public async Task<ListVehicleGrpc> GetAllVehicles(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_Vehicles.VehicleGrpc.Any())
             {
-                return _Vehicles;
+                if (takeAmount <= 0)
+                {
+                    return _Vehicles;
+                }
+
+                ListVehicleGrpc returnList = new ListVehicleGrpc();
+                IQueryable<VehicleGrpc> query = _Vehicles.VehicleGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.VehicleGrpc.AddRange(query);
+                return returnList;
             }
             else
             {

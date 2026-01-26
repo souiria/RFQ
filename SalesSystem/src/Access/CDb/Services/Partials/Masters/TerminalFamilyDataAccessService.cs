@@ -33,14 +33,23 @@
             return false;
         }
 
-        public async Task<ListTerminalFamilyGrpc> ReadAllTerminalFamilys(CancellationToken cancellationToken)
+        public async Task<ListTerminalFamilyGrpc> ReadAllTerminalFamilys(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
-            if (!_TerminalFamilyGrpcs.TerminalFamilyGrpcs.Any())
+            if (_TerminalFamilyGrpcs.TerminalFamilyGrpcs.Any())
             {
-                await PopulateTerminalFamilyData(cancellationToken);
+                if (takeAmount <= 0)
+                {
+                    return _TerminalFamilyGrpcs;
+                }
+
+                ListTerminalFamilyGrpc returnList = new ListTerminalFamilyGrpc();
+                IQueryable<TerminalFamilyGrpc> query = _TerminalFamilyGrpcs.TerminalFamilyGrpcs.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.TerminalFamilyGrpcs.AddRange(query);
+                return returnList;
             }
 
+            await PopulateTerminalFamilyData(cancellationToken);
             return _TerminalFamilyGrpcs;
         }
 

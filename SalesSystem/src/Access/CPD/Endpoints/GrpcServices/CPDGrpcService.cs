@@ -23,7 +23,7 @@
         public override async Task<ListMatSuppMstGrpc> GetAllMatSuppMstView(MatSuppMstViewGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetAllMatSuppMstView starting");
-            return await _CPDAccessService.GetAllMatSuppMstView(context.CancellationToken);
+            return await _CPDAccessService.GetAllMatSuppMstView(context.CancellationToken, request.Position, request.TakeAmount);
 
         }
         #endregion
@@ -32,7 +32,7 @@
         public override async Task<ListHarnessCostingCalculationDataGrpc> GetAllHarnessCostingCalculationDataView(HarnessCostingCalculationDataViewGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetAllHarnessCostingCalculationDataView starting");
-            return await _CPDAccessService.GetHarnessCostingCalculationDataView(context.CancellationToken);
+            return await _CPDAccessService.GetHarnessCostingCalculationDataView(context.CancellationToken, request.Position, request.TakeAmount);
 
         }
         #endregion

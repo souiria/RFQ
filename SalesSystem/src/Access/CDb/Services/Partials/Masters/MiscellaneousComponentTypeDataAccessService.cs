@@ -33,14 +33,23 @@
             return false;
         }
 
-        public async Task<ListMiscellaneousComponentTypeGrpc> ReadAllMiscellaneousComponentTypes(CancellationToken cancellationToken)
+        public async Task<ListMiscellaneousComponentTypeGrpc> ReadAllMiscellaneousComponentTypes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
-            if (!_MiscellaneousComponentTypeGrpcs.MiscellaneousComponentTypeGrpcs.Any())
+            if (_MiscellaneousComponentTypeGrpcs.MiscellaneousComponentTypeGrpcs.Any())
             {
-                await PopulateMiscellaneousComponentTypeData(cancellationToken);
+                if (takeAmount <= 0)
+                {
+                    return _MiscellaneousComponentTypeGrpcs;
+                }
+
+                ListMiscellaneousComponentTypeGrpc returnList = new ListMiscellaneousComponentTypeGrpc();
+                IQueryable<MiscellaneousComponentTypeGrpc> query = _MiscellaneousComponentTypeGrpcs.MiscellaneousComponentTypeGrpcs.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.MiscellaneousComponentTypeGrpcs.AddRange(query);
+                return returnList;
             }
 
+            await PopulateMiscellaneousComponentTypeData(cancellationToken);
             return _MiscellaneousComponentTypeGrpcs;
         }
 

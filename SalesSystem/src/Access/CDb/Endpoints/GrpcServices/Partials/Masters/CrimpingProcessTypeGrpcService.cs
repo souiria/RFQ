@@ -77,7 +77,7 @@
                 case RequestType.ReadAll:
                 {
                     CancellationToken cancellationToken = context.CancellationToken;
-                    ListCrimpingProcessTypeGrpc response = await _CDbAccessService.ReadAllCrimpingProcessTypes(cancellationToken);
+                    ListCrimpingProcessTypeGrpc response = await _CDbAccessService.ReadAllCrimpingProcessTypes(cancellationToken, request.GrpcRequestParameter.Position, request.GrpcRequestParameter.Take);
                     return response;
                 }
 

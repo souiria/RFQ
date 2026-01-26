@@ -33,14 +33,23 @@
             return false;
         }
 
-        public async Task<ListFuseTypeGrpc> ReadAllFuseTypes(CancellationToken cancellationToken)
+        public async Task<ListFuseTypeGrpc> ReadAllFuseTypes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
-            if (!_FuseTypeGrpcs.FuseTypeGrpcs.Any())
+            if (_FuseTypeGrpcs.FuseTypeGrpcs.Any())
             {
-                await PopulateFuseTypeData(cancellationToken);
+                if (takeAmount <= 0)
+                {
+                    return _FuseTypeGrpcs;
+                }
+
+                ListFuseTypeGrpc returnList = new ListFuseTypeGrpc();
+                IQueryable<FuseTypeGrpc> query = _FuseTypeGrpcs.FuseTypeGrpcs.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.FuseTypeGrpcs.AddRange(query);
+                return returnList;
             }
 
+            await PopulateFuseTypeData(cancellationToken);
             return _FuseTypeGrpcs;
         }
 

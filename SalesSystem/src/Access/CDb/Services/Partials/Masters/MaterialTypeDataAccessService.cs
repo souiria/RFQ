@@ -33,14 +33,23 @@
             return false;
         }
 
-        public async Task<ListMaterialTypeGrpc> ReadAllMaterialTypes(CancellationToken cancellationToken)
+        public async Task<ListMaterialTypeGrpc> ReadAllMaterialTypes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
-            if (!_MaterialTypeGrpcs.MaterialTypeGrpcs.Any())
+            if (_MaterialTypeGrpcs.MaterialTypeGrpcs.Any())
             {
-                await PopulateMaterialTypeData(cancellationToken);
+                if (takeAmount <= 0)
+                {
+                    return _MaterialTypeGrpcs;
+                }
+
+                ListMaterialTypeGrpc returnList = new ListMaterialTypeGrpc();
+                IQueryable<MaterialTypeGrpc> query = _MaterialTypeGrpcs.MaterialTypeGrpcs.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.MaterialTypeGrpcs.AddRange(query);
+                return returnList;
             }
 
+            await PopulateMaterialTypeData(cancellationToken);
             return _MaterialTypeGrpcs;
         }
 
