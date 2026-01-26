@@ -603,15 +603,19 @@
         #region AlternativeParts
         public async Task<ListAlternativePartsGrpc> GetAllAlternativePartsGrpc(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-            if (_ListAlternativeParts.AlternativePartsGrpc.Any())
+            TimeSpan ts = TimeSpan.FromSeconds(120);
+            using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
             {
-                return _ListAlternativeParts;
-            }
-            else
-            {
-                await PopulateAlternativePartsAsync(cancellationToken);
-                return _ListAlternativeParts;
+                await Task.Delay(1, cts.Token);
+                if (_ListAlternativeParts.AlternativePartsGrpc.Any())
+                {
+                    return _ListAlternativeParts;
+                }
+                else
+                {
+                    await PopulateAlternativePartsAsync(cts.Token);
+                    return _ListAlternativeParts;
+                }
             }
         }
         #endregion
@@ -1057,27 +1061,28 @@
         #region AlternativeParts
         public async Task<bool> PopulateAlternativePartsAsync(CancellationToken cancellationToken)
         {
+            TimeSpan ts = TimeSpan.FromSeconds(120);
+
             if (!_AlternativePartsRefreshInProgress)
             {
-                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                using IServiceScope scope = _ServiceProvider.CreateScope();
+                using CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                _AlternativePartsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAlternativePartsQuery, List<AlternativePartsGrpc>>>();
+                _AlternativePartsRefreshInProgress = true;
+                GetAlternativePartsQuery query = new GetAlternativePartsQuery();
+                await Task.Delay(1, cts.Token);
+                Result<List<AlternativePartsGrpc>> results = await _AlternativePartsHandler.Handle(query, cts.Token);
+                if (results.Value.Count <= 0)
                 {
-                    _AlternativePartsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAlternativePartsQuery, List<AlternativePartsGrpc>>>();
-                    _AlternativePartsRefreshInProgress = true;
-                    GetAlternativePartsQuery query = new GetAlternativePartsQuery();
-                    await Task.Delay(1, cancellationToken);
-                    Result<List<AlternativePartsGrpc>> results = await _AlternativePartsHandler.Handle(query, cancellationToken);
-                    if (results.Value.Count <= 0)
-                    {
-                    }
-                    else
-                    {
-                        _ListAlternativeParts.AlternativePartsGrpc.Clear();
-                        _ListAlternativeParts.AlternativePartsGrpc.AddRange(results.Value);
-                    }
-
-                    _AlternativePartsRefreshInProgress = false;
-                    return true;
                 }
+                else
+                {
+                    _ListAlternativeParts.AlternativePartsGrpc.Clear();
+                    _ListAlternativeParts.AlternativePartsGrpc.AddRange(results.Value);
+                }
+
+                _AlternativePartsRefreshInProgress = false;
+                return true;
             }
 
             return false;

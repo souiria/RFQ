@@ -1,4 +1,6 @@
-﻿namespace RfqModule.Services
+﻿using System.Threading;
+
+namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {
@@ -1047,28 +1049,37 @@
             return response;
 
         }
-        public async Task<GetAllAlternativePartsGrpcResponse> GetAllAlternativePartsGrpc(GetAllAlternativePartsGrpcRequest request)
+        public async Task<GetAllAlternativePartsGrpcResponse> GetAllAlternativePartsGrpc(GetAllAlternativePartsGrpcRequest request, CancellationToken cancellation)
         {
             try
             {
-                await Task.Delay(1);
-                       
-                EmacsFilterRequestGrpc filterRequest = new EmacsFilterRequestGrpc();
-
-                filterRequest.DatabaseList = "ALTERNATIVEPARTSGRPC"; 
-                filterRequest.FilterExpression = "SumitomoNumber != null"; 
-                EmacsFilterResponseGrpc filterResponse = _EmacsClient.FilterEmacsDataGrpc(filterRequest);
-
-                ListAlternativePartsGrpc partsList = filterResponse.ListAlternativePartsGrpc ?? new ListAlternativePartsGrpc();
-  
-                GetAllAlternativePartsGrpcResponse response = new GetAllAlternativePartsGrpcResponse();
-                foreach (AlternativePartsGrpc part in partsList.AlternativePartsGrpc)
+                TimeSpan ts = TimeSpan.FromSeconds(120);
+                using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellation))
                 {
-                    RfqAlternativePartsGrpc alternativePart = part.ToRfqAlternativeParts();
-                    response.AlternativeParts.Add(alternativePart);
-                }
+                    // Use cts.Token here
+                    //cts.CancelAfter(ts);
 
-                return response;
+                    GetAlternativePartsGrpcRequest requestAll = new GetAlternativePartsGrpcRequest();
+                    request.Position = request.Position;
+                    request.Take = request.Take;
+                    
+                    // the next line fails:
+                    ListAlternativePartsGrpc listResponse = await _EmacsClient.GetAlternativePartsGrpcAsync(request: requestAll, cancellationToken: cts.Token);
+                    //2026 - 01 - 26T10: 32:06 info: Grpc.Net.Client.Internal.GrpcCall[17]
+                    //2026 - 01 - 26T10: 32:06 Error reading message.
+                    //2026 - 01 - 26T10: 32:06 System.Net.Http.HttpIOException: The response ended prematurely, with at least 4105 additional bytes expected. (ResponseEnded)
+
+                    ListAlternativePartsGrpc partsList = listResponse ?? new ListAlternativePartsGrpc();
+
+                    GetAllAlternativePartsGrpcResponse response = new GetAllAlternativePartsGrpcResponse();
+                    foreach (AlternativePartsGrpc part in partsList.AlternativePartsGrpc)
+                    {
+                        RfqAlternativePartsGrpc alternativePart = part.ToRfqAlternativeParts();
+                        response.AlternativeParts.Add(alternativePart);
+                    }
+
+                    return response;
+                }
             }
             catch (Exception ex)
             {

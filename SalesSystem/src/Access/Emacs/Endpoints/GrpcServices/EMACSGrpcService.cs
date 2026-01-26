@@ -1,4 +1,6 @@
-﻿namespace Emacs.Endpoints.GrpcServices
+﻿using System.Diagnostics;
+
+namespace Emacs.Endpoints.GrpcServices
 {
     public class EMACSGrpcService : Emacs.EmacsBase
     {
@@ -144,8 +146,13 @@
         #region AlternateParts
         public override async Task<ListAlternativePartsGrpc> GetAlternativePartsGrpc(GetAlternativePartsGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("GetAlternativePartsGrpc starting");
-            return await _EMACSAccessService.GetAllAlternativePartsGrpc(context.CancellationToken);
+            _Logger.GenericLogInformation($"EMACSAccessService GetAlternativePartsGrpc starting at {request.Position} taking {request.TakeAmount}");
+            // Use cts.Token here
+            Stopwatch sw  = Stopwatch.StartNew();
+            ListAlternativePartsGrpc parts = await _EMACSAccessService.GetAllAlternativePartsGrpc(context.CancellationToken);
+            sw.Stop();
+            _Logger.GenericLogInformation($"EMACSAccessService GetAlternativePartsGrpc returning {parts.AlternativePartsGrpc.Count} parts in {sw.ElapsedMilliseconds}ms");
+            return parts;
         }
         #endregion
 

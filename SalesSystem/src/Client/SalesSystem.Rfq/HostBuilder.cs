@@ -37,6 +37,10 @@
             builder.Services.AddGrpcClient<RfqModule.RfqModule.RfqModuleClient>(o =>
             {
                 o.Address = new Uri("https://localhost:7207");
+            })
+            .ConfigureChannel(options =>
+            {
+                options.MaxReceiveMessageSize = RfqUxClientService.MAX_GRPC_RESPONSE_SIZE;
             });
 
             #endregion

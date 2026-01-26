@@ -175,7 +175,8 @@
             var stopWatch = System.Diagnostics.Stopwatch.StartNew();
             stopWatch.Start();
 
-            _alternativePartNumbersList = await RfqUxClientService.GetAllAlternativePartsAsync();
+            int alternativePartsCount = await RfqUxClientService.GetAllAlternativePartsAsync();
+            Logger.LogInformation($"Loaded {alternativePartsCount} parts");
 
             stopWatch.Stop();
             Logger.LogInformation($"... loaded in {stopWatch.ElapsedMilliseconds} ms");

@@ -1,4 +1,4 @@
-﻿namespace RfqModule
+﻿ namespace RfqModule
 {
     public static class HostBuilder
     {
@@ -43,6 +43,10 @@
             builder.Services.AddGrpcClient<Emacs.Emacs.EmacsClient>(o =>
             {
                 o.Address = new Uri("https://localhost:7285");
+            })
+            .ConfigureChannel(options =>
+            {
+                options.MaxReceiveMessageSize = 256 * 1024 * 1024; // 256 MB
             });
             builder.Services.AddGrpcClient<Adss.AdssGrpc.AdssGrpcClient>(o =>
             {

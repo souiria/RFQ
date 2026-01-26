@@ -265,6 +265,22 @@ namespace Integration.Tests.Rfq.Client
             Assert.Pass("Manual exploration test completed - check console output");
         }
 
+        [Test]
+        [Category("Integration")]
+        [Description("Verify that service can retrieve all alternative parts with SumtomoNumber and Price from Emacs")]
+        public async Task GetAllAlternativePartsAsyncTest()
+        {
+            // Arrange
+            EnsureServiceInitialized();
+            Debug.WriteLine("Testing GetAlternativePartsAsyncTest");
+
+            // Act
+            int alternativePartsCount = await GetAllAlternativePartsAsync();
+            Debug.WriteLine($"Retrieved {alternativePartsCount} alternative parts");
+            Debug.WriteLine($"Retrieved {_RfqUxClientService!.AlternativeParts.Count} alternative parts");
+            // Assert
+            AssertAllAlternativePartsRetrieved(alternativePartsCount);
+        }
         #endregion
 
         #region Helper Methods - Service Operations
@@ -316,6 +332,20 @@ namespace Integration.Tests.Rfq.Client
             }
         }
 
+        async Task<int> GetAllAlternativePartsAsync()
+        {
+            ArgumentNullException.ThrowIfNull(_RfqUxClientService);
+
+            try
+            {
+                return await _RfqUxClientService.GetAllAlternativePartsAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error retrieving all alternative parts: {ex.Message}: {ex.Message}");
+                throw;
+            }
+        }
         #endregion
 
         #region Helper Methods - Assertions
@@ -387,6 +417,15 @@ namespace Integration.Tests.Rfq.Client
                 Assert.That(partCount, isGreaterThanOrEqualToZero, 
                     $"Part count for RfqId {rfqId} should be >= 0");
             }
+        }
+        void AssertAllAlternativePartsRetrieved(int alternativePartsCount)
+        {
+            ArgumentNullException.ThrowIfNull(_RfqUxClientService);
+            GreaterThanOrEqualConstraint condition = Is.GreaterThanOrEqualTo(0);
+            Assert.That(alternativePartsCount, condition, "AlternativeParts count should be >= 0");
+            IReadOnlyCollection<AlternativePartUxModel> parts = _RfqUxClientService.AlternativeParts;
+            EqualConstraint conditionIsEqualTo = Is.EqualTo(alternativePartsCount);
+            Assert.That(parts.Count, conditionIsEqualTo, "Cached alternative parts count should match");
         }
 
         #endregion
