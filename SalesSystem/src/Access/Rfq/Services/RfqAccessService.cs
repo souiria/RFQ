@@ -746,16 +746,18 @@
         {
             await Task.Delay(1, cancellationToken);
 
-            ListRfqProjectGrpc activeProjectsList = new ListRfqProjectGrpc();
+            
 
-            List<RfqProjectGrpc> activeProjects = _ListRfqProjectsGrpc.RfqProjects
-                .Where(p => p.IsActive != null && p.IsActive.Value)
-                .ToList();
-
-            activeProjectsList.RfqProjects.AddRange(activeProjects);
-
-            if (!activeProjectsList.RfqProjects.Any())
+            if (_ListRfqProjectsGrpc.RfqProjects.Any())
             {
+                ListRfqProjectGrpc activeProjectsList = new ListRfqProjectGrpc();
+
+                List<RfqProjectGrpc> activeProjects = _ListRfqProjectsGrpc.RfqProjects
+                    .Where(p => p.IsActive != null && p.IsActive.Value)
+                    .ToList();
+
+                activeProjectsList.RfqProjects.AddRange(activeProjects);
+
                 if (takeAmount <= 0)
                 {
                     return activeProjectsList;
@@ -768,7 +770,7 @@
             }
 
             await PopulateRfqProjects(cancellationToken);
-            return activeProjectsList;
+            return _ListRfqProjectsGrpc;
         }
 
         public async Task<ListRfqProjectGrpc> CreateRfqProjects(RfqProjectGrpcRequest request, CancellationToken cancellationToken)
