@@ -76,7 +76,7 @@
                 case RequestType.ReadAll:
                 {
                     CancellationToken cancellationToken = context.CancellationToken;
-                    ListClipTypeGrpc response = await _CDbAccessService.ReadAllClipTypes(cancellationToken);
+                    ListClipTypeGrpc response = await _CDbAccessService.ReadAllClipTypes(cancellationToken, request.GrpcRequestParameter.Position, request.GrpcRequestParameter.Take);
                     return response;
                 }
 

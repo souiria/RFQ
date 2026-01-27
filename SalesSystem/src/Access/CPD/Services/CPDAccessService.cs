@@ -58,12 +58,20 @@
         #region Handlers
 
         #region MatSuppMst
-        public async Task<ListMatSuppMstGrpc> GetAllMatSuppMstView(CancellationToken cancellationToken)
+        public async Task<ListMatSuppMstGrpc> GetAllMatSuppMstView(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListMatSuppMstView.MatSuppMstViewGrpc.Any())
             {
-                return _ListMatSuppMstView;
+                if(takeAmount <= 0)
+                {
+                    return _ListMatSuppMstView;
+                }
+
+                ListMatSuppMstGrpc returnList = new ListMatSuppMstGrpc();
+                IQueryable<MatSuppMstViewGrpc> query = _ListMatSuppMstView.MatSuppMstViewGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.MatSuppMstViewGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -74,12 +82,20 @@
         #endregion
 
         #region HarnessCostingCalculationData
-        public async Task<ListHarnessCostingCalculationDataGrpc> GetHarnessCostingCalculationDataView(CancellationToken cancellationToken)
+        public async Task<ListHarnessCostingCalculationDataGrpc> GetHarnessCostingCalculationDataView(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if(_ListHarnessCostingCalculationDataView.HarnessCostingCalculationDataGrpc.Any())
             {
-                return _ListHarnessCostingCalculationDataView;
+                if(takeAmount <= 0)
+                {
+                    return _ListHarnessCostingCalculationDataView;
+                }
+                
+                ListHarnessCostingCalculationDataGrpc returnList = new ListHarnessCostingCalculationDataGrpc();
+                IQueryable<HarnessCostingCalculationDataGrpc> query = _ListHarnessCostingCalculationDataView.HarnessCostingCalculationDataGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.HarnessCostingCalculationDataGrpc.AddRange(query);
+                return returnList;
             }
             else
             {

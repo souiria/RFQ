@@ -33,14 +33,23 @@
             return false;
         }
 
-        public async Task<ListFileNameGrpc> ReadAllFileNames(CancellationToken cancellationToken)
+        public async Task<ListFileNameGrpc> ReadAllFileNames(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
-            if (!_FileNameGrpcs.FileNameGrpcs.Any())
+            if (_FileNameGrpcs.FileNameGrpcs.Any())
             {
-                await PopulateFileNameData(cancellationToken);
+                if (takeAmount <= 0)
+                {
+                    return _FileNameGrpcs;
+                }
+
+                ListFileNameGrpc returnList = new ListFileNameGrpc();
+                IQueryable<FileNameGrpc> query = _FileNameGrpcs.FileNameGrpcs.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.FileNameGrpcs.AddRange(query);
+                return returnList;
             }
 
+            await PopulateFileNameData(cancellationToken);
             return _FileNameGrpcs;
         }
 

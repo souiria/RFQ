@@ -33,14 +33,23 @@
             return false;
         }
 
-        public async Task<ListWaterproofTypeGrpc> ReadAllWaterproofTypes(CancellationToken cancellationToken)
+        public async Task<ListWaterproofTypeGrpc> ReadAllWaterproofTypes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
-            if (!_WaterproofTypeGrpcs.WaterproofTypeGrpcs.Any())
+            if (_WaterproofTypeGrpcs.WaterproofTypeGrpcs.Any())
             {
-                await PopulateWaterproofTypeData(cancellationToken);
+                if (takeAmount <= 0)
+                {
+                    return _WaterproofTypeGrpcs;
+                }
+
+                ListWaterproofTypeGrpc returnList = new ListWaterproofTypeGrpc();
+                IQueryable<WaterproofTypeGrpc> query = _WaterproofTypeGrpcs.WaterproofTypeGrpcs.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.WaterproofTypeGrpcs.AddRange(query);
+                return returnList;
             }
 
+            await PopulateWaterproofTypeData(cancellationToken);
             return _WaterproofTypeGrpcs;
         }
 

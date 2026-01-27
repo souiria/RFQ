@@ -49,7 +49,7 @@ namespace Regression.Tests.CPD
             matSuppList = new ListMatSuppMstGrpc();
             matSuppList.MatSuppMstViewGrpc.Add(matSuppItem);
 
-            _MockCpdAccessService.Setup(s => s.GetAllMatSuppMstView(anyToken)).ReturnsAsync(matSuppList);
+            _MockCpdAccessService.Setup(s => s.GetAllMatSuppMstView(anyToken,0,0)).ReturnsAsync(matSuppList);
 
             MatSuppMstViewGrpcRequest matSuppRequest;
             matSuppRequest = new MatSuppMstViewGrpcRequest();

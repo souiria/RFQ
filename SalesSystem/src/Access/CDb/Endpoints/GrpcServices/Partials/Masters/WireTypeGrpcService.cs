@@ -77,7 +77,7 @@
                 case RequestType.ReadAll:
                 {
                     CancellationToken cancellationToken = context.CancellationToken;
-                    ListWireTypeGrpc response = await _CDbAccessService.ReadAllWireTypes(cancellationToken);
+                    ListWireTypeGrpc response = await _CDbAccessService.ReadAllWireTypes(cancellationToken, request.GrpcRequestParameter.Position, request.GrpcRequestParameter.Take);
                     return response;
                 }
 

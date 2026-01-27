@@ -33,14 +33,23 @@
             return false;
         }
 
-        public async Task<ListWireProtectionTypeGrpc> ReadAllWireProtectionTypes(CancellationToken cancellationToken)
+        public async Task<ListWireProtectionTypeGrpc> ReadAllWireProtectionTypes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
-            if (!_WireProtectionTypeGrpcs.WireProtectionTypeGrpcs.Any())
+            if (_WireProtectionTypeGrpcs.WireProtectionTypeGrpcs.Any())
             {
-                await PopulateWireProtectionTypeData(cancellationToken);
+                if (takeAmount <= 0)
+                {
+                    return _WireProtectionTypeGrpcs;
+                }
+
+                ListWireProtectionTypeGrpc returnList = new ListWireProtectionTypeGrpc();
+                IQueryable<WireProtectionTypeGrpc> query = _WireProtectionTypeGrpcs.WireProtectionTypeGrpcs.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.WireProtectionTypeGrpcs.AddRange(query);
+                return returnList;
             }
 
+            await PopulateWireProtectionTypeData(cancellationToken);
             return _WireProtectionTypeGrpcs;
         }
 
