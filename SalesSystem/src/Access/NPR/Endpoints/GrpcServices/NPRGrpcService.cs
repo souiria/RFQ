@@ -22,7 +22,7 @@
         public override async Task<ListH1NPRViewGrpc> GetAllH1NPRViewGrpc(H1NPRViewRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetH1NPRViewGrpc starting");
-            return await _NPRAccessService.GetAllH1NPRView(context.CancellationToken);
+            return await _NPRAccessService.GetAllH1NPRView(context.CancellationToken, request.Position, request.Takeamount);
         }
         #endregion
 

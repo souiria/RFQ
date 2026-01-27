@@ -33,14 +33,23 @@
             return false;
         }
 
-        public async Task<ListClipTypeGrpc> ReadAllClipTypes(CancellationToken cancellationToken)
+        public async Task<ListClipTypeGrpc> ReadAllClipTypes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
-            if (!_ClipTypeGrpcs.ClipTypeGrpcs.Any())
+            if (_ClipTypeGrpcs.ClipTypeGrpcs.Any())
             {
-                await PopulateClipTypeData(cancellationToken);
+                if(takeAmount <= 0)
+                {
+                    return _ClipTypeGrpcs;
+                }
+
+                ListClipTypeGrpc returnList = new ListClipTypeGrpc();
+                IQueryable<ClipTypeGrpc> query = _ClipTypeGrpcs.ClipTypeGrpcs.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.ClipTypeGrpcs.AddRange(query);
+                return returnList;
             }
 
+            await PopulateClipTypeData(cancellationToken);
             return _ClipTypeGrpcs;
         }
 

@@ -7,7 +7,12 @@ namespace Unit4
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddGrpc();
+            builder.Services.AddGrpc(opt =>
+            {
+                opt.EnableDetailedErrors = true;
+                opt.MaxReceiveMessageSize = int.MaxValue;
+                opt.MaxSendMessageSize = int.MaxValue;
+            });
 
             WebApplication app = builder.Build();
 

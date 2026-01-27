@@ -16,7 +16,8 @@
                 <MudItem xs="12">
                     <MudDataGrid T="AlternativePartUxModel"
                                  @ref="_alternativePartNumbersGrid"
-                                 Items="@_alternativePartNumbersList"
+                                 Loading="IsLoading"
+                                 Items="@RfqUxClientService.AlternativeParts"
                                  Virtualize="true"
                                  FixedHeader="true"
                                  ItemSize="20f"
@@ -175,11 +176,11 @@
             var stopWatch = System.Diagnostics.Stopwatch.StartNew();
             stopWatch.Start();
 
-            int alternativePartsCount = await RfqUxClientService.GetAllAlternativePartsAsync();
-            Logger.LogInformation($"Loaded {alternativePartsCount} parts");
+            int alternativePartsCount = await RfqUxClientService.GetAllAlternativePartsAsync(0, 0);
+            Logger.LogInformation($"PickAlternativePartDialog.OnInitializedAsync Loaded {alternativePartsCount} parts");
 
             stopWatch.Stop();
-            Logger.LogInformation($"... loaded in {stopWatch.ElapsedMilliseconds} ms");
+            Logger.LogInformation($"... in {stopWatch.ElapsedMilliseconds} ms");
             IsLoading = false;
         }
         catch (Exception ex)

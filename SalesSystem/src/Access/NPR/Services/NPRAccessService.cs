@@ -47,12 +47,20 @@
         #region Handlers
 
         #region H1NPRView
-        public async Task<ListH1NPRViewGrpc> GetAllH1NPRView(CancellationToken cancellationToken)
+        public async Task<ListH1NPRViewGrpc> GetAllH1NPRView(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_H1NPRView.H1NPRViewGrpc.Any())
             {
-                return _H1NPRView;
+                if(takeAmount <= 0)
+                {
+                    return _H1NPRView;
+                }
+
+                ListH1NPRViewGrpc returnList = new ListH1NPRViewGrpc();
+                IQueryable<H1NPRViewGrpc> query = _H1NPRView.H1NPRViewGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.H1NPRViewGrpc.AddRange(query);
+                return returnList;
             }
             else
             {

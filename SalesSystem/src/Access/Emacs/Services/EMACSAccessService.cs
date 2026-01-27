@@ -343,12 +343,20 @@
         #region Handlers
 
         #region CombinedParts
-        public async Task<ListCombinedPartsGrpc> GetAllCombinedParts(CancellationToken cancellationToken)
+        public async Task<ListCombinedPartsGrpc> GetAllCombinedParts(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListCombinedParts.CombinedPartsGrpc.Any())
             {
-                return _ListCombinedParts;
+                if(takeAmount <= 0)
+                {
+                    return _ListCombinedParts;
+                }
+
+                ListCombinedPartsGrpc returnList = new ListCombinedPartsGrpc();
+                IQueryable<CombinedPartsGrpc> query = _ListCombinedParts.CombinedPartsGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.CombinedPartsGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -374,12 +382,20 @@
 
         #region PartCategoryDetail
 
-        public async Task<ListPartCategoryDetailGrpc> GetAllPartCategoryDetail(CancellationToken cancellationToken)
+        public async Task<ListPartCategoryDetailGrpc> GetAllPartCategoryDetail(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListPartCatogoryDetail.PartCategoryDetailGrpc.Any())
             {
-                return _ListPartCatogoryDetail;
+                if(takeAmount <= 0)
+                {
+                    return _ListPartCatogoryDetail;
+                }
+
+                ListPartCategoryDetailGrpc returnList = new ListPartCategoryDetailGrpc();
+                IQueryable<PartCategoryDetailGrpc> query = _ListPartCatogoryDetail.PartCategoryDetailGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.PartCategoryDetailGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -407,12 +423,20 @@
 
         #region PartClassDetail
 
-        public async Task<ListPartClassDetailGrpc> GetAllPartClassDetail(CancellationToken cancellationToken)
+        public async Task<ListPartClassDetailGrpc> GetAllPartClassDetail(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListPartClassDetail.PartClassDetailGrpc.Any())
             {
-                return _ListPartClassDetail;
+                if(takeAmount <= 0)
+                {
+                    return _ListPartClassDetail;
+                }
+
+                ListPartClassDetailGrpc returnList = new ListPartClassDetailGrpc();
+                IQueryable<PartClassDetailGrpc> query = _ListPartClassDetail.PartClassDetailGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.PartClassDetailGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -424,12 +448,20 @@
 
         #region PartGroups
 
-        public async Task<ListPartGroupsGrpc> GetAllPartGroups(CancellationToken cancellationToken)
+        public async Task<ListPartGroupsGrpc> GetAllPartGroups(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListPartGroups.PartGroupsGrpc.Any())
             {
-                return _ListPartGroups;
+                if (takeAmount <= 0)
+                {
+                    return _ListPartGroups;
+                }
+
+                ListPartGroupsGrpc returnList = new ListPartGroupsGrpc();
+                IQueryable<PartGroupsGrpc> query = _ListPartGroups.PartGroupsGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.PartGroupsGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -441,12 +473,20 @@
 
         #region PartGroupsConst
 
-        public async Task<ListPartGroupsConstGrpc> GetAllPartGroupsConst(CancellationToken cancellationToken)
+        public async Task<ListPartGroupsConstGrpc> GetAllPartGroupsConst(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListPartGroupsConst.PartGroupsConstGrpc.Any())
             {
-                return _ListPartGroupsConst;
+                if (takeAmount <= 0)
+                {
+                    return _ListPartGroupsConst;
+                }
+
+                ListPartGroupsConstGrpc returnList = new ListPartGroupsConstGrpc();
+                IQueryable<PartGroupsConstGrpc> query = _ListPartGroupsConst.PartGroupsConstGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.PartGroupsConstGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -457,12 +497,20 @@
         #endregion
 
         #region CustomerData
-        public async Task<ListCustomerDataGrpc> GetAllCustomerData(CancellationToken cancellationToken)
+        public async Task<ListCustomerDataGrpc> GetAllCustomerData(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListCustomerData.CustomerDataGrpc.Any())
             {
-                return _ListCustomerData;
+                if (takeAmount <= 0)
+                {
+                    return _ListCustomerData;
+                }
+
+                ListCustomerDataGrpc returnList = new ListCustomerDataGrpc();
+                IQueryable<CustomerDataGrpc> query = _ListCustomerData.CustomerDataGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.CustomerDataGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -473,12 +521,20 @@
         #endregion
 
         #region ColourCode
-        public async Task<ListColourCodeGrpc> GetAllColourCode(CancellationToken cancellationToken)
+        public async Task<ListColourCodeGrpc> GetAllColourCode(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListColourCode.ColourCodeGrpc.Any())
             {
-                return _ListColourCode;
+                if (takeAmount <= 0)
+                {
+                    return _ListColourCode;
+                }
+
+                ListColourCodeGrpc returnList = new ListColourCodeGrpc();
+                IQueryable<ColourCodeGrpc> query = _ListColourCode.ColourCodeGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.ColourCodeGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -489,12 +545,20 @@
         #endregion
 
         #region MaterialGroups
-        public async Task<ListMaterialGroupsGrpc> GetAllMaterialGroups(CancellationToken cancellationToken)
+        public async Task<ListMaterialGroupsGrpc> GetAllMaterialGroups(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListMaterialGroups.MaterialGroupsGrpc.Any())
             {
-                return _ListMaterialGroups;
+                if (takeAmount <= 0)
+                {
+                    return _ListMaterialGroups;
+                }
+
+                ListMaterialGroupsGrpc returnList = new ListMaterialGroupsGrpc();
+                IQueryable<MaterialGroupsGrpc> query = _ListMaterialGroups.MaterialGroupsGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.MaterialGroupsGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -505,12 +569,20 @@
         #endregion
 
         #region MaterialTypes
-        public async Task<ListMaterialTypesGrpc> GetAllMaterialTypes(CancellationToken cancellationToken)
+        public async Task<ListMaterialTypesGrpc> GetAllMaterialTypes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListMaterialTypes.MaterialTypesGrpc.Any())
             {
-                return _ListMaterialTypes;
+                if (takeAmount <= 0)
+                {
+                    return _ListMaterialTypes;
+                }
+
+                ListMaterialTypesGrpc returnList = new ListMaterialTypesGrpc();
+                IQueryable<MaterialTypesGrpc> query = _ListMaterialTypes.MaterialTypesGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.MaterialTypesGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -521,12 +593,20 @@
         #endregion
 
         #region NPACustomer
-        public async Task<ListNPACustomerGrpc> GetAllNPACustomer(CancellationToken cancellationToken)
+        public async Task<ListNPACustomerGrpc> GetAllNPACustomer(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListNPACustomer.NPACustomerGrpc.Any())
             {
-                return _ListNPACustomer;
+                if (takeAmount <= 0)
+                {
+                    return _ListNPACustomer;
+                }
+
+                ListNPACustomerGrpc returnList = new ListNPACustomerGrpc();
+                IQueryable<NPACustomerGrpc> query = _ListNPACustomer.NPACustomerGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.NPACustomerGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -537,12 +617,20 @@
         #endregion
 
         #region NPASupplier
-        public async Task<ListNPASupplierGrpc> GetAllNPASupplier(CancellationToken cancellationToken)
+        public async Task<ListNPASupplierGrpc> GetAllNPASupplier(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListNPASupplier.NPASupplierGrpc.Any())
             {
-                return _ListNPASupplier;
+                if (takeAmount <= 0)
+                {
+                    return _ListNPASupplier;
+                }
+
+                ListNPASupplierGrpc returnList = new ListNPASupplierGrpc();
+                IQueryable<NPASupplierGrpc> query = _ListNPASupplier.NPASupplierGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.NPASupplierGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -553,12 +641,20 @@
         #endregion
 
         #region Suppliers
-        public async Task<ListSuppliersGrpc> GetAllSuppliers(CancellationToken cancellationToken)
+        public async Task<ListSuppliersGrpc> GetAllSuppliers(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListSuppliers.SuppliersGrpc.Any())
             {
-                return _ListSuppliers;
+                if (takeAmount <= 0)
+                {
+                    return _ListSuppliers;
+                }
+
+                ListSuppliersGrpc returnList = new ListSuppliersGrpc();
+                IQueryable<SuppliersGrpc> query = _ListSuppliers.SuppliersGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.SuppliersGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -569,12 +665,20 @@
         #endregion
 
         #region EmacsRFIView
-        public async Task<ListEmacsRFIViewGrpc> GetAllEmacsRFIView(CancellationToken cancellationToken)
+        public async Task<ListEmacsRFIViewGrpc> GetAllEmacsRFIView(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListEmacsRFIView.EmacsRFIViewGrpc.Any())
             {
-                return _ListEmacsRFIView;
+                if (takeAmount <= 0)
+                {
+                    return _ListEmacsRFIView;
+                }
+
+                ListEmacsRFIViewGrpc returnList = new ListEmacsRFIViewGrpc();
+                IQueryable<EmacsRFIViewGrpc> query = _ListEmacsRFIView.EmacsRFIViewGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.EmacsRFIViewGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -585,12 +689,20 @@
         #endregion
 
         #region PARTMS
-        public async Task<ListPARTMSGrpc> GetAllPARTMSGrpc(CancellationToken cancellationToken)
+        public async Task<ListPARTMSGrpc> GetAllPARTMSGrpc(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListPARTMS.PARTMSGrpc.Any())
             {
-                return _ListPARTMS;
+                if (takeAmount <= 0)
+                {
+                    return _ListPARTMS;
+                }
+
+                ListPARTMSGrpc returnList = new ListPARTMSGrpc();
+                IQueryable<PARTMSGrpc> query = _ListPARTMS.PARTMSGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.PARTMSGrpc.AddRange(query);
+                return returnList;
             }
             else
             {
@@ -603,27 +715,23 @@
         #region AlternativeParts
         public async Task<ListAlternativePartsGrpc> GetAllAlternativePartsGrpc(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            TimeSpan ts = TimeSpan.FromSeconds(120);
-            using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
+            await Task.Delay(1, cancellationToken);
+            if (_ListAlternativeParts.AlternativePartsGrpc.Any())
             {
-                await Task.Delay(1, cts.Token);
-                if (_ListAlternativeParts.AlternativePartsGrpc.Any())
+                if (takeAmount <= 0)
                 {
-                    if(takeAmount <= 0)
-                    {
-                        return _ListAlternativeParts;
-                    }
-
-                    ListAlternativePartsGrpc returnList = new ListAlternativePartsGrpc();
-                    IQueryable<AlternativePartsGrpc> query = _ListAlternativeParts.AlternativePartsGrpc.AsQueryable().Skip(position).Take(takeAmount);
-                    returnList.AlternativePartsGrpc.AddRange(query);
-                    return returnList;
-                }
-                else
-                {
-                    await PopulateAlternativePartsAsync(cts.Token);
                     return _ListAlternativeParts;
                 }
+
+                ListAlternativePartsGrpc returnList = new ListAlternativePartsGrpc();
+                IQueryable<AlternativePartsGrpc> query = _ListAlternativeParts.AlternativePartsGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.AlternativePartsGrpc.AddRange(query);
+                return returnList;
+            }
+            else
+            {
+                await PopulateAlternativePartsAsync(cancellationToken);
+                return _ListAlternativeParts;
             }
         }
         #endregion
@@ -1069,17 +1177,14 @@
         #region AlternativeParts
         public async Task<bool> PopulateAlternativePartsAsync(CancellationToken cancellationToken)
         {
-            TimeSpan ts = TimeSpan.FromSeconds(120);
-
             if (!_AlternativePartsRefreshInProgress)
             {
                 using IServiceScope scope = _ServiceProvider.CreateScope();
-                using CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
                 _AlternativePartsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAlternativePartsQuery, List<AlternativePartsGrpc>>>();
                 _AlternativePartsRefreshInProgress = true;
                 GetAlternativePartsQuery query = new GetAlternativePartsQuery();
-                await Task.Delay(1, cts.Token);
-                Result<List<AlternativePartsGrpc>> results = await _AlternativePartsHandler.Handle(query, cts.Token);
+                await Task.Delay(1, cancellationToken);
+                Result<List<AlternativePartsGrpc>> results = await _AlternativePartsHandler.Handle(query, cancellationToken);
                 if (results.Value.Count <= 0)
                 {
                 }

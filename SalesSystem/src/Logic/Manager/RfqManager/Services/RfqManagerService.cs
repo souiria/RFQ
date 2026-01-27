@@ -1060,11 +1060,13 @@ namespace RfqModule.Services
                     //cts.CancelAfter(ts);
 
                     GetAlternativePartsGrpcRequest requestAll = new GetAlternativePartsGrpcRequest();
-                    request.Position = request.Position;
-                    request.Take = request.Take;
-                    
+                    requestAll.Position = request.Position;
+                    requestAll.TakeAmount = request.Take;
+
                     // the next line fails:
-                    ListAlternativePartsGrpc listResponse = await _EmacsClient.GetAlternativePartsGrpcAsync(request: requestAll, cancellationToken: cts.Token);
+                    DateTime deadline = DateTime.UtcNow.AddSeconds(60);
+                    CallOptions callOptions = new CallOptions(deadline: deadline);
+                    ListAlternativePartsGrpc listResponse = await _EmacsClient.GetAlternativePartsGrpcAsync(requestAll, callOptions);
                     //2026 - 01 - 26T10: 32:06 info: Grpc.Net.Client.Internal.GrpcCall[17]
                     //2026 - 01 - 26T10: 32:06 Error reading message.
                     //2026 - 01 - 26T10: 32:06 System.Net.Http.HttpIOException: The response ended prematurely, with at least 4105 additional bytes expected. (ResponseEnded)
@@ -1077,6 +1079,8 @@ namespace RfqModule.Services
                         RfqAlternativePartsGrpc alternativePart = part.ToRfqAlternativeParts();
                         response.AlternativeParts.Add(alternativePart);
                     }
+
+                    _Logger.GenericLogInformation($"RfqManagerService.GetAllAlternativePartsGrpc sending {response.AlternativeParts.Count} RfqAlternativePartsGrpc to client with size {response.CalculateSize()}");
 
                     return response;
                 }

@@ -1,13 +1,39 @@
-﻿ namespace RfqModule
+﻿namespace RfqModule
 {
     public static class HostBuilder
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
         public static WebApplication CreateApp(WebApplicationBuilder? builder = null, params string[] args)
         {
 
             builder ??= WebApplication.CreateBuilder(args);
 
             #region Builder
+
+            #region Kestrel
+            // ===== KESTREL CONFIGURATION =====
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                // Increase message size limits
+                options.Limits.MaxRequestBodySize = 256 * 1024 * 1024; // 256 MB
+
+                // Increase timeouts
+                options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10);
+                options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(5);
+
+                // Disable minimum data rate (important for large/slow responses)
+                options.Limits.MinResponseDataRate = null;
+                options.Limits.MinRequestBodyDataRate = null;
+
+                // HTTP/2 specific settings
+                options.Limits.Http2.MaxStreamsPerConnection = 100;
+                options.Limits.Http2.HeaderTableSize = 4096;
+                options.Limits.Http2.MaxFrameSize = 16384;
+                options.Limits.Http2.MaxRequestHeaderFieldSize = 8192;
+                options.Limits.Http2.InitialConnectionWindowSize = 128 * 1024;
+                options.Limits.Http2.InitialStreamWindowSize = 96 * 1024;
+            });
+            #endregion
 
             builder.Services.Configure<CookiePolicyOptions>(options =>
             {
@@ -25,11 +51,10 @@
             #region Additional Services
             builder.AddServiceDefaults();
             builder.Logging.AddSeq();
-            builder.Services.AddGrpc(opt =>
+            builder.Services.AddGrpc(options =>
             {
-                opt.EnableDetailedErrors = true;
-                opt.MaxReceiveMessageSize = int.MaxValue;
-                opt.MaxSendMessageSize = int.MaxValue;
+                options.MaxReceiveMessageSize = 256 * 1024 * 1024; // 16 MB
+                options.MaxSendMessageSize = 256 * 1024 * 1024;    // 16 MB
             });
             builder.Services.AddSingleton<IRfqManagerService, RfqManagerService>();
             builder.Services.AddGrpcClient<MasterClient>(o =>
@@ -46,7 +71,20 @@
             })
             .ConfigureChannel(options =>
             {
-                options.MaxReceiveMessageSize = 256 * 1024 * 1024; // 256 MB
+                options.MaxReceiveMessageSize = 256 * 1024 * 1024; // 16 MB
+                options.MaxSendMessageSize = 256 * 1024 * 1024;    // 16 MB
+            })
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            new SocketsHttpHandler
+            {
+                PooledConnectionIdleTimeout = Timeout.InfiniteTimeSpan,
+                KeepAlivePingDelay = TimeSpan.FromSeconds(60),
+                KeepAlivePingTimeout = TimeSpan.FromSeconds(30),
+                EnableMultipleHttp2Connections = true
+            })
+            .ConfigureHttpClient(client =>
+            {
+                client.Timeout = TimeSpan.FromSeconds(600); // 60 seconds timeout
             });
             builder.Services.AddGrpcClient<Adss.AdssGrpc.AdssGrpcClient>(o =>
             {

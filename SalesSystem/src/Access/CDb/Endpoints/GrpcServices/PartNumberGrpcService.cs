@@ -28,7 +28,7 @@
                 case RequestType.ReadAll:
                 {
                     CancellationToken cancellationToken = context.CancellationToken;
-                    ListPartNumberGrpc response = await _CDbAccessService.ReadAllPartNumbers(cancellationToken);
+                    ListPartNumberGrpc response = await _CDbAccessService.ReadAllPartNumbers(cancellationToken, request.GrpcRequestParameter.Position, request.GrpcRequestParameter.Take);
                     return response;
                 }
 

@@ -33,14 +33,23 @@
             return false;
         }
 
-        public async Task<ListPartNumberGrpc> ReadAllPartNumbers(CancellationToken cancellationToken)
+        public async Task<ListPartNumberGrpc> ReadAllPartNumbers(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
-            if (!_PartNumberGrpcs.PartNumberGrpcs.Any())
+            if (_PartNumberGrpcs.PartNumberGrpcs.Any())
             {
-                await PopulatePartNumberData(cancellationToken);
+                if (takeAmount <= 0)
+                {
+                    return _PartNumberGrpcs;
+                }
+
+                ListPartNumberGrpc returnList = new ListPartNumberGrpc();
+                IQueryable<PartNumberGrpc> query = _PartNumberGrpcs.PartNumberGrpcs.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.PartNumberGrpcs.AddRange(query);
+                return returnList;
             }
 
+            await PopulatePartNumberData(cancellationToken);
             return _PartNumberGrpcs;
         }
 

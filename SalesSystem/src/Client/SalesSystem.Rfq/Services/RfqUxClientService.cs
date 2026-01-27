@@ -1,3 +1,5 @@
+using Grpc.Net.Client.Internal;
+
 namespace SalesSystem.Rfq.Services
 {
     public class RfqUxClientService : IDisposable
@@ -29,6 +31,7 @@ namespace SalesSystem.Rfq.Services
         public IReadOnlyCollection<ProjectAssociationUx> CustomerProjectAssociations => _CustomerProjectAssociations.AsReadOnly();
         public IReadOnlyCollection<string> QuotationNumbers => _QuotationNumbers.AsReadOnly();
         public IReadOnlyCollection<AlternativePartUxModel> AlternativeParts => _AlternativeParts.AsReadOnly();
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
         public RfqUxClientService(IConfiguration configuration, ILogger<RfqUxClientService>? logger = null)
         {
             _Logger = logger;
@@ -36,11 +39,20 @@ namespace SalesSystem.Rfq.Services
             string serviceUrl = configuration["GrpcService:Url"] ?? "https://localhost:7207";
             int timeoutSeconds = configuration.GetValue("GrpcService:TimeoutSeconds", 120);
             _Timeout = TimeSpan.FromSeconds(timeoutSeconds);
+            _MAX_GRPC_RESPONSE_SIZE = 256 * 1024 * 1024;
 
-            _Channel = GrpcChannel.ForAddress(serviceUrl);
+            //_Channel = GrpcChannel.ForAddress(serviceUrl);
+            _Channel = GrpcChannel.ForAddress(serviceUrl, new GrpcChannelOptions
+            {
+                MaxReceiveMessageSize = _MAX_GRPC_RESPONSE_SIZE,
+                MaxSendMessageSize = _MAX_GRPC_RESPONSE_SIZE
+            });
             _Client = new RfqModule.RfqModule.RfqModuleClient(_Channel);
 
-            _Logger?.GenericLogInformation($"RfqUxClientService initialized for service URL: {serviceUrl} with timeout: {timeoutSeconds}s");
+            _Logger?.GenericLogInformation(
+                $"RfqUxClientService initialized for service URL: {serviceUrl} " +
+                $"with timeout: {timeoutSeconds}s, MaxReceive: {_MAX_GRPC_RESPONSE_SIZE/1024/1024}MB, MaxSend: {_MAX_GRPC_RESPONSE_SIZE/1024/1024}MB");
+
             _Disposed = false;
 
             // cache initialization
@@ -59,7 +71,6 @@ namespace SalesSystem.Rfq.Services
             _RfqDrawingPartNumbers= new();
             _AlternativeParts= new();
 
-            _MAX_GRPC_RESPONSE_SIZE = 256 * 1024 * 1024; // 128MB
         }
         #endregion
 
@@ -681,15 +692,15 @@ namespace SalesSystem.Rfq.Services
         #endregion
 
         #region Part alternatives
-        public async Task<int> GetAllAlternativePartsAsync()
+        public async Task<int> GetAllAlternativePartsAsync(int position, int take)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
 
             try
             {
                 GetAllAlternativePartsGrpcRequest request = new GetAllAlternativePartsGrpcRequest();
-                request.Position = 0;
-                request.Take = 0;
+                request.Position = position;
+                request.Take = take;
 
                 GetAllAlternativePartsGrpcResponse response = await _Client.GetAllAlternativePartsGrpcAsync(request, cancellationToken: timeoutCts.Token);
 
@@ -697,10 +708,10 @@ namespace SalesSystem.Rfq.Services
                 _AlternativeParts.Clear();
                 foreach (RfqAlternativePartsGrpc? part in response.AlternativeParts)
                 {
-                    if (0.0 <= part.Price && !string.IsNullOrWhiteSpace(part.SumitomoNumber))
-                    {
-                        continue; // skip parts with no price or empty number
-                    }
+                    //if (0.0 <= part.Price && !string.IsNullOrWhiteSpace(part.SumitomoNumber))
+                    //{
+                    //    continue; // skip parts with no price or empty number
+                    //}
 
                     AlternativePartUxModel? uxModel = part.ToUx();
                     if (null != uxModel)

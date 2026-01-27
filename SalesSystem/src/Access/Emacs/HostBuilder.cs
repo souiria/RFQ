@@ -7,6 +7,18 @@
             builder ??= WebApplication.CreateBuilder(args);
 
             #region Builder
+            #region Kestrel
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.Limits.MaxRequestBodySize = 256 * 1024 * 1024; // 256 MB
+                options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10);
+                options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(5);
+                options.Limits.MinResponseDataRate = null;
+                options.Limits.MinRequestBodyDataRate = null;
+            });
+            #endregion
+
+
             builder.Services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => true;

@@ -28,7 +28,7 @@
                 case RequestType.ReadAll:
                 {
                     CancellationToken cancellationToken = context.CancellationToken;
-                    ListCompositeComponentGrpc response = await _CDbAccessService.ReadAllCompositeComponents(cancellationToken);
+                    ListCompositeComponentGrpc response = await _CDbAccessService.ReadAllCompositeComponents(cancellationToken, request.GrpcRequestParameter.Position, request.GrpcRequestParameter.Take);
                     return response;
                 }
                 default:

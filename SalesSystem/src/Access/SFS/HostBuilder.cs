@@ -29,7 +29,12 @@
             builder.Services.AddScoped(typeof(ISFSReadRepository<>), typeof(SFSRepository<>));
             builder.AddServiceDefaults();
             builder.Logging.AddSeq();
-            builder.Services.AddGrpc();
+            builder.Services.AddGrpc(opt =>
+            {
+                opt.EnableDetailedErrors = true;
+                opt.MaxReceiveMessageSize = int.MaxValue;
+                opt.MaxSendMessageSize = int.MaxValue;
+            });
             //builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddScoped<ISFSAccessService, SFSAccessService>();
             builder.Services.AddScoped(typeof(IQueryHandler<GetCalculationTypeQuery, List<CalculationTypeViewGrpc>>), typeof(CQRS.Handler.CalculationType.QueryHandler));

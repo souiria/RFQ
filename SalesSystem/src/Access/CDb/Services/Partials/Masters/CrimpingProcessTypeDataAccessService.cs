@@ -33,14 +33,23 @@
             return false;
         }
 
-        public async Task<ListCrimpingProcessTypeGrpc> ReadAllCrimpingProcessTypes(CancellationToken cancellationToken)
+        public async Task<ListCrimpingProcessTypeGrpc> ReadAllCrimpingProcessTypes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
-            if (!_CrimpingProcessTypeGrpcs.CrimpingProcessTypeGrpcs.Any())
+            if (_CrimpingProcessTypeGrpcs.CrimpingProcessTypeGrpcs.Any())
             {
-                await PopulateCrimpingProcessTypeData(cancellationToken);
+                if (takeAmount <= 0)
+                {
+                    return _CrimpingProcessTypeGrpcs;
+                }
+
+                ListCrimpingProcessTypeGrpc returnList = new ListCrimpingProcessTypeGrpc();
+                IQueryable<CrimpingProcessTypeGrpc> query = _CrimpingProcessTypeGrpcs.CrimpingProcessTypeGrpcs.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.CrimpingProcessTypeGrpcs.AddRange(query);
+                return returnList;
             }
 
+            await PopulateCrimpingProcessTypeData(cancellationToken);
             return _CrimpingProcessTypeGrpcs;
         }
 

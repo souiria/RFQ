@@ -14,15 +14,19 @@
         public async Task<Result<List<AlternativePartsGrpc>>> Handle(GetAlternativePartsQuery query, CancellationToken cancellationToken)
         {
             _AlternativeParts.Clear();
-            GetAlternativePartsReadOnlySpec spec = new GetAlternativePartsReadOnlySpec(query.Position, query.TakeAmount);
-            List<DbAlternativeParts> results = await _Repository.ListAsync(spec, cancellationToken);
-            foreach (DbAlternativeParts result in results)
+            TimeSpan ts = TimeSpan.FromSeconds(120);
+            using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
             {
-                AlternativePartsGrpc alternativePartsGrpc = result.MapToAlternativePartsGrpc();
-                _AlternativeParts.Add(alternativePartsGrpc);
-            }
+                GetAlternativePartsReadOnlySpec spec = new GetAlternativePartsReadOnlySpec(query.Position, query.TakeAmount);
+                List<DbAlternativeParts> results = await _Repository.ListAsync(spec, cts.Token);
+                foreach (DbAlternativeParts result in results)
+                {
+                    AlternativePartsGrpc alternativePartsGrpc = result.MapToAlternativePartsGrpc();
+                    _AlternativeParts.Add(alternativePartsGrpc);
+                }
 
-            return _AlternativeParts;
+                return _AlternativeParts;
+            }
         }
     }
 }

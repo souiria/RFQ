@@ -44,7 +44,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _PurchasingAccessService.GetAllH1CPD(context.CancellationToken);
+                return await _PurchasingAccessService.GetAllH1CPD(context.CancellationToken, request.PurchasingGrpcRequestParameter.Position, request.PurchasingGrpcRequestParameter.Take);
                 default:
                 {
                     Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");

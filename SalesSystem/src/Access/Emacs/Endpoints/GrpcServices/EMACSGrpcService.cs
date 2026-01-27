@@ -25,7 +25,7 @@ namespace Emacs.Endpoints.GrpcServices
         public override async Task<ListCombinedPartsGrpc> GetCombinedPartsGrpc(CombinedPartsGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetCombinedPartsGrpc starting");
-            return await _EMACSAccessService.GetAllCombinedParts(context.CancellationToken);
+            return await _EMACSAccessService.GetAllCombinedParts(context.CancellationToken, request.Position, request.TakeAmount);
 
         }
 
@@ -42,7 +42,7 @@ namespace Emacs.Endpoints.GrpcServices
         public override async Task<ListPartCategoryDetailGrpc> GetPartCategoryDetailGrpc(PartCategoryDetailGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetPartCategoryDetailGrpc starting");
-            return await _EMACSAccessService.GetAllPartCategoryDetail(context.CancellationToken);
+            return await _EMACSAccessService.GetAllPartCategoryDetail(context.CancellationToken, request.Position, request.TakeAmount);
         }
         #endregion
 
@@ -50,7 +50,7 @@ namespace Emacs.Endpoints.GrpcServices
         public override async Task<ListPartClassDetailGrpc> GetPartClassDetailGrpc(PartClassDetailGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetPartClassDetailGrpc starting");
-            return await _EMACSAccessService.GetAllPartClassDetail(context.CancellationToken);
+            return await _EMACSAccessService.GetAllPartClassDetail(context.CancellationToken, request.Position, request.TakeAmount);
         }
         #endregion
 
@@ -58,7 +58,7 @@ namespace Emacs.Endpoints.GrpcServices
         public override async Task<ListPartGroupsGrpc> GetPartGroupsGrpc(PartGroupsGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetPartGroupsGrpc starting");
-            return await _EMACSAccessService.GetAllPartGroups(context.CancellationToken);
+            return await _EMACSAccessService.GetAllPartGroups(context.CancellationToken, request.Position, request.TakeAmount);
         }
         #endregion
 
@@ -66,7 +66,7 @@ namespace Emacs.Endpoints.GrpcServices
         public override async Task<ListPartGroupsConstGrpc> GetPartGroupsConstGrpc(PartGroupsConstGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetPartGroupsConstGrpc starting");
-            return await _EMACSAccessService.GetAllPartGroupsConst(context.CancellationToken);
+            return await _EMACSAccessService.GetAllPartGroupsConst(context.CancellationToken, request.Position, request.TakeAmount);
         }
         #endregion
 
@@ -74,7 +74,7 @@ namespace Emacs.Endpoints.GrpcServices
         public override async Task<ListCustomerDataGrpc> GetCustomerDataGrpc(GetCustomerDataGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetCustomerDataGrpc starting");
-            return await _EMACSAccessService.GetAllCustomerData(context.CancellationToken);
+            return await _EMACSAccessService.GetAllCustomerData(context.CancellationToken, request.Position, request.TakeAmount);
         }
         #endregion
 
@@ -82,7 +82,7 @@ namespace Emacs.Endpoints.GrpcServices
         public override async Task<ListColourCodeGrpc> GetColourCodeGrpc(GetColourCodeGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetColourCode starting");
-            return await _EMACSAccessService.GetAllColourCode(context.CancellationToken);
+            return await _EMACSAccessService.GetAllColourCode(context.CancellationToken, request.Position, request.TakeAmount);
         }
         #endregion
 
@@ -90,7 +90,7 @@ namespace Emacs.Endpoints.GrpcServices
         public override async Task<ListMaterialGroupsGrpc> GetMaterialGroupsGrpc(GetMaterialGroupsGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetMaterialGroups starting");
-            return await _EMACSAccessService.GetAllMaterialGroups(context.CancellationToken);
+            return await _EMACSAccessService.GetAllMaterialGroups(context.CancellationToken, request.Position, request.TakeAmount);
         }
         #endregion
 
@@ -98,7 +98,7 @@ namespace Emacs.Endpoints.GrpcServices
         public override async Task<ListMaterialTypesGrpc> GetMaterialTypesGrpc(GetMaterialTypesGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetMaterialTypes starting");
-            return await _EMACSAccessService.GetAllMaterialTypes(context.CancellationToken);
+            return await _EMACSAccessService.GetAllMaterialTypes(context.CancellationToken, request.Position, request.TakeAmount);
         }
         #endregion
 
@@ -106,7 +106,7 @@ namespace Emacs.Endpoints.GrpcServices
         public override async Task<ListNPACustomerGrpc> GetNPACustomerGrpc(GetNPACustomerGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetNPACustomer starting");
-            return await _EMACSAccessService.GetAllNPACustomer(context.CancellationToken);
+            return await _EMACSAccessService.GetAllNPACustomer(context.CancellationToken, request.Position, request.TakeAmount);
         }
         #endregion
 
@@ -114,7 +114,7 @@ namespace Emacs.Endpoints.GrpcServices
         public override async Task<ListNPASupplierGrpc> GetNPASupplierGrpc(GetNPASupplierGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetNPASupplier starting");
-            return await _EMACSAccessService.GetAllNPASupplier(context.CancellationToken);
+            return await _EMACSAccessService.GetAllNPASupplier(context.CancellationToken, request.Position, request.TakeAmount);
         }
         #endregion
 
@@ -122,7 +122,7 @@ namespace Emacs.Endpoints.GrpcServices
         public override async Task<ListSuppliersGrpc> GetSuppliersGrpc(GetSuppliersGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetSuppliers starting");
-            return await _EMACSAccessService.GetAllSuppliers(context.CancellationToken);
+            return await _EMACSAccessService.GetAllSuppliers(context.CancellationToken, request.Position, request.TakeAmount);
         }
         #endregion
 
@@ -130,7 +130,7 @@ namespace Emacs.Endpoints.GrpcServices
         public override async Task<ListEmacsRFIViewGrpc> GetEmacsRFIViewGrpc(GetEmacsRFIViewGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetEmacsRFIView starting");
-            return await _EMACSAccessService.GetAllEmacsRFIView(context.CancellationToken);
+            return await _EMACSAccessService.GetAllEmacsRFIView(context.CancellationToken, request.Position, request.TakeAmount);
         }
         #endregion
 
@@ -139,7 +139,7 @@ namespace Emacs.Endpoints.GrpcServices
         {
             _Logger.GenericLogInformation("GetPARTMSGrpcData starting");
 
-            return await _EMACSAccessService.GetAllPARTMSGrpc(context.CancellationToken);
+            return await _EMACSAccessService.GetAllPARTMSGrpc(context.CancellationToken, request.Position, request.TakeAmount);
         }
         #endregion
 
@@ -147,7 +147,7 @@ namespace Emacs.Endpoints.GrpcServices
         public override async Task<ListAlternativePartsGrpc> GetAlternativePartsGrpc(GetAlternativePartsGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation($"EMACSAccessService GetAlternativePartsGrpc starting at {request.Position} taking {request.TakeAmount}");
-            // Use cts.Token here
+
             Stopwatch sw  = Stopwatch.StartNew();
             ListAlternativePartsGrpc parts = await _EMACSAccessService.GetAllAlternativePartsGrpc(context.CancellationToken, request.Position, request.TakeAmount);
             sw.Stop();

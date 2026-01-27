@@ -77,7 +77,7 @@
                 case RequestType.ReadAll:
                 {
                     CancellationToken cancellationToken = context.CancellationToken;
-                    ListPartnerGrpc response = await _CDbAccessService.ReadAllPartners(cancellationToken);
+                    ListPartnerGrpc response = await _CDbAccessService.ReadAllPartners(cancellationToken, request.GrpcRequestParameter.Position, request.GrpcRequestParameter.Take);
                     return response;
                 }
 

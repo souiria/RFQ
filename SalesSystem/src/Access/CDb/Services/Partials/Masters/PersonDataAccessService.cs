@@ -33,14 +33,23 @@
             return false;
         }
 
-        public async Task<ListPersonGrpc> ReadAllPersons(CancellationToken cancellationToken)
+        public async Task<ListPersonGrpc> ReadAllPersons(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
-            if (!_PersonGrpcs.PersonGrpcs.Any())
+            if (_PersonGrpcs.PersonGrpcs.Any())
             {
-                await PopulatePersonData(cancellationToken);
+                if (takeAmount <= 0)
+                {
+                    return _PersonGrpcs;
+                }
+
+                ListPersonGrpc returnList = new ListPersonGrpc();
+                IQueryable<PersonGrpc> query = _PersonGrpcs.PersonGrpcs.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.PersonGrpcs.AddRange(query);
+                return returnList;
             }
 
+            await PopulatePersonData(cancellationToken);
             return _PersonGrpcs;
         }
       
