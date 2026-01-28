@@ -9,9 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Emacs\Client\**" />
-    <EmbeddedResource Remove="Emacs\Client\**" />
-    <None Remove="Emacs\Client\**" />
+    <Compile Remove="Rfq\Client\**" />
+    <EmbeddedResource Remove="Rfq\Client\**" />
+    <None Remove="Rfq\Client\**" />
   </ItemGroup>
 
   <ItemGroup>
