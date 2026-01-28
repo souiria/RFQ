@@ -1,4 +1,4 @@
-@using SalesSystem.Rfq.Models
+﻿@using SalesSystem.Rfq.Models
 @using MudBlazor
 
 @inject RfqUxClientService RfqUxClientService
@@ -152,6 +152,9 @@
         set => _alternativePartFilter = value;
     }
 
+    private string _lastCompiledFilter = "";
+    private Func<AlternativePartUxModel, bool>? _compiledQuickFilter;
+
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
 
     MudDataGrid<AlternativePartUxModel> _alternativePartNumbersGrid { get; set; } = null!;
@@ -165,50 +168,126 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Load related components
         try
         {
             AlternativePartFilter = "";
             IsLoading = true;
             Logger.LogInformation("PickAlternativePartDialog starting up...");
 
+            // Load all parts (the servevice is using local caching)
             int alternativePartsCount = await RfqUxClientService.GetAllAlternativePartsAsync(0, -1);
+
+            Logger.LogInformation($"Loaded {alternativePartsCount} alternative parts");
 
             IsLoading = false;
         }
         catch (Exception ex)
         {
+            IsLoading = false; // Also set to false on error
+
             var stackTrace = new System.Diagnostics.StackTrace(ex, true);
             var frame = stackTrace.GetFrame(0);
             var lineNumber = frame?.GetFileLineNumber() ?? 0;
             var methodName = frame?.GetMethod()?.Name ?? "Unknown";
 
-            Console.WriteLine($"ERROR in PickAlternativePartDialog.OnInitializedAsync at line {lineNumber} in method {methodName}: {ex.Message}");
-            Console.WriteLine($"Full stack trace: {ex.StackTrace}");
+            Logger.LogError(ex, $"ERROR in PickAlternativePartDialog.OnInitializedAsync at line {lineNumber} in method {methodName}");
+
+            Snackbar.Add($"Error loading alternative parts: {ex.Message}", Severity.Error);
         }
     }
 
     private async Task PickAlternativePart(AlternativePartUxModel alternativePart)
     {
-        await Task.Delay(1);
-        if (string.IsNullOrEmpty(alternativePart.SumitomoNumber))
+        if (alternativePart == null)
         {
-            Snackbar.Add($"Selected part has no SumitomoNumber", Severity.Error);
+            Snackbar.Add("No part selected", Severity.Error);
             return;
         }
 
-        if (alternativePart.Price>0)
+        if (string.IsNullOrEmpty(alternativePart.SumitomoNumber))
         {
+            Snackbar.Add("Selected part has no Sumitomo Number", Severity.Error);
+            return;
+        }
+
+        if (!alternativePart.Price.HasValue || alternativePart.Price.Value <= 0)
+        {
+            Snackbar.Add("Selected part has no price", Severity.Error);
+            return;
+        }
+
+        await InvokeAsync(async () =>
+        {
+            // Set values
             AlternativePartNumber = alternativePart.SumitomoNumber;
-            AlternativePrice = (decimal)alternativePart.Price;
+            AlternativePrice = (decimal)alternativePart.Price.Value;
+
+            // Force update
+            StateHasChanged();
+
+            // Wait for next render cycle
+            await Task.Yield();
+
+            // Validate form
             await _form.Validate();
-        }
-        else
-        {
-            Snackbar.Add($"Selected part no price", Severity.Error);
-        }
-        return;
+
+            // Final update
+            StateHasChanged();
+
+            Logger.LogInformation($"PickAlternativePartDialog.PickAlternativePart Form valid: {_isValid}, PartNumber: {AlternativePartNumber}, Price: {AlternativePrice}");
+
+            Snackbar.Add($"PickAlternativePartDialog.PickAlternativePart  Selected: {AlternativePartNumber} - ${AlternativePrice:F2}", Severity.Success);
+        });
     }
+
+    // private async Task PickAlternativePart(AlternativePartUxModel alternativePart)
+    // {
+    //     if (alternativePart == null)
+    //     {
+    //         Snackbar.Add("No part selected", Severity.Error);
+    //         return;
+    //     }
+
+    //     if (string.IsNullOrEmpty(alternativePart.SumitomoNumber))
+    //     {
+    //         Snackbar.Add("Selected part has no Sumitomo Number", Severity.Error);
+    //         return;
+    //     }
+
+    //     if (!alternativePart.Price.HasValue || alternativePart.Price.Value <= 0)
+    //     {
+    //         Snackbar.Add("Selected part has no price", Severity.Error);
+    //         return;
+    //     }
+
+    //     // Set values
+    //     AlternativePartNumber = alternativePart.SumitomoNumber;
+    //     AlternativePrice = (decimal)alternativePart.Price.Value;
+
+    //     StateHasChanged();
+
+    //     // Validate
+    //     await _form.Validate();
+
+    //     // Manually check if values are valid
+    //     bool manualValidation = !string.IsNullOrWhiteSpace(AlternativePartNumber)
+    //                           && AlternativePrice.HasValue
+    //                           && AlternativePrice.Value > 0;
+
+    //     Logger.LogInformation($"Auto validation: {_isValid}, Manual validation: {manualValidation}");
+
+    //     if (!_isValid && manualValidation)
+    //     {
+    //         // Force isValid if manual check passes but form validation didn't update
+    //         _isValid = true;
+    //         StateHasChanged();
+    //         Logger.LogWarning("Forced _isValid to true based on manual validation");
+    //     }
+
+    //     StateHasChanged();
+
+    //     Snackbar.Add($"Selected: {AlternativePartNumber} - ${AlternativePrice:F2}", Severity.Success);
+    // }
 
     private async Task ShowInfo(AlternativePartUxModel alternativePart)
     {
@@ -271,11 +350,74 @@
         if (string.IsNullOrWhiteSpace(AlternativePartFilter))
             return true;
 
-        if (x.SumitomoNumber?.Contains(AlternativePartFilter, StringComparison.OrdinalIgnoreCase) == true)
-            return true;
+        // Compile filter only when it changes
+        if (_lastCompiledFilter != AlternativePartFilter)
+        {
+            _lastCompiledFilter = AlternativePartFilter;
+            var filter = AlternativePartFilter.Trim();
+            var comparisonType = StringComparison.OrdinalIgnoreCase;
+            var isNumeric = double.TryParse(filter, out double numericFilter);
 
-        // ...
+            _compiledQuickFilter = item =>
+            {
+                // String property checks
+                if (item.SumitomoNumber?.Contains(filter, comparisonType) == true) return true;
+                if (item.SumitomoDescription?.Contains(filter, comparisonType) == true) return true;
+                // if (item.MainSupplier?.Contains(filter, comparisonType) == true) return true;
+                if (item.SupplierName?.Contains(filter, comparisonType) == true) return true;
+                if (item.SupplierNumber?.Contains(filter, comparisonType) == true) return true;
+                if (item.CurrencyCode?.Contains(filter, comparisonType) == true) return true;
+                if (item.UnitOfMeasure?.Contains(filter, comparisonType) == true) return true;
+                if (item.PartGroup?.Contains(filter, comparisonType) == true) return true;
+                if (item.GroupDescription?.Contains(filter, comparisonType) == true) return true;
+                if (item.Class1?.Contains(filter, comparisonType) == true) return true;
+                if (item.Class1Name?.Contains(filter, comparisonType) == true) return true;
+                // if (item.Class2?.Contains(filter, comparisonType) == true) return true;
+                if (item.Class2Name?.Contains(filter, comparisonType) == true) return true;
+                if (item.ColourCode?.Contains(filter, comparisonType) == true) return true;
+                if (item.ColorName?.Contains(filter, comparisonType) == true) return true;
+                if (item.MaterialGroup?.Contains(filter, comparisonType) == true) return true;
+                if (item.MaterialType?.Contains(filter, comparisonType) == true) return true;
+                if (item.TypeDescription?.Contains(filter, comparisonType) == true) return true;
+                if (item.CategoryCode?.Contains(filter, comparisonType) == true) return true;
+                if (item.CategoryName?.Contains(filter, comparisonType) == true) return true;
+                if (item.UoM?.Contains(filter, comparisonType) == true) return true;
+                if (item.CustomerCode?.Contains(filter, comparisonType) == true) return true;
+                if (item.CustomerId?.Contains(filter, comparisonType) == true) return true;
+                if (item.Group1?.Contains(filter, comparisonType) == true) return true;
+                if (item.Group2?.Contains(filter, comparisonType) == true) return true;
+                if (item.Group3?.Contains(filter, comparisonType) == true) return true;
+                if (item.Group4?.Contains(filter, comparisonType) == true) return true;
+                if (item.Group5?.Contains(filter, comparisonType) == true) return true;
+                if (item.Group6?.Contains(filter, comparisonType) == true) return true;
+                if (item.Group7?.Contains(filter, comparisonType) == true) return true;
+                if (item.Group8?.Contains(filter, comparisonType) == true) return true;
+                // if (item.Grease?.Contains(filter, comparisonType) == true) return true;
+                if (item.CategoryCode2?.Contains(filter, comparisonType) == true) return true;
+                // if (item.Tilt?.Contains(filter, comparisonType) == true) return true;
 
-        return false;
+                // Numeric property checks
+                if (isNumeric)
+                {
+                    if (item.Price?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.NumberOfCavity?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.InsideDiameter?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.WallThickness?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.Length?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.WidthOrOutsideDiameter?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.MassOrWeight?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.MassOrWeight2?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.Quantity?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.L1?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.L2?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.L3?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.PitchWidth?.ToString().Contains(filter, comparisonType) == true) return true;
+                }
+
+                return false;
+            };
+        }
+
+        return _compiledQuickFilter?.Invoke(x) ?? true;
     };
 }

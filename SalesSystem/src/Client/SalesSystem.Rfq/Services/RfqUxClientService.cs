@@ -701,47 +701,73 @@ namespace SalesSystem.Rfq.Services
 
             try
             {
-                if(AlternativeParts.Count == 0 
-                    || (0 <= AlternativeParts.Count && (position != _AlternativePartsPosition || take != _AlternativePartsTake)))
+                // Check if cache is valid
+                bool cacheIsEmpty = _AlternativeParts.Count == 0;
+                bool parametersChanged = position != _AlternativePartsPosition || take != _AlternativePartsTake;
+
+                if (cacheIsEmpty || parametersChanged)
                 {
-                    // cache empty or parameters changed
+                    _Logger?.GenericLogInformation(
+                        $"RfqUxClientService.GetAllAlternativePartsAsync loading alternative parts " +
+                        $"(position={position}, take={take}, reason={(cacheIsEmpty ? "cache empty" : "parameters changed")})");
+
+                    Stopwatch stopwatch = Stopwatch.StartNew();
+
+                    // Fetch from server
                     GetAllAlternativePartsGrpcRequest request = new GetAllAlternativePartsGrpcRequest();
                     request.Position = position;
                     request.Take = take;
 
-                    Stopwatch stopWatch = Stopwatch.StartNew();
-                    stopWatch.Start();
-                    _Logger?.GenericLogInformation($"RfqUxClientService.GetAllAlternativePartsAsync loading alternative parts ...");
-
                     GetAllAlternativePartsGrpcResponse response = await _Client.GetAllAlternativePartsGrpcAsync(request, cancellationToken: timeoutCts.Token);
 
-                    stopWatch.Stop();
-                    _Logger?.GenericLogInformation($"... count {response.AlternativeParts.Count} in {stopWatch.ElapsedMilliseconds} ms");
+                    stopwatch.Stop();
+                    _Logger?.GenericLogInformation(
+                        $"... received {response.AlternativeParts.Count} parts in {stopwatch.ElapsedMilliseconds}ms");
 
-                    // ux list
+                    // Update cache
                     _AlternativeParts.Clear();
                     foreach (RfqAlternativePartsGrpc? part in response.AlternativeParts)
                     {
-                        AlternativePartUxModel? uxModel = part.ToUx();
-                        if (null != uxModel)
+                        AlternativePartUxModel uxModel = part.ToUx();
+                        if (uxModel != null)
                         {
                             _AlternativeParts.Add(uxModel);
                         }
                     }
+
+                    // Update cached parameters
+                    _AlternativePartsPosition = position;
+                    _AlternativePartsTake = take;
                 }
                 else
                 {
-                    // no parameter change and the cache is in
-                    ;
+                    _Logger?.GenericLogInformation(
+                        $"RfqUxClientService.GetAllAlternativePartsAsync using cached data " +
+                        $"({_AlternativeParts.Count} parts, position={position}, take={take})");
                 }
 
                 return _AlternativeParts.Count;
             }
             catch (Exception ex)
             {
-                _Logger?.GenericLogError($"Error in GetAllAlternativePartsGrpcAsync ", ex);
+                _Logger?.GenericLogError($"Error in GetAllAlternativePartsGrpcAsync", ex);
                 throw;
             }
+        }
+        public void ClearAlternativePartsCache()
+        {
+            _AlternativeParts.Clear();
+            _AlternativePartsPosition = 0;
+            _AlternativePartsTake = -1;
+            _Logger?.GenericLogInformation("Alternative parts cache cleared");
+        }
+
+        // Add method to check if cache is valid
+        public bool IsAlternativePartsCacheValid(int position, int take)
+        {
+            return 0 <= _AlternativeParts.Count
+                && _AlternativePartsPosition == position
+                && _AlternativePartsTake == take;
         }
         public async Task<PartInfoUxModel> GetPartInfoAsync(string partNumber)
         {

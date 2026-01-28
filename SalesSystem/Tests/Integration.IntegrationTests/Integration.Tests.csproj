@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Emacs\Client\**" />
+    <EmbeddedResource Remove="Emacs\Client\**" />
+    <None Remove="Emacs\Client\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="CDb\appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
@@ -45,10 +51,6 @@
 
   <ItemGroup>
     <Using Include="NUnit.Framework" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Emacs\Client\" />
   </ItemGroup>
 
 </Project>
