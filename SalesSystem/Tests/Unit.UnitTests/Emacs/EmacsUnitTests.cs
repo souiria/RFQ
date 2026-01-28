@@ -14,9 +14,10 @@ namespace Unit.Tests.Emacs
         {
             ServiceCollection serviceCollection = new ServiceCollection();
             ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
-            _EMACSAccessService = new EMACSAccessService(serviceProvider, true);
-            Mock<ILogger<EMACSGrpcService>> logger = new Mock<ILogger<EMACSGrpcService>>();
-            _GrpcService = new EMACSGrpcService(_EMACSAccessService, logger.Object);
+            Mock<ILogger<EMACSAccessService>> logger = new Mock<ILogger<EMACSAccessService>>();
+            Mock<ILogger<EMACSGrpcService>> logger2 = new Mock<ILogger<EMACSGrpcService>>();
+            _EMACSAccessService = new EMACSAccessService(serviceProvider, logger.Object, true);
+            _GrpcService = new EMACSGrpcService(_EMACSAccessService, logger2.Object);
         }
 
         [Test]

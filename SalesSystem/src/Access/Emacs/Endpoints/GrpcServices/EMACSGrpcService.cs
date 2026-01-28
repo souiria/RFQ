@@ -144,8 +144,13 @@
         #region AlternateParts
         public override async Task<ListAlternativePartsGrpc> GetAlternativePartsGrpc(GetAlternativePartsGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("GetAlternativePartsGrpc starting");
-            return await _EMACSAccessService.GetAllAlternativePartsGrpc(context.CancellationToken, request.Position, request.TakeAmount);
+            _Logger.GenericLogInformation($"EMACSAccessService GetAlternativePartsGrpc starting at {request.Position} taking {request.TakeAmount}");
+
+            Stopwatch sw  = Stopwatch.StartNew();
+            ListAlternativePartsGrpc parts = await _EMACSAccessService.GetAllAlternativePartsGrpc(context.CancellationToken, request.Position, request.TakeAmount);
+            sw.Stop();
+            _Logger.GenericLogInformation($"EMACSAccessService GetAlternativePartsGrpc returning {parts.AlternativePartsGrpc.Count} parts in {sw.ElapsedMilliseconds}ms");
+            return parts;
         }
         #endregion
 

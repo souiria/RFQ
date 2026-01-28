@@ -15,15 +15,16 @@ namespace Integration.Tests.Emacs
         {
             ServiceCollection serviceCollection = new ServiceCollection();
             ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
-            _EMACSAccessService = new EMACSAccessService(serviceProvider, testing: true);
 
             _LoggerFactory = LoggerFactory.Create(builder =>
             {
                 builder.AddConsole();
             });
-            ILogger<EMACSGrpcService> logger = _LoggerFactory.CreateLogger<EMACSGrpcService>();
+            ILogger<EMACSAccessService> logger = _LoggerFactory.CreateLogger<EMACSAccessService>();
+            ILogger<EMACSGrpcService> logger2 = _LoggerFactory.CreateLogger<EMACSGrpcService>();
 
-            _GrpcService = new EMACSGrpcService(_EMACSAccessService, logger);
+            _EMACSAccessService = new EMACSAccessService(serviceProvider, logger, testing: true);
+            _GrpcService = new EMACSGrpcService(_EMACSAccessService, logger2);
         }
 
         [TearDown]

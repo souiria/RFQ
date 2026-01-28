@@ -7,6 +7,18 @@
             builder ??= WebApplication.CreateBuilder(args);
 
             #region Builder
+            #region Kestrel
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.Limits.MaxRequestBodySize = 256 * 1024 * 1024; // 256 MB
+                options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10);
+                options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(5);
+                options.Limits.MinResponseDataRate = null;
+                options.Limits.MinRequestBodyDataRate = null;
+            });
+            #endregion
+
+
             builder.Services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => true;
@@ -19,7 +31,12 @@
 
             builder.AddServiceDefaults();
             builder.Logging.AddSeq();
-            builder.Services.AddGrpc();
+            builder.Services.AddGrpc(opt =>
+            {
+                opt.EnableDetailedErrors = true;
+                opt.MaxReceiveMessageSize = int.MaxValue;
+                opt.MaxSendMessageSize = int.MaxValue;
+            });
             builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddSingleton<IEMACSAccessService, EMACSAccessService>();
             builder.Services.AddHostedService<DataImportSchedulerService>();

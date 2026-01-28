@@ -212,10 +212,11 @@
         #endregion
 
         readonly IServiceProvider _ServiceProvider;
+        readonly ILogger<EMACSAccessService> _Logger;
         #endregion
 
         #region Constructor
-        public EMACSAccessService(IServiceProvider serviceProvider, bool testing = false)
+        public EMACSAccessService(IServiceProvider serviceProvider, ILogger<EMACSAccessService> logger, bool testing = false)
         {
             #region CombinedParts
 
@@ -332,7 +333,7 @@
             #endregion
 
             _ServiceProvider = serviceProvider;
-
+            _Logger = logger;
             if (testing)
             {
                 PopulateSampleData();
@@ -1175,12 +1176,14 @@
         #endregion
 
         #region AlternativeParts
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public async Task<bool> PopulateAlternativePartsAsync(CancellationToken cancellationToken)
         {
-            if (!_AlternativePartsRefreshInProgress)
+            try
             {
-                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                if (!_AlternativePartsRefreshInProgress)
                 {
+                    using IServiceScope scope = _ServiceProvider.CreateScope();
                     _AlternativePartsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAlternativePartsQuery, List<AlternativePartsGrpc>>>();
                     _AlternativePartsRefreshInProgress = true;
                     GetAlternativePartsQuery query = new GetAlternativePartsQuery();
@@ -1198,6 +1201,12 @@
                     _AlternativePartsRefreshInProgress = false;
                     return true;
                 }
+            }
+            catch(Exception ex)
+            {
+                _Logger.GenericLogInformation($"EMACSAccessService.PopulateAlternativePartsAsync exception {ex.Message}");
+                _ListAlternativeParts.AlternativePartsGrpc.Clear();
+                _AlternativePartsRefreshInProgress = false;
             }
 
             return false;
