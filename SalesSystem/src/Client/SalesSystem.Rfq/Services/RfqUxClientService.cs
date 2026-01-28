@@ -1,4 +1,5 @@
 using Grpc.Net.Client.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace SalesSystem.Rfq.Services
 {
@@ -21,6 +22,8 @@ namespace SalesSystem.Rfq.Services
         List<ProjectAssociationUx> _CustomerProjectAssociations;
         List<string> _QuotationNumbers;
         List<AlternativePartUxModel> _AlternativeParts;
+        int _AlternativePartsTake;
+        int _AlternativePartsPosition;
 
         // Cached data accessors
         public IReadOnlyCollection<RfqDrawingPartNumberUx?> RfqDrawingPartNumbers => _RfqDrawingPartNumbers.AsReadOnly();
@@ -32,7 +35,7 @@ namespace SalesSystem.Rfq.Services
         public IReadOnlyCollection<string> QuotationNumbers => _QuotationNumbers.AsReadOnly();
         public IReadOnlyCollection<AlternativePartUxModel> AlternativeParts => _AlternativeParts.AsReadOnly();
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
-        public RfqUxClientService(IConfiguration configuration, ILogger<RfqUxClientService>? logger = null)
+        public RfqUxClientService(IConfiguration configuration, ILogger<RfqUxClientService> logger)
         {
             _Logger = logger;
 
@@ -70,6 +73,8 @@ namespace SalesSystem.Rfq.Services
             };
             _RfqDrawingPartNumbers= new();
             _AlternativeParts= new();
+            _AlternativePartsPosition = 0;
+            _AlternativePartsTake = -1;
 
         }
         #endregion
@@ -692,32 +697,45 @@ namespace SalesSystem.Rfq.Services
         #endregion
 
         #region Part alternatives
-        public async Task<int> GetAllAlternativePartsAsync(int position, int take)
+        public async Task<int> GetAllAlternativePartsAsync(int position = 0, int take = -1)
         {
+            // take == -1 means get all
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
 
             try
             {
-                GetAllAlternativePartsGrpcRequest request = new GetAllAlternativePartsGrpcRequest();
-                request.Position = position;
-                request.Take = take;
-
-                GetAllAlternativePartsGrpcResponse response = await _Client.GetAllAlternativePartsGrpcAsync(request, cancellationToken: timeoutCts.Token);
-
-                // ux list
-                _AlternativeParts.Clear();
-                foreach (RfqAlternativePartsGrpc? part in response.AlternativeParts)
+                if(AlternativeParts.Count == 0 
+                    || (0 <= AlternativeParts.Count && (position != _AlternativePartsPosition || take != _AlternativePartsTake)))
                 {
-                    //if (0.0 <= part.Price && !string.IsNullOrWhiteSpace(part.SumitomoNumber))
-                    //{
-                    //    continue; // skip parts with no price or empty number
-                    //}
+                    // cache empty or parameters changed
+                    GetAllAlternativePartsGrpcRequest request = new GetAllAlternativePartsGrpcRequest();
+                    request.Position = position;
+                    request.Take = take;
 
-                    AlternativePartUxModel? uxModel = part.ToUx();
-                    if (null != uxModel)
+                    Stopwatch stopWatch = Stopwatch.StartNew();
+                    stopWatch.Start();
+                    _Logger?.GenericLogInformation($"RfqUxClientService.GetAllAlternativePartsAsync loading alternative parts ...");
+
+                    GetAllAlternativePartsGrpcResponse response = await _Client.GetAllAlternativePartsGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                    stopWatch.Stop();
+                    _Logger?.GenericLogInformation($"... count {response.AlternativeParts.Count} in {stopWatch.ElapsedMilliseconds} ms");
+
+                    // ux list
+                    _AlternativeParts.Clear();
+                    foreach (RfqAlternativePartsGrpc? part in response.AlternativeParts)
                     {
-                        _AlternativeParts.Add(uxModel);
+                        AlternativePartUxModel? uxModel = part.ToUx();
+                        if (null != uxModel)
+                        {
+                            _AlternativeParts.Add(uxModel);
+                        }
                     }
+                }
+                else
+                {
+                    // no parameter change and the cache is in
+                    ;
                 }
 
                 return _AlternativeParts.Count;

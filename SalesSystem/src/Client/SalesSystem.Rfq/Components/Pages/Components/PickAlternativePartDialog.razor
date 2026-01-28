@@ -172,15 +172,8 @@
             IsLoading = true;
             Logger.LogInformation("PickAlternativePartDialog starting up...");
 
+            int alternativePartsCount = await RfqUxClientService.GetAllAlternativePartsAsync(0, -1);
 
-            var stopWatch = System.Diagnostics.Stopwatch.StartNew();
-            stopWatch.Start();
-
-            int alternativePartsCount = await RfqUxClientService.GetAllAlternativePartsAsync(0, 0);
-            Logger.LogInformation($"PickAlternativePartDialog.OnInitializedAsync Loaded {alternativePartsCount} parts");
-
-            stopWatch.Stop();
-            Logger.LogInformation($"... in {stopWatch.ElapsedMilliseconds} ms");
             IsLoading = false;
         }
         catch (Exception ex)
