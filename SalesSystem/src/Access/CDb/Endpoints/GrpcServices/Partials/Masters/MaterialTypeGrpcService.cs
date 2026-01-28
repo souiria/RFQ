@@ -77,7 +77,7 @@
                 case RequestType.ReadAll:
                 {
                     CancellationToken cancellationToken = context.CancellationToken;
-                    ListMaterialTypeGrpc response = await _CDbAccessService.ReadAllMaterialTypes(cancellationToken);
+                    ListMaterialTypeGrpc response = await _CDbAccessService.ReadAllMaterialTypes(cancellationToken, request.GrpcRequestParameter.Position, request.GrpcRequestParameter.Take);
                     return response;
                 }
 

@@ -33,14 +33,23 @@
             return false;
         }
 
-        public async Task<ListTemperatureRangeGrpc> ReadAllTemperatureRanges(CancellationToken cancellationToken)
+        public async Task<ListTemperatureRangeGrpc> ReadAllTemperatureRanges(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
-            if (!_TemperatureRangeGrpcs.TemperatureRangeGrpcs.Any())
+            if (_TemperatureRangeGrpcs.TemperatureRangeGrpcs.Any())
             {
-                await PopulateTemperatureRangeData(cancellationToken);
+                if (takeAmount <= 0)
+                {
+                    return _TemperatureRangeGrpcs;
+                }
+
+                ListTemperatureRangeGrpc returnList = new ListTemperatureRangeGrpc();
+                IQueryable<TemperatureRangeGrpc> query = _TemperatureRangeGrpcs.TemperatureRangeGrpcs.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.TemperatureRangeGrpcs.AddRange(query);
+                return returnList;
             }
 
+            await PopulateTemperatureRangeData(cancellationToken);
             return _TemperatureRangeGrpcs;
         }
 

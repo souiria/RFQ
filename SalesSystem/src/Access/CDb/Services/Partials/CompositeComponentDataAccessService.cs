@@ -63,14 +63,23 @@
             return false;
         }
 
-        public async Task<ListCompositeComponentGrpc> ReadAllCompositeComponents(CancellationToken cancellationToken)
+        public async Task<ListCompositeComponentGrpc> ReadAllCompositeComponents(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
-            if (!_CompositeComponentGrpcs.CompositeComponentGrpcs.Any())
+            if (_CompositeComponentGrpcs.CompositeComponentGrpcs.Any())
             {
-                await PopulateCompositeComponentData(cancellationToken);
+                if (takeAmount <= 0)
+                {
+                    return _CompositeComponentGrpcs;
+                }
+
+                ListCompositeComponentGrpc returnList = new ListCompositeComponentGrpc();
+                IQueryable<CompositeComponentGrpc> query = _CompositeComponentGrpcs.CompositeComponentGrpcs.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.CompositeComponentGrpcs.AddRange(query);
+                return returnList;
             }
 
+            await PopulateCompositeComponentData(cancellationToken);
             return _CompositeComponentGrpcs;
         }
 

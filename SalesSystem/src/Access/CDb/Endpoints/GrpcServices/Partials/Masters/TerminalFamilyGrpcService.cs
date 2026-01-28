@@ -77,7 +77,7 @@
                 case RequestType.ReadAll:
                 {
                     CancellationToken cancellationToken = context.CancellationToken;
-                    ListTerminalFamilyGrpc response = await _CDbAccessService.ReadAllTerminalFamilys(cancellationToken);
+                    ListTerminalFamilyGrpc response = await _CDbAccessService.ReadAllTerminalFamilys(cancellationToken, request.GrpcRequestParameter.Position, request.GrpcRequestParameter.Take);
                     return response;
                 }
 

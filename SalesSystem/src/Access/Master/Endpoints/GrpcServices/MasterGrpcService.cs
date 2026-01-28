@@ -23,7 +23,7 @@ namespace Master.Endpoints.GrpcServices
         public override async Task<ListCurrencyGrpc> GetCurrencyGrpc(CurrencyGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetCurrencyGrpc starting");
-            return await _MasterAccessService.GetAllCurrencies(context.CancellationToken);
+            return await _MasterAccessService.GetAllCurrencies(context.CancellationToken, request.Position, request.Takeamount);
         }
 
         public override async Task GetCurrencyGrpcStream(CurrencyGrpcRequest request, IServerStreamWriter<CurrencyGrpc> responseStream, ServerCallContext context)
@@ -42,7 +42,7 @@ namespace Master.Endpoints.GrpcServices
         public override async Task<ListCustomerGrpc> GetCustomerGrpc(CustomerGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetCustomerGrpc starting");
-            return await _MasterAccessService.GetAllCustomerBusinessUnits(context.CancellationToken);
+            return await _MasterAccessService.GetAllCustomerBusinessUnits(context.CancellationToken, request.Position, request.Takeamount);
         }
 
         public override async Task GetCustomerGrpcStream(CustomerGrpcRequest request, IServerStreamWriter<CustomerGrpc> responseStream, ServerCallContext context)
@@ -54,7 +54,7 @@ namespace Master.Endpoints.GrpcServices
         public override async Task<ListCustomerLocationGrpc> GetCustomerLocationGrpc(CustomerLocationGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetCustomerLocationGrpc starting");
-            return await _MasterAccessService.GetAllCustomerLocations(context.CancellationToken);
+            return await _MasterAccessService.GetAllCustomerLocations(context.CancellationToken, request.Position, request.Takeamount);
         }
 
         public override async Task GetCustomerLocationGrpcStream(CustomerLocationGrpcRequest request, IServerStreamWriter<CustomerLocationGrpc> responseStream, ServerCallContext context)
@@ -66,7 +66,7 @@ namespace Master.Endpoints.GrpcServices
         public override async Task<ListCustomerSalesEntityGrpc> GetCustomerSalesEntityGrpc(CustomerSalesEntityGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetCustomerSalesEntityGrpc starting");
-            return await _MasterAccessService.GetAllCustomerSalesEntities(context.CancellationToken);
+            return await _MasterAccessService.GetAllCustomerSalesEntities(context.CancellationToken, request.Position, request.Takeamount);
         }
 
         public override async Task GetCustomerSalesEntityGrpcStream(CustomerSalesEntityGrpcRequest request, IServerStreamWriter<CustomerSalesEntityGrpc> responseStream, ServerCallContext context)
@@ -78,7 +78,7 @@ namespace Master.Endpoints.GrpcServices
         public override async Task<ListCustomerProjectAssociationGrpc> GetCustomerProjectAssociationGrpc(CustomerProjectAssociationGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetCustomerProjectAssociationGrpc starting");
-            return await _MasterAccessService.GetAllCustomerProjectAssociations(context.CancellationToken);
+            return await _MasterAccessService.GetAllCustomerProjectAssociations(context.CancellationToken, request.Position, request.Takeamount);
         }
         public override async Task<ListCustomerProjectAssociationGrpc> GetCustomerProjectAssociationGrpcByUserId(CustomerProjectAssociationByUserIdGrpcRequest request, ServerCallContext context)
         {
@@ -95,7 +95,7 @@ namespace Master.Endpoints.GrpcServices
         public override async Task<ListCustomerBusinessUserAssociationGrpc> GetCustomerBusinessUserAssociationGrpc(CustomerBusinessUserAssociationGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetCustomerBusinessUserAssociationGrpc starting");
-            return await _MasterAccessService.GetCustomerBusinessUserAssociations(context.CancellationToken);
+            return await _MasterAccessService.GetCustomerBusinessUserAssociations(context.CancellationToken, request.Position, request.Takeamount);
         }
 
         public override async Task GetCustomerBusinessUserAssociationGrpcStream(CustomerBusinessUserAssociationGrpcRequest request, IServerStreamWriter<CustomerBusinessUserAssociationGrpc> responseStream, ServerCallContext context)
@@ -111,7 +111,7 @@ namespace Master.Endpoints.GrpcServices
         public override async Task<ListPlatformGrpc> GetPlatformGrpc(PlatformGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetPlatformGrpc starting");
-            return await _MasterAccessService.GetAllPlatforms(context.CancellationToken);
+            return await _MasterAccessService.GetAllPlatforms(context.CancellationToken, request.Position, request.Takeamount);
         }
         public override async Task GetPlatformGrpcStream(PlatformGrpcRequest request, IServerStreamWriter<PlatformGrpc> responseStream, ServerCallContext context)
         {
@@ -121,7 +121,7 @@ namespace Master.Endpoints.GrpcServices
         public override async Task<ListProgramGrpc> GetProgramGrpc(ProgramGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetProgramGrpc starting");
-            return await _MasterAccessService.GetAllPrograms(context.CancellationToken);
+            return await _MasterAccessService.GetAllPrograms(context.CancellationToken, request.Position, request.Takeamount);
         }
 
         public override async Task GetProgramGrpcStream(ProgramGrpcRequest request, IServerStreamWriter<ProgramGrpc> responseStream, ServerCallContext context)
@@ -133,7 +133,7 @@ namespace Master.Endpoints.GrpcServices
         public override async Task<ListProjectGrpc> GetProjectGrpc(ProjectGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetProjectGrpc starting");
-            return await _MasterAccessService.GetAllProjects(context.CancellationToken);
+            return await _MasterAccessService.GetAllProjects(context.CancellationToken, request.Position, request.Takeamount);
         }
 
         public override async Task GetProjectGrpcStream(ProjectGrpcRequest request, IServerStreamWriter<ProjectGrpc> responseStream, ServerCallContext context)
@@ -145,7 +145,7 @@ namespace Master.Endpoints.GrpcServices
         public override async Task<ListMilestoneGrpc> GetMilestoneGrpc(MilestoneGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetMilestoneGrpc starting");
-            return await _MasterAccessService.GetAllMilestones(context.CancellationToken);
+            return await _MasterAccessService.GetAllMilestones(context.CancellationToken, request.Position, request.Takeamount);
         }
 
         public override async Task GetMilestoneGrpcStream(MilestoneGrpcRequest request, IServerStreamWriter<MilestoneGrpc> responseStream, ServerCallContext context)
@@ -161,7 +161,7 @@ namespace Master.Endpoints.GrpcServices
         public override async Task<ListVehicleGrpc> GetVehicleGrpc(VehicleGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("GetVehicleGrpc starting");
-            return await _MasterAccessService.GetAllVehicles(context.CancellationToken);
+            return await _MasterAccessService.GetAllVehicles(context.CancellationToken, request.Position, request.Takeamount);
         }
 
         public override async Task GetVehicleGrpcStream(VehicleGrpcRequest request, IServerStreamWriter<VehicleGrpc> responseStream, ServerCallContext context)

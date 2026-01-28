@@ -51,12 +51,20 @@
         #region Handlers
 
         #region H1CPD
-        public async Task<ListH1CPDGrpc> GetAllH1CPD(CancellationToken cancellationToken)
+        public async Task<ListH1CPDGrpc> GetAllH1CPD(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListH1CPDGrpc.H1CPD.Any())
             {
-                return _ListH1CPDGrpc;
+                if (takeAmount <= 0)
+                {
+                    return _ListH1CPDGrpc;
+                }
+
+                ListH1CPDGrpc returnList = new ListH1CPDGrpc();
+                IQueryable<H1CPDGrpc> query = _ListH1CPDGrpc.H1CPD.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.H1CPD.AddRange(query);
+                return returnList;
             }
             else
             {

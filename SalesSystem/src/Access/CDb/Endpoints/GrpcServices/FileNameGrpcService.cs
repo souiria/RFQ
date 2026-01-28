@@ -28,7 +28,7 @@
                 case RequestType.ReadAll:
                 {
                     CancellationToken cancellationToken = context.CancellationToken;
-                    ListFileNameGrpc response = await _CDbAccessService.ReadAllFileNames(cancellationToken);
+                    ListFileNameGrpc response = await _CDbAccessService.ReadAllFileNames(cancellationToken, request.GrpcRequestParameter.Position, request.GrpcRequestParameter.Take);
                     return response;
                 }
 

@@ -33,14 +33,23 @@
             return false;
         }
 
-        public async Task<ListCoverTypeGrpc> ReadAllCoverTypes(CancellationToken cancellationToken)
+        public async Task<ListCoverTypeGrpc> ReadAllCoverTypes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
-            if (!_CoverTypeGrpcs.CoverTypeGrpcs.Any())
+            if (_CoverTypeGrpcs.CoverTypeGrpcs.Any())
             {
-                await PopulateCoverTypeData(cancellationToken);
+                if (takeAmount <= 0)
+                {
+                    return _CoverTypeGrpcs;
+                }
+
+                ListCoverTypeGrpc returnList = new ListCoverTypeGrpc();
+                IQueryable<CoverTypeGrpc> query = _CoverTypeGrpcs.CoverTypeGrpcs.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.CoverTypeGrpcs.AddRange(query);
+                return returnList;
             }
 
+            await PopulateCoverTypeData(cancellationToken);
             return _CoverTypeGrpcs;
         }
 

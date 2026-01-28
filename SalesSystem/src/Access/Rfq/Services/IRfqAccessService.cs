@@ -4,7 +4,7 @@
     {
         #region PartNumber
 
-        Task<ListRfqDrawingPartNumbersGrpc> GetAllRfqDrawingPartNumbers(CancellationToken cancellationToken);
+        Task<ListRfqDrawingPartNumbersGrpc> GetAllRfqDrawingPartNumbers(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListRfqDrawingPartNumbersGrpc> CreateRfqDrawingPartNumbers(RfqDrawingPartNumbersGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateRfqDrawingPartNumbers(RfqDrawingPartNumbersGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateRfqDrawingPartNumbers(CancellationToken cancellationToken);
@@ -13,7 +13,7 @@
 
         #region Project
 
-        Task<ListRfqProjectGrpc> GetAllRfqProjects(CancellationToken cancellationToken);
+        Task<ListRfqProjectGrpc> GetAllRfqProjects(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListRfqProjectGrpc> CreateRfqProjects(RfqProjectGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateRfqProjects(RfqProjectGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateRfqProjects(CancellationToken cancellationToken);
@@ -22,7 +22,7 @@
 
         #region Notes
 
-        Task<ListRfqNotesGrpc> GetAllRfqNotes(CancellationToken cancellationToken);
+        Task<ListRfqNotesGrpc> GetAllRfqNotes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListRfqNotesGrpc> CreateRfqNotes(RfqNotesGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateRfqNotes(RfqNotesGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateRfqNotes(CancellationToken cancellationToken);
@@ -31,7 +31,7 @@
 
         #region Reason
 
-        Task<ListRfqReasonGrpc> GetAllRfqReasons(CancellationToken cancellationToken);
+        Task<ListRfqReasonGrpc> GetAllRfqReasons(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListRfqReasonGrpc> CreateRfqReason(RfqReasonGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateRfqReasons(RfqReasonGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateRfqReasons(CancellationToken cancellationToken);
@@ -39,7 +39,7 @@
 
         #region DsiBend
 
-        Task<ListDsiBendGrpc> GetAllDsiBends(CancellationToken cancellationToken);
+        Task<ListDsiBendGrpc> GetAllDsiBends(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiBendGrpc> CreateDsiBends(DsiBendGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiBends(DsiBendGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiBends(CancellationToken cancellationToken);
@@ -48,7 +48,7 @@
 
         #region DsiBranchConfiguration
 
-        Task<ListDsiBranchConfigurationGrpc> GetAllDsiBranchConfigurations(CancellationToken cancellationToken);
+        Task<ListDsiBranchConfigurationGrpc> GetAllDsiBranchConfigurations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiBranchConfigurationGrpc> CreateDsiBranchConfigurations(DsiBranchConfigurationGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiBranchConfigurations(DsiBranchConfigurationGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiBranchConfigurations(CancellationToken cancellationToken);
@@ -57,7 +57,7 @@
 
         #region DsiBranchConfigurationBendAssociation
 
-        Task<ListDsiBranchConfigurationBendAssociationGrpc> GetAllDsiBranchConfigurationBendAssociations(CancellationToken cancellationToken);
+        Task<ListDsiBranchConfigurationBendAssociationGrpc> GetAllDsiBranchConfigurationBendAssociations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiBranchConfigurationBendAssociationGrpc> CreateDsiBranchConfigurationBendAssociations(DsiBranchConfigurationBendAssociationGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiBranchConfigurationBendAssociations(DsiBranchConfigurationBendAssociationGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiBranchConfigurationBendAssociations(CancellationToken cancellationToken);
@@ -66,7 +66,7 @@
 
         #region DsiBranchInsulation
 
-        Task<ListDsiBranchInsulationGrpc> GetAllDsiBranchInsulations(CancellationToken cancellationToken);
+        Task<ListDsiBranchInsulationGrpc> GetAllDsiBranchInsulations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiBranchInsulationGrpc> CreateDsiBranchInsulations(DsiBranchInsulationGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiBranchInsulations(DsiBranchInsulationGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiBranchInsulations(CancellationToken cancellationToken);
@@ -75,7 +75,7 @@
 
         #region DsiBranchInsulationThroughNode
 
-        Task<ListDsiBranchInsulationThroughNodeGrpc> GetAllDsiBranchInsulationThroughNodes(CancellationToken cancellationToken);
+        Task<ListDsiBranchInsulationThroughNodeGrpc> GetAllDsiBranchInsulationThroughNodes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiBranchInsulationThroughNodeGrpc> CreateDsiBranchInsulationThroughNodes(DsiBranchInsulationThroughNodeGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiBranchInsulationThroughNodes(DsiBranchInsulationThroughNodeGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiBranchInsulationThroughNodes(CancellationToken cancellationToken);
@@ -84,7 +84,7 @@
 
         #region DsiCavityMapping
 
-        Task<ListDsiCavityMappingGrpc> GetAllDsiCavityMappings(CancellationToken cancellationToken);
+        Task<ListDsiCavityMappingGrpc> GetAllDsiCavityMappings(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiCavityMappingGrpc> CreateDsiCavityMappings(DsiCavityMappingGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiCavityMappings(DsiCavityMappingGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiCavityMappings(CancellationToken cancellationToken);
@@ -93,7 +93,7 @@
 
         #region DsiCentreStrip
 
-        Task<ListDsiCentreStripGrpc> GetAllDsiCentreStrips(CancellationToken cancellationToken);
+        Task<ListDsiCentreStripGrpc> GetAllDsiCentreStrips(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiCentreStripGrpc> CreateDsiCentreStrips(DsiCentreStripGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiCentreStrips(DsiCentreStripGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiCentreStrips(CancellationToken cancellationToken);
@@ -102,7 +102,7 @@
 
         #region DsiCircuitOption
 
-        Task<ListDsiCircuitOptionGrpc> GetAllDsiCircuitOptions(CancellationToken cancellationToken);
+        Task<ListDsiCircuitOptionGrpc> GetAllDsiCircuitOptions(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiCircuitOptionGrpc> CreateDsiCircuitOptions(DsiCircuitOptionGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiCircuitOptions(DsiCircuitOptionGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiCircuitOptions(CancellationToken cancellationToken);
@@ -111,7 +111,7 @@
 
         #region DsiComponent
 
-        Task<ListDsiComponentGrpc> GetAllDsiComponents(CancellationToken cancellationToken);
+        Task<ListDsiComponentGrpc> GetAllDsiComponents(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiComponentGrpc> CreateDsiComponents(DsiComponentGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiComponents(DsiComponentGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiComponents(CancellationToken cancellationToken);
@@ -120,7 +120,7 @@
 
         #region DsiCompositeDetail
 
-        Task<ListDsiCompositeDetailGrpc> GetAllDsiCompositeDetails(CancellationToken cancellationToken);
+        Task<ListDsiCompositeDetailGrpc> GetAllDsiCompositeDetails(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiCompositeDetailGrpc> CreateDsiCompositeDetails(DsiCompositeDetailGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiCompositeDetails(DsiCompositeDetailGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiCompositeDetails(CancellationToken cancellationToken);
@@ -129,7 +129,7 @@
 
         #region DsiCompositeDetailCircuitOptionAssociation
 
-        Task<ListDsiCompositeDetailCircuitOptionAssociationGrpc> GetAllDsiCompositeDetailCircuitOptionAssociations(CancellationToken cancellationToken);
+        Task<ListDsiCompositeDetailCircuitOptionAssociationGrpc> GetAllDsiCompositeDetailCircuitOptionAssociations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiCompositeDetailCircuitOptionAssociationGrpc> CreateDsiCompositeDetailCircuitOptionAssociations(DsiCompositeDetailCircuitOptionAssociationGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiCompositeDetailCircuitOptionAssociations(DsiCompositeDetailCircuitOptionAssociationGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiCompositeDetailCircuitOptionAssociations(CancellationToken cancellationToken);
@@ -138,7 +138,7 @@
 
         #region DsiCompositeOption
 
-        Task<ListDsiCompositeOptionGrpc> GetAllDsiCompositeOptions(CancellationToken cancellationToken);
+        Task<ListDsiCompositeOptionGrpc> GetAllDsiCompositeOptions(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiCompositeOptionGrpc> CreateDsiCompositeOptions(DsiCompositeOptionGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiCompositeOptions(DsiCompositeOptionGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiCompositeOptions(CancellationToken cancellationToken);
@@ -147,7 +147,7 @@
 
         #region DsiHarness
 
-        Task<ListDsiHarnessGrpc> GetAllDsiHarnesses(CancellationToken cancellationToken);
+        Task<ListDsiHarnessGrpc> GetAllDsiHarnesses(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiHarnessGrpc> CreateDsiHarnesses(DsiHarnessGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiHarnesses(DsiHarnessGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiHarnesses(CancellationToken cancellationToken);
@@ -156,7 +156,7 @@
 
         #region DsiHarnessScope
 
-        Task<ListDsiHarnessScopeGrpc> GetAllDsiHarnessScopes(CancellationToken cancellationToken);
+        Task<ListDsiHarnessScopeGrpc> GetAllDsiHarnessScopes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiHarnessScopeGrpc> CreateDsiHarnessScopes(DsiHarnessScopeGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiHarnessScopes(DsiHarnessScopeGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiHarnessScopes(CancellationToken cancellationToken);
@@ -165,7 +165,7 @@
 
         #region DsiHarnessScopeScopeAssociation
 
-        Task<ListDsiHarnessScopeScopeAssociationGrpc> GetAllDsiHarnessScopeScopeAssociations(CancellationToken cancellationToken);
+        Task<ListDsiHarnessScopeScopeAssociationGrpc> GetAllDsiHarnessScopeScopeAssociations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiHarnessScopeScopeAssociationGrpc> CreateDsiHarnessScopeScopeAssociations(DsiHarnessScopeScopeAssociationGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiHarnessScopeScopeAssociations(DsiHarnessScopeScopeAssociationGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiHarnessScopeScopeAssociations(CancellationToken cancellationToken);
@@ -174,7 +174,7 @@
 
         #region DsiManualBomQuantity
 
-        Task<ListDsiManualBomQuantityGrpc> GetAllDsiManualBomQuantities(CancellationToken cancellationToken);
+        Task<ListDsiManualBomQuantityGrpc> GetAllDsiManualBomQuantities(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiManualBomQuantityGrpc> CreateDsiManualBomQuantities(DsiManualBomQuantityGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiManualBomQuantities(DsiManualBomQuantityGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiManualBomQuantities(CancellationToken cancellationToken);
@@ -183,7 +183,7 @@
 
         #region DsiMidWireComponent
 
-        Task<ListDsiMidWireComponentGrpc> GetAllDsiMidWireComponents(CancellationToken cancellationToken);
+        Task<ListDsiMidWireComponentGrpc> GetAllDsiMidWireComponents(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiMidWireComponentGrpc> CreateDsiMidWireComponents(DsiMidWireComponentGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiMidWireComponents(DsiMidWireComponentGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiMidWireComponents(CancellationToken cancellationToken);
@@ -192,7 +192,7 @@
 
         #region DsiModuleChildDetail
 
-        Task<ListDsiModuleChildDetailGrpc> GetAllDsiModuleChildDetails(CancellationToken cancellationToken);
+        Task<ListDsiModuleChildDetailGrpc> GetAllDsiModuleChildDetails(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiModuleChildDetailGrpc> CreateDsiModuleChildDetails(DsiModuleChildDetailGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiModuleChildDetails(DsiModuleChildDetailGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiModuleChildDetails(CancellationToken cancellationToken);
@@ -201,7 +201,7 @@
 
         #region DsiModuleCompatibility
 
-        Task<ListDsiModuleCompatibilityGrpc> GetAllDsiModuleCompatibilities(CancellationToken cancellationToken);
+        Task<ListDsiModuleCompatibilityGrpc> GetAllDsiModuleCompatibilities(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiModuleCompatibilityGrpc> CreateDsiModuleCompatibilities(DsiModuleCompatibilityGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiModuleCompatibilities(DsiModuleCompatibilityGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiModuleCompatibilities(CancellationToken cancellationToken);
@@ -210,7 +210,7 @@
 
         #region DsiMulticoreSpecification
 
-        Task<ListDsiMulticoreSpecificationGrpc> GetAllDsiMulticoreSpecifications(CancellationToken cancellationToken);
+        Task<ListDsiMulticoreSpecificationGrpc> GetAllDsiMulticoreSpecifications(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiMulticoreSpecificationGrpc> CreateDsiMulticoreSpecifications(DsiMulticoreSpecificationGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiMulticoreSpecifications(DsiMulticoreSpecificationGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiMulticoreSpecifications(CancellationToken cancellationToken);
@@ -219,7 +219,7 @@
 
         #region DsiPinMapping
 
-        Task<ListDsiPinMappingGrpc> GetAllDsiPinMappings(CancellationToken cancellationToken);
+        Task<ListDsiPinMappingGrpc> GetAllDsiPinMappings(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiPinMappingGrpc> CreateDsiPinMappings(DsiPinMappingGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiPinMappings(DsiPinMappingGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiPinMappings(CancellationToken cancellationToken);
@@ -228,7 +228,7 @@
 
         #region DsiPinMappingCavityMappingAssociation
 
-        Task<ListDsiPinMappingCavityMappingAssociationGrpc> GetAllDsiPinMappingCavityMappingAssociations(CancellationToken cancellationToken);
+        Task<ListDsiPinMappingCavityMappingAssociationGrpc> GetAllDsiPinMappingCavityMappingAssociations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiPinMappingCavityMappingAssociationGrpc> CreateDsiPinMappingCavityMappingAssociations(DsiPinMappingCavityMappingAssociationGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiPinMappingCavityMappingAssociations(DsiPinMappingCavityMappingAssociationGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiPinMappingCavityMappingAssociations(CancellationToken cancellationToken);
@@ -237,7 +237,7 @@
 
         #region DsiScope
 
-        Task<ListDsiScopeGrpc> GetAllDsiScopes(CancellationToken cancellationToken);
+        Task<ListDsiScopeGrpc> GetAllDsiScopes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiScopeGrpc> CreateDsiScopes(DsiScopeGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiScopes(DsiScopeGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiScopes(CancellationToken cancellationToken);
@@ -246,7 +246,7 @@
 
         #region DsiSupplier
 
-        Task<ListDsiSupplierGrpc> GetAllDsiSuppliers(CancellationToken cancellationToken);
+        Task<ListDsiSupplierGrpc> GetAllDsiSuppliers(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiSupplierGrpc> CreateDsiSuppliers(DsiSupplierGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiSuppliers(DsiSupplierGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiSuppliers(CancellationToken cancellationToken);
@@ -255,7 +255,7 @@
 
         #region DsiTransformedCompositeDetail
 
-        Task<ListDsiTransformedCompositeDetailGrpc> GetAllDsiTransformedCompositeDetails(CancellationToken cancellationToken);
+        Task<ListDsiTransformedCompositeDetailGrpc> GetAllDsiTransformedCompositeDetails(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiTransformedCompositeDetailGrpc> CreateDsiTransformedCompositeDetails(DsiTransformedCompositeDetailGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiTransformedCompositeDetails(DsiTransformedCompositeDetailGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiTransformedCompositeDetails(CancellationToken cancellationToken);
@@ -264,7 +264,7 @@
 
         #region DsiTransformedHarness
 
-        Task<ListDsiTransformedHarnessGrpc> GetAllDsiTransformedHarnesses(CancellationToken cancellationToken);
+        Task<ListDsiTransformedHarnessGrpc> GetAllDsiTransformedHarnesses(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiTransformedHarnessGrpc> CreateDsiTransformedHarnesses(DsiTransformedHarnessGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiTransformedHarnesses(DsiTransformedHarnessGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiTransformedHarnesses(CancellationToken cancellationToken);
@@ -273,7 +273,7 @@
 
         #region DsiTransformedModuleChildDetail
 
-        Task<ListDsiTransformedModuleChildDetailGrpc> GetAllDsiTransformedModuleChildDetails(CancellationToken cancellationToken);
+        Task<ListDsiTransformedModuleChildDetailGrpc> GetAllDsiTransformedModuleChildDetails(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiTransformedModuleChildDetailGrpc> CreateDsiTransformedModuleChildDetails(DsiTransformedModuleChildDetailGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiTransformedModuleChildDetails(DsiTransformedModuleChildDetailGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiTransformedModuleChildDetails(CancellationToken cancellationToken);
@@ -282,7 +282,7 @@
 
         #region DsiUnitOfMeasure
 
-        Task<ListDsiUnitOfMeasureGrpc> GetAllDsiUnitOfMeasures(CancellationToken cancellationToken);
+        Task<ListDsiUnitOfMeasureGrpc> GetAllDsiUnitOfMeasures(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiUnitOfMeasureGrpc> CreateDsiUnitOfMeasures(DsiUnitOfMeasureGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiUnitOfMeasures(DsiUnitOfMeasureGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiUnitOfMeasures(CancellationToken cancellationToken);
@@ -291,7 +291,7 @@
 
         #region DsiWireMulticoreMarker
 
-        Task<ListDsiWireMulticoreMarkerGrpc> GetAllDsiWireMulticoreMarkers(CancellationToken cancellationToken);
+        Task<ListDsiWireMulticoreMarkerGrpc> GetAllDsiWireMulticoreMarkers(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiWireMulticoreMarkerGrpc> CreateDsiWireMulticoreMarkers(DsiWireMulticoreMarkerGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiWireMulticoreMarkers(DsiWireMulticoreMarkerGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiWireMulticoreMarkers(CancellationToken cancellationToken);
@@ -300,7 +300,7 @@
 
         #region DsiWireSpecification
 
-        Task<ListDsiWireSpecificationGrpc> GetAllDsiWireSpecifications(CancellationToken cancellationToken);
+        Task<ListDsiWireSpecificationGrpc> GetAllDsiWireSpecifications(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiWireSpecificationGrpc> CreateDsiWireSpecifications(DsiWireSpecificationGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiWireSpecifications(DsiWireSpecificationGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiWireSpecifications(CancellationToken cancellationToken);
@@ -309,7 +309,7 @@
 
         #region DsiWireThroughNode
 
-        Task<ListDsiWireThroughNodeGrpc> GetAllDsiWireThroughNodes(CancellationToken cancellationToken);
+        Task<ListDsiWireThroughNodeGrpc> GetAllDsiWireThroughNodes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListDsiWireThroughNodeGrpc> CreateDsiWireThroughNodes(DsiWireThroughNodeGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateDsiWireThroughNodes(DsiWireThroughNodeGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateDsiWireThroughNodes(CancellationToken cancellationToken);

@@ -28,7 +28,7 @@
                 case RequestType.ReadAll:
                 {
                     CancellationToken cancellationToken = context.CancellationToken;
-                    ListTagGrpc response = await _CDbAccessService.ReadAllTags(cancellationToken);
+                    ListTagGrpc response = await _CDbAccessService.ReadAllTags(cancellationToken, request.GrpcRequestParameter.Position, request.GrpcRequestParameter.Take);
                     return response;
                 }
 

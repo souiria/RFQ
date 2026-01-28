@@ -8,7 +8,8 @@ namespace SalesSystem.Rfq.Services
         readonly ILogger<RfqUxClientService>? _Logger;
         readonly TimeSpan _Timeout;
         bool _Disposed;
-
+        static int _MAX_GRPC_RESPONSE_SIZE;
+        public static int MAX_GRPC_RESPONSE_SIZE => _MAX_GRPC_RESPONSE_SIZE;
         // Cached Data
         List<RfqDrawingPartNumberUx?> _RfqDrawingPartNumbers;
         List<RfqProject> _RfqProjects;
@@ -18,6 +19,8 @@ namespace SalesSystem.Rfq.Services
         List<ProjectAssociationUx> _CustomerProjectAssociations;
         List<string> _QuotationNumbers;
         List<AlternativePartUxModel> _AlternativeParts;
+        int _AlternativePartsTake;
+        int _AlternativePartsPosition;
 
         // Cached data accessors
         public IReadOnlyCollection<RfqDrawingPartNumberUx?> RfqDrawingPartNumbers => _RfqDrawingPartNumbers.AsReadOnly();
@@ -28,18 +31,28 @@ namespace SalesSystem.Rfq.Services
         public IReadOnlyCollection<ProjectAssociationUx> CustomerProjectAssociations => _CustomerProjectAssociations.AsReadOnly();
         public IReadOnlyCollection<string> QuotationNumbers => _QuotationNumbers.AsReadOnly();
         public IReadOnlyCollection<AlternativePartUxModel> AlternativeParts => _AlternativeParts.AsReadOnly();
-        public RfqUxClientService(IConfiguration configuration, ILogger<RfqUxClientService>? logger = null)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
+        public RfqUxClientService(IConfiguration configuration, ILogger<RfqUxClientService> logger)
         {
             _Logger = logger;
 
             string serviceUrl = configuration["GrpcService:Url"] ?? "https://localhost:7207";
-            int timeoutSeconds = configuration.GetValue("GrpcService:TimeoutSeconds", 30);
+            int timeoutSeconds = configuration.GetValue("GrpcService:TimeoutSeconds", 120);
             _Timeout = TimeSpan.FromSeconds(timeoutSeconds);
+            _MAX_GRPC_RESPONSE_SIZE = 256 * 1024 * 1024;
 
-            _Channel = GrpcChannel.ForAddress(serviceUrl);
+            //_Channel = GrpcChannel.ForAddress(serviceUrl);
+            _Channel = GrpcChannel.ForAddress(serviceUrl, new GrpcChannelOptions
+            {
+                MaxReceiveMessageSize = _MAX_GRPC_RESPONSE_SIZE,
+                MaxSendMessageSize = _MAX_GRPC_RESPONSE_SIZE
+            });
             _Client = new RfqModule.RfqModule.RfqModuleClient(_Channel);
 
-            _Logger?.GenericLogInformation($"RfqUxClientService initialized for service URL: {serviceUrl} with timeout: {timeoutSeconds}s");
+            _Logger?.GenericLogInformation(
+                $"RfqUxClientService initialized for service URL: {serviceUrl} " +
+                $"with timeout: {timeoutSeconds}s, MaxReceive: {_MAX_GRPC_RESPONSE_SIZE/1024/1024}MB, MaxSend: {_MAX_GRPC_RESPONSE_SIZE/1024/1024}MB");
+
             _Disposed = false;
 
             // cache initialization
@@ -57,6 +70,9 @@ namespace SalesSystem.Rfq.Services
             };
             _RfqDrawingPartNumbers= new();
             _AlternativeParts= new();
+            _AlternativePartsPosition = 0;
+            _AlternativePartsTake = -1;
+
         }
         #endregion
 
@@ -678,45 +694,80 @@ namespace SalesSystem.Rfq.Services
         #endregion
 
         #region Part alternatives
-        public async Task<int> GetAllAlternativePartsAsync()
+        public async Task<int> GetAllAlternativePartsAsync(int position = 0, int take = -1)
         {
-            //await Task.Delay(1);
-            //List<AlternativePartUxModel> parts;
-            //parts = AlternativePartUxModel.GenerateRandomList(); //= new List<AlternativePartUxModel>();
-            //return parts;
+            // take == -1 means get all
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
 
             try
             {
-                GetAllAlternativePartsGrpcRequest request = new GetAllAlternativePartsGrpcRequest();
-                request.Position = 0;
-                request.Take = 0;
+                // Check if cache is valid
+                bool cacheIsEmpty = _AlternativeParts.Count == 0;
+                bool parametersChanged = position != _AlternativePartsPosition || take != _AlternativePartsTake;
 
-                GetAllAlternativePartsGrpcResponse response = await _Client.GetAllAlternativePartsGrpcAsync(request, cancellationToken: timeoutCts.Token);
-
-                // ux list
-                _AlternativeParts.Clear();
-                foreach (RfqAlternativePartsGrpc? part in response.AlternativeParts)
+                if (cacheIsEmpty || parametersChanged)
                 {
-                    if (0.0 <= part.Price && !string.IsNullOrWhiteSpace(part.SumitomoNumber))
+                    _Logger?.GenericLogInformation(
+                        $"RfqUxClientService.GetAllAlternativePartsAsync loading alternative parts " +
+                        $"(position={position}, take={take}, reason={(cacheIsEmpty ? "cache empty" : "parameters changed")})");
+
+                    Stopwatch stopwatch = Stopwatch.StartNew();
+
+                    // Fetch from server
+                    GetAllAlternativePartsGrpcRequest request = new GetAllAlternativePartsGrpcRequest();
+                    request.Position = position;
+                    request.Take = take;
+
+                    GetAllAlternativePartsGrpcResponse response = await _Client.GetAllAlternativePartsGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                    stopwatch.Stop();
+                    _Logger?.GenericLogInformation(
+                        $"... received {response.AlternativeParts.Count} parts in {stopwatch.ElapsedMilliseconds}ms");
+
+                    // Update cache
+                    _AlternativeParts.Clear();
+                    foreach (RfqAlternativePartsGrpc? part in response.AlternativeParts)
                     {
-                        continue; // skip parts with no price or empty number
+                        AlternativePartUxModel uxModel = part.ToUx();
+                        if (uxModel != null)
+                        {
+                            _AlternativeParts.Add(uxModel);
+                        }
                     }
 
-                    AlternativePartUxModel? uxModel = part.ToUx();
-                    if (null != uxModel)
-                    {
-                        _AlternativeParts.Add(uxModel);
-                    }
+                    // Update cached parameters
+                    _AlternativePartsPosition = position;
+                    _AlternativePartsTake = take;
+                }
+                else
+                {
+                    _Logger?.GenericLogInformation(
+                        $"RfqUxClientService.GetAllAlternativePartsAsync using cached data " +
+                        $"({_AlternativeParts.Count} parts, position={position}, take={take})");
                 }
 
                 return _AlternativeParts.Count;
             }
             catch (Exception ex)
             {
-                _Logger?.GenericLogError($"Error in GetAllAlternativePartsGrpcAsync ", ex);
+                _Logger?.GenericLogError($"Error in GetAllAlternativePartsGrpcAsync", ex);
                 throw;
             }
+        }
+        public void ClearAlternativePartsCache()
+        {
+            _AlternativeParts.Clear();
+            _AlternativePartsPosition = 0;
+            _AlternativePartsTake = -1;
+            _Logger?.GenericLogInformation("Alternative parts cache cleared");
+        }
+
+        // Add method to check if cache is valid
+        public bool IsAlternativePartsCacheValid(int position, int take)
+        {
+            return 0 <= _AlternativeParts.Count
+                && _AlternativePartsPosition == position
+                && _AlternativePartsTake == take;
         }
         public async Task<PartInfoUxModel> GetPartInfoAsync(string partNumber)
         {

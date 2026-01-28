@@ -44,7 +44,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllRfqDrawingPartNumbers(context.CancellationToken);
+                return await _RfqAccessService.GetAllRfqDrawingPartNumbers(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
                 default:
                 {
                     Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -171,7 +171,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllRfqProjects(context.CancellationToken);
+                return await _RfqAccessService.GetAllRfqProjects(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
                 throw new RpcException(status);
@@ -329,7 +329,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllRfqNotes(context.CancellationToken);
+                return await _RfqAccessService.GetAllRfqNotes(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
                 default:
                 {
                     Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -450,7 +450,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllRfqReasons(context.CancellationToken);
+                return await _RfqAccessService.GetAllRfqReasons(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
                 default:
                 {
                     return await _RfqAccessService.GetAllRfqReasons(context.CancellationToken);
@@ -575,7 +575,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiBends(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiBends(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
                 default:
                 {
                     Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -702,7 +702,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiBranchConfigurations(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiBranchConfigurations(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
                 default:
                 {
                     Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -829,7 +829,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiBranchConfigurationBendAssociations(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiBranchConfigurationBendAssociations(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
                 default:
                 {
                     Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -956,7 +956,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiBranchInsulations(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiBranchInsulations(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
                 default:
                 {
                     Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -1083,7 +1083,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiBranchInsulationThroughNodes(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiBranchInsulationThroughNodes(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
                 default:
                 {
                     Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -1210,7 +1210,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiCavityMappings(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiCavityMappings(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
                 default:
                 {
                     Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -1337,7 +1337,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiCircuitOptions(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiCircuitOptions(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -1467,7 +1467,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiCentreStrips(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiCentreStrips(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -1597,7 +1597,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiComponents(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiComponents(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -1727,7 +1727,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiCompositeDetails(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiCompositeDetails(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -1857,7 +1857,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiCompositeDetailCircuitOptionAssociations(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiCompositeDetailCircuitOptionAssociations(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -1987,7 +1987,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiCompositeOptions(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiCompositeOptions(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -2117,7 +2117,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiHarnesses(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiHarnesses(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -2247,7 +2247,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiHarnessScopes(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiHarnessScopes(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -2377,7 +2377,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiHarnessScopeScopeAssociations(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiHarnessScopeScopeAssociations(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -2507,7 +2507,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiManualBomQuantities(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiManualBomQuantities(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -2637,7 +2637,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiMidWireComponents(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiMidWireComponents(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -2767,7 +2767,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiModuleChildDetails(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiModuleChildDetails(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -2897,7 +2897,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiModuleCompatibilities(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiModuleCompatibilities(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -3027,7 +3027,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiMulticoreSpecifications(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiMulticoreSpecifications(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -3157,7 +3157,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiPinMappings(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiPinMappings(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -3287,7 +3287,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiPinMappingCavityMappingAssociations(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiPinMappingCavityMappingAssociations(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -3417,7 +3417,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiScopes(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiScopes(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -3547,7 +3547,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiSuppliers(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiSuppliers(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -3677,7 +3677,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiTransformedCompositeDetails(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiTransformedCompositeDetails(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -3807,7 +3807,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiTransformedModuleChildDetails(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiTransformedModuleChildDetails(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -3937,7 +3937,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiTransformedHarnesses(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiTransformedHarnesses(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -4067,7 +4067,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiUnitOfMeasures(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiUnitOfMeasures(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -4197,7 +4197,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiWireMulticoreMarkers(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiWireMulticoreMarkers(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -4327,7 +4327,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiWireSpecifications(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiWireSpecifications(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
@@ -4457,7 +4457,7 @@
             switch (requestType)
             {
                 case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiWireThroughNodes(context.CancellationToken);
+                return await _RfqAccessService.GetAllDsiWireThroughNodes(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
 
                 default:
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");

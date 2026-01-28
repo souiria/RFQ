@@ -51,7 +51,7 @@
                 check = await _EMACSAccessService.PopulatePARTMSAsync(stoppingToken);
                 await LogDataPopulationSuccess("PARTMS", check);
                 check = await _EMACSAccessService.PopulateAlternativePartsAsync(stoppingToken);
-                await LogDataPopulationSuccess("PARTMS", check);
+                await LogDataPopulationSuccess("AlternativeParts", check);
             }
 
             return true;

@@ -33,14 +33,23 @@
             return false;
         }
 
-        public async Task<ListWireTypeGrpc> ReadAllWireTypes(CancellationToken cancellationToken)
+        public async Task<ListWireTypeGrpc> ReadAllWireTypes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
-            if (!_WireTypeGrpcs.WireTypeGrpcs.Any())
+            if (_WireTypeGrpcs.WireTypeGrpcs.Any())
             {
-                await PopulateWireTypeData(cancellationToken);
+                if (takeAmount <= 0)
+                {
+                    return _WireTypeGrpcs;
+                }
+
+                ListWireTypeGrpc returnList = new ListWireTypeGrpc();
+                IQueryable<WireTypeGrpc> query = _WireTypeGrpcs.WireTypeGrpcs.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.WireTypeGrpcs.AddRange(query);
+                return returnList;
             }
 
+            await PopulateWireTypeData(cancellationToken);
             return _WireTypeGrpcs;
         }
         public async Task<bool> CreateWireTypes(WireTypeGrpcRequest request, CancellationToken cancellationToken)

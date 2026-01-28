@@ -77,7 +77,7 @@
                 case RequestType.ReadAll:
                 {
                     CancellationToken cancellationToken = context.CancellationToken;
-                    ListWaterproofTypeGrpc response = await _CDbAccessService.ReadAllWaterproofTypes(cancellationToken);
+                    ListWaterproofTypeGrpc response = await _CDbAccessService.ReadAllWaterproofTypes(cancellationToken, request.GrpcRequestParameter.Position, request.GrpcRequestParameter.Take);
                     return response;
                 }
 

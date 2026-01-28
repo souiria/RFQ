@@ -40,10 +40,12 @@ namespace Integration.Tests.Rfq.Client
             ConfigurationBuilder configBuilder = new ConfigurationBuilder();
             Dictionary<string, string?> configuration = new Dictionary<string, string?>();
             configuration["GrpcService:Url"] = "https://localhost:7207";
-            configuration["GrpcService:TimeoutSeconds"] = "30";
+            configuration["GrpcService:TimeoutSeconds"] = "90";
+            configuration["GrpcService:MaxReceiveMessageSizeMB"] = "256"; // 16 MB
+            configuration["GrpcService:MaxSendMessageSizeMB"] = "256";    // 16 MB
             configBuilder.AddInMemoryCollection(configuration);
             _Configuration = configBuilder.Build();
-            Debug.WriteLine("RfqClientIntegrationTests - Configuration initialized");
+            TestContext.Out.WriteLine("RfqClientIntegrationTests - Configuration initialized");
         }
 
         void InitializeService()
@@ -52,7 +54,10 @@ namespace Integration.Tests.Rfq.Client
             Mock<ILogger<RfqUxClientService>> logger = new Mock<ILogger<RfqUxClientService>>();
 
             _RfqUxClientService = new RfqUxClientService(_Configuration, logger.Object);
-            Debug.WriteLine("RfqClientIntegrationTests - RfqUxClientService initialized successfully");
+
+            TestContext.Out.WriteLine("RfqClientIntegrationTests - RfqUxClientService initialized successfully");
+            TestContext.Out.WriteLine($"Max GRPC Response Size: {RfqUxClientService.MAX_GRPC_RESPONSE_SIZE / 1024 / 1024} MB");
+
         }
 
         #endregion
@@ -68,7 +73,7 @@ namespace Integration.Tests.Rfq.Client
 
             // Arrange
             Guid testUserId = Guid.Parse("86380EFD-5651-4552-8145-E59E785F099A");
-            Debug.WriteLine($"Testing GetCustomersByUserIdAsync with RowId: {testUserId}");
+            TestContext.Out.WriteLine($"Testing GetCustomersByUserIdAsync with RowId: {testUserId}");
 
             // Act
             int rfqProjectList = await _RfqUxClientService.GetCustomersByUserIdAsync(testUserId);
@@ -79,7 +84,7 @@ namespace Integration.Tests.Rfq.Client
 
             foreach (RfqProjectUx project in _RfqUxClientService.RfqProjectUxs)
             {
-                Debug.WriteLine($"Retrieved RFQ Project: RowId={project.RowId}, RfqNumber={project.RfqNumber}");
+                TestContext.Out.WriteLine($"Retrieved RFQ Project: RowId={project.RowId}, RfqNumber={project.RfqNumber}");
             }
         }
         [Test]
@@ -91,7 +96,7 @@ namespace Integration.Tests.Rfq.Client
             const long testProjectRowId = 130;
             EnsureServiceInitialized();
 
-            Debug.WriteLine($"Testing GetRfqProjectByIdAsync with RowId: {testProjectRowId}");
+            TestContext.Out.WriteLine($"Testing GetRfqProjectByIdAsync with RowId: {testProjectRowId}");
 
             // Act
             RfqProject? rfqProject = await GetRfqProjectAsync(testProjectRowId);
@@ -115,7 +120,7 @@ namespace Integration.Tests.Rfq.Client
             //const int maxProjectsToTest = 3;
 
             EnsureServiceInitialized();
-            Debug.WriteLine("Testing GetAllRfqProjectAsync");
+            TestContext.Out.WriteLine("Testing GetAllRfqProjectAsync");
 
             // Act
             int projectCount = await GetAllRfqProjectsAsync(position, take);
@@ -162,7 +167,7 @@ namespace Integration.Tests.Rfq.Client
             const long testProjectRowId = 127;
             EnsureServiceInitialized();
 
-            Debug.WriteLine($"Testing UpdateRfqProjectAsync with RowId: {testProjectRowId}");
+            TestContext.Out.WriteLine($"Testing UpdateRfqProjectAsync with RowId: {testProjectRowId}");
             
             RfqProject? rfqProject = await GetRfqProjectAsync(testProjectRowId);
 
@@ -184,7 +189,7 @@ namespace Integration.Tests.Rfq.Client
 
             UpdateRfqProjectGrpcResponse result = await _RfqUxClientService!.UpdateRfqProjectAsync(project);
 
-            Debug.WriteLine($"Update Result: Success={result.Success}, Message={result.Message}");
+            TestContext.Out.WriteLine($"Update Result: Success={result.Success}, Message={result.Message}");
 
             // Get the project again to verify update
             rfqProject = await GetRfqProjectAsync(testProjectRowId);
@@ -192,7 +197,7 @@ namespace Integration.Tests.Rfq.Client
 
             Assert.That(project, Is.Not.Null, "RfqProjectUx should not be null");
 
-            Debug.WriteLine($"Updated Project RfqNumber: {project.RfqNumber}");
+            TestContext.Out.WriteLine($"Updated Project RfqNumber: {project.RfqNumber}");
 
             EndsWithConstraint doesEndsWith = Does.EndWith(" - Updated");
             Assert.That(project.RfqNumber, doesEndsWith, "RfqNumber should reflect the update");
@@ -202,14 +207,14 @@ namespace Integration.Tests.Rfq.Client
             // save changes to revert
             rfqProject = project.ToDto();
             result = await _RfqUxClientService!.UpdateRfqProjectAsync(project);
-            Debug.WriteLine($"Revert Update Result: Success={result.Success}, Message={result.Message}");
+            TestContext.Out.WriteLine($"Revert Update Result: Success={result.Success}, Message={result.Message}");
 
             // reread to confirm revert
             rfqProject = await GetRfqProjectAsync(testProjectRowId);
             project = rfqProject.ToUx();
             Assert.That(project, Is.Not.Null, "RfqProjectUx should not be null after revert");
 
-            Debug.WriteLine($"Reverted Project RfqNumber: {project.RfqNumber}");
+            TestContext.Out.WriteLine($"Reverted Project RfqNumber: {project.RfqNumber}");
             EqualConstraint isEqualToOriginal = Is.EqualTo(originalRfqNumber);
             Assert.That(project.RfqNumber, isEqualToOriginal, "RfqNumber should be reverted to original");
 
@@ -241,7 +246,7 @@ namespace Integration.Tests.Rfq.Client
             List<RfqDrawingPartNumberUx?> parts = await LogDrawingPartNumbers(rowId);
             if (parts.Count == 0)
             {
-                Debug.WriteLine("No drawing part numbers found to update.");
+                TestContext.Out.WriteLine("No drawing part numbers found to update.");
                 Assert.Inconclusive("No drawing part numbers found to update.");
                 return;
             }
@@ -258,14 +263,13 @@ namespace Integration.Tests.Rfq.Client
 
             UpdateRfqDrawingPartNumbersGrpcResponse result = await _RfqUxClientService!.UpdateRfqDrawingPartNumbersAsync(parts);
 
-            Debug.WriteLine($"Update Result: Success={result.Success}, Message={result.Message}");
+            TestContext.Out.WriteLine($"Update Result: Success={result.Success}, Message={result.Message}");
             // reread to confirm update
             await LogDrawingPartNumbers(rowId);
 
             Assert.Pass("Manual exploration test completed - check console output");
         }
 
-        // Alternative Parts
         [Test]
         [Category("Integration")]
         [Description("Verify that service can retrieve all alternative parts with SumtomoNumber and Price from Emacs")]
@@ -273,14 +277,33 @@ namespace Integration.Tests.Rfq.Client
         {
             // Arrange
             EnsureServiceInitialized();
-            Debug.WriteLine("Testing GetAllAlternativePartsAsyncTest");
+            TestContext.Out.WriteLine("Testing GetAlternativePartsAsyncTest");
 
-            // Act
-            int alternativePartsCount = await GetAllAlternativePartsAsync();
+            // Act 100
+            int alternativePartsCount = await GetAllAlternativePartsAsync(0, 100);
+            TestContext.Out.WriteLine($"Retrieved {_RfqUxClientService!.AlternativeParts.Count} alternative parts");
             // Assert
-            AssertAlternativePartsRetrieved(alternativePartsCount);
-        }
+            AssertAllAlternativePartsRetrieved(alternativePartsCount);
 
+            // Act 1000
+            alternativePartsCount = await GetAllAlternativePartsAsync(0, 1000);
+            TestContext.Out.WriteLine($"Retrieved {_RfqUxClientService!.AlternativeParts.Count} alternative parts");
+            // Assert
+            AssertAllAlternativePartsRetrieved(alternativePartsCount);
+
+            // Act 10000
+            alternativePartsCount = await GetAllAlternativePartsAsync(0, 5000);
+            TestContext.Out.WriteLine($"Retrieved {_RfqUxClientService!.AlternativeParts.Count} alternative parts");
+            // Assert
+            AssertAllAlternativePartsRetrieved(alternativePartsCount);
+
+
+            // Act 10000
+            alternativePartsCount = await GetAllAlternativePartsAsync(0, -1);
+            TestContext.Out.WriteLine($"Retrieved ALL {_RfqUxClientService!.AlternativeParts.Count} alternative parts");
+            // Assert
+            AssertAllAlternativePartsRetrieved(alternativePartsCount);
+        }
         #endregion
 
         #region Helper Methods - Service Operations
@@ -296,7 +319,7 @@ namespace Integration.Tests.Rfq.Client
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error retrieving RFQ project with RowId: {rowId}: {ex.Message}");
+                TestContext.Out.WriteLine($"Error retrieving RFQ project with RowId: {rowId}: {ex.Message}");
                 throw;
             }
         }
@@ -311,7 +334,7 @@ namespace Integration.Tests.Rfq.Client
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error retrieving all RFQ projects: {ex.Message}: {ex.Message}");
+                TestContext.Out.WriteLine($"Error retrieving all RFQ projects: {ex.Message}: {ex.Message}");
                 throw;
             }
         }
@@ -337,16 +360,30 @@ namespace Integration.Tests.Rfq.Client
 
             try
             {
-                Debug.WriteLine($"Retrieving drawing part numbers for RfqId: {rfqId}");
+                TestContext.Out.WriteLine($"Retrieving drawing part numbers for RfqId: {rfqId}");
                 return await _RfqUxClientService.GetRfqDrawingPartNumbersByRfqIdAsync(rfqId);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error retrieving drawing part numbers for RfqId: {rfqId}: {ex.Message}");
+                TestContext.Out.WriteLine($"Error retrieving drawing part numbers for RfqId: {rfqId}: {ex.Message}");
                 throw;
             }
         }
 
+        async Task<int> GetAllAlternativePartsAsync(int position, int take)
+        {
+            ArgumentNullException.ThrowIfNull(_RfqUxClientService);
+
+            try
+            {
+                return await _RfqUxClientService.GetAllAlternativePartsAsync(position, take);
+            }
+            catch (Exception ex)
+            {
+                TestContext.Out.WriteLine($"Error retrieving all alternative parts: {ex.Message}: {ex.Message}");
+                throw;
+            }
+        }
         #endregion
 
         #region Helper Methods - Assertions
@@ -365,7 +402,7 @@ namespace Integration.Tests.Rfq.Client
                 Assert.That(project!.RowId, condition, "RowId should match the requested ID");
             });
 
-            Debug.WriteLine($"Retrieved RFQ Project: RowId={project!.RowId}, RfqNumber={project.RfqNumber}");
+            TestContext.Out.WriteLine($"Retrieved RFQ Project: RowId={project!.RowId}, RfqNumber={project.RfqNumber}");
         }
 
         async Task AssertDrawingPartNumbersRetrieved(long rowId)
@@ -376,7 +413,7 @@ namespace Integration.Tests.Rfq.Client
 
             GreaterThanOrEqualConstraint condition = Is.GreaterThanOrEqualTo(0);
             Assert.That(partNumberCount, condition, "Part number count should be >= 0");
-            Debug.WriteLine($"Retrieved {partNumberCount} drawing part numbers");
+            TestContext.Out.WriteLine($"Retrieved {partNumberCount} drawing part numbers");
 
             IReadOnlyCollection<RfqDrawingPartNumberUx?> cachedPartNumbers = _RfqUxClientService.RfqDrawingPartNumbers;
             Assert.Multiple(() =>
@@ -394,7 +431,7 @@ namespace Integration.Tests.Rfq.Client
             ArgumentNullException.ThrowIfNull(_RfqUxClientService);
             GreaterThanOrEqualConstraint condition = Is.GreaterThanOrEqualTo(0);
             Assert.That(projectCount, condition, "Project count should be >= 0");
-            Debug.WriteLine($"Retrieved {projectCount} RFQ projects");
+            TestContext.Out.WriteLine($"Retrieved {projectCount} RFQ projects");
 
             IReadOnlyCollection<RfqProject> projects = _RfqUxClientService.RfqProjects;
             EqualConstraint conditionIsEqualTo = Is.EqualTo(projectCount);
@@ -422,14 +459,23 @@ namespace Integration.Tests.Rfq.Client
             foreach (RfqProject project in projects)
             {
                 long rfqId = project.RowId;
-                Debug.WriteLine($"Getting part numbers for Project: RowId={project.RowId}, RfqNumber={project.RfqNumber}");
+                TestContext.Out.WriteLine($"Getting part numbers for Project: RowId={project.RowId}, RfqNumber={project.RfqNumber}");
 
                 int partCount = await GetDrawingPartNumbersAsync(rfqId);
-                Debug.WriteLine($"  Found {partCount} part numbers for this project");
+                TestContext.Out.WriteLine($"  Found {partCount} part numbers for this project");
                 GreaterThanOrEqualConstraint isGreaterThanOrEqualToZero = Is.GreaterThanOrEqualTo(0);
                 Assert.That(partCount, isGreaterThanOrEqualToZero, 
                     $"Part count for RfqId {rfqId} should be >= 0");
             }
+        }
+        void AssertAllAlternativePartsRetrieved(int alternativePartsCount)
+        {
+            ArgumentNullException.ThrowIfNull(_RfqUxClientService);
+            GreaterThanOrEqualConstraint condition = Is.GreaterThanOrEqualTo(0);
+            Assert.That(alternativePartsCount, condition, "AlternativeParts count should be >= 0");
+            IReadOnlyCollection<AlternativePartUxModel> parts = _RfqUxClientService.AlternativeParts;
+            EqualConstraint conditionIsEqualTo = Is.EqualTo(alternativePartsCount);
+            Assert.That(parts.Count, conditionIsEqualTo, "Cached alternative parts count should match");
         }
 
         #endregion
@@ -441,7 +487,7 @@ namespace Integration.Tests.Rfq.Client
             List<RfqDrawingPartNumberUx?> partNumberList = partNumbers.Where(p => p is not null).ToList();
             foreach (RfqDrawingPartNumberUx? partNumber in partNumberList)
             {
-                Debug.WriteLine(
+                TestContext.Out.WriteLine(
                     $"Part Number: RowId={partNumber!.RowId}, Customer P/N={partNumber.CustomerPartNumber}, Drawing P/N={partNumber.DrawingPartNumber}, " +
                     $"Drawing Price={partNumber.DrawingPartNumberPrice}, Swapped P/N={partNumber.SwappedPartNumber}, Swapped Price={partNumber.SwappedPartNumberPrice}, " +
                     $"PriceSource={partNumber.PriceSource}, IsExactMatch={partNumber.IsExactMatch}, IsCompleted={partNumber.IsCompleted}");
@@ -452,12 +498,12 @@ namespace Integration.Tests.Rfq.Client
         {
             ArgumentNullException.ThrowIfNull(project);
 
-            Debug.WriteLine("Project Found:");
-            Debug.WriteLine($"  RowId: {project.RowId}");
-            Debug.WriteLine($"  RfqNumber: {project.RfqNumber}");
-            Debug.WriteLine($"  CustomerBusinessGroupCode: {project.CustomerBusinessGroupCode}");
-            Debug.WriteLine($"  ProjectName: {project.ProjectName}");
-            Debug.WriteLine($"  CarModelName: {project.CarModelName}");
+            TestContext.Out.WriteLine("Project Found:");
+            TestContext.Out.WriteLine($"  RowId: {project.RowId}");
+            TestContext.Out.WriteLine($"  RfqNumber: {project.RfqNumber}");
+            TestContext.Out.WriteLine($"  CustomerBusinessGroupCode: {project.CustomerBusinessGroupCode}");
+            TestContext.Out.WriteLine($"  ProjectName: {project.ProjectName}");
+            TestContext.Out.WriteLine($"  CarModelName: {project.CarModelName}");
         }
 
         async Task<List<RfqDrawingPartNumberUx?>> LogDrawingPartNumbers(long rfqId)
@@ -505,7 +551,7 @@ namespace Integration.Tests.Rfq.Client
             {
                 _RfqUxClientService?.Dispose();
                 
-                Debug.WriteLine("RfqClientIntegrationTests - Resources disposed");
+                TestContext.Out.WriteLine("RfqClientIntegrationTests - Resources disposed");
             }
 
             _Disposed = true;

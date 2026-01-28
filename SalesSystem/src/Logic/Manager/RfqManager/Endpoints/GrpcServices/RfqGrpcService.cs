@@ -160,9 +160,15 @@
         }
         public override async Task<GetAllAlternativePartsGrpcResponse> GetAllAlternativePartsGrpc(GetAllAlternativePartsGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("GetAllAlternativePartsGrpc starting");
-            GetAllAlternativePartsGrpcResponse response = await _RfqManagerService.GetAllAlternativePartsGrpc(request);
-            return response;
+            _Logger.GenericLogInformation($"GetAlternativePartsGrpc starting at position {request.Position} taking {request.Take} - 120s timeout");
+            TimeSpan ts = TimeSpan.FromSeconds(120);
+            using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(context.CancellationToken))
+            {
+                // Use cts.Token here
+                //cts.CancelAfter(ts);
+                GetAllAlternativePartsGrpcResponse response = await _RfqManagerService.GetAllAlternativePartsGrpc(request, cts.Token);
+                return response;
+            }
         }
     }
 }

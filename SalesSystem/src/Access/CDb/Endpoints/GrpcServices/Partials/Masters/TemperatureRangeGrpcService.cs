@@ -77,7 +77,7 @@
                 case RequestType.ReadAll:
                 {
                     CancellationToken cancellationToken = context.CancellationToken;
-                    ListTemperatureRangeGrpc response = await _CDbAccessService.ReadAllTemperatureRanges(cancellationToken);
+                    ListTemperatureRangeGrpc response = await _CDbAccessService.ReadAllTemperatureRanges(cancellationToken, request.GrpcRequestParameter.Position, request.GrpcRequestParameter.Take);
                     return response;
                 }
 

@@ -77,7 +77,7 @@
                 case RequestType.ReadAll:
                 {
                     CancellationToken cancellationToken = context.CancellationToken;
-                    ListMiscellaneousComponentTypeGrpc response = await _CDbAccessService.ReadAllMiscellaneousComponentTypes(cancellationToken);
+                    ListMiscellaneousComponentTypeGrpc response = await _CDbAccessService.ReadAllMiscellaneousComponentTypes(cancellationToken, request.GrpcRequestParameter.Position, request.GrpcRequestParameter.Take);
                     return response;
                 }
 

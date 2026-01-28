@@ -32,10 +32,12 @@
                     .UseSqlServer(connectionString, sqlServerOptionsAction: sqlOptions =>
                     {
                         sqlOptions.UseCompatibilityLevel(130);
+                        sqlOptions.CommandTimeout(300);
                         sqlOptions.EnableRetryOnFailure(
-                        maxRetryCount: 10,
-                        maxRetryDelay: retryDelay,
-                        errorNumbersToAdd: null);
+                            maxRetryCount: 10,
+                            maxRetryDelay: retryDelay,
+                            errorNumbersToAdd: null
+                        );
                     }));
 
             services.AddScoped<IEMACSDbContext>(sp => sp.GetRequiredService<EMACSDbContext>());

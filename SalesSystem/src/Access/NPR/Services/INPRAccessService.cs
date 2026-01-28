@@ -3,7 +3,7 @@
     public interface INPRAccessService
     {
         #region H1NPIView
-        Task<ListH1NPRViewGrpc> GetAllH1NPRView(CancellationToken cancellationToken);
+        Task<ListH1NPRViewGrpc> GetAllH1NPRView(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<bool> PopulateH1NPRViewAsync(CancellationToken cancellationToken);
         #endregion
 

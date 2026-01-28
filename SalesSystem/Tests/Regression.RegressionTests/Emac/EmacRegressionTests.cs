@@ -15,9 +15,10 @@ namespace Regression.Tests.Emac
             ServiceCollection services = new ServiceCollection();
             ServiceProvider provider = services.BuildServiceProvider();
 
-            _EMACSAccessService = new EMACSAccessService(provider, true);
-            Mock<ILogger<EMACSGrpcService>> logger = new Mock<ILogger<EMACSGrpcService>>();
-            _GrpcService = new EMACSGrpcService(_EMACSAccessService, logger.Object);
+            Mock<ILogger<EMACSAccessService>> logger = new Mock<ILogger<EMACSAccessService>>();
+            _EMACSAccessService = new EMACSAccessService(provider, logger.Object, true);
+            Mock<ILogger<EMACSGrpcService>> logger2 = new Mock<ILogger<EMACSGrpcService>>();
+            _GrpcService = new EMACSGrpcService(_EMACSAccessService, logger2.Object);
         }
 
         [Test]

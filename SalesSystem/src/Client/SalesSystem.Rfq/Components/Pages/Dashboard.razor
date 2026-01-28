@@ -1,8 +1,15 @@
 ﻿@page "/"
 @page "/{UserId:guid}"
 @using SalesSystem.Rfq.Components.Pages.Components
-@inject CustomAuthenticationStateProvider GetAuthenticationStateAsync
+
 @rendermode InteractiveServer
+
+@inject CustomAuthenticationStateProvider GetAuthenticationStateAsync
+@inject RfqUxClientService RfqUxClientService
+@inject ILogger<Dashboard> Logger
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
 
 <MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Dashboard</MudText>
 <MudGrid>
@@ -151,6 +158,10 @@
             }
 #endif
             UserId = userId;
+
+            // Preload alternative parts in background
+            _ = PreloadAlternativePartsAsync();
+
         }
     }
 
@@ -169,5 +180,27 @@
         public Color Severity;
         public string? SeverityTitle;
         public string? Salary;
+    }
+
+    // preload Alternative parts as they are about 55K
+    private async Task PreloadAlternativePartsAsync()
+    {
+        try
+        {
+            if (RfqUxClientService.AlternativeParts.Count == 0)
+            {
+                Logger.GenericLogInformation("Dashboard - Preloading alternative parts...");
+                var sw = System.Diagnostics.Stopwatch.StartNew();
+
+                int count = await RfqUxClientService.GetAllAlternativePartsAsync(0, -1);
+
+                sw.Stop();
+                Logger.GenericLogInformation($"Dashboard - Preloaded {count} alternative parts in {sw.ElapsedMilliseconds}ms");
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError("Dashboard - Error preloading alternative parts", ex);
+        }
     }
 }
