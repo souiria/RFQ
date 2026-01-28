@@ -1,6 +1,3 @@
-using Grpc.Net.Client.Internal;
-using Microsoft.Extensions.Logging;
-
 namespace SalesSystem.Rfq.Services
 {
     public class RfqUxClientService : IDisposable
