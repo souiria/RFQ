@@ -339,6 +339,21 @@ namespace Integration.Tests.Rfq.Client
             }
         }
 
+        async Task<int> GetAllAlternativePartsAsync()
+        {
+            ArgumentNullException.ThrowIfNull(_RfqUxClientService);
+
+            try
+            {
+                return await _RfqUxClientService.GetAllAlternativePartsAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error retrieving all alternative parts: {ex.Message}: {ex.Message}");
+                throw;
+            }
+        }
+
         async Task<int> GetDrawingPartNumbersAsync(long rfqId)
         {
             ArgumentNullException.ThrowIfNull(_RfqUxClientService);
@@ -421,6 +436,18 @@ namespace Integration.Tests.Rfq.Client
             IReadOnlyCollection<RfqProject> projects = _RfqUxClientService.RfqProjects;
             EqualConstraint conditionIsEqualTo = Is.EqualTo(projectCount);
             Assert.That(projects.Count, conditionIsEqualTo, "Cached projects count should match");
+        }
+
+        void AssertAlternativePartsRetrieved(int alternativePartsCount)
+        {
+            ArgumentNullException.ThrowIfNull(_RfqUxClientService);
+            GreaterThanOrEqualConstraint condition = Is.GreaterThanOrEqualTo(0);
+            Assert.That(alternativePartsCount, condition, "AlternativeParts count should be >= 0");
+            Debug.WriteLine($"Retrieved {alternativePartsCount} alternative parts");
+
+            IReadOnlyCollection<AlternativePartUxModel> parts = _RfqUxClientService.AlternativeParts;
+            EqualConstraint conditionIsEqualTo = Is.EqualTo(alternativePartsCount);
+            Assert.That(parts.Count, conditionIsEqualTo, "Cached alternative parts count should match");
         }
 
         async Task AssertDrawingNumbersForMultipleProjects(int maxProjectsToTest)

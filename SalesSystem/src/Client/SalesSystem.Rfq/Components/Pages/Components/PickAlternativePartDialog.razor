@@ -159,8 +159,6 @@
 
     MudDataGrid<AlternativePartUxModel> _alternativePartNumbersGrid { get; set; } = null!;
 
-    List<AlternativePartUxModel> _alternativePartNumbersList { get; set; } = new();
-
     private string? AlternativePartNumber { get; set; }
     private decimal? AlternativePrice { get; set; }
     private MudForm _form = null!;
@@ -168,30 +166,58 @@
 
     protected override async Task OnInitializedAsync()
     {
+        // try
+        // {
+        //     AlternativePartFilter = "";
+        //     IsLoading = true;
+        //     Logger.LogInformation("PickAlternativePartDialog starting up...");
+
+        //     // Load all parts (the servevice is using local caching)
+        //     int alternativePartsCount = await RfqUxClientService.GetAllAlternativePartsAsync(0, -1);
+
+        //     Logger.LogInformation($"Loaded {alternativePartsCount} alternative parts");
+
+        //     IsLoading = false;
+        // }
+        // catch (Exception ex)
+        // {
+        //     IsLoading = false; // Also set to false on error
+
+        //     var stackTrace = new System.Diagnostics.StackTrace(ex, true);
+        //     var frame = stackTrace.GetFrame(0);
+        //     var lineNumber = frame?.GetFileLineNumber() ?? 0;
+        //     var methodName = frame?.GetMethod()?.Name ?? "Unknown";
+
+        //     Logger.LogError(ex, $"ERROR in PickAlternativePartDialog.OnInitializedAsync at line {lineNumber} in method {methodName}");
+
+        //     Snackbar.Add($"Error loading alternative parts: {ex.Message}", Severity.Error);
+        // }
         try
         {
             AlternativePartFilter = "";
-            IsLoading = true;
-            Logger.LogInformation("PickAlternativePartDialog starting up...");
 
-            // Load all parts (the servevice is using local caching)
+            // Check if data is already cached
+            if (RfqUxClientService.AlternativeParts.Count > 0)
+            {
+                Logger.LogInformation($"PickAlternativePartDialog - Using cached {RfqUxClientService.AlternativeParts.Count} alternative parts");
+                IsLoading = false;
+                return;
+            }
+
+            // If not cached, load it now
+            IsLoading = true;
+            Logger.LogInformation("PickAlternativePartDialog - Loading alternative parts...");
+
             int alternativePartsCount = await RfqUxClientService.GetAllAlternativePartsAsync(0, -1);
 
-            Logger.LogInformation($"Loaded {alternativePartsCount} alternative parts");
+            Logger.LogInformation($"PickAlternativePartDialog - Loaded {alternativePartsCount} alternative parts");
 
             IsLoading = false;
         }
         catch (Exception ex)
         {
-            IsLoading = false; // Also set to false on error
-
-            var stackTrace = new System.Diagnostics.StackTrace(ex, true);
-            var frame = stackTrace.GetFrame(0);
-            var lineNumber = frame?.GetFileLineNumber() ?? 0;
-            var methodName = frame?.GetMethod()?.Name ?? "Unknown";
-
-            Logger.LogError(ex, $"ERROR in PickAlternativePartDialog.OnInitializedAsync at line {lineNumber} in method {methodName}");
-
+            IsLoading = false;
+            Logger.LogError(ex, "ERROR in PickAlternativePartDialog.OnInitializedAsync");
             Snackbar.Add($"Error loading alternative parts: {ex.Message}", Severity.Error);
         }
     }
