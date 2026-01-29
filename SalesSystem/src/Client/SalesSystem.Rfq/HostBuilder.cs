@@ -40,8 +40,8 @@
             })
             .ConfigureChannel(options =>
             {
-                options.MaxReceiveMessageSize = 256 * 1024 * 1024; // 256 MB
-                options.MaxSendMessageSize = 256 * 1024 * 1024;    // 256 MB
+                options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 256 MB
+                options.MaxSendMessageSize = 64 * 1024 * 1024;    // 256 MB
             });
 
             #endregion

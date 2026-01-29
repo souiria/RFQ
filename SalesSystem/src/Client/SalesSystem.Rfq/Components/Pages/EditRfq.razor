@@ -72,19 +72,36 @@ else
 
                 <MudPaper Class="pa-4">
                     <MudStack>
-                        <MudSelect T="string"
-                                   Value="@RfqProject.ProjectId"
-                                   For="@(() => RfqProject.ProjectId)"
-                                   ValueChanged="OnCustomerProjectValueChanged"
-                                   Label="Project"
-                                   Placeholder="Please Select"
-                                   AdornmentIcon="@Icons.Material.Filled.DesignServices"
-                                   AdornmentColor="Color.Primary">
-                            @foreach (var association in RfqUxClientService.CustomerProjectAssociations)
-                            {
-                                <MudSelectItem Value="@association.ProjectId">@association.ProjectName - @association.CustomerName</MudSelectItem>
-                            }
-                        </MudSelect>
+                        @* ✅ CHANGED: MudSelect replaced with MudAutocomplete *@
+                        <MudAutocomplete T="ProjectAssociationUx"
+                                         Value="selectedProject"
+                                         ValueChanged="OnProjectAutocompleteValueChanged"
+                                         Label="Project"
+                                         Placeholder="Search project..."
+                                         SearchFunc="@SearchProjects"
+                                         ToStringFunc="@(p => p != null ? $"{p.ProjectName} - {p.CustomerName}" : "")"
+                                         ResetValueOnEmptyText="true"
+                                         CoerceText="true"
+                                         CoerceValue="false"
+                                         AdornmentIcon="@Icons.Material.Filled.DesignServices"
+                                         AdornmentColor="Color.Primary"
+                                         Immediate="true"
+                                         Dense="true"
+                                         Clearable="true"
+                                         ShowProgressIndicator="true"
+                                         MaxItems="100">
+                            <ItemTemplate Context="project">
+                                <MudStack Spacing="0">
+                                    <MudText Typo="Typo.body2">
+                                        <strong>@project.ProjectName</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                        @project.ProjectName - @project.CustomerName
+                                    </MudText>
+                                </MudStack>
+                            </ItemTemplate>
+                        </MudAutocomplete>
+        
                         <MudNumericField @bind-Value="@RfqProject.VehicleVolume"
                                          Label="Vehicle Volume"
                                          Variant="Variant.Text"
@@ -276,6 +293,9 @@ else
     bool IsLoading { get; set; } = true;
     RfqProjectUx? RfqProject { get; set; }
 
+    // Selected project for autocomplete
+    private ProjectAssociationUx? selectedProject { get; set; }
+
     [Parameter] public Guid? UserId { get; set; }
     [Parameter] public long RfqProjectId { get; set; }
 
@@ -359,6 +379,10 @@ else
         }
         else
         {
+            // Set the selected project from the loaded RfqProject
+            selectedProject = RfqUxClientService.CustomerProjectAssociations
+                .FirstOrDefault(p => p.ProjectId == RfqProject.ProjectId);
+
             IsLoading = false;
             Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded RFQ Project with Id {RfqProject.RowId} - {RfqProject.RfqNumber} {RfqProject.ProjectId}");
         }
@@ -385,8 +409,12 @@ else
             Logger.GenericLogInformation($"EditRfq.OnCustomerValueChanged - Customer with name '{value}' not found");
             return;
         }
-        await Task.Delay(0);
+
         Logger.GenericLogInformation($"EditRfq.OnCustomerValueChanged - Customer changed to {customer?.Id} - {customer?.CustomerBusinessGroupName}");
+
+        // Clear selected project when customer changes
+        selectedProject = null;
+        RfqProject.ProjectId = "";
 
         try
         {
@@ -417,15 +445,58 @@ else
         }
     }
 
-    private void OnCustomerProjectValueChanged(string value)
-    {
-        RfqProject!.ProjectId = value;
+    // private void OnCustomerProjectValueChanged(string value)
+    // {
+    //     RfqProject!.ProjectId = value;
 
-        var project = RfqUxClientService.CustomerProjectAssociations.FirstOrDefault(p => p.Id == value);
-        Logger.GenericLogInformation($"Project changed to {project?.Id} - {project?.ProjectName}");
+    //     var project = RfqUxClientService.CustomerProjectAssociations.FirstOrDefault(p => p.Id == value);
+    //     Logger.GenericLogInformation($"Project changed to {project?.Id} - {project?.ProjectName}");
+
+    //     StateHasChanged();
+    // }
+    private void OnProjectAutocompleteValueChanged(ProjectAssociationUx? value)
+    {
+        selectedProject = value;
+
+        if (value != null)
+        {
+            RfqProject!.ProjectId = value.ProjectId!;
+            Logger.GenericLogInformation($"EditRfq.OnProjectAutocompleteValueChanged - Project changed to {value.Id} - {value.ProjectName}");
+        }
+        else
+        {
+            RfqProject!.ProjectId = "";
+            Logger.GenericLogInformation($"EditRfq.OnProjectAutocompleteValueChanged - Project cleared");
+        }
 
         StateHasChanged();
     }
+    #endregion
+
+    #region Project Autocomplete
+
+    // ✅ NEW: Search function for MudAutocomplete
+    private async Task<IEnumerable<ProjectAssociationUx>> SearchProjects(string searchText, CancellationToken cancellationToken)
+    {
+        await Task.Delay(0, cancellationToken); // Keep async signature and respect cancellation
+
+        // If no search text, return all projects
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            return RfqUxClientService.CustomerProjectAssociations
+                .OrderBy(p => p.ProjectName)
+                .ThenBy(p => p.CustomerName);
+        }
+
+        // Search across project name, customer name, and location name
+        return RfqUxClientService.CustomerProjectAssociations
+            .Where(p =>
+                (p.ProjectName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                (p.CustomerName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false))
+            .OrderBy(p => p.ProjectName)
+            .ThenBy(p => p.CustomerName);
+    }
+
     #endregion
 
     #region Reason

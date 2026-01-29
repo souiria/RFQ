@@ -51,20 +51,36 @@
 
             <MudPaper Class="pa-4">
                 <MudStack>
-                    <MudSelect T="string"
-                               Value="customerProjectValue"
-                               For="@(() => customerProjectValue)"
-                               ValueChanged="OnCustomerProjectValueChanged"
-                               Label="Project"
-                               Placeholder="Please Select"
-                               Disabled="uploadedSuccessfully"
-                               AdornmentIcon="@Icons.Material.Filled.DesignServices"
-                               AdornmentColor="Color.Primary">
-                        @foreach (var association in RfqUxClientService.CustomerProjectAssociations)
-                        {
-                            <MudSelectItem Value="@association.Id">@association.ProjectName - @association.CustomerName</MudSelectItem>
-                        }
-                    </MudSelect>
+                    @* CHANGED: MudSelect replaced with MudAutocomplete *@
+                    <MudAutocomplete T="ProjectAssociationUx"
+                                     @bind-Value="selectedProject"
+                                     Label="Project"
+                                     Placeholder="Search project..."
+                                     SearchFunc="@SearchProjects"
+                                     ToStringFunc="@(p => p != null ? $"{p.ProjectName} - {p.CustomerName}" : "")"
+                                     ResetValueOnEmptyText="true"
+                                     CoerceText="true"
+                                     CoerceValue="false"
+                                     Disabled="uploadedSuccessfully"
+                                     AdornmentIcon="@Icons.Material.Filled.DesignServices"
+                                     AdornmentColor="Color.Primary"
+                                     Immediate="true"
+                                     Dense="true"
+                                     Clearable="true"
+                                     ShowProgressIndicator="true"
+                                     MaxItems="100">
+                        <ItemTemplate Context="project">
+                            <MudStack Spacing="0">
+                                <MudText Typo="Typo.body2">
+                                    <strong>@project.ProjectName</strong>
+                                </MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                    @project.ProjectName - @project.CustomerName
+                                </MudText>
+                            </MudStack>
+                        </ItemTemplate>
+                    </MudAutocomplete>
+
                     <MudNumericField @bind-Value="vehicleVolume"
                                      Label="Vehicle Volume"
                                      Disabled="uploadedSuccessfully"
@@ -139,7 +155,8 @@
 
     // Form values
     string? customerValue { get; set; }
-    string? customerProjectValue { get; set; }
+    string? customerProjectValue { get; set; }  // Keep for backward compatibility with validation
+    ProjectAssociationUx? selectedProject { get; set; }  // NEW: Holds the selected project object
     string? reasonValue { get; set; }
     string? projectValue { get; set; }
     string? quotationValue { get; set; }
@@ -187,6 +204,10 @@
         var customer = RfqUxClientService.Customers.FirstOrDefault(c => c?.CustomerBusinessGroupName == value);
         Logger.GenericLogInformation($"CreateRfq.OnCustomerValueChanged - Customer changed to {customer?.Id} - {customer?.CustomerBusinessGroupName}");
 
+        // Clear selected project when customer changes
+        selectedProject = null;
+        customerProjectValue = null;
+
         try
         {
             await GetProjectAssociationsByCustomerName(value);
@@ -230,11 +251,35 @@
     }
     #endregion
 
+    #region Project Autocomplete
+
+    // Add CancellationToken parameter to match MudAutocomplete's delegate signature
+    private async Task<IEnumerable<ProjectAssociationUx>> SearchProjects(string searchText, CancellationToken cancellationToken)
+    {
+        await Task.Delay(0, cancellationToken); // Keep async signature and respect cancellation
+
+        // If no search text, return all projects
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            return RfqUxClientService.CustomerProjectAssociations;
+        }
+
+        // Search across project name, customer name, and location name
+        return RfqUxClientService.CustomerProjectAssociations
+            .Where(p =>
+                (p.ProjectName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                (p.CustomerName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false))
+            .OrderBy(p => p.ProjectName)
+            .ThenBy(p => p.CustomerName);
+    }
+
+    #endregion
+
     private async Task SubmitDataAsync()
     {
         // Create a progress state object that will be shared with the dialog
         var progressState = new SubmissionProgressState();
-        
+
         // Set up navigation callback for successful completion
         progressState.OnSuccessCallback = () =>
         {
@@ -249,16 +294,16 @@
                 Snackbar.Add("Navigation error occurred. Please manually navigate to the dashboard.", Severity.Warning);
             }
         };
-        
+
         // Initialize progress dialog
         var parameters = new DialogParameters<SubmissionProgressDialog>
         {
             { x => x.ProgressState, progressState }
         };
-        
-        var options = new DialogOptions() 
-        { 
-            CloseButton = false, 
+
+        var options = new DialogOptions()
+        {
+            CloseButton = false,
             BackdropClick = false,
             MaxWidth = MaxWidth.Medium,
             FullWidth = true
@@ -274,8 +319,9 @@
 
             await Task.Delay(500); // Small delay for UX
 
+            // UPDATED: Use selectedProject instead of customerProjectValue for validation
             if (string.IsNullOrWhiteSpace(customerValue)
-            || string.IsNullOrWhiteSpace(customerProjectValue)
+            || selectedProject == null  // Changed validation
             || string.IsNullOrWhiteSpace(reasonValue)
             || string.IsNullOrWhiteSpace(quotationValue)
             || vehicleVolume <= 0 || !date.HasValue)
@@ -288,19 +334,14 @@
             CustomerUx? customer = RfqUxClientService.Customers.FirstOrDefault(c => c?.CustomerBusinessGroupName == customerValue);
             if (customer is null)
             {
-                progressState.SetError("Validation fProjectAssociation not found", "Selected customer not found.");
+                progressState.SetError("Validation failed: Customer not found", "Selected customer not found.");
                 Logger.GenericLogInformation("CreateRfq.SubmitDataAsync - Validation failed: Customer not found");
                 return;
             }
-            
-            ProjectAssociationUx? customerProject = RfqUxClientService.CustomerProjectAssociations.FirstOrDefault(p => p.Id == customerProjectValue);
-            if (customerProject is null)
-            {
-                progressState.SetError("Validation failed: Project not found", "Selected customer project not found.");
-                Logger.GenericLogInformation("CreateRfq.SubmitDataAsync - Validation failed: Project not found");
-                return;
-            }
-            
+
+            // UPDATED: Use selectedProject directly (already validated above)
+            ProjectAssociationUx customerProject = selectedProject;
+
             RfqModule.RfqReasonGrpc? reason = RfqUxClientService.Reasons.FirstOrDefault(r => r.RfqReasonTitle == reasonValue);
             if (reason is null)
             {
@@ -333,13 +374,13 @@
 
             CreateRfqProjectGrpcResponse response = await RfqUxClientService.CreateRfqProjectAsync(requestProject);
 
-            if(response == null)
+            if (response == null)
             {
                 progressState.SetError("Failed to create project", "Failed to create project. Response is null.");
                 Logger.GenericLogInformation("CreateRfq.SubmitDataAsync - Failed to create project. Response is null.");
                 return;
             }
-            else if(response.Success == false)
+            else if (response.Success == false)
             {
                 progressState.SetError("Failed to create project", $"Failed to create project. {response.Message}");
                 Logger.GenericLogInformation($"CreateRfq.SubmitDataAsync - Failed to create project. {response.Message}");
@@ -359,11 +400,11 @@
             var validFiles = FileObjects.Where(f => f.Status != UxObjectStatus.Deleted && f.IsFileValid).ToList();
             int totalFiles = validFiles.Count;
 
-            foreach(FileObjectUx fileObject in validFiles)
+            foreach (FileObjectUx fileObject in validFiles)
             {
                 try
                 {
-                    if(fileObject.File == null || !fileObject.IsFileValid)
+                    if (fileObject.File == null || !fileObject.IsFileValid)
                     {
                         skippedCount++;
                         Logger.GenericLogInformation($"CreateRfq.SubmitDataAsync - Skipping invalid file: {fileObject.DisplayName}");
@@ -376,25 +417,25 @@
                     UploadPartsRequestGrpcResponse uploadFileResponse = await RfqUxClientService.UploadPartsAsync(response.CreatedProjectId, fileObject.File, 16_000_000);
                     fileObject.UploadStatus = new FileObjectUploadStatus(uploadFileResponse);
                     allOk = allOk && uploadFileResponse.Success;
-                    
+
                     Logger.GenericLogInformation($"CreateRfq.SubmitDataAsync - Uploaded file {fileObject.File.Name}/{fileObject.File.Size}, {fileObject.UploadStatus.Status}/{fileObject.UploadStatus.Message}");
                 }
                 catch (Exception fileEx)
                 {
                     Logger.GenericLogError($"CreateRfq.SubmitDataAsync - Error uploading file {fileObject.DisplayName}", fileEx);
-                    fileObject.UploadStatus = new FileObjectUploadStatus 
-                    { 
-                        Status = FileUploadStatus.Failed, 
-                        Message = $"Upload error: {fileEx.Message}" 
+                    fileObject.UploadStatus = new FileObjectUploadStatus
+                    {
+                        Status = FileUploadStatus.Failed,
+                        Message = $"Upload error: {fileEx.Message}"
                     };
                     allOk = false;
                 }
             }
 
-            string uploadSummary = skippedCount > 0 
+            string uploadSummary = skippedCount > 0
                 ? $"Uploaded {fileCount} files, skipped {skippedCount} invalid files"
                 : $"Uploaded {fileCount} files";
-            
+
             progressState.SetCheckpointCompleted(2, uploadSummary);
             Logger.GenericLogInformation($"CreateRfq.SubmitDataAsync - Checkpoint: {uploadSummary}");
 
@@ -446,15 +487,10 @@
 
         StateHasChanged();
     }
-    private void OnCustomerProjectValueChanged(string value)
-    {
-        customerProjectValue = value;
 
-        var project = RfqUxClientService.CustomerProjectAssociations.FirstOrDefault(p => p.ProjectName == value);
-        Logger.GenericLogInformation($"Project changed to {project?.Id} - {project?.ProjectName}");
+    // REMOVED: OnCustomerProjectValueChanged is no longer needed
+    // The selectedProject binding handles this automatically
 
-        StateHasChanged();
-    }
     private void OnFilesChanged()
     {
         StateHasChanged();
@@ -465,13 +501,13 @@
         try
         {
             Logger.GenericLogInformation($"CreateRfq.HandleFileRemoval - Starting removal for file: {fileObject.DisplayName} (ID: {fileObject.Id})");
-            
+
             // Check if file can be safely removed
             if (fileObject.CanBeRemovedSafely)
             {
                 // Remove completely from collection to prevent InputFile issues
                 bool removed = FileObjects.Remove(fileObject);
-                
+
                 if (removed)
                 {
                     // Reset the FileManager's InputFile component to clear internal state
@@ -479,7 +515,7 @@
                     {
                         await componentFileManager.ResetInputFileAsync();
                     }
-                    
+
                     Logger.GenericLogInformation($"CreateRfq.HandleFileRemoval - Completely removed file: {fileObject.DisplayName}");
                     Snackbar.Add($"File '{fileObject.DisplayName}' removed successfully", Severity.Success);
                 }
@@ -495,7 +531,7 @@
                 Logger.GenericLogInformation($"CreateRfq.HandleFileRemoval - Marked uploaded file as deleted: {fileObject.DisplayName}");
                 Snackbar.Add($"File '{fileObject.DisplayName}' marked as deleted", Severity.Info);
             }
-            
+
             StateHasChanged();
         }
         catch (Exception ex)
