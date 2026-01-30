@@ -10,7 +10,7 @@
             #region Kestrel
             builder.WebHost.ConfigureKestrel(options =>
             {
-                options.Limits.MaxRequestBodySize = 256 * 1024 * 1024; // 256 MB
+                options.Limits.MaxRequestBodySize = 64 * 1024 * 1024; // 256 MB
                 options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10);
                 options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(5);
                 options.Limits.MinResponseDataRate = null;

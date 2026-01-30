@@ -15,7 +15,7 @@
             builder.WebHost.ConfigureKestrel(options =>
             {
                 // Increase message size limits
-                options.Limits.MaxRequestBodySize = 256 * 1024 * 1024; // 256 MB
+                options.Limits.MaxRequestBodySize = 64 * 1024 * 1024; // 256 MB
 
                 // Increase timeouts
                 options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10);
@@ -30,7 +30,7 @@
                 options.Limits.Http2.HeaderTableSize = 4096;
                 options.Limits.Http2.MaxFrameSize = 16384;
                 options.Limits.Http2.MaxRequestHeaderFieldSize = 8192;
-                options.Limits.Http2.InitialConnectionWindowSize = 128 * 1024;
+                options.Limits.Http2.InitialConnectionWindowSize = 64 * 1024;
                 options.Limits.Http2.InitialStreamWindowSize = 96 * 1024;
             });
             #endregion
@@ -53,8 +53,8 @@
             builder.Logging.AddSeq();
             builder.Services.AddGrpc(options =>
             {
-                options.MaxReceiveMessageSize = 256 * 1024 * 1024; // 16 MB
-                options.MaxSendMessageSize = 256 * 1024 * 1024;    // 16 MB
+                options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
+                options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
             });
             builder.Services.AddSingleton<IRfqManagerService, RfqManagerService>();
             builder.Services.AddGrpcClient<MasterClient>(o =>
@@ -71,8 +71,8 @@
             })
             .ConfigureChannel(options =>
             {
-                options.MaxReceiveMessageSize = 256 * 1024 * 1024; // 16 MB
-                options.MaxSendMessageSize = 256 * 1024 * 1024;    // 16 MB
+                options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
+                options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
             })
             .ConfigurePrimaryHttpMessageHandler(() =>
             new SocketsHttpHandler

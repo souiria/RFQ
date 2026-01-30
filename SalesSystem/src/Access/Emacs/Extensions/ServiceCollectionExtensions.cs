@@ -32,7 +32,7 @@
                     .UseSqlServer(connectionString, sqlServerOptionsAction: sqlOptions =>
                     {
                         sqlOptions.UseCompatibilityLevel(130);
-                        sqlOptions.CommandTimeout(300);
+                        sqlOptions.CommandTimeout(120);
                         sqlOptions.EnableRetryOnFailure(
                             maxRetryCount: 10,
                             maxRetryDelay: retryDelay,

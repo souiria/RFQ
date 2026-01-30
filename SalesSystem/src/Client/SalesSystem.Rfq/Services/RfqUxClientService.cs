@@ -12,7 +12,7 @@ namespace SalesSystem.Rfq.Services
         public static int MAX_GRPC_RESPONSE_SIZE => _MAX_GRPC_RESPONSE_SIZE;
         // Cached Data
         List<RfqDrawingPartNumberUx?> _RfqDrawingPartNumbers;
-        List<RfqProject> _RfqProjects;
+        //List<RfqProject> _RfqProjects;
         List<RfqProjectUx> _RfqProjectUxs;
         List<CustomerUx?> _Customers;
         List<RfqReasonGrpc> _Reasons;
@@ -24,7 +24,7 @@ namespace SalesSystem.Rfq.Services
 
         // Cached data accessors
         public IReadOnlyCollection<RfqDrawingPartNumberUx?> RfqDrawingPartNumbers => _RfqDrawingPartNumbers.AsReadOnly();
-        public IReadOnlyCollection<RfqProject> RfqProjects => _RfqProjects.AsReadOnly();
+        //public IReadOnlyCollection<RfqProject> RfqProjects => _RfqProjects.AsReadOnly();
         public IReadOnlyCollection<RfqProjectUx> RfqProjectUxs => _RfqProjectUxs.AsReadOnly(); // only active projects are here
         public IReadOnlyCollection<CustomerUx?> Customers => _Customers.AsReadOnly();
         public IReadOnlyCollection<RfqReasonGrpc> Reasons => _Reasons.AsReadOnly();
@@ -39,7 +39,7 @@ namespace SalesSystem.Rfq.Services
             string serviceUrl = configuration["GrpcService:Url"] ?? "https://localhost:7207";
             int timeoutSeconds = configuration.GetValue("GrpcService:TimeoutSeconds", 120);
             _Timeout = TimeSpan.FromSeconds(timeoutSeconds);
-            _MAX_GRPC_RESPONSE_SIZE = 256 * 1024 * 1024;
+            _MAX_GRPC_RESPONSE_SIZE = 64 * 1024 * 1024;
 
             //_Channel = GrpcChannel.ForAddress(serviceUrl);
             _Channel = GrpcChannel.ForAddress(serviceUrl, new GrpcChannelOptions
@@ -56,7 +56,7 @@ namespace SalesSystem.Rfq.Services
             _Disposed = false;
 
             // cache initialization
-            _RfqProjects = new();
+            //_RfqProjects = new();
             _RfqProjectUxs = new();
             _Logger = logger;
             _Customers = new();
@@ -164,11 +164,11 @@ namespace SalesSystem.Rfq.Services
                 GetAllRfqProjectGrpcResponse response = await _Client.GetAllRfqProjectGrpcAsync(request, cancellationToken: timeoutCts.Token);
 
                 // dto list
-                _RfqProjects.Clear();
-                _RfqProjects.AddRange(response.RfqProjects);
+                //_RfqProjects.Clear();
+                //_RfqProjects.AddRange(response.RfqProjects);
                 // ux list
                 _RfqProjectUxs.Clear();
-                foreach (RfqProject? rfqProject in _RfqProjects)
+                foreach (RfqProject? rfqProject in response.RfqProjects)
                 {
                     if(rfqProject.IsActive.HasValue && !rfqProject.IsActive.Value)
                     {
@@ -182,7 +182,7 @@ namespace SalesSystem.Rfq.Services
                     }
                 }
 
-                return _RfqProjects.Count;
+                return _RfqProjectUxs.Count;
             }
             catch (Exception ex)
             {
