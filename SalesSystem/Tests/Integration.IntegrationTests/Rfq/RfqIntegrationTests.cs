@@ -316,6 +316,295 @@ namespace Integration.Tests.Rfq
             int failCount = failItems.Count;
             Assert.That(failCount, Is.Zero);
         }
+        // ---------------------------------------------------------------------
+        // DSITRANSFORMEDCOMPOSITEDETAILGRPC
+        // ---------------------------------------------------------------------
+        [Test]
+        [Category("Integration")]
+        public void Filter_DsiTransformedCompositeDetail_Success_And_Fail()
+        {
+            ServerCallContext ctx = CreateServerContext(nameof(_GrpcService.FilterRfqGrpc));
+
+            RfqFilterRequest successReq = new RfqFilterRequest();
+            successReq.DatabaseList = "DSITRANSFORMEDCOMPOSITEDETAILGRPC";
+            successReq.FilterExpression = "true";
+
+            Task<RfqFilterResponse> successTask = _GrpcService.FilterRfqGrpc(successReq, ctx);
+            RfqFilterResponse successResp = successTask.Result;
+
+            Assert.That(successResp, Is.Not.Null);
+
+            ListDsiTransformedCompositeDetailGrpc successListContainer = successResp.ListDsiTransformedCompositeDetailGrpc;
+            Assert.That(successListContainer, Is.Not.Null);
+
+            RepeatedField<DsiTransformedCompositeDetailGrpc> successItems = successListContainer.DsiTransformedCompositeDetailGrpcs;
+            int successCount = successItems.Count;
+            Assert.That(successCount, Is.Positive);
+
+            RfqFilterRequest failReq = new RfqFilterRequest();
+            failReq.DatabaseList = "DSITRANSFORMEDCOMPOSITEDETAILGRPC";
+            failReq.FilterExpression = "false";
+
+            Task<RfqFilterResponse> failTask = _GrpcService.FilterRfqGrpc(failReq, ctx);
+            RfqFilterResponse failResp = failTask.Result;
+
+            Assert.That(failResp, Is.Not.Null);
+
+            ListDsiTransformedCompositeDetailGrpc failListContainer = failResp.ListDsiTransformedCompositeDetailGrpc;
+            Assert.That(failListContainer, Is.Not.Null);
+
+            RepeatedField<DsiTransformedCompositeDetailGrpc> failItems = failListContainer.DsiTransformedCompositeDetailGrpcs;
+            int failCount = failItems.Count;
+            Assert.That(failCount, Is.Zero);
+        }
+        // ---------------------------------------------------------------------
+        // DSITRANSFORMEDHARNESSGRPC
+        // ---------------------------------------------------------------------
+        [Test]
+        [Category("Integration")]
+        public void Filter_DsiTransformedHarness_Success_And_Fail()
+        {
+            ServerCallContext ctx = CreateServerContext(nameof(_GrpcService.FilterRfqGrpc));
+
+            RfqFilterRequest successReq = new RfqFilterRequest();
+            successReq.DatabaseList = "DSITRANSFORMEDHARNESSGRPC";
+            successReq.FilterExpression = "true";
+
+            Task<RfqFilterResponse> successTask = _GrpcService.FilterRfqGrpc(successReq, ctx);
+            RfqFilterResponse successResp = successTask.Result;
+
+            Assert.That(successResp, Is.Not.Null);
+
+            ListDsiTransformedHarnessGrpc successListContainer = successResp.ListDsiTransformedHarnessGrpc;
+            Assert.That(successListContainer, Is.Not.Null);
+
+            RepeatedField<DsiTransformedHarnessGrpc> successItems = successListContainer.DsiTransformedHarnessGrpcs;
+            int successCount = successItems.Count;
+            Assert.That(successCount, Is.Positive);
+
+            RfqFilterRequest failReq = new RfqFilterRequest();
+            failReq.DatabaseList = "DSITRANSFORMEDHARNESSGRPC";
+            failReq.FilterExpression = "false";
+
+            Task<RfqFilterResponse> failTask = _GrpcService.FilterRfqGrpc(failReq, ctx);
+            RfqFilterResponse failResp = failTask.Result;
+
+            Assert.That(failResp, Is.Not.Null);
+
+            ListDsiTransformedHarnessGrpc failListContainer = failResp.ListDsiTransformedHarnessGrpc;
+            Assert.That(failListContainer, Is.Not.Null);
+
+            RepeatedField<DsiTransformedHarnessGrpc> failItems = failListContainer.DsiTransformedHarnessGrpcs;
+            int failCount = failItems.Count;
+            Assert.That(failCount, Is.Zero);
+        }
+        // DSITRANSFORMEDMODULECHILDDETAILGRPC
+        // ---------------------------------------------------------------------
+        [Test]
+        [Category("Integration")]
+        public void Filter_DsiTransformedModuleChildDetail_Success_And_Fail()
+        {
+            ServerCallContext ctx = CreateServerContext(nameof(_GrpcService.FilterRfqGrpc));
+
+            RfqFilterRequest successReq = new RfqFilterRequest();
+            successReq.DatabaseList = "DSITRANSFORMEDMODULECHILDDETAILGRPC";
+            successReq.FilterExpression = "true";
+
+            Task<RfqFilterResponse> successTask = _GrpcService.FilterRfqGrpc(successReq, ctx);
+            RfqFilterResponse successResp = successTask.Result;
+
+            Assert.That(successResp, Is.Not.Null);
+
+            ListDsiTransformedModuleChildDetailGrpc successListContainer = successResp.ListDsiTransformedModuleChildDetailGrpc;
+            Assert.That(successListContainer, Is.Not.Null);
+
+            RepeatedField<DsiTransformedModuleChildDetailGrpc> successItems = successListContainer.DsiTransformedModuleChildDetailGrpcs;
+            int successCount = successItems.Count;
+            Assert.That(successCount, Is.Positive);
+
+            RfqFilterRequest failReq = new RfqFilterRequest();
+            failReq.DatabaseList = "DSITRANSFORMEDMODULECHILDDETAILGRPC";
+            failReq.FilterExpression = "false";
+
+            Task<RfqFilterResponse> failTask = _GrpcService.FilterRfqGrpc(failReq, ctx);
+            RfqFilterResponse failResp = failTask.Result;
+
+            Assert.That(failResp, Is.Not.Null);
+
+            ListDsiTransformedModuleChildDetailGrpc failListContainer = failResp.ListDsiTransformedModuleChildDetailGrpc;
+            Assert.That(failListContainer, Is.Not.Null);
+
+            RepeatedField<DsiTransformedModuleChildDetailGrpc> failItems = failListContainer.DsiTransformedModuleChildDetailGrpcs;
+            int failCount = failItems.Count;
+            Assert.That(failCount, Is.Zero);
+        }
+
+        // ---------------------------------------------------------------------
+        // DSIUNITOFMEASUREGRPC
+        // ---------------------------------------------------------------------
+        [Test]
+        [Category("Integration")]
+        public void Filter_DsiUnitOfMeasure_Success_And_Fail()
+        {
+            ServerCallContext ctx = CreateServerContext(nameof(_GrpcService.FilterRfqGrpc));
+
+            RfqFilterRequest successReq = new RfqFilterRequest();
+            successReq.DatabaseList = "DSIUNITOFMEASUREGRPC";
+            successReq.FilterExpression = "true";
+
+            Task<RfqFilterResponse> successTask = _GrpcService.FilterRfqGrpc(successReq, ctx);
+            RfqFilterResponse successResp = successTask.Result;
+
+            Assert.That(successResp, Is.Not.Null);
+
+            ListDsiUnitOfMeasureGrpc successListContainer = successResp.ListDsiUnitOfMeasureGrpc;
+            Assert.That(successListContainer, Is.Not.Null);
+
+            RepeatedField<DsiUnitOfMeasureGrpc> successItems = successListContainer.DsiUnitOfMeasureGrpcs;
+            int successCount = successItems.Count;
+            Assert.That(successCount, Is.Positive);
+
+            RfqFilterRequest failReq = new RfqFilterRequest();
+            failReq.DatabaseList = "DSIUNITOFMEASUREGRPC";
+            failReq.FilterExpression = "false";
+
+            Task<RfqFilterResponse> failTask = _GrpcService.FilterRfqGrpc(failReq, ctx);
+            RfqFilterResponse failResp = failTask.Result;
+
+            Assert.That(failResp, Is.Not.Null);
+
+            ListDsiUnitOfMeasureGrpc failListContainer = failResp.ListDsiUnitOfMeasureGrpc;
+            Assert.That(failListContainer, Is.Not.Null);
+
+            RepeatedField<DsiUnitOfMeasureGrpc> failItems = failListContainer.DsiUnitOfMeasureGrpcs;
+            int failCount = failItems.Count;
+            Assert.That(failCount, Is.Zero);
+        }
+        // ---------------------------------------------------------------------
+        // DSIWIREMULTICOREMARKERGRPC
+        // ---------------------------------------------------------------------
+        [Test]
+        [Category("Integration")]
+        public void Filter_DsiWireMulticoreMarker_Success_And_Fail()
+        {
+            ServerCallContext ctx = CreateServerContext(nameof(_GrpcService.FilterRfqGrpc));
+
+            RfqFilterRequest successReq = new RfqFilterRequest();
+            successReq.DatabaseList = "DSIWIREMULTICOREMARKERGRPC";
+            successReq.FilterExpression = "true";
+
+            Task<RfqFilterResponse> successTask = _GrpcService.FilterRfqGrpc(successReq, ctx);
+            RfqFilterResponse successResp = successTask.Result;
+
+            Assert.That(successResp, Is.Not.Null);
+
+            ListDsiWireMulticoreMarkerGrpc successListContainer = successResp.ListDsiWireMulticoreMarkerGrpc;
+            Assert.That(successListContainer, Is.Not.Null);
+
+            RepeatedField<DsiWireMulticoreMarkerGrpc> successItems = successListContainer.DsiWireMulticoreMarkerGrpcs;
+            int successCount = successItems.Count;
+            Assert.That(successCount, Is.Positive);
+
+            RfqFilterRequest failReq = new RfqFilterRequest();
+            failReq.DatabaseList = "DSIWIREMULTICOREMARKERGRPC";
+            failReq.FilterExpression = "false";
+
+            Task<RfqFilterResponse> failTask = _GrpcService.FilterRfqGrpc(failReq, ctx);
+            RfqFilterResponse failResp = failTask.Result;
+
+            Assert.That(failResp, Is.Not.Null);
+
+            ListDsiWireMulticoreMarkerGrpc failListContainer = failResp.ListDsiWireMulticoreMarkerGrpc;
+            Assert.That(failListContainer, Is.Not.Null);
+
+            RepeatedField<DsiWireMulticoreMarkerGrpc> failItems = failListContainer.DsiWireMulticoreMarkerGrpcs;
+            int failCount = failItems.Count;
+            Assert.That(failCount, Is.Zero);
+        }
+
+        // ---------------------------------------------------------------------
+        // DSIWIRESPECIFICATIONGRPC
+        // ---------------------------------------------------------------------
+        [Test]
+        [Category("Integration")]
+        public void Filter_DsiWireSpecification_Success_And_Fail()
+        {
+            ServerCallContext ctx = CreateServerContext(nameof(_GrpcService.FilterRfqGrpc));
+
+            RfqFilterRequest successReq = new RfqFilterRequest();
+            successReq.DatabaseList = "DSIWIRESPECIFICATIONGRPC";
+            successReq.FilterExpression = "true";
+
+            Task<RfqFilterResponse> successTask = _GrpcService.FilterRfqGrpc(successReq, ctx);
+            RfqFilterResponse successResp = successTask.Result;
+
+            Assert.That(successResp, Is.Not.Null);
+
+            ListDsiWireSpecificationGrpc successListContainer = successResp.ListDsiWireSpecificationGrpc;
+            Assert.That(successListContainer, Is.Not.Null);
+
+            RepeatedField<DsiWireSpecificationGrpc> successItems = successListContainer.DsiWireSpecificationGrpcs;
+            int successCount = successItems.Count;
+            Assert.That(successCount, Is.Positive);
+
+            RfqFilterRequest failReq = new RfqFilterRequest();
+            failReq.DatabaseList = "DSIWIRESPECIFICATIONGRPC";
+            failReq.FilterExpression = "false";
+
+            Task<RfqFilterResponse> failTask = _GrpcService.FilterRfqGrpc(failReq, ctx);
+            RfqFilterResponse failResp = failTask.Result;
+
+            Assert.That(failResp, Is.Not.Null);
+
+            ListDsiWireSpecificationGrpc failListContainer = failResp.ListDsiWireSpecificationGrpc;
+            Assert.That(failListContainer, Is.Not.Null);
+
+            RepeatedField<DsiWireSpecificationGrpc> failItems = failListContainer.DsiWireSpecificationGrpcs;
+            int failCount = failItems.Count;
+            Assert.That(failCount, Is.Zero);
+        }
+
+        // ---------------------------------------------------------------------
+        // DSIWIRETHROUGHNODEGRPC
+        // ---------------------------------------------------------------------
+        [Test]
+        [Category("Integration")]
+        public void Filter_DsiWireThroughNode_Success_And_Fail()
+        {
+            ServerCallContext ctx = CreateServerContext(nameof(_GrpcService.FilterRfqGrpc));
+
+            RfqFilterRequest successReq = new RfqFilterRequest();
+            successReq.DatabaseList = "DSIWIRETHROUGHNODEGRPC";
+            successReq.FilterExpression = "true";
+
+            Task<RfqFilterResponse> successTask = _GrpcService.FilterRfqGrpc(successReq, ctx);
+            RfqFilterResponse successResp = successTask.Result;
+
+            Assert.That(successResp, Is.Not.Null);
+
+            ListDsiWireThroughNodeGrpc successListContainer = successResp.ListDsiWireThroughNodeGrpc;
+            Assert.That(successListContainer, Is.Not.Null);
+
+            RepeatedField<DsiWireThroughNodeGrpc> successItems = successListContainer.DsiWireThroughNodeGrpcs;
+            int successCount = successItems.Count;
+            Assert.That(successCount, Is.Positive);
+
+            RfqFilterRequest failReq = new RfqFilterRequest();
+            failReq.DatabaseList = "DSIWIRETHROUGHNODEGRPC";
+            failReq.FilterExpression = "false";
+
+            Task<RfqFilterResponse> failTask = _GrpcService.FilterRfqGrpc(failReq, ctx);
+            RfqFilterResponse failResp = failTask.Result;
+
+            Assert.That(failResp, Is.Not.Null);
+
+            ListDsiWireThroughNodeGrpc failListContainer = failResp.ListDsiWireThroughNodeGrpc;
+            Assert.That(failListContainer, Is.Not.Null);
+
+            RepeatedField<DsiWireThroughNodeGrpc> failItems = failListContainer.DsiWireThroughNodeGrpcs;
+            int failCount = failItems.Count;
+            Assert.That(failCount, Is.Zero);
+        }
 
         ServerCallContext CreateServerContext(string methodName)
         {
