@@ -38,7 +38,7 @@ namespace SalesSystem.Rfq.Services
 
             string serviceUrl = configuration["GrpcService:Url"] ?? "https://localhost:7207";
             int timeoutSeconds = configuration.GetValue("GrpcService:TimeoutSeconds", 120);
-            _Timeout = TimeSpan.FromSeconds(timeoutSeconds);
+            _Timeout = TimeSpan.FromSeconds(300);
             _MAX_GRPC_RESPONSE_SIZE = 64 * 1024 * 1024;
 
             //_Channel = GrpcChannel.ForAddress(serviceUrl);
@@ -493,6 +493,35 @@ namespace SalesSystem.Rfq.Services
             catch (Exception ex)
             {
                 _Logger?.GenericLogError($"Error in UploadParts for project: {projectId}, file: {file.Name}", ex);
+                throw;
+            }
+        }
+        public async Task<UploadPartsRequestGrpcResponse> UploadPartsAsync(string projectId,
+                                                                           byte[] fileData,
+                                                                           string fileName,
+                                                                           long maxAllowedSize=16_777_216)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(projectId);
+            ArgumentNullException.ThrowIfNull(fileData);
+            ArgumentException.ThrowIfNullOrEmpty(fileName);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(fileData.LongLength, maxAllowedSize);
+
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+
+            try
+            {
+                UploadPartsRequestGrpcRequest request = new UploadPartsRequestGrpcRequest();
+                request.ProjectId = projectId;
+                request.FileName = fileName;
+                request.FileData = ByteString.CopyFrom(fileData);
+
+                UploadPartsRequestGrpcResponse response = await _Client.UploadPartsGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in UploadParts for project: {projectId}, file: {fileName}", ex);
                 throw;
             }
         }

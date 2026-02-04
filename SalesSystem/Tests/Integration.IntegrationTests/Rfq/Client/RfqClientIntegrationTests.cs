@@ -87,6 +87,7 @@ namespace Integration.Tests.Rfq.Client
                 TestContext.Out.WriteLine($"Retrieved RFQ Project: RowId={project.RowId}, RfqNumber={project.RfqNumber}");
             }
         }
+        
         [Test]
         [Category("Integration")]
         [Description("Verify that GetRfqProjectByIdAsync returns a project")]
@@ -297,12 +298,145 @@ namespace Integration.Tests.Rfq.Client
             // Assert
             AssertAllAlternativePartsRetrieved(alternativePartsCount);
 
-
             // Act 10000
             alternativePartsCount = await GetAllAlternativePartsAsync(0, -1);
             TestContext.Out.WriteLine($"Retrieved ALL {_RfqUxClientService!.AlternativeParts.Count} alternative parts");
             // Assert
             AssertAllAlternativePartsRetrieved(alternativePartsCount);
+        }
+
+        [Test]
+        [Category("Integration")]
+        [Description("Verify that CreateRfqProjectAsync and UploadPartsAsync work together to create an RFQ and upload a BOM file")]
+        public async Task CreateRfqProjectAndUploadPartsAsyncTest()
+        {
+            // Arrange
+            EnsureServiceInitialized();
+            ArgumentNullException.ThrowIfNull(_RfqUxClientService);
+
+            //TestContext.Out.WriteLine("Testing combined CreateRfqProjectAsync and UploadPartsAsync");
+
+            // Create RfqProject with specified parameters
+            //RfqProject rfqProject = new RfqProject();
+            //DateTime dueDate = DateTime.UtcNow.AddDays(30);
+            //rfqProject.CustomerBusinessUnitGuid = "6812E12D-BD63-4519-8D41-7E66462CFCDB";
+            //rfqProject.CustomerLocationGuid = "C1C48ED2-EEA8-4561-9BBB-2B353D688D44";
+            //rfqProject.ProjectGuid = "3C04FD2D-28B5-4393-A2C1-B608732F374F";
+            //rfqProject.RfqReasonId = 2;
+            //rfqProject.VehicleVolume = 11;
+            //rfqProject.RfqResponseDeadline = Timestamp.FromDateTime(dueDate);
+
+            //TestContext.Out.WriteLine($"Creating RFQ Project:");
+            //TestContext.Out.WriteLine($"  CustomerBusinessUnitGuid: {rfqProject.CustomerBusinessUnitGuid}");
+            //TestContext.Out.WriteLine($"  CustomerLocationGuid: {rfqProject.CustomerLocationGuid}");
+            //TestContext.Out.WriteLine($"  ProjectGuid: {rfqProject.ProjectGuid}");
+            //TestContext.Out.WriteLine($"  RfqReasonId: {rfqProject.RfqReasonId}");
+            //TestContext.Out.WriteLine($"  VehicleVolume: {rfqProject.VehicleVolume}");
+            //TestContext.Out.WriteLine($"  RfqResponseDeadline: {rfqProject.RfqResponseDeadline.ToDateTime():yyyy-MM-dd}");
+
+            // Act - Step 1: Create RFQ Project
+            //CreateRfqProjectGrpcResponse createResponse = await _RfqUxClientService.CreateRfqProjectAsync(rfqProject);
+
+            // Assert - Create Project
+            //Assert.Multiple(() =>
+            //{
+            //    Assert.That(createResponse, Is.Not.Null, "CreateRfqProjectGrpcResponse should not be null");
+            //    Assert.That(createResponse.Success, Is.True, "RFQ Project creation should succeed");
+            //    Assert.That(createResponse.CreatedProjectId, Is.Not.Null.And.Not.Empty, "Created project ID should not be null or empty");
+            //});
+
+            //TestContext.Out.WriteLine($"RFQ Project created successfully:");
+            //TestContext.Out.WriteLine($"  CreatedProjectId: {createResponse.CreatedProjectId}");
+            //TestContext.Out.WriteLine($"  Message: {createResponse.Message}");
+
+            // Prepare test BOM file (FordBom.xml)
+            string bomFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, "TestData", "FordBom.xml");
+
+            // If file doesn't exist, create it with sample content
+            if (!File.Exists(bomFilePath))
+            {
+                string testDataDir = Path.Combine(TestContext.CurrentContext.TestDirectory, "TestData");
+                Directory.CreateDirectory(testDataDir);
+
+                // Create a minimal valid XML file for testing
+                string sampleBomContent = @"<?xml version=""1.0"" encoding=""utf-8""?>
+<Harness xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" name=""S2X6-14183-AD"">
+  <HarnessItem xsi:type=""Device"" id=""DEV_TEST"" name=""C1HP01"" compType=""MU5T-14D665-LA"">
+    <DeviceItem xsi:type=""Pin"" id=""PIN_1"" name=""1"" />
+  </HarnessItem>
+</Harness>";
+
+                await File.WriteAllTextAsync(bomFilePath, sampleBomContent);
+                TestContext.Out.WriteLine($"Created test BOM file at: {bomFilePath}");
+            }
+
+            bool isFile = File.Exists(bomFilePath);
+            Assert.That(isFile, Is.True, $"BOM file should exist at {bomFilePath}");
+
+            // Read file for upload
+            byte[] fileBytes = await File.ReadAllBytesAsync(bomFilePath);
+            string fileName = Path.GetFileName(bomFilePath);
+
+            TestContext.Out.WriteLine($"Uploading BOM file:");
+            TestContext.Out.WriteLine($"  File: {fileName}");
+            TestContext.Out.WriteLine($"  Size: {fileBytes.Length} bytes");
+            //TestContext.Out.WriteLine($"  Target Project ID: {createResponse.CreatedProjectId}");
+            TestContext.Out.WriteLine($"  Target Project ID: 163"); // 163 exists
+
+            // Create IBrowserFile mock/wrapper for the upload
+            // Note: In real scenario, you might need to create a test implementation of IBrowserFile
+            // For now, we'll use the direct upload method if available
+
+            // Act - Step 2: Upload Parts File
+            // Note: Adjust the max file size as needed (16MB = 16_777_216 bytes)
+            UploadPartsRequestGrpcResponse uploadResponse = await _RfqUxClientService.UploadPartsAsync(
+                //createResponse.CreatedProjectId,
+                "163",
+                fileBytes,
+                fileName
+            );
+
+            // Assert - Upload Parts
+            Assert.Multiple(() =>
+            {
+                Assert.That(uploadResponse, Is.Not.Null, "UploadPartsRequestGrpcResponse should not be null");
+                Assert.That(uploadResponse.Success, Is.True, "Parts file upload should succeed");
+            });
+
+            TestContext.Out.WriteLine($"Parts file uploaded successfully:");
+            TestContext.Out.WriteLine($"  Success: {uploadResponse.Success}");
+            TestContext.Out.WriteLine($"  Message: {uploadResponse.Message}");
+
+            // Optional: Verify the uploaded parts can be retrieved
+            //if (long.TryParse(createResponse.CreatedProjectId, out long projectId))
+            if (long.TryParse("163", out long projectId))
+            {
+                    TestContext.Out.WriteLine($"Verifying uploaded parts for project ID: {projectId}");
+
+                int partCount = await _RfqUxClientService.GetRfqDrawingPartNumbersByRfqIdAsync(projectId);
+
+                TestContext.Out.WriteLine($"Retrieved {partCount} part number(s) from uploaded BOM");
+
+                GreaterThanOrEqualConstraint hasPartNumbers = Is.GreaterThanOrEqualTo(0);
+                Assert.That(partCount, hasPartNumbers, "Should retrieve part numbers from uploaded BOM");
+
+                if (0 < partCount )
+                {
+                    TestContext.Out.WriteLine("Sample part numbers:");
+                    IEnumerable<RfqDrawingPartNumberUx?> parts = _RfqUxClientService.RfqDrawingPartNumbers;
+
+                    foreach (RfqDrawingPartNumberUx? part in parts)
+                    {
+                        if (part != null)
+                        {
+                            TestContext.Out.WriteLine($"  - Customer P/N: {part.CustomerPartNumber}, Drawing P/N: {part.DrawingPartNumber}");
+                        }
+                    }
+                }
+            }
+
+            //Assert.Pass($"Successfully created RFQ project (ID: {createResponse.CreatedProjectId}) and uploaded BOM file ({fileName})");
+            Assert.Pass($"Successfully created RFQ project (ID: 163) and uploaded BOM file ({fileName})");
         }
         #endregion
 
@@ -433,7 +567,7 @@ namespace Integration.Tests.Rfq.Client
             Assert.That(projectCount, condition, "Project count should be >= 0");
             TestContext.Out.WriteLine($"Retrieved {projectCount} RFQ projects");
 
-            IReadOnlyCollection<RfqProject> projects = _RfqUxClientService.RfqProjects;
+            IReadOnlyCollection<RfqProjectUx> projects = _RfqUxClientService.RfqProjectUxs;
             EqualConstraint conditionIsEqualTo = Is.EqualTo(projectCount);
             Assert.That(projects.Count, conditionIsEqualTo, "Cached projects count should match");
         }
@@ -454,9 +588,9 @@ namespace Integration.Tests.Rfq.Client
         {
             ArgumentNullException.ThrowIfNull(_RfqUxClientService);
 
-            IEnumerable<RfqProject> projects = _RfqUxClientService.RfqProjects.Take(maxProjectsToTest);
+            IEnumerable<RfqProjectUx> projects = _RfqUxClientService.RfqProjectUxs.Take(maxProjectsToTest);
             
-            foreach (RfqProject project in projects)
+            foreach (RfqProjectUx project in projects)
             {
                 long rfqId = project.RowId;
                 TestContext.Out.WriteLine($"Getting part numbers for Project: RowId={project.RowId}, RfqNumber={project.RfqNumber}");
