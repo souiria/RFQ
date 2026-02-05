@@ -52,6 +52,10 @@
             #region App
 
             WebApplication app = builder.Build();
+            ILogger logger = app.Services.GetRequiredService<ILoggerFactory>()
+                .CreateLogger("Rfq.Startup");
+
+            logger.GenericLogInformation("III RFQ Service starting up - SEQ test message");
 
             if (app.Environment.IsDevelopment())
             {

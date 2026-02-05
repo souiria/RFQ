@@ -1,4 +1,6 @@
-﻿namespace RfqModule
+﻿using Microsoft.Extensions.Http.Resilience;
+
+namespace RfqModule
 {
     public static class HostBuilder
     {
@@ -49,7 +51,7 @@
             // *********************************************************************
 
             #region Additional Services
-            builder.AddServiceDefaults();
+
             builder.Logging.AddSeq();
             builder.Services.AddGrpc(options =>
             {
@@ -81,6 +83,14 @@
             {
                 client.Timeout = TimeSpan.FromSeconds(600); // 60 seconds timeout
             });
+
+            // Configure resilience policy to allow longer timeouts
+            builder.Services.Configure<HttpStandardResilienceOptions>("GrpcClient.Rfq.Rfq+RfqClient", options =>
+            {
+                options.TotalRequestTimeout.Timeout = TimeSpan.FromMinutes(10);
+                options.AttemptTimeout.Timeout = TimeSpan.FromMinutes(5);
+            });
+
             builder.Services.AddGrpcClient<Emacs.Emacs.EmacsClient>(o =>
             {
                 o.Address = new Uri("https://localhost:7285");
@@ -114,6 +124,10 @@
             {
                 o.Address = new Uri("https://localhost:7166");
             });
+
+            // whatever you set after this is bs
+            builder.AddServiceDefaults();
+
             builder.Services.AddInfrastructure();
 
             #endregion

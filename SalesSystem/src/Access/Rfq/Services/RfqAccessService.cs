@@ -1,7 +1,11 @@
-﻿namespace Rfq.Services
+﻿using Microsoft.Extensions.Logging;
+
+namespace Rfq.Services
 {
     public partial class RfqAccessService : IRfqAccessService
     {
+        ILogger<RfqAccessService> _Logger;
+
         #region In Memory Datasets
 
         #region RfqDrawingPartNumbers
@@ -341,7 +345,9 @@
         #endregion
 
         #region Constructor
-        public RfqAccessService(IServiceProvider serviceProvider, bool testing = false)
+        public RfqAccessService(IServiceProvider serviceProvider,
+                                ILogger<RfqAccessService> logger,
+                                bool testing = false)
         {
             #region RfqDrawingPartNumbers
 
@@ -543,6 +549,7 @@
             //////////////////////////////////////////////////////////////////////////////////////////////
 
             _ServiceProvider = serviceProvider;
+            _Logger = logger;
 
             if (testing)
             {
@@ -579,6 +586,7 @@
         public async Task<ListRfqDrawingPartNumbersGrpc> CreateRfqDrawingPartNumbers(RfqDrawingPartNumbersGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
+            _Logger.GenericLogInformation($"III RfqAccessService.CreateRfqDrawingPartNumbers - Entering with passed {request.RfqDrawingPartNumbersGrpcsToCreate.Count} parts passed in");
             ListRfqDrawingPartNumbersGrpc responseList = new ListRfqDrawingPartNumbersGrpc();
             if (request == null || request.RfqDrawingPartNumbersGrpcsToCreate == null || request.RfqDrawingPartNumbersGrpcsToCreate.Count == 0)
             {
@@ -591,14 +599,6 @@
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    // Can you really change a list this way while iterating over it?
-                    //foreach(RfqDrawingPartNumbersGrpc part in request.RfqDrawingPartNumbersGrpcsToCreate)
-                    //{
-                    //    if(_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Any(x => x.OriginalPartNumber == part.OriginalPartNumber))
-                    //    {
-                    //        request.RfqDrawingPartNumbersGrpcsToCreate.Remove(part);
-                    //    }
-                    //}
                     List<RfqDrawingPartNumbersGrpc> itemsToCreate = new();
                     foreach (RfqDrawingPartNumbersGrpc? part in request.RfqDrawingPartNumbersGrpcsToCreate)
                     {
@@ -613,41 +613,61 @@
                         return responseList; // Nothing new to create
                     }
 
+                    _Logger.GenericLogInformation($"III RfqAccessService.CreateRfqDrawingPartNumbers - Starting with cached part count {_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Count}");
+
                     ICommandHandler<RfqDrawingPartNumberCommand, List<DbRfqDrawingPartNumber>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<RfqDrawingPartNumberCommand, List<DbRfqDrawingPartNumber>>>();
-                    //RfqDrawingPartNumberCommand command = new RfqDrawingPartNumberCommand(CommandType.Create, request.RfqDrawingPartNumbersGrpcsToCreate);
                     RfqDrawingPartNumberCommand command = new RfqDrawingPartNumberCommand(CommandType.Create, itemsToCreate);
                     Result<List<DbRfqDrawingPartNumber>> result = await handler.Handle(command, cancellationToken);
 
                     if (result.IsSuccess)
                     {
+
+                        _Logger.GenericLogInformation($"III RfqAccessService.CreateRfqDrawingPartNumbers - CQRS Handler retuned success - created {result.Value.Count} parts");
+
 #if DEBUG
-                        _ListRfqDrawingPartNumbersGrpc = new();
                         await PopulateRfqDrawingPartNumbers(cancellationToken);
-                        responseList.RfqDrawingPartNumbers.AddRange(_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers);
+                        List<DbRfqDrawingPartNumber> createdComponents = result.Value;
+
+                        List<RfqDrawingPartNumbersGrpc> createdGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
+                        responseList.RfqDrawingPartNumbers.AddRange(createdGrpcComponents);
+
+                        _Logger.GenericLogInformation($"III RfqAccessService.CreateRfqDrawingPartNumbers - PopulateRfqDrawingPartNumbers called, cached part count {_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Count}");
 #else
                     List<DbRfqDrawingPartNumber> createdComponents = result.Value;
                     List<RfqDrawingPartNumbersGrpc> updatedGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
                     _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.AddRange(updatedGrpcComponents);
                     responseList.RfqDrawingPartNumbers.AddRange(updatedGrpcComponents);
 #endif
+
+                    }
+                    else
+                    {
+                        _Logger.GenericLogInformation($"FFF RfqAccessService.CreateRfqDrawingPartNumbers - CQRS Handler retuned success");
                     }
 
-                    return responseList;
+                        return responseList;
                 }
+            }
+            catch (TaskCanceledException ex)
+            {
+                // Also a cancellation scenario
+                _Logger.GenericLogInformation($"WWW RfqAccessService.CreateRfqDrawingPartNumbers - Task cancelled (likely timeout): {ex.Message}");
+                throw;
+            }
+            catch (OperationCanceledException ex)
+            {
+                // This is expected when the client cancels (timeout)
+                _Logger.GenericLogInformation($"WWW RfqAccessService.CreateRfqDrawingPartNumbers - Operation cancelled (likely timeout): {ex.Message}");
+                throw; // Re-throw so gRPC can return proper status code
             }
             catch (InvalidOperationException ex)
             {
-                Console.WriteLine($"EEE InvalidOperationException in RfqAccessService.CreateRfqDrawingPartNumbers {ex.Message}, stack trace: {stackTrace}");
-                throw;
-            }
-            catch (ArgumentNullException ex)
-            {
-                Console.WriteLine($"EEE ArgumentNullException in RfqAccessService.CreateRfqDrawingPartNumbers {ex.Message}, stack trace: {stackTrace}");
+                _Logger.GenericLogError($"EEE RfqAccessService.CreateRfqDrawingPartNumbers - InvalidOperationException: {ex.Message}", ex);
                 throw;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"EEE Exception in RfqAccessService.CreateRfqDrawingPartNumbers {ex.Message}, stack trace: {stackTrace}");
+                _Logger.GenericLogError($"EEE RfqAccessService.CreateRfqDrawingPartNumbers - Unexpected exception: {ex.Message}", ex);
                 throw;
             }
         }

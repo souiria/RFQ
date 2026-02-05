@@ -412,17 +412,24 @@
                     }
 
                     fileCount++;
-                    progressState.UpdateProgress($"Uploading file {fileCount} of {totalFiles}: {fileObject.File.Name}", 2);
+                    progressState.UpdateProgress($"CreateRfq.SubmitDataAsync - Uploading file {fileCount} of {totalFiles}: {fileObject.File.Name}", 2);
 
                     UploadPartsRequestGrpcResponse uploadFileResponse = await RfqUxClientService.UploadPartsAsync(response.CreatedProjectId, fileObject.File, 16_000_000);
                     fileObject.UploadStatus = new FileObjectUploadStatus(uploadFileResponse);
-                    allOk = allOk && uploadFileResponse.Success;
+                    allOk = allOk && uploadFileResponse.Success == true;
 
-                    Logger.GenericLogInformation($"CreateRfq.SubmitDataAsync - Uploaded file {fileObject.File.Name}/{fileObject.File.Size}, {fileObject.UploadStatus.Status}/{fileObject.UploadStatus.Message}");
+                    if (uploadFileResponse.Success == true)
+                    {
+                        Logger.GenericLogInformation($"III CreateRfq.SubmitDataAsync - Uploaded file {fileObject.File.Name}/{fileObject.File.Size}, {fileObject.UploadStatus.Status}/{fileObject.UploadStatus.Message}");
+                    }
+                    else
+                    {
+                        Logger.GenericLogInformation($"FFF CreateRfq.SubmitDataAsync - Uploaded file {fileObject.File.Name}/{fileObject.File.Size}, {fileObject.UploadStatus.Status}/{fileObject.UploadStatus.Message}");
+                    }
                 }
                 catch (Exception fileEx)
                 {
-                    Logger.GenericLogError($"CreateRfq.SubmitDataAsync - Error uploading file {fileObject.DisplayName}", fileEx);
+                    Logger.GenericLogError($"EEE CreateRfq.SubmitDataAsync - Error uploading file {fileObject.DisplayName}", fileEx);
                     fileObject.UploadStatus = new FileObjectUploadStatus
                     {
                         Status = FileUploadStatus.Failed,
