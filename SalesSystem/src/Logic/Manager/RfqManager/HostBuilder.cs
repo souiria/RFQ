@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Http.Resilience;
-
-namespace RfqModule
+﻿namespace RfqModule
 {
     public static class HostBuilder
     {

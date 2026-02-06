@@ -1,6 +1,4 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace Emacs.Services
+﻿namespace Emacs.Services
 {
     public class DataImportSchedulerService : BackgroundService
     {
