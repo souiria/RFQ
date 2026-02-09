@@ -8,6 +8,16 @@
             builder ??= WebApplication.CreateBuilder(args);
 
             #region Builder
+            #region Kestrel
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.Limits.MaxRequestBodySize = 64 * 1024 * 1024; // 256 MB
+                options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10);
+                options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(5);
+                options.Limits.MinResponseDataRate = null;
+                options.Limits.MinRequestBodyDataRate = null;
+            });
+            #endregion
 
             builder.Services.Configure<CookiePolicyOptions>(options =>
             {
@@ -42,6 +52,10 @@
             #region App
 
             WebApplication app = builder.Build();
+            ILogger logger = app.Services.GetRequiredService<ILoggerFactory>()
+                .CreateLogger("Rfq.Startup");
+
+            logger.GenericLogInformation("III RFQ Service starting up - SEQ test message");
 
             if (app.Environment.IsDevelopment())
             {

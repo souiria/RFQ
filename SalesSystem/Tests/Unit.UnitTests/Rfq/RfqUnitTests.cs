@@ -14,9 +14,10 @@ namespace Unit.Tests.Rfq
         {
             ServiceCollection serviceCollection = new ServiceCollection();
             ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
-            _RfqAccessService = new RfqAccessService(serviceProvider, true);
-            Mock<ILogger<RfqGrpcService>> logger = new Mock<ILogger<RfqGrpcService>>();
-            _GrpcService = new RfqGrpcService(_RfqAccessService, logger.Object);
+            Mock<ILogger<RfqAccessService>> logger = new Mock<ILogger<RfqAccessService>>();
+            _RfqAccessService = new RfqAccessService(serviceProvider, logger.Object, true);
+            Mock<ILogger<RfqGrpcService>> logger2 = new Mock<ILogger<RfqGrpcService>>();
+            _GrpcService = new RfqGrpcService(_RfqAccessService, logger2.Object);
         }
 
         [Test]

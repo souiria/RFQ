@@ -193,7 +193,7 @@
                 List<VehicleGrpc> filteredVehicles = new List<VehicleGrpc>();
                 foreach (Master.VehicleGrpc? vehicle in vehicles.VehicleGrpc)
                 {
-                    _Logger.GenericLogInformation("Vehicle from Master Service: " + vehicle.ToString());
+                    //_Logger.GenericLogInformation("Vehicle from Master Service: " + vehicle.ToString());
                     if (vehicle.ProjectReference.Contains('+', StringComparison.InvariantCulture))
                     {
                         string[] codes = vehicle.ProjectReference.Split('+');
@@ -218,6 +218,8 @@
                         filteredVehicles.Add(filteredVehicle);
                     }
                 }
+
+                _Logger.GenericLogInformation($"III RfqManagerService.GetVehiclesByProjectCodeGrpc Filtered vehicles from Master Service: {filteredVehicles.Count}");
 
                 return filteredVehicles;
             }
@@ -642,11 +644,14 @@
             {
                 uploadResponse.Success = false;
                 uploadResponse.Message = "Failed to create RFQ Parts";
+                _Logger.GenericLogInformation($"FFF RfqManagerService.UploadPartsGrpc Failed uploading - {customerParts.Count} parts incoming");
+
                 return uploadResponse;
             }
 
             uploadResponse.Success = true;
             uploadResponse.Message = $"{request.FileName} processed and RFQ Parts created successfully";
+            _Logger.GenericLogInformation($"III RfqManagerService.UploadPartsGrpc Successfully uploaded - {customerParts.Count} parts incoming");
 
             return uploadResponse;
 
@@ -872,30 +877,50 @@
             return newCustomerParts;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         RfqCrudGrpcResponse CreateRfqDrawingPartNumbers(string projectId, List<CustomerParts> customerParts)
         {
             RfqDrawingPartNumbersGrpcRequest partRequest = new RfqDrawingPartNumbersGrpcRequest();
-            partRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
-            partRequest.RfqGrpcRequestParameter.RequestType = 70;
-            foreach (CustomerParts customerPart in customerParts)
+            RfqCrudGrpcResponse partResponse = new();
+            partResponse.SaveSuccess = false;
+
+            try
             {
-                RfqDrawingPartNumbersGrpc part = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber1);
-                partRequest.RfqDrawingPartNumbersGrpcsToCreate.Add(part);
-                if (customerPart.PartNumber2 != null)
+                _Logger.GenericLogInformation($"III RfqManaerService.CreateRfqDrawingPartNumbers - start GRPC to the access layer - sending {customerParts.Count} parts");
+
+                partRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                partRequest.RfqGrpcRequestParameter.RequestType = 70;
+                foreach (CustomerParts customerPart in customerParts)
                 {
-                    RfqDrawingPartNumbersGrpc part2 = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber2);
-                    partRequest.RfqDrawingPartNumbersGrpcsToCreate.Add(part2);
+                    RfqDrawingPartNumbersGrpc part = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber1);
+                    partRequest.RfqDrawingPartNumbersGrpcsToCreate.Add(part);
+                    if (customerPart.PartNumber2 != null)
+                    {
+                        RfqDrawingPartNumbersGrpc part2 = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber2);
+                        partRequest.RfqDrawingPartNumbersGrpcsToCreate.Add(part2);
+                    }
+
+                    if (customerPart.PartNumber3 != null)
+                    {
+                        RfqDrawingPartNumbersGrpc part3 = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber3);
+                        partRequest.RfqDrawingPartNumbersGrpcsToCreate.Add(part3);
+                    }
                 }
 
-                if (customerPart.PartNumber3 != null)
-                {
-                    RfqDrawingPartNumbersGrpc part3 = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber3);
-                    partRequest.RfqDrawingPartNumbersGrpcsToCreate.Add(part3);
-                }
+                partResponse = _RfqClient.CreateRfqDrawingPartNumbersGrpc(partRequest);
+
+                string msg = partResponse.SaveSuccess == true ? "successfully" : "failed somehow";
+                _Logger.GenericLogInformation($"III RfqManaerService.CreateRfqDrawingPartNumbers - access layer returned over GRPC - {msg}");
+                return partResponse;
+
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError($"EEE RfqManaerService.CreateRfqDrawingPartNumbers - access layer returned over GRPC - {ex.Message}", ex);
             }
 
-            RfqCrudGrpcResponse partResponse = _RfqClient.CreateRfqDrawingPartNumbersGrpc(partRequest);
             return partResponse;
+
         }
 
         RfqDrawingPartNumbersGrpc ToRfqDrawingPartNumbers(string projectId, string partNumber)

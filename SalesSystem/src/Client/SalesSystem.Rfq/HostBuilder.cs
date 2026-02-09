@@ -51,6 +51,9 @@
             #region App
 
             WebApplication app = builder.Build();
+            // Add this test log
+            ILogger<Program> logger = app.Services.GetRequiredService<ILogger<Program>>();
+            logger.GenericLogInformation("III RFQ UX Client starting up - SEQ test message");
 
             if (!app.Environment.IsDevelopment())
             {

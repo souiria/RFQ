@@ -16,7 +16,9 @@ namespace Integration.Tests.Rfq
             ServiceCollection services = new ServiceCollection();
             ServiceProvider provider = services.BuildServiceProvider();
 
-            _RfqAccessService = new RfqAccessService(provider, testing: true);
+            // IMPORTANT: testing=true -> seeds in-memory lists via SampleRfqDataService
+            Mock<ILogger<RfqAccessService>> logger2 = new Mock<ILogger<RfqAccessService>>();
+            _RfqAccessService = new RfqAccessService(provider, logger2.Object, testing: true);
 
             _LoggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
             ILogger<RfqGrpcService> logger = _LoggerFactory.CreateLogger<RfqGrpcService>();

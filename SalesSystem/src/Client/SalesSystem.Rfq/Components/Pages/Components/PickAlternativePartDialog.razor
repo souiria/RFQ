@@ -29,6 +29,7 @@
                                  SortMode="SortMode.Multiple"
                                  Hideable="true"
                                  Filterable="true"
+                                 FilterMode="DataGridFilterMode.ColumnFilterRow"
                                  Groupable="true"
                                  QuickFilter="@QuickFilter"
                                  ReadOnly="true"
@@ -36,29 +37,19 @@
                                  ShowMenuIcon="true">
                         <ToolBarContent>
                             <MudTooltip Text="Full text search">
-                                <MudTextField @bind-Value="AlternativePartFilter" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
-                                              AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                                <MudTextField @bind-Value="AlternativePartFilter" 
+                                              Placeholder="Search" 
+                                              Adornment="Adornment.Start" 
+                                              Immediate="true"
+                                              AdornmentIcon="@Icons.Material.Filled.Search" 
+                                              IconSize="Size.Medium" 
+                                              Class="mt-0" />
                             </MudTooltip>
                             <span>&nbsp;</span>
                         </ToolBarContent>
                         <Columns>
-                            <TemplateColumn CellClass="d-flex justify-end" StickyLeft="true">
-                                <CellTemplate>
-                                    <MudStack Row>
-                                        <MudIconButton Size="Size.Small"
-                                                       Icon="@Icons.Material.Filled.Info"
-                                                       aria-label="info"
-                                                       OnClick="@(() => ShowInfo(context.Item))" />
-                                        <MudIconButton Size="Size.Small"
-                                                       Icon="@Icons.Material.Filled.SelectAll"
-                                                       aria-label="select"
-                                                       OnClick="@(() => PickAlternativePart(context.Item))" />
-
-                                    </MudStack>
-                                </CellTemplate>
-                            </TemplateColumn>
                             <PropertyColumn Property="x => x.SumitomoNumber" Title="Sumitomo Number" StickyLeft="true" />
-                            <PropertyColumn Property="x => x.SumitomoDescription" Title="Description" />
+                            <PropertyColumn Property="x => x.SumitomoDescription" Title="Description" HeaderStyle="max-width:18em; min-width:18em" Filterable="true" />
                             <PropertyColumn Property="x => x.MainSupplier" Title="Main Supplier" />
                             <PropertyColumn Property="x => x.SupplierName" Title="Supplier Name" />
                             <PropertyColumn Property="x => x.SupplierNumber" Title="Supplier Number" />
@@ -105,6 +96,21 @@
                             <PropertyColumn Property="x => x.Tilt" Title="Tilt" />
                             <PropertyColumn Property="x => x.Grease" Title="Grease" />
                             <PropertyColumn Property="x => x.CategoryCode2" Title="Category Code 2" />
+                            <TemplateColumn CellClass="d-flex justify-end" StickyRight="true">
+                                <CellTemplate>
+                                    <MudStack Row>
+                                        <MudIconButton Size="Size.Small"
+                                                       Icon="@Icons.Material.Filled.Info"
+                                                       aria-label="info"
+                                                       OnClick="@(() => ShowInfo(context.Item))" />
+                                        <MudIconButton Size="Size.Small"
+                                                       Icon="@Icons.Material.Filled.SelectAll"
+                                                       aria-label="select"
+                                                       OnClick="@(() => PickAlternativePart(context.Item))" />
+
+                                    </MudStack>
+                                </CellTemplate>
+                            </TemplateColumn>
                         </Columns>
                     </MudDataGrid>
                 </MudItem>

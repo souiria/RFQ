@@ -49,7 +49,7 @@
             // *********************************************************************
 
             #region Additional Services
-            builder.AddServiceDefaults();
+
             builder.Logging.AddSeq();
             builder.Services.AddGrpc(options =>
             {
@@ -64,7 +64,31 @@
             builder.Services.AddGrpcClient<Rfq.Rfq.RfqClient>(o =>
             {
                 o.Address = new Uri("https://localhost:7116");
+            }).ConfigureChannel(options =>
+            {
+                options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
+                options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
+            })
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            new SocketsHttpHandler
+            {
+                PooledConnectionIdleTimeout = Timeout.InfiniteTimeSpan,
+                KeepAlivePingDelay = TimeSpan.FromSeconds(60),
+                KeepAlivePingTimeout = TimeSpan.FromSeconds(30),
+                EnableMultipleHttp2Connections = true
+            })
+            .ConfigureHttpClient(client =>
+            {
+                client.Timeout = TimeSpan.FromSeconds(600); // 60 seconds timeout
             });
+
+            // Configure resilience policy to allow longer timeouts
+            builder.Services.Configure<HttpStandardResilienceOptions>("GrpcClient.Rfq.Rfq+RfqClient", options =>
+            {
+                options.TotalRequestTimeout.Timeout = TimeSpan.FromMinutes(10);
+                options.AttemptTimeout.Timeout = TimeSpan.FromMinutes(5);
+            });
+
             builder.Services.AddGrpcClient<Emacs.Emacs.EmacsClient>(o =>
             {
                 o.Address = new Uri("https://localhost:7285");
@@ -98,6 +122,10 @@
             {
                 o.Address = new Uri("https://localhost:7166");
             });
+
+            // whatever you set after this is bs
+            builder.AddServiceDefaults();
+
             builder.Services.AddInfrastructure();
 
             #endregion

@@ -156,7 +156,7 @@
     // Form values
     string? customerValue { get; set; }
     string? customerProjectValue { get; set; }  // Keep for backward compatibility with validation
-    ProjectAssociationUx? selectedProject { get; set; }  // NEW: Holds the selected project object
+    ProjectAssociationUx? selectedProject { get; set; }  // Holds the selected project object
     string? reasonValue { get; set; }
     string? projectValue { get; set; }
     string? quotationValue { get; set; }
@@ -319,7 +319,7 @@
 
             await Task.Delay(500); // Small delay for UX
 
-            // UPDATED: Use selectedProject instead of customerProjectValue for validation
+            // Use selectedProject instead of customerProjectValue for validation
             if (string.IsNullOrWhiteSpace(customerValue)
             || selectedProject == null  // Changed validation
             || string.IsNullOrWhiteSpace(reasonValue)
@@ -339,7 +339,7 @@
                 return;
             }
 
-            // UPDATED: Use selectedProject directly (already validated above)
+            // Use selectedProject directly (already validated above)
             ProjectAssociationUx customerProject = selectedProject;
 
             RfqModule.RfqReasonGrpc? reason = RfqUxClientService.Reasons.FirstOrDefault(r => r.RfqReasonTitle == reasonValue);
@@ -412,17 +412,24 @@
                     }
 
                     fileCount++;
-                    progressState.UpdateProgress($"Uploading file {fileCount} of {totalFiles}: {fileObject.File.Name}", 2);
+                    progressState.UpdateProgress($"CreateRfq.SubmitDataAsync - Uploading file {fileCount} of {totalFiles}: {fileObject.File.Name}", 2);
 
                     UploadPartsRequestGrpcResponse uploadFileResponse = await RfqUxClientService.UploadPartsAsync(response.CreatedProjectId, fileObject.File, 16_000_000);
                     fileObject.UploadStatus = new FileObjectUploadStatus(uploadFileResponse);
-                    allOk = allOk && uploadFileResponse.Success;
+                    allOk = allOk && uploadFileResponse.Success == true;
 
-                    Logger.GenericLogInformation($"CreateRfq.SubmitDataAsync - Uploaded file {fileObject.File.Name}/{fileObject.File.Size}, {fileObject.UploadStatus.Status}/{fileObject.UploadStatus.Message}");
+                    if (uploadFileResponse.Success == true)
+                    {
+                        Logger.GenericLogInformation($"III CreateRfq.SubmitDataAsync - Uploaded file {fileObject.File.Name}/{fileObject.File.Size}, {fileObject.UploadStatus.Status}/{fileObject.UploadStatus.Message}");
+                    }
+                    else
+                    {
+                        Logger.GenericLogInformation($"FFF CreateRfq.SubmitDataAsync - Uploaded file {fileObject.File.Name}/{fileObject.File.Size}, {fileObject.UploadStatus.Status}/{fileObject.UploadStatus.Message}");
+                    }
                 }
                 catch (Exception fileEx)
                 {
-                    Logger.GenericLogError($"CreateRfq.SubmitDataAsync - Error uploading file {fileObject.DisplayName}", fileEx);
+                    Logger.GenericLogError($"EEE CreateRfq.SubmitDataAsync - Error uploading file {fileObject.DisplayName}", fileEx);
                     fileObject.UploadStatus = new FileObjectUploadStatus
                     {
                         Status = FileUploadStatus.Failed,
@@ -431,6 +438,9 @@
                     allOk = false;
                 }
             }
+
+            // humor
+            //allOk = true;
 
             string uploadSummary = skippedCount > 0
                 ? $"Uploaded {fileCount} files, skipped {skippedCount} invalid files"

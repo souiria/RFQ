@@ -16,10 +16,13 @@ using Rfq.Services;
             services = new ServiceCollection();
              ServiceProvider provider;
             provider = services.BuildServiceProvider();
-             _RfqAccessService = new RfqAccessService(provider, true);
-             Mock<ILogger<RfqGrpcService>> logger;
-            logger = new Mock<ILogger<RfqGrpcService>>();
-             _GrpcService = new RfqGrpcService(_RfqAccessService, logger.Object);
+            Mock<ILogger<RfqAccessService>> logger;
+            logger = new Mock<ILogger<RfqAccessService>>();
+            _RfqAccessService = new RfqAccessService(provider, logger.Object, true);
+
+            Mock<ILogger<RfqGrpcService>> logger2;
+            logger2 = new Mock<ILogger<RfqGrpcService>>();
+            _GrpcService = new RfqGrpcService(_RfqAccessService, logger2.Object);
         }
          [Test]
         public async Task RegressionTest_AllEndpoints_FilterOnly_ShouldReturnExpectedResults()

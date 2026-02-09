@@ -55,7 +55,7 @@
 
         public override async Task<RfqCrudGrpcResponse> CreateRfqDrawingPartNumbersGrpc(RfqDrawingPartNumbersGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("CreateRfqDrawingPartNumbersGrpc starting");
+            _Logger.GenericLogInformation($"III Access Layer RfqGrpcService.CreateRfqDrawingPartNumbersGrpc called with {request.RfqDrawingPartNumbersGrpcsToCreate.Count} parts");
             if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
@@ -82,7 +82,10 @@
 
             RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
             CancellationToken cancellationToken = context.CancellationToken;
+
             ListRfqDrawingPartNumbersGrpc response = await _RfqAccessService.CreateRfqDrawingPartNumbers(request, cancellationToken);
+            _Logger.GenericLogInformation($"III Access Layer RfqGrpcService.CreateRfqDrawingPartNumbers created {response.RfqDrawingPartNumbers.Count} parts");
+
             if (request.RfqDrawingPartNumbersGrpcsToCreate.Count == response.RfqDrawingPartNumbers.Count)
             {
                 responseMessage.Message = $"{request.RfqDrawingPartNumbersGrpcsToCreate.Count} RfqDrawingPartNumbers types created successfully.";
@@ -98,6 +101,7 @@
                 responseMessage.SaveSuccess = false;
             }
 
+            _Logger.GenericLogInformation($"III Access Layer RfqGrpcService.CreateRfqDrawingPartNumbers returning  {response.RfqDrawingPartNumbers.Count} parts, success {responseMessage.SaveSuccess}, message {responseMessage.Message}");
             return responseMessage;
         }
 
