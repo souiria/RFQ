@@ -14,6 +14,7 @@ service NPR {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply);
   rpc GetAllH1NPRViewGrpc (H1NPRViewRequest) returns (ListH1NPRViewGrpc);
+  rpc GetAllRFQStatusGrpc (RFQStatusRequest) returns (ListRFQStatusGrpc);
   rpc FilterNPRGrpc (NPRFilterRequest) returns (NPRFilterResponse);
 }
 
@@ -100,6 +101,20 @@ message H1NPRViewGrpc{
 
 message ListH1NPRViewGrpc {
 	repeated H1NPRViewGrpc H1NPRViewGrpc = 1;
+}
+
+message RFQStatusRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message RFQStatusGrpc {
+	google.protobuf.StringValue RFQStatusDescription = 1;
+	google.protobuf.StringValue NPRStage = 2;
+}
+
+message ListRFQStatusGrpc {
+	repeated RFQStatusGrpc RFQStatusGrpc = 1;
 }
 
 message NPRFilterRequest {

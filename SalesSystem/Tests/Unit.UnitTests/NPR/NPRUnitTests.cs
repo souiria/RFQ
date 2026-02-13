@@ -39,15 +39,30 @@ namespace Unit.Tests.NPR
 
         [Test]
         [Category("Unit")]
-        public void GetCurrencyGrpcTest_Success()
+        public void GetH1NPRViewGrpcTest_Success()
         {
             H1NPRViewRequest h1NPRViewRequest = new H1NPRViewRequest();
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetAllH1NPRViewGrpc));
 
-            Task<ListH1NPRViewGrpc> getCurrencyGrpcReply = _GrpcService.GetAllH1NPRViewGrpc(h1NPRViewRequest, serverCallContext);
-            Assert.That(getCurrencyGrpcReply.Result.H1NPRViewGrpc, Is.Not.Null);
+            Task<ListH1NPRViewGrpc> geth1NPRViewGrpcReply = _GrpcService.GetAllH1NPRViewGrpc(h1NPRViewRequest, serverCallContext);
+            Assert.That(geth1NPRViewGrpcReply.Result.H1NPRViewGrpc, Is.Not.Null);
             EqualConstraint countConstraint = Is.EqualTo(6);
-            Assert.That(getCurrencyGrpcReply.Result.H1NPRViewGrpc.Count, countConstraint);
+            Assert.That(geth1NPRViewGrpcReply.Result.H1NPRViewGrpc.Count, countConstraint);
+
+        }
+        #endregion
+
+        #region RFQStatus
+        [Category("Unit")]
+        public void GetRFQStatusTest_Success()
+        {
+            RFQStatusRequest rfqStatusRequest = new RFQStatusRequest();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetAllRFQStatusGrpc));
+
+            Task<ListRFQStatusGrpc> getRFQStatusReply = _GrpcService.GetAllRFQStatusGrpc(rfqStatusRequest, serverCallContext);
+            Assert.That(getRFQStatusReply.Result.RFQStatusGrpc, Is.Not.Null);
+            EqualConstraint countConstraint = Is.EqualTo(6);
+            Assert.That(getRFQStatusReply.Result.RFQStatusGrpc.Count, countConstraint);
 
         }
         #endregion

@@ -26,6 +26,14 @@
         }
         #endregion
 
+        #region RFQStatus
+        public override async Task<ListRFQStatusGrpc> GetAllRFQStatusGrpc(RFQStatusRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetAllRFQStatusGrpc starting");
+            return await _NPRAccessService.GetAllRFQStatus(context.CancellationToken, request.Position, request.Takeamount);
+        }
+        #endregion
+
         public override async Task<NPRFilterResponse> FilterNPRGrpc(NPRFilterRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("FilterNPRGrpc starting");
