@@ -145,5 +145,25 @@
             return listH1NPRViewGrpc;
         }
         #endregion
+
+        #region RFQStatus
+        public static ListRFQStatusGrpc PopulateRFQStatusGrpc()
+        {
+            ListRFQStatusGrpc listRFQStatusGrpc = new ListRFQStatusGrpc();
+            for (int i = 0; i < 5; i++)
+            {
+                RFQStatusGrpc rfqStatus = new RFQStatusGrpc();
+                rfqStatus.RFQStatusDescription = $"TestDescription{i}";
+                rfqStatus.NPRStage = $"TestStage{i}";
+                listRFQStatusGrpc.RFQStatusGrpc.Add(rfqStatus);
+            }
+
+            RFQStatusGrpc fixedRFQStatus = new RFQStatusGrpc();
+            fixedRFQStatus.RFQStatusDescription = "TestFixedDescription";
+            fixedRFQStatus.NPRStage = "TestFixedStage";
+            listRFQStatusGrpc.RFQStatusGrpc.Add(fixedRFQStatus);
+            return listRFQStatusGrpc;
+        }
+        #endregion
     }
 }

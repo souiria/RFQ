@@ -13,6 +13,7 @@
         #region DbSet
 
         public DbSet<DbH1NPRView> H1NPRItems => Set<DbH1NPRView>();
+        public DbSet<DbRFQStatus> RFQStatusItems => Set<DbRFQStatus>();
 
         #endregion
 

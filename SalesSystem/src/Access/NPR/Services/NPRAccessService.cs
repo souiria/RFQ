@@ -9,6 +9,11 @@
         ListH1NPRViewGrpc _H1NPRView;
 
         #endregion
+        #region RFQStatus
+
+        ListRFQStatusGrpc _RFQStatus;
+
+        #endregion
         #endregion
 
         #region Fields and Properties
@@ -17,6 +22,12 @@
 
         IQueryHandler<GetH1NPRViewQuery, List<H1NPRViewGrpc>>? _H1NPRViewHandler;
         bool _H1NPRViewRefreshInProgress;
+
+        #endregion
+        #region RFQStatus
+
+        IQueryHandler<GetRFQStatusQuery, List<RFQStatusGrpc>>? _RFQStatusHandler;
+        bool _RFQStatusRefreshInProgress;
 
         #endregion
 
@@ -28,10 +39,17 @@
 
         public NPRAccessService(IServiceProvider serviceProvider, bool testing = false)
         {
-            #region Currency
+            #region H1NPRView
 
             _H1NPRView = new ListH1NPRViewGrpc();
             _H1NPRViewRefreshInProgress = false;
+
+            #endregion
+
+            #region RFQStatus
+
+            _RFQStatus = new ListRFQStatusGrpc();
+            _RFQStatusRefreshInProgress = false;
 
             #endregion
 
@@ -69,6 +87,30 @@
             }
         }
         #endregion
+
+        #region RFQStatus
+        public async Task<ListRFQStatusGrpc> GetAllRFQStatus(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_RFQStatus.RFQStatusGrpc.Any())
+            {
+                if (takeAmount <= 0)
+                {
+                    return _RFQStatus;
+                }
+
+                ListRFQStatusGrpc returnList = new ListRFQStatusGrpc();
+                IQueryable<RFQStatusGrpc> query = _RFQStatus.RFQStatusGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.RFQStatusGrpc.AddRange(query);
+                return returnList;
+            }
+            else
+            {
+                await PopulateRFQStatusAsync(cancellationToken);
+                return _RFQStatus;
+            }
+        }
+        #endregion
         #endregion
 
         #region Data Imports
@@ -90,6 +132,33 @@
                     {
                         _H1NPRView.H1NPRViewGrpc.Clear();
                         _H1NPRView.H1NPRViewGrpc.AddRange(results.Value);
+                    }
+
+                    _H1NPRViewRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        public async Task<bool> PopulateRFQStatusAsync(CancellationToken cancellationToken)
+        {
+            if (!_RFQStatusRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _RFQStatusHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetRFQStatusQuery, List<RFQStatusGrpc>>>();
+                    _RFQStatusRefreshInProgress = true;
+                    GetRFQStatusQuery query = new GetRFQStatusQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<RFQStatusGrpc>> results = await _RFQStatusHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _RFQStatus.RFQStatusGrpc.Clear();
+                        _RFQStatus.RFQStatusGrpc.AddRange(results.Value);
                     }
 
                     _H1NPRViewRefreshInProgress = false;
@@ -125,6 +194,7 @@
         void PopulateSampleData()
         {
             _H1NPRView = SampleNPRDataService.PopulateH1NPRViewGrpc();
+            _RFQStatus = SampleNPRDataService.PopulateRFQStatusGrpc();
         }
     }
 }

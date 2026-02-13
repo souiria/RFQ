@@ -38,6 +38,8 @@
                 bool check;
                 check = await _NPRAccessService.PopulateH1NPRViewAsync(stoppingToken);
                 await LogDataPopulationSuccess("AllH1NPRView", check);
+                check = await _NPRAccessService.PopulateRFQStatusAsync(stoppingToken);
+                await LogDataPopulationSuccess("AllRfqStatus", check);
             }
 
             return true;

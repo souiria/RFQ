@@ -73,6 +73,14 @@
             return data;
         }
 
+        public static RFQStatusGrpc MapToRFQStatus(this DbRFQStatus entity)
+        {
+            RFQStatusGrpc data = new RFQStatusGrpc();
+            data.RFQStatusDescription = entity.RFQStatusDescription;
+            data.NPRStage = entity.NPRStage;
+            return data;
+        }
+
         #endregion
     }
 }
