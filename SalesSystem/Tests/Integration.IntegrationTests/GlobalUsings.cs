@@ -8,6 +8,7 @@ global using System.Reflection;
 global using System.Text;
 global using System.Text.Json;
 global using System.Threading.Tasks;
+global using Google.Protobuf;
 global using Google.Protobuf.Collections;
 global using Google.Protobuf.WellKnownTypes;
 global using Grpc.Core;
