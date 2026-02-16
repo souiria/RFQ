@@ -12,7 +12,6 @@ namespace SalesSystem.Rfq.Services
         public static int MAX_GRPC_RESPONSE_SIZE => _MAX_GRPC_RESPONSE_SIZE;
         // Cached Data
         List<RfqDrawingPartNumberUx?> _RfqDrawingPartNumbers;
-        //List<RfqProject> _RfqProjects;
         List<RfqProjectUx> _RfqProjectUxs;
         List<CustomerUx?> _Customers;
         List<RfqReasonGrpc> _Reasons;
@@ -22,6 +21,18 @@ namespace SalesSystem.Rfq.Services
         int _AlternativePartsTake;
         int _AlternativePartsPosition;
 
+        // NPR Request cached data
+        List<RfqNprRequestSetUxModel> _NprRequestSets;
+        static readonly string _NprRequestSetsFilePath;
+        static readonly JsonSerializerOptions _JsonOptions;
+        // static constructor
+        static RfqUxClientService()
+        {
+            _NprRequestSetsFilePath = Path.Combine("C:\\temp", "npr_request_sets.json");
+            _JsonOptions = new JsonSerializerOptions();
+            _JsonOptions.WriteIndented = true;
+            _JsonOptions.PropertyNameCaseInsensitive = false;
+        }
         // Cached data accessors
         public IReadOnlyCollection<RfqDrawingPartNumberUx?> RfqDrawingPartNumbers => _RfqDrawingPartNumbers.AsReadOnly();
         //public IReadOnlyCollection<RfqProject> RfqProjects => _RfqProjects.AsReadOnly();
@@ -31,7 +42,10 @@ namespace SalesSystem.Rfq.Services
         public IReadOnlyCollection<ProjectAssociationUx> CustomerProjectAssociations => _CustomerProjectAssociations.AsReadOnly();
         public IReadOnlyCollection<string> QuotationNumbers => _QuotationNumbers.AsReadOnly();
         public IReadOnlyCollection<AlternativePartUxModel> AlternativeParts => _AlternativeParts.AsReadOnly();
+        public IReadOnlyCollection<RfqNprRequestSetUxModel> NprRequestSets => _NprRequestSets.AsReadOnly();
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
+
         public RfqUxClientService(IConfiguration configuration, ILogger<RfqUxClientService> logger)
         {
             _Logger = logger;
@@ -51,7 +65,7 @@ namespace SalesSystem.Rfq.Services
 
             _Logger?.GenericLogInformation(
                 $"RfqUxClientService initialized for service URL: {serviceUrl} " +
-                $"with timeout: {timeoutSeconds}s, MaxReceive: {_MAX_GRPC_RESPONSE_SIZE/1024/1024}MB, MaxSend: {_MAX_GRPC_RESPONSE_SIZE/1024/1024}MB");
+                $"with timeout: {timeoutSeconds}s, MaxReceive: {_MAX_GRPC_RESPONSE_SIZE / 1024 / 1024}MB, MaxSend: {_MAX_GRPC_RESPONSE_SIZE / 1024 / 1024}MB");
 
             _Disposed = false;
 
@@ -62,17 +76,17 @@ namespace SalesSystem.Rfq.Services
             _Customers = new();
             _Reasons = new();
             _CustomerProjectAssociations = new();
-            _QuotationNumbers= new()
+            _QuotationNumbers = new()
             {
                 "SEWS-25-025-005678",
                 "SEWS-25-025-005688",
                 "SEWS-25-025-005692"
             };
-            _RfqDrawingPartNumbers= new();
-            _AlternativeParts= new();
+            _RfqDrawingPartNumbers = new();
+            _AlternativeParts = new();
             _AlternativePartsPosition = 0;
             _AlternativePartsTake = -1;
-
+            _NprRequestSets = new();
         }
         #endregion
 
@@ -159,7 +173,6 @@ namespace SalesSystem.Rfq.Services
 
                 request.Position = position;
                 request.Take = take;
-              
 
                 GetAllRfqProjectGrpcResponse response = await _Client.GetAllRfqProjectGrpcAsync(request, cancellationToken: timeoutCts.Token);
 
@@ -170,7 +183,7 @@ namespace SalesSystem.Rfq.Services
                 _RfqProjectUxs.Clear();
                 foreach (RfqProject? rfqProject in response.RfqProjects)
                 {
-                    if(rfqProject.IsActive.HasValue && !rfqProject.IsActive.Value)
+                    if (rfqProject.IsActive.HasValue && !rfqProject.IsActive.Value)
                     {
                         continue; // skip inactive projects
                     }
@@ -198,7 +211,7 @@ namespace SalesSystem.Rfq.Services
             {
                 GetRfqProjectByIdGrpcRequest request = new GetRfqProjectByIdGrpcRequest();
                 request.RowId = rowId;
-              
+
                 GetRfqProjectByIdGrpcResponse response = await _Client.GetRfqProjectByIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
 
                 return response.Project;
@@ -312,7 +325,7 @@ namespace SalesSystem.Rfq.Services
 
         #region PartNumbers
         public async Task<int> GetRfqDrawingPartNumbersByRfqIdAsync(long rfqId)
-  
+
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
 
@@ -323,7 +336,7 @@ namespace SalesSystem.Rfq.Services
 
                 GetRfqDrawingPartNumbersByRfqIdGrpcResponse response = await _Client.GetRfqDrawingPartNumbersByRfqIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
                 _RfqDrawingPartNumbers.Clear();
-                if(null != response && 0 <= response.Parts.Count) 
+                if (null != response && 0 <= response.Parts.Count)
                 {
                     List<RfqDrawingPartNumberUx?> uxs = response.Parts.Select(x => x.ToUx()).ToList();
                     _RfqDrawingPartNumbers.AddRange(uxs);
@@ -375,7 +388,7 @@ namespace SalesSystem.Rfq.Services
             await Task.Delay(1);
             try
             {
-                
+
                 return true;
             }
             catch (Exception ex)
@@ -499,7 +512,7 @@ namespace SalesSystem.Rfq.Services
         public async Task<UploadPartsRequestGrpcResponse> UploadPartsAsync(string projectId,
                                                                            byte[] fileData,
                                                                            string fileName,
-                                                                           long maxAllowedSize=16_777_216)
+                                                                           long maxAllowedSize = 16_777_216)
         {
             ArgumentException.ThrowIfNullOrEmpty(projectId);
             ArgumentNullException.ThrowIfNull(fileData);
@@ -681,7 +694,7 @@ namespace SalesSystem.Rfq.Services
             string? stringValue = null,
             CancellationToken cancellationToken = default)
         {
-            if(string.IsNullOrEmpty(stringValue))
+            if (string.IsNullOrEmpty(stringValue))
             {
                 throw new ArgumentNullException(nameof(stringValue), "stringValue cannot be null or empty for this request type.");
             }
@@ -804,6 +817,352 @@ namespace SalesSystem.Rfq.Services
             PartInfoUxModel part = new PartInfoUxModel(partNumber);
             return part;
         }
+        #endregion
+
+        #region NPR Request Sets (JSON file persistence - debug/test)
+
+        // --- Private helpers ---
+
+        async Task<List<RfqNprRequestSetUxModel>> LoadNprRequestSetsFromFileAsync()
+        {
+            List<RfqNprRequestSetUxModel> list = new List<RfqNprRequestSetUxModel>();
+            try
+            {
+                if (!File.Exists(_NprRequestSetsFilePath))
+                {
+                    _Logger?.GenericLogInformation($"NPR file not found at {_NprRequestSetsFilePath}, returning empty list");
+                    return list;
+                }
+
+                string json = await File.ReadAllTextAsync(_NprRequestSetsFilePath);
+
+                if (string.IsNullOrWhiteSpace(json))
+                {
+                    return list;
+                }
+
+                List<RfqNprRequestSetUxModel>? result = JsonSerializer.Deserialize<List<RfqNprRequestSetUxModel>>(json, _JsonOptions);
+
+                return result ?? list;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error loading NPR request sets from file: {_NprRequestSetsFilePath}", ex);
+                throw;
+            }
+        }
+
+        async Task SaveNprRequestSetsToFileAsync(List<RfqNprRequestSetUxModel> sets)
+        {
+            try
+            {
+                string? directory = Path.GetDirectoryName(_NprRequestSetsFilePath);
+
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                    _Logger?.GenericLogInformation($"Created directory: {directory}");
+                }
+
+                string json = JsonSerializer.Serialize(sets, _JsonOptions);
+                await File.WriteAllTextAsync(_NprRequestSetsFilePath, json);
+
+                _Logger?.GenericLogInformation($"Saved {sets.Count} NPR request sets to {_NprRequestSetsFilePath}");
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error saving NPR request sets to file: {_NprRequestSetsFilePath}", ex);
+                throw;
+            }
+        }
+
+        async Task SyncCacheFromFileAsync()
+        {
+            List<RfqNprRequestSetUxModel> sets = await LoadNprRequestSetsFromFileAsync();
+
+            _NprRequestSets.Clear();
+            _NprRequestSets.AddRange(sets);
+        }
+
+        async Task SyncCacheToFileAsync()
+        {
+            await SaveNprRequestSetsToFileAsync(_NprRequestSets);
+        }
+
+        // --- NPR Request Set CRUD ---
+
+        public async Task<int> GetAllNprRequestSetsAsync()
+        {
+            try
+            {
+                await SyncCacheFromFileAsync();
+
+                _Logger?.GenericLogInformation($"Loaded {_NprRequestSets.Count} NPR request sets from file");
+
+                return _NprRequestSets.Count;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError("Error in GetAllNprRequestSetsAsync", ex);
+                throw;
+            }
+        }
+
+        public async Task<RfqNprRequestSetUxModel?> GetNprRequestSetByIdAsync(Guid setId)
+        {
+            try
+            {
+                await SyncCacheFromFileAsync();
+
+                RfqNprRequestSetUxModel? set = _NprRequestSets.FirstOrDefault(s => s.Id == setId);
+
+                if (set == null)
+                {
+                    _Logger?.GenericLogInformation($"NPR request set not found for Id: {setId}");
+                }
+
+                return set;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in GetNprRequestSetByIdAsync for Id: {setId}", ex);
+                throw;
+            }
+        }
+
+        public async Task<RfqNprRequestSetUxModel> CreateNprRequestSetAsync(RfqNprRequestSetUxModel newSet)
+        {
+            ArgumentNullException.ThrowIfNull(newSet);
+
+            try
+            {
+                await SyncCacheFromFileAsync();
+
+                newSet.Created = DateTime.UtcNow;
+                newSet.Status = NprSetRequestStatus.Empty;
+
+                _NprRequestSets.Add(newSet);
+
+                await SyncCacheToFileAsync();
+
+                _Logger?.GenericLogInformation($"Created NPR request set Id: {newSet.Id}, RfqNumber: {newSet.RfqNumber}");
+
+                return newSet;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in CreateNprRequestSetAsync for RfqNumber: {newSet.RfqNumber}", ex);
+                throw;
+            }
+        }
+
+        public async Task<RfqNprRequestSetUxModel> UpdateNprRequestSetAsync(RfqNprRequestSetUxModel updatedSet)
+        {
+            ArgumentNullException.ThrowIfNull(updatedSet);
+
+            try
+            {
+                await SyncCacheFromFileAsync();
+
+                int index = _NprRequestSets.FindIndex(s => s.Id == updatedSet.Id);
+
+                if (index < 0)
+                {
+                    throw new InvalidOperationException($"NPR request set not found for Id: {updatedSet.Id}");
+                }
+
+                updatedSet.Updated = DateTime.UtcNow;
+
+                _NprRequestSets[index] = updatedSet;
+
+                await SyncCacheToFileAsync();
+
+                _Logger?.GenericLogInformation($"Updated NPR request set Id: {updatedSet.Id}, RfqNumber: {updatedSet.RfqNumber}");
+
+                return updatedSet;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in UpdateNprRequestSetAsync for Id: {updatedSet.Id}", ex);
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteNprRequestSetAsync(Guid setId)
+        {
+            try
+            {
+                await SyncCacheFromFileAsync();
+
+                RfqNprRequestSetUxModel? set = _NprRequestSets.FirstOrDefault(s => s.Id == setId);
+
+                if (set == null)
+                {
+                    _Logger?.GenericLogInformation($"NPR request set not found for deletion, Id: {setId}");
+                    return false;
+                }
+
+                _NprRequestSets.Remove(set);
+
+                await SyncCacheToFileAsync();
+
+                _Logger?.GenericLogInformation($"Deleted NPR request set Id: {setId}, RfqNumber: {set.RfqNumber}");
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in DeleteNprRequestSetAsync for Id: {setId}", ex);
+                throw;
+            }
+        }
+
+        // --- NPR Request Item CRUD (within a Set) ---
+
+        public async Task<RfqNprRequestUxModel> AddNprRequestToSetAsync(Guid setId, RfqNprRequestUxModel newRequest)
+        {
+            ArgumentNullException.ThrowIfNull(newRequest);
+
+            try
+            {
+                await SyncCacheFromFileAsync();
+
+                RfqNprRequestSetUxModel? set = _NprRequestSets.FirstOrDefault(s => s.Id == setId);
+
+                if (set == null)
+                {
+                    throw new InvalidOperationException($"NPR request set not found for Id: {setId}");
+                }
+
+                // Access the backing list via reflection or add a method to the model
+                // Since NprRequests is ReadOnlyCollection, we need the internal list
+                // Using the Add pattern consistent with the model design
+                set.AddNprRequest(newRequest);
+
+                await SyncCacheToFileAsync();
+
+                _Logger?.GenericLogInformation(
+                    $"Added NPR request Id: {newRequest.Id} to set Id: {setId}, " +
+                    $"set now has {set.NprRequests.Count} requests");
+
+                return newRequest;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in AddNprRequestToSetAsync for SetId: {setId}, RequestId: {newRequest.Id}", ex);
+                throw;
+            }
+        }
+
+        public async Task<RfqNprRequestUxModel> UpdateNprRequestInSetAsync(Guid setId, RfqNprRequestUxModel updatedRequest)
+        {
+            ArgumentNullException.ThrowIfNull(updatedRequest);
+
+            try
+            {
+                await SyncCacheFromFileAsync();
+
+                RfqNprRequestSetUxModel? set = _NprRequestSets.FirstOrDefault(s => s.Id == setId);
+
+                if (set == null)
+                {
+                    throw new InvalidOperationException($"NPR request set not found for Id: {setId}");
+                }
+
+                bool replaced = set.ReplaceNprRequest(updatedRequest);
+
+                if (!replaced)
+                {
+                    throw new InvalidOperationException(
+                        $"NPR request not found for Id: {updatedRequest.Id} in set Id: {setId}");
+                }
+
+                await SyncCacheToFileAsync();
+
+                _Logger?.GenericLogInformation(
+                    $"Updated NPR request Id: {updatedRequest.Id} in set Id: {setId}");
+
+                return updatedRequest;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError(
+                    $"Error in UpdateNprRequestInSetAsync for SetId: {setId}, RequestId: {updatedRequest.Id}", ex);
+                throw;
+            }
+        }
+
+        public async Task<bool> RemoveNprRequestFromSetAsync(Guid setId, Guid requestId)
+        {
+            try
+            {
+                await SyncCacheFromFileAsync();
+
+                RfqNprRequestSetUxModel? set = _NprRequestSets.FirstOrDefault(s => s.Id == setId);
+
+                if (set == null)
+                {
+                    _Logger?.GenericLogInformation($"NPR request set not found for Id: {setId}");
+                    return false;
+                }
+
+                bool removed = set.RemoveNprRequest(requestId);
+
+                if (!removed)
+                {
+                    _Logger?.GenericLogInformation(
+                        $"NPR request not found for removal, RequestId: {requestId} in SetId: {setId}");
+                    return false;
+                }
+
+                await SyncCacheToFileAsync();
+
+                _Logger?.GenericLogInformation(
+                    $"Removed NPR request Id: {requestId} from set Id: {setId}, " +
+                    $"set now has {set.NprRequests.Count} requests");
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError(
+                    $"Error in RemoveNprRequestFromSetAsync for SetId: {setId}, RequestId: {requestId}", ex);
+                throw;
+            }
+        }
+
+        public async Task<RfqNprRequestUxModel?> GetNprRequestByIdAsync(Guid setId, Guid requestId)
+        {
+            try
+            {
+                await SyncCacheFromFileAsync();
+
+                RfqNprRequestSetUxModel? set = _NprRequestSets.FirstOrDefault(s => s.Id == setId);
+
+                if (set == null)
+                {
+                    _Logger?.GenericLogInformation($"NPR request set not found for Id: {setId}");
+                    return null;
+                }
+
+                RfqNprRequestUxModel? request = set.NprRequests.FirstOrDefault(r => r.Id == requestId);
+
+                if (request == null)
+                {
+                    _Logger?.GenericLogInformation(
+                        $"NPR request not found for Id: {requestId} in set Id: {setId}");
+                }
+
+                return request;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError(
+                    $"Error in GetNprRequestByIdAsync for SetId: {setId}, RequestId: {requestId}", ex);
+                throw;
+            }
+        }
+
         #endregion
 
         #region Cleanup

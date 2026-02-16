@@ -168,6 +168,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Filtering", "SalesSystem\sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing", "SalesSystem\src\Access\Purchasing\Purchasing.csproj", "{CB15F0B7-6AFB-243F-603A-544C008404EC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{BC40E487-946F-47D0-AEBB-66312543C78E}"
+	ProjectSection(SolutionItems) = preProject
+		SalesSystem\docs\NPRRequest.docx = SalesSystem\docs\NPRRequest.docx
+		SalesSystem\docs\SelectAlternativePart.docx = SalesSystem\docs\SelectAlternativePart.docx
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -620,6 +626,7 @@ Global
 		{69BA9C8B-EAB9-431F-90AA-F99D99C20811} = {2193328D-16FA-4D41-9977-48C550461D4A}
 		{3214A415-B137-9932-6971-F1B8AE78D19B} = {567986A9-D3FC-419C-908F-79BED3875FF0}
 		{CB15F0B7-6AFB-243F-603A-544C008404EC} = {AB8A2F54-ED2B-4D12-AB8D-9B879F3EB725}
+		{BC40E487-946F-47D0-AEBB-66312543C78E} = {C4574448-5F0F-4917-9605-A78F5E341C79}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {45532623-50AD-4761-959C-8E565670BB49}
