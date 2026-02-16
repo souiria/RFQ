@@ -864,6 +864,11 @@ namespace SalesSystem.Rfq.Services
                     _Logger?.GenericLogInformation($"Created directory: {directory}");
                 }
 
+                foreach (RfqNprRequestSetUxModel set in sets)
+                {
+                    set.Status = NprSetRequestStatus.LocalUnchanged;
+                }
+
                 string json = JsonSerializer.Serialize(sets, _JsonOptions);
                 await File.WriteAllTextAsync(_NprRequestSetsFilePath, json);
 
@@ -882,6 +887,10 @@ namespace SalesSystem.Rfq.Services
 
             _NprRequestSets.Clear();
             _NprRequestSets.AddRange(sets);
+            foreach (RfqNprRequestSetUxModel set in sets)
+            {
+                set.Status = NprSetRequestStatus.LocalUnchanged;
+            }
         }
 
         async Task SyncCacheToFileAsync()
@@ -939,7 +948,7 @@ namespace SalesSystem.Rfq.Services
                 await SyncCacheFromFileAsync();
 
                 newSet.Created = DateTime.UtcNow;
-                newSet.Status = NprSetRequestStatus.Empty;
+                newSet.Status = NprSetRequestStatus.LocalUpdated;
 
                 _NprRequestSets.Add(newSet);
 
@@ -1016,7 +1025,34 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
+        public async Task<bool> DeleteAllNprRequestSetsAsync()
+        {
+            try
+            {
+                await SyncCacheFromFileAsync();
 
+                int count = _NprRequestSets.Count;
+
+                if (count == 0)
+                {
+                    _Logger?.GenericLogInformation("No NPR request sets to delete");
+                    return false;
+                }
+
+                _NprRequestSets.Clear();
+
+                await SyncCacheToFileAsync();
+
+                _Logger?.GenericLogInformation($"Deleted all {count} NPR request sets and their requests");
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError("Error in DeleteAllNprRequestSetsAsync", ex);
+                throw;
+            }
+        }
         // --- NPR Request Item CRUD (within a Set) ---
 
         public async Task<RfqNprRequestUxModel> AddNprRequestToSetAsync(Guid setId, RfqNprRequestUxModel newRequest)

@@ -12,7 +12,7 @@ namespace Integration.Tests.Rfq.Client
         RfqUxClientService _Service;
         Mock<ILogger<RfqUxClientService>> _LoggerMock;
         IConfiguration? _Configuration;
-        Mock<IConfiguration> _ConfigurationMock;
+        //Mock<IConfiguration> _ConfigurationMock;
         bool _Disposed;
 
         static readonly string _TestFilePath;
@@ -25,7 +25,7 @@ namespace Integration.Tests.Rfq.Client
         {
             _Service = null!;
             _LoggerMock = null!;
-            _ConfigurationMock = null!;
+            //_ConfigurationMock = null!;
         }
         #endregion
 
@@ -37,8 +37,8 @@ namespace Integration.Tests.Rfq.Client
             Dictionary<string, string?> configuration = new Dictionary<string, string?>();
             configuration["GrpcService:Url"] = "https://localhost:7207";
             configuration["GrpcService:TimeoutSeconds"] = "90";
-            configuration["GrpcService:MaxReceiveMessageSizeMB"] = "256"; // 16 MB
-            configuration["GrpcService:MaxSendMessageSizeMB"] = "256";    // 16 MB
+            configuration["GrpcService:MaxReceiveMessageSizeMB"] = "256";
+            configuration["GrpcService:MaxSendMessageSizeMB"] = "256";
             configBuilder.AddInMemoryCollection(configuration);
             _Configuration = configBuilder.Build();
             TestContext.Out.WriteLine("RfqUxClientServiceNprTest - Configuration initialized");
@@ -47,13 +47,12 @@ namespace Integration.Tests.Rfq.Client
         void InitializeService()
         {
             ArgumentNullException.ThrowIfNull(_Configuration);
-            Mock<ILogger<RfqUxClientService>> logger = new Mock<ILogger<RfqUxClientService>>();
+            _LoggerMock = new Mock<ILogger<RfqUxClientService>>();
 
-            _Service = new RfqUxClientService(_Configuration, logger.Object);
+            _Service = new RfqUxClientService(_Configuration, _LoggerMock.Object);
 
             TestContext.Out.WriteLine("RfqUxClientServiceNprTest - RfqUxClientService initialized successfully");
             TestContext.Out.WriteLine($"Max GRPC Response Size: {RfqUxClientService.MAX_GRPC_RESPONSE_SIZE / 1024 / 1024} MB");
-
         }
 
         #endregion
@@ -79,10 +78,10 @@ namespace Integration.Tests.Rfq.Client
             _Service?.Dispose();
 
             // Clean up test file
-            if (File.Exists(_TestFilePath))
-            {
-                File.Delete(_TestFilePath);
-            }
+            //if (File.Exists(_TestFilePath))
+            //{
+            //    File.Delete(_TestFilePath);
+            //}
         }
 
         #endregion
@@ -116,7 +115,7 @@ namespace Integration.Tests.Rfq.Client
             return request;
         }
 
-        async Task<RfqNprRequestSetUxModel> CreateAndPersistTestSetAsync(string name = "Test Set")
+        async Task<RfqNprRequestSetUxModel> CreateAndPersistTestSetAsync(string name)
         {
             RfqNprRequestSetUxModel set = CreateTestSet(name);
             RfqNprRequestSetUxModel createdSet = await _Service.CreateNprRequestSetAsync(set);
@@ -144,9 +143,9 @@ namespace Integration.Tests.Rfq.Client
         public async Task GetAllNprRequestSetsAsync_WhenSetsExist_ReturnsCorrectCount()
         {
             // Arrange
-            await CreateAndPersistTestSetAsync("Set A");
-            await CreateAndPersistTestSetAsync("Set B");
-            await CreateAndPersistTestSetAsync("Set C");
+            await CreateAndPersistTestSetAsync("Set A - GetAllNprRequestSetsAsync_WhenSetsExist_ReturnsCorrectCount");
+            await CreateAndPersistTestSetAsync("Set B - GetAllNprRequestSetsAsync_WhenSetsExist_ReturnsCorrectCount");
+            await CreateAndPersistTestSetAsync("Set C - GetAllNprRequestSetsAsync_WhenSetsExist_ReturnsCorrectCount");
 
             // Act
             int count = await _Service.GetAllNprRequestSetsAsync();
@@ -188,7 +187,8 @@ namespace Integration.Tests.Rfq.Client
         public async Task GetNprRequestSetByIdAsync_WhenSetExists_ReturnsSet()
         {
             // Arrange
-            RfqNprRequestSetUxModel createdSet = await CreateAndPersistTestSetAsync("Find Me");
+            await _Service.DeleteAllNprRequestSetsAsync();
+            RfqNprRequestSetUxModel createdSet = await CreateAndPersistTestSetAsync("Find Me - WhenSetExists_ReturnsSet");
 
             // Act
             RfqNprRequestSetUxModel? foundSet = await _Service.GetNprRequestSetByIdAsync(createdSet.Id);
@@ -197,7 +197,7 @@ namespace Integration.Tests.Rfq.Client
             Assert.That(foundSet, Is.Not.Null);
             EqualConstraint isCreatedId = Is.EqualTo(createdSet.Id);
             Assert.That(foundSet!.Id, isCreatedId);
-            EqualConstraint isFindMe = Is.EqualTo("Find Me");
+            EqualConstraint isFindMe = Is.EqualTo("Find Me - WhenSetExists_ReturnsSet");
             Assert.That(foundSet.RfqNumber, isFindMe);
         }
 
@@ -205,7 +205,7 @@ namespace Integration.Tests.Rfq.Client
         public async Task GetNprRequestSetByIdAsync_WhenSetDoesNotExist_ReturnsNull()
         {
             // Arrange
-            await CreateAndPersistTestSetAsync("Other Set");
+            await CreateAndPersistTestSetAsync("Other Set - WhenSetDoesNotExist_ReturnsNull");
 
             // Act
             Guid newId = Guid.NewGuid();
@@ -235,17 +235,18 @@ namespace Integration.Tests.Rfq.Client
         public async Task CreateNprRequestSetAsync_WithValidSet_CreatesAndPersists()
         {
             // Arrange
-            RfqNprRequestSetUxModel newSet = CreateTestSet("New Set");
+            await _Service.DeleteAllNprRequestSetsAsync();
+            RfqNprRequestSetUxModel newSet = CreateTestSet("New Set - WithValidSet_CreatesAndPersists");
 
             // Act
             RfqNprRequestSetUxModel result = await _Service.CreateNprRequestSetAsync(newSet);
 
             // Assert
             Assert.That(result, Is.Not.Null);
-            EqualConstraint isNewSet = Is.EqualTo("New Set");
+            EqualConstraint isNewSet = Is.EqualTo("New Set - WithValidSet_CreatesAndPersists");
             Assert.That(result.RfqNumber, isNewSet);
-            EqualConstraint isLocalUpdated = Is.EqualTo(NprSetRequestStatus.LocalUpdated);
-            Assert.That(result.Status, isLocalUpdated);
+            EqualConstraint isLocalUnchanged = Is.EqualTo(NprSetRequestStatus.LocalUnchanged);
+            Assert.That(result.Status, isLocalUnchanged);
             EqualConstraint defaultDT = Is.Not.EqualTo(default(DateTime));
             Assert.That(result.Created, defaultDT);
             bool fileExists = File.Exists(_TestFilePath);
@@ -261,17 +262,18 @@ namespace Integration.Tests.Rfq.Client
         public async Task CreateNprRequestSetAsync_MultipleSets_AllPersisted()
         {
             // Act
-            RfqNprRequestSetUxModel set1 = await CreateAndPersistTestSetAsync("Set 1");
-            RfqNprRequestSetUxModel set2 = await CreateAndPersistTestSetAsync("Set 2");
-            RfqNprRequestSetUxModel set3 = await CreateAndPersistTestSetAsync("Set 3");
+            await _Service.DeleteAllNprRequestSetsAsync();
+            RfqNprRequestSetUxModel set1 = await CreateAndPersistTestSetAsync("Set 1 - MultipleSets_AllPersisted");
+            RfqNprRequestSetUxModel set2 = await CreateAndPersistTestSetAsync("Set 2 - MultipleSets_AllPersisted");
+            RfqNprRequestSetUxModel set3 = await CreateAndPersistTestSetAsync("Set 3 - MultipleSets_AllPersisted");
 
             // Assert
             int count = await _Service.GetAllNprRequestSetsAsync();
             EqualConstraint isEQ3 = Is.EqualTo(3);
             Assert.That(count, isEQ3);
 
-            RfqNprRequestSetUxModel? loadedSet2 = _Service.NprRequestSets.FirstOrDefault(x => x.RfqNumber == "Set 2");
-            RfqNprRequestSetUxModel? loadedSet3 = _Service.NprRequestSets.FirstOrDefault(x => x.RfqNumber == "Set 3");
+            RfqNprRequestSetUxModel? loadedSet2 = _Service.NprRequestSets.FirstOrDefault(x => x.RfqNumber == "Set 2 - MultipleSets_AllPersisted");
+            RfqNprRequestSetUxModel? loadedSet3 = _Service.NprRequestSets.FirstOrDefault(x => x.RfqNumber == "Set 3 - MultipleSets_AllPersisted");
 
             EqualConstraint isEQs2Id = Is.EqualTo(set2.Id);
             EqualConstraint isEQs3Id = Is.EqualTo(set3.Id);
@@ -314,14 +316,15 @@ namespace Integration.Tests.Rfq.Client
         public async Task UpdateNprRequestSetAsync_WithValidSet_UpdatesAndPersists()
         {
             // Arrange
-            RfqNprRequestSetUxModel createdSet = await CreateAndPersistTestSetAsync("Original Name");
+            await _Service.DeleteAllNprRequestSetsAsync();
+            RfqNprRequestSetUxModel createdSet = await CreateAndPersistTestSetAsync("Original Name - WithValidSet_UpdatesAndPersists");
 
             // Act
-            createdSet.RfqNumber = "Updated Name";
+            createdSet.RfqNumber = "Updated Name - WithValidSet_UpdatesAndPersists - Updated";
             RfqNprRequestSetUxModel result = await _Service.UpdateNprRequestSetAsync(createdSet);
 
             // Assert
-            EqualConstraint updatedRfq = Is.EqualTo("Updated Name");
+            EqualConstraint updatedRfq = Is.EqualTo("Updated Name - WithValidSet_UpdatesAndPersists - Updated");
             Assert.That(result.RfqNumber, updatedRfq);
             NullConstraint isNotNull = Is.Not.Null;
             Assert.That(result.Updated, isNotNull);
@@ -337,7 +340,7 @@ namespace Integration.Tests.Rfq.Client
         public async Task UpdateNprRequestSetAsync_SetsUpdatedTimestamp()
         {
             // Arrange
-            RfqNprRequestSetUxModel createdSet = await CreateAndPersistTestSetAsync("Before Update");
+            RfqNprRequestSetUxModel createdSet = await CreateAndPersistTestSetAsync("Before Update - SetsUpdatedTimestamp");
             DateTime beforeUpdate = DateTime.UtcNow;
 
             // Act
@@ -358,7 +361,7 @@ namespace Integration.Tests.Rfq.Client
         public void UpdateNprRequestSetAsync_WhenSetNotFound_ThrowsInvalidOperationException()
         {
             // Arrange
-            RfqNprRequestSetUxModel nonExistentSet = CreateTestSet("Ghost Set");
+            RfqNprRequestSetUxModel nonExistentSet = CreateTestSet("Ghost Set - WhenSetNotFound_ThrowsInvalidOperationException");
 
             // Act & Assert
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
@@ -377,8 +380,9 @@ namespace Integration.Tests.Rfq.Client
         public async Task UpdateNprRequestSetAsync_DoesNotAffectOtherSets()
         {
             // Arrange
-            RfqNprRequestSetUxModel set1 = await CreateAndPersistTestSetAsync("Set 1");
-            RfqNprRequestSetUxModel set2 = await CreateAndPersistTestSetAsync("Set 2");
+            await _Service.DeleteAllNprRequestSetsAsync();
+            RfqNprRequestSetUxModel set1 = await CreateAndPersistTestSetAsync("Set 1 - DoesNotAffectOtherSets");
+            RfqNprRequestSetUxModel set2 = await CreateAndPersistTestSetAsync("Set 2 - DoesNotAffectOtherSets");
 
             // Act
             set1.RfqNumber = "Set 1 Updated";
@@ -387,7 +391,7 @@ namespace Integration.Tests.Rfq.Client
             // Assert
             RfqNprRequestSetUxModel? reloadedSet2 = await _Service.GetNprRequestSetByIdAsync(set2.Id);
             Assert.That(reloadedSet2, Is.Not.Null);
-            EqualConstraint is2 = Is.EqualTo("Set 2");
+            EqualConstraint is2 = Is.EqualTo("Set 2 - DoesNotAffectOtherSets");
             Assert.That(reloadedSet2!.RfqNumber, is2);
         }
 
@@ -399,7 +403,8 @@ namespace Integration.Tests.Rfq.Client
         public async Task DeleteNprRequestSetAsync_WhenSetExists_DeletesAndReturnsTrue()
         {
             // Arrange
-            RfqNprRequestSetUxModel createdSet = await CreateAndPersistTestSetAsync("Delete Me");
+            await _Service.DeleteAllNprRequestSetsAsync();
+            RfqNprRequestSetUxModel createdSet = await CreateAndPersistTestSetAsync("Delete Me - WhenSetExists_DeletesAndReturnsTrue");
 
             // Act
             bool result = await _Service.DeleteNprRequestSetAsync(createdSet.Id);
@@ -416,7 +421,8 @@ namespace Integration.Tests.Rfq.Client
         public async Task DeleteNprRequestSetAsync_WhenSetDoesNotExist_ReturnsFalse()
         {
             // Arrange
-            await CreateAndPersistTestSetAsync("Keep Me");
+            await _Service.DeleteAllNprRequestSetsAsync();
+            await CreateAndPersistTestSetAsync("Keep Me - WhenSetDoesNotExist_ReturnsFalse");
 
             // Act
             Guid newId = Guid.NewGuid();
@@ -434,9 +440,10 @@ namespace Integration.Tests.Rfq.Client
         public async Task DeleteNprRequestSetAsync_DeletesOnlyTargetSet()
         {
             // Arrange
-            RfqNprRequestSetUxModel set1 = await CreateAndPersistTestSetAsync("Set 1");
-            RfqNprRequestSetUxModel set2 = await CreateAndPersistTestSetAsync("Set 2");
-            RfqNprRequestSetUxModel set3 = await CreateAndPersistTestSetAsync("Set 3");
+            await _Service.DeleteAllNprRequestSetsAsync();
+            RfqNprRequestSetUxModel set1 = await CreateAndPersistTestSetAsync("Set 1 - DeletesOnlyTargetSet");
+            RfqNprRequestSetUxModel set2 = await CreateAndPersistTestSetAsync("Set 2 - DeletesOnlyTargetSet");
+            RfqNprRequestSetUxModel set3 = await CreateAndPersistTestSetAsync("Set 3 - DeletesOnlyTargetSet");
 
             // Act
             bool result = await _Service.DeleteNprRequestSetAsync(set2.Id);
@@ -466,7 +473,7 @@ namespace Integration.Tests.Rfq.Client
         public async Task AddNprRequestToSetAsync_WithValidRequest_AddsAndPersists()
         {
             // Arrange
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Set With Requests");
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Set With Requests - WithValidRequest_AddsAndPersists");
             RfqNprRequestUxModel request = CreateTestRequest();
 
             // Act
@@ -487,10 +494,10 @@ namespace Integration.Tests.Rfq.Client
         }
 
         [Test]
-        public async Task AddNprRequestToSetAsync_SetsStatusToDraft()
+        public async Task AddNprRequestToSetAsync_SetsStatusToLocalUnchanged()
         {
             // Arrange
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Empty Set");
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Empty Set - SetsStatusToLocalUnchanged");
             RfqNprRequestUxModel request = CreateTestRequest();
 
             // Act
@@ -498,15 +505,15 @@ namespace Integration.Tests.Rfq.Client
 
             // Assert
             RfqNprRequestSetUxModel? reloaded = await _Service.GetNprRequestSetByIdAsync(set.Id);
-            EqualConstraint isLocalUpdated = Is.EqualTo(NprSetRequestStatus.LocalUpdated);
-            Assert.That(reloaded!.Status, isLocalUpdated);
+            EqualConstraint isLocalUnchanged = Is.EqualTo(NprSetRequestStatus.LocalUnchanged);
+            Assert.That(reloaded!.Status, isLocalUnchanged);
         }
 
         [Test]
         public async Task AddNprRequestToSetAsync_SetsUpdatedTimestamp()
         {
             // Arrange
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Timestamp Set");
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Timestamp Set - SetsUpdatedTimestamp");
             RfqNprRequestUxModel request = CreateTestRequest();
             DateTime beforeAdd = DateTime.UtcNow;
 
@@ -528,7 +535,7 @@ namespace Integration.Tests.Rfq.Client
         public async Task AddNprRequestToSetAsync_MultipleRequests_AllPersisted()
         {
             // Arrange
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Multi Request Set");
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Multi Request Set - MultipleRequests_AllPersisted");
             RfqNprRequestUxModel request1 = CreateTestRequest(sumitomoNumber: "SUM-001");
             RfqNprRequestUxModel request2 = CreateTestRequest(sumitomoNumber: "SUM-002");
             RfqNprRequestUxModel request3 = CreateTestRequest(sumitomoNumber: "SUM-003");
@@ -548,7 +555,7 @@ namespace Integration.Tests.Rfq.Client
         public void AddNprRequestToSetAsync_WhenSetNotFound_ThrowsInvalidOperationException()
         {
             // Arrange
-            RfqNprRequestUxModel request = CreateTestRequest();
+            RfqNprRequestUxModel request = CreateTestRequest("Ghost Request - WhenSetNotFound_ThrowsInvalidOperationException");
 
             // Act & Assert
             Guid newGuid = Guid.NewGuid();
@@ -560,7 +567,7 @@ namespace Integration.Tests.Rfq.Client
         public async Task AddNprRequestToSetAsync_WithNullRequest_ThrowsArgumentNullException()
         {
             // Arrange
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Set");
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Set - WithNullRequest_ThrowsArgumentNullException");
 
             // Act & Assert
             Assert.ThrowsAsync<ArgumentNullException>(async () =>
@@ -575,7 +582,8 @@ namespace Integration.Tests.Rfq.Client
         public async Task UpdateNprRequestInSetAsync_WithValidRequest_UpdatesAndPersists()
         {
             // Arrange
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Update Request Set");
+            await _Service.DeleteAllNprRequestSetsAsync();
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Update Request Set - WithValidRequest_UpdatesAndPersists");
             RfqNprRequestUxModel request = CreateTestRequest(reason: "Original Reason");
             await _Service.AddNprRequestToSetAsync(set.Id, request);
 
@@ -585,16 +593,16 @@ namespace Integration.Tests.Rfq.Client
             RfqNprRequestUxModel result = await _Service.UpdateNprRequestInSetAsync(set.Id, request);
 
             // Assert
-            EqualConstraint isEQUpdReas = Is.EqualTo("Updated Reason");
-            EqualConstraint isEQ999 = Is.EqualTo("Updated Reason");
+            EqualConstraint isEQUpdReason = Is.EqualTo("Updated Reason");
+            EqualConstraint isEQ999 = Is.EqualTo(999);
 
-            Assert.That(result.Reason, isEQUpdReas);
+            Assert.That(result.Reason, isEQUpdReason);
             Assert.That(result.Quantity, isEQ999);
 
             // Verify persistence
             RfqNprRequestUxModel? reloaded = await _Service.GetNprRequestByIdAsync(set.Id, request.Id);
             Assert.That(reloaded, Is.Not.Null);
-            Assert.That(reloaded!.Reason, isEQUpdReas);
+            Assert.That(reloaded!.Reason, isEQUpdReason);
             Assert.That(reloaded.Quantity, isEQ999);
         }
 
@@ -602,7 +610,7 @@ namespace Integration.Tests.Rfq.Client
         public async Task UpdateNprRequestInSetAsync_SetsUpdatedTimestampOnSet()
         {
             // Arrange
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Timestamp Update Set");
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Timestamp Update Set - SetsUpdatedTimestampOnSet");
             RfqNprRequestUxModel request = CreateTestRequest();
             await _Service.AddNprRequestToSetAsync(set.Id, request);
             DateTime beforeUpdate = DateTime.UtcNow;
@@ -624,7 +632,7 @@ namespace Integration.Tests.Rfq.Client
         public async Task UpdateNprRequestInSetAsync_DoesNotAffectOtherRequests()
         {
             // Arrange
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Multi Update Set");
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Multi Update Set - DoesNotAffectOtherRequests");
             RfqNprRequestUxModel request1 = CreateTestRequest(reason: "Reason 1", sumitomoNumber: "SUM-001");
             RfqNprRequestUxModel request2 = CreateTestRequest(reason: "Reason 2", sumitomoNumber: "SUM-002");
             await _Service.AddNprRequestToSetAsync(set.Id, request1);
@@ -657,7 +665,7 @@ namespace Integration.Tests.Rfq.Client
         public async Task UpdateNprRequestInSetAsync_WhenRequestNotFound_ThrowsInvalidOperationException()
         {
             // Arrange
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Set");
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Set - WhenRequestNotFound_ThrowsInvalidOperationException");
             RfqNprRequestUxModel nonExistentRequest = CreateTestRequest();
 
             // Act & Assert
@@ -669,7 +677,7 @@ namespace Integration.Tests.Rfq.Client
         public async Task UpdateNprRequestInSetAsync_WithNull_ThrowsArgumentNullException()
         {
             // Arrange
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Set");
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Set - WithNull_ThrowsArgumentNullException");
 
             // Act & Assert
             Assert.ThrowsAsync<ArgumentNullException>(async () =>
@@ -684,7 +692,7 @@ namespace Integration.Tests.Rfq.Client
         public async Task RemoveNprRequestFromSetAsync_WhenRequestExists_RemovesAndReturnsTrue()
         {
             // Arrange
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Remove Request Set");
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Remove Request Set - WhenRequestExists_RemovesAndReturnsTrue");
             RfqNprRequestUxModel request = CreateTestRequest();
             await _Service.AddNprRequestToSetAsync(set.Id, request);
 
@@ -704,7 +712,8 @@ namespace Integration.Tests.Rfq.Client
         public async Task RemoveNprRequestFromSetAsync_WhenLastRequestRemoved_SetsStatusToEmpty()
         {
             // Arrange
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Status Reset Set");
+            await _Service.DeleteAllNprRequestSetsAsync();
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Status Reset Set - WhenLastRequestRemoved_SetsStatusToEmpty");
             RfqNprRequestUxModel request = CreateTestRequest();
             await _Service.AddNprRequestToSetAsync(set.Id, request);
 
@@ -719,10 +728,11 @@ namespace Integration.Tests.Rfq.Client
         }
 
         [Test]
-        public async Task RemoveNprRequestFromSetAsync_WhenNotLastRequest_StatusRemainsDraft()
+        public async Task RemoveNprRequestFromSetAsync_WhenReloaded_StatusRemainsLocalUnchanged()
         {
             // Arrange
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Multi Remove Set");
+            await _Service.DeleteAllNprRequestSetsAsync();
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Multi Remove Set - WhenReloaded_StatusRemainsLocalUnchanged");
             RfqNprRequestUxModel request1 = CreateTestRequest(sumitomoNumber: "SUM-001");
             RfqNprRequestUxModel request2 = CreateTestRequest(sumitomoNumber: "SUM-002");
             await _Service.AddNprRequestToSetAsync(set.Id, request1);
@@ -744,7 +754,7 @@ namespace Integration.Tests.Rfq.Client
         public async Task RemoveNprRequestFromSetAsync_RemovesOnlyTargetRequest()
         {
             // Arrange
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Selective Remove Set");
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Selective Remove Set - RemovesOnlyTargetRequest");
             RfqNprRequestUxModel request1 = CreateTestRequest(sumitomoNumber: "SUM-001");
             RfqNprRequestUxModel request2 = CreateTestRequest(sumitomoNumber: "SUM-002");
             RfqNprRequestUxModel request3 = CreateTestRequest(sumitomoNumber: "SUM-003");
@@ -775,7 +785,7 @@ namespace Integration.Tests.Rfq.Client
         public async Task RemoveNprRequestFromSetAsync_WhenRequestNotFound_ReturnsFalse()
         {
             // Arrange
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Set");
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Set - WhenRequestNotFound_ReturnsFalse");
             RfqNprRequestUxModel request = CreateTestRequest();
             await _Service.AddNprRequestToSetAsync(set.Id, request);
 
@@ -808,7 +818,7 @@ namespace Integration.Tests.Rfq.Client
         public async Task RemoveNprRequestFromSetAsync_SetsUpdatedTimestamp()
         {
             // Arrange
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Timestamp Remove Set");
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Timestamp Remove Set - SetsUpdatedTimestamp");
             RfqNprRequestUxModel request = CreateTestRequest();
             await _Service.AddNprRequestToSetAsync(set.Id, request);
             DateTime beforeRemove = DateTime.UtcNow;
@@ -835,7 +845,7 @@ namespace Integration.Tests.Rfq.Client
         public async Task GetNprRequestByIdAsync_WhenRequestExists_ReturnsRequest()
         {
             // Arrange
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Get Request Set");
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Get Request Set - WhenRequestExists_ReturnsRequest");
             RfqNprRequestUxModel request = CreateTestRequest(
                 reason: "Find This",
                 customer: "Important Customer",
@@ -869,7 +879,7 @@ namespace Integration.Tests.Rfq.Client
         public async Task GetNprRequestByIdAsync_WhenRequestDoesNotExist_ReturnsNull()
         {
             // Arrange
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Set");
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Set - WhenRequestDoesNotExist_ReturnsNull");
             RfqNprRequestUxModel request = CreateTestRequest();
             await _Service.AddNprRequestToSetAsync(set.Id, request);
 
@@ -901,7 +911,8 @@ namespace Integration.Tests.Rfq.Client
         public async Task Persistence_DataSurvivesServiceRecreation()
         {
             // Arrange - create data with first service instance
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Persistent Set");
+            await _Service.DeleteAllNprRequestSetsAsync();
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Persistent Set - DataSurvivesServiceRecreation");
             RfqNprRequestUxModel request = CreateTestRequest(reason: "Persistent Request");
             await _Service.AddNprRequestToSetAsync(set.Id, request);
             Guid setId = set.Id;
@@ -909,12 +920,12 @@ namespace Integration.Tests.Rfq.Client
 
             // Act - dispose and create a new service instance
             _Service.Dispose();
-            _Service = new RfqUxClientService(_ConfigurationMock.Object, _LoggerMock.Object);
+            _Service = new RfqUxClientService(_Configuration!, _LoggerMock.Object);
 
             // Assert - data should be loadable from the new instance
             RfqNprRequestSetUxModel? reloadedSet = await _Service.GetNprRequestSetByIdAsync(setId);
             Assert.That(reloadedSet, Is.Not.Null);
-            EqualConstraint isThePersistentSet = Is.EqualTo("Persistent Set");
+            EqualConstraint isThePersistentSet = Is.EqualTo("Persistent Set - DataSurvivesServiceRecreation");
             Assert.That(reloadedSet!.RfqNumber, isThePersistentSet);
             EqualConstraint is1 = Is.EqualTo(1);
             Assert.That(reloadedSet.NprRequests.Count, is1);
@@ -928,7 +939,8 @@ namespace Integration.Tests.Rfq.Client
         public async Task Persistence_FileContainsValidJson()
         {
             // Arrange
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("JSON Valid Set");
+            await _Service.DeleteAllNprRequestSetsAsync();
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("JSON Valid Set - FileContainsValidJson");
             RfqNprRequestUxModel request = CreateTestRequest();
             await _Service.AddNprRequestToSetAsync(set.Id, request);
 
@@ -953,7 +965,8 @@ namespace Integration.Tests.Rfq.Client
         public async Task Persistence_AllRequestFieldsAreSerialized()
         {
             // Arrange
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Full Fields Set");
+            await _Service.DeleteAllNprRequestSetsAsync();
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Full Fields Set - AllRequestFieldsAreSerialized");
             RfqNprRequestUxModel request = new RfqNprRequestUxModel();
             request.Reason = "Test Reason";
             request.Customer = "Test Customer";
@@ -987,7 +1000,7 @@ namespace Integration.Tests.Rfq.Client
 
             // Act - reload from file via new service instance
             _Service.Dispose();
-            _Service = new RfqUxClientService(_ConfigurationMock.Object, _LoggerMock.Object);
+            _Service = new RfqUxClientService(_Configuration!, _LoggerMock.Object);
 
             RfqNprRequestUxModel? reloaded = await _Service.GetNprRequestByIdAsync(set.Id, request.Id);
 
@@ -1083,7 +1096,8 @@ namespace Integration.Tests.Rfq.Client
         public async Task Workflow_CreateSetAddRequestsUpdateRemoveDelete()
         {
             // Step 1: Create a set
-            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Workflow Set");
+            await _Service.DeleteAllNprRequestSetsAsync();
+            RfqNprRequestSetUxModel set = await CreateAndPersistTestSetAsync("Workflow Set - CreateSetAddRequestsUpdateRemoveDelete");
             EqualConstraint isEQLocalUnchanged = Is.EqualTo(NprSetRequestStatus.LocalUnchanged);
             Assert.That(set.Status, isEQLocalUnchanged);
 
@@ -1096,10 +1110,12 @@ namespace Integration.Tests.Rfq.Client
             await _Service.AddNprRequestToSetAsync(set.Id, request3);
 
             RfqNprRequestSetUxModel? afterAdd = await _Service.GetNprRequestSetByIdAsync(set.Id);
+            
             EqualConstraint isThree = Is.EqualTo(3);
+            EqualConstraint isLocalUnchanged = Is.EqualTo(NprSetRequestStatus.LocalUnchanged);
             Assert.That(afterAdd!.NprRequests.Count, isThree);
-            EqualConstraint isLocalUpdated = Is.EqualTo(NprSetRequestStatus.LocalUpdated);
-            Assert.That(afterAdd.Status, isLocalUpdated);
+
+            Assert.That(afterAdd.Status, isLocalUnchanged);
 
             // Step 3: Update a request
             request2.Reason = "Reason 2 - Updated";
@@ -1107,8 +1123,11 @@ namespace Integration.Tests.Rfq.Client
             await _Service.UpdateNprRequestInSetAsync(set.Id, request2);
 
             RfqNprRequestUxModel? updatedRequest = await _Service.GetNprRequestByIdAsync(set.Id, request2.Id);
-            Assert.That(updatedRequest!.Reason, isLocalUpdated);
+
             EqualConstraint is500 = Is.EqualTo(500);
+            EqualConstraint isEQReason2Updated = Is.EqualTo("Reason 2 - Updated");
+            
+            Assert.That(updatedRequest!.Reason, isEQReason2Updated);
             Assert.That(updatedRequest.Quantity, is500);
 
             // Step 4: Remove a request
@@ -1142,8 +1161,9 @@ namespace Integration.Tests.Rfq.Client
         public async Task Workflow_MultipleSetsWithIndependentRequests()
         {
             // Create two independent sets
-            RfqNprRequestSetUxModel setA = await CreateAndPersistTestSetAsync("Set A");
-            RfqNprRequestSetUxModel setB = await CreateAndPersistTestSetAsync("Set B");
+            await _Service.DeleteAllNprRequestSetsAsync();
+            RfqNprRequestSetUxModel setA = await CreateAndPersistTestSetAsync("Set A - MultipleSetsWithIndependentRequests");
+            RfqNprRequestSetUxModel setB = await CreateAndPersistTestSetAsync("Set B - MultipleSetsWithIndependentRequests");
 
             // Add requests to each set
             RfqNprRequestUxModel requestA1 = CreateTestRequest(customer: "Customer A1");
@@ -1174,7 +1194,7 @@ namespace Integration.Tests.Rfq.Client
             int totalSets = await _Service.GetAllNprRequestSetsAsync();
             Assert.That(totalSets, isEQ1);
 
-            EqualConstraint isEQSetB = Is.EqualTo("Set B");
+            EqualConstraint isEQSetB = Is.EqualTo("Set B - MultipleSetsWithIndependentRequests");
 
             RfqNprRequestSetUxModel? survivingSet = await _Service.GetNprRequestSetByIdAsync(setB.Id);
             Assert.That(survivingSet, Is.Not.Null);
