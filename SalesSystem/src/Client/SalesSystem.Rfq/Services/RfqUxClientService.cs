@@ -23,19 +23,11 @@ namespace SalesSystem.Rfq.Services
 
         // NPR Request cached data
         List<RfqNprRequestSetUxModel> _NprRequestSets;
-        static readonly string _NprRequestSetsFilePath;
-        static readonly JsonSerializerOptions _JsonOptions;
-        // static constructor
-        static RfqUxClientService()
-        {
-            _NprRequestSetsFilePath = Path.Combine("C:\\temp", "npr_request_sets.json");
-            _JsonOptions = new JsonSerializerOptions();
-            _JsonOptions.WriteIndented = true;
-            _JsonOptions.PropertyNameCaseInsensitive = false;
-        }
+        string _NprRequestSetsFilePath;
+        public string NprRequestSetsFilePath => _NprRequestSetsFilePath;
+        JsonSerializerOptions _JsonOptions;
         // Cached data accessors
         public IReadOnlyCollection<RfqDrawingPartNumberUx?> RfqDrawingPartNumbers => _RfqDrawingPartNumbers.AsReadOnly();
-        //public IReadOnlyCollection<RfqProject> RfqProjects => _RfqProjects.AsReadOnly();
         public IReadOnlyCollection<RfqProjectUx> RfqProjectUxs => _RfqProjectUxs.AsReadOnly(); // only active projects are here
         public IReadOnlyCollection<CustomerUx?> Customers => _Customers.AsReadOnly();
         public IReadOnlyCollection<RfqReasonGrpc> Reasons => _Reasons.AsReadOnly();
@@ -45,8 +37,7 @@ namespace SalesSystem.Rfq.Services
         public IReadOnlyCollection<RfqNprRequestSetUxModel> NprRequestSets => _NprRequestSets.AsReadOnly();
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
-
-        public RfqUxClientService(IConfiguration configuration, ILogger<RfqUxClientService> logger)
+        public RfqUxClientService(IConfiguration configuration, ILogger<RfqUxClientService> logger, bool isTest = false)
         {
             _Logger = logger;
 
@@ -70,7 +61,6 @@ namespace SalesSystem.Rfq.Services
             _Disposed = false;
 
             // cache initialization
-            //_RfqProjects = new();
             _RfqProjectUxs = new();
             _Logger = logger;
             _Customers = new();
@@ -87,6 +77,24 @@ namespace SalesSystem.Rfq.Services
             _AlternativePartsPosition = 0;
             _AlternativePartsTake = -1;
             _NprRequestSets = new();
+
+            // storage for requests
+            if(isTest)
+            {
+                _NprRequestSetsFilePath = Path.Combine("C:\\temp", "npr_request_sets_test.json");
+                _JsonOptions = new JsonSerializerOptions();
+                _JsonOptions.WriteIndented = true;
+                _JsonOptions.PropertyNameCaseInsensitive = false;
+            }
+            else
+            {
+                _NprRequestSetsFilePath = Path.Combine("C:\\temp", "npr_request_sets.json");
+                _JsonOptions = new JsonSerializerOptions();
+                _JsonOptions.WriteIndented = true;
+                _JsonOptions.PropertyNameCaseInsensitive = false;
+            }
+
+            _Logger.GenericLogInformation($">>> RfqUxClientService was created with test == {isTest} and storage to file {_NprRequestSetsFilePath}");
         }
         #endregion
 
@@ -938,6 +946,27 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
+        public async Task<RfqNprRequestSetUxModel?> GetNprRequestSetByRfqNumberAsync(string? rfqNumber)
+        {
+            try
+            {
+                await SyncCacheFromFileAsync();
+
+                RfqNprRequestSetUxModel? set = _NprRequestSets.FirstOrDefault(s => s.RfqNumber?.ToUpperInvariant().Trim() == rfqNumber?.ToUpperInvariant().Trim());
+
+                if (set == null)
+                {
+                    _Logger?.GenericLogInformation($"NPR request set not found for RfqNumber: {rfqNumber}");
+                }
+
+                return set;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in GetNprRequestSetByIdAsync for RfqNumber: {rfqNumber}", ex);
+                throw;
+            }
+        }
 
         public async Task<RfqNprRequestSetUxModel> CreateNprRequestSetAsync(RfqNprRequestSetUxModel newSet)
         {
@@ -1053,6 +1082,7 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
+        
         // --- NPR Request Item CRUD (within a Set) ---
 
         public async Task<RfqNprRequestUxModel> AddNprRequestToSetAsync(Guid setId, RfqNprRequestUxModel newRequest)

@@ -294,5 +294,52 @@
             return ux;
         }
         #endregion
+
+        #region NprRequests
+        public static RfqNprRequestSetUxModel ToNprRequestSet(this RfqProjectUx project)
+        {
+            RfqNprRequestSetUxModel requestSet = new RfqNprRequestSetUxModel();
+            requestSet.Project = project;
+            requestSet.RfqNumber = project.RfqNumber;
+            requestSet.NprRequests = new();
+
+            return requestSet;
+
+        }
+        public static RfqNprRequestUxModel ToNprRequest(this RfqDrawingPartNumberUx partNumber, RfqProjectUx rfqProject)
+        {
+            RfqNprRequestUxModel nprRequest = new RfqNprRequestUxModel();
+            nprRequest.RequiredDate = rfqProject.RfqResponseDeadline;
+            nprRequest.IsCustomerNominatedMaterial = false;
+            nprRequest.IsCustomerNominatedSupplier = false;
+            nprRequest.QtyPerVehicle = 1;
+            nprRequest.Quantity = 1;
+            nprRequest.AssociatedParts = "";
+            nprRequest.Customer = rfqProject.CustomerBusinessUnit;
+            nprRequest.CustomerPartNumber = partNumber.CustomerPartNumber;
+            nprRequest.FreightAccount = "";
+            nprRequest.MaterialDescription = "";
+            nprRequest.MaterialType = "";
+            nprRequest.PlatformName = "";
+            nprRequest.ProgramName = "";
+            nprRequest.Project = rfqProject.Project;
+            nprRequest.RaisedRemarks = "";
+            nprRequest.Reason = rfqProject.RfqReason;
+            nprRequest.SuggestedManufacturer =  "";
+            nprRequest.SuggestedSewsEManufacturingSite = rfqProject.CustomerLocation;
+            nprRequest.SumitomoNumber = "";
+            nprRequest.SupplierGroup = "";
+            nprRequest.SupplierPartNumber = "";
+            nprRequest.UnitOfMeasure = "";
+            // samples
+            nprRequest.SamplesRequired = false;
+            nprRequest.SampleRequiredDate = null;
+            nprRequest.SampleQuantity = 0;
+            nprRequest.SampleRecipient = "";
+            nprRequest.SampleSite = "";
+
+            return nprRequest;
+        }
+        #endregion
     }
 }

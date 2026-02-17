@@ -12,20 +12,16 @@ namespace Integration.Tests.Rfq.Client
         RfqUxClientService _Service;
         Mock<ILogger<RfqUxClientService>> _LoggerMock;
         IConfiguration? _Configuration;
-        //Mock<IConfiguration> _ConfigurationMock;
         bool _Disposed;
 
-        static readonly string _TestFilePath;
         static RfqUxClientServiceNprTests()
         {
-            _TestFilePath = Path.Combine("C:\\temp", "npr_request_sets.json");
         }
 
         public RfqUxClientServiceNprTests()
         {
             _Service = null!;
             _LoggerMock = null!;
-            //_ConfigurationMock = null!;
         }
         #endregion
 
@@ -49,7 +45,7 @@ namespace Integration.Tests.Rfq.Client
             ArgumentNullException.ThrowIfNull(_Configuration);
             _LoggerMock = new Mock<ILogger<RfqUxClientService>>();
 
-            _Service = new RfqUxClientService(_Configuration, _LoggerMock.Object);
+            _Service = new RfqUxClientService(_Configuration, _LoggerMock.Object, true);
 
             TestContext.Out.WriteLine("RfqUxClientServiceNprTest - RfqUxClientService initialized successfully");
             TestContext.Out.WriteLine($"Max GRPC Response Size: {RfqUxClientService.MAX_GRPC_RESPONSE_SIZE / 1024 / 1024} MB");
@@ -63,25 +59,18 @@ namespace Integration.Tests.Rfq.Client
         public void SetUp()
         {
             InitializeConfiguration();
-            // Ensure clean state before each test
-            if (File.Exists(_TestFilePath))
-            {
-                File.Delete(_TestFilePath);
-            }
-
             InitializeService();
+            // Ensure clean state before each test
+            if (File.Exists(_Service.NprRequestSetsFilePath))
+            {
+                File.Delete(_Service.NprRequestSetsFilePath);
+            }
         }
 
         [OneTimeTearDown]
         public void TearDown()
         {
             _Service?.Dispose();
-
-            // Clean up test file
-            //if (File.Exists(_TestFilePath))
-            //{
-            //    File.Delete(_TestFilePath);
-            //}
         }
 
         #endregion
@@ -161,14 +150,14 @@ namespace Integration.Tests.Rfq.Client
         public async Task GetAllNprRequestSetsAsync_WhenFileIsEmpty_ReturnsZero()
         {
             // Arrange
-            string? directory = Path.GetDirectoryName(_TestFilePath);
+            string? directory = Path.GetDirectoryName(_Service.NprRequestSetsFilePath);
 
             if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
             }
 
-            await File.WriteAllTextAsync(_TestFilePath, "");
+            await File.WriteAllTextAsync(_Service.NprRequestSetsFilePath, "");
 
             // Act
             int count = await _Service.GetAllNprRequestSetsAsync();
@@ -249,7 +238,7 @@ namespace Integration.Tests.Rfq.Client
             Assert.That(result.Status, isLocalUnchanged);
             EqualConstraint defaultDT = Is.Not.EqualTo(default(DateTime));
             Assert.That(result.Created, defaultDT);
-            bool fileExists = File.Exists(_TestFilePath);
+            bool fileExists = File.Exists(_Service.NprRequestSetsFilePath);
             Assert.That(fileExists, Is.True);
 
             // Verify persistence
@@ -920,7 +909,7 @@ namespace Integration.Tests.Rfq.Client
 
             // Act - dispose and create a new service instance
             _Service.Dispose();
-            _Service = new RfqUxClientService(_Configuration!, _LoggerMock.Object);
+            _Service = new RfqUxClientService(_Configuration!, _LoggerMock.Object, true);
 
             // Assert - data should be loadable from the new instance
             RfqNprRequestSetUxModel? reloadedSet = await _Service.GetNprRequestSetByIdAsync(setId);
@@ -945,7 +934,7 @@ namespace Integration.Tests.Rfq.Client
             await _Service.AddNprRequestToSetAsync(set.Id, request);
 
             // Act
-            string json = await File.ReadAllTextAsync(_TestFilePath);
+            string json = await File.ReadAllTextAsync(_Service.NprRequestSetsFilePath);
 
             // Assert
             Assert.That(json, Is.Not.Null.And.Not.Empty);
@@ -1000,7 +989,7 @@ namespace Integration.Tests.Rfq.Client
 
             // Act - reload from file via new service instance
             _Service.Dispose();
-            _Service = new RfqUxClientService(_Configuration!, _LoggerMock.Object);
+            _Service = new RfqUxClientService(_Configuration!, _LoggerMock.Object, true);
 
             RfqNprRequestUxModel? reloaded = await _Service.GetNprRequestByIdAsync(set.Id, request.Id);
 
