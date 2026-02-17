@@ -1,9 +1,16 @@
-﻿namespace NPR.Services
-{
-    public sealed class NPRAccessService : INPRAccessService
-    {
-        #region In Memory Datasets
+﻿using System.Collections.ObjectModel;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
+namespace NPR.Services
+{
+    public sealed class NPRAccessService : INPRAccessService, IDisposable
+    {
+         string _NprRequestSetsFilePath;
+         JsonSerializerOptions _NprJsonOptions;
+         SemaphoreSlim _NprSetsGate;
+         List<RfqNprRequestSetModel> _NprSetsCache;
+        #region In Memory Datasets
         #region H1NPRView
 
         ListH1NPRViewGrpc _H1NPRView;
@@ -59,6 +66,16 @@
             {
                 PopulateSampleData();
             }
+
+            _NprRequestSetsFilePath = @"C:\temp\npr_request_sets.json";
+
+            _NprJsonOptions = new JsonSerializerOptions();
+            _NprJsonOptions.PropertyNamingPolicy = null;                   
+               _NprJsonOptions.WriteIndented = false;
+                 //Converters = { new JsonStringEnumConverter(allowIntegerValues: true) } // numeric enums
+            _NprSetsGate = new SemaphoreSlim(1, 1);
+            _NprSetsCache = new List<RfqNprRequestSetModel>();
+
         }
         #endregion
 
@@ -191,10 +208,114 @@
                 };
             }, cancellationToken);
         }
+        #region NPR Request Sets (JSON persistence - service)
+        public async Task<List<RfqNprRequestSetModel>> LoadNprRequestSetsFromBackendAsync(CancellationToken cancellationToken)
+        {
+            await _NprSetsGate.WaitAsync(cancellationToken);
+            try
+            {
+                if (!File.Exists(_NprRequestSetsFilePath))
+                {
+                    //_Logger?.LogInformation("NPR file not found at {Path}, returning empty list", _NprRequestSetsFilePath);
+                    _NprSetsCache.Clear();
+                    return [.. _NprSetsCache];
+                }
+
+                string json = await File.ReadAllTextAsync(_NprRequestSetsFilePath, cancellationToken);
+                if (string.IsNullOrWhiteSpace(json))
+                {
+                    _NprSetsCache.Clear();
+                    return [.. _NprSetsCache];
+                }
+
+                List<RfqNprRequestSetModel>? sets =
+                    JsonSerializer.Deserialize<List<RfqNprRequestSetModel>>(json, _NprJsonOptions);
+
+                _NprSetsCache.Clear();
+                if (sets is not null)
+                {
+                    _NprSetsCache.AddRange(sets);
+                }
+
+                // After load => align to LocalUnchanged
+                foreach (RfqNprRequestSetModel s in _NprSetsCache)
+                {
+                    s.Status = NprSetRequestStatus.LocalUnchanged;
+                }
+
+                //_Logger?.LogInformation("Loaded {Count} NPR request sets from {Path}", _NprSetsCache.Count, _NprRequestSetsFilePath);
+                return [.. _NprSetsCache];
+            }
+            catch (Exception)
+            {
+                //_Logger?.LogError(ex, "Error loading NPR request sets from file: {Path}", _NprRequestSetsFilePath);
+                throw;
+            }
+            finally
+            {
+                _NprSetsGate.Release();
+            }
+        }
+
+        public async Task SaveNprRequestSetsToBackendAsync(ReadOnlyCollection<RfqNprRequestSetModel> sets, CancellationToken cancellationToken)
+        {
+            ArgumentNullException.ThrowIfNull(sets);
+
+            await _NprSetsGate.WaitAsync(cancellationToken);
+            try
+            {
+                string? directory = Path.GetDirectoryName(_NprRequestSetsFilePath);
+                bool needDirectory = !string.IsNullOrEmpty(directory) && !Directory.Exists(directory!);
+                if (needDirectory)
+                {
+                    Directory.CreateDirectory(directory!);
+                    // optional: log directory creation
+                }
+
+                // Create a writable working copy (since ReadOnlyCollection<T> is immutable)
+                List<RfqNprRequestSetModel> working = new List<RfqNprRequestSetModel>(sets);
+
+                // Normalize status before persisting (same as your client)
+                foreach (RfqNprRequestSetModel set in working)
+                {
+                    set.Status = NprSetRequestStatus.LocalUpdated;
+                }
+
+                string json = JsonSerializer.Serialize(working, _NprJsonOptions);
+                await File.WriteAllTextAsync(_NprRequestSetsFilePath, json, cancellationToken);
+
+                // Update in-memory cache
+                _NprSetsCache.Clear();
+                _NprSetsCache.AddRange(working);
+                   
+            }
+            catch
+            {
+        
+                throw;
+            }
+            finally
+            {
+                _NprSetsGate.Release();
+            }
+        }
+        #endregion
         void PopulateSampleData()
         {
             _H1NPRView = SampleNPRDataService.PopulateH1NPRViewGrpc();
             _RFQStatus = SampleNPRDataService.PopulateRFQStatusGrpc();
         }
+        #region IDisposable
+
+        public void Dispose()
+        {
+            SemaphoreSlim? gate = _NprSetsGate;
+            if (gate is not null)
+            {
+                gate.Dispose();
+            }
+        }
+
+        #endregion
     }
 }

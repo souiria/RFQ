@@ -1,4 +1,6 @@
-﻿namespace NPR.Services
+﻿using System.Collections.ObjectModel;
+
+namespace NPR.Services
 {
     public interface INPRAccessService
     {
@@ -11,5 +13,9 @@
 
         Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig,
             Action<IEnumerable<T>> setResponseCollection, CancellationToken cancellationToken);
+        Task<List<RfqNprRequestSetModel>> LoadNprRequestSetsFromBackendAsync(CancellationToken cancellationToken);
+        Task SaveNprRequestSetsToBackendAsync(ReadOnlyCollection<RfqNprRequestSetModel> sets, CancellationToken cancellationToken);
+
+
     }
 }

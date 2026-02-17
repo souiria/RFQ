@@ -66,7 +66,7 @@
             return reason;
         }
 
-        public static RfqProject ToRfqProject(this RfqProjectGrpc rfqProjectGrpc)
+        public static RfqProject ToRfqProject(this Rfq.RfqProjectGrpc rfqProjectGrpc)
         {
             RfqProject project = new RfqProject();
             project.RowId = rfqProjectGrpc.RowId;

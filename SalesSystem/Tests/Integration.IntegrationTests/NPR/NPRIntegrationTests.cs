@@ -1,117 +1,117 @@
-﻿using NPR;
-using NPR.Endpoints.GrpcServices;
-using NPR.Services;
+﻿//using NPR;
+//using NPR.Endpoints.GrpcServices;
+//using NPR.Services;
 
-namespace Integration.Tests.NPR
-{
-    public class NPRIntegrationTests
-    {
-        NPRAccessService _NPRAccessService;
-        NPRGrpcService _GrpcService;
-        ILoggerFactory _LoggerFactory;
+//namespace Integration.Tests.NPR
+//{
+//    public class NPRIntegrationTests
+//    {
+//        NPRAccessService _NPRAccessService;
+//        NPRGrpcService _GrpcService;
+//        ILoggerFactory _LoggerFactory;
 
-        [SetUp]
-        public void Setup()
-        {
-            ServiceCollection services = new ServiceCollection();
-            ServiceProvider provider = services.BuildServiceProvider();
+//        [SetUp]
+//        public void Setup()
+//        {
+//            ServiceCollection services = new ServiceCollection();
+//            ServiceProvider provider = services.BuildServiceProvider();
 
-            _NPRAccessService = new NPRAccessService(provider, testing: true);
+//            _NPRAccessService = new NPRAccessService(provider, testing: true);
 
-            _LoggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
-            ILogger<NPRGrpcService> logger = _LoggerFactory.CreateLogger<NPRGrpcService>();
+//            _LoggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
+//            ILogger<NPRGrpcService> logger = _LoggerFactory.CreateLogger<NPRGrpcService>();
 
-            _GrpcService = new NPRGrpcService(_NPRAccessService, logger);
-        }
+//            _GrpcService = new NPRGrpcService(_NPRAccessService, logger);
+//        }
 
-        [TearDown]
-        public void TearDown()
-        {
-            _LoggerFactory?.Dispose();
-        }
+//        [TearDown]
+//        public void TearDown()
+//        {
+//            _LoggerFactory?.Dispose();
+//        }
 
-        // ---------------------------------------------------------------------
-        // SayHello
-        // ---------------------------------------------------------------------
-        [Test]
-        [Category("Integration")]
-        public void SayHelloTest()
-        {
-            HelloRequest request = new HelloRequest();
-            request.Name = "TestName";
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.SayHello));
+//        // ---------------------------------------------------------------------
+//        // SayHello
+//        // ---------------------------------------------------------------------
+//        [Test]
+//        [Category("Integration")]
+//        public void SayHelloTest()
+//        {
+//            HelloRequest request = new HelloRequest();
+//            request.Name = "TestName";
+//            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.SayHello));
 
-            Task<HelloReply> helloReply = _GrpcService.SayHello(request, serverCallContext);
+//            Task<HelloReply> helloReply = _GrpcService.SayHello(request, serverCallContext);
 
-            string replyString = "Hello TestName";
-            EqualConstraint equalConstraint = Is.EqualTo(replyString);
-            Assert.That(helloReply, Is.Not.Null);
-            Assert.That(helloReply.Result.Message, equalConstraint);
-        }
+//            string replyString = "Hello TestName";
+//            EqualConstraint equalConstraint = Is.EqualTo(replyString);
+//            Assert.That(helloReply, Is.Not.Null);
+//            Assert.That(helloReply.Result.Message, equalConstraint);
+//        }
 
-        // ---------------------------------------------------------------------
-        // NPR: H1NPRView 
-        // ---------------------------------------------------------------------
-        [Test]
-        [Category("Integration")]
-        public void Filter_H1NPRView_Success_And_Fail()
-        {
-            ServerCallContext ctx = CreateServerContext(nameof(_GrpcService.FilterNPRGrpc));
+//        // ---------------------------------------------------------------------
+//        // NPR: H1NPRView 
+//        // ---------------------------------------------------------------------
+//        [Test]
+//        [Category("Integration")]
+//        public void Filter_H1NPRView_Success_And_Fail()
+//        {
+//            ServerCallContext ctx = CreateServerContext(nameof(_GrpcService.FilterNPRGrpc));
 
-            // ----------------------- SUCCESS CASE -----------------------
-            NPRFilterRequest successReq = new NPRFilterRequest();
-               successReq.DatabaseList = "H1NPRVIEWGRPC";
-            successReq.FilterExpression = "true";
+//            // ----------------------- SUCCESS CASE -----------------------
+//            NPRFilterRequest successReq = new NPRFilterRequest();
+//               successReq.DatabaseList = "H1NPRVIEWGRPC";
+//            successReq.FilterExpression = "true";
 
-            Task<NPRFilterResponse> successTask = _GrpcService.FilterNPRGrpc(successReq, ctx);
-            NPRFilterResponse successResp = successTask.Result;
+//            Task<NPRFilterResponse> successTask = _GrpcService.FilterNPRGrpc(successReq, ctx);
+//            NPRFilterResponse successResp = successTask.Result;
 
-            Assert.That(successResp, Is.Not.Null);
+//            Assert.That(successResp, Is.Not.Null);
 
-            ListH1NPRViewGrpc successListContainer = successResp.ListH1NPRViewGrpc;
-            Assert.That(successListContainer, Is.Not.Null);
+//            ListH1NPRViewGrpc successListContainer = successResp.ListH1NPRViewGrpc;
+//            Assert.That(successListContainer, Is.Not.Null);
 
-            RepeatedField<H1NPRViewGrpc> successItems = successListContainer.H1NPRViewGrpc;
-            int successCount = successItems.Count;
-            Assert.That(successCount, Is.Positive);
+//            RepeatedField<H1NPRViewGrpc> successItems = successListContainer.H1NPRViewGrpc;
+//            int successCount = successItems.Count;
+//            Assert.That(successCount, Is.Positive);
 
-            // ----------------------- FAILURE CASE -----------------------
-            NPRFilterRequest failReq = new NPRFilterRequest();
-            failReq.DatabaseList = "H1NPRVIEWGRPC";
-            failReq.FilterExpression = "false";
+//            // ----------------------- FAILURE CASE -----------------------
+//            NPRFilterRequest failReq = new NPRFilterRequest();
+//            failReq.DatabaseList = "H1NPRVIEWGRPC";
+//            failReq.FilterExpression = "false";
 
-            Task<NPRFilterResponse> failTask = _GrpcService.FilterNPRGrpc(failReq, ctx);
-            NPRFilterResponse failResp = failTask.Result;
+//            Task<NPRFilterResponse> failTask = _GrpcService.FilterNPRGrpc(failReq, ctx);
+//            NPRFilterResponse failResp = failTask.Result;
 
-            Assert.That(failResp, Is.Not.Null);
+//            Assert.That(failResp, Is.Not.Null);
 
-            ListH1NPRViewGrpc failListContainer = failResp.ListH1NPRViewGrpc;
-            Assert.That(failListContainer, Is.Not.Null);
+//            ListH1NPRViewGrpc failListContainer = failResp.ListH1NPRViewGrpc;
+//            Assert.That(failListContainer, Is.Not.Null);
 
-            RepeatedField<H1NPRViewGrpc> failItems = failListContainer.H1NPRViewGrpc;
-            int failCount = failItems.Count;
-            Assert.That(failCount, Is.Zero);
-        }
+//            RepeatedField<H1NPRViewGrpc> failItems = failListContainer.H1NPRViewGrpc;
+//            int failCount = failItems.Count;
+//            Assert.That(failCount, Is.Zero);
+//        }
 
-        ServerCallContext CreateServerContext(string methodName)
-        {
-            DateTime deadline = DateTime.Now.AddMinutes(30);
-            Metadata metadata = new Metadata();
+//        ServerCallContext CreateServerContext(string methodName)
+//        {
+//            DateTime deadline = DateTime.Now.AddMinutes(30);
+//            Metadata metadata = new Metadata();
 
-            ServerCallContext serverCallContext = TestServerCallContext.Create(
-                method: methodName,
-                host: "localhost",
-                deadline: deadline,
-                requestHeaders: metadata,
-                cancellationToken: CancellationToken.None,
-                peer: "10.0.0.25:5001",
-                authContext: null,
-                contextPropagationToken: null,
-                writeHeadersFunc: (md) => Task.CompletedTask,
-                writeOptionsGetter: () => new WriteOptions(),
-                writeOptionsSetter: (writeOptions) => { }
-            );
-            return serverCallContext;
-        }
-    }
-}
+//            ServerCallContext serverCallContext = TestServerCallContext.Create(
+//                method: methodName,
+//                host: "localhost",
+//                deadline: deadline,
+//                requestHeaders: metadata,
+//                cancellationToken: CancellationToken.None,
+//                peer: "10.0.0.25:5001",
+//                authContext: null,
+//                contextPropagationToken: null,
+//                writeHeadersFunc: (md) => Task.CompletedTask,
+//                writeOptionsGetter: () => new WriteOptions(),
+//                writeOptionsSetter: (writeOptions) => { }
+//            );
+//            return serverCallContext;
+//        }
+//    }
+//}

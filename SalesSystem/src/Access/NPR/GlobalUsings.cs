@@ -12,6 +12,7 @@ global using NPR.CQRS.Query.RFQStatus;
 global using NPR.CQRS.Specification.H1NPRView;
 global using NPR.CQRS.Specification.RFQStatus;
 global using NPR.Data.Context;
+global using NPR.Data.Enum;
 global using NPR.Data.Interface;
 global using NPR.Data.Model;
 global using NPR.Data.Repository;
