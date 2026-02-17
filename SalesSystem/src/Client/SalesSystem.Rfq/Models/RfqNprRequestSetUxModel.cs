@@ -1,6 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-
-namespace SalesSystem.Rfq.Models
+﻿namespace SalesSystem.Rfq.Models
 {
     public class RfqNprRequestSetUxModel
     {
