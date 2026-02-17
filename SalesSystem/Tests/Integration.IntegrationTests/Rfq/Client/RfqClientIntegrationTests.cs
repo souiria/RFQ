@@ -349,6 +349,9 @@ namespace Integration.Tests.Rfq.Client
             //TestContext.Out.WriteLine($"  CreatedProjectId: {createResponse.CreatedProjectId}");
             //TestContext.Out.WriteLine($"  Message: {createResponse.Message}");
 
+            // Test project Id
+            const string testProjectId = "71";
+
             // Prepare test BOM file (FordBom.xml)
             string bomFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, "TestData", "FordBom.xml");
 
@@ -381,7 +384,7 @@ namespace Integration.Tests.Rfq.Client
             TestContext.Out.WriteLine($"  File: {fileName}");
             TestContext.Out.WriteLine($"  Size: {fileBytes.Length} bytes");
             //TestContext.Out.WriteLine($"  Target Project ID: {createResponse.CreatedProjectId}");
-            TestContext.Out.WriteLine($"  Target Project ID: 163"); // 163 exists
+            TestContext.Out.WriteLine($"  Target Project ID: {testProjectId}");
 
             // Create IBrowserFile mock/wrapper for the upload
             // Note: In real scenario, you might need to create a test implementation of IBrowserFile
@@ -391,7 +394,7 @@ namespace Integration.Tests.Rfq.Client
             // Note: Adjust the max file size as needed (16MB = 16_777_216 bytes)
             UploadPartsRequestGrpcResponse uploadResponse = await _RfqUxClientService.UploadPartsAsync(
                 //createResponse.CreatedProjectId,
-                "163",
+                testProjectId,
                 fileBytes,
                 fileName
             );
@@ -409,7 +412,7 @@ namespace Integration.Tests.Rfq.Client
 
             // Optional: Verify the uploaded parts can be retrieved
             //if (long.TryParse(createResponse.CreatedProjectId, out long projectId))
-            if (long.TryParse("163", out long projectId))
+            if (long.TryParse(testProjectId, out long projectId))
             {
                     TestContext.Out.WriteLine($"Verifying uploaded parts for project ID: {projectId}");
 
