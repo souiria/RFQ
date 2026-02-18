@@ -57,32 +57,7 @@
                 throw;
             }
         }
-        //public async Task<GetCustomersByUserIdGrpcResponse> GetCustomersByUserIdGrpc(GetCustomersByUserIdGrpcRequest request)
-        //{
-        //    try
-        //    {
-        //        // Call the Master service to get masterCustomers
-        //        await Task.Delay(1);
-        //        CustomerByUserIdGrpcRequest getCustomersRequest = new CustomerByUserIdGrpcRequest();
-        //        getCustomersRequest.Id = request.UserId.ToUpperInvariant();
-        //        ListCustomerGrpc customers = _MasterClient.GetCustomerGrpcByUserId(getCustomersRequest);
-        //        GetCustomersByUserIdGrpcResponse response = new GetCustomersByUserIdGrpcResponse();
-        //        foreach (Master.CustomerGrpc? masterCustomer in customers.CustomerGrpc)
-        //        {
-        //            CustomerGrpc customer = masterCustomer.ToCustomerGrpc();
-        //            response.Customers.Add(customer);
-        //        }
-
-        //        return response;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _Logger.GenericLogError("Error fetching masterCustomers from Master service", ex);
-        //        throw;
-        //    }
-        //}
-
-        public async Task<GetProjectAssociationsByCustomerIdResponse> GetProjectAssociationsByCustomerId(GetProjectAssociationsByCustomerIdRequest request)
+         public async Task<GetProjectAssociationsByCustomerIdResponse> GetProjectAssociationsByCustomerId(GetProjectAssociationsByCustomerIdRequest request)
         {
             try
             {
@@ -1209,7 +1184,60 @@
 
             return response;
         }
+        public async Task<NPRListRfqNprRequestSetGrpc> GetAllNprRequestSetsAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                _Logger.GenericLogInformation("Manager: GetAllNprRequestSets passthrough -> NPR");
 
+                Empty empty = new Empty();
+
+                DateTime deadline = DateTime.UtcNow.AddSeconds(30);
+                CallOptions callOptions = new CallOptions();
+                callOptions = callOptions.WithDeadline(deadline);
+                callOptions = callOptions.WithCancellationToken(cancellationToken);
+
+                ListRfqNprRequestSetGrpc nprResponse =
+                    await _NPRGrpcClient.GetAllNprRequestSetsAsync(empty, callOptions);
+
+                NPRListRfqNprRequestSetGrpc mgrResponse = RfqModuleMapping.ToMgr(nprResponse);
+                return mgrResponse;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError("Manager: GetAllNprRequestSets failed", ex);
+                throw;
+            }
+        }
+
+        public async Task<Empty> SaveAllNprRequestSetsAsync(NPRListRfqNprRequestSetGrpc request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (request is null)
+                {
+                    throw new ArgumentNullException(nameof(request), "NPRListRfqNprRequestSetGrpc request cannot be null.");
+                }
+
+                int count = request.Items?.Count ?? 0;
+                _Logger.GenericLogInformation($"Manager: SaveAllNprRequestSets passthrough -> NPR (items={count})");
+
+                ListRfqNprRequestSetGrpc nprRequest = RfqModuleMapping.ToNpr(request);
+
+                DateTime deadline = DateTime.UtcNow.AddSeconds(30);
+                CallOptions callOptions = new CallOptions();
+                callOptions = callOptions.WithDeadline(deadline);
+                callOptions = callOptions.WithCancellationToken(cancellationToken);
+
+                Empty response = await _NPRGrpcClient.SaveAllNprRequestSetsAsync(nprRequest, callOptions);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError("Manager: SaveAllNprRequestSets failed", ex);
+                throw;
+            }
+        }
         public async Task<FilterGrpcResponse> FilterNPRBySumitomoPartNumber(FilterGrpcRequest request)
         {
             await Task.Delay(1);
@@ -1400,7 +1428,7 @@
                 default:
                 throw new ArgumentException("Invalid type parameter");
             }
-        }
+          }
         #endregion
     }
 }

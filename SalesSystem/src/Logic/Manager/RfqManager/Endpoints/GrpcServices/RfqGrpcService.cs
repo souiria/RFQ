@@ -170,5 +170,23 @@
                 return response;
             }
         }
+        public override async Task<NPRListRfqNprRequestSetGrpc> GetAllNprRequestSets(Empty request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetAllNprRequestSets (Manager) starting");
+            NPRListRfqNprRequestSetGrpc response =
+                await _RfqManagerService.GetAllNprRequestSetsAsync(context.CancellationToken);
+            return response;
+        }
+
+        public override async Task<Empty> SaveAllNprRequestSets(NPRListRfqNprRequestSetGrpc request, ServerCallContext context)
+        {
+            NPRListRfqNprRequestSetGrpc safe = request ?? new NPRListRfqNprRequestSetGrpc();
+            int count = safe.Items?.Count ?? 0;
+
+            _Logger.GenericLogInformation($"SaveAllNprRequestSets (Manager) starting; items={count}");
+
+            Empty result = await _RfqManagerService.SaveAllNprRequestSetsAsync(safe, context.CancellationToken);
+            return result;
+        }
     }
 }

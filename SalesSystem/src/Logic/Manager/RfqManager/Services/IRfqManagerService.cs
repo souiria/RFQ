@@ -27,5 +27,7 @@
         Task<GetCustomerBusinessUnitsByUserIdResponse> GetCustomerBusinessUnitsByUserId(string userId);
         Task<GetAlternativePartInfoBySumitomoNumberResponse> GetAlternativePartInfoBySumitomoNumberResponse (string sumitomoNumber);
         Task<GetAllAlternativePartsGrpcResponse> GetAllAlternativePartsGrpc(GetAllAlternativePartsGrpcRequest request, CancellationToken cancellation);
+        Task<NPRListRfqNprRequestSetGrpc> GetAllNprRequestSetsAsync(CancellationToken cancellationToken);
+        Task<Empty> SaveAllNprRequestSetsAsync(NPRListRfqNprRequestSetGrpc request, CancellationToken cancellationToken);
     }
 }
