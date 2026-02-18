@@ -1,120 +1,127 @@
-﻿//using NPR;
-//using NPR.Endpoints.GrpcServices;
-//using NPR.Services;
-//using NUnit.Framework.Constraints;
+﻿using NPR;
+using NPR.Endpoints.GrpcServices;
+using NPR.Services;
+using NUnit.Framework.Constraints;
 
-//namespace Regression.Tests.NPR
-//{
-//    public class NPRRegressionTests
-//    {
-//        NPRAccessService _NPRAccessService;
-//        NPRGrpcService _GrpcService;
+namespace Regression.Tests.NPR
+{
+    public class NPRRegressionTests
+    {
+        NPRAccessService _NPRAccessService;
+        NPRGrpcService _GrpcService;
 
-//        [SetUp]
-//        public void Setup()
-//        {
-//            ServiceCollection services = new ServiceCollection();
-//            ServiceProvider provider = services.BuildServiceProvider();
+        [SetUp]
+        public void Setup()
+        {
+            ServiceCollection services = new ServiceCollection();
+            ServiceProvider provider = services.BuildServiceProvider();
 
-//            _NPRAccessService = new NPRAccessService(provider, true);
-//            Mock<ILogger<NPRGrpcService>> logger = new Mock<ILogger<NPRGrpcService>>();
-//            _GrpcService = new NPRGrpcService(_NPRAccessService, logger.Object);
-//        }
+            _NPRAccessService = new NPRAccessService(provider, true);
+            Mock<ILogger<NPRGrpcService>> logger = new Mock<ILogger<NPRGrpcService>>();
+            _GrpcService = new NPRGrpcService(_NPRAccessService, logger.Object);
+        }
 
-//        [Test]
-//        public async Task RegressionTest_NPR_AllEndpoints_ShouldReturnExpectedResults()
-//        {
-//            // ---------------------------------------------------------
-//            //   SayHello
-//            // ---------------------------------------------------------
+        [TearDown]
+        public void TearDown()
+        {
 
-//            HelloRequest helloRequest = new HelloRequest();
-//            helloRequest.Name = "TestName";
+            _NPRAccessService?.Dispose();
+          
+        }
+        [Test]
+        public async Task RegressionTest_NPR_AllEndpoints_ShouldReturnExpectedResults()
+        {
+            // ---------------------------------------------------------
+            //   SayHello
+            // ---------------------------------------------------------
 
-//            ServerCallContext helloContext = CreateServerContext(nameof(_GrpcService.SayHello));
+            HelloRequest helloRequest = new HelloRequest();
+            helloRequest.Name = "TestName";
 
-//            HelloReply helloReply = await _GrpcService.SayHello(helloRequest, helloContext);
+            ServerCallContext helloContext = CreateServerContext(nameof(_GrpcService.SayHello));
 
-//            // Expected value
-//            string expectedHello = "Hello TestName";
+            HelloReply helloReply = await _GrpcService.SayHello(helloRequest, helloContext);
 
-//            // Actual value
-//            string actualHello = helloReply.Message;
+            // Expected value
+            string expectedHello = "Hello TestName";
 
-//            // Constraint
-//            EqualConstraint helloConstraint = Is.EqualTo(expectedHello);
+            // Actual value
+            string actualHello = helloReply.Message;
 
-//            // Assertion
-//            Assert.That(actualHello, helloConstraint);
+            // Constraint
+            EqualConstraint helloConstraint = Is.EqualTo(expectedHello);
 
-//            // =========================================================
-//            // H1NPRView
-//            // =========================================================
+            // Assertion
+            Assert.That(actualHello, helloConstraint);
 
-//            H1NPRViewRequest h1Request;
-//            h1Request = new H1NPRViewRequest();
+            // =========================================================
+            // H1NPRView
+            // =========================================================
 
-//            ServerCallContext h1Context;
-//            h1Context = CreateServerContext(nameof(_GrpcService.GetAllH1NPRViewGrpc));
+            H1NPRViewRequest h1Request;
+            h1Request = new H1NPRViewRequest();
 
-//            Task<ListH1NPRViewGrpc> h1Task;
-//            h1Task = _GrpcService.GetAllH1NPRViewGrpc(h1Request, h1Context);
+            ServerCallContext h1Context;
+            h1Context = CreateServerContext(nameof(_GrpcService.GetAllH1NPRViewGrpc));
 
-//            ListH1NPRViewGrpc h1Response;
-//            h1Response = await h1Task;
+            Task<ListH1NPRViewGrpc> h1Task;
+            h1Task = _GrpcService.GetAllH1NPRViewGrpc(h1Request, h1Context);
 
-//            Google.Protobuf.Collections.RepeatedField<H1NPRViewGrpc> h1List;
-//            h1List = h1Response.H1NPRViewGrpc;
+            ListH1NPRViewGrpc h1Response;
+            h1Response = await h1Task;
 
-//            Assert.That(h1List, Is.Not.Null);
+            Google.Protobuf.Collections.RepeatedField<H1NPRViewGrpc> h1List;
+            h1List = h1Response.H1NPRViewGrpc;
 
-//            // Count check
-//            int h1ActualCount;
-//            h1ActualCount = h1List.Count;
+            Assert.That(h1List, Is.Not.Null);
 
-//            int h1ExpectedCount;
-//            h1ExpectedCount = 6;
+            // Count check
+            int h1ActualCount;
+            h1ActualCount = h1List.Count;
 
-//            bool h1CountMatches;
-//            h1CountMatches = h1ActualCount == h1ExpectedCount;
+            int h1ExpectedCount;
+            h1ExpectedCount = 6;
 
-//            Assert.That(h1CountMatches, Is.True);
+            bool h1CountMatches;
+            h1CountMatches = h1ActualCount == h1ExpectedCount;
 
-//            // First record
-//            H1NPRViewGrpc? h1First;
-//            h1First = h1List.FirstOrDefault();
+            Assert.That(h1CountMatches, Is.True);
 
-//            Assert.That(h1First, Is.Not.Null);
+            // First record
+            H1NPRViewGrpc? h1First;
+            h1First = h1List.FirstOrDefault();
 
-//            // Validate a guaranteed non-null field
-//            string h1CustomerNo;
-//            h1CustomerNo = h1First!.CustomerNo;
+            Assert.That(h1First, Is.Not.Null);
 
-//            bool h1CustomerNoNotEmpty;
-//            h1CustomerNoNotEmpty = !string.IsNullOrWhiteSpace(h1CustomerNo);
+            // Validate a guaranteed non-null field
+            string h1CustomerNo;
+            h1CustomerNo = h1First!.CustomerNo;
 
-//            Assert.That(h1CustomerNoNotEmpty, Is.True);
+            bool h1CustomerNoNotEmpty;
+            h1CustomerNoNotEmpty = !string.IsNullOrWhiteSpace(h1CustomerNo);
 
-//        }
+            Assert.That(h1CustomerNoNotEmpty, Is.True);
 
-//        ServerCallContext CreateServerContext(string methodName)
-//        {
-//            DateTime deadline = DateTime.Now.AddMinutes(30);
-//            Metadata metadata = new Metadata();
-//            ServerCallContext serverCallContext = TestServerCallContext.Create(
-//                                                    method: methodName,
-//                                                    host: "localhost",
-//                                                    deadline: deadline,
-//                                                    requestHeaders: metadata,
-//                                                    cancellationToken: CancellationToken.None,
-//                                                    peer: "10.0.0.25:5001",
-//                                                    authContext: null,
-//                                                    contextPropagationToken: null,
-//                                                    writeHeadersFunc: (metadata) => Task.CompletedTask,
-//                                                    writeOptionsGetter: () => new WriteOptions(),
-//                                                    writeOptionsSetter: (writeOptions) => { }
-//                                                  );
-//            return serverCallContext;
-//        }
-//    }
-//}
+        }
+
+        ServerCallContext CreateServerContext(string methodName)
+        {
+            DateTime deadline = DateTime.Now.AddMinutes(30);
+            Metadata metadata = new Metadata();
+            ServerCallContext serverCallContext = TestServerCallContext.Create(
+                                                    method: methodName,
+                                                    host: "localhost",
+                                                    deadline: deadline,
+                                                    requestHeaders: metadata,
+                                                    cancellationToken: CancellationToken.None,
+                                                    peer: "10.0.0.25:5001",
+                                                    authContext: null,
+                                                    contextPropagationToken: null,
+                                                    writeHeadersFunc: (metadata) => Task.CompletedTask,
+                                                    writeOptionsGetter: () => new WriteOptions(),
+                                                    writeOptionsSetter: (writeOptions) => { }
+                                                  );
+            return serverCallContext;
+        }
+    }
+}
