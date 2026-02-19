@@ -117,5 +117,56 @@ namespace NPR.Endpoints.GrpcServices
 
             return result;
         }
+        public override async Task<LoadDuplicatedNprRequestsResponse> LoadDuplicatedNprRequests(
+    LoadDuplicatedNprRequestsRequest request,
+    ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("LoadDuplicatedNprRequests starting");
+
+            // Call the service method you added next to 'LoadNprRequestSetsFromBackendAsync'
+            List<RfqNprRequestModel> duplicates =
+                await _NPRAccessService.LoadDuplicatedNprRequestsAsync(
+                    context.CancellationToken,
+                    includeEmptyKeys: request.IncludeEmptyKeys,
+                    removeFormatting: request.RemoveFormatting);
+
+            LoadDuplicatedNprRequestsResponse resp = new LoadDuplicatedNprRequestsResponse();
+
+            foreach (RfqNprRequestModel m in duplicates)
+            {
+                RfqNprRequestGrpc? g = m.MapToGrpc(); // implement if not present
+                if (g is not null)
+                {
+                    resp.Items.Add(g);
+                }
+            }
+
+            return resp;
+        }
+        public override async Task<ListRfqNprRequestSetGrpc> GetAllNprRequestSetsWithoutDuplicates(
+    LoadNprSetsWithoutDuplicatesRequest request,
+    ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetAllNprRequestSetsWithoutDuplicates starting");
+
+            List<RfqNprRequestSetModel> cleaned =
+                await _NPRAccessService.LoadNprSetsWithoutDuplicatesAndSaveRemovedAsync(
+                    context.CancellationToken,
+                    includeEmptyKeys: request.IncludeEmptyKeys,
+                    removeFormatting: request.RemoveFormatting);
+
+            // Map back to gRPC and return
+            ListRfqNprRequestSetGrpc response = new ListRfqNprRequestSetGrpc();
+            foreach (RfqNprRequestSetModel set in cleaned)
+            {
+                RfqNprRequestSetGrpc? g = set.MapToGrpc();
+                if (g is not null)
+                {
+                    response.Items.Add(g);
+                }
+            }
+
+            return response;
+        }
     }
 }

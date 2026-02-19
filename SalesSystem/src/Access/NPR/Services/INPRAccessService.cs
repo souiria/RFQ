@@ -15,7 +15,7 @@ namespace NPR.Services
             Action<IEnumerable<T>> setResponseCollection, CancellationToken cancellationToken);
         Task<List<RfqNprRequestSetModel>> LoadNprRequestSetsFromBackendAsync(CancellationToken cancellationToken);
         Task SaveNprRequestSetsToBackendAsync(ReadOnlyCollection<RfqNprRequestSetModel> sets, CancellationToken cancellationToken);
-
-
+        Task<List<RfqNprRequestModel>> LoadDuplicatedNprRequestsAsync(CancellationToken cancellationToken, bool includeEmptyKeys = false, bool removeFormatting = true);
+        Task<List<RfqNprRequestSetModel>> LoadNprSetsWithoutDuplicatesAndSaveRemovedAsync(CancellationToken cancellationToken, bool includeEmptyKeys = false, bool removeFormatting = true, string? duplicatesOutputPath = null);
     }
 }

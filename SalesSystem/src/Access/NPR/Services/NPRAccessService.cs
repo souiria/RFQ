@@ -75,8 +75,7 @@ namespace NPR.Services
                  //Converters = { new JsonStringEnumConverter(allowIntegerValues: true) } // numeric enums
             _NprSetsGate = new SemaphoreSlim(1, 1);
             _NprSetsCache = new List<RfqNprRequestSetModel>();
-
-        }
+         }
         #endregion
 
         #region Handlers
@@ -299,6 +298,168 @@ namespace NPR.Services
                 _NprSetsGate.Release();
             }
         }
+        public async Task<List<RfqNprRequestModel>> LoadDuplicatedNprRequestsAsync(    CancellationToken cancellationToken,    bool includeEmptyKeys = false,    bool removeFormatting = true)
+        {
+            // Load all sets (existing method)
+            List<RfqNprRequestSetModel> sets =
+                await LoadNprRequestSetsFromBackendAsync(cancellationToken);
+
+            // Normalize helper
+            static string Normalize(string? value, bool removeFmt)
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    return string.Empty;
+                }
+
+                string v;
+                v = value.Trim().ToUpperInvariant();
+
+                if (removeFmt)
+                {
+                    string noSpaces;
+                    noSpaces = v.Replace(" ", "", StringComparison.Ordinal);
+
+                    string noDashes;
+                    noDashes = noSpaces.Replace("-", "", StringComparison.Ordinal);
+
+                    return noDashes;
+                }
+
+                return v;
+            }
+
+            // Flatten NPR requests with grouping keys
+            var rows =
+                sets.SelectMany(set =>
+                    set.NprRequests.Select(req => new
+                    {
+                        Request = req,
+                        KeyCPN = Normalize(req.CustomerPartNumber, removeFormatting),
+                        KeySNO = Normalize(req.SumitomoNumber, removeFormatting)
+                    }))
+                .Where(x => includeEmptyKeys ||
+                    (!string.IsNullOrEmpty(x.KeyCPN) && !string.IsNullOrEmpty(x.KeySNO)))
+                .ToList();
+
+            // Find duplicate groups
+            List<RfqNprRequestModel> duplicates =
+                rows.GroupBy(x => new { x.KeyCPN, x.KeySNO })
+                   .Where(g =>
+                   {
+                       int count;
+                       count = g.Count();
+                       bool isDuplicate;
+                       isDuplicate = 1 < count;
+                       return isDuplicate;
+                   })
+
+                    .SelectMany(g => g.Select(x => x.Request))
+                    .ToList();
+
+            return duplicates;
+        }
+        public async Task<List<RfqNprRequestSetModel>> LoadNprSetsWithoutDuplicatesAndSaveRemovedAsync(CancellationToken cancellationToken, bool includeEmptyKeys = false, bool removeFormatting = true, string? duplicatesOutputPath = null)
+        {
+            // 1) Load current sets (uses your file cache/gate internally)
+            List<RfqNprRequestSetModel> sets =
+                await LoadNprRequestSetsFromBackendAsync(cancellationToken);
+
+            // 2) Build key tracker across the WHOLE file (intra-set + cross-set)
+            HashSet<string> seen = new HashSet<string>(StringComparer.Ordinal);
+
+            // 3) We’ll collect removed items to a list for JSON export
+            List<RemovedNprDuplicate> removed = new List<RemovedNprDuplicate>();
+
+            // 4) Deduplicate set-by-set, preserving order of first occurrence
+            foreach (RfqNprRequestSetModel set in sets)
+            {
+                List<RfqNprRequestModel> original = set.NprRequests;
+                List<RfqNprRequestModel> cleaned = new List<RfqNprRequestModel>(original.Count);
+
+                foreach (RfqNprRequestModel req in original)
+                {
+                    string cpn = NormalizePart(req.CustomerPartNumber, removeFormatting);
+                    string sno = NormalizePart(req.SumitomoNumber, removeFormatting);
+
+                    // By default, do NOT treat empty components as part of a valid key.
+                    // This matches your "pair equals pair" rule without false-positives on blanks.
+                    bool isKeyValid = !string.IsNullOrEmpty(cpn) && !string.IsNullOrEmpty(sno);
+                    if (!includeEmptyKeys && !isKeyValid)
+                    {
+                        // keep items with incomplete keys as-is
+                        cleaned.Add(req);
+                        continue;
+                    }
+
+                    // Build the pair key and check duplicates
+                    string key = $"{cpn}|{sno}";
+                    if (seen.Add(key))
+                    {
+                        // first occurrence → keep
+                        cleaned.Add(req);
+                    }
+                    else
+                    {
+                        RemovedNprDuplicate duplicate;
+                        duplicate = new RemovedNprDuplicate(
+                            set.Id,
+                            set.RfqNumber,
+                            req.CustomerPartNumber ?? string.Empty,
+                            req.SumitomoNumber ?? string.Empty,
+                            req
+                        );
+
+                        removed.Add(duplicate);
+
+                    }
+                }
+
+                // Replace with cleaned list
+                set.NprRequests = cleaned;
+                set.Updated = DateTime.UtcNow;
+                set.Status = NprSetRequestStatus.LocalUpdated; // mark as "needs save"
+            }
+
+            // 5) Persist the removed duplicates to a separate JSON file
+            try
+            {
+                string mainDir = Path.GetDirectoryName(_NprRequestSetsFilePath) ?? @"C:\temp";
+                string duplicatesDir = mainDir;
+
+                if (!Directory.Exists(duplicatesDir))
+                {
+                    Directory.CreateDirectory(duplicatesDir);
+                }
+
+                string outPath = duplicatesOutputPath ??
+                                 Path.Combine(duplicatesDir, $"npr_request_sets_duplicates_{DateTime.UtcNow:yyyyMMdd_HHmmss}.json");
+
+                // Write a small envelope with metadata + raw removed items
+                var envelope = new
+                {
+                    generatedUtc = DateTime.UtcNow,
+                    rule = "CustomerPartNumber+SumitomoNumber",
+                    includeEmptyKeys,
+                    removeFormatting,
+                    count = removed.Count,
+                    items = removed
+                };
+
+                string dupJson = JsonSerializer.Serialize(envelope, _NprJsonOptions);
+                await File.WriteAllTextAsync(outPath, dupJson, cancellationToken);
+            }
+            catch (IOException)
+            {
+                // Logging optional — ignore safely
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // Logging optional — ignore safely
+            }
+            // 6) Return the de-duplicated sets so the caller can SaveAllNprRequestSets(...)
+            return sets;
+        }
         #endregion
         void PopulateSampleData()
         {
@@ -317,5 +478,35 @@ namespace NPR.Services
         }
 
         #endregion
+
+        static string NormalizePart(string? value, bool removeFormatting)
+        {
+            bool isNullOrWhite;
+            isNullOrWhite = string.IsNullOrWhiteSpace(value);
+
+            if (isNullOrWhite)
+            {
+                return string.Empty;
+            }
+
+            string trimmed;
+            trimmed = value!.Trim();
+
+            string upper;
+            upper = trimmed.ToUpperInvariant();
+
+            if (removeFormatting)
+            {
+                string noSpaces;
+                noSpaces = upper.Replace(" ", string.Empty, StringComparison.Ordinal);
+
+                string noDashes;
+                noDashes = noSpaces.Replace("-", string.Empty, StringComparison.Ordinal);
+
+                return noDashes;
+            }
+
+            return upper;
+        }
     }
 }

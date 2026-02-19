@@ -18,7 +18,8 @@ service NPR {
   rpc FilterNPRGrpc (NPRFilterRequest) returns (NPRFilterResponse);
   rpc GetAllNprRequestSets (google.protobuf.Empty) returns (ListRfqNprRequestSetGrpc);
   rpc SaveAllNprRequestSets (ListRfqNprRequestSetGrpc) returns (google.protobuf.Empty);
- 
+ rpc LoadDuplicatedNprRequests (LoadDuplicatedNprRequestsRequest) returns (LoadDuplicatedNprRequestsResponse);
+ rpc GetAllNprRequestSetsWithoutDuplicates (LoadNprSetsWithoutDuplicatesRequest)  returns (ListRfqNprRequestSetGrpc);
 }
 
 // The request message containing the user's name.
@@ -210,4 +211,16 @@ message RfqNprRequestSetGrpc {
 
 message ListRfqNprRequestSetGrpc {
   repeated RfqNprRequestSetGrpc items = 1;
+}
+message LoadDuplicatedNprRequestsRequest {
+  bool include_empty_keys = 1;   
+  bool remove_formatting  = 2; 
+}
+message LoadDuplicatedNprRequestsResponse {
+  repeated RfqNprRequestGrpc items = 1;
+}
+
+message LoadNprSetsWithoutDuplicatesRequest {
+  bool include_empty_keys = 1; 
+  bool remove_formatting  = 2; 
 }

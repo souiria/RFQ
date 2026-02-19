@@ -91,7 +91,6 @@ namespace NPR.Extentions
 
         #region NPR Request Sets (DTO <-> gRPC)
 
-
         public static RfqNprRequestSetGrpc MapToGrpc(this RfqNprRequestSetModel s)
         {
             RfqNprRequestSetGrpc g = new RfqNprRequestSetGrpc();
@@ -253,8 +252,6 @@ namespace NPR.Extentions
 
             return g;
         }
-
-
         public static RfqProjectInfoGrpc MapToGrpc(this RfqProjectInfo p)
         {
             RfqProjectInfoGrpc g = new RfqProjectInfoGrpc();
@@ -382,8 +379,6 @@ namespace NPR.Extentions
 
             return s;
         }
-
-
         public static RfqNprRequestModel MapToModel(this RfqNprRequestGrpc g)
         {
             RfqNprRequestModel r = new RfqNprRequestModel();
