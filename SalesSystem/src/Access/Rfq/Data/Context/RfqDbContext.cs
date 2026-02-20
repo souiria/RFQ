@@ -44,6 +44,7 @@
         public DbSet<DbDsiWireMulticoreMarker> DsiWireMulticoreMarker => Set<DbDsiWireMulticoreMarker>();
         public DbSet<DbDsiWireSpecification> DsiWireSpecification => Set<DbDsiWireSpecification>();
         public DbSet<DbDsiWireThroughNode> DsiWireThroughNode => Set<DbDsiWireThroughNode>();
+        public DbSet<DbRfqNprRequestModel> RfqNprRequest => Set<DbRfqNprRequestModel>();
         #endregion
 
         #region OnModelCreating

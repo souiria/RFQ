@@ -147,6 +147,10 @@
         ListDsiWireThroughNodeGrpc _ListDsiWireThroughNodeGrpc;
         #endregion
 
+        #region RfqNprRequest
+        ListRfqNprRequestGrpc _ListRfqNprRequestGrpc;
+        #endregion
+
         //////////////////////////////////////////////////////////////////////////////////////////////
         #endregion
 
@@ -334,6 +338,11 @@
         #region DsiWireThroughNode
         IQueryHandler<GetDsiWireThroughNodeQuery, List<DsiWireThroughNodeGrpc>>? _DsiWireThroughNodeHandler;
         bool _DsiWireThroughNodeRefreshInProgress;
+        #endregion
+
+        #region RfqNprRequest
+        IQueryHandler<GetRfqNprRequestQuery, List<RfqNprRequestGrpc>>? _RfqNprRequestHandler;
+        bool _RfqNprRequestRefreshInProgress;
         #endregion
 
         //////////////////////////////////////////////////////////////////////////////////////////////
@@ -542,6 +551,11 @@
             #region DsiWireThroughNode
             _ListDsiWireThroughNodeGrpc = new ListDsiWireThroughNodeGrpc();
             _DsiWireThroughNodeRefreshInProgress = false;
+            #endregion
+
+            #region RfqNprRequest
+            _ListRfqNprRequestGrpc = new ListRfqNprRequestGrpc();
+            _RfqNprRequestRefreshInProgress = false;
             #endregion
 
             //////////////////////////////////////////////////////////////////////////////////////////////
@@ -3780,6 +3794,92 @@
 
         #endregion
 
+        #region RfqNprRequest
+
+        public async Task<ListRfqNprRequestGrpc> GetAllRfqNprRequest(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListRfqNprRequestGrpc.RfqNprRequestGrpcs.Any())
+            {
+                if (takeAmount <= 0)
+                {
+                    return _ListRfqNprRequestGrpc;
+                }
+
+                ListRfqNprRequestGrpc returnList = new ListRfqNprRequestGrpc();
+                IEnumerable<RfqNprRequestGrpc> query = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.Skip(position).Take(takeAmount);
+                returnList.RfqNprRequestGrpcs.AddRange(query);
+                return returnList;
+            }
+
+            await PopulateRfqNprRequest(cancellationToken);
+            return _ListRfqNprRequestGrpc;
+        }
+
+        public async Task<ListRfqNprRequestGrpc> CreateRfqNprRequest(RfqNprRequestGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            ListRfqNprRequestGrpc responseList = new ListRfqNprRequestGrpc();
+            if (request?.RfqNprRequestGrpcsToCreate == null || request.RfqNprRequestGrpcsToCreate.Count == 0)
+            {
+                return responseList;
+            }
+
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                ICommandHandler<RfqNprRequestCommand, List<DbRfqNprRequestModel>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<RfqNprRequestCommand, List<DbRfqNprRequestModel>>>();
+                RfqNprRequestCommand command = new RfqNprRequestCommand(CommandType.Create, request.RfqNprRequestGrpcsToCreate);
+                Result<List<DbRfqNprRequestModel>> result = await handler.Handle(command, cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    List<RfqNprRequestGrpc> updated = result.Value.Select(p => p.FromEntity()).ToList();
+                    _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.AddRange(updated);
+                    responseList.RfqNprRequestGrpcs.AddRange(updated);
+                }
+
+                return responseList;
+            }
+        }
+
+        public async Task<bool> UpdateRfqNprRequest(RfqNprRequestGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (request?.RfqNprRequestGrpcsToUpdate == null || request.RfqNprRequestGrpcsToUpdate.Count == 0)
+            {
+                return false;
+            }
+
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                ICommandHandler<RfqNprRequestCommand, List<DbRfqNprRequestModel>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<RfqNprRequestCommand, List<DbRfqNprRequestModel>>>();
+                RfqNprRequestCommand command = new RfqNprRequestCommand(CommandType.Update, request.RfqNprRequestGrpcsToUpdate);
+                Result<List<DbRfqNprRequestModel>> result = await handler.Handle(command, cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    foreach (RfqNprRequestGrpc? updated in request.RfqNprRequestGrpcsToUpdate)
+                    {
+                        RfqNprRequestGrpc? existing = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.FirstOrDefault(p => p.Id == updated.Id);
+                        if (existing != null)
+                        {
+                            int index = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.IndexOf(existing);
+                            if (index != -1)
+                            {
+                                _ListRfqNprRequestGrpc.RfqNprRequestGrpcs[index] = updated;
+                            }
+                        }
+                    }
+
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        #endregion
+
         #region Data Imports
 
         #region RfqDrawingPartNumbers
@@ -4846,9 +4946,39 @@
         }
         #endregion
 
+        #region RfqNprRequest
+        public async Task<bool> PopulateRfqNprRequest(CancellationToken cancellationToken)
+        {
+            if (!_RfqNprRequestRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _RfqNprRequestHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetRfqNprRequestQuery, List<RfqNprRequestGrpc>>>();
+                    _RfqNprRequestRefreshInProgress = true;
+                    GetRfqNprRequestQuery query = new GetRfqNprRequestQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<RfqNprRequestGrpc>> results = await _RfqNprRequestHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.Clear();
+                        _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.AddRange(results.Value);
+                    }
+
+                    _RfqNprRequestRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
         //////////////////////////////////////////////////////////////////////////////////////////////
         #endregion
-#endregion
+        #endregion
         public async Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig, Action<IEnumerable<T>> setResponseCollection,
         CancellationToken cancellationToken)
         {
@@ -4900,6 +5030,7 @@
                     "DSIWIREMULTICOREMARKERGRPC" => _ListDsiWireMulticoreMarkerGrpc.DsiWireMulticoreMarkerGrpcs.Cast<T>().Where(func).ToList(),
                     "DSIWIRESPECIFICATIONGRPC" => _ListDsiWireSpecificationGrpc.DsiWireSpecificationGrpcs.Cast<T>().Where(func).ToList(),
                     "DSIWIRETHROUGHNODEGRPC" => _ListDsiWireThroughNodeGrpc.DsiWireThroughNodeGrpcs.Cast<T>().Where(func).ToList(),
+                    "RFQNPRREQUESTGRPC" => _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.Cast<T>().Where(func).ToList(),
                     _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
                 };
             }, cancellationToken);
@@ -4941,6 +5072,7 @@
             _ListDsiWireMulticoreMarkerGrpc = SampleRfqDataService.PopulateDsiWireMulticoreMarkerGrpc();
             _ListDsiWireSpecificationGrpc = SampleRfqDataService.PopulateDsiWireSpecificationGrpc();
             _ListDsiWireThroughNodeGrpc = SampleRfqDataService.PopulateDsiWireThroughNodeGrpc();
+            _ListRfqNprRequestGrpc = SampleRfqDataService.PopulateRfqNprRequestGrpc();
 
         }
     }

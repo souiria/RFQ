@@ -1,4 +1,6 @@
-﻿namespace Rfq.Services
+﻿using MudBlazor.Extensions;
+
+namespace Rfq.Services
 {
     public static class SampleRfqDataService
     {
@@ -1673,6 +1675,57 @@
 
             return list;
         }
+        #endregion
+
+        #region RfqNprRequest
+
+        public static ListRfqNprRequestGrpc PopulateRfqNprRequestGrpc()
+        {
+            ListRfqNprRequestGrpc list = new ListRfqNprRequestGrpc();
+            for (int i = 0; i < 5; i++)
+            {
+                RfqNprRequestGrpc item = new RfqNprRequestGrpc();
+                item.Id = Guid.Parse($"b559bdd7-e4fa-434c-8e8d-c26b3ae40ba{i}").ToString();
+                item.Reason = $"Reason{i}";
+                item.Customer = $"Customer{i}";
+                item.PlatformName = $"PlatformName{i}";
+                item.ProgramName = $"ProgramName{i}";
+                item.Project = $"Project{i}";
+                item.MaterialType = $"MaterialType{i}";
+                item.SuggestedSewsEManufacturingSite = $"SuggestedSewsEManufacturingSite{i}";
+                item.CustomerPartNumber = $"CustomerPartNumber{i}";
+                item.SupplierPartNumber = $"SupplierPartNumber{i}";
+                item.SumitomoNumber = $"SumitomoNumber{i}";
+                item.MaterialDescription = $"MaterialDescription{i}";
+                item.UnitOfMeasure = $"UnitOfMeasure{i}";
+                item.SupplierGroup = $"SupplierGroup{i}";
+                item.QtyPerVehicle = i;
+                item.Quantity = i;
+                item.RequiredDate = DateTime.UtcNow.ToTimestamp();
+                item.RaisedRemarks = $"RaisedRemarks{i}";
+                item.IsCustomerNominatedSupplier = true;
+                item.IsCustomerNominatedMaterial = true;
+                item.SamplesRequired = true;
+                item.SampleSite = $"SampleSite{i}";
+                item.SampleQuantity = i;
+                item.SampleRecipient = $"SampleRecipient{i}";
+                item.SampleRequiredDate = DateTime.UtcNow.ToTimestamp();
+                item.FreightAccount = $"FreightAccount{i}";
+                item.AssociatedParts = $"AssociatedParts{i}";
+                item.SuggestedManufacturer = $"SuggestedManufacturer{i}";
+                item.CreatedAt = DateTime.UtcNow.ToTimestamp();
+                item.CreatedBy = Guid.NewGuid().ToString();
+                item.ModifiedAt = DateTime.UtcNow.ToTimestamp();
+                item.ModifiedBy = Guid.NewGuid().ToString();
+                item.SubmissionStatus = (int?)SubmissionStatus.Submitted;
+                item.RemoteEndpointResponse = $"RemoteEndpointResponse{i}";
+                item.SubmittedAt = DateTime.UtcNow.ToTimestamp();
+                list.RfqNprRequestGrpcs.Add(item);
+            }
+
+            return list;
+        }
+
         #endregion
 
     }

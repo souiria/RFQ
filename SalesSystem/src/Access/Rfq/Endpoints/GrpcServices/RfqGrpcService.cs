@@ -4565,6 +4565,135 @@
 
         #endregion
 
+        #region RfqNprRequest
+        public override async Task<ListRfqNprRequestGrpc> ReadRfqNprRequestGrpc(RfqNprRequestGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("ReadRfqNprRequestGrpc starting");
+
+            if (request == null || request.RfqGrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            switch (requestType)
+            {
+                case RequestType.Read:
+                return await _RfqAccessService.GetAllRfqNprRequest(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
+
+                default:
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+        }
+
+        public override async Task<RfqCrudGrpcResponse> CreateRfqNprRequestGrpc(RfqNprRequestGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("CreateRfqNprRequestGrpc starting");
+
+            if (request == null || request.RfqGrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            if (requestType != RequestType.Create)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for creating RfqNprRequest.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            ListRfqNprRequestGrpc response = await _RfqAccessService.CreateRfqNprRequest(request, cancellationToken);
+
+            if (response.RfqNprRequestGrpcs.Count == request.RfqNprRequestGrpcsToCreate.Count)
+            {
+                responseMessage.Message = $"{request.RfqNprRequestGrpcsToCreate.Count} RfqNprRequest types created successfully.";
+                responseMessage.SaveSuccess = true;
+                foreach (RfqNprRequestGrpc item in response.RfqNprRequestGrpcs)
+                {
+                    responseMessage.StringValue += item.Id.ToString(CultureInfo.InvariantCulture) + ",";
+                }
+            }
+            else
+            {
+                responseMessage.Message = "No/not all RfqNprRequest types created.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
+
+        public override async Task<RfqCrudGrpcResponse> UpdateRfqNprRequestGrpc(RfqNprRequestGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("UpdateRfqNprRequestGrpc starting");
+
+            if (request == null || request.RfqGrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            if (requestType != RequestType.Update)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for updating RfqNprRequest.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            bool response = await _RfqAccessService.UpdateRfqNprRequest(request, cancellationToken);
+
+            if (response)
+            {
+                responseMessage.Message = $"{request.RfqNprRequestGrpcsToUpdate.Count} RfqNprRequest types updated successfully.";
+                responseMessage.SaveSuccess = true;
+            }
+            else
+            {
+                responseMessage.Message = "No/not all RfqNprRequest types updated.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
+
+        #endregion
+
         public override async Task<RfqFilterResponse> FilterRfqGrpc(RfqFilterRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("FilterRfqGrpc starting");
@@ -4963,6 +5092,17 @@
                         ListDsiWireThroughNodeGrpc returnList = new ListDsiWireThroughNodeGrpc();
                         returnList.DsiWireThroughNodeGrpcs.AddRange(filterlist);
                         returnResponse.ListDsiWireThroughNodeGrpc = returnList;
+                        returnResponse.Success = true;
+                    }, context.CancellationToken);
+                break;
+                case "RFQNPRREQUESTGRPC":
+                await _RfqAccessService.HandleFilterCase<RfqNprRequestGrpc>(
+                    request.FilterExpression, parsingConfig,
+                    filterlist =>
+                    {
+                        ListRfqNprRequestGrpc returnList = new ListRfqNprRequestGrpc();
+                        returnList.RfqNprRequestGrpcs.AddRange(filterlist);
+                        returnResponse.ListRfqNprRequestGrpc = returnList;
                         returnResponse.Success = true;
                     }, context.CancellationToken);
                 break;
