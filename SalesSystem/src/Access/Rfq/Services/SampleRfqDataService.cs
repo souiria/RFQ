@@ -1,6 +1,4 @@
-﻿using MudBlazor.Extensions;
-
-namespace Rfq.Services
+﻿namespace Rfq.Services
 {
     public static class SampleRfqDataService
     {
