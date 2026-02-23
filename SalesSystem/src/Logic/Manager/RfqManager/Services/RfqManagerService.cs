@@ -1238,6 +1238,64 @@
                 throw;
             }
         }
+        public async Task<LoadDuplicatedNprRequestsResponse> LoadDuplicatedNprRequestsAsync(
+            LoadDuplicatedNprRequestsRequest request,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                _Logger.GenericLogInformation("Manager: LoadDuplicatedNprRequests passthrough -> NPR");
+
+                NPR.LoadDuplicatedNprRequestsRequest nprReq =
+                    RfqModuleMapping.ToNpr(request);
+
+                DateTime deadline = DateTime.UtcNow.AddSeconds(30);
+                CallOptions callOptions = new CallOptions();
+                callOptions = callOptions.WithDeadline(deadline);
+                callOptions = callOptions.WithCancellationToken(cancellationToken);
+
+                NPR.LoadDuplicatedNprRequestsResponse nprResp =
+                    await _NPRGrpcClient.LoadDuplicatedNprRequestsAsync(nprReq, callOptions);
+
+                LoadDuplicatedNprRequestsResponse mgrResp =
+                  RfqModuleMapping.ToMgr(nprResp);
+
+                return mgrResp;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError("Manager: LoadDuplicatedNprRequests failed", ex);
+                throw;
+            }
+        }
+
+        public async Task<NPRListRfqNprRequestSetGrpc> GetAllNprRequestSetsWithoutDuplicatesAsync(
+            LoadNprSetsWithoutDuplicatesRequest request,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                _Logger.GenericLogInformation("Manager: GetAllNprRequestSetsWithoutDuplicates passthrough -> NPR");
+
+                NPR.LoadNprSetsWithoutDuplicatesRequest nprReq = RfqModuleMapping.ToNpr(request);
+
+                DateTime deadline = DateTime.UtcNow.AddSeconds(30);
+                CallOptions callOptions = new CallOptions();
+                callOptions = callOptions.WithDeadline(deadline);
+                callOptions = callOptions.WithCancellationToken(cancellationToken);
+
+                ListRfqNprRequestSetGrpc nprResp =
+                    await _NPRGrpcClient.GetAllNprRequestSetsWithoutDuplicatesAsync(nprReq, callOptions);
+
+                NPRListRfqNprRequestSetGrpc mgrResp = RfqModuleMapping.ToMgr(nprResp);
+                return mgrResp;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError("Manager: GetAllNprRequestSetsWithoutDuplicates failed", ex);
+                throw;
+            }
+        }
         public async Task<FilterGrpcResponse> FilterNPRBySumitomoPartNumber(FilterGrpcRequest request)
         {
             await Task.Delay(1);

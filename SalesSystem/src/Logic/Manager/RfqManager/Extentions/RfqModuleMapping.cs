@@ -443,5 +443,50 @@
 
             return to;
         }
+        // Manager (RfqModule) -> NPR : LoadDuplicatedNprRequestsRequest
+        public static NPR.LoadDuplicatedNprRequestsRequest ToNpr(
+            LoadDuplicatedNprRequestsRequest from)
+        {
+            NPR.LoadDuplicatedNprRequestsRequest to = new NPR.LoadDuplicatedNprRequestsRequest();
+            if (from == null)
+            {
+                return to;
+            }
+
+            to.IncludeEmptyKeys = from.IncludeEmptyKeys;
+            to.RemoveFormatting = from.RemoveFormatting;
+            return to;
+        }
+
+        // NPR -> Manager (RfqModule) : LoadDuplicatedNprRequestsResponse
+        public static LoadDuplicatedNprRequestsResponse ToMgr(
+            NPR.LoadDuplicatedNprRequestsResponse from)
+        {
+            LoadDuplicatedNprRequestsResponse to = new LoadDuplicatedNprRequestsResponse();
+            if (from?.Items != null)
+            {
+                foreach (NPR.RfqNprRequestGrpc item in from.Items)
+                {
+                    RfqNprRequestGrpc mapped = ToMgr(item);
+                    to.Items.Add(mapped);
+                }
+            }
+            return to;
+        }
+
+        // Manager (RfqModule) -> NPR : LoadNprSetsWithoutDuplicatesRequest
+        public static NPR.LoadNprSetsWithoutDuplicatesRequest ToNpr(
+            LoadNprSetsWithoutDuplicatesRequest from)
+        {
+            NPR.LoadNprSetsWithoutDuplicatesRequest to = new NPR.LoadNprSetsWithoutDuplicatesRequest();
+            if (from == null)
+            {
+                return to;
+            }
+
+            to.IncludeEmptyKeys = from.IncludeEmptyKeys;
+            to.RemoveFormatting = from.RemoveFormatting;
+            return to;
+        }
     }
 }

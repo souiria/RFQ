@@ -1,6 +1,8 @@
-﻿global using System.Linq.Dynamic.Core;
+﻿global using System.Collections.ObjectModel;
+global using System.Linq.Dynamic.Core;
 global using System.Linq.Expressions;
 global using System.Reflection;
+global using System.Text.Json;
 global using Ardalis.Specification;
 global using Ardalis.Specification.EntityFrameworkCore;
 global using Google.Protobuf.WellKnownTypes;

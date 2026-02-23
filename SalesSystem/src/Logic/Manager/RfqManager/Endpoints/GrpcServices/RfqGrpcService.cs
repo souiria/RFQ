@@ -188,5 +188,27 @@
             Empty result = await _RfqManagerService.SaveAllNprRequestSetsAsync(safe, context.CancellationToken);
             return result;
         }
+        public override async Task<LoadDuplicatedNprRequestsResponse> LoadDuplicatedNprRequests(
+      LoadDuplicatedNprRequestsRequest request,
+      ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("LoadDuplicatedNprRequests (Manager) starting");
+
+            LoadDuplicatedNprRequestsResponse response =
+                await _RfqManagerService.LoadDuplicatedNprRequestsAsync(request, context.CancellationToken);
+
+            return response;
+        }
+        public override async Task<NPRListRfqNprRequestSetGrpc> GetAllNprRequestSetsWithoutDuplicates(
+      LoadNprSetsWithoutDuplicatesRequest request,
+      ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetAllNprRequestSetsWithoutDuplicates (Manager) starting");
+
+            NPRListRfqNprRequestSetGrpc response =
+                await _RfqManagerService.GetAllNprRequestSetsWithoutDuplicatesAsync(request, context.CancellationToken);
+
+            return response;
+        }
     }
 }

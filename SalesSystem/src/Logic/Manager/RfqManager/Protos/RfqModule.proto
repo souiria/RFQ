@@ -37,6 +37,8 @@ service RfqModule {
  rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
    rpc GetAllNprRequestSets (google.protobuf.Empty) returns (NPRListRfqNprRequestSetGrpc);
   rpc SaveAllNprRequestSets (NPRListRfqNprRequestSetGrpc) returns (google.protobuf.Empty);
+    rpc LoadDuplicatedNprRequests (LoadDuplicatedNprRequestsRequest) returns (LoadDuplicatedNprRequestsResponse);
+	  rpc GetAllNprRequestSetsWithoutDuplicates (LoadNprSetsWithoutDuplicatesRequest) returns (NPRListRfqNprRequestSetGrpc);
 }
 
 // The request message containing the user's name.
@@ -510,4 +512,18 @@ message RfqNprRequestSetGrpc {
 
 message NPRListRfqNprRequestSetGrpc {
   repeated RfqNprRequestSetGrpc items = 1;
+}
+
+message LoadDuplicatedNprRequestsRequest {
+  bool include_empty_keys = 1;
+  bool remove_formatting  = 2;
+}
+
+message LoadDuplicatedNprRequestsResponse {
+  repeated RfqNprRequestGrpc items = 1;
+}
+
+message LoadNprSetsWithoutDuplicatesRequest {
+  bool include_empty_keys = 1;
+  bool remove_formatting  = 2;
 }

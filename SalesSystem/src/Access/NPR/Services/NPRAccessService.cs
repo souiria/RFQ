@@ -1,8 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-namespace NPR.Services
+﻿namespace NPR.Services
 {
     public sealed class NPRAccessService : INPRAccessService, IDisposable
     {
@@ -71,8 +67,7 @@ namespace NPR.Services
 
             _NprJsonOptions = new JsonSerializerOptions();
             _NprJsonOptions.PropertyNamingPolicy = null;                   
-               _NprJsonOptions.WriteIndented = false;
-                 //Converters = { new JsonStringEnumConverter(allowIntegerValues: true) } // numeric enums
+             _NprJsonOptions.WriteIndented = false;
             _NprSetsGate = new SemaphoreSlim(1, 1);
             _NprSetsCache = new List<RfqNprRequestSetModel>();
          }
@@ -215,8 +210,7 @@ namespace NPR.Services
             {
                 if (!File.Exists(_NprRequestSetsFilePath))
                 {
-                    //_Logger?.LogInformation("NPR file not found at {Path}, returning empty list", _NprRequestSetsFilePath);
-                    _NprSetsCache.Clear();
+                   _NprSetsCache.Clear();
                     return [.. _NprSetsCache];
                 }
 
@@ -242,12 +236,11 @@ namespace NPR.Services
                     s.Status = NprSetRequestStatus.LocalUnchanged;
                 }
 
-                //_Logger?.LogInformation("Loaded {Count} NPR request sets from {Path}", _NprSetsCache.Count, _NprRequestSetsFilePath);
                 return [.. _NprSetsCache];
             }
             catch (Exception)
             {
-                //_Logger?.LogError(ex, "Error loading NPR request sets from file: {Path}", _NprRequestSetsFilePath);
+               
                 throw;
             }
             finally
@@ -268,13 +261,13 @@ namespace NPR.Services
                 if (needDirectory)
                 {
                     Directory.CreateDirectory(directory!);
-                    // optional: log directory creation
+                 
                 }
 
-                // Create a writable working copy (since ReadOnlyCollection<T> is immutable)
+         
                 List<RfqNprRequestSetModel> working = new List<RfqNprRequestSetModel>(sets);
 
-                // Normalize status before persisting (same as your client)
+             
                 foreach (RfqNprRequestSetModel set in working)
                 {
                     set.Status = NprSetRequestStatus.LocalUpdated;
@@ -283,7 +276,6 @@ namespace NPR.Services
                 string json = JsonSerializer.Serialize(working, _NprJsonOptions);
                 await File.WriteAllTextAsync(_NprRequestSetsFilePath, json, cancellationToken);
 
-                // Update in-memory cache
                 _NprSetsCache.Clear();
                 _NprSetsCache.AddRange(working);
                    
@@ -300,7 +292,7 @@ namespace NPR.Services
         }
         public async Task<List<RfqNprRequestModel>> LoadDuplicatedNprRequestsAsync(    CancellationToken cancellationToken,    bool includeEmptyKeys = false,    bool removeFormatting = true)
         {
-            // Load all sets (existing method)
+            // Load all sets 
             List<RfqNprRequestSetModel> sets =
                 await LoadNprRequestSetsFromBackendAsync(cancellationToken);
 
@@ -361,14 +353,14 @@ namespace NPR.Services
         }
         public async Task<List<RfqNprRequestSetModel>> LoadNprSetsWithoutDuplicatesAndSaveRemovedAsync(CancellationToken cancellationToken, bool includeEmptyKeys = false, bool removeFormatting = true, string? duplicatesOutputPath = null)
         {
-            // 1) Load current sets (uses your file cache/gate internally)
+            // 1) Load current sets
             List<RfqNprRequestSetModel> sets =
                 await LoadNprRequestSetsFromBackendAsync(cancellationToken);
 
             // 2) Build key tracker across the WHOLE file (intra-set + cross-set)
             HashSet<string> seen = new HashSet<string>(StringComparer.Ordinal);
 
-            // 3) We’ll collect removed items to a list for JSON export
+            // 3) collect removed items to a list for JSON export
             List<RemovedNprDuplicate> removed = new List<RemovedNprDuplicate>();
 
             // 4) Deduplicate set-by-set, preserving order of first occurrence
@@ -382,9 +374,7 @@ namespace NPR.Services
                     string cpn = NormalizePart(req.CustomerPartNumber, removeFormatting);
                     string sno = NormalizePart(req.SumitomoNumber, removeFormatting);
 
-                    // By default, do NOT treat empty components as part of a valid key.
-                    // This matches your "pair equals pair" rule without false-positives on blanks.
-                    bool isKeyValid = !string.IsNullOrEmpty(cpn) && !string.IsNullOrEmpty(sno);
+                  bool isKeyValid = !string.IsNullOrEmpty(cpn) && !string.IsNullOrEmpty(sno);
                     if (!includeEmptyKeys && !isKeyValid)
                     {
                         // keep items with incomplete keys as-is
@@ -451,11 +441,11 @@ namespace NPR.Services
             }
             catch (IOException)
             {
-                // Logging optional — ignore safely
+              
             }
             catch (UnauthorizedAccessException)
             {
-                // Logging optional — ignore safely
+              
             }
             // 6) Return the de-duplicated sets so the caller can SaveAllNprRequestSets(...)
             return sets;

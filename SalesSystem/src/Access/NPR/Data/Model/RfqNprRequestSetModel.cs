@@ -44,7 +44,7 @@
         {
             Id = Guid.NewGuid();
             _NprRequests = new();
-            Status = NprSetRequestStatus.LocalUpdated; // needs to be saved
+            Status = NprSetRequestStatus.LocalUpdated; 
         }
 
         #endregion
