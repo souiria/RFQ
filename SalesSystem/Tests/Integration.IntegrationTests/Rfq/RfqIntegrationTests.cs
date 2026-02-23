@@ -1531,6 +1531,47 @@ namespace Integration.Tests.Rfq
             int failCount = failItems.Count;
             Assert.That(failCount, Is.Zero);
         }
+        // ---------------------------------------------------------------------
+        // RFQNPRREQUESTGRPC
+        // ---------------------------------------------------------------------
+        [Test]
+        [Category("Integration")]
+        public void Filter_RfqNprRequest_Success_And_Fail()
+        {
+            ServerCallContext ctx = CreateServerContext(nameof(_GrpcService.FilterRfqGrpc));
+
+            RfqFilterRequest successReq = new RfqFilterRequest();
+            successReq.DatabaseList = "RFQNPRREQUESTGRPC";
+            successReq.FilterExpression = "true";
+
+            Task<RfqFilterResponse> successTask = _GrpcService.FilterRfqGrpc(successReq, ctx);
+            RfqFilterResponse successResp = successTask.Result;
+
+            Assert.That(successResp, Is.Not.Null);
+
+            ListRfqNprRequestGrpc successListContainer = successResp.ListRfqNprRequestGrpc;
+            Assert.That(successListContainer, Is.Not.Null);
+
+            RepeatedField<RfqNprRequestGrpc> successItems = successListContainer.RfqNprRequestGrpcs;
+            int successCount = successItems.Count;
+            Assert.That(successCount, Is.Positive);
+
+            RfqFilterRequest failReq = new RfqFilterRequest();
+            failReq.DatabaseList = "RFQNPRREQUESTGRPC";
+            failReq.FilterExpression = "false";
+
+            Task<RfqFilterResponse> failTask = _GrpcService.FilterRfqGrpc(failReq, ctx);
+            RfqFilterResponse failResp = failTask.Result;
+
+            Assert.That(failResp, Is.Not.Null);
+
+            ListRfqNprRequestGrpc failListContainer = failResp.ListRfqNprRequestGrpc;
+            Assert.That(failListContainer, Is.Not.Null);
+
+            RepeatedField<RfqNprRequestGrpc> failItems = failListContainer.RfqNprRequestGrpcs;
+            int failCount = failItems.Count;
+            Assert.That(failCount, Is.Zero);
+        }
         ServerCallContext CreateServerContext(string methodName)
         {
             DateTime deadline = DateTime.Now.AddMinutes(30);
