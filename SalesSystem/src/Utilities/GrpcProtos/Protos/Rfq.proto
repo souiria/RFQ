@@ -153,6 +153,10 @@ rpc CreateDsiWireThroughNodeGrpc (DsiWireThroughNodeGrpcRequest) returns (RfqCru
 rpc ReadDsiWireThroughNodeGrpc (DsiWireThroughNodeGrpcRequest) returns (ListDsiWireThroughNodeGrpc);
 rpc UpdateDsiWireThroughNodeGrpc (DsiWireThroughNodeGrpcRequest) returns (RfqCrudGrpcResponse);
 
+rpc CreateRfqNprRequestGrpc (RfqNprRequestGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc ReadRfqNprRequestGrpc (RfqNprRequestGrpcRequest) returns (ListRfqNprRequestGrpc);
+rpc UpdateRfqNprRequestGrpc (RfqNprRequestGrpcRequest) returns (RfqCrudGrpcResponse);
+
   rpc FilterRfqGrpc (RfqFilterRequest) returns (RfqFilterResponse);
 }
 
@@ -1348,6 +1352,55 @@ message ListDsiWireThroughNodeGrpc {
   repeated DsiWireThroughNodeGrpc DsiWireThroughNodeGrpcs = 1;
 }
 
+message RfqNprRequestGrpcRequest {
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  repeated RfqNprRequestGrpc RfqNprRequestGrpcsToCreate = 2;
+  repeated RfqNprRequestGrpc RfqNprRequestGrpcsToUpdate = 3;
+  repeated RfqNprRequestGrpc RfqNprRequestGrpcsToDelete = 4;
+}
+
+message ListRfqNprRequestGrpc {
+	repeated RfqNprRequestGrpc RfqNprRequestGrpcs = 1;
+}
+
+message RfqNprRequestGrpc {
+	google.protobuf.StringValue Id = 1;
+	google.protobuf.StringValue Reason = 2;
+	google.protobuf.StringValue Customer = 3;
+	google.protobuf.StringValue PlatformName = 4;
+	google.protobuf.StringValue ProgramName = 5;
+	google.protobuf.StringValue Project = 6;
+	google.protobuf.StringValue MaterialType = 7;
+	google.protobuf.StringValue SuggestedSewsEManufacturingSite = 8;
+	google.protobuf.StringValue CustomerPartNumber = 9;
+	google.protobuf.StringValue SupplierPartNumber = 10;
+	google.protobuf.StringValue SumitomoNumber = 11;
+	google.protobuf.StringValue MaterialDescription = 12;
+	google.protobuf.StringValue UnitOfMeasure = 13;
+	google.protobuf.StringValue SupplierGroup = 14;
+	google.protobuf.Int32Value QtyPerVehicle = 15;
+	google.protobuf.Int32Value Quantity = 16;
+	google.protobuf.Timestamp RequiredDate = 17;
+	google.protobuf.StringValue RaisedRemarks = 18;
+	google.protobuf.BoolValue IsCustomerNominatedSupplier = 19;
+	google.protobuf.BoolValue IsCustomerNominatedMaterial = 20;
+	google.protobuf.BoolValue SamplesRequired = 21;
+	google.protobuf.StringValue SampleSite = 22;
+	google.protobuf.Int32Value SampleQuantity = 23;
+	google.protobuf.StringValue SampleRecipient = 24;
+	google.protobuf.Timestamp SampleRequiredDate = 25;
+	google.protobuf.StringValue FreightAccount = 26;
+	google.protobuf.StringValue AssociatedParts = 27;
+	google.protobuf.StringValue SuggestedManufacturer = 28;
+	google.protobuf.Timestamp CreatedAt = 29;
+	google.protobuf.StringValue CreatedBy = 30;
+	google.protobuf.Timestamp ModifiedAt = 31;
+	google.protobuf.StringValue ModifiedBy = 32;
+	google.protobuf.Int32Value SubmissionStatus = 33;
+	google.protobuf.StringValue RemoteEndpointResponse = 34;
+	google.protobuf.Timestamp SubmittedAt = 35;
+}
+
 message RfqFilterRequest {
 	string DatabaseList = 1;
     string FilterExpression = 2;
@@ -1390,4 +1443,5 @@ message RfqFilterResponse {
 	ListDsiWireMulticoreMarkerGrpc ListDsiWireMulticoreMarkerGrpc = 35;
 	ListDsiWireSpecificationGrpc ListDsiWireSpecificationGrpc = 36;
 	ListDsiWireThroughNodeGrpc ListDsiWireThroughNodeGrpc = 37;
+	ListRfqNprRequestGrpc ListRfqNprRequestGrpc = 38;
 }

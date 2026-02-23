@@ -94,6 +94,8 @@
                 await LogDataPopulationSuccess("DsiWireSpecifications", check);
                 check = await _RfqAccessService.PopulateDsiWireThroughNodes(stoppingToken);
                 await LogDataPopulationSuccess("DsiWireThroughNodes", check);
+                check = await _RfqAccessService.PopulateRfqNprRequest(stoppingToken);
+                await LogDataPopulationSuccess("RfqNprRequest", check);
             }
 
             return true;

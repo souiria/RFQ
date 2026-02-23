@@ -70,6 +70,8 @@
         { get; }
         DbSet<DbDsiWireThroughNode> DsiWireThroughNode
         { get; }
+        DbSet<DbRfqNprRequestModel> RfqNprRequest
+        { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

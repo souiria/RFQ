@@ -1808,6 +1808,55 @@ namespace Unit.Tests.Rfq
         }
         #endregion
 
+        #region RfqNprRequest
+        [Test]
+        public void GetRfqNprRequestGrpcTest_Success()
+        {
+            RfqNprRequestGrpcRequest reasonGrpcRequest = new RfqNprRequestGrpcRequest();
+            RfqGrpcRequestParameter requestParameter = new RfqGrpcRequestParameter();
+            requestParameter.RequestType = (int)RequestType.Read;
+            reasonGrpcRequest.RfqGrpcRequestParameter = requestParameter;
+            reasonGrpcRequest.RfqGrpcRequestParameter.RequestType = (int)RequestType.Read;
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.ReadRfqNprRequestGrpc));
+
+            Task<ListRfqNprRequestGrpc> getReply = _GrpcService.ReadRfqNprRequestGrpc(reasonGrpcRequest, serverCallContext);
+            Assert.That(getReply.Result.RfqNprRequestGrpcs, Is.Not.Null);
+            EqualConstraint countConstraint = Is.EqualTo(5);
+            Assert.That(getReply.Result.RfqNprRequestGrpcs.Count, countConstraint);
+        }
+
+        [Test]
+        public void FilterRfqNprRequestGrpcByRowIdTest_Success()
+        {
+            RfqFilterRequest filterRequest = new RfqFilterRequest();
+            filterRequest.DatabaseList = "RfqNprRequestGrpc".ToUpperInvariant();
+            filterRequest.FilterExpression = "Id != null && Id == \"b559bdd7-e4fa-434c-8e8d-c26b3ae40ba2\"";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterRfqGrpc));
+
+            Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
+
+            Assert.That(filterByRowIdReply.Result.ListRfqNprRequestGrpc.RfqNprRequestGrpcs, Is.Not.Null);
+            EqualConstraint countConstraint = Is.EqualTo(1);
+            Assert.That(filterByRowIdReply.Result.ListRfqNprRequestGrpc.RfqNprRequestGrpcs.Count, countConstraint);
+            EqualConstraint reasonConstraint = Is.EqualTo("Project2");
+            Assert.That(filterByRowIdReply.Result.ListRfqNprRequestGrpc.RfqNprRequestGrpcs.First().Project, reasonConstraint);
+        }
+
+        [Test]
+        public void GetRfqNprRequestGrpcByRowIdTest_Fails()
+        {
+            RfqFilterRequest filterRequest = new RfqFilterRequest();
+            filterRequest.DatabaseList = "RfqNprRequestGrpc".ToUpperInvariant();
+            filterRequest.FilterExpression = "Id != null && Id == \"10\"";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterRfqGrpc));
+
+            Task<RfqFilterResponse> filterByRowIdReply = _GrpcService.FilterRfqGrpc(filterRequest, serverCallContext);
+
+            EqualConstraint countConstraint = Is.EqualTo(0);
+            Assert.That(filterByRowIdReply.Result.ListRfqNprRequestGrpc.RfqNprRequestGrpcs.Count, countConstraint);
+        }
+        #endregion
+
         ServerCallContext CreateServerContext(string methodName)
         {
             DateTime deadline = DateTime.Now.AddMinutes(30);

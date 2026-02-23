@@ -316,6 +316,15 @@
 
         #endregion
 
+        #region RfqNprRequest
+
+        Task<ListRfqNprRequestGrpc> GetAllRfqNprRequest(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
+        Task<ListRfqNprRequestGrpc> CreateRfqNprRequest(RfqNprRequestGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> UpdateRfqNprRequest(RfqNprRequestGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> PopulateRfqNprRequest(CancellationToken cancellationToken);
+
+        #endregion
+
         Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig,
             Action<IEnumerable<T>> setResponseCollection, CancellationToken cancellationToken);
     }
