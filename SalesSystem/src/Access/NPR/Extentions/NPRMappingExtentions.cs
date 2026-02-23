@@ -1,10 +1,4 @@
-﻿using System;
-using Google.Protobuf.WellKnownTypes;
-using Microsoft.Extensions.Primitives;
-using NPR;
-using NPR.Data.Model;
-
-namespace NPR.Extentions
+﻿namespace NPR.Extentions
 {
     public static class NPRMappingExtentions
     {

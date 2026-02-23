@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Diagnostics.Eventing.Reader;
-namespace NPR.Endpoints.GrpcServices
+﻿namespace NPR.Endpoints.GrpcServices
 {
     public class NPRGrpcService : NPR.NPRBase
     {

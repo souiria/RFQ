@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-namespace NPR.Services
+﻿namespace NPR.Services
 {
     public interface INPRAccessService
     {
