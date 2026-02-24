@@ -1,5 +1,6 @@
-@using SalesSystem.Rfq.Models
 @using MudBlazor
+@using SalesSystem.Rfq.Enums
+@using SalesSystem.Rfq.Models
 
 @inject IDialogService DialogService
 @inject ILogger<EditPartNumberDialog> Logger
@@ -40,8 +41,8 @@
                     <MudItem xs="12">
                         <MudPaper Elevation="2" Class="pa-4">
                             <MudText Typo="Typo.h6" Class="mb-3">Matched Part Numbers</MudText>
-                            <MudList T="RfqDrawingPartNumberUx" Dense="true">
-                                @foreach (RfqDrawingPartNumberUx matchedPart in EditedItem.SearchResultPartNumbers)
+                            <MudList T="RfqDrawingPartNumberUxModel" Dense="true">
+                                @foreach (RfqDrawingPartNumberUxModel matchedPart in EditedItem.SearchResultPartNumbers)
                                 {
                                     <MudListItem>
                                         <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
@@ -183,16 +184,16 @@
 
 @code {
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
-    [Parameter] public RfqDrawingPartNumberUx OriginalItem { get; set; } = null!;
+    [Parameter] public RfqDrawingPartNumberUxModel OriginalItem { get; set; } = null!;
 
-    private RfqDrawingPartNumberUx EditedItem { get; set; } = new();
+    private RfqDrawingPartNumberUxModel EditedItem { get; set; } = new();
     private MudForm _form = null!;
     private bool _isValid;
 
     protected override void OnInitialized()
     {
         // Create a copy of the original item to edit
-        EditedItem = new RfqDrawingPartNumberUx
+        EditedItem = new RfqDrawingPartNumberUxModel
         {
             RowId = OriginalItem.RowId,
             RfqId = OriginalItem.RfqId,
@@ -210,7 +211,7 @@
         EditedItem.SearchResultPartNumbers.AddRange(OriginalItem.SearchResultPartNumbers);
     }
 
-    private async Task ShowMatchedPart(RfqDrawingPartNumberUx item)
+    private async Task ShowMatchedPart(RfqDrawingPartNumberUxModel item)
     {
         if (item == null)
         {
@@ -231,7 +232,7 @@
         try
         {
             // Create a copy of the item to avoid reference issues
-            var searchedPartNumber = new RfqDrawingPartNumberUx
+            var searchedPartNumber = new RfqDrawingPartNumberUxModel
             {
                 CustomerPartNumber = EditedItem.CustomerPartNumber,
                 DrawingPartNumber = item.DrawingPartNumber,
@@ -262,7 +263,7 @@
 
             var result = await dialog.Result;
             
-            if (result != null && !result.Canceled && result.Data is RfqDrawingPartNumberUx updatedPart)
+            if (result != null && !result.Canceled && result.Data is RfqDrawingPartNumberUxModel updatedPart)
             {
                 // Update the EditedItem with the selected part data
                 PickMatchedPart(updatedPart);
@@ -278,7 +279,7 @@
         }
     }
 
-    private void PickMatchedPart(RfqDrawingPartNumberUx matchedPart)
+    private void PickMatchedPart(RfqDrawingPartNumberUxModel matchedPart)
     {
         // Assign the DrawingPartNumber and DrawingPartNumberPrice to the current item
         EditedItem.DrawingPartNumber = matchedPart.DrawingPartNumber;
@@ -307,7 +308,7 @@
 
         DialogResult? result = await dialog.Result;
 
-        if (result != null && !result.Canceled && result.Data is RfqDrawingPartNumberUx alternativePart && alternativePart.SwappedPartNumberPrice > 0.0m)
+        if (result != null && !result.Canceled && result.Data is RfqDrawingPartNumberUxModel alternativePart && alternativePart.SwappedPartNumberPrice > 0.0m)
         {
             // Update the EditedItem with dummy part data
             EditedItem.SwappedPartNumber = alternativePart.SwappedPartNumber;

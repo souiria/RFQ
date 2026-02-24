@@ -70,12 +70,12 @@
 </div>
 
 @code {
-    [Parameter] public IEnumerable<RfqDrawingPartNumberUx> PartNumbers { get; set; } = Enumerable.Empty<RfqDrawingPartNumberUx>();
+    [Parameter] public IEnumerable<RfqDrawingPartNumberUxModel> PartNumbers { get; set; } = Enumerable.Empty<RfqDrawingPartNumberUxModel>();
     [Parameter] public string Label { get; set; } = string.Empty;
     [Parameter] public string BackgroundColor { get; set; } = "var(--mud-palette-primary)";
     [Parameter] public bool InitiallyExpanded { get; set; } = true;
-    [Parameter] public EventCallback<RfqDrawingPartNumberUx> OnPartNumberDeleted { get; set; }
-    [Parameter] public EventCallback<RfqDrawingPartNumberUx> OnPartNumberUpdated { get; set; }
+    [Parameter] public EventCallback<RfqDrawingPartNumberUxModel> OnPartNumberDeleted { get; set; }
+    [Parameter] public EventCallback<RfqDrawingPartNumberUxModel> OnPartNumberUpdated { get; set; }
 
     private bool IsExpanded { get; set; }
 

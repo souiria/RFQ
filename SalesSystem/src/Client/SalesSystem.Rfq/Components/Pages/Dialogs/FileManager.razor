@@ -67,6 +67,13 @@
                                Disabled="@(!FileObjects.Any())"
                                Size="Size.Small" />
             </MudTooltip>
+            <MudTooltip Text="Upload files">
+                <MudIconButton Icon="@Icons.Material.Filled.CloudUpload"
+                               Color="Color.Primary"
+                               Size="Size.Small"
+                               Disabled="@UploadDisabled"
+                               OnClick="@OnUploadClicked" />
+            </MudTooltip>
         </div>
     </MudStack>
 </div>
@@ -75,10 +82,16 @@
     const int MAX_FILE_SIZE = 16 * 1024 * 1024;
 
     [Parameter]
-    public List<FileObjectUx> FileObjects { get; set; } = new();
+    public List<FileObjectUxModel> FileObjects { get; set; } = new();
 
     [Parameter]
     public EventCallback OnFilesChanged { get; set; }
+
+    [Parameter]
+    public EventCallback OnUploadClicked { get; set; }
+
+    [Parameter]
+    public bool UploadDisabled { get; set; } = true;
 
     // Drop zone elements
     private ElementReference dropZoneElement;
@@ -146,7 +159,7 @@
                         continue;
                     }
 
-                    var fileObject = new FileObjectUx(file);
+                    var fileObject = new FileObjectUxModel(file);
 
                     // Validate file type and size
                     var fileType = DetermineFileType(fileObject);
@@ -207,7 +220,7 @@
             f.OriginalFileSize == newFile.Size);
     }
 
-    private RfqFileType DetermineFileType(FileObjectUx fileObject)
+    private RfqFileType DetermineFileType(FileObjectUxModel fileObject)
     {
         if(fileObject.File == null)
         {
@@ -309,7 +322,7 @@
         }
     }
 
-    private async Task DeleteFile(FileObjectUx fileObject)
+    private async Task DeleteFile(FileObjectUxModel fileObject)
     {
         if (fileObject != null && fileObject.Status != UxObjectStatus.Deleted)
         {
@@ -319,7 +332,7 @@
         }
     }
 
-    private async Task RestoreFile(FileObjectUx fileObject)
+    private async Task RestoreFile(FileObjectUxModel fileObject)
     {
         if (fileObject != null && fileObject.Status == UxObjectStatus.Deleted)
         {
@@ -385,7 +398,7 @@
     /// <summary>
     /// Removes a file from the collection and resets InputFile if needed
     /// </summary>
-    public async Task RemoveFileAsync(FileObjectUx fileObject)
+    public async Task RemoveFileAsync(FileObjectUxModel fileObject)
     {
         try
         {

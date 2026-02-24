@@ -36,7 +36,7 @@
                 {
                     <MudItem xs="12" sm="12">
                         <MudStack Row="true">
-                            <MudImage Src="@PartImageData.NoImage.Source"
+                            <MudImage Src="@PartImageDataUxModel.NoImage.Source"
                                       Alt="Part Image"
                                       Width="96"
                                       Elevation="3"
@@ -196,7 +196,7 @@
 
             Logger.GenericLogInformation($"Loading image for alternative part number: {alternativePartNumber.SumitomoNumber}");
 
-            SearchResultUx response = await RfqUxClientService.SearchAdssSewsePn(alternativePartNumber.SumitomoNumber);
+            SearchResultUxModel response = await RfqUxClientService.SearchAdssSewsePn(alternativePartNumber.SumitomoNumber);
 
             if (response.IsSuccessful &&
                 response.ByteList != null &&
@@ -208,7 +208,7 @@
                 byte[] imageBytes = response.ByteList[0];
                 string mimeType = response.StringList2[0] ?? "image/png";
 
-                alternativePartNumber.PartImage = new PartImageData
+                alternativePartNumber.PartImage = new PartImageDataUxModel
                 {
                     ImageBytes = imageBytes,
                     MimeType = mimeType

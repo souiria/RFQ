@@ -1,7 +1,8 @@
-@using SalesSystem.Rfq.Models
-@using MudBlazor
-@using SalesSystem.Rfq.Services
 @using Microsoft.JSInterop
+@using MudBlazor
+@using SalesSystem.Rfq.Enums
+@using SalesSystem.Rfq.Models
+@using SalesSystem.Rfq.Services
 
 @inject IJSRuntime JSRuntime
 @inject ISnackbar Snackbar
@@ -178,26 +179,26 @@
 @code {
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
 
-    [Parameter] public List<RfqDrawingPartNumberUx?> MatchedParts { get; set; } = new();
-    [Parameter] public List<RfqDrawingPartNumberUx?> UnmatchedParts { get; set; } = new();
+    [Parameter] public List<RfqDrawingPartNumberUxModel?> MatchedParts { get; set; } = new();
+    [Parameter] public List<RfqDrawingPartNumberUxModel?> UnmatchedParts { get; set; } = new();
 
     private bool _isExporting = false;
 
     // All parts from both lists
-    private List<RfqDrawingPartNumberUx?> AllParts => MatchedParts.Concat(UnmatchedParts).ToList();
+    private List<RfqDrawingPartNumberUxModel?> AllParts => MatchedParts.Concat(UnmatchedParts).ToList();
 
     private int TotalParts => AllParts.Count;
 
     // Matched parts: Parts with DrawingPartNumberPrice set (from both InProgress and Completed datasets)
-    private List<RfqDrawingPartNumberUx?> ActualMatchedParts =>
+    private List<RfqDrawingPartNumberUxModel?> ActualMatchedParts =>
         AllParts.Where(p => p?.DrawingPartNumberPrice.HasValue == true && p.DrawingPartNumberPrice.Value > 0).ToList();
 
     // Alternative parts: Parts with SwappedPartNumberPrice set (from both InProgress and Completed datasets)
-    private List<RfqDrawingPartNumberUx?> ActualAlternativeParts =>
+    private List<RfqDrawingPartNumberUxModel?> ActualAlternativeParts =>
         AllParts.Where(p => p?.SwappedPartNumberPrice.HasValue == true && p.SwappedPartNumberPrice.Value > 0).ToList();
 
     // Unmatched parts: Parts without DrawingPartNumberPrice and without SwappedPartNumberPrice
-    private List<RfqDrawingPartNumberUx?> ActualUnmatchedParts =>
+    private List<RfqDrawingPartNumberUxModel?> ActualUnmatchedParts =>
         AllParts.Where(p =>
             (p?.DrawingPartNumberPrice ?? 0) == 0 &&
             (p?.SwappedPartNumberPrice ?? 0) == 0).ToList();
@@ -301,8 +302,8 @@
             Logger.LogInformation($"DatasetStatusDialog.ExportToCsv - Starting export of {TotalParts} parts (Matched: {MatchedCount}, Alternative: {AlternativeCount}, Unmatched: {UnmatchedCount})");
 
             // Convert to Collection<T> as required by method signature
-            var matchedCollection = new System.Collections.ObjectModel.Collection<RfqDrawingPartNumberUx?>(MatchedParts);
-            var unmatchedCollection = new System.Collections.ObjectModel.Collection<RfqDrawingPartNumberUx?>(UnmatchedParts);
+            var matchedCollection = new System.Collections.ObjectModel.Collection<RfqDrawingPartNumberUxModel?>(MatchedParts);
+            var unmatchedCollection = new System.Collections.ObjectModel.Collection<RfqDrawingPartNumberUxModel?>(UnmatchedParts);
 
             await CsvExportService.ExportPartNumbersToCsvAsync(matchedCollection, unmatchedCollection, "RFQ_Dataset_Export");
 

@@ -19,7 +19,7 @@
             <MudList T="string"
                      SelectionMode="SelectionMode.SingleSelection"
                      Dense="true">
-                @foreach (RfqDrawingPartNumberUx partNumber in SearchedPartNumber.SearchResultPartNumbers)
+                @foreach (RfqDrawingPartNumberUxModel partNumber in SearchedPartNumber.SearchResultPartNumbers)
                 {
                     <MudListItem Style="@GetListItemStyle(partNumber.IsExactMatch == true)">
                         <MudPaper Elevation="2" Class="pa-3 mb-2">
@@ -45,7 +45,7 @@
                                                 <strong>NPR Results:</strong>
                                             </MudText>
                                             <MudList T="string" Dense="true" Padding="false" Class="ml-2">
-                                                @foreach (RfqDrawingPartNumberUx nprSearchResult in partNumber.SearchResultPartNumbers)
+                                                @foreach (RfqDrawingPartNumberUxModel nprSearchResult in partNumber.SearchResultPartNumbers)
                                                 {
                                                     <MudListItem Dense="true" Gutters="false">
                                                         <div class="d-flex align-center justify-space-between">
@@ -118,7 +118,7 @@
 @code {
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
 
-    [Parameter] public RfqDrawingPartNumberUx? SearchedPartNumber { get; set; }
+    [Parameter] public RfqDrawingPartNumberUxModel? SearchedPartNumber { get; set; }
 
     private Dictionary<int, bool> _loadingImageStates = new();
     private Dictionary<int, bool> _imageErrorStates = new();
@@ -206,7 +206,7 @@
             : "background-color: lightyellow;";
     }
 
-    private async Task LoadPartImageAsync(RfqDrawingPartNumberUx matchedPartNumber)
+    private async Task LoadPartImageAsync(RfqDrawingPartNumberUxModel matchedPartNumber)
     {
         if (string.IsNullOrWhiteSpace(matchedPartNumber.DrawingPartNumber))
         {
@@ -221,7 +221,7 @@
 
             Logger.GenericLogInformation($"Loading image for part number: {matchedPartNumber.DrawingPartNumber}");
 
-            SearchResultUx response = await RfqUxClientService.SearchAdssSewsePn(matchedPartNumber.DrawingPartNumber);
+            SearchResultUxModel response = await RfqUxClientService.SearchAdssSewsePn(matchedPartNumber.DrawingPartNumber);
 
             if (response.IsSuccessful &&
                 response.ByteList != null &&
@@ -233,7 +233,7 @@
                 byte[] imageBytes = response.ByteList[0];
                 string mimeType = response.StringList2[0] ?? "image/png";
 
-                matchedPartNumber.PartImage = new PartImageData
+                matchedPartNumber.PartImage = new PartImageDataUxModel
                 {
                     ImageBytes = imageBytes,
                     MimeType = mimeType
@@ -258,7 +258,7 @@
         }
     }
 
-    private async Task LoadNprDataAsync(RfqDrawingPartNumberUx matchedPartNumber)
+    private async Task LoadNprDataAsync(RfqDrawingPartNumberUxModel matchedPartNumber)
     {
         if (string.IsNullOrWhiteSpace(matchedPartNumber.DrawingPartNumber))
         {
@@ -273,7 +273,7 @@
 
             Logger.GenericLogInformation($"Loading NPR data for part number: {matchedPartNumber.DrawingPartNumber}");
 
-            SearchResultUx response = await RfqUxClientService.SearchNprSewsePn(matchedPartNumber.DrawingPartNumber);
+            SearchResultUxModel response = await RfqUxClientService.SearchNprSewsePn(matchedPartNumber.DrawingPartNumber);
 
             if (response.IsSuccessful &&
                 response.StringList != null &&
@@ -288,7 +288,7 @@
                 int index = 0;
                 foreach (string nprPartNumber in nprPartNumbers)
                 {
-                    RfqDrawingPartNumberUx nprResult = new RfqDrawingPartNumberUx
+                    RfqDrawingPartNumberUxModel nprResult = new RfqDrawingPartNumberUxModel
                     {
                         DrawingPartNumber = nprPartNumber,
                         DrawingPartNumberPrice = (index < nprPrices.Count) ? nprPrices[index] : 0
@@ -315,7 +315,7 @@
         }
     }
 
-    private async Task ApplyNprData(RfqDrawingPartNumberUx nprSearchResult)
+    private async Task ApplyNprData(RfqDrawingPartNumberUxModel nprSearchResult)
     {
         await Task.Delay(1);
         if (SearchedPartNumber == null)

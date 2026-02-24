@@ -42,7 +42,7 @@
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
 
     // This has a DrawingPartNumber set and possibly a DrawingPriceNumber, nothing else
-    [Parameter] public RfqDrawingPartNumberUx? SearchedPartNumber { get; set; }
+    [Parameter] public RfqDrawingPartNumberUxModel? SearchedPartNumber { get; set; }
 
     private string _currentUser = "Unknown";
 
@@ -92,7 +92,7 @@
             : "background-color: lightyellow;";
     }
 
-    private async Task LoadPartImageAsync(RfqDrawingPartNumberUx matchedPartNumber)
+    private async Task LoadPartImageAsync(RfqDrawingPartNumberUxModel matchedPartNumber)
     {
         if (string.IsNullOrWhiteSpace(matchedPartNumber.DrawingPartNumber))
         {
@@ -105,7 +105,7 @@
 
             Logger.GenericLogInformation($"Loading image for part number: {matchedPartNumber.DrawingPartNumber}");
 
-            SearchResultUx response = await RfqUxClientService.SearchAdssSewsePn(matchedPartNumber.DrawingPartNumber);
+            SearchResultUxModel response = await RfqUxClientService.SearchAdssSewsePn(matchedPartNumber.DrawingPartNumber);
 
             if (response.IsSuccessful &&
                 response.ByteList != null &&
@@ -117,7 +117,7 @@
                 byte[] imageBytes = response.ByteList[0];
                 string mimeType = response.StringList2[0] ?? "image/png";
 
-                matchedPartNumber.PartImage = new PartImageData
+                matchedPartNumber.PartImage = new PartImageDataUxModel
                 {
                     ImageBytes = imageBytes,
                     MimeType = mimeType

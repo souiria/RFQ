@@ -1,6 +1,6 @@
 ﻿namespace SalesSystem.Rfq.Models
 {
-    public class FileObjectUx
+    public class FileObjectUxModel
     {
         public string Id
         { get; private set; }
@@ -19,7 +19,7 @@
         public long OriginalFileSize
         { get; private set; }
 
-        public FileObjectUx(IBrowserFile browserFile)
+        public FileObjectUxModel(IBrowserFile browserFile)
         {
             Id = Guid.NewGuid().ToString();
             File = browserFile;

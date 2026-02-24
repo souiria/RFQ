@@ -12,7 +12,7 @@
     //}
     public static class SearchResultUxExtensions
     {
-        public static RfqDrawingPartNumberUx ToSinglePartNumber(this SearchResultUx searchResult)
+        public static RfqDrawingPartNumberUxModel ToSinglePartNumber(this SearchResultUxModel searchResult)
         {
             if (searchResult is null
                 || searchResult.StringList is null
@@ -23,14 +23,14 @@
                 throw new ArgumentException("SearchResultUxExtensions.ToSinglePartNumber: Invalid search result data");
             }
 
-            RfqDrawingPartNumberUx nprPartSearchResult = new RfqDrawingPartNumberUx();
+            RfqDrawingPartNumberUxModel nprPartSearchResult = new RfqDrawingPartNumberUxModel();
             nprPartSearchResult.DrawingPartNumber = searchResult.StringList[0];
             nprPartSearchResult.DrawingPartNumberPrice = Math.Round((decimal)searchResult.DoubleList[0], 5, MidpointRounding.AwayFromZero); // Convert.ToDecimal(searchResult.DoubleList[0]);
             return nprPartSearchResult;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
-        public static List<RfqDrawingPartNumberUx> ToSearchResultPartNumbers(this SearchResultUx searchResult)
+        public static List<RfqDrawingPartNumberUxModel> ToSearchResultPartNumbers(this SearchResultUxModel searchResult)
         {
             if (searchResult is null
                 || searchResult.StringList is null
@@ -40,10 +40,10 @@
                 throw new ArgumentException("SearchResultUxExtensions.ToCompletedPartNumbes: Invalid search result data");
             }
 
-            List<RfqDrawingPartNumberUx> nprPartSearchResults = new List<RfqDrawingPartNumberUx>();
+            List<RfqDrawingPartNumberUxModel> nprPartSearchResults = new List<RfqDrawingPartNumberUxModel>();
             for (int i = 0; i < searchResult.StringList.Count; i++)
             {
-                RfqDrawingPartNumberUx nprPartSearchResult = new RfqDrawingPartNumberUx();
+                RfqDrawingPartNumberUxModel nprPartSearchResult = new RfqDrawingPartNumberUxModel();
                 nprPartSearchResult.DrawingPartNumber = searchResult.StringList[i];
                 nprPartSearchResult.DrawingPartNumberPrice = Math.Round((decimal)searchResult.DoubleList[i], 5, MidpointRounding.AwayFromZero); // Convert.ToDecimal(searchResult.DoubleList[i]);
                 nprPartSearchResults.Add(nprPartSearchResult);
@@ -52,17 +52,17 @@
             return nprPartSearchResults;
         }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
-        public static List<RfqDrawingPartNumberUx> ToCompletedPartNumbersList(this SearchResultUx searchResult, bool isExactMatch=false)
+        public static List<RfqDrawingPartNumberUxModel> ToCompletedPartNumbersList(this SearchResultUxModel searchResult, bool isExactMatch=false)
         {
             if (searchResult is null || searchResult.StringList is null)
             {
                 throw new ArgumentException("SearchResultUxExtensions.ToCompletedPartNumbersList: Invalid search result data");
             }
 
-            List<RfqDrawingPartNumberUx> matchedPartNumbers = new List<RfqDrawingPartNumberUx>();
+            List<RfqDrawingPartNumberUxModel> matchedPartNumbers = new List<RfqDrawingPartNumberUxModel>();
             for (int i = 0; i < searchResult.StringList.Count; i++)
             {
-                RfqDrawingPartNumberUx nprPartSearchResult = new RfqDrawingPartNumberUx();
+                RfqDrawingPartNumberUxModel nprPartSearchResult = new RfqDrawingPartNumberUxModel();
                 nprPartSearchResult.DrawingPartNumber = searchResult.StringList[i];
                 nprPartSearchResult.DrawingPartNumberPrice = Math.Round((decimal)searchResult.DoubleList[i], 5, MidpointRounding.AwayFromZero);
                 nprPartSearchResult.IsExactMatch = isExactMatch;
@@ -72,7 +72,7 @@
             return matchedPartNumbers;  
         }
     }
-    public class SearchResultUx
+    public class SearchResultUxModel
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
         public List<string> StringList
@@ -93,7 +93,7 @@
         public List<string> StringList2
         { get; init; }
 
-        public SearchResultUx()
+        public SearchResultUxModel()
         {
             StringList = new List<string>();
             IntList = new List<int>();

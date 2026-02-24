@@ -3,48 +3,41 @@
 @using MudBlazor
 
 @inject RfqUxClientService RfqUxClientService
-@inject ILogger<RfqNprRequestSetEditDialog> Logger
+@inject ILogger<RfqNprRequestsEditDialog> Logger
 @inject ISnackbar Snackbar
 
 <MudDialog>
     <DialogContent>
         <MudText Typo="Typo.h6" Class="mb-4">
-            NPR Request Set
+            NPR Request Set — @(RfqProject.RfqNumber ?? "No RFQ Number")
         </MudText>
         <MudForm @ref="_form" @bind-IsValid="_isValid">
             <MudGrid>
-                @* --- Set-level attributes --- *@
-                <MudItem xs="6">
-                    <MudTextField @bind-Value="NprRequestSet.RfqNumber"
+                @* --- Set-level summary (derived from requests) --- *@
+                <MudItem xs="4">
+                    <MudTextField Value="@(RfqProject.RfqNumber ?? "—")"
                                   Label="RFQ Number"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
                                   ReadOnly="true" />
                 </MudItem>
-                <MudItem xs="6">
-                    <MudTextField Value="@NprRequestSet.Status.ToString()"
-                                  Label="Status"
+                <MudItem xs="2">
+                    <MudTextField Value="@RfqProject.NprRequests.Count.ToString()"
+                                  Label="Requests"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
                                   ReadOnly="true" />
                 </MudItem>
-                <MudItem xs="4">
-                    <MudTextField Value="@NprRequestSet.Created.ToString("dd.MM.yyyy HH:mm:ss")"
+                <MudItem xs="3">
+                    <MudTextField Value="@(RfqProject.EarliestCreated?.ToString("dd.MM.yyyy HH:mm:ss") ?? "—")"
                                   Label="Created"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
                                   ReadOnly="true" />
                 </MudItem>
-                <MudItem xs="4">
-                    <MudTextField Value="@(NprRequestSet.Updated.ToString("dd.MM.yyyy HH:mm:ss") ?? "—")"
-                                  Label="Updated"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense"
-                                  ReadOnly="true" />
-                </MudItem>
-                <MudItem xs="4">
-                    <MudTextField Value="@(NprRequestSet.Closed?.ToString("dd.MM.yyyy HH:mm:ss") ?? "—")"
-                                  Label="Closed"
+                <MudItem xs="3">
+                    <MudTextField Value="@(RfqProject.LastUpdated?.ToString("dd.MM.yyyy HH:mm:ss") ?? "—")"
+                                  Label="Last Updated"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
                                   ReadOnly="true" />
@@ -54,11 +47,11 @@
                 <MudItem xs="12">
                     <MudDataGrid T="RfqNprRequestUxModel"
                                  @ref="_nprRequestsGrid"
-                                 Items="@NprRequestSet.NprRequests"
+                                 Items="@RfqProject.NprRequests"
                                  Virtualize="true"
                                  FixedHeader="true"
-                                 ItemSize="20f"
-                                 Height="380px"
+                                 ItemSize="36"
+                                 Height="420px"
                                  Dense="true"
                                  DragDropColumnReordering="true"
                                  ApplyDropClassesOnDragStarted="true"
@@ -75,10 +68,11 @@
                                  Bordered="true"
                                  ShowMenuIcon="true"
                                  CommittedItemChanges="@OnItemCommitted"
-                                 HorizontalScrollbar="true">
+                                 HorizontalScrollbar="true"
+                                 Style="overflow: auto;">
                         <ToolBarContent>
                             <MudText Typo="Typo.subtitle1" Class="mr-4">
-                                NPR Requests (@NprRequestSet.NprRequests.Count)
+                                NPR Requests (@RfqProject.NprRequests.Count)
                             </MudText>
                             <MudTooltip Text="Full text search">
                                 <MudTextField @bind-Value="_searchFilter"
@@ -90,14 +84,19 @@
                                               Class="mt-0" />
                             </MudTooltip>
                             <MudSpacer />
-@*                             <MudTooltip Text="Add new NPR request">
-                                <MudIconButton Icon="@Icons.Material.Filled.Add"
-                                               Color="Color.Primary"
-                                               OnClick="@AddNewRequest" />
-                            </MudTooltip> *@
                         </ToolBarContent>
                         <Columns>
-                            <PropertyColumn Property="x => x.SumitomoNumber" Title="Sumitomo Number" StickyLeft="true" Editable="true" />
+                            <PropertyColumn Property="x => x.UxStatus" Title="Status" Editable="false" StickyLeft="true">
+                                <CellTemplate>
+                                    <MudChip T="string"
+                                             Size="Size.Small"
+                                             Color="@GetStatusColor(context.Item.UxStatus)"
+                                             Variant="Variant.Outlined">
+                                        @context.Item.UxStatus
+                                    </MudChip>
+                                </CellTemplate>
+                            </PropertyColumn>
+                            <PropertyColumn Property="x => x.SumitomoNumber" Title="Sumitomo Number" Editable="true" />
                             <PropertyColumn Property="x => x.CustomerPartNumber" Title="Customer P/N" Editable="true" />
                             <PropertyColumn Property="x => x.SupplierPartNumber" Title="Supplier P/N" Editable="true" />
                             <PropertyColumn Property="x => x.MaterialDescription" Title="Material Description" Editable="true" />
@@ -124,6 +123,8 @@
                             <PropertyColumn Property="x => x.FreightAccount" Title="Freight Account" Editable="true" />
                             <PropertyColumn Property="x => x.AssociatedParts" Title="Associated Parts" Editable="true" />
                             <PropertyColumn Property="x => x.SuggestedManufacturer" Title="Suggested Mfr." Editable="true" />
+                            <PropertyColumn Property="x => x.Created" Title="Created" Format="dd.MM.yyyy HH:mm" Editable="false" />
+                            <PropertyColumn Property="x => x.Updated" Title="Updated" Format="dd.MM.yyyy HH:mm" Editable="false" />
                             <TemplateColumn CellClass="d-flex justify-end" StickyRight="true" Editable="false">
                                 <CellTemplate>
                                     <MudStack Row>
@@ -138,7 +139,7 @@
                         </Columns>
                         <NoRecordsContent>
                             <MudText Typo="Typo.body2" Align="Align.Center" Class="pa-4">
-                                No NPR requests in this set. Click the + button to add one.
+                                No NPR requests in this set.
                             </MudText>
                         </NoRecordsContent>
                     </MudDataGrid>
@@ -147,8 +148,17 @@
         </MudForm>
     </DialogContent>
     <DialogActions>
+        @if (_isDirty)
+        {
+            <MudChip T="string" Size="Size.Small" Color="Color.Warning" Variant="Variant.Outlined"
+                     Icon="@Icons.Material.Filled.Warning">
+                Unsaved changes
+            </MudChip>
+        }
+        <MudSpacer />
         <MudButton OnClick="Cancel" Color="Color.Default">Cancel</MudButton>
-        <MudButton OnClick="Save" Color="Color.Primary" Variant="Variant.Filled">Save</MudButton>
+        <MudButton OnClick="Save" Color="Color.Primary" Variant="Variant.Filled"
+                   Disabled="@(!_isDirty)">Save</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -156,7 +166,7 @@
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
 
     [Parameter, EditorRequired]
-    public RfqNprRequestSetUxModel NprRequestSet { get; set; } = null!;
+    public RqfProjectUxModel RfqProject { get; set; } = null!;
 
     MudDataGrid<RfqNprRequestUxModel> _nprRequestsGrid { get; set; } = null!;
     MudForm _form = null!;
@@ -169,61 +179,56 @@
 
     Func<RfqNprRequestUxModel, bool> QuickFilter => _quickFilterFunc;
 
+    Color GetStatusColor(UxObjectStatus status) => status switch
+    {
+        UxObjectStatus.Created => Color.Info,
+        UxObjectStatus.Updated => Color.Warning,
+        UxObjectStatus.Deleted => Color.Error,
+        UxObjectStatus.Read => Color.Default,
+        _ => Color.Default
+    };
+
     void OnItemCommitted(RfqNprRequestUxModel item)
     {
         _isDirty = true;
-        NprRequestSet.Status = NprSetRequestStatus.LocalUpdated;
-        NprRequestSet.Updated = DateTime.UtcNow;
+
+        if (item.UxStatus == UxObjectStatus.Read)
+        {
+            item.UxStatus = UxObjectStatus.Updated;
+        }
+
+        item.Updated = DateTime.UtcNow;
 
         Logger.LogInformation(
-            $"RfqNprRequestSetEditDialog.OnItemCommitted - " +
+            $"RfqNprRequestsEditDialog.OnItemCommitted - " +
             $"Updated request Id: {item.Id}, SumitomoNumber: {item.SumitomoNumber}");
 
         StateHasChanged();
     }
 
-    // void AddNewRequest()
-    // {
-    //     RfqNprRequestUxModel newRequest = new RfqNprRequestUxModel();
-    //     NprRequestSet.AddNprRequest(newRequest);
-
-    //     _isDirty = true;
-    //     NprRequestSet.Status = NprSetRequestStatus.LocalUpdated;
-    //     NprRequestSet.Updated = DateTime.UtcNow;
-
-    //     Logger.LogInformation(
-    //         $"RfqNprRequestSetEditDialog.AddNewRequest - " +
-    //         $"Added new request Id: {newRequest.Id}, set now has {NprRequestSet.NprRequests.Count} requests");
-
-    //     Snackbar.Add("New NPR request added", Severity.Success);
-    //     StateHasChanged();
-    // }
-
     async Task RemoveRequest(RfqNprRequestUxModel request)
     {
-        bool removed = NprRequestSet.RemoveNprRequest(request.Id);
-
-        if (removed)
+        if (request.UxStatus == UxObjectStatus.Created)
         {
-            _isDirty = true;
-            NprRequestSet.Status = NprSetRequestStatus.LocalUpdated;
-            NprRequestSet.Updated = DateTime.UtcNow;
-
-            Logger.LogInformation(
-                $"RfqNprRequestSetEditDialog.RemoveRequest - " +
-                $"Removed request Id: {request.Id}, SumitomoNumber: {request.SumitomoNumber}, " +
-                $"set now has {NprRequestSet.NprRequests.Count} requests");
-
-            Snackbar.Add($"Removed NPR request: {request.SumitomoNumber ?? request.CustomerPartNumber ?? request.Id.ToString()}", Severity.Info);
+            // Not yet persisted — remove entirely
+            RfqProject.NprRequests.Remove(request);
         }
         else
         {
-            Logger.LogWarning(
-                $"RfqNprRequestSetEditDialog.RemoveRequest - " +
-                $"Request not found for removal, Id: {request.Id}");
-
-            Snackbar.Add("Request not found", Severity.Warning);
+            // Mark as deleted — will be removed on save
+            request.UxStatus = UxObjectStatus.Deleted;
         }
+
+        _isDirty = true;
+
+        Logger.LogInformation(
+            $"RfqNprRequestsEditDialog.RemoveRequest - " +
+            $"Removed request Id: {request.Id}, SumitomoNumber: {request.SumitomoNumber}, " +
+            $"set now has {RfqProject.NprRequests.Count(r => r.UxStatus != UxObjectStatus.Deleted)} active requests");
+
+        Snackbar.Add(
+            $"Removed NPR request: {request.SumitomoNumber ?? request.CustomerPartNumber ?? request.Id.ToString()}",
+            Severity.Info);
 
         await Task.CompletedTask;
         StateHasChanged();
@@ -247,30 +252,38 @@
 
         try
         {
-            NprRequestSet.Updated = DateTime.UtcNow;
+            // Pass all requests (including deleted ones) to the service
+            // The service will handle removing deleted items during persistence
+            List<RfqNprRequestUxModel> allRequests = RfqProject.NprRequests.ToList();
 
-            RfqNprRequestSetUxModel updatedSet = await RfqUxClientService.UpdateNprRequestSetAsync(NprRequestSet);
+            List<RfqNprRequestUxModel> updatedRequests = await RfqUxClientService.UpdateNprRequestsAsync(allRequests);
 
             Logger.LogInformation(
-                $"RfqNprRequestSetEditDialog.Save - " +
-                $"Saved NPR request set Id: {updatedSet.Id}, RfqNumber: {updatedSet.RfqNumber}, " +
-                $"requests: {updatedSet.NprRequests.Count}");
+                $"RfqNprRequestsEditDialog.Save - " +
+                $"Saved NPR requests for RfqNumber: {RfqProject.RfqNumber}, " +
+                $"count: {updatedRequests.Count}");
 
             Snackbar.Add(
-                $"NPR request set saved: {updatedSet.RfqNumber} ({updatedSet.NprRequests.Count} requests)",
+                $"NPR requests saved: {RfqProject.RfqNumber} ({updatedRequests.Count} requests)",
                 Severity.Success);
 
-            MudDialog.Close(DialogResult.Ok(updatedSet));
+            MudDialog.Close(DialogResult.Ok(updatedRequests));
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "RfqNprRequestSetEditDialog.Save - Error saving NPR request set");
+            Logger.LogError(ex, "RfqNprRequestsEditDialog.Save - Error saving NPR requests");
             Snackbar.Add($"Error saving: {ex.Message}", Severity.Error);
         }
     }
 
     bool _quickFilterFunc(RfqNprRequestUxModel x)
     {
+        // Don't show deleted items in the grid
+        if (x.UxStatus == UxObjectStatus.Deleted)
+        {
+            return false;
+        }
+
         if (string.IsNullOrWhiteSpace(_searchFilter))
         {
             return true;
@@ -285,6 +298,8 @@
 
             _compiledQuickFilter = item =>
             {
+                if (item.UxStatus == UxObjectStatus.Deleted) return false;
+                if (item.RfqNumber?.Contains(filter, comparisonType) == true) return true;
                 if (item.SumitomoNumber?.Contains(filter, comparisonType) == true) return true;
                 if (item.CustomerPartNumber?.Contains(filter, comparisonType) == true) return true;
                 if (item.SupplierPartNumber?.Contains(filter, comparisonType) == true) return true;
@@ -319,3 +334,4 @@
         return _compiledQuickFilter?.Invoke(x) ?? true;
     }
 }
+
