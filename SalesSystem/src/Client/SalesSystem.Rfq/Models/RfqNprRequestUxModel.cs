@@ -7,6 +7,23 @@
         public Guid Id
         { get; set; }
 
+        public string? RfqNumber
+        { get; set; }
+
+        public DateTime Created
+        { get; set; }
+
+        public DateTime Updated
+        { get; set; }
+
+        public RfqNprRequestSet Status
+        { get; set; }
+        public UxObjectStatus UxStatus
+        { get; set; }
+
+        public DateTime? Closed
+        { get; set; }
+
         public string? Reason
         { get; set; }
 
@@ -95,6 +112,8 @@
         public RfqNprRequestUxModel()
         {
             Id = Guid.NewGuid();
+            Status = RfqNprRequestSet.Draft;
+            UxStatus = UxObjectStatus.Created;
         }
 
         #endregion

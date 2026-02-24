@@ -3,15 +3,15 @@
     public static class UxModelConversionExtensions
 
     {
-        #region ProjectAssociationUx Conversion
-        public static ProjectAssociationUx? ToUx(this ProjectAssociation association)
+        #region RqfCustomerProjectAssociationUxModel Conversion
+        public static RqfCustomerProjectAssociationUxModel? ToUx(this ProjectAssociation association)
         {
             if (association == null)
             {
                 return null;
             }
 
-            ProjectAssociationUx projectAssociation = new ProjectAssociationUx();
+            RqfCustomerProjectAssociationUxModel projectAssociation = new RqfCustomerProjectAssociationUxModel();
             projectAssociation.ProjectId = association.CustomerProjectGuid.ToUpperInvariant();
             projectAssociation.ProjectName = association.CustomerProjectName;
             projectAssociation.CustomerId = association.CustomerLocationGuid.ToUpperInvariant();
@@ -21,15 +21,15 @@
         }
         #endregion
 
-        #region RfqProjectUx Conversion
-        public static RfqProjectUx? ToUx(this RfqProject? rfqProject)
+        #region RqfProjectUxModel Conversion
+        public static RqfProjectUxModel? ToUx(this RfqProject? rfqProject)
         {
             if (rfqProject == null)
             {
                 return null;
             }
 
-            RfqProjectUx uxModel = new RfqProjectUx();
+            RqfProjectUxModel uxModel = new RqfProjectUxModel();
             uxModel.RowId = rfqProject.RowId;
             uxModel.RfqNumber = rfqProject.RfqNumber;
             uxModel.CustomerBusinessUnitId = rfqProject.CustomerBusinessUnitGuid.Trim().ToUpperInvariant();
@@ -43,7 +43,7 @@
 
             return uxModel;
         }
-        public static RfqProject ToDto(this RfqProjectUx uxModel)
+        public static RfqProject ToDto(this RqfProjectUxModel uxModel)
         {
             if (uxModel == null)
             {
@@ -72,15 +72,15 @@
         }
         #endregion
 
-        #region CustomerUx Conversion
-        public static CustomerUx? ToUx(this CustomerGrpc customerGrpc)
+        #region CustomerUxModel Conversion
+        public static CustomerUxModel? ToUx(this CustomerGrpc customerGrpc)
         {
             if (customerGrpc == null)
             {
                 return null;
             }
 
-            CustomerUx customerUx = new CustomerUx();
+            CustomerUxModel customerUx = new CustomerUxModel();
             customerUx.Id = customerGrpc.Id?.ToUpperInvariant();
             customerUx.CustomerBusinessGroupCode = customerGrpc.CustomerBusinessGroupCode;
             customerUx.CustomerBusinessGroupName = customerGrpc.CustomerBusinessGroupName;
@@ -90,15 +90,15 @@
         }
         #endregion
 
-        #region RfqDrawingPartNumberUx Conversion
-        public static RfqDrawingPartNumberUx? ToUx(this RfqDrawingPartNumber dto)
+        #region RfqDrawingPartNumberUxModel Conversion
+        public static RfqDrawingPartNumberUxModel? ToUx(this RfqDrawingPartNumber dto)
         {
             if (dto == null)
             {
                 return null;
             }
 
-            RfqDrawingPartNumberUx uxModel = new RfqDrawingPartNumberUx();
+            RfqDrawingPartNumberUxModel uxModel = new RfqDrawingPartNumberUxModel();
 
             uxModel.RowId = dto.RowId;
             uxModel.RfqId = dto.RfqId;
@@ -138,7 +138,7 @@
 
             return uxModel;
         }
-        public static RfqDrawingPartNumber ToDto(this RfqDrawingPartNumberUx uxModel)
+        public static RfqDrawingPartNumber ToDto(this RfqDrawingPartNumberUxModel uxModel)
         {
             if (uxModel == null)
             {
@@ -171,15 +171,15 @@
         }
         #endregion
 
-        #region SearchResultUx
-        public static SearchResultUx ToUx(this FilterGrpcResponse searchResult)
+        #region SearchResultUxModel
+        public static SearchResultUxModel ToUx(this FilterGrpcResponse searchResult)
         {
             if (searchResult == null)
             {
                 throw new ArgumentNullException(nameof(searchResult));
             }
 
-            SearchResultUx resultUx = new SearchResultUx();
+            SearchResultUxModel resultUx = new SearchResultUxModel();
             resultUx.StringList.Clear();
             foreach (string? item in searchResult.StringList)
             {
@@ -296,17 +296,7 @@
         #endregion
 
         #region NprRequests
-        public static RfqNprRequestSetUxModel ToNprRequestSet(this RfqProjectUx project)
-        {
-            RfqNprRequestSetUxModel requestSet = new RfqNprRequestSetUxModel();
-            requestSet.Project = project;
-            requestSet.RfqNumber = project.RfqNumber;
-            requestSet.NprRequests = new();
-
-            return requestSet;
-
-        }
-        public static RfqNprRequestUxModel ToNprRequest(this RfqDrawingPartNumberUx partNumber, RfqProjectUx rfqProject)
+        public static RfqNprRequestUxModel ToNprRequest(this RfqDrawingPartNumberUxModel partNumber, RqfProjectUxModel rfqProject)
         {
             RfqNprRequestUxModel nprRequest = new RfqNprRequestUxModel();
             nprRequest.RequiredDate = rfqProject.RfqResponseDeadline;

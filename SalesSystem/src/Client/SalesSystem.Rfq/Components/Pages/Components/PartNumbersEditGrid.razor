@@ -1,4 +1,5 @@
 ﻿@using System.Net.Http.Json
+@using SalesSystem.Rfq.Enums
 @using SharedModels.Filtering
 
 @inject RfqUxClientService RfqUxClientService
@@ -8,7 +9,7 @@
 
 
 <div class="d-flex flex-column" style="height: 100%; overflow: hidden;">
-    <MudDataGrid T="RfqDrawingPartNumberUx" 
+    <MudDataGrid T="RfqDrawingPartNumberUxModel" 
                  Items="@PartNumbers" 
                  ReadOnly="false" 
                  EditMode="DataGridEditMode.Form"
@@ -91,16 +92,16 @@
 </style>
 
 @code {
-    [Parameter] public IEnumerable<RfqDrawingPartNumberUx?> PartNumbers { get; set; } = new List<RfqDrawingPartNumberUx>();
-    [Parameter] public EventCallback<RfqDrawingPartNumberUx> OnPartNumberDeleted { get; set; }
-    [Parameter] public EventCallback<RfqDrawingPartNumberUx> OnPartNumberUpdated { get; set; }
+    [Parameter] public IEnumerable<RfqDrawingPartNumberUxModel?> PartNumbers { get; set; } = new List<RfqDrawingPartNumberUxModel>();
+    [Parameter] public EventCallback<RfqDrawingPartNumberUxModel> OnPartNumberDeleted { get; set; }
+    [Parameter] public EventCallback<RfqDrawingPartNumberUxModel> OnPartNumberUpdated { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await Task.Delay(1);
     }
 
-    private string RowStyleFunc(RfqDrawingPartNumberUx item, int index)
+    private string RowStyleFunc(RfqDrawingPartNumberUxModel item, int index)
     {
         return item?.Status switch
         {
@@ -114,22 +115,22 @@
     }
 
     // events
-    void StartedEditingItem(RfqDrawingPartNumberUx item)
+    void StartedEditingItem(RfqDrawingPartNumberUxModel item)
     {
         //_events.Insert(0, $"Event = StartedEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
     }
 
-    void CanceledEditingItem(RfqDrawingPartNumberUx item)
+    void CanceledEditingItem(RfqDrawingPartNumberUxModel item)
     {
         //_events.Insert(0, $"Event = CanceledEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
     }
 
-    void CommittedItemChanges(RfqDrawingPartNumberUx item)
+    void CommittedItemChanges(RfqDrawingPartNumberUxModel item)
     {
         //_events.Insert(0, $"Event = CommittedItemChanges, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
     }
 
-    private async Task OnSearch(RfqDrawingPartNumberUx item)
+    private async Task OnSearch(RfqDrawingPartNumberUxModel item)
     {
         if (item == null)
         {
@@ -160,8 +161,8 @@
                 Logger.GenericLogInformation("CustomerPartNumber is null");
                 return;
             }
-            SearchResultUx responseExact = await RfqUxClientService.SearchEmacsExactCustomerPn(item.CustomerPartNumber);
-            SearchResultUx responseContains = await RfqUxClientService.SearchEmacsContainsCustomerPn(cleanedUpPn);
+            SearchResultUxModel responseExact = await RfqUxClientService.SearchEmacsExactCustomerPn(item.CustomerPartNumber);
+            SearchResultUxModel responseContains = await RfqUxClientService.SearchEmacsContainsCustomerPn(cleanedUpPn);
 
 
             if ((responseContains.IsSuccessful && 0 <= responseContains.StringList.Count)
@@ -183,7 +184,7 @@
                 commentData.ExactMatchPartNumbers.AddRange(exactMatches);
                 foreach (string pn in responseExact.StringList)
                 {
-                    var matchedPartNumber = new RfqDrawingPartNumberUx();
+                    var matchedPartNumber = new RfqDrawingPartNumberUxModel();
                     matchedPartNumber.IsExactMatch = true;  // exact match
                     matchedPartNumber.Index = index++;
                     matchedPartNumber.DrawingPartNumber = pn;
@@ -196,7 +197,7 @@
                 commentData.ContainsMatchPartNumbers.AddRange(containsMatches);
                 foreach (string pn in responseContains.StringList)
                 {
-                    var matchedPartNumber = new RfqDrawingPartNumberUx();
+                    var matchedPartNumber = new RfqDrawingPartNumberUxModel();
                     matchedPartNumber.IsExactMatch = false;  // exact match
                     matchedPartNumber.Index = index++;
                     matchedPartNumber.DrawingPartNumber = pn;
@@ -227,7 +228,7 @@
                 // Wait for dialog result
                 DialogResult? result = await dialog.Result;
 
-                if (result != null && !result.Canceled && result.Data is RfqDrawingPartNumberUx updatedItem)
+                if (result != null && !result.Canceled && result.Data is RfqDrawingPartNumberUxModel updatedItem)
                 {
                     try
                     {
@@ -313,7 +314,7 @@
         }
     }
 
-    // private async Task OnFlip(RfqDrawingPartNumberUx item)
+    // private async Task OnFlip(RfqDrawingPartNumberUxModel item)
     // {
     //     await Task.Delay(1);
     //     if (item == null)
@@ -327,7 +328,7 @@
     //     StateHasChanged();
     // }
 
-    private async Task OnEdit(RfqDrawingPartNumberUx item)
+    private async Task OnEdit(RfqDrawingPartNumberUxModel item)
     {
         if (item == null)
         {
@@ -356,7 +357,7 @@
 
         DialogResult? result = await dialog.Result;
 
-        if (result != null && !result.Canceled && result.Data is RfqDrawingPartNumberUx editedItem)
+        if (result != null && !result.Canceled && result.Data is RfqDrawingPartNumberUxModel editedItem)
         {
             try
             {
@@ -406,7 +407,7 @@
         }
     }
 
-    private async Task OnDelete(RfqDrawingPartNumberUx item)
+    private async Task OnDelete(RfqDrawingPartNumberUxModel item)
     {
         if (item == null)
         {

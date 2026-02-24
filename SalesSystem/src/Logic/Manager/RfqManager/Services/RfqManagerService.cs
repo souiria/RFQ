@@ -768,6 +768,7 @@
             rfqProject.CarModelGuid = request.Project.CarModelGuid.ToUpperInvariant();
             rfqProject.VehicleVolume = request.Project.VehicleVolume;
             rfqProject.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+            rfqProject.IsActive = request.Project.IsActive ?? false;
 
             RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             rfqProjectRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
@@ -809,6 +810,7 @@
                 rfqProject.RfqResponseDeadline = request.Project.RfqResponseDeadline;
                 rfqProject.CarModelGuid = request.Project.CarModelGuid.ToUpperInvariant();
                 rfqProject.VehicleVolume = request.Project.VehicleVolume;
+                rfqProject.IsActive = request.Project.IsActive ?? false;
 
                 RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
                 rfqProjectRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();

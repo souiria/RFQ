@@ -1,6 +1,6 @@
 ﻿namespace SalesSystem.Rfq.Models
 {
-    public class ProjectAssociationUx
+    public class RqfCustomerProjectAssociationUxModel
     {
         public string? CustomerName 
         { get; set; }

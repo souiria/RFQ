@@ -366,7 +366,7 @@
             if(selectedPart != null)
             {
                 Logger.GenericLogInformation($"Picked action");
-                RfqDrawingPartNumberUx pickResult = new RfqDrawingPartNumberUx();
+                RfqDrawingPartNumberUxModel pickResult = new RfqDrawingPartNumberUxModel();
 
                 pickResult.SwappedPartNumber = selectedPart.SumitomoNumber;
                 pickResult.SwappedPartNumberPrice = (decimal?)selectedPart.Price;
@@ -390,7 +390,7 @@
         await _form.Validate();
         if (_isValid)
         {
-            var result = new RfqDrawingPartNumberUx();
+            var result = new RfqDrawingPartNumberUxModel();
 
             result.SwappedPartNumber = AlternativePartNumber;
             result.SwappedPartNumberPrice = AlternativePrice;

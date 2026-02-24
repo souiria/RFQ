@@ -12,7 +12,7 @@
 
         public async Task<Result<List<DbRfqProject>>> Handle(RfqProjectCommand command, CancellationToken cancellationToken)
         {
-            List<DbRfqProject> components = command.RfqProjectGrpcs.Select(rfqProjectGrpc => rfqProjectGrpc.ToEntity()).ToList();
+            List<DbRfqProject> rfqProjects = command.RfqProjectGrpcs.Select(rfqProjectGrpc => rfqProjectGrpc.ToEntity()).ToList();
 
             List<DbRfqProject> results = new List<DbRfqProject>();
             IEnumerable<DbRfqProject> repositoryActionResult;
@@ -21,17 +21,17 @@
             switch(command.CommandType)
             {
                 case CommandType.Create:
-                    repositoryActionResult = await Repository.AddRangeAsync(components, cancellationToken);
-                    success = repositoryActionResult.Count() == components.Count;
+                    repositoryActionResult = await Repository.AddRangeAsync(rfqProjects, cancellationToken);
+                    success = repositoryActionResult.Count() == rfqProjects.Count;
                     results = repositoryActionResult.ToList();
                 break;
                 case CommandType.Update:
-                    updateDeleteCount = await Repository.UpdateRangeAsync(components, cancellationToken);
-                    success = updateDeleteCount == components.Count;
+                    updateDeleteCount = await Repository.UpdateRangeAsync(rfqProjects, cancellationToken);
+                    success = updateDeleteCount == rfqProjects.Count;
                     break;
                 case CommandType.Delete:
-                    updateDeleteCount = await Repository.DeleteRangeAsync(components, cancellationToken);
-                    success = updateDeleteCount == components.Count;
+                    updateDeleteCount = await Repository.DeleteRangeAsync(rfqProjects, cancellationToken);
+                    success = updateDeleteCount == rfqProjects.Count;
                     break;
                 default:
                     {

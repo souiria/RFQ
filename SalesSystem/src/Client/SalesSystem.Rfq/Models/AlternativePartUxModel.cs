@@ -274,9 +274,9 @@
         public AlternativePartUxModel()
         {
             HasImage = false;
-            PartImage = new PartImageData();
+            PartImage = new PartImageDataUxModel();
         }
-        public PartImageData PartImage
+        public PartImageDataUxModel PartImage
         { get; set; }
         public string Source
         {
@@ -296,7 +296,7 @@
                 //string? base64Image = Convert.ToBase64String(imageData.ImageBytes.ToArray());
                 return HasImage 
                     ? $"data:{PartImage.MimeType};base64,{PartImage.Source}"
-                    : $"data:{PartImageData.NoImage.MimeType};base64,{PartImageData.NoImage.Source}";
+                    : $"data:{PartImageDataUxModel.NoImage.MimeType};base64,{PartImageDataUxModel.NoImage.Source}";
             }
         }
     }

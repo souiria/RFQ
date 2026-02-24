@@ -1,22 +1,12 @@
 ﻿namespace SalesSystem.Rfq.Models
 {
-    public enum RfqDrawingPartNumberStatus
-    {
-        New = 0,
-        ExactMatch = 10,
-        ContainsMatch = 15,
-        NprSearched = 20,
-        AlternativePartSelected = 30,
-        NprRequested = 40,
-        Completed = 50
-    }
 
-    public class RfqDrawingPartNumberUx
+    public class RfqDrawingPartNumberUxModel
     {
-        public RfqDrawingPartNumberUx()
+        public RfqDrawingPartNumberUxModel()
         {
             MultiMatch = false;
-            SearchResultPartNumbers = new List<RfqDrawingPartNumberUx>();
+            SearchResultPartNumbers = new List<RfqDrawingPartNumberUxModel>();
             Status = RfqDrawingPartNumberStatus.New;
             IsExactMatch  = false;
             IsSwapped = false;
@@ -75,9 +65,9 @@
         public int Index
         { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
-        public List<RfqDrawingPartNumberUx> SearchResultPartNumbers
+        public List<RfqDrawingPartNumberUxModel> SearchResultPartNumbers
         { get; }
-        public PartImageData? PartImage
+        public PartImageDataUxModel? PartImage
         { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
         public bool HasImage => PartImage != null && 0 <= PartImage.ImageBytes.Count;

@@ -21,7 +21,7 @@
     }
     else
     {
-        <MudDataGrid T="RfqProjectUx"
+        <MudDataGrid T="RqfProjectUxModel"
                      @ref="@_DataGrid"
                      Items="@RfqUxClientService.RfqProjectUxs"
                      QuickFilter="@QuickFilter"
@@ -94,8 +94,8 @@
 </style>
 
 @code {
-    MudDataGrid<RfqProjectUx> _DataGrid = null!;
-    // IEnumerable<RfqProjectUx> _RfqProjects = new List<RfqProjectUx>();
+    MudDataGrid<RqfProjectUxModel> _DataGrid = null!;
+    // IEnumerable<RqfProjectUxModel> _RfqProjects = new List<RqfProjectUxModel>();
     string? _SearchString = string.Empty;
 
     [Parameter] public Guid? UserId { get; set; }
@@ -119,7 +119,7 @@
                 Snackbar.Add("No RFQ projects found.", Severity.Info);
             }
             // FIX: Assign the correct type directly, do not use Concat (Concat does not mutate the original list)
-            // _RfqProjects = RfqUxClientService.RfqProjectUxs.Cast<RfqProjectUx>().ToList();
+            // _RfqProjects = RfqUxClientService.RfqProjectUxs.Cast<RqfProjectUxModel>().ToList();
             Logger.LogInformation($"Loaded {RfqUxClientService.RfqProjectUxs.Count} RFQ projects");
         }
         catch (Exception ex)
@@ -133,7 +133,7 @@
         }
     }
 
-    private void NavigateToEdit(RfqProjectUx project)
+    private void NavigateToEdit(RqfProjectUxModel project)
     {
         if (UserId.HasValue)
         {
@@ -145,7 +145,7 @@
         }
     }
 
-    private async Task DeleteAsync(RfqProjectUx project)
+    private async Task DeleteAsync(RqfProjectUxModel project)
     {
         bool? result = await DialogService.ShowMessageBox(
             "Delete RFQ Project",
@@ -185,7 +185,7 @@
     }
 
     // quick filter - filter globally across multiple columns with the same input
-    private Func<RfqProjectUx, bool> QuickFilter => x =>
+    private Func<RqfProjectUxModel, bool> QuickFilter => x =>
     {
         if (string.IsNullOrWhiteSpace(_SearchString))
             return true;

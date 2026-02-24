@@ -11,12 +11,12 @@
     public static class RfqDrawingPartNumberUxSearchResultExtensions
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
-        public static List<RfqDrawingPartNumberUx> ToRfqDrawingPartNumberUxList(this List<string> partNumbers, bool isExactMatch = false)
+        public static List<RfqDrawingPartNumberUxModel> ToRfqDrawingPartNumberUxList(this List<string> partNumbers, bool isExactMatch = false)
         {
-            List<RfqDrawingPartNumberUx> result = new List<RfqDrawingPartNumberUx>();
+            List<RfqDrawingPartNumberUxModel> result = new List<RfqDrawingPartNumberUxModel>();
             foreach (string partNumber in partNumbers)
             {
-                RfqDrawingPartNumberUx item = new RfqDrawingPartNumberUx();
+                RfqDrawingPartNumberUxModel item = new RfqDrawingPartNumberUxModel();
                 item.DrawingPartNumber = partNumber;
                 item.IsExactMatch = isExactMatch;
 
@@ -36,15 +36,15 @@
         public string? Action
         { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
-        public List<RfqDrawingPartNumberUx> ExactMatchPartNumbers
+        public List<RfqDrawingPartNumberUxModel> ExactMatchPartNumbers
         { get; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
-        public List<RfqDrawingPartNumberUx> ContainsMatchPartNumbers
+        public List<RfqDrawingPartNumberUxModel> ContainsMatchPartNumbers
         { get; }
         public RfqDrawingPartNumberUxSearchResult()
         {
-            ExactMatchPartNumbers = new List<RfqDrawingPartNumberUx>();
-            ContainsMatchPartNumbers = new List<RfqDrawingPartNumberUx>();
+            ExactMatchPartNumbers = new List<RfqDrawingPartNumberUxModel>();
+            ContainsMatchPartNumbers = new List<RfqDrawingPartNumberUxModel>();
         }
     }
 }
