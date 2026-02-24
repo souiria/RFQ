@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Access\Master\Master.csproj" />
+    <ProjectReference Include="..\..\..\Access\NPR\NPR.csproj" />
     <ProjectReference Include="..\..\..\Access\Rfq\Rfq.csproj" />
     <ProjectReference Include="..\..\..\Debug\SalesSystem.ServiceDefaults\SalesSystem.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\..\Utilities\SharedModels\SharedModels.csproj" />

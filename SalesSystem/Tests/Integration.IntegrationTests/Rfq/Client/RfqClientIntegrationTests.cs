@@ -87,7 +87,7 @@ namespace Integration.Tests.Rfq.Client
                 TestContext.Out.WriteLine($"Retrieved RFQ Project: RowId={project.RowId}, RfqNumber={project.RfqNumber}");
             }
         }
-        
+
         [Test]
         [Category("Integration")]
         [Description("Verify that GetRfqProjectByIdAsync returns a project")]
@@ -169,7 +169,7 @@ namespace Integration.Tests.Rfq.Client
             EnsureServiceInitialized();
 
             TestContext.Out.WriteLine($"Testing UpdateRfqProjectAsync with RowId: {testProjectRowId}");
-            
+
             RfqProject? rfqProject = await GetRfqProjectAsync(testProjectRowId);
 
             // Assert
@@ -414,7 +414,7 @@ namespace Integration.Tests.Rfq.Client
             //if (long.TryParse(createResponse.CreatedProjectId, out long projectId))
             if (long.TryParse(testProjectId, out long projectId))
             {
-                    TestContext.Out.WriteLine($"Verifying uploaded parts for project ID: {projectId}");
+                TestContext.Out.WriteLine($"Verifying uploaded parts for project ID: {projectId}");
 
                 int partCount = await _RfqUxClientService.GetRfqDrawingPartNumbersByRfqIdAsync(projectId);
 
@@ -423,7 +423,7 @@ namespace Integration.Tests.Rfq.Client
                 GreaterThanOrEqualConstraint hasPartNumbers = Is.GreaterThanOrEqualTo(0);
                 Assert.That(partCount, hasPartNumbers, "Should retrieve part numbers from uploaded BOM");
 
-                if (0 < partCount )
+                if (0 < partCount)
                 {
                     TestContext.Out.WriteLine("Sample part numbers:");
                     IEnumerable<RfqDrawingPartNumberUx?> parts = _RfqUxClientService.RfqDrawingPartNumbers;
@@ -592,7 +592,7 @@ namespace Integration.Tests.Rfq.Client
             ArgumentNullException.ThrowIfNull(_RfqUxClientService);
 
             IEnumerable<RfqProjectUx> projects = _RfqUxClientService.RfqProjectUxs.Take(maxProjectsToTest);
-            
+
             foreach (RfqProjectUx project in projects)
             {
                 long rfqId = project.RowId;
@@ -601,7 +601,7 @@ namespace Integration.Tests.Rfq.Client
                 int partCount = await GetDrawingPartNumbersAsync(rfqId);
                 TestContext.Out.WriteLine($"  Found {partCount} part numbers for this project");
                 GreaterThanOrEqualConstraint isGreaterThanOrEqualToZero = Is.GreaterThanOrEqualTo(0);
-                Assert.That(partCount, isGreaterThanOrEqualToZero, 
+                Assert.That(partCount, isGreaterThanOrEqualToZero,
                     $"Part count for RfqId {rfqId} should be >= 0");
             }
         }
@@ -648,7 +648,7 @@ namespace Integration.Tests.Rfq.Client
             ArgumentNullException.ThrowIfNull(_RfqUxClientService);
 
             int partCount = await GetDrawingPartNumbersAsync(rfqId);
-            
+
             Console.WriteLine($"\nDrawing Part Numbers ({partCount} found) for RfqId {rfqId}:");
 
             List<RfqDrawingPartNumberUx?> partList = _RfqUxClientService.RfqDrawingPartNumbers.Where(p => p is not null).ToList();
@@ -687,7 +687,7 @@ namespace Integration.Tests.Rfq.Client
             if (disposing)
             {
                 _RfqUxClientService?.Dispose();
-                
+
                 TestContext.Out.WriteLine("RfqClientIntegrationTests - Resources disposed");
             }
 

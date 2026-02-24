@@ -13,7 +13,7 @@ global using Microsoft.Extensions.Logging;
 global using Newtonsoft.Json;
 global using NPR;
 global using Rfq;
-global using RfqModule.Data.DTOs;
+global using RfqModels = RfqModule;global using RfqModule.Data.DTOs;
 global using RfqModule.Data.Time;
 global using RfqModule.Endpoints.GrpcServices;
 global using RfqModule.Extentions;

@@ -35,6 +35,10 @@ service RfqModule {
   rpc GetAllAlternativePartsGrpc (GetAllAlternativePartsGrpcRequest) returns (GetAllAlternativePartsGrpcResponse);
 
  rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
+   rpc GetAllNprRequestSets (google.protobuf.Empty) returns (NPRListRfqNprRequestSetGrpc);
+  rpc SaveAllNprRequestSets (NPRListRfqNprRequestSetGrpc) returns (google.protobuf.Empty);
+    rpc LoadDuplicatedNprRequests (LoadDuplicatedNprRequestsRequest) returns (LoadDuplicatedNprRequestsResponse);
+	  rpc GetAllNprRequestSetsWithoutDuplicates (LoadNprSetsWithoutDuplicatesRequest) returns (NPRListRfqNprRequestSetGrpc);
 }
 
 // The request message containing the user's name.
@@ -427,4 +431,99 @@ string requestType = 3;
 message GetAllAlternativePartsGrpcResponse
 {
     repeated RfqAlternativePartsGrpc alternativeParts = 1;
+}
+
+enum NprSetRequestStatusGrpc {
+  NPR_SET_STATUS_UNSPECIFIED = 0;
+  LOCAL_UNCHANGED = 1;
+  LOCAL_UPDATED = 2;
+}
+
+message RfqProjectInfoGrpc {
+  int32 row_id = 1;
+  google.protobuf.StringValue rfq_number = 2;
+  google.protobuf.StringValue customer_business_unit_id = 3;
+  google.protobuf.StringValue customer_location_id = 4;
+  google.protobuf.StringValue project_id = 5;
+  int32 rfq_reason_id = 6;
+  google.protobuf.Timestamp rfq_response_deadline = 7;
+  google.protobuf.StringValue car_model_id = 8;
+  int32 vehicle_volume = 9;
+  bool is_active = 10;
+}
+
+message RfqNprRequestGrpc {
+  string id = 1;
+
+  google.protobuf.StringValue reason = 2;
+  google.protobuf.StringValue customer = 3;
+  google.protobuf.StringValue platform_name = 4;
+  google.protobuf.StringValue program_name = 5;
+  google.protobuf.StringValue project = 6;
+
+  google.protobuf.StringValue material_type = 7;
+  google.protobuf.StringValue suggested_sews_e_manufacturing_site = 8;
+
+  google.protobuf.StringValue customer_part_number = 9;
+  google.protobuf.StringValue supplier_part_number = 10;
+  google.protobuf.StringValue sumitomo_number = 11;
+
+  google.protobuf.StringValue material_description = 12;
+  google.protobuf.StringValue unit_of_measure = 13;
+  google.protobuf.StringValue supplier_group = 14;
+
+  google.protobuf.Int32Value qty_per_vehicle = 15;
+  google.protobuf.Int32Value quantity = 16;
+
+  google.protobuf.Timestamp required_date = 17;
+
+  google.protobuf.StringValue raised_remarks = 18;
+
+  bool is_customer_nominated_supplier = 19;
+  bool is_customer_nominated_material = 20;
+  bool samples_required = 21;
+
+  google.protobuf.StringValue sample_site = 22;
+  google.protobuf.Int32Value sample_quantity = 23;
+  google.protobuf.StringValue sample_recipient = 24;
+  google.protobuf.Timestamp sample_required_date = 25;
+
+  google.protobuf.StringValue freight_account = 26;
+  google.protobuf.StringValue associated_parts = 27;
+  google.protobuf.StringValue suggested_manufacturer = 28;
+}
+
+message RfqNprRequestSetGrpc {
+  string id = 1;
+
+  google.protobuf.StringValue rfq_number = 2;
+
+  google.protobuf.Timestamp created = 3;
+  NprSetRequestStatusGrpc status = 4;
+  google.protobuf.Timestamp updated = 5;
+
+  repeated RfqNprRequestGrpc npr_requests = 6;
+
+  google.protobuf.Timestamp closed = 7;
+  google.protobuf.StringValue project_id = 8;
+
+  RfqProjectInfoGrpc project = 9;
+}
+
+message NPRListRfqNprRequestSetGrpc {
+  repeated RfqNprRequestSetGrpc items = 1;
+}
+
+message LoadDuplicatedNprRequestsRequest {
+  bool include_empty_keys = 1;
+  bool remove_formatting  = 2;
+}
+
+message LoadDuplicatedNprRequestsResponse {
+  repeated RfqNprRequestGrpc items = 1;
+}
+
+message LoadNprSetsWithoutDuplicatesRequest {
+  bool include_empty_keys = 1;
+  bool remove_formatting  = 2;
 }
