@@ -1,6 +1,8 @@
-﻿global using System.Linq.Dynamic.Core;
+﻿global using System.Collections.ObjectModel;
+global using System.Linq.Dynamic.Core;
 global using System.Linq.Expressions;
 global using System.Reflection;
+global using System.Text.Json;
 global using Ardalis.Specification;
 global using Ardalis.Specification.EntityFrameworkCore;
 global using Google.Protobuf.WellKnownTypes;
@@ -12,6 +14,7 @@ global using NPR.CQRS.Query.RFQStatus;
 global using NPR.CQRS.Specification.H1NPRView;
 global using NPR.CQRS.Specification.RFQStatus;
 global using NPR.Data.Context;
+global using NPR.Data.Enum;
 global using NPR.Data.Interface;
 global using NPR.Data.Model;
 global using NPR.Data.Repository;

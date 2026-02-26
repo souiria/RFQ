@@ -1,6 +1,6 @@
 ﻿namespace SalesSystem.Rfq.Models
 {
-    public class PartImageData
+    public class PartImageDataUxModel
     {
         byte[] _ImageBytes;
 
@@ -23,7 +23,7 @@
         public string MimeType
         { get; set; }
 
-        public PartImageData()
+        public PartImageDataUxModel()
         {
             _ImageBytes = Array.Empty<byte>();
             MimeType = "image/png";
@@ -38,13 +38,13 @@
                     """;
             }
         }
-        static PartImageData _NoImage;
-        static PartImageData()
+        static PartImageDataUxModel _NoImage;
+        static PartImageDataUxModel()
         {
-            _NoImage = new PartImageData();
+            _NoImage = new PartImageDataUxModel();
             _NoImage.ImageBytes = Encoding.ASCII.GetBytes(NoImageSource);
         }
-        public static PartImageData NoImage
+        public static PartImageDataUxModel NoImage
         {
             get => _NoImage;
         }

@@ -226,15 +226,15 @@
 
 @code {
     [Parameter]
-    public List<FileObjectUx> FileObjects { get; set; } = new();
+    public List<FileObjectUxModel> FileObjects { get; set; } = new();
 
     [Parameter]
-    public EventCallback<FileObjectUx> OnRetryUpload { get; set; }
+    public EventCallback<FileObjectUxModel> OnRetryUpload { get; set; }
 
     [Parameter]
-    public EventCallback<FileObjectUx> OnRemoveFile { get; set; }
+    public EventCallback<FileObjectUxModel> OnRemoveFile { get; set; }
 
-    private async Task RemoveFile(FileObjectUx fileObject)
+    private async Task RemoveFile(FileObjectUxModel fileObject)
     {
         try
         {
@@ -256,7 +256,7 @@
         }
     }
 
-    private string GetCardCssClass(FileObjectUx fileObject)
+    private string GetCardCssClass(FileObjectUxModel fileObject)
     {
         var baseClass = "file-card";
 
@@ -335,7 +335,7 @@
         return $"{size:0.##} {sizes[order]}";
     }
 
-    private RfqFileType DetermineFileType(FileObjectUx fileObject)
+    private RfqFileType DetermineFileType(FileObjectUxModel fileObject)
     {
         if (fileObject.File == null)
         {

@@ -10,8 +10,8 @@ namespace SalesSystem.Rfq.Services
         }
 
         public async Task ExportPartNumbersToCsvAsync(
-            Collection<RfqDrawingPartNumberUx?> matchedParts,
-            Collection<RfqDrawingPartNumberUx?> unmatchedParts,
+            Collection<RfqDrawingPartNumberUxModel?> matchedParts,
+            Collection<RfqDrawingPartNumberUxModel?> unmatchedParts,
             string fileName = "RFQ_Parts_Export")
         {
             try
@@ -20,8 +20,8 @@ namespace SalesSystem.Rfq.Services
                 List<RfqPartNumberExportModel> exportData = new List<RfqPartNumberExportModel>();
 
                 // Add matched parts
-                List<RfqDrawingPartNumberUx?> matched = matchedParts.Where(p => p != null).ToList();
-                foreach (RfqDrawingPartNumberUx? part in matched)
+                List<RfqDrawingPartNumberUxModel?> matched = matchedParts.Where(p => p != null).ToList();
+                foreach (RfqDrawingPartNumberUxModel? part in matched)
                 {
                     RfqPartNumberExportModel record = new RfqPartNumberExportModel();
 
@@ -44,8 +44,8 @@ namespace SalesSystem.Rfq.Services
                 }
 
                 // Add unmatched parts
-                List<RfqDrawingPartNumberUx?> unmatched = unmatchedParts.Where(p => p != null).ToList();
-                foreach (RfqDrawingPartNumberUx? part in unmatched)
+                List<RfqDrawingPartNumberUxModel?> unmatched = unmatchedParts.Where(p => p != null).ToList();
+                foreach (RfqDrawingPartNumberUxModel? part in unmatched)
                 {
                     RfqPartNumberExportModel record = new RfqPartNumberExportModel();
                     record.RowId = part!.RowId;

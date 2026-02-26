@@ -1,4 +1,4 @@
-﻿namespace SalesSystem.Rfq.Enums
+﻿namespace NPR.Data.Enum
 {
     public enum NprSetRequestStatus
     {
@@ -9,3 +9,4 @@
         Approved,
     }
 }
+

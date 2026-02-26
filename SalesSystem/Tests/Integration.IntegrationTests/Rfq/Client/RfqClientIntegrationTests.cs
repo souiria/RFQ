@@ -82,12 +82,12 @@ namespace Integration.Tests.Rfq.Client
             GreaterThanConstraint greaterThanZero = Is.GreaterThan(0);
             Assert.That(rfqProjectList, greaterThanZero, "RfqProject list count should be greater than 0");
 
-            foreach (RfqProjectUx project in _RfqUxClientService.RfqProjectUxs)
+            foreach (RqfProjectUxModel project in _RfqUxClientService.RfqProjectUxs)
             {
                 TestContext.Out.WriteLine($"Retrieved RFQ Project: RowId={project.RowId}, RfqNumber={project.RfqNumber}");
             }
         }
-        
+
         [Test]
         [Category("Integration")]
         [Description("Verify that GetRfqProjectByIdAsync returns a project")]
@@ -169,19 +169,19 @@ namespace Integration.Tests.Rfq.Client
             EnsureServiceInitialized();
 
             TestContext.Out.WriteLine($"Testing UpdateRfqProjectAsync with RowId: {testProjectRowId}");
-            
+
             RfqProject? rfqProject = await GetRfqProjectAsync(testProjectRowId);
 
             // Assert
             AssertProjectRetrieved(rfqProject, testProjectRowId);
             Assert.That(rfqProject, Is.Not.Null, "RfqProject should not be null");
 
-            RfqProjectUx? project = rfqProject.ToUx();
+            RqfProjectUxModel? project = rfqProject.ToUx();
 
             // save the name for later comparison
             string originalRfqNumber = project!.RfqNumber;
 
-            Assert.That(project, Is.Not.Null, "RfqProjectUx should not be null");
+            Assert.That(project, Is.Not.Null, "RqfProjectUxModel should not be null");
 
             // Act - update the project
             project.RfqNumber += " - Updated";
@@ -196,7 +196,7 @@ namespace Integration.Tests.Rfq.Client
             rfqProject = await GetRfqProjectAsync(testProjectRowId);
             project = rfqProject.ToUx();
 
-            Assert.That(project, Is.Not.Null, "RfqProjectUx should not be null");
+            Assert.That(project, Is.Not.Null, "RqfProjectUxModel should not be null");
 
             TestContext.Out.WriteLine($"Updated Project RfqNumber: {project.RfqNumber}");
 
@@ -213,7 +213,7 @@ namespace Integration.Tests.Rfq.Client
             // reread to confirm revert
             rfqProject = await GetRfqProjectAsync(testProjectRowId);
             project = rfqProject.ToUx();
-            Assert.That(project, Is.Not.Null, "RfqProjectUx should not be null after revert");
+            Assert.That(project, Is.Not.Null, "RqfProjectUxModel should not be null after revert");
 
             TestContext.Out.WriteLine($"Reverted Project RfqNumber: {project.RfqNumber}");
             EqualConstraint isEqualToOriginal = Is.EqualTo(originalRfqNumber);
@@ -244,7 +244,7 @@ namespace Integration.Tests.Rfq.Client
             LogProjectDetails(project);
 
             long rowId = project.RowId;
-            List<RfqDrawingPartNumberUx?> parts = await LogDrawingPartNumbers(rowId);
+            List<RfqDrawingPartNumberUxModel?> parts = await LogDrawingPartNumbers(rowId);
             if (parts.Count == 0)
             {
                 TestContext.Out.WriteLine("No drawing part numbers found to update.");
@@ -253,7 +253,7 @@ namespace Integration.Tests.Rfq.Client
             }
 
             // update all IsCompleted to false
-            foreach (RfqDrawingPartNumberUx? part in parts)
+            foreach (RfqDrawingPartNumberUxModel? part in parts)
             {
                 if (part is not null)
                 {
@@ -350,7 +350,7 @@ namespace Integration.Tests.Rfq.Client
             //TestContext.Out.WriteLine($"  Message: {createResponse.Message}");
 
             // Test project Id
-            const string testProjectId = "71";
+            const string testProjectId = "73";
 
             // Prepare test BOM file (FordBom.xml)
             string bomFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, "TestData", "FordBom.xml");
@@ -414,7 +414,7 @@ namespace Integration.Tests.Rfq.Client
             //if (long.TryParse(createResponse.CreatedProjectId, out long projectId))
             if (long.TryParse(testProjectId, out long projectId))
             {
-                    TestContext.Out.WriteLine($"Verifying uploaded parts for project ID: {projectId}");
+                TestContext.Out.WriteLine($"Verifying uploaded parts for project ID: {projectId}");
 
                 int partCount = await _RfqUxClientService.GetRfqDrawingPartNumbersByRfqIdAsync(projectId);
 
@@ -423,12 +423,12 @@ namespace Integration.Tests.Rfq.Client
                 GreaterThanOrEqualConstraint hasPartNumbers = Is.GreaterThanOrEqualTo(0);
                 Assert.That(partCount, hasPartNumbers, "Should retrieve part numbers from uploaded BOM");
 
-                if (0 < partCount )
+                if (0 < partCount)
                 {
                     TestContext.Out.WriteLine("Sample part numbers:");
-                    IEnumerable<RfqDrawingPartNumberUx?> parts = _RfqUxClientService.RfqDrawingPartNumbers;
+                    IEnumerable<RfqDrawingPartNumberUxModel?> parts = _RfqUxClientService.RfqDrawingPartNumbers;
 
-                    foreach (RfqDrawingPartNumberUx? part in parts)
+                    foreach (RfqDrawingPartNumberUxModel? part in parts)
                     {
                         if (part != null)
                         {
@@ -552,7 +552,7 @@ namespace Integration.Tests.Rfq.Client
             Assert.That(partNumberCount, condition, "Part number count should be >= 0");
             TestContext.Out.WriteLine($"Retrieved {partNumberCount} drawing part numbers");
 
-            IReadOnlyCollection<RfqDrawingPartNumberUx?> cachedPartNumbers = _RfqUxClientService.RfqDrawingPartNumbers;
+            IReadOnlyCollection<RfqDrawingPartNumberUxModel?> cachedPartNumbers = _RfqUxClientService.RfqDrawingPartNumbers;
             Assert.Multiple(() =>
             {
                 Assert.That(cachedPartNumbers, Is.Not.Null, "Cached part numbers collection should not be null");
@@ -570,7 +570,7 @@ namespace Integration.Tests.Rfq.Client
             Assert.That(projectCount, condition, "Project count should be >= 0");
             TestContext.Out.WriteLine($"Retrieved {projectCount} RFQ projects");
 
-            IReadOnlyCollection<RfqProjectUx> projects = _RfqUxClientService.RfqProjectUxs;
+            IReadOnlyCollection<RqfProjectUxModel> projects = _RfqUxClientService.RfqProjectUxs;
             EqualConstraint conditionIsEqualTo = Is.EqualTo(projectCount);
             Assert.That(projects.Count, conditionIsEqualTo, "Cached projects count should match");
         }
@@ -591,9 +591,9 @@ namespace Integration.Tests.Rfq.Client
         {
             ArgumentNullException.ThrowIfNull(_RfqUxClientService);
 
-            IEnumerable<RfqProjectUx> projects = _RfqUxClientService.RfqProjectUxs.Take(maxProjectsToTest);
+            IEnumerable<RqfProjectUxModel> projects = _RfqUxClientService.RfqProjectUxs.Take(maxProjectsToTest);
             
-            foreach (RfqProjectUx project in projects)
+            foreach (RqfProjectUxModel project in projects)
             {
                 long rfqId = project.RowId;
                 TestContext.Out.WriteLine($"Getting part numbers for Project: RowId={project.RowId}, RfqNumber={project.RfqNumber}");
@@ -601,7 +601,7 @@ namespace Integration.Tests.Rfq.Client
                 int partCount = await GetDrawingPartNumbersAsync(rfqId);
                 TestContext.Out.WriteLine($"  Found {partCount} part numbers for this project");
                 GreaterThanOrEqualConstraint isGreaterThanOrEqualToZero = Is.GreaterThanOrEqualTo(0);
-                Assert.That(partCount, isGreaterThanOrEqualToZero, 
+                Assert.That(partCount, isGreaterThanOrEqualToZero,
                     $"Part count for RfqId {rfqId} should be >= 0");
             }
         }
@@ -619,10 +619,10 @@ namespace Integration.Tests.Rfq.Client
 
         #region Helper Methods - Logging
 
-        void LogPartNumberDetails(IReadOnlyCollection<RfqDrawingPartNumberUx?> partNumbers)
+        void LogPartNumberDetails(IReadOnlyCollection<RfqDrawingPartNumberUxModel?> partNumbers)
         {
-            List<RfqDrawingPartNumberUx?> partNumberList = partNumbers.Where(p => p is not null).ToList();
-            foreach (RfqDrawingPartNumberUx? partNumber in partNumberList)
+            List<RfqDrawingPartNumberUxModel?> partNumberList = partNumbers.Where(p => p is not null).ToList();
+            foreach (RfqDrawingPartNumberUxModel? partNumber in partNumberList)
             {
                 TestContext.Out.WriteLine(
                     $"Part Number: RowId={partNumber!.RowId}, Customer P/N={partNumber.CustomerPartNumber}, Drawing P/N={partNumber.DrawingPartNumber}, " +
@@ -643,16 +643,16 @@ namespace Integration.Tests.Rfq.Client
             TestContext.Out.WriteLine($"  CarModelName: {project.CarModelName}");
         }
 
-        async Task<List<RfqDrawingPartNumberUx?>> LogDrawingPartNumbers(long rfqId)
+        async Task<List<RfqDrawingPartNumberUxModel?>> LogDrawingPartNumbers(long rfqId)
         {
             ArgumentNullException.ThrowIfNull(_RfqUxClientService);
 
             int partCount = await GetDrawingPartNumbersAsync(rfqId);
-            
+
             Console.WriteLine($"\nDrawing Part Numbers ({partCount} found) for RfqId {rfqId}:");
 
-            List<RfqDrawingPartNumberUx?> partList = _RfqUxClientService.RfqDrawingPartNumbers.Where(p => p is not null).ToList();
-            foreach (RfqDrawingPartNumberUx? part in partList)
+            List<RfqDrawingPartNumberUxModel?> partList = _RfqUxClientService.RfqDrawingPartNumbers.Where(p => p is not null).ToList();
+            foreach (RfqDrawingPartNumberUxModel? part in partList)
             {
                 string msg = $"  - {part!.CustomerPartNumber} / {part.DrawingPartNumber} (${part.DrawingPartNumberPrice}) ";
                 msg += (part.IsCompleted == true ? "completed" : "in progress");
@@ -687,7 +687,7 @@ namespace Integration.Tests.Rfq.Client
             if (disposing)
             {
                 _RfqUxClientService?.Dispose();
-                
+
                 TestContext.Out.WriteLine("RfqClientIntegrationTests - Resources disposed");
             }
 

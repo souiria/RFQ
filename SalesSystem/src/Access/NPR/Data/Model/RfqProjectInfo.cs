@@ -1,6 +1,6 @@
-﻿namespace SalesSystem.Rfq.Models
+﻿namespace NPR.Data.Model
 {
-    public class RfqProjectUx
+    public class RfqProjectInfo
     {
         public long RowId
         { get; set; }
@@ -32,7 +32,7 @@
         { get; set; }
         public bool IsActive
         { get; set; }
-        public RfqProjectUx()
+        public RfqProjectInfo()
         {
             RfqNumber = string.Empty;
             CustomerBusinessUnitId = string.Empty;
