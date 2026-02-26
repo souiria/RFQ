@@ -170,5 +170,29 @@
                 return response;
             }
         }
+        public override async Task<GetRfqNprRequestByRfqNumberGrpcResponse> GetRfqNprRequestByRfqNumberGrpc(GetRfqNprRequestByRfqNumberGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation($"GetRfqNprRequestByRfqNumberGrpc starting");
+            GetRfqNprRequestByRfqNumberGrpcResponse response = await _RfqManagerService.GetRfqNprRequestByRfqNumberGrpc(request);
+            return response;
+        }
+        public override async Task<GetAllRfqNprRequestGrpcResponse> GetAllRfqNprRequestGrpc(GetAllRfqNprRequestGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation($"GetAllRfqNprRequestGrpc starting");
+            GetAllRfqNprRequestGrpcResponse response = await _RfqManagerService.GetAllRfqNprRequestGrpc(request);
+            return response;
+        }
+        public override async Task<CreateRfqNprRequestGrpcResponse> CreateRfqNprRequestGrpc(CreateRfqNprRequestGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation($"CreateRfqNprRequestGrpc starting");
+            CreateRfqNprRequestGrpcResponse response = await _RfqManagerService.CreateRfqNprRequestGrpc(request);
+            return response;
+        }
+        public override async Task<UpdateRfqNprRequestGrpcResponse> UploadRfqNprRequestGrpc(UpdateRfqNprRequestGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation($"UploadRfqNprRequestGrpc starting");
+            UpdateRfqNprRequestGrpcResponse response = await _RfqManagerService.UpdateRfqNprRequestGrpc(request);
+            return response;
+        }
     }
 }

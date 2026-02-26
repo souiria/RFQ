@@ -106,5 +106,7 @@
 
         public DateTime? SubmittedAt
         { get; set; }
+        public string? RfqNumber
+        { get; set; }
     }
 }

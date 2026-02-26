@@ -1,4 +1,6 @@
-﻿namespace Rfq.Extensions
+﻿using SharedKernel;
+
+namespace Rfq.Extensions
 {
     public static class RfqMappingExtentions
     {
@@ -1924,6 +1926,7 @@
             data.SubmissionStatus = (int?)entity.SubmissionStatus;
             data.RemoteEndpointResponse = entity.RemoteEndpointResponse;
             data.SubmittedAt = entity.SubmittedAt?.ToUniversalTime().ToTimestamp();
+            data.RfqNumber = entity.RfqNumber;
             return data;
         }
 
@@ -1965,11 +1968,9 @@
             data.SubmissionStatus = (SubmissionStatus?)grpc.SubmissionStatus;
             data.RemoteEndpointResponse = grpc.RemoteEndpointResponse;
             data.SubmittedAt = grpc.SubmittedAt.ToDateTime();
+            data.RfqNumber = grpc.RfqNumber;
             return data;
         }
-
-
-
         #endregion
 
     }

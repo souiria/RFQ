@@ -168,5 +168,88 @@
             part.CategoryCode2 = alternativeParts.CategoryCode2;
             return part;
         }
+
+        public static Rfq.RfqNprRequestGrpc ToRfqNprRquestGrpcAccess(this RfqNprRequestGrpc rfqNprRequest)
+        {
+            Rfq.RfqNprRequestGrpc accessData = new Rfq.RfqNprRequestGrpc();
+            accessData.Id = rfqNprRequest.Id;
+            accessData.Reason = rfqNprRequest.Reason;
+            accessData.Customer = rfqNprRequest.Customer;
+            accessData.PlatformName = rfqNprRequest.PlatformName;
+            accessData.ProgramName = rfqNprRequest.ProgramName;
+            accessData.Project = rfqNprRequest.Project;
+            accessData.MaterialType = rfqNprRequest.MaterialType;
+            accessData.SuggestedSewsEManufacturingSite = rfqNprRequest.SuggestedSewsEManufacturingSite;
+            accessData.CustomerPartNumber = rfqNprRequest.CustomerPartNumber;
+            accessData.SupplierPartNumber = rfqNprRequest.SupplierPartNumber;
+            accessData.SumitomoNumber = rfqNprRequest.SumitomoNumber;
+            accessData.MaterialDescription = rfqNprRequest.MaterialDescription;
+            accessData.UnitOfMeasure = rfqNprRequest.UnitOfMeasure;
+            accessData.SupplierGroup = rfqNprRequest.SupplierGroup;
+            accessData.QtyPerVehicle = rfqNprRequest.QtyPerVehicle;
+            accessData.Quantity = rfqNprRequest.Quantity;
+            accessData.RequiredDate = rfqNprRequest.RequiredDate;
+            accessData.RaisedRemarks = rfqNprRequest.RaisedRemarks;
+            accessData.IsCustomerNominatedSupplier = rfqNprRequest.IsCustomerNominatedSupplier;
+            accessData.IsCustomerNominatedMaterial = rfqNprRequest.IsCustomerNominatedMaterial;
+            accessData.SamplesRequired = rfqNprRequest.SamplesRequired;
+            accessData.SampleSite = rfqNprRequest.SampleSite;
+            accessData.SampleQuantity = rfqNprRequest.SampleQuantity;
+            accessData.SampleRecipient = rfqNprRequest.SampleRecipient;
+            accessData.SampleRequiredDate = rfqNprRequest.SampleRequiredDate;
+            accessData.FreightAccount = rfqNprRequest.FreightAccount;
+            accessData.AssociatedParts = rfqNprRequest.AssociatedParts;
+            accessData.SuggestedManufacturer = rfqNprRequest.SuggestedManufacturer;
+            accessData.CreatedAt = rfqNprRequest.CreatedAt;
+            accessData.CreatedBy = rfqNprRequest.CreatedBy;
+            accessData.ModifiedAt = rfqNprRequest.ModifiedAt;
+            accessData.ModifiedBy = rfqNprRequest.ModifiedBy;
+            accessData.SubmissionStatus = rfqNprRequest.SubmissionStatus;
+            accessData.RemoteEndpointResponse = rfqNprRequest.RemoteEndpointResponse;
+            accessData.SubmittedAt = rfqNprRequest.SubmittedAt;
+            accessData.RfqNumber = rfqNprRequest.RfqNumber;
+            return accessData;
+        }
+        public static RfqNprRequestGrpc ToRfqNprRequest(this Rfq.RfqNprRequestGrpc accessData)
+        {
+            RfqNprRequestGrpc rfqNprRequest = new RfqNprRequestGrpc();
+            rfqNprRequest.Id = accessData.Id;
+            rfqNprRequest.Reason = accessData.Reason;
+            rfqNprRequest.Customer = accessData.Customer;
+            rfqNprRequest.PlatformName = accessData.PlatformName;
+            rfqNprRequest.ProgramName = accessData.ProgramName;
+            rfqNprRequest.Project = accessData.Project;
+            rfqNprRequest.MaterialType = accessData.MaterialType;
+            rfqNprRequest.SuggestedSewsEManufacturingSite = accessData.SuggestedSewsEManufacturingSite;
+            rfqNprRequest.CustomerPartNumber = accessData.CustomerPartNumber;
+            rfqNprRequest.SupplierPartNumber = accessData.SupplierPartNumber;
+            rfqNprRequest.SumitomoNumber = accessData.SumitomoNumber;
+            rfqNprRequest.MaterialDescription = accessData.MaterialDescription;
+            rfqNprRequest.UnitOfMeasure = accessData.UnitOfMeasure;
+            rfqNprRequest.SupplierGroup = accessData.SupplierGroup;
+            rfqNprRequest.QtyPerVehicle = accessData.QtyPerVehicle;
+            rfqNprRequest.Quantity = accessData.Quantity;
+            rfqNprRequest.RequiredDate = accessData.RequiredDate;
+            rfqNprRequest.RaisedRemarks = accessData.RaisedRemarks;
+            rfqNprRequest.IsCustomerNominatedSupplier = accessData.IsCustomerNominatedSupplier;
+            rfqNprRequest.IsCustomerNominatedMaterial = accessData.IsCustomerNominatedMaterial;
+            rfqNprRequest.SamplesRequired = accessData.SamplesRequired;
+            rfqNprRequest.SampleSite = accessData.SampleSite;
+            rfqNprRequest.SampleQuantity = accessData.SampleQuantity;
+            rfqNprRequest.SampleRecipient = accessData.SampleRecipient;
+            rfqNprRequest.SampleRequiredDate = accessData.SampleRequiredDate;
+            rfqNprRequest.FreightAccount = accessData.FreightAccount;
+            rfqNprRequest.AssociatedParts = accessData.AssociatedParts;
+            rfqNprRequest.SuggestedManufacturer = accessData.SuggestedManufacturer;
+            rfqNprRequest.CreatedAt = accessData.CreatedAt;
+            rfqNprRequest.CreatedBy = accessData.CreatedBy;
+            rfqNprRequest.ModifiedAt = accessData.ModifiedAt;
+            rfqNprRequest.ModifiedBy = accessData.ModifiedBy;
+            rfqNprRequest.SubmissionStatus = accessData.SubmissionStatus;
+            rfqNprRequest.RemoteEndpointResponse = accessData.RemoteEndpointResponse;
+            rfqNprRequest.SubmittedAt = accessData.SubmittedAt;
+            rfqNprRequest.RfqNumber = accessData.RfqNumber;
+            return rfqNprRequest;
+        }
     }
 }

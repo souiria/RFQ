@@ -1114,6 +1114,89 @@
                 throw;
             }
         }
+
+        public async Task<GetRfqNprRequestByRfqNumberGrpcResponse> GetRfqNprRequestByRfqNumberGrpc(GetRfqNprRequestByRfqNumberGrpcRequest request)
+        {
+            await Task.Delay(1);
+            GetRfqNprRequestByRfqNumberGrpcResponse response = new GetRfqNprRequestByRfqNumberGrpcResponse();
+            Collection<RfqNprRequestGrpc> filteredList = new Collection<RfqNprRequestGrpc>();
+
+            RfqFilterRequest rfqFilterRequestGrpc = new RfqFilterRequest();
+            rfqFilterRequestGrpc.DatabaseList = "RfqNprRequest";
+            rfqFilterRequestGrpc.FilterExpression = $"RfqNumber != null && RfqNumber == \"{request.RfqNumber}\"";
+            RfqFilterResponse rfqNprRequests = await _RfqClient.FilterRfqGrpcAsync(rfqFilterRequestGrpc);
+            if (rfqNprRequests.ListRfqNprRequestGrpc != null)
+            {
+                filteredList = ExtractRFQResponseData<RfqNprRequestGrpc>(rfqNprRequests);
+                response.RfqNprRequestGrpcs.AddRange(filteredList);
+            }
+
+            return response;
+        }
+        public async Task<GetAllRfqNprRequestGrpcResponse> GetAllRfqNprRequestGrpc(GetAllRfqNprRequestGrpcRequest request)
+        {
+            await Task.Delay(1);
+            GetAllRfqNprRequestGrpcResponse response = new GetAllRfqNprRequestGrpcResponse();
+            Collection<RfqNprRequestGrpc> filteredList = new Collection<RfqNprRequestGrpc>();
+
+            RfqNprRequestGrpcRequest rfqRequest = new RfqNprRequestGrpcRequest();
+            RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            rfqGrpcRequestParameter.Position = request.Position;
+            rfqGrpcRequestParameter.Take = request.Take;
+            rfqGrpcRequestParameter.RequestType = 1;
+            rfqRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
+            ListRfqNprRequestGrpc rfqNprRequests = _RfqClient.ReadRfqNprRequestGrpc(rfqRequest);
+            foreach(Rfq.RfqNprRequestGrpc? item in rfqNprRequests.RfqNprRequestGrpcs)
+            {
+                RfqNprRequestGrpc rfqNpr = item.ToRfqNprRequest();
+                response.RfqNprRequestGrpcs.Add(rfqNpr);
+            }
+
+            return response;
+        }
+
+        public async Task<CreateRfqNprRequestGrpcResponse> CreateRfqNprRequestGrpc(CreateRfqNprRequestGrpcRequest request)
+        {
+            await Task.Delay(0);
+            CreateRfqNprRequestGrpcResponse response = new CreateRfqNprRequestGrpcResponse();
+            RfqNprRequestGrpcRequest rfqNprRequest = new RfqNprRequestGrpcRequest();
+            RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            rfqGrpcRequestParameter.RequestType = 70;
+            foreach (RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
+            {
+                Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRquestGrpcAccess();
+                rfqNprRequest.RfqNprRequestGrpcsToCreate.Add(accessRfqNprRequest);
+            }
+
+            rfqNprRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
+            RfqCrudGrpcResponse accessResponse = _RfqClient.CreateRfqNprRequestGrpc(rfqNprRequest);
+            for (int i = 0; i < request.RfqNprRequestGrpc.Count; i++)
+            {
+                string[] rfqNprRequestIds = accessResponse.StringValue.Split(",", i);
+                response.CreatedRfqNprRequestId.Add(rfqNprRequestIds);
+            }
+
+            response.Message = accessResponse.Message;
+            return response;
+        }
+
+        public async Task<UpdateRfqNprRequestGrpcResponse> UpdateRfqNprRequestGrpc(UpdateRfqNprRequestGrpcRequest request)
+        {
+            await Task.Delay(0);
+            UpdateRfqNprRequestGrpcResponse response = new UpdateRfqNprRequestGrpcResponse();
+            RfqNprRequestGrpcRequest rfqNprRequest = new RfqNprRequestGrpcRequest();
+            RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            rfqGrpcRequestParameter.RequestType = 80;
+            foreach (RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
+            {
+                Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRquestGrpcAccess();
+                rfqNprRequest.RfqNprRequestGrpcsToUpdate.Add(accessRfqNprRequest);
+            }
+
+            RfqCrudGrpcResponse accessResponse = _RfqClient.UpdateRfqNprRequestGrpc(rfqNprRequest);
+            response.Message = accessResponse.Message;
+            return response;
+        }
         #region Filtering
 
         public Task<FilterGrpcResponse> FilterByCustomerId(FilterGrpcRequest request)
@@ -1320,6 +1403,7 @@
             TryExtractList(response.ListRfqReasonGrpc?.RfqReasons, results);
             TryExtractList(response.ListRfqNotesGrpc?.RfqNotes, results);
             TryExtractList(response.ListRfqProjectGrpc?.RfqProjects, results);
+            TryExtractList(response.ListRfqNprRequestGrpc?.RfqNprRequestGrpcs, results);
 
             return results;
         }
