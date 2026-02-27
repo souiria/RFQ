@@ -33,12 +33,8 @@ service RfqModule {
  rpc GetCustomerBusinessUnitsByUserIdGrpc (GetCustomerBusinessUnitsByUserIdRequest) returns (GetCustomerBusinessUnitsByUserIdResponse);
  rpc GetAlternativePartInfoBySumitomoNumberGrpc (GetAlternativePartInfoBySumitomoNumberRequest) returns (GetAlternativePartInfoBySumitomoNumberResponse);    
   rpc GetAllAlternativePartsGrpc (GetAllAlternativePartsGrpcRequest) returns (GetAllAlternativePartsGrpcResponse);
+   rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
 
- rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
-   rpc GetAllNprRequestSets (google.protobuf.Empty) returns (NPRListRfqNprRequestSetGrpc);
-  rpc SaveAllNprRequestSets (NPRListRfqNprRequestSetGrpc) returns (google.protobuf.Empty);
-    rpc LoadDuplicatedNprRequests (LoadDuplicatedNprRequestsRequest) returns (LoadDuplicatedNprRequestsResponse);
-	  rpc GetAllNprRequestSetsWithoutDuplicates (LoadNprSetsWithoutDuplicatesRequest) returns (NPRListRfqNprRequestSetGrpc);
 }
 
 // The request message containing the user's name.
@@ -491,39 +487,4 @@ message RfqNprRequestGrpc {
   google.protobuf.StringValue freight_account = 26;
   google.protobuf.StringValue associated_parts = 27;
   google.protobuf.StringValue suggested_manufacturer = 28;
-}
-
-message RfqNprRequestSetGrpc {
-  string id = 1;
-
-  google.protobuf.StringValue rfq_number = 2;
-
-  google.protobuf.Timestamp created = 3;
-  NprSetRequestStatusGrpc status = 4;
-  google.protobuf.Timestamp updated = 5;
-
-  repeated RfqNprRequestGrpc npr_requests = 6;
-
-  google.protobuf.Timestamp closed = 7;
-  google.protobuf.StringValue project_id = 8;
-
-  RfqProjectInfoGrpc project = 9;
-}
-
-message NPRListRfqNprRequestSetGrpc {
-  repeated RfqNprRequestSetGrpc items = 1;
-}
-
-message LoadDuplicatedNprRequestsRequest {
-  bool include_empty_keys = 1;
-  bool remove_formatting  = 2;
-}
-
-message LoadDuplicatedNprRequestsResponse {
-  repeated RfqNprRequestGrpc items = 1;
-}
-
-message LoadNprSetsWithoutDuplicatesRequest {
-  bool include_empty_keys = 1;
-  bool remove_formatting  = 2;
 }
