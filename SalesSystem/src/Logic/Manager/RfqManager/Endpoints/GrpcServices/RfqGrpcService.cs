@@ -201,5 +201,14 @@
             UpdateRfqNprRequestGrpcResponse response = await _RfqManagerService.UpdateRfqNprRequestGrpc(request);
             return response;
         }
+      ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetAllNprRequestSetsWithoutDuplicates (Manager) starting");
+
+            NPRListRfqNprRequestSetGrpc response =
+                await _RfqManagerService.GetAllNprRequestSetsWithoutDuplicatesAsync(request, context.CancellationToken);
+
+            return response;
+        }
     }
 }
