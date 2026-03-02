@@ -1,3 +1,5 @@
+using Azure.Core;
+
 namespace SalesSystem.Rfq.Services
 {
     public class RfqUxClientService : IDisposable
@@ -829,6 +831,33 @@ namespace SalesSystem.Rfq.Services
         }
         #endregion
 
+        #region NPR Requests
+        public int GetAllNprRequestsAsync(int position = 0, int take = -1)
+        {
+            try
+            {
+                _NprRequests.Clear();
+                GetAllRfqNprRequestGrpcRequest request = new GetAllRfqNprRequestGrpcRequest();
+                request.Position = position;
+                request.Take = take;
+                GetAllRfqNprRequestGrpcResponse response = _Client.GetAllRfqNprRequestGrpc(request);
+                foreach (RfqNprRequestGrpc? rfqNpr in response.RfqNprRequestGrpcs)
+                {
+                    RfqNprRequestUxModel model = rfqNpr.ToNprUx();
+                    _NprRequests.Add(model);
+                }
+
+                _Logger?.GenericLogInformation($"Loaded {_NprRequests.Count} NPR requests from file");
+                return _NprRequests.Count;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError("Error in GetAllNprRequestsAsync", ex);
+                throw;
+            }
+        }
+        #endregion
+
         #region NPR Requests (JSON file persistence - debug/test)
         // In the NPR Request Sets region of RfqUxClientService:
 
@@ -910,20 +939,20 @@ namespace SalesSystem.Rfq.Services
 
         // --- NPR Request CRUD ---
 
-        public async Task<int> GetAllNprRequestsAsync()
-        {
-            try
-            {
-                await SyncNprCacheFromFileAsync();
-                _Logger?.GenericLogInformation($"Loaded {_NprRequests.Count} NPR requests from file");
-                return _NprRequests.Count;
-            }
-            catch (Exception ex)
-            {
-                _Logger?.GenericLogError("Error in GetAllNprRequestsAsync", ex);
-                throw;
-            }
-        }
+        //public async Task<int> GetAllNprRequestsAsync()
+        //{
+        //    try
+        //    {
+        //        await SyncNprCacheFromFileAsync();
+        //        _Logger?.GenericLogInformation($"Loaded {_NprRequests.Count} NPR requests from file");
+        //        return _NprRequests.Count;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _Logger?.GenericLogError("Error in GetAllNprRequestsAsync", ex);
+        //        throw;
+        //    }
+        //}
         public async Task<List<RfqNprRequestUxModel>?> GetNprRequestsByRfqProjectIdAsync(Guid rfqProjectId)
         {
             try

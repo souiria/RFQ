@@ -1,4 +1,6 @@
-﻿namespace SalesSystem.Rfq.Extensions
+﻿using SharedKernel;
+
+namespace SalesSystem.Rfq.Extensions
 {
     public static class UxModelConversionExtensions
 
@@ -329,6 +331,89 @@
             nprRequest.SampleSite = "";
 
             return nprRequest;
+        }
+
+        public static RfqNprRequestGrpc ToNprGrpc (this RfqNprRequestUxModel model)
+        {
+            RfqNprRequestGrpc nprGrpc = new RfqNprRequestGrpc ();
+            nprGrpc.Id = model.Id.ToString();
+            nprGrpc.Reason = model.Reason;
+            nprGrpc.Customer = model.Customer;
+            nprGrpc.PlatformName = model.PlatformName;
+            nprGrpc.ProgramName = model.ProgramName;
+            nprGrpc.Project = model.Project;
+            nprGrpc.MaterialType = model.MaterialType;
+            nprGrpc.SuggestedSewsEManufacturingSite = model.SuggestedSewsEManufacturingSite;
+            nprGrpc.CustomerPartNumber = model.CustomerPartNumber;
+            nprGrpc.SupplierPartNumber = model.SupplierPartNumber;
+            nprGrpc.SumitomoNumber = model.SumitomoNumber;
+            nprGrpc.MaterialDescription = model.MaterialDescription;
+            nprGrpc.UnitOfMeasure = model.UnitOfMeasure;
+            nprGrpc.SupplierGroup = model.SupplierGroup;
+            nprGrpc.QtyPerVehicle = model.QtyPerVehicle;
+            nprGrpc.Quantity = model.Quantity;
+            nprGrpc.RequiredDate = model.RequiredDate?.ToUniversalTime().ToTimestamp();
+            nprGrpc.RaisedRemarks = model.RaisedRemarks;
+            nprGrpc.IsCustomerNominatedSupplier = model.IsCustomerNominatedSupplier;
+            nprGrpc.IsCustomerNominatedMaterial = model.IsCustomerNominatedMaterial;
+            nprGrpc.SamplesRequired = model.SamplesRequired;
+            nprGrpc.SampleSite = model.SampleSite;
+            nprGrpc.SampleQuantity = model.SampleQuantity;
+            nprGrpc.SampleRecipient = model.SampleRecipient;
+            nprGrpc.SampleRequiredDate = model.SampleRequiredDate?.ToUniversalTime().ToTimestamp();
+            nprGrpc.FreightAccount = model.FreightAccount;
+            nprGrpc.AssociatedParts = model.AssociatedParts;
+            nprGrpc.SuggestedManufacturer = model.SuggestedManufacturer;
+            nprGrpc.CreatedAt = model.Created.ToUniversalTime().ToTimestamp();
+            //nprGrpc.CreatedBy = model.CreatedBy.ToString();
+            nprGrpc.ModifiedAt = model.Updated.ToUniversalTime().ToTimestamp();
+            //nprGrpc.ModifiedBy = model.ModifiedBy.ToString();
+            nprGrpc.SubmissionStatus = (int?)model.Status;
+            //nprGrpc.RemoteEndpointResponse = model.RemoteEndpointResponse;
+            //nprGrpc.SubmittedAt = model.SubmittedAt?.ToUniversalTime().ToTimestamp();
+            nprGrpc.RfqNumber = model.RfqNumber;
+            return nprGrpc;
+        }
+        public static RfqNprRequestUxModel ToNprUx (this RfqNprRequestGrpc grpc)
+        {
+            RfqNprRequestUxModel model = new RfqNprRequestUxModel();
+            model.Id = Guid.Parse(grpc.Id);
+            model.Reason = grpc.Reason;
+            model.Customer = grpc.Customer;
+            model.PlatformName = grpc.PlatformName;
+            model.ProgramName = grpc.ProgramName;
+            model.Project = grpc.Project;
+            model.MaterialType = grpc.MaterialType;
+            model.SuggestedSewsEManufacturingSite = grpc.SuggestedSewsEManufacturingSite;
+            model.CustomerPartNumber = grpc.CustomerPartNumber;
+            model.SupplierPartNumber = grpc.SupplierPartNumber;
+            model.SumitomoNumber = grpc.SumitomoNumber;
+            model.MaterialDescription = grpc.MaterialDescription;
+            model.UnitOfMeasure = grpc.UnitOfMeasure;
+            model.SupplierGroup = grpc.SupplierGroup;
+            model.QtyPerVehicle = grpc.QtyPerVehicle;
+            model.Quantity = grpc.Quantity;
+            model.RequiredDate = grpc.RequiredDate.ToDateTime();
+            model.RaisedRemarks = grpc.RaisedRemarks;
+            model.IsCustomerNominatedSupplier = grpc.IsCustomerNominatedSupplier ?? false;
+            model.IsCustomerNominatedMaterial = grpc.IsCustomerNominatedMaterial ?? false;
+            model.SamplesRequired = grpc.SamplesRequired ?? false;
+            model.SampleSite = grpc.SampleSite;
+            model.SampleQuantity = grpc.SampleQuantity;
+            model.SampleRecipient = grpc.SampleRecipient;
+            model.SampleRequiredDate = grpc.SampleRequiredDate.ToDateTime();
+            model.FreightAccount = grpc.FreightAccount;
+            model.AssociatedParts = grpc.AssociatedParts;
+            model.SuggestedManufacturer = grpc.SuggestedManufacturer;
+            model.Created = grpc.CreatedAt.ToDateTime();
+            //nprGrpc.CreatedBy = model.CreatedBy.ToString();
+            model.Updated = grpc.ModifiedAt.ToDateTime();
+            //nprGrpc.ModifiedBy = model.ModifiedBy.ToString();
+            model.Status = grpc.SubmissionStatus.HasValue? (RfqNprRequestSet)grpc.SubmissionStatus.Value: new RfqNprRequestSet();
+            //nprGrpc.RemoteEndpointResponse = model.RemoteEndpointResponse;
+            //nprGrpc.SubmittedAt = model.SubmittedAt?.ToUniversalTime().ToTimestamp();
+            model.RfqNumber = grpc.RfqNumber;
+            return model;
         }
         #endregion
     }
