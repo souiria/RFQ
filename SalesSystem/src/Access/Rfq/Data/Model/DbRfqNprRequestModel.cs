@@ -108,5 +108,7 @@
         { get; set; }
         public string? RfqNumber
         { get; set; }
+        public bool? IsActive
+        { get; set; }
     }
 }

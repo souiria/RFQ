@@ -141,7 +141,7 @@ namespace Integration.Tests.Rfq.Client
         public async Task GetAllNprRequestsAsync_WhenNoFileExists_ReturnsZero()
         {
             // Act
-            int count = await _Service.GetAllNprRequestsAsync();
+            int count = await _Service.GetAllNprRequestsAsync(0,0);
 
             // Assert
             Assert.That(count, Is.EqualTo(0));
@@ -174,6 +174,7 @@ namespace Integration.Tests.Rfq.Client
             {
                 Directory.CreateDirectory(directory);
             }
+
             await File.WriteAllTextAsync(_Service.NprRequestSetsFilePath, "");
 
             // Act
@@ -635,7 +636,5 @@ namespace Integration.Tests.Rfq.Client
         }
 
         #endregion
-#pragma warning restore IDESIGN103 // Avoid compound statements.
-
     }
 }

@@ -183,6 +183,12 @@
             GetRfqNprRequestByRfqProjectIdGrpcResponse response = await _RfqManagerService.GetRfqNprRequestByRfqProjectIdGrpc(request);
             return response;
         }
+        public override async Task<GetRfqNprRequestByIdGrpcResponse> GetRfqNprRequestByIdGrpc(GetRfqNprRequestByIdGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation($"GetRfqNprRequestByIdGrpc starting");
+            GetRfqNprRequestByIdGrpcResponse response = await _RfqManagerService.GetRfqNprRequestByIdGrpc(request);
+            return response;
+        }
         public override async Task<GetAllRfqNprRequestGrpcResponse> GetAllRfqNprRequestGrpc(GetAllRfqNprRequestGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation($"GetAllRfqNprRequestGrpc starting");
@@ -195,19 +201,10 @@
             CreateRfqNprRequestGrpcResponse response = await _RfqManagerService.CreateRfqNprRequestGrpc(request);
             return response;
         }
-        public override async Task<UpdateRfqNprRequestGrpcResponse> UploadRfqNprRequestGrpc(UpdateRfqNprRequestGrpcRequest request, ServerCallContext context)
+        public override async Task<UpdateRfqNprRequestGrpcResponse> UpdateRfqNprRequestGrpc(UpdateRfqNprRequestGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation($"UploadRfqNprRequestGrpc starting");
+            _Logger.GenericLogInformation($"UpdateRfqNprRequestGrpc starting");
             UpdateRfqNprRequestGrpcResponse response = await _RfqManagerService.UpdateRfqNprRequestGrpc(request);
-            return response;
-        }
-      ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("GetAllNprRequestSetsWithoutDuplicates (Manager) starting");
-
-            NPRListRfqNprRequestSetGrpc response =
-                await _RfqManagerService.GetAllNprRequestSetsWithoutDuplicatesAsync(request, context.CancellationToken);
-
             return response;
         }
     }

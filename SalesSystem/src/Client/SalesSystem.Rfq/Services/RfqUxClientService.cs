@@ -832,7 +832,7 @@ namespace SalesSystem.Rfq.Services
         #endregion
 
         #region NPR Requests
-        public int GetAllNprRequestsAsync(int position = 0, int take = -1)
+        public async Task<int> GetAllNprRequestsAsync(int position = 0, int take = -1)
         {
             try
             {
@@ -840,7 +840,7 @@ namespace SalesSystem.Rfq.Services
                 GetAllRfqNprRequestGrpcRequest request = new GetAllRfqNprRequestGrpcRequest();
                 request.Position = position;
                 request.Take = take;
-                GetAllRfqNprRequestGrpcResponse response = _Client.GetAllRfqNprRequestGrpc(request);
+                GetAllRfqNprRequestGrpcResponse response = await _Client.GetAllRfqNprRequestGrpcAsync(request);
                 foreach (RfqNprRequestGrpc? rfqNpr in response.RfqNprRequestGrpcs)
                 {
                     RfqNprRequestUxModel model = rfqNpr.ToNprUx();

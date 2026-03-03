@@ -1927,6 +1927,7 @@ namespace Rfq.Extensions
             data.RemoteEndpointResponse = entity.RemoteEndpointResponse;
             data.SubmittedAt = entity.SubmittedAt?.ToUniversalTime().ToTimestamp();
             data.RfqNumber = entity.RfqNumber;
+            data.IsActive = entity.IsActive;
             return data;
         }
 
@@ -1969,6 +1970,7 @@ namespace Rfq.Extensions
             data.RemoteEndpointResponse = grpc.RemoteEndpointResponse;
             data.SubmittedAt = grpc.SubmittedAt.ToDateTime();
             data.RfqNumber = grpc.RfqNumber;
+            data.IsActive = grpc.IsActive;
             return data;
         }
         #endregion

@@ -1,4 +1,6 @@
-﻿namespace RfqModule.Services
+﻿using Google.Protobuf;
+
+namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {
@@ -31,7 +33,7 @@
             _NPRGrpcClient = nprClient;
             _CPDClient = cPDClient;
         }
-
+        #region Master Requests
         public async Task<GetAllCustomersGrpcResponse> GetAllCustomersGrpc (GetAllCustomersGrpcRequest request)
         {
             try
@@ -204,7 +206,7 @@
                 throw;
             }
         }
-
+        #endregion
         public async Task<GetRfqReasonsGrpcResponse> GetRfqReasonsGrpc(GetRfqReasonsGrpcRequest request)
         {
             try
@@ -1096,16 +1098,20 @@
         {
             await Task.Delay(1);
             GetRfqNprRequestByRfqNumberGrpcResponse response = new GetRfqNprRequestByRfqNumberGrpcResponse();
-            Collection<RfqNprRequestGrpc> filteredList = new Collection<RfqNprRequestGrpc>();
+            Collection<Rfq.RfqNprRequestGrpc> filteredList = new Collection<Rfq.RfqNprRequestGrpc>();
 
             RfqFilterRequest rfqFilterRequestGrpc = new RfqFilterRequest();
-            rfqFilterRequestGrpc.DatabaseList = "RfqNprRequest";
+            rfqFilterRequestGrpc.DatabaseList = "RfqNprRequestGrpc";
             rfqFilterRequestGrpc.FilterExpression = $"RfqNumber != null && RfqNumber == \"{request.RfqNumber}\"";
             RfqFilterResponse rfqNprRequests = await _RfqClient.FilterRfqGrpcAsync(rfqFilterRequestGrpc);
             if (rfqNprRequests.ListRfqNprRequestGrpc != null)
             {
-                filteredList = ExtractRFQResponseData<RfqNprRequestGrpc>(rfqNprRequests);
-                response.RfqNprRequestGrpcs.AddRange(filteredList);
+                filteredList = ExtractRFQResponseData<Rfq.RfqNprRequestGrpc>(rfqNprRequests);
+                foreach(Rfq.RfqNprRequestGrpc accessItem in filteredList)
+                {
+                    RfqNprRequestGrpc item = accessItem.ToRfqNprRequest();
+                    response.RfqNprRequestGrpcs.Add(item);
+                }
             }
 
             return response;
@@ -1114,20 +1120,47 @@
         {
             await Task.Delay(1);
             GetRfqNprRequestByRfqProjectIdGrpcResponse response = new GetRfqNprRequestByRfqProjectIdGrpcResponse();
-            Collection<RfqNprRequestGrpc> filteredList = new Collection<RfqNprRequestGrpc>();
+            Collection<Rfq.RfqNprRequestGrpc> filteredList = new Collection<Rfq.RfqNprRequestGrpc>();
 
             RfqFilterRequest rfqFilterRequestGrpc = new RfqFilterRequest();
-            rfqFilterRequestGrpc.DatabaseList = "RfqNprRequest";
+            rfqFilterRequestGrpc.DatabaseList = "RfqNprRequestGrpc";
             rfqFilterRequestGrpc.FilterExpression = $"Project != null && Project == \"{request.RfqProjectId}\"";
             RfqFilterResponse rfqNprRequests = await _RfqClient.FilterRfqGrpcAsync(rfqFilterRequestGrpc);
             if (rfqNprRequests.ListRfqNprRequestGrpc != null)
             {
-                filteredList = ExtractRFQResponseData<RfqNprRequestGrpc>(rfqNprRequests);
-                response.RfqNprRequestGrpcs.AddRange(filteredList);
+                filteredList = ExtractRFQResponseData<Rfq.RfqNprRequestGrpc>(rfqNprRequests);
+                foreach (Rfq.RfqNprRequestGrpc accessItem in filteredList)
+                {
+                    RfqNprRequestGrpc item = accessItem.ToRfqNprRequest();
+                    response.RfqNprRequestGrpcs.Add(item);
+                }
             }
 
             return response;
         }
+        public async Task<GetRfqNprRequestByIdGrpcResponse> GetRfqNprRequestByIdGrpc(GetRfqNprRequestByIdGrpcRequest request)
+        {
+            await Task.Delay(1);
+            GetRfqNprRequestByIdGrpcResponse response = new GetRfqNprRequestByIdGrpcResponse();
+            Collection<Rfq.RfqNprRequestGrpc> filteredList = new Collection<Rfq.RfqNprRequestGrpc>();
+
+            RfqFilterRequest rfqFilterRequestGrpc = new RfqFilterRequest();
+            rfqFilterRequestGrpc.DatabaseList = "RfqNprRequestGrpc";
+            rfqFilterRequestGrpc.FilterExpression = $"Id != null && Id.ToUpperInvariant() == \"{request.Id.ToUpperInvariant()}\"";
+            RfqFilterResponse rfqNprRequests = await _RfqClient.FilterRfqGrpcAsync(rfqFilterRequestGrpc);
+            if (rfqNprRequests.ListRfqNprRequestGrpc != null)
+            {
+                filteredList = ExtractRFQResponseData<Rfq.RfqNprRequestGrpc>(rfqNprRequests);
+                foreach (Rfq.RfqNprRequestGrpc accessItem in filteredList)
+                {
+                    RfqNprRequestGrpc item = accessItem.ToRfqNprRequest();
+                    response.RfqNprRequestGrpcs.Add(item);
+                }
+            }
+
+            return response;
+        }
+
         public async Task<GetAllRfqNprRequestGrpcResponse> GetAllRfqNprRequestGrpc(GetAllRfqNprRequestGrpcRequest request)
         {
             await Task.Delay(1);

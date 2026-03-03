@@ -35,9 +35,10 @@ service RfqModule {
   rpc GetAllAlternativePartsGrpc (GetAllAlternativePartsGrpcRequest) returns (GetAllAlternativePartsGrpcResponse);
   rpc GetRfqNprRequestByRfqNumberGrpc (GetRfqNprRequestByRfqNumberGrpcRequest) returns (GetRfqNprRequestByRfqNumberGrpcResponse);
   rpc GetRfqNprRequestByRfqProjectIdGrpc (GetRfqNprRequestByRfqProjectIdGrpcRequest) returns (GetRfqNprRequestByRfqProjectIdGrpcResponse);
+  rpc GetRfqNprRequestByIdGrpc (GetRfqNprRequestByIdGrpcRequest) returns (GetRfqNprRequestByIdGrpcResponse);
   rpc GetAllRfqNprRequestGrpc (GetAllRfqNprRequestGrpcRequest) returns (GetAllRfqNprRequestGrpcResponse);
   rpc CreateRfqNprRequestGrpc (CreateRfqNprRequestGrpcRequest) returns (CreateRfqNprRequestGrpcResponse);
-  rpc UploadRfqNprRequestGrpc (UpdateRfqNprRequestGrpcRequest) returns (UpdateRfqNprRequestGrpcResponse);
+  rpc UpdateRfqNprRequestGrpc (UpdateRfqNprRequestGrpcRequest) returns (UpdateRfqNprRequestGrpcResponse);
    
  rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
 }
@@ -486,6 +487,14 @@ message GetRfqNprRequestByRfqProjectIdGrpcRequest {
 	string RfqProjectId = 3;
 }
 message GetRfqNprRequestByRfqProjectIdGrpcResponse {
+	repeated RfqNprRequestGrpc RfqNprRequestGrpcs = 1;
+}
+message GetRfqNprRequestByIdGrpcRequest {
+	int32 position = 1;
+	int32 take = 2; 
+	string Id = 3;
+}
+message GetRfqNprRequestByIdGrpcResponse {
 	repeated RfqNprRequestGrpc RfqNprRequestGrpcs = 1;
 }
 
