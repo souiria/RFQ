@@ -141,7 +141,7 @@ namespace Integration.Tests.Rfq.Client
         public async Task GetAllNprRequestsAsync_WhenNoFileExists_ReturnsZero()
         {
             // Act
-            int count = await _Service.GetAllNprRequestsAsync(0,0);
+            int count = await _Service.GetAllNprRequestsAsync();
 
             // Assert
             Assert.That(count, Is.EqualTo(0));

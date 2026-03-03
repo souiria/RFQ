@@ -472,6 +472,7 @@ message RfqNprRequestGrpc {
 	google.protobuf.StringValue RemoteEndpointResponse = 34;
 	google.protobuf.Timestamp SubmittedAt = 35;
 	google.protobuf.StringValue RfqNumber = 36;
+	google.protobuf.BoolValue IsActive = 37;
 }
 message GetRfqNprRequestByRfqNumberGrpcRequest {
 	int32 position = 1;
