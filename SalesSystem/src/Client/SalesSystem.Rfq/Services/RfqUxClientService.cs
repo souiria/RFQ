@@ -191,7 +191,8 @@ namespace SalesSystem.Rfq.Services
                 //_RfqProjects.AddRange(response.RfqProjects);
                 // ux list
                 _RfqProjectUxs.Clear();
-                foreach (RfqProject? rfqProject in response.RfqProjects)
+                IOrderedEnumerable<RfqProject> rfqProjects = response.RfqProjects.OrderByDescending(x => x.RfqNumber);
+                foreach (RfqProject? rfqProject in rfqProjects)
                 {
                     if (rfqProject.IsActive.HasValue && !rfqProject.IsActive.Value)
                     {

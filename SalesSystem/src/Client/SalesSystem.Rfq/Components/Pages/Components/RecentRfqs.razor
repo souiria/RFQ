@@ -122,6 +122,7 @@
             // FIX: Assign the correct type directly, do not use Concat (Concat does not mutate the original list)
             // _RfqProjects = RfqUxClientService.RfqProjectUxs.Cast<RqfProjectUxModel>().ToList();
             Logger.LogInformation($"Loaded {RfqUxClientService.RfqProjectUxs.Count} RFQ projects");
+
         }
         catch (Exception ex)
         {

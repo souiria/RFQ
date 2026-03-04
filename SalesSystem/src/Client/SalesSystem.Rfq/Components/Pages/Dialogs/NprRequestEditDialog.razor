@@ -110,12 +110,12 @@
                                   Margin="Margin.Dense"
                                   Lines="2" />
                 </MudItem>
-                <MudItem xs="4">
+                <MudItem xs="2">
                     <MudCheckBox @bind-Value="NprRequest.IsCustomerNominatedSupplier"
                                  Label="Cust. Nom. Supplier"
                                  Dense="true" />
                 </MudItem>
-                <MudItem xs="4">
+                <MudItem xs="2">
                     <MudCheckBox @bind-Value="NprRequest.IsCustomerNominatedMaterial"
                                  Label="Cust. Nom. Material"
                                  Dense="true" />
@@ -125,30 +125,34 @@
                                  Label="Samples Required"
                                  Dense="true" />
                 </MudItem>
-                <MudItem xs="4">
+                <MudItem xs="2">
                     <MudTextField @bind-Value="NprRequest.SampleSite"
                                   Label="Sample Site"
                                   Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" />
+                                  Margin="Margin.Dense"
+                                  Disabled="@(NprRequest.SamplesRequired == false)" />
                 </MudItem>
-                <MudItem xs="4">
+                <MudItem xs="2">
                     <MudNumericField @bind-Value="NprRequest.SampleQuantity"
                                      Label="Sample Qty"
                                      Variant="Variant.Outlined"
-                                     Margin="Margin.Dense" />
+                                     Margin="Margin.Dense"
+                                     Disabled="@(NprRequest.SamplesRequired == false)" />
                 </MudItem>
                 <MudItem xs="4">
                     <MudTextField @bind-Value="NprRequest.SampleRecipient"
                                   Label="Sample Recipient"
                                   Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" />
+                                  Margin="Margin.Dense"
+                                  Disabled="@(NprRequest.SamplesRequired == false)" />
                 </MudItem>
                 <MudItem xs="6">
                     <MudDatePicker @bind-Date="NprRequest.SampleRequiredDate"
                                    Label="Sample Required Date"
                                    DateFormat="dd.MM.yyyy"
                                    Variant="Variant.Outlined"
-                                   Margin="Margin.Dense" />
+                                   Margin="Margin.Dense"
+                                   Disabled="@(NprRequest.SamplesRequired == false)" />
                 </MudItem>
                 <MudItem xs="6">
                     <MudTextField @bind-Value="NprRequest.FreightAccount"

@@ -16,17 +16,24 @@
 
         <MudPaper Elevation="2" Class="pa-3 mb-2">
             <MudGrid>
-                @if (SearchedPartNumber?.HasImage == true)
-                {
-                    <MudItem>
-
-                    </MudItem>
+                <MudItem xs="12" sm="4">
                     <MudImage Src="@GetImageSource()"
                                 Alt="Part Image"
                                 Width="128"
                                 Elevation="3"
                                 Class="rounded p-1 m-1" />
-                }
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudText Typo="Typo.body1">RfqId</MudText> <MudText Typo="Typo.body2">@SearchedPartNumber?.RfqId</MudText>
+                    <MudText Typo="Typo.body1">RowId</MudText> <MudText Typo="Typo.body2">@SearchedPartNumber?.RowId</MudText>
+                    <MudText Typo="Typo.body1">Customer P/N</MudText> <MudText Typo="Typo.body2">@SearchedPartNumber?.CustomerPartNumber</MudText>
+                    <MudText Typo="Typo.body1">Drawing P/N</MudText> <MudText Typo="Typo.body2">@SearchedPartNumber?.DrawingPartNumber</MudText>
+                    <MudText Typo="Typo.body1">Drawing P/N Price</MudText> <MudText Typo="Typo.body2">@SearchedPartNumber?.DrawingPartNumberPrice?.ToString(new CultureInfo("fr-Fr"))</MudText>
+                    <MudText Typo="Typo.body1">Swapped P/N</MudText> <MudText Typo="Typo.body2">@SearchedPartNumber?.SwappedPartNumber</MudText>
+                    <MudText Typo="Typo.body1">Swapped P/N Price</MudText> <MudText Typo="Typo.body2">@SearchedPartNumber?.SwappedPartNumberPrice?.ToString(new CultureInfo("fr-Fr"))</MudText>
+                    <MudText Typo="Typo.body1">Price Source</MudText> <MudText Typo="Typo.body2">@SearchedPartNumber?.PriceSource</MudText>
+                    <MudText Typo="Typo.body1">Comments</MudText> <MudText Typo="Typo.body2">@SearchedPartNumber?.Comments</MudText>
+                </MudItem>
             </MudGrid>
         </MudPaper>
 

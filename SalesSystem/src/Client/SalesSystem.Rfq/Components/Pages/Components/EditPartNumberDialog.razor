@@ -31,8 +31,8 @@
                                      Variant="Variant.Outlined"
                                      Margin="Margin.Dense"
                                      Format="0.#####"
-                                     Adornment="Adornment.Start"
-                                     AdornmentText="$"
+                                     Adornment="Adornment.End"
+                                     AdornmentText="€"
                                      Min="0m" />
                 </MudItem>
                 @* Pick list from search results stored in the commment after data aseparator *@
@@ -51,7 +51,7 @@
                                                     <strong>@matchedPart.DrawingPartNumber</strong>
                                                 </MudText>
                                                 <MudText Typo="Typo.body2" Color="Color.Default">
-                                                    Price: @(matchedPart.DrawingPartNumberPrice.HasValue ? matchedPart.DrawingPartNumberPrice.Value.ToString("C5") : "N/A")
+                                                    Price: @(matchedPart.DrawingPartNumberPrice.HasValue? matchedPart.DrawingPartNumberPrice.Value.ToString("C5", new CultureInfo("fr-FR")) : "N/A")
                                                     @if (matchedPart.IsExactMatch == true)
                                                     {
                                                         <MudChip T="string"
@@ -61,20 +61,27 @@
                                                     }
                                                 </MudText>
                                             </div>
-                                            <MudButton OnClick="@(() => ShowMatchedPart(matchedPart))"
-                                                       Color="Color.Primary"
-                                                       Variant="Variant.Filled"
-                                                       Size="Size.Small"
-                                                       StartIcon="@Icons.Material.Filled.Info">
-                                                More info
-                                            </MudButton>
-                                            <MudButton OnClick="@(() => PickMatchedPart(matchedPart))"
-                                                       Color="Color.Primary"
-                                                       Variant="Variant.Filled"
-                                                       Size="Size.Small"
-                                                       StartIcon="@Icons.Material.Filled.CheckCircle">
-                                                Pick
-                                            </MudButton>
+                                            <MudStack Row Spacing="2" Class="ma-1">
+                                                <MudTooltip Text="Show Alt.Part Info">
+                                                    <MudButton OnClick="@(() => ShowMatchedPart(matchedPart))"
+                                                               Color="Color.Primary"
+                                                               Variant="Variant.Filled"
+                                                               Size="Size.Small"
+                                                               StartIcon="@Icons.Material.Filled.Info">
+                                                        Info
+                                                    </MudButton>
+                                                </MudTooltip>
+                                                <MudTooltip Text="Pick Alt.Part">
+                                                    <MudButton OnClick="@(() => PickMatchedPart(matchedPart))"
+                                                               Color="Color.Primary"
+                                                               Variant="Variant.Filled"
+                                                               Size="Size.Small"
+                                                               StartIcon="@Icons.Material.Filled.CheckCircle">
+                                                        Pick
+                                                    </MudButton>
+                                                </MudTooltip>
+                                            </MudStack>
+
                                         </div>
                                     </MudListItem>
                                     <MudDivider />
@@ -96,8 +103,8 @@
                                      Variant="Variant.Outlined"
                                      Margin="Margin.Dense"
                                      Format="0.#####"
-                                     Adornment="Adornment.Start"
-                                     AdornmentText="$"
+                                     Adornment="Adornment.End"
+                                     AdornmentText="€"
                                      Min="0m" />
                 </MudItem>
                 <MudItem xs="12">
@@ -210,6 +217,8 @@
         };
         EditedItem.SearchResultPartNumbers.AddRange(OriginalItem.SearchResultPartNumbers);
     }
+
+
 
     private async Task ShowMatchedPart(RfqDrawingPartNumberUxModel item)
     {

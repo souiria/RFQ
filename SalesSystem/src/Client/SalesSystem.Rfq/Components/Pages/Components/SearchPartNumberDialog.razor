@@ -327,7 +327,7 @@
 
         try
         {
-            Logger.GenericLogInformation($"Applying NPR data: Part={nprSearchResult.DrawingPartNumber}, Price={nprSearchResult.DrawingPartNumberPrice:F5}");
+            Logger.GenericLogInformation($"Applying NPR data: Part={nprSearchResult.DrawingPartNumber}, Price={nprSearchResult.DrawingPartNumberPrice?.ToString(new CultureInfo("fr-FR")):F5}");
 
             // Update the part number with NPR data - price already has proper precision
             SearchedPartNumber.DrawingPartNumber = nprSearchResult.DrawingPartNumber;
@@ -363,7 +363,7 @@
                 SearchedPartNumber.Comments += $"||<<<{commentJson}";
             }
 
-            Logger.GenericLogInformation($"Successfully applied NPR data to part number: {SearchedPartNumber.CustomerPartNumber}/{SearchedPartNumber.DrawingPartNumber}, Price={nprSearchResult.DrawingPartNumberPrice:F5}");
+            Logger.GenericLogInformation($"Successfully applied NPR data to part number: {SearchedPartNumber.CustomerPartNumber}/{SearchedPartNumber.DrawingPartNumber}, Price={nprSearchResult.DrawingPartNumberPrice?.ToString(new CultureInfo("fr-FR")):F5}");
             Snackbar.Add($"Applied NPR part: {nprSearchResult.DrawingPartNumber} (${nprSearchResult.DrawingPartNumberPrice:N5})", Severity.Success);
 
             // Close the dialog and return the updated part number

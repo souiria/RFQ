@@ -213,7 +213,7 @@ else
 
         <MudItem xs="12" Class="pt-2">
             <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-3">
-                <MudTabPanel Text="Parts Lists">
+                <MudTabPanel Text="Parts Lists" Icon="@Icons.Material.Filled.Api" BadgeData='"PROJ"' BadgeColor="Color.Info">
                     <div class="d-flex flex-column" style="height: calc(100vh - 364px); overflow: hidden;">
                         <PartNumberSection PartNumbers="@InProgressParts"
                                            Label="In progress"
@@ -230,32 +230,28 @@ else
                                            OnPartNumberUpdated="@HandlePartNumberUpdated" />
                     </div>
                 </MudTabPanel>
-                <MudTabPanel Text="BOM Files">
+                <MudTabPanel Text="BOM Files" Icon="@Icons.Material.Filled.Api" BadgeData='"BOM"' BadgeColor="Color.Success">
                     <div class="d-flex flex-column" style="height: calc(100vh - 364px); overflow: hidden;">
                         <FileCards @ref="componentFileCards"
                                    FileObjects="FileObjects"
                                    OnRemoveFile="HandleFileRemoval" />
                     </div>
                 </MudTabPanel>
-                <MudTabPanel Text="@($"NPRs ({NprRequests?.Count ?? 0})")"
-                             Disabled="@(NprRequests == null || NprRequests.Count == 0)"
-                             BadgeData="@(NprRequests?.Count ?? 0)"
-                             BadgeColor="Color.Info"
-                             Icon="@Icons.Material.Filled.ListAlt">
-                    <MudGrid Justify="Justify.FlexStart" Style="flex-direction:column; flex-shrink: 0;">
-                        @if (NprRequests != null && NprRequests.Count > 0)
+                <MudTabPanel Text="@($"NPRs")"
+                             Disabled="@(RfqProject.NprRequests == null || RfqProject.NprRequests.Count == 0)"
+                             Icon="@Icons.Material.Filled.RequestPage" BadgeData="@(RfqProject.NprRequests?.Count ?? 0)" BadgeColor="Color.Primary">
+                    <div class="d-flex flex-column" style="height: calc(100vh - 364px); overflow: hidden;">
+                        @if (RfqProject.NprRequests != null && RfqProject.NprRequests.Count > 0)
                         {
-                            <NprRequestsEditor RfqProject="RfqProject" />
+                            <NprRequestsEditor @ref="componentNprEditor" RfqProject="RfqProject" />
                         }
                         else
                         {
-                            <MudItem xs="12">
-                                <MudAlert Severity="Severity.Info" Class="ma-4">
-                                    No NPR requests available. Use the "Add NPRs" button to create NPR requests for in-progress parts.
-                                </MudAlert>
-                            </MudItem>
+                            <MudAlert Severity="Severity.Info" Class="ma-4">
+                                No NPR requests available. Use the "Add NPRs" button to create NPR requests for in-progress parts.
+                            </MudAlert>
                         }
-                    </MudGrid>
+                    </div>
                 </MudTabPanel>
             </MudTabs>
         </MudItem>
@@ -266,6 +262,7 @@ else
     // Reference to the FileManager component
     FileManager? componentFileManager;
     FileCards? componentFileCards;
+    NprRequestsEditor? componentNprEditor;
     List<FileObjectUxModel> FileObjects { get; set; } = new List<FileObjectUxModel>();
 
     // Search All state tracking
@@ -281,7 +278,7 @@ else
     // Form related
     bool IsLoading { get; set; } = true;
     RqfProjectUxModel? RfqProject { get; set; }
-    List<RfqNprRequestUxModel>? NprRequests { get; set; }
+    // List<RfqNprRequestUxModel>? NprRequests { get; set; }
 
     // Simplified project selection (like CreateRfq)
     private RqfCustomerProjectAssociationUxModel? selectedProject { get; set; }
@@ -408,7 +405,7 @@ else
         List<RfqNprRequestUxModel>? nprRequests = await RfqUxClientService.GetNprRequestsByRfqNumberAsync(RfqProject?.RfqNumber);
         if (nprRequests != null)
         {
-            NprRequests = nprRequests;
+            RfqProject!.NprRequests = nprRequests;
         }
     }
 
@@ -459,7 +456,7 @@ else
             }
 
             List<RfqNprRequestUxModel> response = await RfqUxClientService.CreateNprRequestsAsync(nprRequests);
-            NprRequests = response;
+            RfqProject.NprRequests = response;
 
             Snackbar.Add($"Successfully created NPR request set for {InProgressParts.Count} part(s)", Severity.Success);
             StateHasChanged();
@@ -737,10 +734,19 @@ else
 
     private async Task ReloadDataAsync()
     {
-        await Task.Delay(0);
         try
         {
             await LoadRfqAndPartNumbersAsync();
+
+            // Reload NPR requests into RfqProject so the tab stays enabled
+            await LoadNprRequests();
+
+            // If the editor component is still alive, refresh its view too
+            if (componentNprEditor != null)
+            {
+                await componentNprEditor.RefreshNprRequestsAsync();
+            }
+
             StateHasChanged();
         }
         catch (Exception ex)
@@ -751,33 +757,42 @@ else
 
     private async Task SaveDataAsync()
     {
-
         List<RfqDrawingPartNumberUxModel?> allParts = new();
         allParts.AddRange(CompletedParts);
         allParts.AddRange(InProgressParts);
 
-        await Task.Delay(0);
         try
         {
+            // Save pending NPR changes BEFORE reloading (otherwise the editor gets destroyed)
+            if (componentNprEditor != null && componentNprEditor.HasPendingChanges)
+            {
+                await componentNprEditor.SaveNprRequestsAsync();
+            }
+
             var partsUpdateResult = await RfqUxClientService.UpdateRfqDrawingPartNumbersAsync(allParts);
             var rfqUpdateResult = await RfqUxClientService.UpdateRfqProjectAsync(RfqProject!);
+
             if (partsUpdateResult.Success && rfqUpdateResult.Success)
             {
-                Snackbar.Add("Data refreshed successfully", Severity.Success);
-                Logger.GenericLogInformation("EditRfq.SaveDataAsync - Data refreshed successfully");
-                // reload Rfq and Part numbers
+                Snackbar.Add("Data saved successfully", Severity.Success);
+                Logger.GenericLogInformation("EditRfq.SaveDataAsync - Data saved successfully");
+
+                // Reload part numbers
                 await LoadRfqAndPartNumbersAsync();
+
+                // Reload NPR requests so the tab remains enabled and data is fresh
+                await LoadNprRequests();
             }
             else
             {
-                Snackbar.Add("Error refreshing data", Severity.Error);
-                Logger.GenericLogInformation("EditRfq.SaveDataAsync - Error refreshing data");
+                Snackbar.Add("Error saving data", Severity.Error);
+                Logger.GenericLogInformation("EditRfq.SaveDataAsync - Error saving data");
             }
             StateHasChanged();
         }
         catch (Exception ex)
         {
-            Logger.GenericLogError($"EditRfq.RefreshDataAsync - Unexpected error during data refresh {ex.Message}", ex);
+            Logger.GenericLogError($"EditRfq.SaveDataAsync - Unexpected error during data save {ex.Message}", ex);
         }
     }
     #endregion

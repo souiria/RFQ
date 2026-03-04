@@ -71,7 +71,7 @@
 
             <MudItem xs="12" sm="4">
                 <MudPaper Elevation="2" Class="pa-3">
-                    <MudText Typo="Typo.h6" Color="Color.Success">@TotalMatchedPrice.ToString("C2")</MudText>
+                    <MudText Typo="Typo.h6" Color="Color.Success">@TotalMatchedPrice.ToString("C2", new CultureInfo("fr-FR"))</MudText>
                     <MudText Typo="Typo.body2">Total Completed Price</MudText>
                     <MudText Typo="Typo.caption">@PartsWithMatchedPrice parts with pricing</MudText>
                 </MudPaper>
@@ -79,7 +79,7 @@
 
             <MudItem xs="12" sm="4">
                 <MudPaper Elevation="2" Class="pa-3">
-                    <MudText Typo="Typo.h6" Color="Color.Info">@TotalAlternativePrice.ToString("C2")</MudText>
+                    <MudText Typo="Typo.h6" Color="Color.Info">@TotalAlternativePrice.ToString("C2", new CultureInfo("fr-FR"))</MudText>
                     <MudText Typo="Typo.body2">Total Alternative Price</MudText>
                     <MudText Typo="Typo.caption">@PartsWithAlternativePrice parts with estimated pricing</MudText>
                 </MudPaper>
@@ -87,7 +87,7 @@
 
             <MudItem xs="12" sm="4">
                 <MudPaper Elevation="2" Class="pa-3">
-                    <MudText Typo="Typo.h6" Color="Color.Default">@TotalUnmatchedPrice.ToString("C2")</MudText>
+                    <MudText Typo="Typo.h6" Color="Color.Default">@TotalUnmatchedPrice.ToString("C2", new CultureInfo("fr-FR"))</MudText>
                     <MudText Typo="Typo.body2">Total In Progress Price</MudText>
                     <MudText Typo="Typo.caption">@PartsWithUnmatchedPrice parts with no pricing</MudText>
                 </MudPaper>
@@ -98,7 +98,7 @@
                 <MudPaper Elevation="2" Class="pa-3">
                     <div class="d-flex align-center justify-space-between">
                         <MudText Typo="Typo.h6" Color="Color.Primary">
-                            Total Price (All Parts): @TotalPrice.ToString("C2")
+                            Total Price (All Parts): @TotalPrice.ToString("C2", new CultureInfo("fr-FR"))
                         </MudText>
                         <MudText Typo="Typo.body2" Color="Color.Default">
                             Coverage: @PriceCoveragePercentage% (@PartsWithAnyPrice of @TotalParts parts)
