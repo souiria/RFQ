@@ -1,0 +1,536 @@
+@using Google.Protobuf.WellKnownTypes
+@using SalesSystem.Rfq.Components.Pages.Components
+@using SalesSystem.Rfq.Components.Pages.Dialogs
+@using SalesSystem.Rfq.Enums
+@using SalesSystem.Rfq.Extensions
+@using SalesSystem.Rfq.Models
+
+@inject ISnackbar Snackbar
+@inject RfqUxClientService RfqUxClientService
+@inject ILogger<NprRequestsEditor> Logger
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+
+<style>
+    .npr-table-toolbar {
+        flex-wrap: wrap;
+        height: inherit;
+    }
+
+        .npr-table-toolbar .mud-button-group-root {
+            flex-basis: 96%;
+        }
+
+    .npr-table-head th {
+        white-space: nowrap;
+    }
+
+    .npr-table-data td {
+        white-space: nowrap;
+    }
+</style>
+
+    <MudItem xs="12">
+        <MudDataGrid @ref="_dataGrid"
+                         T="RfqNprRequestUxModel"
+                         Items="@RfqProject.NprRequests"
+                         Virtualize="true"
+                         FixedHeader="true"
+                         OverscanCount="50"
+                         ItemSize="36f"
+                         Height="calc(100vh - 364px)"
+                         Dense="true"
+                         Class="d-flex flex-column flex-fill"
+                         DragDropColumnReordering="true"
+                         ApplyDropClassesOnDragStarted="true"
+                         ColumnResizeMode="ResizeMode.Column"
+                         SortMode="SortMode.Multiple"
+                         Hideable="true"
+                         Filterable="true"
+                         FilterMode="DataGridFilterMode.ColumnFilterRow"
+                         FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive"
+                         Groupable="true"
+                         QuickFilter="@QuickFilter"
+                         ReadOnly="true"
+                         Bordered="true"
+                         ShowMenuIcon="true"
+                         HorizontalScrollbar="true">
+                <ToolBarContent>
+                    <MudText Typo="Typo.subtitle1" Class="mr-4">
+                        NPR Requests for @RfqProject.RfqNumber (@ActiveNprCount)
+                    </MudText>
+                    <MudTooltip Text="Full text search">
+                        <MudTextField @bind-Value="_searchFilter"
+                                      Placeholder="Search"
+                                      Adornment="Adornment.Start"
+                                      Immediate="true"
+                                      AdornmentIcon="@Icons.Material.Filled.Search"
+                                      IconSize="Size.Medium"
+                                      Class="mt-0" />
+                    </MudTooltip>
+                    <MudSpacer />
+                    @if (HasPendingChanges)
+                    {
+                        <MudChip T="string" Size="Size.Small" Color="Color.Warning" Variant="Variant.Filled">
+                            Unsaved changes
+                        </MudChip>
+                    }
+                    <MudTooltip Text="Refresh NPR requests from server">
+                        <MudIconButton Size="Size.Small"
+                                       Color="Color.Info"
+                                       Icon="@Icons.Material.Filled.Refresh"
+                                       aria-label="refresh"
+                                       OnClick="@RefreshNprRequestsAsync" />
+                    </MudTooltip>
+                    <MudTooltip Text="Save NPR request changes">
+                        <MudIconButton Size="Size.Small"
+                                       Color="Color.Primary"
+                                       Icon="@Icons.Material.Filled.Save"
+                                       aria-label="save"
+                                       Disabled="@(!HasPendingChanges)"
+                                       OnClick="@SaveNprRequestsAsync" />
+                    </MudTooltip>
+                    <span>&nbsp;</span>
+                </ToolBarContent>
+                <Columns>
+                    <PropertyColumn Property="x => x.UxStatus"
+                                    Title="Status"
+                                    Editable="false"
+                                    StickyLeft="true">
+                        <CellTemplate>
+                            <MudChip T="string"
+                                     Size="Size.Small"
+                                     Color="@GetNprStatusColor(context.Item)"
+                                     Variant="Variant.Outlined">
+                                @context.Item.UxStatus
+                            </MudChip>
+                        </CellTemplate>
+                    </PropertyColumn>
+                    <PropertyColumn Property="x => x.SumitomoNumber" Title="Sumitomo Number" Editable="true" />
+                    <PropertyColumn Property="x => x.CustomerPartNumber" Title="Customer P/N" Editable="true" />
+                    <PropertyColumn Property="x => x.SupplierPartNumber" Title="Supplier P/N" Editable="true" />
+                    <PropertyColumn Property="x => x.MaterialDescription" Title="Material Description" Editable="true" />
+                    <PropertyColumn Property="x => x.Reason" Title="Reason" Editable="true" />
+                    <PropertyColumn Property="x => x.Customer" Title="Customer" Editable="true" />
+                    <PropertyColumn Property="x => x.PlatformName" Title="Platform" Editable="true" />
+                    <PropertyColumn Property="x => x.ProgramName" Title="Program" Editable="true" />
+                    <PropertyColumn Property="x => x.Project" Title="Project" Editable="true" />
+                    <PropertyColumn Property="x => x.MaterialType" Title="Material Type" Editable="true" />
+                    <PropertyColumn Property="x => x.SuggestedSewsEManufacturingSite" Title="Mfg. Site" Editable="true" />
+                    <PropertyColumn Property="x => x.UnitOfMeasure" Title="UoM" Editable="true" />
+                    <PropertyColumn Property="x => x.SupplierGroup" Title="Supplier Group" Editable="true" />
+                    <PropertyColumn Property="x => x.QtyPerVehicle" Title="Qty/Vehicle" Editable="true" />
+                    <PropertyColumn Property="x => x.Quantity" Title="Quantity" Editable="true" />
+                    <PropertyColumn Property="x => x.RequiredDate" Title="Required Date" Format="dd.MM.yyyy" Editable="true" />
+                    <PropertyColumn Property="x => x.RaisedRemarks" Title="Remarks" Editable="true" />
+                    <PropertyColumn Property="x => x.IsCustomerNominatedSupplier" Title="Cust. Nom. Supplier" Editable="true" />
+                    <PropertyColumn Property="x => x.IsCustomerNominatedMaterial" Title="Cust. Nom. Material" Editable="true" />
+                    <PropertyColumn Property="x => x.SamplesRequired" Title="Samples Req." Editable="true" />
+                    <PropertyColumn Property="x => x.SampleSite" Title="Sample Site" Editable="true" />
+                    <PropertyColumn Property="x => x.SampleQuantity" Title="Sample Qty" Editable="true" />
+                    <PropertyColumn Property="x => x.SampleRecipient" Title="Sample Recipient" Editable="true" />
+                    <PropertyColumn Property="x => x.SampleRequiredDate" Title="Sample Req. Date" Format="dd.MM.yyyy" Editable="true" />
+                    <PropertyColumn Property="x => x.FreightAccount" Title="Freight Account" Editable="true" />
+                    <PropertyColumn Property="x => x.AssociatedParts" Title="Associated Parts" Editable="true" />
+                    <PropertyColumn Property="x => x.SuggestedManufacturer" Title="Suggested Mfr." Editable="true" />
+                    <PropertyColumn Property="x => x.Created" Title="Created" Format="dd.MM.yyyy HH:mm" Editable="false" />
+                    <PropertyColumn Property="x => x.Updated" Title="Updated" Format="dd.MM.yyyy HH:mm" Editable="false" />
+                    <TemplateColumn Title="Actions" StickyRight="true">
+                        <CellTemplate>
+                            <MudStack Row>
+                                <MudIconButton Size="Size.Small"
+                                               Icon="@Icons.Material.Filled.Edit"
+                                               Style="@($"color:{Colors.LightGreen.Lighten1};")"
+                                               aria-label="edit"
+                                               OnClick="@(() => EditNprRequest(context.Item))" />
+                                <MudIconButton Size="Size.Small"
+                                               Icon="@Icons.Material.Filled.Delete"
+                                               Style="@($"color:{Colors.Red.Lighten1};")"
+                                               aria-label="delete"
+                                               OnClick="@(() => RemoveNprRequest(context.Item))" />
+                            </MudStack>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+                <NoRecordsContent>
+                    <MudText Typo="Typo.body2" Align="Align.Center" Class="pa-4">
+                        No NPR requests in this set.
+                    </MudText>
+                </NoRecordsContent>
+            </MudDataGrid>
+    </MudItem>
+    <MudItem xs="12">
+        @ActiveNprCount active NPR request(s) | @(RfqProject?.NprRequests?.Count ?? 0) total
+        @if (HasPendingChanges)
+        {
+            <span> | <strong style="color: var(--mud-palette-warning);">Unsaved changes</strong></span>
+        }
+    </MudItem>
+
+
+@code {
+    string _searchFilter = "";
+    string _lastCompiledFilter = "";
+    Func<RfqNprRequestUxModel, bool>? _compiledQuickFilter;
+    MudDataGrid<RfqNprRequestUxModel>? _dataGrid;
+
+    Func<RfqNprRequestUxModel, bool> QuickFilter => _quickFilterFunc;
+
+    [Parameter] public RqfProjectUxModel RfqProject { get; set; } = new();
+
+    private int ActiveNprCount =>
+        RfqProject?.NprRequests?.Count(r => r.UxStatus != UxObjectStatus.Deleted) ?? 0;
+
+    private bool HasPendingChanges =>
+        RfqProject?.NprRequests?.Any(r =>
+            r.UxStatus == UxObjectStatus.Created ||
+            r.UxStatus == UxObjectStatus.Updated ||
+            r.UxStatus == UxObjectStatus.Deleted) ?? false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshNprRequestsAsync();
+    }
+
+    #region NPR Tab - inline management
+
+    private async Task RefreshNprRequestsAsync()
+    {
+        try
+        {
+            Logger.GenericLogInformation("NprRequestsEditor.RefreshNprRequestsAsync - Refreshing NPR requests");
+
+            List<RfqNprRequestUxModel>? refreshedRequests =
+                await RfqUxClientService.GetNprRequestsByRfqNumberAsync(RfqProject?.RfqNumber);
+
+            if (refreshedRequests != null)
+            {
+                RfqProject!.NprRequests = refreshedRequests;
+                Snackbar.Add($"NPR requests refreshed: {ActiveNprCount} request(s)", Severity.Success);
+                Logger.GenericLogInformation($"NprRequestsEditor.RefreshNprRequestsAsync - Refreshed {ActiveNprCount} NPR requests");
+            }
+            else
+            {
+                RfqProject!.NprRequests = new List<RfqNprRequestUxModel>();
+                Snackbar.Add("No NPR requests found", Severity.Info);
+                Logger.GenericLogInformation("NprRequestsEditor.RefreshNprRequestsAsync - No NPR requests returned");
+            }
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError("NprRequestsEditor.RefreshNprRequestsAsync - Error refreshing NPR requests", ex);
+            Snackbar.Add($"Error refreshing NPR requests: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task SaveNprRequestsAsync()
+    {
+        if (RfqProject.NprRequests == null || RfqProject.NprRequests.Count == 0)
+        {
+            Snackbar.Add("No NPR requests to save", Severity.Info);
+            return;
+        }
+
+        try
+        {
+            var itemsToCreate = RfqProject.NprRequests
+                .Where(r => r.UxStatus == UxObjectStatus.Created)
+                .ToList();
+
+            var itemsToUpdate = RfqProject.NprRequests
+                .Where(r => r.UxStatus == UxObjectStatus.Updated)
+                .ToList();
+
+            var itemsToDelete = RfqProject.NprRequests
+                .Where(r => r.UxStatus == UxObjectStatus.Deleted)
+                .ToList();
+
+            int totalChanges = itemsToCreate.Count + itemsToUpdate.Count + itemsToDelete.Count;
+
+            if (totalChanges == 0)
+            {
+                Snackbar.Add("No pending changes to save", Severity.Info);
+                return;
+            }
+
+            Logger.GenericLogInformation(
+                $"NprRequestsEditor.SaveNprRequestsAsync - Saving changes: " +
+                $"{itemsToCreate.Count} new, {itemsToUpdate.Count} updated, {itemsToDelete.Count} deleted");
+
+            if (itemsToCreate.Count > 0)
+            {
+                await RfqUxClientService.CreateNprRequestsAsync(itemsToCreate);
+                Logger.GenericLogInformation(
+                    $"NprRequestsEditor.SaveNprRequestsAsync - Created {itemsToCreate.Count} new NPR requests");
+            }
+
+            if (itemsToUpdate.Count > 0)
+            {
+                await RfqUxClientService.CreateNprRequestsAsync(itemsToUpdate);
+                Logger.GenericLogInformation(
+                    $"NprRequestsEditor.SaveNprRequestsAsync - Updated {itemsToUpdate.Count} NPR requests");
+            }
+
+            if (itemsToDelete.Count > 0)
+            {
+                await RfqUxClientService.CreateNprRequestsAsync(itemsToDelete);
+                Logger.GenericLogInformation(
+                    $"NprRequestsEditor.SaveNprRequestsAsync - Deleted {itemsToDelete.Count} NPR requests");
+            }
+
+            await RefreshNprRequestsAsync();
+
+            Snackbar.Add(
+                $"NPR requests saved: {itemsToCreate.Count} created, {itemsToUpdate.Count} updated, {itemsToDelete.Count} deleted",
+                Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError("NprRequestsEditor.SaveNprRequestsAsync - Error saving NPR requests", ex);
+            Snackbar.Add($"Error saving NPR requests: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task EditNprRequest(RfqNprRequestUxModel nprRequest)
+    {
+        try
+        {
+            Logger.GenericLogInformation(
+                $"NprRequestsEditor.EditNprRequest - Editing NPR request Id: {nprRequest.Id}, " +
+                $"Sumitomo: {nprRequest.SumitomoNumber}, Customer P/N: {nprRequest.CustomerPartNumber}");
+
+            // Create a shallow copy so the dialog can cancel without mutating the original
+            var editCopy = new RfqNprRequestUxModel
+            {
+                Id = nprRequest.Id,
+                RfqNumber = nprRequest.RfqNumber,
+                SumitomoNumber = nprRequest.SumitomoNumber,
+                CustomerPartNumber = nprRequest.CustomerPartNumber,
+                SupplierPartNumber = nprRequest.SupplierPartNumber,
+                MaterialDescription = nprRequest.MaterialDescription,
+                Reason = nprRequest.Reason,
+                Customer = nprRequest.Customer,
+                PlatformName = nprRequest.PlatformName,
+                ProgramName = nprRequest.ProgramName,
+                Project = nprRequest.Project,
+                MaterialType = nprRequest.MaterialType,
+                SuggestedSewsEManufacturingSite = nprRequest.SuggestedSewsEManufacturingSite,
+                UnitOfMeasure = nprRequest.UnitOfMeasure,
+                SupplierGroup = nprRequest.SupplierGroup,
+                QtyPerVehicle = nprRequest.QtyPerVehicle,
+                Quantity = nprRequest.Quantity,
+                RequiredDate = nprRequest.RequiredDate,
+                RaisedRemarks = nprRequest.RaisedRemarks,
+                IsCustomerNominatedSupplier = nprRequest.IsCustomerNominatedSupplier,
+                IsCustomerNominatedMaterial = nprRequest.IsCustomerNominatedMaterial,
+                SamplesRequired = nprRequest.SamplesRequired,
+                SampleSite = nprRequest.SampleSite,
+                SampleQuantity = nprRequest.SampleQuantity,
+                SampleRecipient = nprRequest.SampleRecipient,
+                SampleRequiredDate = nprRequest.SampleRequiredDate,
+                FreightAccount = nprRequest.FreightAccount,
+                AssociatedParts = nprRequest.AssociatedParts,
+                SuggestedManufacturer = nprRequest.SuggestedManufacturer,
+                Created = nprRequest.Created,
+                Updated = nprRequest.Updated,
+                UxStatus = nprRequest.UxStatus
+            };
+
+            var parameters = new DialogParameters<NprRequestEditDialog>
+            {
+                { x => x.NprRequest, editCopy }
+            };
+
+            var options = new DialogOptions
+            {
+                MaxWidth = MaxWidth.Medium,
+                FullWidth = true,
+                CloseOnEscapeKey = true,
+                BackdropClick = false
+            };
+
+            var dialog = await DialogService.ShowAsync<NprRequestEditDialog>(
+                $"Edit NPR: {nprRequest.SumitomoNumber ?? nprRequest.CustomerPartNumber ?? "New"}",
+                parameters,
+                options);
+
+            var result = await dialog.Result;
+
+            if (result != null && !result.Canceled)
+            {
+                var updatedItem = result.Data as RfqNprRequestUxModel;
+                if (updatedItem != null)
+                {
+                    // Apply changes from dialog back to the original item
+                    nprRequest.SumitomoNumber = updatedItem.SumitomoNumber;
+                    nprRequest.CustomerPartNumber = updatedItem.CustomerPartNumber;
+                    nprRequest.SupplierPartNumber = updatedItem.SupplierPartNumber;
+                    nprRequest.MaterialDescription = updatedItem.MaterialDescription;
+                    nprRequest.Reason = updatedItem.Reason;
+                    nprRequest.Customer = updatedItem.Customer;
+                    nprRequest.PlatformName = updatedItem.PlatformName;
+                    nprRequest.ProgramName = updatedItem.ProgramName;
+                    nprRequest.Project = updatedItem.Project;
+                    nprRequest.MaterialType = updatedItem.MaterialType;
+                    nprRequest.SuggestedSewsEManufacturingSite = updatedItem.SuggestedSewsEManufacturingSite;
+                    nprRequest.UnitOfMeasure = updatedItem.UnitOfMeasure;
+                    nprRequest.SupplierGroup = updatedItem.SupplierGroup;
+                    nprRequest.QtyPerVehicle = updatedItem.QtyPerVehicle;
+                    nprRequest.Quantity = updatedItem.Quantity;
+                    nprRequest.RequiredDate = updatedItem.RequiredDate;
+                    nprRequest.RaisedRemarks = updatedItem.RaisedRemarks;
+                    nprRequest.IsCustomerNominatedSupplier = updatedItem.IsCustomerNominatedSupplier;
+                    nprRequest.IsCustomerNominatedMaterial = updatedItem.IsCustomerNominatedMaterial;
+                    nprRequest.SamplesRequired = updatedItem.SamplesRequired;
+                    nprRequest.SampleSite = updatedItem.SampleSite;
+                    nprRequest.SampleQuantity = updatedItem.SampleQuantity;
+                    nprRequest.SampleRecipient = updatedItem.SampleRecipient;
+                    nprRequest.SampleRequiredDate = updatedItem.SampleRequiredDate;
+                    nprRequest.FreightAccount = updatedItem.FreightAccount;
+                    nprRequest.AssociatedParts = updatedItem.AssociatedParts;
+                    nprRequest.SuggestedManufacturer = updatedItem.SuggestedManufacturer;
+                    nprRequest.Updated = DateTime.UtcNow;
+
+                    // Mark as updated if it was a clean Read item
+                    if (nprRequest.UxStatus == UxObjectStatus.Read)
+                    {
+                        nprRequest.UxStatus = UxObjectStatus.Updated;
+                    }
+
+                    Logger.GenericLogInformation(
+                        $"NprRequestsEditor.EditNprRequest - Updated NPR request Id: {nprRequest.Id}");
+                    Snackbar.Add(
+                        $"NPR request '{nprRequest.SumitomoNumber ?? nprRequest.CustomerPartNumber}' updated. Save to persist.",
+                        Severity.Success);
+
+                    StateHasChanged();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError($"NprRequestsEditor.EditNprRequest - Error editing NPR request: {nprRequest.CustomerPartNumber}", ex);
+            Snackbar.Add($"Error editing NPR request: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private void RemoveNprRequest(RfqNprRequestUxModel nprRequest)
+    {
+        try
+        {
+            if (nprRequest.UxStatus == UxObjectStatus.Created)
+            {
+                RfqProject.NprRequests?.Remove(nprRequest);
+            }
+            else
+            {
+                nprRequest.UxStatus = UxObjectStatus.Deleted;
+            }
+
+            Logger.LogInformation(
+                $"NprRequestsEditor.RemoveRequest - " +
+                $"Removed request Id: {nprRequest.Id}, SumitomoNumber: {nprRequest.SumitomoNumber}, " +
+                $"set now has {ActiveNprCount} active requests");
+
+            Snackbar.Add(
+                $"Removed NPR request: {nprRequest.SumitomoNumber ?? nprRequest.CustomerPartNumber ?? nprRequest.Id.ToString()}",
+                Severity.Info);
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError($"NprRequestsEditor.RemoveNprRequest - Error removing NPR request: {nprRequest.CustomerPartNumber}", ex);
+            Snackbar.Add($"Error removing NPR request: {ex.Message}", Severity.Error);
+        }
+    }
+
+    void OnItemCommitted(RfqNprRequestUxModel item)
+    {
+        if (item.UxStatus == UxObjectStatus.Read)
+        {
+            item.UxStatus = UxObjectStatus.Updated;
+        }
+
+        item.Updated = DateTime.UtcNow;
+
+        Logger.LogInformation(
+            $"NprRequestsEditor.OnItemCommitted - " +
+            $"Updated request Id: {item.Id}, SumitomoNumber: {item.SumitomoNumber}");
+
+        StateHasChanged();
+    }
+
+    private Color GetNprStatusColor(RfqNprRequestUxModel nprRequest)
+    {
+        return nprRequest.UxStatus switch
+        {
+            UxObjectStatus.Created => Color.Info,
+            UxObjectStatus.Updated => Color.Warning,
+            UxObjectStatus.Deleted => Color.Error,
+            UxObjectStatus.Read => Color.Default,
+            _ => Color.Default
+        };
+    }
+
+    bool _quickFilterFunc(RfqNprRequestUxModel x)
+    {
+        if (x.UxStatus == UxObjectStatus.Deleted)
+        {
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(_searchFilter))
+        {
+            return true;
+        }
+
+        if (_lastCompiledFilter != _searchFilter)
+        {
+            _lastCompiledFilter = _searchFilter;
+            string filter = _searchFilter.Trim();
+            StringComparison comparisonType = StringComparison.OrdinalIgnoreCase;
+            bool isNumeric = int.TryParse(filter, out _);
+
+            _compiledQuickFilter = item =>
+            {
+                if (item.UxStatus == UxObjectStatus.Deleted) return false;
+                if (item.RfqNumber?.Contains(filter, comparisonType) == true) return true;
+                if (item.SumitomoNumber?.Contains(filter, comparisonType) == true) return true;
+                if (item.CustomerPartNumber?.Contains(filter, comparisonType) == true) return true;
+                if (item.SupplierPartNumber?.Contains(filter, comparisonType) == true) return true;
+                if (item.MaterialDescription?.Contains(filter, comparisonType) == true) return true;
+                if (item.Reason?.Contains(filter, comparisonType) == true) return true;
+                if (item.Customer?.Contains(filter, comparisonType) == true) return true;
+                if (item.PlatformName?.Contains(filter, comparisonType) == true) return true;
+                if (item.ProgramName?.Contains(filter, comparisonType) == true) return true;
+                if (item.Project?.Contains(filter, comparisonType) == true) return true;
+                if (item.MaterialType?.Contains(filter, comparisonType) == true) return true;
+                if (item.SuggestedSewsEManufacturingSite?.Contains(filter, comparisonType) == true) return true;
+                if (item.UnitOfMeasure?.Contains(filter, comparisonType) == true) return true;
+                if (item.SupplierGroup?.Contains(filter, comparisonType) == true) return true;
+                if (item.RaisedRemarks?.Contains(filter, comparisonType) == true) return true;
+                if (item.SampleSite?.Contains(filter, comparisonType) == true) return true;
+                if (item.SampleRecipient?.Contains(filter, comparisonType) == true) return true;
+                if (item.FreightAccount?.Contains(filter, comparisonType) == true) return true;
+                if (item.AssociatedParts?.Contains(filter, comparisonType) == true) return true;
+                if (item.SuggestedManufacturer?.Contains(filter, comparisonType) == true) return true;
+
+                if (isNumeric)
+                {
+                    if (item.QtyPerVehicle?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.Quantity?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.SampleQuantity?.ToString().Contains(filter, comparisonType) == true) return true;
+                }
+
+                return false;
+            };
+        }
+
+        return _compiledQuickFilter?.Invoke(x) ?? true;
+    }
+
+    #endregion
+}

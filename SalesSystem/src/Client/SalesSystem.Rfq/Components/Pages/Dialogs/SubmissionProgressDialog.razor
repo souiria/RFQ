@@ -10,10 +10,39 @@
         <div class="d-flex flex-column align-center pa-4" style="min-width: 400px; min-height: 200px;">
             <MudText Typo="Typo.h6" Class="mb-4">Processing RFQ Submission</MudText>
             
-            <MudProgressCircular Color="Color.Primary" 
-                                Size="Size.Large" 
-                                Indeterminate="true" 
-                                Class="mb-4" />
+            @if (ProgressState.IsCompleted)
+            {
+                @* Completed image here *@
+                @if (ProgressState.HasError)
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.Error"
+                             Color="Color.Error"
+                             Size="Size.Large"
+                             Class="mb-4" />
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircle"
+                             Color="Color.Success"
+                             Size="Size.Large"
+                             Class="mb-4" />
+                }
+
+                <MudText Typo="Typo.subtitle1"
+                         Align="Align.Center"
+                         Class="mb-4"
+                         Color="@(ProgressState.HasError ? Color.Error : Color.Success)">
+                    @(ProgressState.HasError ? "Submission completed with errors" : "Submission complete")
+                </MudText>
+            }
+            else
+            {
+                <MudProgressCircular Color="Color.Primary"
+                                     Size="Size.Large"
+                                     Indeterminate="true"
+                                     Class="mb-4" />
+            }
+
             
             <MudText Typo="Typo.body1" 
                      Align="Align.Center" 
