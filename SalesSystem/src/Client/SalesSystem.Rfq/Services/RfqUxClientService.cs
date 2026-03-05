@@ -914,7 +914,7 @@ namespace SalesSystem.Rfq.Services
         }
         #endregion
 
-        async Task CreateNpr(List<RfqNprRequestUxModel> list)
+        async Task<bool> CreateNpr(List<RfqNprRequestUxModel> list)
         {
             CreateRfqNprRequestGrpcRequest createRequest = new CreateRfqNprRequestGrpcRequest();
             foreach (RfqNprRequestUxModel model in list)
@@ -925,16 +925,10 @@ namespace SalesSystem.Rfq.Services
             }
 
             CreateRfqNprRequestGrpcResponse response = await _Client.CreateRfqNprRequestGrpcAsync(createRequest);
-            if (!response.Success)
-            {
-                _Logger?.GenericLogInformation($"{response.Message}");
-                foreach(RfqNprRequestUxModel item in list)
-                {
-                    _NprRequests.Remove(item);
-                }
-            }
+            _Logger?.GenericLogInformation($"{response.Message}");
+            return response.Success;
         }
-        async Task UpdateNpr(List<RfqNprRequestUxModel> list)
+        async Task<bool> UpdateNpr(List<RfqNprRequestUxModel> list)
         {
             UpdateRfqNprRequestGrpcRequest updateRequest = new UpdateRfqNprRequestGrpcRequest();
             foreach (RfqNprRequestUxModel model in list)
@@ -945,13 +939,8 @@ namespace SalesSystem.Rfq.Services
             }
 
             UpdateRfqNprRequestGrpcResponse response = await _Client.UpdateRfqNprRequestGrpcAsync(updateRequest);
-            if (response.Success)
-            {
-                if (!response.Success)
-                {
-                    _Logger?.GenericLogInformation($"{response.Message}");
-                }
-            }
+            _Logger?.GenericLogInformation($"{response.Message}");
+            return response.Success;
         }
         async Task<List<RfqNprRequestUxModel>> LoadNprRequestsFromDatabaseAsync()
         {
@@ -997,12 +986,12 @@ namespace SalesSystem.Rfq.Services
 
                 if(0 < createList.Count)
                 {
-                    await CreateNpr(createList);
+                    bool success = await CreateNpr(createList);
                 }
 
                 if(0 < updateList.Count)
                 {
-                    await UpdateNpr(updateList);
+                    bool success = await UpdateNpr(updateList);
                 }
             }
             catch (Exception ex)
