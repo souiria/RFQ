@@ -1399,6 +1399,8 @@ message RfqNprRequestGrpc {
 	google.protobuf.Int32Value SubmissionStatus = 33;
 	google.protobuf.StringValue RemoteEndpointResponse = 34;
 	google.protobuf.Timestamp SubmittedAt = 35;
+	google.protobuf.StringValue RfqNumber = 36;
+	google.protobuf.BoolValue IsActive = 37;
 }
 
 message RfqFilterRequest {

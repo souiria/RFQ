@@ -174,6 +174,7 @@ namespace Integration.Tests.Rfq.Client
             {
                 Directory.CreateDirectory(directory);
             }
+
             await File.WriteAllTextAsync(_Service.NprRequestSetsFilePath, "");
 
             // Act
@@ -635,7 +636,5 @@ namespace Integration.Tests.Rfq.Client
         }
 
         #endregion
-#pragma warning restore IDESIGN103 // Avoid compound statements.
-
     }
 }
