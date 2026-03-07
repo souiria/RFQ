@@ -999,15 +999,8 @@ namespace RfqModule.Services
             {
                 if (customer.IsActive == true)
                 {
-                    //mastersFilterRequestGrpc.DatabaseList = "CUSTOMERGRPC";
-                    //mastersFilterRequestGrpc.FilterExpression = $"Id != null && Id.ToUpperInvariant() == \"{customer.CustomerBusinessHierarchyGuid.ToString().ToUpperInvariant()}\"";
-                    //MastersFilterResponseGrpc customerFilter = _MasterClient.FilterMasterDataGrpc(mastersFilterRequestGrpc);
                     List<Master.CustomerGrpc> userCustomers = allCustomers.Where(c => c.Id != null && c.Id.ToUpperInvariant() == customer.CustomerBusinessHierarchyGuid.ToString().ToUpperInvariant()).ToList();
-                    //foreach (Master.CustomerGrpc masterCustomer in customerFilter.CustomerGrpcList.CustomerGrpc)
-                    //{
-                    //    CustomerGrpc customerGrpc = masterCustomer.ToCustomerGrpc();
-                    //    response.Customers.Add(customerGrpc);
-                    //}
+
                     foreach (Master.CustomerGrpc masterCustomer in userCustomers)
                     {
                         CustomerGrpc customerGrpc = masterCustomer.ToCustomerGrpc();
@@ -1205,8 +1198,27 @@ namespace RfqModule.Services
             }
 
             response.Message = accessResponse.Message;
+            response.Success = accessResponse.SaveSuccess;
             return response;
         }
+
+        //public async Task<UpdateRfqNprRequestGrpcResponse> UpdateRfqNprRequestGrpc(UpdateRfqNprRequestGrpcRequest request)
+        //{
+        //    await Task.Delay(0);
+        //    UpdateRfqNprRequestGrpcResponse response = new UpdateRfqNprRequestGrpcResponse();
+        //    RfqNprRequestGrpcRequest rfqNprRequest = new RfqNprRequestGrpcRequest();
+        //    RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+        //    rfqGrpcRequestParameter.RequestType = 80;
+        //    foreach (RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
+        //    {
+        //        Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRquestGrpcAccess();
+        //        rfqNprRequest.RfqNprRequestGrpcsToUpdate.Add(accessRfqNprRequest);
+        //    }
+
+        //    RfqCrudGrpcResponse accessResponse = _RfqClient.UpdateRfqNprRequestGrpc(rfqNprRequest);
+        //    response.Message = accessResponse.Message;
+        //    return response;
+        //}
 
         public async Task<UpdateRfqNprRequestGrpcResponse> UpdateRfqNprRequestGrpc(UpdateRfqNprRequestGrpcRequest request)
         {
@@ -1215,6 +1227,7 @@ namespace RfqModule.Services
             RfqNprRequestGrpcRequest rfqNprRequest = new RfqNprRequestGrpcRequest();
             RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             rfqGrpcRequestParameter.RequestType = 80;
+            rfqNprRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
             foreach (RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
             {
                 Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRquestGrpcAccess();
@@ -1222,6 +1235,7 @@ namespace RfqModule.Services
             }
 
             RfqCrudGrpcResponse accessResponse = _RfqClient.UpdateRfqNprRequestGrpc(rfqNprRequest);
+            response.Success = accessResponse.SaveSuccess;
             response.Message = accessResponse.Message;
             return response;
         }

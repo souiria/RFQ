@@ -18,8 +18,31 @@
 
         public RfqNprRequestSet Status
         { get; set; }
+        UxObjectStatus _UxStatus;
         public UxObjectStatus UxStatus
-        { get; set; }
+        { 
+            get
+            {
+                return _UxStatus;
+            }
+            set
+            {
+                if (_UxStatus != value)
+                {
+                    _UxStatus = value;
+                    if (_UxStatus == UxObjectStatus.Deleted)
+                    {
+                        _IsActive = false;
+                    }
+                    else
+                    {
+                        _IsActive = true;
+                    }
+                }
+            }
+        }
+        bool _IsActive;
+        public bool IsActive => _IsActive;
 
         public DateTime? Closed
         { get; set; }

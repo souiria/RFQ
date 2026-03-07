@@ -43,7 +43,7 @@ namespace Integration.Tests.Rfq.Client
             ArgumentNullException.ThrowIfNull(_Configuration);
             _LoggerMock = new Mock<ILogger<RfqUxClientService>>();
 
-            _Service = new RfqUxClientService(_Configuration, _LoggerMock.Object, true);
+            _Service = new RfqUxClientService(_Configuration, _LoggerMock.Object, isTest:false);
 
             TestContext.Out.WriteLine("RfqUxClientServiceNprTest - RfqUxClientService initialized successfully");
             TestContext.Out.WriteLine($"Max GRPC Response Size: {RfqUxClientService.MAX_GRPC_RESPONSE_SIZE / 1024 / 1024} MB");
@@ -145,7 +145,7 @@ namespace Integration.Tests.Rfq.Client
 
             // Assert
             Assert.That(count, Is.EqualTo(0));
-            Assert.That(_Service.NprRequestSets, Is.Empty);
+            Assert.That(_Service.NprRequests, Is.Empty);
         }
 
         [Test]
@@ -161,7 +161,7 @@ namespace Integration.Tests.Rfq.Client
 
             // Assert
             Assert.That(count, Is.EqualTo(3));
-            Assert.That(_Service.NprRequestSets.Count, Is.EqualTo(3));
+            Assert.That(_Service.NprRequests.Count, Is.EqualTo(3));
         }
 
         [Test]

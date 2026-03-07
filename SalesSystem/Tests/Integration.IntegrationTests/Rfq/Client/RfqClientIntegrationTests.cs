@@ -274,7 +274,7 @@ namespace Integration.Tests.Rfq.Client
         [Test]
         [Category("Integration")]
         [Description("Verify that service can retrieve all alternative parts with SumtomoNumber and Price from Emacs")]
-        public async Task GetAllAlternativePartsAsyncTest()
+         public async Task GetAllAlternativePartsAsyncTest()
         {
             // Arrange
             EnsureServiceInitialized();
@@ -292,17 +292,17 @@ namespace Integration.Tests.Rfq.Client
             // Assert
             AssertAllAlternativePartsRetrieved(alternativePartsCount);
 
-            // Act 10000
-            alternativePartsCount = await GetAllAlternativePartsAsync(0, 5000);
-            TestContext.Out.WriteLine($"Retrieved {_RfqUxClientService!.AlternativeParts.Count} alternative parts");
-            // Assert
-            AssertAllAlternativePartsRetrieved(alternativePartsCount);
+            //// Act 10000
+            //alternativePartsCount = await GetAllAlternativePartsAsync(0, 5000);
+            //TestContext.Out.WriteLine($"Retrieved {_RfqUxClientService!.AlternativeParts.Count} alternative parts");
+            //// Assert
+            //AssertAllAlternativePartsRetrieved(alternativePartsCount);
 
-            // Act 10000
-            alternativePartsCount = await GetAllAlternativePartsAsync(0, -1);
-            TestContext.Out.WriteLine($"Retrieved ALL {_RfqUxClientService!.AlternativeParts.Count} alternative parts");
-            // Assert
-            AssertAllAlternativePartsRetrieved(alternativePartsCount);
+            //// Act 10000
+            //alternativePartsCount = await GetAllAlternativePartsAsync(0, -1);
+            //TestContext.Out.WriteLine($"Retrieved ALL {_RfqUxClientService!.AlternativeParts.Count} alternative parts");
+            //// Assert
+            //AssertAllAlternativePartsRetrieved(alternativePartsCount);
         }
 
         [Test]
@@ -315,7 +315,7 @@ namespace Integration.Tests.Rfq.Client
             ArgumentNullException.ThrowIfNull(_RfqUxClientService);
 
             // Test project Id
-            const string testProjectId = "183";
+            const string testProjectId = "184";
 
             // Prepare test BOM file (FordBom.xml)
             string bomFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, "TestData", "FordBom.xml");

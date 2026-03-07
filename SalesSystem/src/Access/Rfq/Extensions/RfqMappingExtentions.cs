@@ -1963,12 +1963,18 @@ namespace Rfq.Extensions
             data.AssociatedParts = grpc.AssociatedParts;
             data.SuggestedManufacturer = grpc.SuggestedManufacturer;
             data.CreatedAt = grpc.CreatedAt.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
+            data.CreatedBy = grpc.CreatedBy is null 
+                                ? Guid.Empty 
+                                : Guid.Parse(grpc.CreatedBy);
             data.ModifiedAt = grpc.ModifiedAt.ToDateTime();
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            data.ModifiedBy = grpc.ModifiedBy is null 
+                                ? Guid.Empty
+                                :Guid.Parse(grpc.ModifiedBy);
             data.SubmissionStatus = (SubmissionStatus?)grpc.SubmissionStatus;
             data.RemoteEndpointResponse = grpc.RemoteEndpointResponse;
-            data.SubmittedAt = grpc.SubmittedAt.ToDateTime();
+            data.SubmittedAt = grpc.SubmittedAt is null 
+                ? null
+                : grpc.SubmittedAt.ToDateTime();
             data.RfqNumber = grpc.RfqNumber;
             data.IsActive = grpc.IsActive;
             return data;

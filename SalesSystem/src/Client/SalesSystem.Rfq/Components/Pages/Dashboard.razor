@@ -9,7 +9,7 @@
 @inject ILogger<Dashboard> Logger
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
-
+@inject NavigationManager NavigationManager
 
 <MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Dashboard</MudText>
 <MudGrid>
@@ -42,7 +42,16 @@
     </MudItem>
     <MudItem xs="12" sm="6" md="3">
         <MudPaper Elevation="24" Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
-            <MudIcon Icon="@Icons.Custom.Uncategorized.Radioactive" Color="Color.Warning" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+            @if(ShowAdmin)
+            {
+                <MudLink Href='@($"/adminRfq/{Uri.EscapeDataString(AdminName)}")' Underline="Underline.None">
+                    <MudIcon Icon="@Icons.Custom.Uncategorized.Radioactive" Color="Color.Warning" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+                </MudLink>
+            }
+            else
+            {
+                <MudIcon Icon="@Icons.Custom.Uncategorized.Radioactive" Color="Color.Warning" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+            }
             <div>
                 <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">RFQ KPI 4</MudText>
                 <MudText Typo="Typo.h5">3,6</MudText>
@@ -112,6 +121,9 @@
 </MudGrid>
 
 @code {
+    bool ShowAdmin = false;
+    string AdminName = string.Empty;
+
     [Parameter] public Guid? UserId { get; set; }
 
 
@@ -130,12 +142,18 @@
             if (user.Identity!.IsAuthenticated)
             {
                 userName = user.Identity.Name;
-                Console.WriteLine($"User is authenticated: {userName}");
+                Logger.GenericLogInformation($">>> Loading Rfq.Dashboard with authenticated user: {userName}");
+                if(!string.IsNullOrEmpty(userName) && userName.Trim().ToLowerInvariant().EndsWith("canachl"))
+                {
+                    ShowAdmin = true;
+                    AdminName = userName;
+                }
             }
             else
             {
                 userName = "Anonymous";
-                Console.WriteLine("User is not authenticated.");
+                Console.WriteLine(".");
+                Logger.GenericLogInformation($">>> Loading Rfq.Dashboard, cannot get authenticated user");
             }
 
 #if DEBUG

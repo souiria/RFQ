@@ -363,6 +363,7 @@
             requestProject.RfqReasonId = reason.RowId ?? 0;
             requestProject.VehicleVolume = vehicleVolume;
             requestProject.RfqResponseDeadline = Timestamp.FromDateTime(date.Value.ToUniversalTime());
+            requestProject.IsActive = true;
 
             CreateRfqProjectGrpcResponse response = await RfqUxClientService.CreateRfqProjectAsync(requestProject);
 

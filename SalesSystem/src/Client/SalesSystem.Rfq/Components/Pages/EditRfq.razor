@@ -126,7 +126,8 @@ else
                                        @bind-Date="RfqProject.RfqResponseDeadline"
                                        DateFormat="dd.MM.yyyy" />
                         <MudCheckBox Label="Is Active"
-                                     @bind-Value="RfqProject.IsActive" />
+                                     @bind-Value="RfqProject.IsActive"
+                                     Disabled="true"/>
                     </MudStack>
                 </MudPaper>
 
@@ -164,7 +165,7 @@ else
                                                Size="Size.Small"
                                                StartIcon="@Icons.Material.Filled.AddTask"
                                                FullWidth="true"
-                                               Disabled="@(InProgressParts.Count == 0 || _isSearchingAll)">
+                                               Disabled="@(IsCreateNprRequestsPermitted)">
                                         Add NPRs
                                     </MudButton>
                                 </MudTooltip>
@@ -278,7 +279,6 @@ else
     // Form related
     bool IsLoading { get; set; } = true;
     RqfProjectUxModel? RfqProject { get; set; }
-    // List<RfqNprRequestUxModel>? NprRequests { get; set; }
 
     // Simplified project selection (like CreateRfq)
     private RqfCustomerProjectAssociationUxModel? selectedProject { get; set; }
@@ -399,6 +399,24 @@ else
     #endregion
 
     #region Load npr requests
+    public bool IsCreateNprRequestsPermitted
+    {
+        get
+        {
+            int nprRequestAlreadyExists = 0;
+
+            foreach (RfqDrawingPartNumberUxModel? drawingPartNumber in InProgressParts)
+            {
+                if (RfqProject?.NprRequests.Any(x => x.CustomerPartNumber == drawingPartNumber?.CustomerPartNumber) == true)
+                {
+                    nprRequestAlreadyExists++;
+                }
+            }
+
+            return InProgressParts.Count <= nprRequestAlreadyExists;
+        }
+    }
+
     async Task LoadNprRequests()
     {
         await Task.Delay(1);
@@ -407,6 +425,12 @@ else
         {
             RfqProject!.NprRequests = nprRequests;
         }
+    }
+
+    // it should be in the ux service
+    RfqNprRequestUxModel? GetRfqNprRequestByCustomerNumber(RfqDrawingPartNumberUxModel part)
+    {
+        return RfqProject?.NprRequests.FirstOrDefault(x => x.CustomerPartNumber?.Trim().ToLowerInvariant() == part.CustomerPartNumber?.Trim().ToLowerInvariant());
     }
 
     // NprAllInProgressPartsAsync - creates flat list of requests
@@ -446,12 +470,17 @@ else
             {
                 if (part != null)
                 {
-                    RfqNprRequestUxModel nprRequest = part.ToNprRequest(RfqProject);
-                    nprRequest.RfqNumber = RfqProject.RfqNumber;
-                    nprRequest.Created = now;
-                    nprRequest.Updated = now;
-                    nprRequest.UxStatus = UxObjectStatus.Created;
-                    nprRequests.Add(nprRequest);
+                    //check if the part does not already has a npr request created in another project
+                    RfqNprRequestUxModel? nprRequest = GetRfqNprRequestByCustomerNumber(part);
+                    if(nprRequest == null)
+                    {
+                        nprRequest = part.ToNprRequest(RfqProject);
+                        nprRequest.RfqNumber = RfqProject.RfqNumber;
+                        nprRequest.Created = now;
+                        nprRequest.Updated = now;
+                        nprRequest.UxStatus = UxObjectStatus.Created;
+                        nprRequests.Add(nprRequest);
+                    }
                 }
             }
 

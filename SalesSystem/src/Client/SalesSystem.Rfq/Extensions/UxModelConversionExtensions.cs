@@ -330,6 +330,8 @@ namespace SalesSystem.Rfq.Extensions
             nprRequest.SampleRecipient = "";
             nprRequest.SampleSite = "";
 
+            nprRequest.UxStatus = UxObjectStatus.Created;
+
             return nprRequest;
         }
 
@@ -372,6 +374,9 @@ namespace SalesSystem.Rfq.Extensions
             //nprGrpc.RemoteEndpointResponse = model.RemoteEndpointResponse;
             //nprGrpc.SubmittedAt = model.SubmittedAt?.ToUniversalTime().ToTimestamp();
             nprGrpc.RfqNumber = model.RfqNumber;
+
+            nprGrpc.IsActive = model.UxStatus != UxObjectStatus.Deleted;
+
             return nprGrpc;
         }
         public static RfqNprRequestUxModel ToNprUx (this RfqNprRequestGrpc grpc)
@@ -413,6 +418,9 @@ namespace SalesSystem.Rfq.Extensions
             //nprGrpc.RemoteEndpointResponse = model.RemoteEndpointResponse;
             //nprGrpc.SubmittedAt = model.SubmittedAt?.ToUniversalTime().ToTimestamp();
             model.RfqNumber = grpc.RfqNumber;
+
+            model.UxStatus = grpc.IsActive == false ? UxObjectStatus.Deleted : UxObjectStatus.Read;
+            
             return model;
         }
         #endregion
