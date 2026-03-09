@@ -136,13 +136,13 @@
                                            OnClick="@(() => ToggleDeleteNprRequest(context.Item))" />
                         </MudTooltip>
                     }
-                    @*                     <MudTooltip Text="Delete Forever NPR Request">
+                                        <MudTooltip Text="Delete Forever NPR Request">
                         <MudIconButton Size="@Size.Small"
                                        Color="Color.Error"
                                        Icon="@Icons.Material.Filled.DeleteForever"
                                        aria-label="edit"
                                        OnClick="@(() => DeleteForeverNprRequest(context.Item))" />
-                    </MudTooltip> *@
+                    </MudTooltip>
                 </CellTemplate>
             </TemplateColumn>
             <PropertyColumn Property="x => x.Project" Title="RfqProject" />

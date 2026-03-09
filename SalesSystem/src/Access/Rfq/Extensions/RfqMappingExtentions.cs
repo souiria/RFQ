@@ -1958,15 +1958,21 @@ namespace Rfq.Extensions
             data.SampleSite = grpc.SampleSite;
             data.SampleQuantity = grpc.SampleQuantity;
             data.SampleRecipient = grpc.SampleRecipient;
-            data.SampleRequiredDate = grpc.SampleRequiredDate.ToDateTime();
+            data.SampleRequiredDate = grpc.SampleRequiredDate is null
+                ? null
+                : grpc.SampleRequiredDate.ToDateTime();
             data.FreightAccount = grpc.FreightAccount;
             data.AssociatedParts = grpc.AssociatedParts;
             data.SuggestedManufacturer = grpc.SuggestedManufacturer;
-            data.CreatedAt = grpc.CreatedAt.ToDateTime();
+            data.CreatedAt = grpc.CreatedAt is null 
+                 ? null
+                 : grpc.CreatedAt.ToDateTime();
             data.CreatedBy = grpc.CreatedBy is null 
                                 ? Guid.Empty 
                                 : Guid.Parse(grpc.CreatedBy);
-            data.ModifiedAt = grpc.ModifiedAt.ToDateTime();
+            data.ModifiedAt = grpc.ModifiedAt is null 
+                ? null 
+                : grpc.ModifiedAt.ToDateTime();
             data.ModifiedBy = grpc.ModifiedBy is null 
                                 ? Guid.Empty
                                 :Guid.Parse(grpc.ModifiedBy);

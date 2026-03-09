@@ -406,13 +406,17 @@ namespace SalesSystem.Rfq.Extensions
             model.SampleSite = grpc.SampleSite;
             model.SampleQuantity = grpc.SampleQuantity;
             model.SampleRecipient = grpc.SampleRecipient;
-            model.SampleRequiredDate = grpc.SampleRequiredDate.ToDateTime();
+            model.SampleRequiredDate = grpc.SampleRequiredDate is null ? null : grpc.SampleRequiredDate.ToDateTime();
             model.FreightAccount = grpc.FreightAccount;
             model.AssociatedParts = grpc.AssociatedParts;
             model.SuggestedManufacturer = grpc.SuggestedManufacturer;
-            model.Created = grpc.CreatedAt.ToDateTime();
+            model.Created = grpc.CreatedAt is null 
+                ? DateTime.UtcNow
+                : grpc.CreatedAt.ToDateTime();
             //nprGrpc.CreatedBy = model.CreatedBy.ToString();
-            model.Updated = grpc.ModifiedAt.ToDateTime();
+            model.Updated = grpc.ModifiedAt is null 
+                ? DateTime.UtcNow
+                : grpc.ModifiedAt.ToDateTime();
             //nprGrpc.ModifiedBy = model.ModifiedBy.ToString();
             model.Status = grpc.SubmissionStatus.HasValue? (RfqNprRequestSet)grpc.SubmissionStatus.Value: new RfqNprRequestSet();
             //nprGrpc.RemoteEndpointResponse = model.RemoteEndpointResponse;

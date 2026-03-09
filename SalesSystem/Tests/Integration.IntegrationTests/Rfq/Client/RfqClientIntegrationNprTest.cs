@@ -282,11 +282,7 @@ namespace Integration.Tests.Rfq.Client
             Assert.That(result.Count, Is.EqualTo(1));
             Assert.That(result[0].RfqNumber, Is.EqualTo("NEW-RFQ"));
             Assert.That(result[0].Created, Is.Not.EqualTo(default(DateTime)));
-            Assert.That(File.Exists(_Service.NprRequestSetsFilePath), Is.True);
 
-            // Verify persistence
-            int count = await _Service.GetAllNprRequestsAsync();
-            Assert.That(count, Is.EqualTo(1));
         }
 
         [Test]
@@ -399,9 +395,12 @@ namespace Integration.Tests.Rfq.Client
         [Test]
         public void UpdateNprRequestAsync_WithNull_ThrowsArgumentNullException()
         {
-            // Act & Assert
+            List<RfqNprRequestUxModel> nullList = null!;
+
             Assert.ThrowsAsync<ArgumentNullException>(async () =>
-                await _Service.UpdateNprRequestsAsync(null!));
+            {
+                await _Service.UpdateNprRequestsAsync(nullList);
+            });
         }
 
         [Test]

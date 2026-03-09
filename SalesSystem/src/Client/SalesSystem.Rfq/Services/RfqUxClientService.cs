@@ -1153,6 +1153,7 @@ namespace SalesSystem.Rfq.Services
             try
             {
                 await SyncNprCacheFromDataSource();
+                _NprRequestsHasChanges = false;
                 return _NprRequests.Count;
             }
             catch (Exception ex)
@@ -1261,7 +1262,12 @@ namespace SalesSystem.Rfq.Services
                 }
 
                 _NprRequests.AddRange(nprRequests);
-                _NprRequestsHasChanges = true;
+
+                // sync
+                await SyncNprCacheToDataSource();
+                await SyncNprCacheFromDataSource();
+
+                _NprRequestsHasChanges = false;
                 
                 _Logger?.GenericLogInformation($"Created {nprRequests.Count} NPR requests");
 
@@ -1275,17 +1281,16 @@ namespace SalesSystem.Rfq.Services
         }
         public async Task<List<RfqNprRequestUxModel>> UpdateNprRequestsAsync(List<RfqNprRequestUxModel>? updatedRequests)
         {
-            // full sync (only from AdminTool)
-            if (_NprRequestsHasChanges == true && updatedRequests == null)
+            // full sync (only from AdminTool) — null means "push all cached changes"
+            if (_NprRequestsHasChanges && updatedRequests == null)
             {
                 try
                 {
                     await SyncNprCacheToDataSource();
+                    await SyncNprCacheFromDataSource();
+                    _NprRequestsHasChanges = false;
                 }
-                catch (InvalidOperationException)
-                {
-                    throw; // re-throw validation errors
-                }
+                catch (InvalidOperationException) { throw; }
                 catch (Exception ex)
                 {
                     _Logger?.GenericLogError($"Error in UpdateNprRequestsAsync", ex);
@@ -1295,63 +1300,63 @@ namespace SalesSystem.Rfq.Services
                 return _NprRequests;
             }
 
-            // partial update
-            if (_NprRequestsHasChanges == true && updatedRequests != null)
+            // null without pending changes is a caller error
+            ArgumentNullException.ThrowIfNull(updatedRequests);
+
+            // partial update — always validate and persist
+            try
             {
-                try
+                if (_NprRequests.Count <= 0)
                 {
-                    if (!_NprRequestsHasChanges &&  _NprRequests.Count <= 0)
-                    {
-                        await SyncNprCacheFromDataSource();
-                    }
-
-                    // Validate all requests exist in the cache
-                    foreach (RfqNprRequestUxModel request in updatedRequests)
-                    {
-                        RfqNprRequestUxModel? existing = _NprRequests.FirstOrDefault(r => r.Id == request.Id);
-                        if (existing == null)
-                        {
-                            throw new InvalidOperationException(
-                                $"NPR request not found for Id: {request.Id}, RfqNumber: {request.RfqNumber}");
-                        }
-                    }
-
-                    // Replace each existing request with the updated version
-                    DateTime now = DateTime.UtcNow;
-                    foreach (RfqNprRequestUxModel request in updatedRequests)
-                    {
-                        int index = _NprRequests.FindIndex(r => r.Id == request.Id);
-                        request.Updated = now;
-                        // we need to preserve the UxStatus from the UX, do not change this in the service
-                        // request.UxStatus = UxObjectStatus.Updated;
-                        _NprRequests[index] = request;
-                    }
-
-                    await SyncNprCacheToDataSource();
-
-                    _Logger?.GenericLogInformation(
-                        $"Updated {updatedRequests.Count} NPR requests");
-
-                    return updatedRequests;
+                    await SyncNprCacheFromDataSource();
                 }
-                catch (InvalidOperationException)
+
+                // Validate all requests exist in the cache
+                foreach (RfqNprRequestUxModel request in updatedRequests)
                 {
-                    throw; // re-throw validation errors
+                    RfqNprRequestUxModel? existing = _NprRequests.FirstOrDefault(r => r.Id == request.Id);
+                    if (existing == null)
+                    {
+                        throw new InvalidOperationException(
+                            $"NPR request not found for Id: {request.Id}, RfqNumber: {request.RfqNumber}");
+                    }
                 }
-                catch (Exception ex)
+
+                // Replace each existing request with the updated version
+                DateTime now = DateTime.UtcNow;
+                foreach (RfqNprRequestUxModel request in updatedRequests)
                 {
-                    _Logger?.GenericLogError($"Error in UpdateNprRequestsAsync", ex);
-                    throw;
+                    int index = _NprRequests.FindIndex(r => r.Id == request.Id);
+                    request.Updated = now;
+                    _NprRequests[index] = request;
                 }
+
+                await SyncNprCacheToDataSource();
+
+                _Logger?.GenericLogInformation(
+                    $"Updated {updatedRequests.Count} NPR requests");
+
+                return updatedRequests;
             }
-
-            return updatedRequests ?? new List<RfqNprRequestUxModel>();
+            catch (InvalidOperationException ex) 
+            {
+                _Logger?.GenericLogError($"InvalidOperationException in UpdateNprRequestsAsync", ex);
+                throw; 
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in UpdateNprRequestsAsync", ex);
+                throw;
+            }
         }
         public async Task<bool> DeleteNprRequestAsync(Guid requestId)
         {
             try
             {
-                await SyncNprCacheFromDataSource();
+                if (!_NprRequestsHasChanges && _NprRequests.Count <= 0)
+                {
+                    await SyncNprCacheFromDataSource();
+                }
 
                 RfqNprRequestUxModel? request = _NprRequests.FirstOrDefault(r => r.Id == requestId);
 
@@ -1363,7 +1368,11 @@ namespace SalesSystem.Rfq.Services
 
                 _NprRequests.Remove(request);
 
+                // sync
                 await SyncNprCacheToDataSource();
+                await SyncNprCacheFromDataSource();
+
+                _NprRequestsHasChanges = false;
 
                 _Logger?.GenericLogInformation($"Deleted NPR rfqRequestsForRfqNumber Id: {requestId}");
 
@@ -1379,7 +1388,10 @@ namespace SalesSystem.Rfq.Services
         {
             try
             {
-                await SyncNprCacheFromDataSource();
+                if (!_NprRequestsHasChanges && _NprRequests.Count <= 0)
+                {
+                    await SyncNprCacheFromDataSource();
+                }
 
                 List<RfqNprRequestUxModel>? rfqRequestsForRfqNumber
                     = _NprRequests.Where(r => r.RfqNumber == rfqNumber).ToList();
@@ -1395,7 +1407,11 @@ namespace SalesSystem.Rfq.Services
                     _NprRequests.Remove(rfqRequest);
                 }
 
+                // sync
                 await SyncNprCacheToDataSource();
+                await SyncNprCacheFromDataSource();
+
+                _NprRequestsHasChanges = false;
 
                 _Logger?.GenericLogInformation($"Deleted NPR rfqRequestsForRfqNumber Id: {rfqNumber}");
 
@@ -1411,7 +1427,10 @@ namespace SalesSystem.Rfq.Services
         {
             try
             {
-                await SyncNprCacheFromDataSource();
+                if (!_NprRequestsHasChanges && _NprRequests.Count <= 0)
+                {
+                    await SyncNprCacheFromDataSource();
+                }
 
                 int count = _NprRequests.Count;
 
@@ -1423,7 +1442,11 @@ namespace SalesSystem.Rfq.Services
 
                 _NprRequests.Clear();
 
+                // sync
                 await SyncNprCacheToDataSource();
+                await SyncNprCacheFromDataSource();
+
+                _NprRequestsHasChanges = false;
 
                 _Logger?.GenericLogInformation($"Deleted all {count} NPR requests");
 
