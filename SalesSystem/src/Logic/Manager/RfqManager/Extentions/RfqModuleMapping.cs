@@ -207,6 +207,7 @@
             accessData.RemoteEndpointResponse = rfqNprRequest.RemoteEndpointResponse;
             accessData.SubmittedAt = rfqNprRequest.SubmittedAt;
             accessData.RfqNumber = rfqNprRequest.RfqNumber;
+            accessData.IsActive = rfqNprRequest.IsActive;
             return accessData;
         }
         public static RfqNprRequestGrpc ToRfqNprRequest(this Rfq.RfqNprRequestGrpc accessData)
@@ -248,6 +249,7 @@
             rfqNprRequest.RemoteEndpointResponse = accessData.RemoteEndpointResponse;
             rfqNprRequest.SubmittedAt = accessData.SubmittedAt;
             rfqNprRequest.RfqNumber = accessData.RfqNumber;
+            rfqNprRequest.IsActive = accessData.IsActive;
             return rfqNprRequest;
         }
     }
