@@ -156,6 +156,7 @@ rpc UpdateDsiWireThroughNodeGrpc (DsiWireThroughNodeGrpcRequest) returns (RfqCru
 rpc CreateRfqNprRequestGrpc (RfqNprRequestGrpcRequest) returns (RfqCrudGrpcResponse);
 rpc ReadRfqNprRequestGrpc (RfqNprRequestGrpcRequest) returns (ListRfqNprRequestGrpc);
 rpc UpdateRfqNprRequestGrpc (RfqNprRequestGrpcRequest) returns (RfqCrudGrpcResponse);
+rpc DeleteRfqNprRequestByIdGrpc (RfqNprRequestGrpcRequest) returns (RfqCrudGrpcResponse);
 
   rpc FilterRfqGrpc (RfqFilterRequest) returns (RfqFilterResponse);
 }

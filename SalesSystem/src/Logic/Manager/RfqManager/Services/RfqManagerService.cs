@@ -1,6 +1,4 @@
-﻿using Google.Protobuf;
-
-namespace RfqModule.Services
+﻿namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {
@@ -1235,6 +1233,26 @@ namespace RfqModule.Services
             }
 
             RfqCrudGrpcResponse accessResponse = _RfqClient.UpdateRfqNprRequestGrpc(rfqNprRequest);
+            response.Success = accessResponse.SaveSuccess;
+            response.Message = accessResponse.Message;
+            return response;
+        }
+
+        public async Task<DeleteRfqNprRequestByIdGrpcResponse> DeleteRfqNprRequestByIdGrpc(DeleteRfqNprRequestByIdGrpcRequest request)
+        {
+            await Task.Delay(0);
+            DeleteRfqNprRequestByIdGrpcResponse response = new DeleteRfqNprRequestByIdGrpcResponse();
+            RfqNprRequestGrpcRequest rfqNprRequest = new RfqNprRequestGrpcRequest();
+            RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            rfqGrpcRequestParameter.RequestType = 90;
+            rfqNprRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
+            foreach(RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
+            {
+                Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRquestGrpcAccess();
+                rfqNprRequest.RfqNprRequestGrpcsToDelete.Add(accessRfqNprRequest);
+            }
+
+            RfqCrudGrpcResponse accessResponse = _RfqClient.DeleteRfqNprRequestByIdGrpc(rfqNprRequest);
             response.Success = accessResponse.SaveSuccess;
             response.Message = accessResponse.Message;
             return response;
