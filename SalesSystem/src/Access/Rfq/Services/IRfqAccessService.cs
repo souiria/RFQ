@@ -321,6 +321,7 @@
         Task<ListRfqNprRequestGrpc> GetAllRfqNprRequest(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListRfqNprRequestGrpc> CreateRfqNprRequest(RfqNprRequestGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateRfqNprRequest(RfqNprRequestGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> DeleteRfqNprRequestById(RfqNprRequestGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateRfqNprRequest(CancellationToken cancellationToken);
 
         #endregion

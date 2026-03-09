@@ -39,6 +39,7 @@ service RfqModule {
   rpc GetAllRfqNprRequestGrpc (GetAllRfqNprRequestGrpcRequest) returns (GetAllRfqNprRequestGrpcResponse);
   rpc CreateRfqNprRequestGrpc (CreateRfqNprRequestGrpcRequest) returns (CreateRfqNprRequestGrpcResponse);
   rpc UpdateRfqNprRequestGrpc (UpdateRfqNprRequestGrpcRequest) returns (UpdateRfqNprRequestGrpcResponse);
+  rpc DeleteRfqNprRequestByIdGrpc (DeleteRfqNprRequestByIdGrpcRequest) returns (DeleteRfqNprRequestByIdGrpcResponse);
    
  rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
 }
@@ -522,4 +523,12 @@ message UpdateRfqNprRequestGrpcRequest {
 message UpdateRfqNprRequestGrpcResponse {
   bool Success = 1;
   string Message = 2;
+}
+message DeleteRfqNprRequestByIdGrpcRequest {
+	repeated RfqNprRequestGrpc RfqNprRequestGrpc = 1;
+}
+
+message DeleteRfqNprRequestByIdGrpcResponse {
+	bool Success = 1;
+	string Message = 2;
 }

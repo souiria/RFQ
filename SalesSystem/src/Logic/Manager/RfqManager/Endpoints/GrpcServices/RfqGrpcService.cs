@@ -207,5 +207,11 @@
             UpdateRfqNprRequestGrpcResponse response = await _RfqManagerService.UpdateRfqNprRequestGrpc(request);
             return response;
         }
+        public override async Task<DeleteRfqNprRequestByIdGrpcResponse> DeleteRfqNprRequestByIdGrpc(DeleteRfqNprRequestByIdGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation($"DeleteRfqNprRequestByIdGrpc starting");
+            DeleteRfqNprRequestByIdGrpcResponse response = await _RfqManagerService.DeleteRfqNprRequestByIdGrpc(request);
+            return response;
+        }
     }
 }
