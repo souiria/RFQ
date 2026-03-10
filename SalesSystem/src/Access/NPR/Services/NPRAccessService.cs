@@ -13,6 +13,11 @@
         ListRFQStatusGrpc _RFQStatus;
 
         #endregion
+        #region NprApiData
+
+        List<NprApiData> _NprApiData;
+
+        #endregion
         #endregion
 
         #region Fields and Properties
@@ -27,6 +32,10 @@
 
         IQueryHandler<GetRFQStatusQuery, List<RFQStatusGrpc>>? _RFQStatusHandler;
         bool _RFQStatusRefreshInProgress;
+
+        #endregion
+        #region NprApiData
+        bool _NprRfqDataRefreshInProgress;
 
         #endregion
 
@@ -49,6 +58,13 @@
 
             _RFQStatus = new ListRFQStatusGrpc();
             _RFQStatusRefreshInProgress = false;
+
+            #endregion
+
+            #region NprApiData
+
+            _NprApiData = new List<NprApiData>();
+            _NprRfqDataRefreshInProgress = false;
 
             #endregion
 
@@ -108,6 +124,44 @@
                 await PopulateRFQStatusAsync(cancellationToken);
                 return _RFQStatus;
             }
+        }
+        #endregion
+
+        #region NprApiData
+        public async Task<NprApiGrpcResponse> CreateNpr(CreateNprApiGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            NprApiGrpcResponse response = new NprApiGrpcResponse();
+            if (request.NprApiData == null)
+            {
+                return response;
+            }
+
+            string jsonList = JsonConvert.SerializeObject(request.NprApiData);
+            HttpClient httpClient = new HttpClient();
+            string uri = "";
+            HttpResponseMessage httpResponse = await httpClient.PostAsJsonAsync(uri, jsonList, cancellationToken);
+            httpClient.Dispose();
+            try
+            {
+                string httpJsonString = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
+                List<NprApiData>? nprApiDatas = JsonConvert.DeserializeObject<List<NprApiData>>(httpJsonString);
+                if (nprApiDatas == null)
+                {
+                    return response;
+                }
+
+                response.NprApiData.AddRange(nprApiDatas);
+                response.HttpStatusCode = httpResponse.StatusCode.ToString();
+            }
+            catch (JsonException e) 
+            {
+                response.Message = e.Message;
+                response.HttpStatusCode = httpResponse.StatusCode.ToString();
+                return response;
+            }
+
+            return response;
         }
         #endregion
         #endregion
@@ -186,6 +240,7 @@
                 return typeof(T).Name.ToUpperInvariant() switch
                 {
                     "H1NPRVIEWGRPC" => _H1NPRView.H1NPRViewGrpc.Cast<T>().Where(func).ToList(),
+                    "RFQSTATUS" => _RFQStatus.RFQStatusGrpc.Cast<T>().Where(func).ToList(),
                     _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
                 };
             }, cancellationToken);
