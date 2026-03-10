@@ -328,5 +328,6 @@
 
         Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig,
             Action<IEnumerable<T>> setResponseCollection, CancellationToken cancellationToken);
-    }
+        Task<NprValidationResultDto> ValidateNprItemsAsync(Collection<RfqNprRequestGrpc> items, CancellationToken cancellationToken);
+     }
 }
