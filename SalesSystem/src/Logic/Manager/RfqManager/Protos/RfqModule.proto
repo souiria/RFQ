@@ -534,6 +534,17 @@ message DeleteRfqNprRequestByIdGrpcResponse {
 	string Message = 2;
 }
 
-message CreateNprGrpcRequest {
+message NprApiData {
+	RfqNprRequestGrpc RfqNprRequest = 1;
+	google.protobuf.StringValue NprId = 2;
+}
 
+message CreateNprGrpcRequest {
+	repeated NprApiData NprApiData = 1;
+}
+
+message CreateNprGrpcResponse {
+	repeated NprApiData NprApiData = 1;
+	google.protobuf.StringValue message = 2;
+	google.protobuf.StringValue HttpStatusCode = 3;
 }

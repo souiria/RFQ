@@ -1246,6 +1246,11 @@
             response.Message = accessResponse.Message;
             return response;
         }
+
+        public async Task<CreateNprGrpcResponse> CreateNprGrpc (CreateNprGrpcRequest request)
+        {
+
+        }
         #region Filtering
 
         public Task<FilterGrpcResponse> FilterByCustomerId(FilterGrpcRequest request)
