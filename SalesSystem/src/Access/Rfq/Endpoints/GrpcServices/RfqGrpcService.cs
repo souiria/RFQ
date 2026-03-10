@@ -4737,7 +4737,58 @@
             return responseMessage;
 
         }
+        public override async Task<ValidateNprRequestResponse> ValidateNprRequestGrpc(ValidateNprRequestRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("ValidateNprRequestGrpc starting");
 
+            if (request?.Items == null || request.Items.Count == 0)
+            {
+                _Logger.GenericLogInformation("No items provided.");
+            }
+
+            _Logger.GenericLogInformation($"ValidateNprRequestGrpc: received {request?.Items.Count} items");
+
+            CancellationToken cancellationToken = context.CancellationToken;
+
+            ValidateNprRequestRequest safeRequest = request!;
+            ICollection<RfqNprRequestGrpc> safeItems = safeRequest.Items!;
+            Collection<RfqNprRequestGrpc> items = new Collection<RfqNprRequestGrpc>();
+
+            foreach (RfqNprRequestGrpc grpcItem in safeItems)
+            {
+                string iid = grpcItem.Id ?? string.Empty;
+                string customer = grpcItem.Customer ?? string.Empty;
+                items.Add(grpcItem);
+            }
+
+            NprValidationResultDto result = await _RfqAccessService.ValidateNprItemsAsync(items, cancellationToken);
+
+            ValidateNprRequestResponse response = new ValidateNprRequestResponse();
+
+            response.AllValid = result.AllValid;
+            response.ItemCount = result.ItemCount;
+            response.TotalQuantity = result.TotalQuantity;
+
+            foreach (NprValidationLineDto line in result.LineStatuses)
+            {
+                SubmitNprLineStatus lineStatus = new SubmitNprLineStatus();
+                lineStatus.Id = line.Id ?? string.Empty;
+                lineStatus.IsValid = line.IsValid;
+
+                foreach (ValidationErrorDto errorDto in line.Errors)
+                {
+                    ValidationError validation = new ValidationError();
+                    validation.Field = errorDto.Field;
+                    validation.Message = errorDto.Message;
+                    lineStatus.Errors.Add(validation);
+
+                }
+
+                response.LineStatuses.Add(lineStatus);
+            }
+
+            return response;
+        }
         #endregion
 
         public override async Task<RfqFilterResponse> FilterRfqGrpc(RfqFilterRequest request, ServerCallContext context)
