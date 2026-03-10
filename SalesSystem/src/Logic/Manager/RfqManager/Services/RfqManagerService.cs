@@ -1249,7 +1249,11 @@
 
         public async Task<CreateNprGrpcResponse> CreateNprGrpc (CreateNprGrpcRequest request)
         {
-
+            await Task.Delay(0);
+            CreateNprGrpcResponse response = new CreateNprGrpcResponse();
+            cre
+            // Validate request.NprData
+            _NPRGrpcClient.CreateNprApiGrpcAsync(request)
         }
         #region Filtering
 
