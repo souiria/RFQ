@@ -116,7 +116,7 @@
                                        aria-label="edit"
                                        OnClick="@(() => EditNprRequest(context.Item))" />
                     </MudTooltip>
-                    @if (context.Item.UxStatus == UxObjectStatus.Deleted)
+@*                     @if (context.Item.UxStatus == UxObjectStatus.Deleted)
                     {
                         <MudTooltip Text="Restore NPR Request">
                             <MudIconButton Size="@Size.Small"
@@ -135,13 +135,13 @@
                                            aria-label="delete"
                                            OnClick="@(() => ToggleDeleteNprRequest(context.Item))" />
                         </MudTooltip>
-                    }
-                                        <MudTooltip Text="Delete Forever NPR Request">
+                    } *@
+                                        <MudTooltip Text="Delete NPR Request">
                         <MudIconButton Size="@Size.Small"
                                        Color="Color.Error"
                                        Icon="@Icons.Material.Filled.DeleteForever"
                                        aria-label="edit"
-                                       OnClick="@(() => DeleteForeverNprRequest(context.Item))" />
+                                       OnClick="@(() => DeleteNprRequest(context.Item))" />
                     </MudTooltip>
                 </CellTemplate>
             </TemplateColumn>
@@ -427,50 +427,92 @@
         }
     }
 
-    private void ToggleDeleteNprRequest(RfqNprRequestUxModel nprRequest)
-    {
-        if(nprRequest.IsActive)
-        {
-            RfqUxClientService.DeleteNprRequest(nprRequest);
-        }
-        else
-        {
-            RfqUxClientService.UnDeleteNprRequest(nprRequest);
-        }
-        StateHasChanged();
-    }
+    // private void ToggleDeleteNprRequest(RfqNprRequestUxModel nprRequest)
+    // {
+    //     if(nprRequest.IsActive)
+    //     {
+    //         RfqUxClientService.DeleteNprRequest(nprRequest);
+    //     }
+    //     else
+    //     {
+    //         RfqUxClientService.UnDeleteNprRequest(nprRequest);
+    //     }
+    //     StateHasChanged();
+    // }
 
-    private async Task DeleteForeverNprRequest(RfqNprRequestUxModel nprRequest)
+    // private async Task DeleteForeverNprRequest(RfqNprRequestUxModel nprRequest)
+    // {
+    //     try
+    //     {
+    //         if (nprRequest.UxStatus == UxObjectStatus.Created)
+    //         {
+    //             RfqUxClientService.DeleteNprRequest(nprRequest);
+    //         }
+    //         else
+    //         {
+    //             if (await RfqUxClientService.DeleteNprRequestAsync(nprRequest.Id))
+    //             {
+    //                 Logger.LogInformation(
+    //                     $"AdminRfqNprRequests.DeleteForever - " +
+    //                     $"Removed request Id: {nprRequest.Id}, SumitomoNumber: {nprRequest.SumitomoNumber}, " +
+    //                     $"set now has {ActiveNprCount} active requests");
+
+    //                 Snackbar.Add(
+    //                     $"DeleteForever NPR request: {nprRequest.SumitomoNumber ?? nprRequest.CustomerPartNumber ?? nprRequest.Id.ToString()}",
+    //                     Severity.Info);
+    //             }
+    //             else
+    //             {
+    //                 Logger.LogInformation(
+    //                     $"AdminRfqNprRequests.DeleteForever FAILED - " +
+    //                     $"Removed request Id: {nprRequest.Id}, SumitomoNumber: {nprRequest.SumitomoNumber}, " +
+    //                     $"set now has {ActiveNprCount} active requests");
+
+    //                 Snackbar.Add(
+    //                     $"DeleteForever NPR request: {nprRequest.SumitomoNumber ?? nprRequest.CustomerPartNumber ?? nprRequest.Id.ToString()}",
+    //                     Severity.Error);
+    //             }
+    //         }
+
+    //         StateHasChanged();
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Logger.GenericLogError($"AdminRfqNprRequests.RemoveNprRequest - Error removing NPR request: {nprRequest.CustomerPartNumber}", ex);
+    //         Snackbar.Add($"Error removing NPR request: {ex.Message}", Severity.Error);
+    //     }
+    // }
+    private async Task DeleteNprRequest(RfqNprRequestUxModel nprRequest)
     {
+        if (_isBusy) return;
+        _isBusy = true;
+
         try
         {
             if (nprRequest.UxStatus == UxObjectStatus.Created)
             {
+                // Never persisted — just remove from cache
                 RfqUxClientService.DeleteNprRequest(nprRequest);
+                Snackbar.Add(
+                    $"Removed unpersisted NPR: {nprRequest.SumitomoNumber ?? nprRequest.CustomerPartNumber}",
+                    Severity.Info);
             }
             else
             {
-                if (await RfqUxClientService.DeleteNprRequestAsync(nprRequest.Id))
+                bool result = await RfqUxClientService.DeleteNprRequestAsync(nprRequest.Id);
+                if (result)
                 {
-                    Logger.LogInformation(
-                        $"AdminRfqNprRequests.DeleteForever - " +
-                        $"Removed request Id: {nprRequest.Id}, SumitomoNumber: {nprRequest.SumitomoNumber}, " +
-                        $"set now has {ActiveNprCount} active requests");
-
                     Snackbar.Add(
-                        $"DeleteForever NPR request: {nprRequest.SumitomoNumber ?? nprRequest.CustomerPartNumber ?? nprRequest.Id.ToString()}",
+                        $"Permanently deleted: {nprRequest.SumitomoNumber ?? nprRequest.CustomerPartNumber}",
                         Severity.Info);
                 }
                 else
                 {
-                    Logger.LogInformation(
-                        $"AdminRfqNprRequests.DeleteForever FAILED - " +
-                        $"Removed request Id: {nprRequest.Id}, SumitomoNumber: {nprRequest.SumitomoNumber}, " +
-                        $"set now has {ActiveNprCount} active requests");
-
+                    // Reload to get fresh state — row may already be gone
+                    await RefreshNprRequestsAsync();
                     Snackbar.Add(
-                        $"DeleteForever NPR request: {nprRequest.SumitomoNumber ?? nprRequest.CustomerPartNumber ?? nprRequest.Id.ToString()}",
-                        Severity.Error);
+                        $"Record not found — it may have already been deleted. List refreshed.",
+                        Severity.Warning);
                 }
             }
 
@@ -478,17 +520,20 @@
         }
         catch (Exception ex)
         {
-            Logger.GenericLogError($"AdminRfqNprRequests.RemoveNprRequest - Error removing NPR request: {nprRequest.CustomerPartNumber}", ex);
-            Snackbar.Add($"Error removing NPR request: {ex.Message}", Severity.Error);
+            Logger.GenericLogError(
+                $"AdminRfqNprRequests.DeleteForever - Error: {ex.Message}", ex);
+
+            // Reload to resync with DB
+            await RefreshNprRequestsAsync();
+            Snackbar.Add($"Error deleting — list refreshed: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isBusy = false;
         }
     }
-
     bool _quickFilterFunc(RfqNprRequestUxModel x)
     {
-        // if (x.UxStatus == UxObjectStatus.Deleted)
-        // {
-        //     return false;
-        // }
 
         if (string.IsNullOrWhiteSpace(_searchFilter))
         {

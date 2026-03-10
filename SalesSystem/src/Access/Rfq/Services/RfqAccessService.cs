@@ -3894,19 +3894,19 @@
 
                 if (result.IsSuccess)
                 {
-                    foreach (RfqNprRequestGrpc? deleted in request.RfqNprRequestGrpcsToDelete)
-                    {
-                        RfqNprRequestGrpc? existing = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.FirstOrDefault(p => p.Id.ToUpperInvariant() == deleted.Id.ToUpperInvariant());
-                        if (existing != null)
-                        {
-                            int index = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.IndexOf(existing);
-                            if (index != -1)
-                            {
-                                _ListRfqNprRequestGrpc.RfqNprRequestGrpcs[index] = deleted;
-                            }
-                        }
-                    }
-
+                    //foreach (RfqNprRequestGrpc? deleted in request.RfqNprRequestGrpcsToDelete)
+                    //{
+                    //    RfqNprRequestGrpc? existing = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.FirstOrDefault(p => p.Id.ToUpperInvariant() == deleted.Id.ToUpperInvariant());
+                    //    if (existing != null)
+                    //    {
+                    //        int index = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.IndexOf(existing);
+                    //        if (index != -1)
+                    //        {
+                    //            _ListRfqNprRequestGrpc.RfqNprRequestGrpcs[index] = deleted;
+                    //        }
+                    //    }
+                    //}
+                    await PopulateRfqNprRequest(cancellationToken);
                     return true;
                 }
 
