@@ -3915,7 +3915,220 @@
         }
 
         #endregion
+        public async Task<NprValidationResultDto> ValidateNprItemsAsync(Collection<RfqNprRequestGrpc> items, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
 
+            NprValidationResultDto result = new NprValidationResultDto();
+
+            int itemCount = items.Count;
+            result.ItemCount = itemCount;
+
+            Dictionary<string, int> byCustomer = new Dictionary<string, int>(StringComparer.InvariantCultureIgnoreCase);
+
+            foreach (RfqNprRequestGrpc item in items)
+            {
+                NprValidationLineDto line = ValidateNprItem(item);
+                result.LineStatuses.Add(line);
+
+                int totalQuantity = result.TotalQuantity;
+                int quantity = 0;
+                int qty = 0;
+
+                int? nullableQuantity = item.Quantity;
+                bool hasQuantity = nullableQuantity.HasValue;
+
+                if (hasQuantity)
+                {
+                    int quantityValue = nullableQuantity.GetValueOrDefault();
+                    qty = quantityValue;
+                }
+
+                int newTotal = totalQuantity + quantity;
+                result.TotalQuantity = newTotal;
+
+                string customer = item.Customer;
+                bool hasCustomer = !string.IsNullOrWhiteSpace(customer);
+
+                if (hasCustomer)
+                {
+                    int existingCount = 0;
+                    bool exists = byCustomer.TryGetValue(customer, out existingCount);
+
+                    int updatedCount = exists ? existingCount + 1 : 1;
+                    byCustomer[customer] = updatedCount;
+                }
+            }
+
+            foreach (KeyValuePair<string, int> kv in byCustomer)
+            {
+                string key = kv.Key;
+                int value = kv.Value;
+
+                result.ByCustomerCounts[key] = value;
+            }
+
+            bool allValid = true;
+
+            foreach (NprValidationLineDto line in result.LineStatuses)
+            {
+                if (!line.IsValid)
+                {
+                    allValid = false;
+                }
+            }
+
+            result.AllValid = allValid;
+
+            return result;
+        }
+
+        #endregion
+        #region Validation (RfqNprRequest)
+        NprValidationLineDto ValidateNprItem(RfqNprRequestGrpc item)
+        {
+            NprValidationLineDto status = new NprValidationLineDto();
+            status.Id = item.Id ?? string.Empty;
+            status.IsValid = true;
+
+            void Err(string field, string message)
+            {
+                status.IsValid = false;
+                ValidationErrorDto validation = new ValidationErrorDto();
+                validation.Field = field;
+                validation.Message = message;
+                status.Errors.Add(validation);
+            }
+
+            // Extract values safely
+            string id = item.Id ?? "";
+            string reason = item.Reason ?? "";
+            string customer = item.Customer ?? "";
+            string platformName = item.PlatformName ?? "";
+            string programName = item.ProgramName ?? "";
+            string project = item.Project ?? "";
+            string materialType = item.MaterialType ?? "";
+            string suggestedSewsSite = item.SuggestedSewsEManufacturingSite ?? "";
+            string customerPartNumber = item.CustomerPartNumber ?? "";
+            string supplierPartNumber = item.SupplierPartNumber ?? "";
+            string sumitomoNumber = item.SumitomoNumber ?? "";
+            string materialDescription = item.MaterialDescription ?? "";
+            string unitOfMeasure = item.UnitOfMeasure ?? "";
+            string supplierGroup = item.SupplierGroup ?? "";
+            string raisedRemarks = item.RaisedRemarks ?? "";
+            string sampleSite = item.SampleSite ?? "";
+            string sampleRecipient = item.SampleRecipient ?? "";
+            string freightAccount = item.FreightAccount ?? "";
+            string associatedParts = item.AssociatedParts ?? "";
+            string suggestedManufacturer = item.SuggestedManufacturer ?? "";
+            string createdBy = item.CreatedBy ?? "";
+            string modifiedBy = item.ModifiedBy ?? "";
+            string remoteEndpointResponse = item.RemoteEndpointResponse ?? "";
+
+            int qtyPerVehicle = item.QtyPerVehicle ?? 0;
+            int quantity = item.Quantity ?? 0;
+            int sampleQuantity = item.SampleQuantity ?? 0;
+
+            bool isCustomerNominatedSupplier = item.IsCustomerNominatedSupplier ?? false;
+            bool isCustomerNominatedMaterial = item.IsCustomerNominatedMaterial ?? false;
+            bool samplesRequired = item.SamplesRequired ?? false;
+
+            DateTime? requiredDate = item.RequiredDate?.ToDateTime();
+            DateTime? sampleRequiredDate = item.SampleRequiredDate?.ToDateTime();
+            DateTime? submittedAt = item.SubmittedAt?.ToDateTime();
+
+            int submissionStatus = item.SubmissionStatus ?? 0;
+
+            // -----------------------------
+            // REQUIRED FIELD VALIDATIONS
+            // -----------------------------
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                Err(nameof(item.Id), "Id is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(customer))
+            {
+                Err(nameof(item.Customer), "Customer is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(materialType))
+            {
+                Err(nameof(item.MaterialType), "Material type is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(unitOfMeasure))
+            {
+                Err(nameof(item.UnitOfMeasure), "Unit of measure is required.");
+            }
+
+            if (quantity <= 0)
+            {
+                Err(nameof(item.Quantity), "Quantity must be greater than zero.");
+            }
+
+            if (string.IsNullOrWhiteSpace(reason))
+            {
+                Err(nameof(item.Reason), "Reason is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(materialDescription))
+            {
+                Err(nameof(item.MaterialDescription), "Material description is required.");
+            }
+
+            if (requiredDate.HasValue && requiredDate.Value.Date < DateTime.UtcNow.Date)
+            {
+                Err(nameof(item.RequiredDate), "Required date cannot be in the past.");
+            }
+
+            if (samplesRequired)
+            {
+                if (sampleQuantity <= 0)
+                {
+                    Err(nameof(item.SampleQuantity), "Sample quantity must be > 0 when samples are required.");
+                }
+
+                if (sampleRequiredDate.HasValue && sampleRequiredDate.Value.Date < DateTime.UtcNow.Date)
+                {
+                    Err(nameof(item.SampleRequiredDate), "Sample required date cannot be in the past.");
+                }
+            }
+
+            if (qtyPerVehicle < 0)
+            {
+                Err(nameof(item.QtyPerVehicle), "QtyPerVehicle cannot be negative.");
+            }
+
+            if (submissionStatus < 0)
+            {
+                Err(nameof(item.SubmissionStatus), "SubmissionStatus cannot be negative.");
+            }
+
+            if (isCustomerNominatedSupplier && string.IsNullOrWhiteSpace(supplierPartNumber))
+            {
+                Err(nameof(item.SupplierPartNumber), "Supplier part number is required when supplier is customer-nominated.");
+            }
+
+            if (isCustomerNominatedMaterial && string.IsNullOrWhiteSpace(sumitomoNumber))
+            {
+                Err(nameof(item.SumitomoNumber), "Sumitomo number is required when material is customer-nominated.");
+            }
+
+            if (samplesRequired && string.IsNullOrWhiteSpace(sampleSite))
+            {
+                Err(nameof(item.SampleSite), "Sample site is required when samples are required.");
+            }
+
+            if (samplesRequired && string.IsNullOrWhiteSpace(sampleRecipient))
+            {
+                Err(nameof(item.SampleRecipient), "Sample recipient is required when samples are required.");
+            }
+
+            return status;
+        }
+
+        #endregion
         #region Data Imports
 
         #region RfqDrawingPartNumbers
@@ -5014,7 +5227,7 @@
 
         //////////////////////////////////////////////////////////////////////////////////////////////
         #endregion
-        #endregion
+ 
         public async Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig, Action<IEnumerable<T>> setResponseCollection,
         CancellationToken cancellationToken)
         {

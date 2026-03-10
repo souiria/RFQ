@@ -159,6 +159,8 @@ rpc UpdateRfqNprRequestGrpc (RfqNprRequestGrpcRequest) returns (RfqCrudGrpcRespo
 rpc DeleteRfqNprRequestByIdGrpc (RfqNprRequestGrpcRequest) returns (RfqCrudGrpcResponse);
 
   rpc FilterRfqGrpc (RfqFilterRequest) returns (RfqFilterResponse);
+  
+    rpc ValidateNprRequestGrpc (ValidateNprRequestRequest) returns (ValidateNprRequestResponse);
 }
 
 // The request message containing the user's name.
@@ -1448,3 +1450,26 @@ message RfqFilterResponse {
 	ListDsiWireThroughNodeGrpc ListDsiWireThroughNodeGrpc = 37;
 	ListRfqNprRequestGrpc ListRfqNprRequestGrpc = 38;
 }
+
+message ValidateNprRequestRequest {
+  repeated RfqNprRequestGrpc items = 1;
+}
+message ValidationError {
+  string field = 1;
+  string message = 2;
+}
+
+message SubmitNprLineStatus {
+  string id = 1;                   
+  bool isValid = 2;
+  repeated ValidationError errors = 3;
+}
+
+message ValidateNprRequestResponse {
+  bool allValid = 1;
+  repeated SubmitNprLineStatus lineStatuses = 2;
+  int32 itemCount = 3;
+  map<string, int32> byCustomerCounts = 4; 
+  int32 totalQuantity = 5;
+}
+
