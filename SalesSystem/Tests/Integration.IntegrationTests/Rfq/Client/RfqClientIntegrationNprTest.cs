@@ -43,7 +43,7 @@ namespace Integration.Tests.Rfq.Client
             ArgumentNullException.ThrowIfNull(_Configuration);
             _LoggerMock = new Mock<ILogger<RfqUxClientService>>();
 
-            _Service = new RfqUxClientService(_Configuration, _LoggerMock.Object, isTest:false);
+            _Service = new RfqUxClientService(_Configuration, _LoggerMock.Object);
 
             TestContext.Out.WriteLine("RfqUxClientServiceNprTest - RfqUxClientService initialized successfully");
             TestContext.Out.WriteLine($"Max GRPC Response Size: {RfqUxClientService.MAX_GRPC_RESPONSE_SIZE / 1024 / 1024} MB");
@@ -58,11 +58,6 @@ namespace Integration.Tests.Rfq.Client
         {
             InitializeConfiguration();
             InitializeService();
-            // Ensure clean state
-            if (File.Exists(_Service.NprRequestSetsFilePath))
-            {
-                File.Delete(_Service.NprRequestSetsFilePath);
-            }
         }
 
         [OneTimeTearDown]
@@ -169,13 +164,6 @@ namespace Integration.Tests.Rfq.Client
         {
             // Arrange
             await _Service.DeleteAllNprRequestsAsync();
-            string? directory = Path.GetDirectoryName(_Service.NprRequestSetsFilePath);
-            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            await File.WriteAllTextAsync(_Service.NprRequestSetsFilePath, "");
 
             // Act
             int count = await _Service.GetAllNprRequestsAsync();

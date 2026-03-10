@@ -155,12 +155,19 @@
     private int ActiveNprCount =>
         RfqProject?.NprRequests?.Count(r => r.UxStatus != UxObjectStatus.Deleted) ?? 0;
 
+    // Add this to the @code block
+    public void NotifyStateChanged()
+    {
+        StateHasChanged();
+    }
+
     protected override async Task OnInitializedAsync()
     {
         if (RfqProject.NprRequests == null || RfqProject.NprRequests.Count == 0)
         {
             await RefreshNprRequestsAsync();
         }
+        StateHasChanged();
     }
 
     private string RowStyleFunc(RfqNprRequestUxModel item, int index)
@@ -176,105 +183,6 @@
     }
 
     #region NPR Tab - inline management (public methods callable by parent)
-
-    public async Task RefreshNprRequestsAsync()
-    {
-        try
-        {
-            Logger.GenericLogInformation("NprRequestsEditor.RefreshNprRequestsAsync - Refreshing NPR requests");
-
-            List<RfqNprRequestUxModel>? refreshedRequests =
-                await RfqUxClientService.GetNprRequestsByRfqNumberAsync(RfqProject?.RfqNumber);
-
-            if (refreshedRequests != null)
-            {
-                RfqProject!.NprRequests = refreshedRequests;
-                Snackbar.Add($"NPR requests refreshed: {ActiveNprCount} request(s)", Severity.Success);
-                Logger.GenericLogInformation($"NprRequestsEditor.RefreshNprRequestsAsync - Refreshed {ActiveNprCount} NPR requests");
-            }
-            else
-            {
-                RfqProject!.NprRequests = new List<RfqNprRequestUxModel>();
-                Snackbar.Add("No NPR requests found", Severity.Info);
-                Logger.GenericLogInformation("NprRequestsEditor.RefreshNprRequestsAsync - No NPR requests returned");
-            }
-
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            Logger.GenericLogError("NprRequestsEditor.RefreshNprRequestsAsync - Error refreshing NPR requests", ex);
-            Snackbar.Add($"Error refreshing NPR requests: {ex.Message}", Severity.Error);
-        }
-    }
-
-    // public async Task SaveNprRequestsAsync()
-    // {
-    //     if (RfqProject.NprRequests == null || RfqProject.NprRequests.Count == 0)
-    //     {
-    //         Snackbar.Add("No NPR requests to save", Severity.Info);
-    //         return;
-    //     }
-
-    //     try
-    //     {
-    //         var itemsToCreate = RfqProject.NprRequests
-    //             .Where(r => r.UxStatus == UxObjectStatus.Created)
-    //             .ToList();
-
-    //         var itemsToUpdate = RfqProject.NprRequests
-    //             .Where(r => r.UxStatus == UxObjectStatus.Updated)
-    //             .ToList();
-
-    //         var itemsToDelete = RfqProject.NprRequests
-    //             .Where(r => r.UxStatus == UxObjectStatus.Deleted)
-    //             .ToList();
-
-    //         int totalChanges = itemsToCreate.Count + itemsToUpdate.Count + itemsToDelete.Count;
-
-    //         if (totalChanges == 0)
-    //         {
-    //             Snackbar.Add("No pending NPR changes to save", Severity.Info);
-    //             return;
-    //         }
-
-    //         Logger.GenericLogInformation(
-    //             $"NprRequestsEditor.SaveNprRequestsAsync - Saving changes: " +
-    //             $"{itemsToCreate.Count} new, {itemsToUpdate.Count} updated, {itemsToDelete.Count} deleted");
-
-    //         if (itemsToCreate.Count > 0)
-    //         {
-    //             await RfqUxClientService.CreateNprRequestsAsync(itemsToCreate);
-    //             Logger.GenericLogInformation(
-    //                 $"NprRequestsEditor.SaveNprRequestsAsync - Created {itemsToCreate.Count} new NPR requests");
-    //         }
-
-    //         if (itemsToUpdate.Count > 0)
-    //         {
-    //             await RfqUxClientService.CreateNprRequestsAsync(itemsToUpdate);
-    //             Logger.GenericLogInformation(
-    //                 $"NprRequestsEditor.SaveNprRequestsAsync - Updated {itemsToUpdate.Count} NPR requests");
-    //         }
-
-    //         if (itemsToDelete.Count > 0)
-    //         {
-    //             await RfqUxClientService.CreateNprRequestsAsync(itemsToDelete);
-    //             Logger.GenericLogInformation(
-    //                 $"NprRequestsEditor.SaveNprRequestsAsync - Deleted {itemsToDelete.Count} NPR requests");
-    //         }
-
-    //         await RefreshNprRequestsAsync();
-
-    //         Snackbar.Add(
-    //             $"NPR requests saved: {itemsToCreate.Count} created, {itemsToUpdate.Count} updated, {itemsToDelete.Count} deleted",
-    //             Severity.Success);
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Logger.GenericLogError("NprRequestsEditor.SaveNprRequestsAsync - Error saving NPR requests", ex);
-    //         Snackbar.Add($"Error saving NPR requests: {ex.Message}", Severity.Error);
-    //     }
-    // }
 
     public async Task SaveNprRequestsAsync()
     {
@@ -304,7 +212,10 @@
             Logger.GenericLogInformation(
                 $"NprRequestsEditor.SaveNprRequestsAsync - Updated {itemsToUpdate.Count} NPR requests");
 
-            // Reload from server to get authoritative state
+            // Force full cache reload from DB so UxStatus resets to Read
+            await RfqUxClientService.GetAllNprRequestsAsync();
+
+            // Reload the project-specific list from the now-fresh cache
             await RefreshNprRequestsAsync();
 
             Snackbar.Add($"NPR requests saved: {itemsToUpdate.Count} updated", Severity.Success);
@@ -313,6 +224,40 @@
         {
             Logger.GenericLogError("NprRequestsEditor.SaveNprRequestsAsync - Error saving NPR requests", ex);
             Snackbar.Add($"Error saving NPR requests: {ex.Message}", Severity.Error);
+        }
+    }
+
+    public async Task RefreshNprRequestsAsync()
+    {
+        try
+        {
+            Logger.GenericLogInformation("NprRequestsEditor.RefreshNprRequestsAsync - Refreshing NPR requests");
+
+            // Force a full reload so the cache has fresh UxStatus values
+            await RfqUxClientService.GetAllNprRequestsAsync();
+
+            List<RfqNprRequestUxModel>? refreshedRequests =
+                await RfqUxClientService.GetNprRequestsByRfqNumberAsync(RfqProject?.RfqNumber);
+
+            if (refreshedRequests != null)
+            {
+                RfqProject!.NprRequests = refreshedRequests;
+                Snackbar.Add($"NPR requests refreshed: {ActiveNprCount} request(s)", Severity.Success);
+                Logger.GenericLogInformation($"NprRequestsEditor.RefreshNprRequestsAsync - Refreshed {ActiveNprCount} NPR requests");
+            }
+            else
+            {
+                RfqProject!.NprRequests = new List<RfqNprRequestUxModel>();
+                Snackbar.Add("No NPR requests found", Severity.Info);
+                Logger.GenericLogInformation("NprRequestsEditor.RefreshNprRequestsAsync - No NPR requests returned");
+            }
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError("NprRequestsEditor.RefreshNprRequestsAsync - Error refreshing NPR requests", ex);
+            Snackbar.Add($"Error refreshing NPR requests: {ex.Message}", Severity.Error);
         }
     }
 
@@ -457,7 +402,8 @@
             Snackbar.Add(
                 $"Removed NPR request: {nprRequest.SumitomoNumber ?? nprRequest.CustomerPartNumber ?? nprRequest.Id.ToString()}",
                 Severity.Info);
-
+            
+            
             StateHasChanged();
         }
         catch (Exception ex)

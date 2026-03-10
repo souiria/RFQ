@@ -21,18 +21,15 @@ namespace SalesSystem.Rfq.Services
         List<RfqReasonGrpc> _Reasons;
         List<RqfCustomerProjectAssociationUxModel> _CustomerProjectAssociations;
         List<string> _QuotationNumbers;
-        // AlterrnativeParts
+        // AlternativeParts
         List<AlternativePartUxModel> _AlternativeParts;
         int _AlternativePartsTake;
         int _AlternativePartsPosition;
-        bool _Testing;
 
         // NPR Request cached data
         List<RfqNprRequestUxModel> _NprRequests;
         // track changes in UX
         bool _NprRequestsHasChanges;
-        string _NprRequestSetsFilePath;
-        public string NprRequestSetsFilePath => _NprRequestSetsFilePath;
         public bool NprRequestsHasChanges
         {
             get
@@ -41,8 +38,6 @@ namespace SalesSystem.Rfq.Services
                 return someUpdates || _NprRequestsHasChanges;
             }
         }
-
-        JsonSerializerOptions _JsonOptions;
 
         // Cached data accessors
         public IReadOnlyCollection<RfqDrawingPartNumberUxModel?> RfqDrawingPartNumbers => _RfqDrawingPartNumbers.AsReadOnly();
@@ -57,7 +52,7 @@ namespace SalesSystem.Rfq.Services
 
         #region Ctor
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
-        public RfqUxClientService(IConfiguration configuration, ILogger<RfqUxClientService> logger, bool isTest = false)
+        public RfqUxClientService(IConfiguration configuration, ILogger<RfqUxClientService> logger)
         {
             _Logger = logger;
 
@@ -66,7 +61,6 @@ namespace SalesSystem.Rfq.Services
             _Timeout = TimeSpan.FromSeconds(300);
             _MAX_GRPC_RESPONSE_SIZE = 64 * 1024 * 1024;
 
-            //_Channel = GrpcChannel.ForAddress(serviceUrl);
             _Channel = GrpcChannel.ForAddress(serviceUrl, new GrpcChannelOptions
             {
                 MaxReceiveMessageSize = _MAX_GRPC_RESPONSE_SIZE,
@@ -99,23 +93,7 @@ namespace SalesSystem.Rfq.Services
             _NprRequests = new();
             _NprRequestsHasChanges = false;
 
-            // storage for requests
-            if (isTest)
-            {
-                _NprRequestSetsFilePath = Path.Combine("C:\\temp", "npr_request_sets_test.json");
-                _JsonOptions = new JsonSerializerOptions();
-                _JsonOptions.WriteIndented = true;
-                _JsonOptions.PropertyNameCaseInsensitive = false;
-                _Testing = true;
-                _Logger.GenericLogInformation($">>> RfqUxClientService was created with test == {isTest} and storage to file {_NprRequestSetsFilePath}");
-            }
-            else
-            {
-                _NprRequestSetsFilePath = string.Empty;
-                _JsonOptions = new JsonSerializerOptions();
-                _Testing = false;
-                _Logger.GenericLogInformation($">>> RfqUxClientService was created with test == {isTest} and storage via GRPC endpoints");
-            }
+            _Logger.GenericLogInformation($">>> RfqUxClientService was created with storage via GRPC endpoints");
         }
         #endregion
 
@@ -205,10 +183,6 @@ namespace SalesSystem.Rfq.Services
 
                 GetAllRfqProjectGrpcResponse response = await _Client.GetAllRfqProjectGrpcAsync(request, cancellationToken: timeoutCts.Token);
 
-                // dto list
-                //_RfqProjects.Clear();
-                //_RfqProjects.AddRange(response.RfqProjects);
-                // ux list
                 _RfqProjectUxs.Clear();
                 IOrderedEnumerable<RfqProject> rfqProjects = response.RfqProjects.OrderByDescending(x => x.RfqNumber);
                 foreach (RfqProject? rfqProject in rfqProjects)
@@ -355,7 +329,6 @@ namespace SalesSystem.Rfq.Services
 
         #region PartNumbers
         public async Task<int> GetRfqDrawingPartNumbersByRfqIdAsync(long rfqId)
-
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
 
@@ -396,11 +369,9 @@ namespace SalesSystem.Rfq.Services
 
             try
             {
-                // Build the rfqRequestsForRfqNumber
                 UpdateRfqDrawingPartNumbersGrpcRequest request = new UpdateRfqDrawingPartNumbersGrpcRequest();
                 request.RfqDrawingPartNumbersGrpcsToUpdate.AddRange(partsDto);
 
-                // Call the gRPC client
                 UpdateRfqDrawingPartNumbersGrpcResponse response =
                     await _Client.UpdateRfqDrawingPartNumbersGrpcAsync(request, cancellationToken: timeoutCts.Token);
 
@@ -418,7 +389,6 @@ namespace SalesSystem.Rfq.Services
             await Task.Delay(1);
             try
             {
-
                 return true;
             }
             catch (Exception ex)
@@ -433,7 +403,6 @@ namespace SalesSystem.Rfq.Services
             await Task.Delay(0);
             try
             {
-                // Convert to gRPC type inline
                 RfqDrawingPartNumber grpcPartNumber = new RfqDrawingPartNumber();
                 grpcPartNumber.RowId = partNumberUx.RowId;
                 grpcPartNumber.RfqId = partNumberUx.RfqId;
@@ -447,8 +416,6 @@ namespace SalesSystem.Rfq.Services
                 grpcPartNumber.Comments = partNumberUx.Comments ?? string.Empty;
                 grpcPartNumber.SumitomoPartNumber = partNumberUx.CustomerPartNumber ?? string.Empty;
 
-                // TODO: Implement delete logic once gRPC endpoint is added to RfqModule.proto
-                // For now, return false to indicate deletion is not yet implemented
                 _Logger?.GenericLogInformation($"Delete not yet implemented for PartNumber: {partNumberUx.CustomerPartNumber}/{partNumberUx.DrawingPartNumber}");
                 return false;
             }
@@ -577,7 +544,6 @@ namespace SalesSystem.Rfq.Services
             await Task.Delay(1);
             try
             {
-                // Call FilterRFQByExactCustomerPartNumber
                 FilterGrpcResponse response = await FilterByRequestTypeAsync(
                     RfqManagerFilterType.FilterEmacsByExactPartNumber,
                     customerPartNumber
@@ -608,7 +574,6 @@ namespace SalesSystem.Rfq.Services
             await Task.Delay(1);
             try
             {
-                // Call FilterRFQBySumitomoPartNumber
                 FilterGrpcResponse response = await FilterByRequestTypeAsync(
                     RfqManagerFilterType.FilterEmacsByContainingPartNumber,
                     customerPartNumber
@@ -639,7 +604,6 @@ namespace SalesSystem.Rfq.Services
             await Task.Delay(1);
             try
             {
-                // Call FilterRFQBySumitomoPartNumber
                 FilterGrpcResponse response = await FilterByRequestTypeAsync(
                     RfqManagerFilterType.FilterAdssBySumitomoPartNumber,
                     sewsePartNumber
@@ -670,7 +634,6 @@ namespace SalesSystem.Rfq.Services
             await Task.Delay(1);
             try
             {
-                // Call FilterRFQBySumitomoPartNumber
                 FilterGrpcResponse response = await FilterByRequestTypeAsync(
                     RfqManagerFilterType.FilterNPRBySumitomoPartNumber,
                     sewsePartNumber
@@ -698,7 +661,6 @@ namespace SalesSystem.Rfq.Services
         #endregion
 
         #region Filtering
-        // implement call to filtering service here FilterRfqGrpc
         public async Task<FilterGrpcResponse> FilterGrpcAsync(
             FilterGrpcRequest request,
             CancellationToken cancellationToken = default)
@@ -768,12 +730,10 @@ namespace SalesSystem.Rfq.Services
         #region Part alternatives
         public async Task<int> GetAllAlternativePartsAsync(int position = 0, int take = -1)
         {
-            // take == -1 means get all
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
 
             try
             {
-                // Check if cache is valid
                 bool cacheIsEmpty = _AlternativeParts.Count == 0;
                 bool parametersChanged = position != _AlternativePartsPosition || take != _AlternativePartsTake;
 
@@ -785,7 +745,6 @@ namespace SalesSystem.Rfq.Services
 
                     Stopwatch stopwatch = Stopwatch.StartNew();
 
-                    // Fetch from server
                     GetAllAlternativePartsGrpcRequest request = new GetAllAlternativePartsGrpcRequest();
                     request.Position = position;
                     request.Take = take;
@@ -796,7 +755,6 @@ namespace SalesSystem.Rfq.Services
                     _Logger?.GenericLogInformation(
                         $"... received {response.AlternativeParts.Count} parts in {stopwatch.ElapsedMilliseconds}ms");
 
-                    // Update cache
                     _AlternativeParts.Clear();
                     foreach (RfqAlternativePartsGrpc? part in response.AlternativeParts)
                     {
@@ -807,7 +765,6 @@ namespace SalesSystem.Rfq.Services
                         }
                     }
 
-                    // Update cached parameters
                     _AlternativePartsPosition = position;
                     _AlternativePartsTake = take;
                 }
@@ -834,7 +791,6 @@ namespace SalesSystem.Rfq.Services
             _Logger?.GenericLogInformation("Alternative parts cache cleared");
         }
 
-        // Add method to check if cache is valid
         public bool IsAlternativePartsCacheValid(int position, int take)
         {
             return 0 <= _AlternativeParts.Count
@@ -849,87 +805,7 @@ namespace SalesSystem.Rfq.Services
         }
         #endregion
 
-        #region NPR Requests (JSON file persistence - debug/test, GRPC Endpoints in the RfqManager otherwise)
-
-        // Lower Level List Handling (Persistence Dependent)
-        #region Low Level JSON Datasource
-        async Task<List<RfqNprRequestUxModel>> LoadNprRequestsFromFileAsync()
-        {
-            List<RfqNprRequestUxModel> list = new List<RfqNprRequestUxModel>();
-            try
-            {
-                if (!File.Exists(_NprRequestSetsFilePath))
-                {
-                    _Logger?.GenericLogInformation($"NPR file not found at {_NprRequestSetsFilePath}, returning empty list");
-                    return list;
-                }
-
-                string json = await File.ReadAllTextAsync(_NprRequestSetsFilePath);
-
-                if (string.IsNullOrWhiteSpace(json))
-                {
-                    return list;
-                }
-
-                List<RfqNprRequestUxModel>? result = JsonSerializer.Deserialize<List<RfqNprRequestUxModel>>(json, _JsonOptions);
-
-                return result ?? list;
-            }
-            catch (Exception ex)
-            {
-                _Logger?.GenericLogError($"Error loading NPR requests from file: {_NprRequestSetsFilePath}", ex);
-                throw;
-            }
-        }
-
-        async Task SaveNprRequestsToFileAsync(List<RfqNprRequestUxModel> requests)
-        {
-            try
-            {
-                string? directory = Path.GetDirectoryName(_NprRequestSetsFilePath);
-
-                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-                {
-                    Directory.CreateDirectory(directory);
-                    _Logger?.GenericLogInformation($"Created directory: {directory}");
-                }
-
-                // Mark all as Read (persisted) before saving
-                foreach (RfqNprRequestUxModel request in requests)
-                {
-                    request.UxStatus = UxObjectStatus.Read;
-                }
-
-                string json = JsonSerializer.Serialize(requests, _JsonOptions);
-                await File.WriteAllTextAsync(_NprRequestSetsFilePath, json);
-
-                _Logger?.GenericLogInformation($"Saved {requests.Count} NPR requests to {_NprRequestSetsFilePath}");
-            }
-            catch (Exception ex)
-            {
-                _Logger?.GenericLogError($"Error saving NPR requests to file: {_NprRequestSetsFilePath}", ex);
-                throw;
-            }
-        }
-
-        async Task SyncNprCacheFromFileAsync()
-        {
-            List<RfqNprRequestUxModel> requests = await LoadNprRequestsFromFileAsync();
-
-            _NprRequests.Clear();
-            foreach (RfqNprRequestUxModel request in requests)
-            {
-                request.UxStatus = UxObjectStatus.Read;
-            }
-
-            _NprRequests.AddRange(requests);
-        }
-
-        async Task SyncNprCacheToFileAsync()
-        {
-            await SaveNprRequestsToFileAsync(_NprRequests);
-        }
-        #endregion
+        #region NPR Requests (GRPC Endpoints in the RfqManager)
 
         #region Low Level GRPC Datasource
         async Task<bool> CreateNpr(List<RfqNprRequestUxModel> list)
@@ -958,7 +834,6 @@ namespace SalesSystem.Rfq.Services
             _Logger?.GenericLogInformation($"{response.Message}");
             return response.Success;
         }
-#if DEBUG
         async Task<bool> DeleteNpr(List<RfqNprRequestUxModel> list)
         {
             DeleteRfqNprRequestByIdGrpcRequest deleteRequest = new DeleteRfqNprRequestByIdGrpcRequest();
@@ -984,32 +859,9 @@ namespace SalesSystem.Rfq.Services
             _Logger?.GenericLogInformation($"DeleteNprById: {response.Message}");
             return response.Success;
         }
-#endif
-        async Task<List<RfqNprRequestUxModel>> LoadNprRequestsFromDatabaseAsync()
-        {
-            List<RfqNprRequestUxModel> list = new List<RfqNprRequestUxModel>();
-            try
-            {
-                GetAllRfqNprRequestGrpcRequest request = new GetAllRfqNprRequestGrpcRequest();
-
-                GetAllRfqNprRequestGrpcResponse response = await _Client.GetAllRfqNprRequestGrpcAsync(request);
-
-                foreach (RfqNprRequestGrpc? nprRequest in response.RfqNprRequestGrpcs)
-                {
-                    RfqNprRequestUxModel model = nprRequest.ToNprUx();
-                    list.Add(model);
-                }
-
-                return list;
-            }
-            catch (Exception ex)
-            {
-                _Logger?.GenericLogError($"Error loading NPR requests from file: {_NprRequestSetsFilePath}", ex);
-                throw;
-            }
-        }
 
 #if DEBUG
+        // DEBUG: hard-delete via DeleteRfqNprRequestByIdGrpc endpoint
         async Task SaveNprRequestsToDatabaseAsync(List<RfqNprRequestUxModel> requests)
         {
             try
@@ -1061,6 +913,7 @@ namespace SalesSystem.Rfq.Services
             }
         }
 #else
+        // RELEASE: soft-delete via IsActive = false through the Update endpoint
         async Task SaveNprRequestsToDatabaseAsync(List<RfqNprRequestUxModel> requests)
         {
             try
@@ -1073,22 +926,22 @@ namespace SalesSystem.Rfq.Services
                     switch (model.UxStatus)
                     {
                         case UxObjectStatus.Created:
-                        createList.Add(model);
-                        break;
+                            createList.Add(model);
+                            break;
 
                         case UxObjectStatus.Updated:
-                        updateList.Add(model);
-                        break;
+                            updateList.Add(model);
+                            break;
 
                         case UxObjectStatus.Deleted:
-                        // Deleted items go through the update path —
-                        // ToNprGrpc() already sets IsActive = false when UxStatus == Deleted
-                        updateList.Add(model);
-                        break;
+                            // Deleted items go through the update path –
+                            // ToNprGrpc() already sets IsActive = false when UxStatus == Deleted
+                            updateList.Add(model);
+                            break;
 
                         case UxObjectStatus.Read:
-                        // No changes — skip
-                        break;
+                            // No changes – skip
+                            break;
                     }
                 }
 
@@ -1111,46 +964,36 @@ namespace SalesSystem.Rfq.Services
             }
         }
 #endif
+
         async Task SyncNprCacheFromDatabaseAsync()
         {
-            List<RfqNprRequestUxModel> requests = await LoadNprRequestsFromDatabaseAsync();
+            List<RfqNprRequestUxModel> requests = new List<RfqNprRequestUxModel>();
+            try
+            {
+                GetAllRfqNprRequestGrpcRequest request = new GetAllRfqNprRequestGrpcRequest();
 
-            _NprRequests.Clear();
-            _NprRequests.AddRange(requests);
+                GetAllRfqNprRequestGrpcResponse response = await _Client.GetAllRfqNprRequestGrpcAsync(request);
+
+                foreach (RfqNprRequestGrpc? nprRequest in response.RfqNprRequestGrpcs)
+                {
+                    RfqNprRequestUxModel model = nprRequest.ToNprUx();
+                    requests.Add(model);
+                }
+
+                _NprRequests.Clear();
+                _NprRequests.AddRange(requests);
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error loading NPR requests from database", ex);
+                throw;
+            }
         }
         async Task SyncNprCacheToDatabaseAsync()
         {
             await SaveNprRequestsToDatabaseAsync(_NprRequests);
         }
-#endregion
-
-        // Higher Level List Handling (Persistence Abstracted)
-        async Task SyncNprCacheToDataSource()
-        {
-            if (_Testing)
-            {
-                await SyncNprCacheToFileAsync();
-            }
-            else
-            {
-                await SyncNprCacheToDatabaseAsync();
-            }
-
-            _NprRequestsHasChanges = false;
-        }
-        async Task SyncNprCacheFromDataSource()
-        {
-            if (_Testing)
-            {
-                await SyncNprCacheFromFileAsync();
-            }
-            else
-            {
-                await SyncNprCacheFromDatabaseAsync();
-            }
-
-            _NprRequestsHasChanges = false;
-        }
+        #endregion
 
         // --- NPR Request CRUD ---
         // on cached list
@@ -1161,7 +1004,7 @@ namespace SalesSystem.Rfq.Services
             {
                 if (request.UxStatus == UxObjectStatus.Created)
                 {
-                    // Never persisted — safe to remove entirely
+                    // Never persisted – safe to remove entirely
                     _NprRequests.Remove(request);
                 }
                 else
@@ -1189,12 +1032,11 @@ namespace SalesSystem.Rfq.Services
             return false;
         }
 
-        // to check
         public async Task<int> GetAllNprRequestsAsync()
         {
             try
             {
-                await SyncNprCacheFromDataSource();
+                await SyncNprCacheFromDatabaseAsync();
                 _NprRequestsHasChanges = false;
                 return _NprRequests.Count;
             }
@@ -1208,11 +1050,8 @@ namespace SalesSystem.Rfq.Services
         {
             try
             {
-                if (!_NprRequestsHasChanges && _NprRequests.Count <= 0)
-                {
-                    await SyncNprCacheFromDataSource();
-                }
-
+                await SyncNprCacheFromDatabaseAsync();
+                _NprRequestsHasChanges = false;
                 List<RfqNprRequestUxModel> matching = _NprRequests
                     .Where(r => r.Id == rfqProjectId)
                     .ToList();
@@ -1235,11 +1074,8 @@ namespace SalesSystem.Rfq.Services
         {
             try
             {
-                if (!_NprRequestsHasChanges && _NprRequests.Count <= 0)
-                {
-                    await SyncNprCacheFromDataSource();
-                }
-
+                await SyncNprCacheFromDatabaseAsync();
+                _NprRequestsHasChanges = false;
                 List<RfqNprRequestUxModel> matching = _NprRequests
                     .Where(r => r.RfqNumber?.ToUpperInvariant().Trim() == rfqNumber?.ToUpperInvariant().Trim())
                     .ToList();
@@ -1264,14 +1100,15 @@ namespace SalesSystem.Rfq.Services
             {
                 if (!_NprRequestsHasChanges && _NprRequests.Count <= 0)
                 {
-                    await SyncNprCacheFromDataSource();
+                    await SyncNprCacheFromDatabaseAsync();
+                    _NprRequestsHasChanges = false;
                 }
 
                 RfqNprRequestUxModel? nprRequest = _NprRequests.FirstOrDefault(s => s.Id == nprRequestId);
 
                 if (nprRequest == null)
                 {
-                    _Logger?.GenericLogInformation($"NPR rfqRequestsForRfqNumber nprRequest not found for Id: {nprRequestId}");
+                    _Logger?.GenericLogInformation($"NPR request not found for Id: {nprRequestId}");
                     return null;
                 }
 
@@ -1292,7 +1129,8 @@ namespace SalesSystem.Rfq.Services
             {
                 if (!_NprRequestsHasChanges && _NprRequests.Count <= 0)
                 {
-                    await SyncNprCacheFromDataSource();
+                    await SyncNprCacheFromDatabaseAsync();
+                    _NprRequestsHasChanges = false;
                 }
 
                 DateTime created = DateTime.UtcNow;
@@ -1306,11 +1144,11 @@ namespace SalesSystem.Rfq.Services
                 _NprRequests.AddRange(nprRequests);
 
                 // sync
-                await SyncNprCacheToDataSource();
-                await SyncNprCacheFromDataSource();
+                await SyncNprCacheToDatabaseAsync();
+                await SyncNprCacheFromDatabaseAsync();
 
                 _NprRequestsHasChanges = false;
-                
+
                 _Logger?.GenericLogInformation($"Created {nprRequests.Count} NPR requests");
 
                 return nprRequests;
@@ -1328,8 +1166,8 @@ namespace SalesSystem.Rfq.Services
             {
                 try
                 {
-                    await SyncNprCacheToDataSource();
-                    await SyncNprCacheFromDataSource();
+                    await SyncNprCacheToDatabaseAsync();
+                    await SyncNprCacheFromDatabaseAsync();
                     _NprRequestsHasChanges = false;
                 }
                 catch (InvalidOperationException) { throw; }
@@ -1350,7 +1188,8 @@ namespace SalesSystem.Rfq.Services
             {
                 if (_NprRequests.Count <= 0)
                 {
-                    await SyncNprCacheFromDataSource();
+                    await SyncNprCacheFromDatabaseAsync();
+                    _NprRequestsHasChanges = false;
                 }
 
                 // Validate all requests exist in the cache
@@ -1373,17 +1212,17 @@ namespace SalesSystem.Rfq.Services
                     _NprRequests[index] = request;
                 }
 
-                await SyncNprCacheToDataSource();
+                await SyncNprCacheToDatabaseAsync();
 
                 _Logger?.GenericLogInformation(
                     $"Updated {updatedRequests.Count} NPR requests");
 
                 return updatedRequests;
             }
-            catch (InvalidOperationException ex) 
+            catch (InvalidOperationException ex)
             {
                 _Logger?.GenericLogError($"InvalidOperationException in UpdateNprRequestsAsync", ex);
-                throw; 
+                throw;
             }
             catch (Exception ex)
             {
@@ -1395,34 +1234,33 @@ namespace SalesSystem.Rfq.Services
 #if DEBUG
         public async Task<bool> DeleteNprRequestAsync(Guid requestId)
         {
-            // the only one that really deletes - do not use in production
+            // DEBUG only: hard-delete from the backend table
             try
             {
                 if (!_NprRequestsHasChanges && _NprRequests.Count <= 0)
                 {
-                    await SyncNprCacheFromDataSource();
+                    await SyncNprCacheFromDatabaseAsync();
+                    _NprRequestsHasChanges = false;
                 }
 
                 RfqNprRequestUxModel? request = _NprRequests.FirstOrDefault(r => r.Id == requestId);
 
                 if (request == null)
                 {
-                    _Logger?.GenericLogInformation($"NPR rfqRequestsForRfqNumber not found for deletion, Id: {requestId}");
+                    _Logger?.GenericLogInformation($"NPR request not found for deletion, Id: {requestId}");
                     return false;
                 }
 
-                // not how yo do it
                 _NprRequests.Remove(request);
 
                 bool result = await DeleteNprById(request);
 
-                // sync
-                // await SyncNprCacheToDataSource();
-                await SyncNprCacheFromDataSource();
+                // reload cache from DB to stay in sync
+                await SyncNprCacheFromDatabaseAsync();
 
                 _NprRequestsHasChanges = false;
 
-                _Logger?.GenericLogInformation($"Deleted NPR rfqRequestsForRfqNumber Id: {requestId}");
+                _Logger?.GenericLogInformation($"Deleted NPR request Id: {requestId}");
 
                 return result;
             }
@@ -1435,6 +1273,7 @@ namespace SalesSystem.Rfq.Services
 #else
         public async Task<bool> DeleteNprRequestAsync(Guid requestId)
         {
+            // RELEASE: no hard-delete in production
             await Task.Delay(1);
             return false;
         }
@@ -1445,7 +1284,8 @@ namespace SalesSystem.Rfq.Services
             {
                 if (!_NprRequestsHasChanges && _NprRequests.Count <= 0)
                 {
-                    await SyncNprCacheFromDataSource();
+                    await SyncNprCacheFromDatabaseAsync();
+                    _NprRequestsHasChanges = false;
                 }
 
                 List<RfqNprRequestUxModel>? rfqRequestsForRfqNumber
@@ -1453,7 +1293,7 @@ namespace SalesSystem.Rfq.Services
 
                 if (rfqRequestsForRfqNumber == null || rfqRequestsForRfqNumber.Count <= 0)
                 {
-                    _Logger?.GenericLogInformation($"NPR rfqRequestsForRfqNumber not found for deletion, Id: {rfqNumber}");
+                    _Logger?.GenericLogInformation($"NPR requests not found for deletion, RfqNumber: {rfqNumber}");
                     return false;
                 }
 
@@ -1463,18 +1303,18 @@ namespace SalesSystem.Rfq.Services
                 }
 
                 // sync
-                await SyncNprCacheToDataSource();
-                await SyncNprCacheFromDataSource();
-
+                await SyncNprCacheToDatabaseAsync();
+                await SyncNprCacheFromDatabaseAsync();
+                _NprRequestsHasChanges = false;
                 _NprRequestsHasChanges = false;
 
-                _Logger?.GenericLogInformation($"Deleted NPR rfqRequestsForRfqNumber Id: {rfqNumber}");
+                _Logger?.GenericLogInformation($"Deleted NPR requests for RfqNumber: {rfqNumber}");
 
                 return true;
             }
             catch (Exception ex)
             {
-                _Logger?.GenericLogError($"Error in DeleteNprRequestsByRfqNumberAsync for Id: {rfqNumber}", ex);
+                _Logger?.GenericLogError($"Error in DeleteNprRequestsByRfqNumberAsync for RfqNumber: {rfqNumber}", ex);
                 throw;
             }
         }
@@ -1484,7 +1324,7 @@ namespace SalesSystem.Rfq.Services
             {
                 if (!_NprRequestsHasChanges && _NprRequests.Count <= 0)
                 {
-                    await SyncNprCacheFromDataSource();
+                    await SyncNprCacheFromDatabaseAsync();
                 }
 
                 int count = _NprRequests.Count;
@@ -1498,8 +1338,8 @@ namespace SalesSystem.Rfq.Services
                 _NprRequests.Clear();
 
                 // sync
-                await SyncNprCacheToDataSource();
-                await SyncNprCacheFromDataSource();
+                await SyncNprCacheToDatabaseAsync();
+                await SyncNprCacheFromDatabaseAsync();
 
                 _NprRequestsHasChanges = false;
 
@@ -1513,7 +1353,7 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-#endregion
+        #endregion
 
         #region Cleanup
         protected virtual void Dispose(bool disposing)

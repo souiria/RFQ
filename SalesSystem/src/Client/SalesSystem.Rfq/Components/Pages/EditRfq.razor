@@ -784,6 +784,46 @@ else
         }
     }
 
+    // private async Task SaveDataAsync()
+    // {
+    //     List<RfqDrawingPartNumberUxModel?> allParts = new();
+    //     allParts.AddRange(CompletedParts);
+    //     allParts.AddRange(InProgressParts);
+
+    //     try
+    //     {
+    //         // Save pending NPR changes BEFORE reloading (otherwise the editor gets destroyed)
+    //         if (componentNprEditor != null && componentNprEditor.HasPendingChanges)
+    //         {
+    //             await componentNprEditor.SaveNprRequestsAsync();
+    //         }
+
+    //         var partsUpdateResult = await RfqUxClientService.UpdateRfqDrawingPartNumbersAsync(allParts);
+    //         var rfqUpdateResult = await RfqUxClientService.UpdateRfqProjectAsync(RfqProject!);
+
+    //         if (partsUpdateResult.Success && rfqUpdateResult.Success)
+    //         {
+    //             Snackbar.Add("Data saved successfully", Severity.Success);
+    //             Logger.GenericLogInformation("EditRfq.SaveDataAsync - Data saved successfully");
+
+    //             // Reload part numbers
+    //             await LoadRfqAndPartNumbersAsync();
+
+    //             // Reload NPR requests so the tab remains enabled and data is fresh
+    //             await LoadNprRequests();
+    //         }
+    //         else
+    //         {
+    //             Snackbar.Add("Error saving data", Severity.Error);
+    //             Logger.GenericLogInformation("EditRfq.SaveDataAsync - Error saving data");
+    //         }
+    //         StateHasChanged();
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Logger.GenericLogError($"EditRfq.SaveDataAsync - Unexpected error during data save {ex.Message}", ex);
+    //     }
+    // }
     private async Task SaveDataAsync()
     {
         List<RfqDrawingPartNumberUxModel?> allParts = new();
@@ -811,6 +851,15 @@ else
 
                 // Reload NPR requests so the tab remains enabled and data is fresh
                 await LoadNprRequests();
+
+                // Notify the NPR editor to re-render with the fresh data
+                // (the parent replaced RfqProject.NprRequests but Blazor won't
+                //  detect the change since the RfqProject reference is the same)
+                if (componentNprEditor != null)
+                {
+                    // await componentNprEditor.RefreshNprRequestsAsync();
+                    componentNprEditor.NotifyStateChanged();
+                }
             }
             else
             {

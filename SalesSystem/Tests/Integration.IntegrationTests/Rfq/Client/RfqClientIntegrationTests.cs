@@ -53,7 +53,7 @@ namespace Integration.Tests.Rfq.Client
             ArgumentNullException.ThrowIfNull(_Configuration);
             Mock<ILogger<RfqUxClientService>> logger = new Mock<ILogger<RfqUxClientService>>();
 
-            _RfqUxClientService = new RfqUxClientService(_Configuration, logger.Object, isTest: false);
+            _RfqUxClientService = new RfqUxClientService(_Configuration, logger.Object);
 
             TestContext.Out.WriteLine("RfqClientIntegrationTests - RfqUxClientService initialized successfully");
             TestContext.Out.WriteLine($"Max GRPC Response Size: {RfqUxClientService.MAX_GRPC_RESPONSE_SIZE / 1024 / 1024} MB");
