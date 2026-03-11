@@ -445,7 +445,7 @@ else
         if (InProgressParts.Count == 0)
         {
             Snackbar.Add("No unmatched parts to process for NPR", Severity.Info);
-            return;
+            return;                                                                                                             
         }
 
         try
@@ -466,29 +466,103 @@ else
             List<RfqNprRequestUxModel> nprRequests = new List<RfqNprRequestUxModel>();
             DateTime now = DateTime.UtcNow;
 
-            foreach (RfqDrawingPartNumberUxModel? part in InProgressParts.ToList())
+            // check against all npr requests for duplicates
+            int count = await RfqUxClientService.GetAllNprRequestsAsync();
+            if(count > 0)
             {
-                if (part != null)
+                // some records already there
+                List<RfqNprRequestUxModel> discards = new();
+                List<RfqDrawingPartNumberUxModel> toNewNprRequests = new();
+
+                foreach (RfqDrawingPartNumberUxModel? r in InProgressParts)
                 {
-                    //check if the part does not already has a npr request created in another project
-                    RfqNprRequestUxModel? nprRequest = GetRfqNprRequestByCustomerNumber(part);
-                    if(nprRequest == null)
+                    if(r is null)
                     {
-                        nprRequest = part.ToNprRequest(RfqProject);
-                        nprRequest.RfqNumber = RfqProject.RfqNumber;
-                        nprRequest.Created = now;
-                        nprRequest.Updated = now;
-                        nprRequest.UxStatus = UxObjectStatus.Created;
-                        nprRequests.Add(nprRequest);
+                        continue;
+                    }
+
+                    RfqNprRequestUxModel? found = RfqUxClientService.NprRequests.FirstOrDefault(x => (r?.CustomerPartNumber == x?.CustomerPartNumber && x?.RfqNumber != RfqProject.RfqNumber));
+                    if(found!=null)
+                    {
+                        discards.Add(found);    
+                    }
+                    else
+                    {
+                        toNewNprRequests.Add(r);
                     }
                 }
+
+                if(0 < toNewNprRequests.Count)
+                {
+                    foreach (RfqDrawingPartNumberUxModel? part in toNewNprRequests)
+                    {
+                        if (part != null)
+                        {
+                            //check if the part does not already has a npr request created in another project
+                            RfqNprRequestUxModel? nprRequest = GetRfqNprRequestByCustomerNumber(part);
+                            if (nprRequest == null)
+                            {
+                                nprRequest = part.ToNprRequest(RfqProject);
+                                nprRequest.RfqNumber = RfqProject.RfqNumber;
+                                nprRequest.Created = now;
+                                nprRequest.Updated = now;
+                                nprRequest.UxStatus = UxObjectStatus.Created;
+                                nprRequests.Add(nprRequest);
+                            }
+                        }
+                    }
+
+                    List<RfqNprRequestUxModel> response = await RfqUxClientService.CreateNprRequestsAsync(nprRequests);
+                    RfqProject.NprRequests = response;
+
+                    Snackbar.Add($"Successfully created NPR request set for {InProgressParts.Count} part(s)", Severity.Success);
+                    StateHasChanged();
+                }
+
+                if (0 < discards.Count)
+                {
+                    string partLines = string.Join("<br/>", discards.Select(d =>
+                        $"&bull; {d.CustomerPartNumber ?? "N/A"} — {d.RfqNumber ?? "N/A"}"));
+
+                    string message =
+                        $"<b>{discards.Count} NPR(s) already exist in other RfqProjects:</b><br/>" +
+                        partLines;
+
+                    Snackbar.Add(new MarkupString(message), Severity.Warning, options =>
+                    {
+                        options.RequireInteraction = true;
+                        options.ShowCloseIcon = true;
+                        options.SnackbarVariant = Variant.Filled;
+                    });
+                }
             }
+            else
+            {
+                // no npr requests yet
+                foreach (RfqDrawingPartNumberUxModel? part in InProgressParts.ToList())
+                {
+                    if (part != null)
+                    {
+                        //check if the part does not already has a npr request created in another project
+                        RfqNprRequestUxModel? nprRequest = GetRfqNprRequestByCustomerNumber(part);
+                        if (nprRequest == null)
+                        {
+                            nprRequest = part.ToNprRequest(RfqProject);
+                            nprRequest.RfqNumber = RfqProject.RfqNumber;
+                            nprRequest.Created = now;
+                            nprRequest.Updated = now;
+                            nprRequest.UxStatus = UxObjectStatus.Created;
+                            nprRequests.Add(nprRequest);
+                        }
+                    }
+                }
 
-            List<RfqNprRequestUxModel> response = await RfqUxClientService.CreateNprRequestsAsync(nprRequests);
-            RfqProject.NprRequests = response;
+                List<RfqNprRequestUxModel> response = await RfqUxClientService.CreateNprRequestsAsync(nprRequests);
+                RfqProject.NprRequests = response;
 
-            Snackbar.Add($"Successfully created NPR request set for {InProgressParts.Count} part(s)", Severity.Success);
-            StateHasChanged();
+                Snackbar.Add($"Successfully created NPR request set for {InProgressParts.Count} part(s)", Severity.Success);
+                StateHasChanged();
+            }
         }
         catch (Exception ex)
         {
@@ -784,46 +858,6 @@ else
         }
     }
 
-    // private async Task SaveDataAsync()
-    // {
-    //     List<RfqDrawingPartNumberUxModel?> allParts = new();
-    //     allParts.AddRange(CompletedParts);
-    //     allParts.AddRange(InProgressParts);
-
-    //     try
-    //     {
-    //         // Save pending NPR changes BEFORE reloading (otherwise the editor gets destroyed)
-    //         if (componentNprEditor != null && componentNprEditor.HasPendingChanges)
-    //         {
-    //             await componentNprEditor.SaveNprRequestsAsync();
-    //         }
-
-    //         var partsUpdateResult = await RfqUxClientService.UpdateRfqDrawingPartNumbersAsync(allParts);
-    //         var rfqUpdateResult = await RfqUxClientService.UpdateRfqProjectAsync(RfqProject!);
-
-    //         if (partsUpdateResult.Success && rfqUpdateResult.Success)
-    //         {
-    //             Snackbar.Add("Data saved successfully", Severity.Success);
-    //             Logger.GenericLogInformation("EditRfq.SaveDataAsync - Data saved successfully");
-
-    //             // Reload part numbers
-    //             await LoadRfqAndPartNumbersAsync();
-
-    //             // Reload NPR requests so the tab remains enabled and data is fresh
-    //             await LoadNprRequests();
-    //         }
-    //         else
-    //         {
-    //             Snackbar.Add("Error saving data", Severity.Error);
-    //             Logger.GenericLogInformation("EditRfq.SaveDataAsync - Error saving data");
-    //         }
-    //         StateHasChanged();
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Logger.GenericLogError($"EditRfq.SaveDataAsync - Unexpected error during data save {ex.Message}", ex);
-    //     }
-    // }
     private async Task SaveDataAsync()
     {
         List<RfqDrawingPartNumberUxModel?> allParts = new();

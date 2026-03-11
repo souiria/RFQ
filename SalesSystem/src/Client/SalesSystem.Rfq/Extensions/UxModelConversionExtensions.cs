@@ -298,6 +298,7 @@ namespace SalesSystem.Rfq.Extensions
         #endregion
 
         #region NprRequests
+        // convert a drawing number in a given rfq prject into a npr request
         public static RfqNprRequestUxModel ToNprRequest(this RfqDrawingPartNumberUxModel partNumber, RqfProjectUxModel rfqProject)
         {
             RfqNprRequestUxModel nprRequest = new RfqNprRequestUxModel();
@@ -334,7 +335,7 @@ namespace SalesSystem.Rfq.Extensions
 
             return nprRequest;
         }
-
+        // dto to/from ux conversion
         public static RfqNprRequestGrpc ToNprGrpc (this RfqNprRequestUxModel model)
         {
             RfqNprRequestGrpc nprGrpc = new RfqNprRequestGrpc ();

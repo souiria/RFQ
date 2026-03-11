@@ -124,15 +124,28 @@
 
     private string RowStyleFunc(RfqDrawingPartNumberUxModel item, int index)
     {
-        return item?.Status switch
+        if(item == null || item.SearchResultPartNumbers.Count == 0)
         {
-            RfqDrawingPartNumberStatus.Completed => "background-color: lightgreen;",
+            return string.Empty;
+        }
+
+        string color = item!.Status switch
+        {
+            RfqDrawingPartNumberStatus.Completed => "background-color: #66BB6A;",
             RfqDrawingPartNumberStatus.ContainsMatch => "background-color: lightyellow;",
             RfqDrawingPartNumberStatus.ExactMatch => "background-color: lightcoral;",
             RfqDrawingPartNumberStatus.AlternativePartSelected => "background-color: lightblue;",
             RfqDrawingPartNumberStatus.NprRequested => "background-color: lightmagenta;",
             _ => string.Empty,
         };
+
+        if (item!.Status == RfqDrawingPartNumberStatus.ContainsMatch 
+            && 0 < item!.SearchResultPartNumbers.Count
+            && item!.SearchResultPartNumbers.Any(x => (0.0m < x.DrawingPartNumberPrice) == true))
+        {
+            color = "background-color: #A5D6A7;";
+        }
+        return color;
     }
 
     // events
