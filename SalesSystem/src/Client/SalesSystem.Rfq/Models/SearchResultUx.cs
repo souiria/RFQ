@@ -1,15 +1,5 @@
 ﻿namespace SalesSystem.Rfq.Models
 {
-    //message FilterGrpcResponse
-    //{
-    //bool Success = 1;
-    //    repeated google.protobuf.StringValue StringList = 2;
-    //    repeated google.protobuf.Int32Value IntList = 3;
-    //    repeated bytes ByteList = 4;
-    //    repeated google.protobuf.DoubleValue DoubleList = 6;
-    //    repeated google.protobuf.StringValue StringList2 = 5;
-
-    //}
     public static class SearchResultUxExtensions
     {
         public static RfqDrawingPartNumberUxModel ToSinglePartNumber(this SearchResultUxModel searchResult)

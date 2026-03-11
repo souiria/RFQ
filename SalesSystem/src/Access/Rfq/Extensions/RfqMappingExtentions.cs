@@ -1958,17 +1958,29 @@ namespace Rfq.Extensions
             data.SampleSite = grpc.SampleSite;
             data.SampleQuantity = grpc.SampleQuantity;
             data.SampleRecipient = grpc.SampleRecipient;
-            data.SampleRequiredDate = grpc.SampleRequiredDate.ToDateTime();
+            data.SampleRequiredDate = grpc.SampleRequiredDate is null
+                ? null
+                : grpc.SampleRequiredDate.ToDateTime();
             data.FreightAccount = grpc.FreightAccount;
             data.AssociatedParts = grpc.AssociatedParts;
             data.SuggestedManufacturer = grpc.SuggestedManufacturer;
-            data.CreatedAt = grpc.CreatedAt.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedAt = grpc.ModifiedAt.ToDateTime();
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            data.CreatedAt = grpc.CreatedAt is null 
+                 ? null
+                 : grpc.CreatedAt.ToDateTime();
+            data.CreatedBy = grpc.CreatedBy is null 
+                                ? Guid.Empty 
+                                : Guid.Parse(grpc.CreatedBy);
+            data.ModifiedAt = grpc.ModifiedAt is null 
+                ? null 
+                : grpc.ModifiedAt.ToDateTime();
+            data.ModifiedBy = grpc.ModifiedBy is null 
+                                ? Guid.Empty
+                                :Guid.Parse(grpc.ModifiedBy);
             data.SubmissionStatus = (SubmissionStatus?)grpc.SubmissionStatus;
             data.RemoteEndpointResponse = grpc.RemoteEndpointResponse;
-            data.SubmittedAt = grpc.SubmittedAt.ToDateTime();
+            data.SubmittedAt = grpc.SubmittedAt is null 
+                ? null
+                : grpc.SubmittedAt.ToDateTime();
             data.RfqNumber = grpc.RfqNumber;
             data.IsActive = grpc.IsActive;
             return data;

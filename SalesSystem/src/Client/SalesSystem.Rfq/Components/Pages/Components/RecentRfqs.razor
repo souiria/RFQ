@@ -31,7 +31,8 @@
                      FixedHeader="true"
                      Height="calc(100% - 8px)"
                      Class="mud-grid-no-scroll-x"
-                     Style="flex: 1 1 auto; min-height: 0; overflow-y: auto; margin: 4px 0;">
+                     Style="flex: 1 1 auto; min-height: 0; overflow-y: auto; margin: 4px 0;"
+                     HorizontalScrollbar="true">
             <ToolBarContent>
                 <MudTooltip Text="Full text search">
                     <MudTextField AdornmentIcon="@Icons.Material.Outlined.Search" 
@@ -121,6 +122,7 @@
             // FIX: Assign the correct type directly, do not use Concat (Concat does not mutate the original list)
             // _RfqProjects = RfqUxClientService.RfqProjectUxs.Cast<RqfProjectUxModel>().ToList();
             Logger.LogInformation($"Loaded {RfqUxClientService.RfqProjectUxs.Count} RFQ projects");
+
         }
         catch (Exception ex)
         {

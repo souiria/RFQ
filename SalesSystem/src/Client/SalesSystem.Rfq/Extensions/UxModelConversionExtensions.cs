@@ -298,6 +298,7 @@ namespace SalesSystem.Rfq.Extensions
         #endregion
 
         #region NprRequests
+        // convert a drawing number in a given rfq prject into a npr request
         public static RfqNprRequestUxModel ToNprRequest(this RfqDrawingPartNumberUxModel partNumber, RqfProjectUxModel rfqProject)
         {
             RfqNprRequestUxModel nprRequest = new RfqNprRequestUxModel();
@@ -330,9 +331,11 @@ namespace SalesSystem.Rfq.Extensions
             nprRequest.SampleRecipient = "";
             nprRequest.SampleSite = "";
 
+            nprRequest.UxStatus = UxObjectStatus.Created;
+
             return nprRequest;
         }
-
+        // dto to/from ux conversion
         public static RfqNprRequestGrpc ToNprGrpc (this RfqNprRequestUxModel model)
         {
             RfqNprRequestGrpc nprGrpc = new RfqNprRequestGrpc ();
@@ -372,6 +375,9 @@ namespace SalesSystem.Rfq.Extensions
             //nprGrpc.RemoteEndpointResponse = model.RemoteEndpointResponse;
             //nprGrpc.SubmittedAt = model.SubmittedAt?.ToUniversalTime().ToTimestamp();
             nprGrpc.RfqNumber = model.RfqNumber;
+
+            nprGrpc.IsActive = model.UxStatus != UxObjectStatus.Deleted;
+
             return nprGrpc;
         }
         public static RfqNprRequestUxModel ToNprUx (this RfqNprRequestGrpc grpc)
@@ -401,18 +407,25 @@ namespace SalesSystem.Rfq.Extensions
             model.SampleSite = grpc.SampleSite;
             model.SampleQuantity = grpc.SampleQuantity;
             model.SampleRecipient = grpc.SampleRecipient;
-            model.SampleRequiredDate = grpc.SampleRequiredDate.ToDateTime();
+            model.SampleRequiredDate = grpc.SampleRequiredDate is null ? null : grpc.SampleRequiredDate.ToDateTime();
             model.FreightAccount = grpc.FreightAccount;
             model.AssociatedParts = grpc.AssociatedParts;
             model.SuggestedManufacturer = grpc.SuggestedManufacturer;
-            model.Created = grpc.CreatedAt.ToDateTime();
+            model.Created = grpc.CreatedAt is null 
+                ? DateTime.UtcNow
+                : grpc.CreatedAt.ToDateTime();
             //nprGrpc.CreatedBy = model.CreatedBy.ToString();
-            model.Updated = grpc.ModifiedAt.ToDateTime();
+            model.Updated = grpc.ModifiedAt is null 
+                ? DateTime.UtcNow
+                : grpc.ModifiedAt.ToDateTime();
             //nprGrpc.ModifiedBy = model.ModifiedBy.ToString();
             model.Status = grpc.SubmissionStatus.HasValue? (RfqNprRequestSet)grpc.SubmissionStatus.Value: new RfqNprRequestSet();
             //nprGrpc.RemoteEndpointResponse = model.RemoteEndpointResponse;
             //nprGrpc.SubmittedAt = model.SubmittedAt?.ToUniversalTime().ToTimestamp();
             model.RfqNumber = grpc.RfqNumber;
+
+            model.UxStatus = grpc.IsActive == false ? UxObjectStatus.Deleted : UxObjectStatus.Read;
+            
             return model;
         }
         #endregion

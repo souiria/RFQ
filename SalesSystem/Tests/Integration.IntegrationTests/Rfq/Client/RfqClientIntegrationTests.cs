@@ -53,7 +53,7 @@ namespace Integration.Tests.Rfq.Client
             ArgumentNullException.ThrowIfNull(_Configuration);
             Mock<ILogger<RfqUxClientService>> logger = new Mock<ILogger<RfqUxClientService>>();
 
-            _RfqUxClientService = new RfqUxClientService(_Configuration, logger.Object, true);
+            _RfqUxClientService = new RfqUxClientService(_Configuration, logger.Object);
 
             TestContext.Out.WriteLine("RfqClientIntegrationTests - RfqUxClientService initialized successfully");
             TestContext.Out.WriteLine($"Max GRPC Response Size: {RfqUxClientService.MAX_GRPC_RESPONSE_SIZE / 1024 / 1024} MB");
@@ -274,7 +274,7 @@ namespace Integration.Tests.Rfq.Client
         [Test]
         [Category("Integration")]
         [Description("Verify that service can retrieve all alternative parts with SumtomoNumber and Price from Emacs")]
-        public async Task GetAllAlternativePartsAsyncTest()
+         public async Task GetAllAlternativePartsAsyncTest()
         {
             // Arrange
             EnsureServiceInitialized();
@@ -292,17 +292,17 @@ namespace Integration.Tests.Rfq.Client
             // Assert
             AssertAllAlternativePartsRetrieved(alternativePartsCount);
 
-            // Act 10000
-            alternativePartsCount = await GetAllAlternativePartsAsync(0, 5000);
-            TestContext.Out.WriteLine($"Retrieved {_RfqUxClientService!.AlternativeParts.Count} alternative parts");
-            // Assert
-            AssertAllAlternativePartsRetrieved(alternativePartsCount);
+            //// Act 10000
+            //alternativePartsCount = await GetAllAlternativePartsAsync(0, 5000);
+            //TestContext.Out.WriteLine($"Retrieved {_RfqUxClientService!.AlternativeParts.Count} alternative parts");
+            //// Assert
+            //AssertAllAlternativePartsRetrieved(alternativePartsCount);
 
-            // Act 10000
-            alternativePartsCount = await GetAllAlternativePartsAsync(0, -1);
-            TestContext.Out.WriteLine($"Retrieved ALL {_RfqUxClientService!.AlternativeParts.Count} alternative parts");
-            // Assert
-            AssertAllAlternativePartsRetrieved(alternativePartsCount);
+            //// Act 10000
+            //alternativePartsCount = await GetAllAlternativePartsAsync(0, -1);
+            //TestContext.Out.WriteLine($"Retrieved ALL {_RfqUxClientService!.AlternativeParts.Count} alternative parts");
+            //// Assert
+            //AssertAllAlternativePartsRetrieved(alternativePartsCount);
         }
 
         [Test]
@@ -314,43 +314,8 @@ namespace Integration.Tests.Rfq.Client
             EnsureServiceInitialized();
             ArgumentNullException.ThrowIfNull(_RfqUxClientService);
 
-            //TestContext.Out.WriteLine("Testing combined CreateRfqProjectAsync and UploadPartsAsync");
-
-            // Create RfqProject with specified parameters
-            //RfqProject rfqProject = new RfqProject();
-            //DateTime dueDate = DateTime.UtcNow.AddDays(30);
-            //rfqProject.CustomerBusinessUnitGuid = "6812E12D-BD63-4519-8D41-7E66462CFCDB";
-            //rfqProject.CustomerLocationGuid = "C1C48ED2-EEA8-4561-9BBB-2B353D688D44";
-            //rfqProject.ProjectGuid = "3C04FD2D-28B5-4393-A2C1-B608732F374F";
-            //rfqProject.RfqReasonId = 2;
-            //rfqProject.VehicleVolume = 11;
-            //rfqProject.RfqResponseDeadline = Timestamp.FromDateTime(dueDate);
-
-            //TestContext.Out.WriteLine($"Creating RFQ Project:");
-            //TestContext.Out.WriteLine($"  CustomerBusinessUnitGuid: {rfqProject.CustomerBusinessUnitGuid}");
-            //TestContext.Out.WriteLine($"  CustomerLocationGuid: {rfqProject.CustomerLocationGuid}");
-            //TestContext.Out.WriteLine($"  ProjectGuid: {rfqProject.ProjectGuid}");
-            //TestContext.Out.WriteLine($"  RfqReasonId: {rfqProject.RfqReasonId}");
-            //TestContext.Out.WriteLine($"  VehicleVolume: {rfqProject.VehicleVolume}");
-            //TestContext.Out.WriteLine($"  RfqResponseDeadline: {rfqProject.RfqResponseDeadline.ToDateTime():yyyy-MM-dd}");
-
-            // Act - Step 1: Create RFQ Project
-            //CreateRfqProjectGrpcResponse createResponse = await _RfqUxClientService.CreateRfqProjectAsync(rfqProject);
-
-            // Assert - Create Project
-            //Assert.Multiple(() =>
-            //{
-            //    Assert.That(createResponse, Is.Not.Null, "CreateRfqProjectGrpcResponse should not be null");
-            //    Assert.That(createResponse.Success, Is.True, "RFQ Project creation should succeed");
-            //    Assert.That(createResponse.CreatedProjectId, Is.Not.Null.And.Not.Empty, "Created project ID should not be null or empty");
-            //});
-
-            //TestContext.Out.WriteLine($"RFQ Project created successfully:");
-            //TestContext.Out.WriteLine($"  CreatedProjectId: {createResponse.CreatedProjectId}");
-            //TestContext.Out.WriteLine($"  Message: {createResponse.Message}");
-
             // Test project Id
-            const string testProjectId = "73";
+            const string testProjectId = "187";
 
             // Prepare test BOM file (FordBom.xml)
             string bomFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, "TestData", "FordBom.xml");

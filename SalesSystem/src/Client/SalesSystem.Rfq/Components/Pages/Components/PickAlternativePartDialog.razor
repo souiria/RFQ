@@ -6,6 +6,45 @@
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 
+<style>
+    .mud-alt-part-grid .mud-table-head {
+        background-color: lightgrey;
+    }
+
+        .mud-alt-part-grid .mud-table-head th {
+            background-color: lightgrey;
+        }
+
+    .mud-alt-part-grid {
+        overflow-x: hidden !important;
+        border: 1px solid #bdbdbd;
+        border-radius: 4px;
+    }
+
+    .mud-table-sticky-header {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background-color: var(--mud-palette-surface);
+    }
+
+    /* First row: column headers */
+    .mud-alt-part-grid .mud-table-head tr:first-child th {
+        position: sticky;
+        top: 0;
+        z-index: 3;
+        background-color: lightgrey;
+    }
+
+    /* Second row: filter inputs */
+    .mud-alt-part-grid .mud-table-head tr:nth-child(2) th {
+        position: sticky;
+        top: 36px;
+        z-index: 3;
+        background-color: #f5f5f5;
+    }
+</style>
+
 <MudDialog>
     <DialogContent>
         <MudText Typo="Typo.h6" Class="mb-4">
@@ -40,6 +79,7 @@
                                      QuickFilter="@QuickFilter"
                                      ReadOnly="true"
                                      Bordered="true"
+                                     Class="mud-alt-part-grid"
                                      ShowMenuIcon="true">
                             <ToolBarContent>
                                 <MudTooltip Text="Full text search">
@@ -191,17 +231,24 @@
                                 <PropertyColumn Property="x => x.Tilt" Title="Tilt" />
                                 <PropertyColumn Property="x => x.Grease" Title="Grease" />
                                 <PropertyColumn Property="x => x.CategoryCode2" Title="Category Code 2" />
-                                <TemplateColumn CellClass="d-flex justify-end" StickyRight="true">
+                                <TemplateColumn CellClass="d-flex justify-end" StickyRight="true" Title="Actions">
                                     <CellTemplate>
                                         <MudStack Row>
-                                            <MudIconButton Size="Size.Small"
-                                                           Icon="@Icons.Material.Filled.Info"
-                                                           aria-label="info"
-                                                           OnClick="@(() => ShowInfo(context.Item))" />
-                                            <MudIconButton Size="Size.Small"
-                                                           Icon="@Icons.Material.Filled.SelectAll"
-                                                           aria-label="select"
-                                                           OnClick="@(() => PickAlternativePart(context.Item))" />
+                                            <MudTooltip Text="Show Alt.Part Info">
+                                                <MudIconButton Size="Size.Small"
+                                                               Class="p-2"
+                                                               Icon="@Icons.Material.Filled.Info"
+                                                               aria-label="info"
+                                                               OnClick="@(() => ShowInfo(context.Item))" />
+                                            </MudTooltip>
+
+                                            <MudTooltip Text="Pick Dummy Part">
+                                                <MudIconButton Size="Size.Small"
+                                                               Icon="@Icons.Material.Filled.SelectAll"
+                                                               aria-label="select"
+                                                               OnClick="@(() => PickAlternativePart(context.Item))" />
+                                            </MudTooltip>
+
 
                                         </MudStack>
                                     </CellTemplate>
@@ -210,32 +257,55 @@
                         </MudDataGrid>
                     }
                 </MudItem>
-                <MudItem xs="12">
-                    <MudTextField @bind-Value="AlternativePartNumber"
-                                  Label="Dummy Part Number"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense"
-                                  Required="true"
-                                  RequiredError="Dummy part number is required" />
-                </MudItem>
-                <MudItem xs="12">
-                    <MudNumericField @bind-Value="AlternativePrice"
-                                     Label="Dummy Price"
-                                     Variant="Variant.Outlined"
-                                     Margin="Margin.Dense"
-                                     Format="0.#####"
-                                     Adornment="Adornment.Start"
-                                     AdornmentText="$"
-                                     Min="0m"
-                                     Required="true"
-                                     RequiredError="Dummy price is required" />
-                </MudItem>
+                @* <MudItem xs="12">
+                    <MudStack Row Spacing="2" Class="ma-1">
+                        <MudTextField @bind-Value="AlternativePartNumber"
+                                      Label="Dummy Part Number"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      Required="true"
+                                      RequiredError="Dummy part number is required"
+                                      Disabled="true"/>
+                        <MudNumericField @bind-Value="AlternativePrice"
+                                         Label="Dummy Price"
+                                         Variant="Variant.Outlined"
+                                         Margin="Margin.Dense"
+                                         Format="0.#####"
+                                         Adornment="Adornment.End"
+                                         AdornmentText="€"
+                                         Min="0m"
+                                         Required="true"
+                                         RequiredError="Dummy price is required"
+                                         Disabled="true"/>
+                    </MudStack>
+                </MudItem> *@
             </MudGrid>
         </MudForm>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel" Color="Color.Default">Cancel</MudButton>
-        <MudButton OnClick="Apply" Color="Color.Primary" Variant="Variant.Filled" Disabled="!_isValid">OK</MudButton>
+        <MudStack Row Spacing="2" Class="ma-1">
+            <MudTextField @bind-Value="AlternativePartNumber"
+                          Label="Dummy Part Number"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Required="true"
+                          RequiredError="Dummy part number is required"
+                          Disabled="true" />
+            <MudNumericField @bind-Value="AlternativePrice"
+                             Label="Dummy Price"
+                             Variant="Variant.Outlined"
+                             Margin="Margin.Dense"
+                             Format="0.#####"
+                             Adornment="Adornment.End"
+                             AdornmentText="€"
+                             Min="0m"
+                             Required="true"
+                             RequiredError="Dummy price is required"
+                             Disabled="true" />
+            <MudButton OnClick="Cancel" Color="Color.Default">Cancel</MudButton>
+            <MudButton OnClick="Apply" Color="Color.Primary" Variant="Variant.Filled" Disabled="!_isValid">OK</MudButton>
+        </MudStack>
+
     </DialogActions>
 </MudDialog>
 

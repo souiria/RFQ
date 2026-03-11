@@ -43,7 +43,7 @@ namespace Integration.Tests.Rfq.Client
             ArgumentNullException.ThrowIfNull(_Configuration);
             _LoggerMock = new Mock<ILogger<RfqUxClientService>>();
 
-            _Service = new RfqUxClientService(_Configuration, _LoggerMock.Object, true);
+            _Service = new RfqUxClientService(_Configuration, _LoggerMock.Object);
 
             TestContext.Out.WriteLine("RfqUxClientServiceNprTest - RfqUxClientService initialized successfully");
             TestContext.Out.WriteLine($"Max GRPC Response Size: {RfqUxClientService.MAX_GRPC_RESPONSE_SIZE / 1024 / 1024} MB");
@@ -58,11 +58,6 @@ namespace Integration.Tests.Rfq.Client
         {
             InitializeConfiguration();
             InitializeService();
-            // Ensure clean state
-            if (File.Exists(_Service.NprRequestSetsFilePath))
-            {
-                File.Delete(_Service.NprRequestSetsFilePath);
-            }
         }
 
         [OneTimeTearDown]
@@ -145,7 +140,7 @@ namespace Integration.Tests.Rfq.Client
 
             // Assert
             Assert.That(count, Is.EqualTo(0));
-            Assert.That(_Service.NprRequestSets, Is.Empty);
+            Assert.That(_Service.NprRequests, Is.Empty);
         }
 
         [Test]
@@ -161,7 +156,7 @@ namespace Integration.Tests.Rfq.Client
 
             // Assert
             Assert.That(count, Is.EqualTo(3));
-            Assert.That(_Service.NprRequestSets.Count, Is.EqualTo(3));
+            Assert.That(_Service.NprRequests.Count, Is.EqualTo(3));
         }
 
         [Test]
@@ -169,13 +164,6 @@ namespace Integration.Tests.Rfq.Client
         {
             // Arrange
             await _Service.DeleteAllNprRequestsAsync();
-            string? directory = Path.GetDirectoryName(_Service.NprRequestSetsFilePath);
-            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            await File.WriteAllTextAsync(_Service.NprRequestSetsFilePath, "");
 
             // Act
             int count = await _Service.GetAllNprRequestsAsync();
@@ -282,11 +270,7 @@ namespace Integration.Tests.Rfq.Client
             Assert.That(result.Count, Is.EqualTo(1));
             Assert.That(result[0].RfqNumber, Is.EqualTo("NEW-RFQ"));
             Assert.That(result[0].Created, Is.Not.EqualTo(default(DateTime)));
-            Assert.That(File.Exists(_Service.NprRequestSetsFilePath), Is.True);
 
-            // Verify persistence
-            int count = await _Service.GetAllNprRequestsAsync();
-            Assert.That(count, Is.EqualTo(1));
         }
 
         [Test]
@@ -399,9 +383,12 @@ namespace Integration.Tests.Rfq.Client
         [Test]
         public void UpdateNprRequestAsync_WithNull_ThrowsArgumentNullException()
         {
-            // Act & Assert
+            List<RfqNprRequestUxModel> nullList = null!;
+
             Assert.ThrowsAsync<ArgumentNullException>(async () =>
-                await _Service.UpdateNprRequestsAsync(null!));
+            {
+                await _Service.UpdateNprRequestsAsync(nullList);
+            });
         }
 
         [Test]

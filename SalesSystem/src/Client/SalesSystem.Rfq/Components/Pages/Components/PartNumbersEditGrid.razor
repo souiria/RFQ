@@ -7,7 +7,28 @@
 @inject ILogger<PartNumbersEditGrid> Logger
 @inject IDialogService DialogService
 
+<style>
+    .mud-parts-list .mud-table-head {
+        background-color: lightgrey;
+    }
 
+        .mud-parts-list .mud-table-head th {
+            background-color: lightgrey;
+        }
+
+    .mud-parts-list {
+        overflow-x: hidden !important;
+        border: 1px solid #bdbdbd;
+        border-radius: 4px;
+    }
+
+    .mud-table-sticky-header {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background-color: var(--mud-palette-surface);
+    }
+</style>
 <div class="d-flex flex-column" style="height: 100%; overflow: hidden;">
     <MudDataGrid T="RfqDrawingPartNumberUxModel" 
                  Items="@PartNumbers" 
@@ -21,12 +42,12 @@
                  EditTrigger="DataGridEditTrigger.Manual"
                  FixedHeader="true"
                  Height="calc(100% - 16px)"
-                 Class="mud-grid-no-scroll-x"
+                 Class="mud-parts-list"
                  Style="flex: 1 1 auto; min-height: 0; overflow-y: auto; margin: 8px 0;"
                  RowStyleFunc="@RowStyleFunc"
                  ColumnResizeMode="ResizeMode.Column">
         <Columns>
-            <TemplateColumn CellClass="d-flex justify-start">
+            <TemplateColumn Title="Actions" CellClass="d-flex justify-start">
                 <CellTemplate>
                     <MudTooltip Text="Search Part Number">
                         <MudIconButton Size="@Size.Small"
@@ -51,17 +72,17 @@
                     </MudTooltip>
                 </CellTemplate>
             </TemplateColumn>
-            <PropertyColumn Property="x => x.RowId" Title="ID" Editable="false" />
+            @* <PropertyColumn Property="x => x.RowId" Title="ID" Editable="false" /> *@
             <PropertyColumn Property="x => x.CustomerPartNumber" Title="Customer P/N" />
             <PropertyColumn Property="x => x.DrawingPartNumber" Title="Drawing P/N" />
             <PropertyColumn Property="x => x.DrawingPartNumberPrice"
                             Title="Drawing P/N Price"
-                            Format="0.#####">
+                            Format="0.##### €">
             </PropertyColumn>
             <PropertyColumn Property="x => x.SwappedPartNumber" Title="Dummy/Alt. P/N" />
             <PropertyColumn Property="x => x.SwappedPartNumberPrice"
                             Title="Dummy/Alt. P/N Price"
-                            Format="0.#####">
+                            Format="0.##### €">
             </PropertyColumn>
             <PropertyColumn Property="x => x.PriceSource" Title="Price Source" />
             <PropertyColumn Property="x => x.IsExactMatch" Title="Exact Match">
@@ -103,15 +124,28 @@
 
     private string RowStyleFunc(RfqDrawingPartNumberUxModel item, int index)
     {
-        return item?.Status switch
+        if(item == null || item.SearchResultPartNumbers.Count == 0)
         {
-            RfqDrawingPartNumberStatus.Completed => "background-color: lightgreen;",
+            return string.Empty;
+        }
+
+        string color = item!.Status switch
+        {
+            RfqDrawingPartNumberStatus.Completed => "background-color: #66BB6A;",
             RfqDrawingPartNumberStatus.ContainsMatch => "background-color: lightyellow;",
             RfqDrawingPartNumberStatus.ExactMatch => "background-color: lightcoral;",
             RfqDrawingPartNumberStatus.AlternativePartSelected => "background-color: lightblue;",
             RfqDrawingPartNumberStatus.NprRequested => "background-color: lightmagenta;",
             _ => string.Empty,
         };
+
+        if (item!.Status == RfqDrawingPartNumberStatus.ContainsMatch 
+            && 0 < item!.SearchResultPartNumbers.Count
+            && item!.SearchResultPartNumbers.Any(x => (0.0m < x.DrawingPartNumberPrice) == true))
+        {
+            color = "background-color: #A5D6A7;";
+        }
+        return color;
     }
 
     // events
@@ -423,9 +457,9 @@
         messageBuilder.AppendLine($"RFQ ID: {item.RfqId}");
         messageBuilder.AppendLine($"Customer Part Number: {item.CustomerPartNumber ?? "N/A"}");
         messageBuilder.AppendLine($"Drawing Part Number: {item.DrawingPartNumber ?? "N/A"}");
-        messageBuilder.AppendLine($"Drawing Part Number Price: {(item.DrawingPartNumberPrice.HasValue ? $"${item.DrawingPartNumberPrice.Value:N5}" : "N/A")}");
+        messageBuilder.AppendLine($"Drawing Part Number Price: {(item.DrawingPartNumberPrice.HasValue ? $"${item.DrawingPartNumberPrice.Value.ToString(new CultureInfo("fr-FR")):N5}" : "N/A")}");
         messageBuilder.AppendLine($"Dummy/Alt. Part Number: {item.SwappedPartNumber ?? "N/A"}");
-        messageBuilder.AppendLine($"Dummy/Alt. Price: {(item.SwappedPartNumberPrice.HasValue ? $"${item.SwappedPartNumberPrice.Value:N5}" : "N/A")}");
+        messageBuilder.AppendLine($"Dummy/Alt. Price: {(item.SwappedPartNumberPrice.HasValue ? $"${item.SwappedPartNumberPrice.Value.ToString(new CultureInfo("fr-FR")):N5}" : "N/A")}");
         messageBuilder.AppendLine($"Price Source: {item.PriceSource ?? "N/A"}");
         messageBuilder.AppendLine($"Is Exact Match: {(item.IsExactMatch.HasValue ? item.IsExactMatch.Value.ToString() : "N/A")}");
         messageBuilder.AppendLine($"Is Swapped: {(item.IsSwapped.HasValue ? item.IsSwapped.Value.ToString() : "N/A")}");

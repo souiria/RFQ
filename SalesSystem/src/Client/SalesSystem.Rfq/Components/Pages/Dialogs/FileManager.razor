@@ -27,9 +27,9 @@
         border-radius: 5px;
     }
 
-    .drop-zone.hover {
-        border-style: solid;
-    }
+        .drop-zone.hover {
+            border-style: solid;
+        }
 
     .file-item {
         border: 1px solid #ddd;
@@ -39,17 +39,18 @@
         background: #f9f9f9;
     }
 
-    .file-item.deleted {
-        background: #ffebee;
-        text-decoration: line-through;
-        opacity: 0.6;
-    }
+        .file-item.deleted {
+            background: #ffebee;
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
 
     .file-manager-container {
         width: 100%;
         height: 100%;
         display: flex;
         flex-direction: column;
+        min-width: 0; /* important when inside a constrained flex column */
     }
 </style>
 
