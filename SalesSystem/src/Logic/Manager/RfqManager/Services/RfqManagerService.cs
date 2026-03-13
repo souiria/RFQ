@@ -1,8 +1,4 @@
-﻿using DocumentFormat.OpenXml.Math;
-using Rfq.Data.Model;
-using static Rfq.Rfq;
-
-namespace RfqModule.Services
+﻿namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {

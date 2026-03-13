@@ -558,7 +558,6 @@ message MgrValidateNprRequestResponse {
   map<string, int32> byCustomerCounts = 4;
   int32 totalQuantity = 5;
 }
-}
 
 message NprApiDataGrpc {
 	RfqNprRequestGrpc RfqNprRequest = 1;
