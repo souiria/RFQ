@@ -471,20 +471,21 @@ else
             if(count > 0)
             {
                 // some records already there
-                List<RfqNprRequestUxModel> discards = new();
+                List<RfqNprRequestUxModel> preExistingNprRequests = new();
                 List<RfqDrawingPartNumberUxModel> toNewNprRequests = new();
 
+                // look for same customer part and different rfq project
                 foreach (RfqDrawingPartNumberUxModel? r in InProgressParts)
                 {
-                    if(r is null)
+                    if (r is null)
                     {
                         continue;
                     }
 
                     RfqNprRequestUxModel? found = RfqUxClientService.NprRequests.FirstOrDefault(x => (r?.CustomerPartNumber == x?.CustomerPartNumber && x?.RfqNumber != RfqProject.RfqNumber));
-                    if(found!=null)
+                    if (found != null)
                     {
-                        discards.Add(found);    
+                        preExistingNprRequests.Add(found);
                     }
                     else
                     {
@@ -492,8 +493,19 @@ else
                     }
                 }
 
+                confirm = await DialogService.ShowMessageBox(
+                    "Commit NPR Requests",
+                    $"Are you sure you want to create {toNewNprRequests.Count} NPR requests and take over {preExistingNprRequests.Count} older NPR requests? This will UPDATE CHANGES.",
+                    yesText: $"Commit {toNewNprRequests.Count + preExistingNprRequests.Count} NPR requests",
+                    cancelText: "Cancel"
+                );
+
+                if (confirm != true) return;
+
+                // act if ok
                 if(0 < toNewNprRequests.Count)
                 {
+                    // new ones
                     foreach (RfqDrawingPartNumberUxModel? part in toNewNprRequests)
                     {
                         if (part != null)
@@ -512,28 +524,31 @@ else
                         }
                     }
 
+                    // persist
+                    RfqProject.NprRequests.Clear();
                     List<RfqNprRequestUxModel> response = await RfqUxClientService.CreateNprRequestsAsync(nprRequests);
-                    RfqProject.NprRequests = response;
+                    RfqProject.NprRequests.AddRange(response);
 
-                    Snackbar.Add($"Successfully created NPR request set for {InProgressParts.Count} part(s)", Severity.Success);
+                    Snackbar.Add($"Successfully created new NPR request set for {toNewNprRequests.Count} part(s)", Severity.Success);
                     StateHasChanged();
                 }
 
-                if (0 < discards.Count)
+                if (0 < preExistingNprRequests.Count)
                 {
-                    string partLines = string.Join("<br/>", discards.Select(d =>
-                        $"&bull; {d.CustomerPartNumber ?? "N/A"} — {d.RfqNumber ?? "N/A"}"));
-
-                    string message =
-                        $"<b>{discards.Count} NPR(s) already exist in other RfqProjects:</b><br/>" +
-                        partLines;
-
-                    Snackbar.Add(new MarkupString(message), Severity.Warning, options =>
+                    // update pre-existing ones
+                    foreach (var r in preExistingNprRequests)
                     {
-                        options.RequireInteraction = true;
-                        options.ShowCloseIcon = true;
-                        options.SnackbarVariant = Variant.Filled;
-                    });
+                        r.RfqNumber = RfqProject.RfqNumber;
+                        r.Updated = DateTime.UtcNow;
+                        r.UxStatus = UxObjectStatus.Updated;
+                    }
+
+                    // persist
+                    List<RfqNprRequestUxModel> response = await RfqUxClientService.UpdateNprRequestsAsync(preExistingNprRequests);
+                    RfqProject.NprRequests.AddRange(response);
+
+                    Snackbar.Add($"Successfully updated pre-existing {preExistingNprRequests.Count} NPR request(s)", Severity.Success);
+                    StateHasChanged();
                 }
             }
             else
