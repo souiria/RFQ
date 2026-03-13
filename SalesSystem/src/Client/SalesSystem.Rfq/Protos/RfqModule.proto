@@ -436,18 +436,6 @@ message GetAllAlternativePartsGrpcResponse
     repeated RfqAlternativePartsGrpc alternativeParts = 1;
 }
 
-message RfqProjectInfoGrpc {
-  int32 row_id = 1;
-  google.protobuf.StringValue rfq_number = 2;
-  google.protobuf.StringValue customer_business_unit_id = 3;
-  google.protobuf.StringValue customer_location_id = 4;
-  google.protobuf.StringValue project_id = 5;
-  int32 rfq_reason_id = 6;
-  google.protobuf.Timestamp rfq_response_deadline = 7;
-  google.protobuf.StringValue car_model_id = 8;
-  int32 vehicle_volume = 9;
-  bool is_active = 10;
-}
 message RfqNprRequestGrpc {
 	google.protobuf.StringValue Id = 1;
 	google.protobuf.StringValue Reason = 2;
@@ -503,7 +491,7 @@ message GetRfqNprRequestByRfqProjectIdGrpcRequest {
 message GetRfqNprRequestByRfqProjectIdGrpcResponse {
 	repeated RfqNprRequestGrpc RfqNprRequestGrpcs = 1;
 }
-message GetRfqNprRequestByIdGrpcRequest{
+message GetRfqNprRequestByIdGrpcRequest {
 	int32 position = 1;
 	int32 take = 2; 
 	string Id = 3;

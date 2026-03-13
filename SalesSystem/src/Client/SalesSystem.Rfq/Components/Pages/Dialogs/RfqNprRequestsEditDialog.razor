@@ -51,7 +51,7 @@
                                  Virtualize="true"
                                  FixedHeader="true"
                                  ItemSize="36"
-                                 Height="380px"
+                                 Height="calc(100vh - 640px)"
                                  Dense="true"
                                  DragDropColumnReordering="true"
                                  ApplyDropClassesOnDragStarted="true"
@@ -86,7 +86,10 @@
                             <MudSpacer />
                         </ToolBarContent>
                         <Columns>
-                            <PropertyColumn Property="x => x.UxStatus" Title="Status" Editable="false" StickyLeft="true">
+                            <PropertyColumn Property="x => x.UxStatus"
+                                            Title="Status"
+                                            Editable="false"
+                                            StickyLeft="true">
                                 <CellTemplate>
                                     <MudChip T="string"
                                              Size="Size.Small"

@@ -40,6 +40,7 @@ service RfqModule {
   rpc CreateRfqNprRequestGrpc (CreateRfqNprRequestGrpcRequest) returns (CreateRfqNprRequestGrpcResponse);
   rpc UpdateRfqNprRequestGrpc (UpdateRfqNprRequestGrpcRequest) returns (UpdateRfqNprRequestGrpcResponse);
   rpc DeleteRfqNprRequestByIdGrpc (DeleteRfqNprRequestByIdGrpcRequest) returns (DeleteRfqNprRequestByIdGrpcResponse);
+rpc ValidateNprRequestGrpc (MgrValidateNprRequestRequest) returns (MgrValidateNprRequestResponse);
   rpc CreateNprGrpc (CreateNprGrpcRequest) returns (CreateNprGrpcResponse);
    
  rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
@@ -532,6 +533,31 @@ message DeleteRfqNprRequestByIdGrpcRequest {
 message DeleteRfqNprRequestByIdGrpcResponse {
 	bool Success = 1;
 	string Message = 2;
+}
+
+
+message MgrValidateNprRequestRequest {
+  repeated RfqNprRequestGrpc items = 1;
+}
+
+message MgrValidationError {
+  string field = 1;
+  string message = 2;
+}
+
+message MgrSubmitNprLineStatus {
+  string id = 1;
+  bool isValid = 2;
+  repeated MgrValidationError errors = 3;
+}
+
+message MgrValidateNprRequestResponse {
+  bool allValid = 1;
+  repeated MgrSubmitNprLineStatus lineStatuses = 2;
+  int32 itemCount = 3;
+  map<string, int32> byCustomerCounts = 4;
+  int32 totalQuantity = 5;
+}
 }
 
 message NprApiDataGrpc {

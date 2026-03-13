@@ -56,7 +56,7 @@
                     <MudText Typo="Typo.body1">Main Supplier</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.MainSupplier</MudText>
                     <MudText Typo="Typo.body1">Supplier Name</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.SupplierName</MudText>
                     <MudText Typo="Typo.body1">Supplier Number</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.SupplierNumber</MudText>
-                    <MudText Typo="Typo.body1">Price</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.Price</MudText>
+                    <MudText Typo="Typo.body1">Price</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.Price?.ToString(new CultureInfo("fr-FR"))</MudText>
                     <MudText Typo="Typo.body1">Currency Code</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.CurrencyCode</MudText>
                     <MudText Typo="Typo.body1">Unit Of Measure</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.UnitOfMeasure</MudText>
                     <MudText Typo="Typo.body1">Part Group</MudText> <MudText Typo="Typo.body2">@AlternativePartNumber?.PartGroup</MudText>

@@ -48,6 +48,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Components\Pages\Admin\" />
     <Folder Include="wwwroot\assets\fontawesome\" />
   </ItemGroup>
 

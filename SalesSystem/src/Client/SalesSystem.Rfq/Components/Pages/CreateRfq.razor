@@ -16,7 +16,8 @@
     @* Attributes *@
     <MudItem xs="12">
         <MudPaper Class="d-flex flex-row" Style="height:150px;">
-            <MudPaper Class="pa-4">
+            @* Column 1: Customer + Reason (25%) *@
+            <MudPaper Class="pa-4" Style="flex: 0 0 25%; max-width:25%; min-width: 25%;">
                 <MudStack>
                     <MudSelect T="string"
                                Value="customerValue"
@@ -49,7 +50,8 @@
                 </MudStack>
             </MudPaper>
 
-            <MudPaper Class="pa-4">
+            @* Column 2: Project + VehicleVolume (25%) *@
+            <MudPaper Class="pa-4" Style="flex: 0 0 25%; max-width:25%; min-width: 25%;">
                 <MudStack>
                     @* CHANGED: MudSelect replaced with MudAutocomplete *@
                     <MudAutocomplete T="RqfCustomerProjectAssociationUxModel"
@@ -89,7 +91,8 @@
                 </MudStack>
             </MudPaper>
 
-            <MudPaper Class="pa-4">
+            @* Column 3: Quotation + Deadline (auto, remaining space) *@
+            <MudPaper Class="pa-2" Style="flex: 1 1 20%;  max-width:20%; min-width: 192px;">
                 <MudStack>
                     <MudSelect T="string"
                                Value="quotationValue"
@@ -112,12 +115,15 @@
 
                 </MudStack>
             </MudPaper>
-            @* File Manager *@
-            <FileManager @ref="componentFileManager"
-                         FileObjects="FileObjects"
-                         OnFilesChanged="OnFilesChanged"
-                         OnUploadClicked="@SubmitDataAsync"
-                         UploadDisabled="@(!FileObjects.Any() || uploadedSuccessfully)" />
+
+            @* Column 4: File Manager (max 30%) *@
+            <MudPaper Class="pa-2 w-100" Style="flex: 0 0 15%; max-width:15%; min-width: 192px;">
+                <FileManager @ref="componentFileManager"
+                             FileObjects="FileObjects"
+                             OnFilesChanged="OnFilesChanged"
+                             OnUploadClicked="@SubmitDataAsync"
+                             UploadDisabled="@(!FileObjects.Any() || uploadedSuccessfully)" />
+            </MudPaper>
         </MudPaper>
     </MudItem>
     @* File drop zone  *@
@@ -130,7 +136,6 @@
         </MudPaper>
     </MudItem>
 </MudGrid>
-
 
 @code {
 
@@ -358,6 +363,7 @@
             requestProject.RfqReasonId = reason.RowId ?? 0;
             requestProject.VehicleVolume = vehicleVolume;
             requestProject.RfqResponseDeadline = Timestamp.FromDateTime(date.Value.ToUniversalTime());
+            requestProject.IsActive = true;
 
             CreateRfqProjectGrpcResponse response = await RfqUxClientService.CreateRfqProjectAsync(requestProject);
 

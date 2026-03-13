@@ -1,0 +1,98 @@
+﻿@page "/adminRfq/{AdminName:nonfile}"
+
+@using Google.Protobuf.WellKnownTypes
+@using SalesSystem.Rfq.Components.Pages.Components
+@using SalesSystem.Rfq.Components.Pages.Dialogs
+@using SalesSystem.Rfq.Components.Pages.Admin
+@using SalesSystem.Rfq.Enums
+@using SalesSystem.Rfq.Extensions
+@using SalesSystem.Rfq.Models
+
+@inject ISnackbar Snackbar
+@inject RfqUxClientService RfqUxClientService
+@inject ILogger<AdminRfq> Logger
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+
+@rendermode InteractiveServer
+
+@if (IsLoading)
+{
+    <MudContainer Class="d-flex justify-center align-center" Style="height: calc(100vh - 128px);">
+        <MudProgressCircular Indeterminate="true" Color="Color.Primary" Style="height:96px;width:96px;">
+            <ChildContent>
+                <MudText Typo="Typo.subtitle2">
+                    Loading...
+                </MudText>
+            </ChildContent>
+        </MudProgressCircular>
+    </MudContainer>
+}
+else
+{
+    <MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">User: @AdminName </MudText>
+    <MudGrid Class="position-fixed">
+        <MudItem xs="12">
+            <MudPaper Class="d-flex flex-row" Style="height:150px;">
+                @* Region label *@
+                <MudPaper Style="width: 48px; background-color: crimson; position: relative; overflow: visible;">
+                    <MudText Style="transform: rotate(-90deg); transform-origin: left bottom; white-space: nowrap; position: absolute; bottom: 20px; left: 36px; font-weight: 500; color: white;"
+                             Typo="Typo.h6">
+                        Admin
+                    </MudText>
+                </MudPaper>
+
+                @* Column 1: Select Dataset *@
+                <MudPaper Class="pa-4" Style="flex: 0 0 20%; max-width:20%; min-width: 20%;">
+                    <MudStack>
+                        <MudSelect T="string"
+                                   @bind-Value="SelectedDataset"
+                                   Label="Dataset"
+                                   Placeholder="Please Select"
+                                   AdornmentIcon="@Icons.Material.Filled.Dataset"
+                                   AdornmentColor="Color.Primary">
+                            <MudSelectItem Value='"RfqProjects"'>Projects</MudSelectItem>
+                            <MudSelectItem Value='"Alternative Parts"'>Alt.Parts</MudSelectItem>
+                            <MudSelectItem Value='"RfqNprRequests"'>NprRequests</MudSelectItem>
+                        </MudSelect>
+                    </MudStack>
+                </MudPaper>
+
+            </MudPaper>
+        </MudItem>
+
+        @* Admin tools area *@
+        <MudItem xs="12" Class="pt-2">
+            @if (SelectedDataset == "RfqNprRequests")
+            {
+                <AdminRfqNprRequests />
+            }
+            else if (!string.IsNullOrEmpty(SelectedDataset))
+            {
+                <MudText Typo="Typo.caption">@SelectedDataset selected</MudText>
+            }
+            else
+            {
+                <MudText Typo="Typo.caption">Please select a dataset</MudText>
+            }
+        </MudItem>
+    </MudGrid>
+}
+
+@code {
+    // Form related
+    bool IsLoading { get; set; } = true;
+    string? SelectedDataset { get; set; }
+
+    [Parameter] public string? AdminName { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(AdminName))
+        {
+            AdminName = Uri.UnescapeDataString(AdminName);
+        }
+        await Task.Delay(50);
+        IsLoading = false;
+    }
+}
