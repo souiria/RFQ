@@ -1,6 +1,8 @@
 ﻿global using System.Collections.ObjectModel;
 global using System.Globalization;
-global using System.Linq.Dynamic.Core;global using System.Text.RegularExpressions;
+global using System.Linq.Dynamic.Core;
+global using System.Net;
+global using System.Text.RegularExpressions;
 global using CPD;
 global using Emacs;
 global using Google.Protobuf.WellKnownTypes;

@@ -1257,6 +1257,97 @@
             response.Message = accessResponse.Message;
             return response;
         }
+        public async Task<MgrValidateNprRequestResponse> ValidateNprRequestGrpc(MgrValidateNprRequestRequest request)
+        {
+            await Task.Delay(1);
+
+           ValidateNprRequestRequest accessRequest = new ValidateNprRequestRequest();
+            if (request?.Items != null && 0 < request.Items.Count )
+            {
+                foreach (RfqNprRequestGrpc? mgrItem in request.Items)
+                {
+                                    Rfq.RfqNprRequestGrpc accessItem = mgrItem.ToRfqNprRquestGrpcAccess();
+                    accessRequest.Items.Add(accessItem);
+                }
+            }
+                      
+            ValidateNprRequestResponse? accessResponse = await _RfqClient.ValidateNprRequestGrpcAsync(accessRequest);
+                 
+            MgrValidateNprRequestResponse response = new MgrValidateNprRequestResponse();
+            response.AllValid = accessResponse?.AllValid ?? false;
+            response.ItemCount = accessResponse?.ItemCount ?? 0;
+            response.TotalQuantity = accessResponse?.TotalQuantity ?? 0;
+          
+          
+            if (accessResponse?.ByCustomerCounts != null)
+            {
+                foreach (KeyValuePair<string, int> kv in accessResponse.ByCustomerCounts)
+                {
+                    response.ByCustomerCounts[kv.Key] = kv.Value;
+                }
+            }
+
+            // Map LineStatuses & Errors
+            if (accessResponse?.LineStatuses != null && 0 < accessResponse.LineStatuses.Count )
+            {
+                foreach (SubmitNprLineStatus? accessLine in accessResponse.LineStatuses)
+                {
+                    MgrSubmitNprLineStatus mgrLine = new MgrSubmitNprLineStatus();
+                    mgrLine.Id = accessLine?.Id ?? string.Empty;
+                    mgrLine.IsValid = accessLine?.IsValid ?? false;
+
+                    if (accessLine?.Errors != null && 0 < accessLine.Errors.Count)
+                    {
+                        foreach (Rfq.ValidationError? err in accessLine.Errors)
+                        {
+                            MgrValidationError mgrValidationError = new MgrValidationError();
+                            mgrValidationError.Field = err?.Field ?? string.Empty;
+                            mgrValidationError.Message = err?.Message ?? string.Empty;
+                         }
+                    }
+
+                    response.LineStatuses.Add(mgrLine);
+                }
+            }
+
+            return response;
+        }
+
+        public async Task<CreateNprGrpcResponse> CreateNprGrpc (CreateNprGrpcRequest request)
+        {
+            await Task.Delay(0);
+            CreateNprGrpcResponse response = new CreateNprGrpcResponse();
+            ValidateNprRequestRequest validateRequest = new ValidateNprRequestRequest();
+            List<NPR.NprApiDataGrpc> accessDataList = new List<NPR.NprApiDataGrpc>();
+            foreach (NprApiDataGrpc? npr in request.NprApiData)
+            {
+                Rfq.RfqNprRequestGrpc rfqNprRequest = npr.RfqNprRequest.ToRfqNprRquestGrpcAccess();
+                NPR.NprApiDataGrpc nprAccessData = npr.ToNprApiAccessData();
+                accessDataList.Add(nprAccessData);
+                validateRequest.Items.Add(rfqNprRequest);
+            }
+
+            ValidateNprRequestResponse validateResponse = await _RfqClient.ValidateNprRequestGrpcAsync(validateRequest);
+            if (!validateResponse.AllValid)
+            {
+                response.Message = "Not all RfqNprRequests are valid";
+                response.HttpStatusCode = HttpStatusCode.BadRequest.ToString();
+                return response;
+            }
+
+            CreateNprApiGrpcRequest createNprApiGrpcRequest = new CreateNprApiGrpcRequest();
+            createNprApiGrpcRequest.NprApiData.AddRange(accessDataList);
+            CreateNprApiGrpcResponse accessResponse = await _NPRGrpcClient.CreateNprApiGrpcAsync(createNprApiGrpcRequest);
+            response.HttpStatusCode = accessResponse.HttpStatusCode;
+            response.Message = accessResponse.Message;
+            foreach(NPR.NprApiDataGrpc? responseNpr in accessResponse.NprApiData)
+            {
+                NprApiDataGrpc apiData = responseNpr.ToNprApiData();
+                response.NprApiData.Add(apiData);
+            }
+
+            return response;
+        }
         #region Filtering
 
         public Task<FilterGrpcResponse> FilterByCustomerId(FilterGrpcRequest request)

@@ -9,6 +9,10 @@
         Task<bool> PopulateRFQStatusAsync(CancellationToken cancellationToken);
         #endregion
 
+        #region NprApi
+        Task<CreateNprApiGrpcResponse> CreateNpr(CreateNprApiGrpcRequest request, CancellationToken cancellationToken);
+        #endregion
+
         Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig,
             Action<IEnumerable<T>> setResponseCollection, CancellationToken cancellationToken);
      }
