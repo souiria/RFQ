@@ -1,4 +1,5 @@
-﻿using NPR;
+﻿using Microsoft.Extensions.DependencyInjection;
+using NPR;
 using NPR.Endpoints.GrpcServices;
 using NPR.Services;
 
@@ -13,10 +14,12 @@ namespace Integration.Tests.NPR
         [SetUp]
         public void Setup()
         {
-            ServiceCollection services = new ServiceCollection();
-            ServiceProvider provider = services.BuildServiceProvider();
+            ServiceCollection serviceCollection = new ServiceCollection();
+            serviceCollection.AddHttpClient();
+            ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
+            IHttpClientFactory httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 
-            _NPRAccessService = new NPRAccessService(provider, testing: true);
+            _NPRAccessService = new NPRAccessService(serviceProvider, httpClientFactory, testing: true);
 
             _LoggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
             ILogger<NPRGrpcService> logger = _LoggerFactory.CreateLogger<NPRGrpcService>();

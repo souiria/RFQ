@@ -1170,7 +1170,10 @@ namespace SalesSystem.Rfq.Services
                     await SyncNprCacheFromDatabaseAsync();
                     _NprRequestsHasChanges = false;
                 }
-                catch (InvalidOperationException) { throw; }
+                catch (InvalidOperationException) 
+                { 
+                    throw; 
+                }
                 catch (Exception ex)
                 {
                     _Logger?.GenericLogError($"Error in UpdateNprRequestsAsync", ex);

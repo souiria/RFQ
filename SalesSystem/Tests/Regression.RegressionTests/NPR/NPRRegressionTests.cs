@@ -12,10 +12,12 @@ namespace Regression.Tests.NPR
         [SetUp]
         public void Setup()
         {
-            ServiceCollection services = new ServiceCollection();
-            ServiceProvider provider = services.BuildServiceProvider();
+            ServiceCollection serviceCollection = new ServiceCollection();
+            serviceCollection.AddHttpClient();
+            ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
+            IHttpClientFactory httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 
-            _NPRAccessService = new NPRAccessService(provider, true);
+            _NPRAccessService = new NPRAccessService(serviceProvider, httpClientFactory, true);
             Mock<ILogger<NPRGrpcService>> logger = new Mock<ILogger<NPRGrpcService>>();
             _GrpcService = new NPRGrpcService(_NPRAccessService, logger.Object);
         }

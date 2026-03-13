@@ -41,6 +41,8 @@ service RfqModule {
   rpc UpdateRfqNprRequestGrpc (UpdateRfqNprRequestGrpcRequest) returns (UpdateRfqNprRequestGrpcResponse);
   rpc DeleteRfqNprRequestByIdGrpc (DeleteRfqNprRequestByIdGrpcRequest) returns (DeleteRfqNprRequestByIdGrpcResponse);
 rpc ValidateNprRequestGrpc (MgrValidateNprRequestRequest) returns (MgrValidateNprRequestResponse);
+  rpc CreateNprGrpc (CreateNprGrpcRequest) returns (CreateNprGrpcResponse);
+   
  rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
 }
 
@@ -555,4 +557,19 @@ message MgrValidateNprRequestResponse {
   int32 itemCount = 3;
   map<string, int32> byCustomerCounts = 4;
   int32 totalQuantity = 5;
+}
+
+message NprApiDataGrpc {
+	RfqNprRequestGrpc RfqNprRequest = 1;
+	google.protobuf.StringValue NprId = 2;
+}
+
+message CreateNprGrpcRequest {
+	repeated NprApiDataGrpc NprApiData = 1;
+}
+
+message CreateNprGrpcResponse {
+	repeated NprApiDataGrpc NprApiData = 1;
+	google.protobuf.StringValue message = 2;
+	google.protobuf.StringValue HttpStatusCode = 3;
 }

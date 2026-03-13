@@ -1,8 +1,4 @@
-﻿using DocumentFormat.OpenXml.Math;
-using Rfq.Data.Model;
-using static Rfq.Rfq;
-
-namespace RfqModule.Services
+﻿namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {
@@ -1312,6 +1308,42 @@ namespace RfqModule.Services
 
                     response.LineStatuses.Add(mgrLine);
                 }
+            }
+
+            return response;
+        }
+
+        public async Task<CreateNprGrpcResponse> CreateNprGrpc (CreateNprGrpcRequest request)
+        {
+            await Task.Delay(0);
+            CreateNprGrpcResponse response = new CreateNprGrpcResponse();
+            ValidateNprRequestRequest validateRequest = new ValidateNprRequestRequest();
+            List<NPR.NprApiDataGrpc> accessDataList = new List<NPR.NprApiDataGrpc>();
+            foreach (NprApiDataGrpc? npr in request.NprApiData)
+            {
+                Rfq.RfqNprRequestGrpc rfqNprRequest = npr.RfqNprRequest.ToRfqNprRquestGrpcAccess();
+                NPR.NprApiDataGrpc nprAccessData = npr.ToNprApiAccessData();
+                accessDataList.Add(nprAccessData);
+                validateRequest.Items.Add(rfqNprRequest);
+            }
+
+            ValidateNprRequestResponse validateResponse = await _RfqClient.ValidateNprRequestGrpcAsync(validateRequest);
+            if (!validateResponse.AllValid)
+            {
+                response.Message = "Not all RfqNprRequests are valid";
+                response.HttpStatusCode = HttpStatusCode.BadRequest.ToString();
+                return response;
+            }
+
+            CreateNprApiGrpcRequest createNprApiGrpcRequest = new CreateNprApiGrpcRequest();
+            createNprApiGrpcRequest.NprApiData.AddRange(accessDataList);
+            CreateNprApiGrpcResponse accessResponse = await _NPRGrpcClient.CreateNprApiGrpcAsync(createNprApiGrpcRequest);
+            response.HttpStatusCode = accessResponse.HttpStatusCode;
+            response.Message = accessResponse.Message;
+            foreach(NPR.NprApiDataGrpc? responseNpr in accessResponse.NprApiData)
+            {
+                NprApiDataGrpc apiData = responseNpr.ToNprApiData();
+                response.NprApiData.Add(apiData);
             }
 
             return response;
