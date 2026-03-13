@@ -35,7 +35,7 @@
         #endregion
 
         #region NprApiData
-        public override async Task<NprApiGrpcResponse> CreateNprApiGrpc(CreateNprApiGrpcRequest request, ServerCallContext context)
+        public override async Task<CreateNprApiGrpcResponse> CreateNprApiGrpc(CreateNprApiGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("CreateNprApiGrpc starting");
             return await _NPRAccessService.CreateNpr(request, context.CancellationToken);
@@ -58,5 +58,5 @@
                 }, context.CancellationToken);
             return returnResponse;
         }
-          }
+        }
 }

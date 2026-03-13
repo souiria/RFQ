@@ -31,9 +31,40 @@
                 opt.MaxSendMessageSize = int.MaxValue;
             });
             builder.Services.AddInfrastructure(builder.Configuration);
+            IAsyncPolicy<HttpResponseMessage> policy = GetRetryPolicy();
+            builder.Services.AddHttpClient("MyClient").AddPolicyHandler(policy);
             builder.Services.AddSingleton<INPRAccessService, NPRAccessService>();
             builder.Services.AddHostedService<DataImportSchedulerService>();
 
+            static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+            {
+                int retryCount = 3;
+
+                HttpStatusCode tooManyRequests = HttpStatusCode.TooManyRequests;
+
+                bool IsTooManyRequests(HttpResponseMessage msg) => msg.StatusCode == tooManyRequests;
+
+                void OnRetry(DelegateResult<HttpResponseMessage> outcome, TimeSpan timespan, int attempt, Context context)
+                {
+                    string reason = outcome.Exception?.Message ?? outcome.Result.StatusCode.ToString();
+                    Console.WriteLine($"Retry {attempt} after {timespan.TotalSeconds}s due to: {reason}");
+                }
+
+                TimeSpan SleepDuration(int attempt)
+                {
+                    double value = Math.Pow(2, attempt);
+                    TimeSpan returnTime = TimeSpan.FromMilliseconds(value);
+                    return returnTime;
+                }
+
+                PolicyBuilder<HttpResponseMessage> transientErrorPolicy = HttpPolicyExtensions.HandleTransientHttpError();
+
+                PolicyBuilder<HttpResponseMessage> extendedPolicy = transientErrorPolicy.OrResult(IsTooManyRequests);
+
+                IAsyncPolicy<HttpResponseMessage> retryPolicy = extendedPolicy.WaitAndRetryAsync(retryCount, SleepDuration, OnRetry);
+
+                return retryPolicy;
+            }
             #endregion
 
             #endregion

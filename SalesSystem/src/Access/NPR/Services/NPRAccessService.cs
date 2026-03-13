@@ -34,18 +34,15 @@
         bool _RFQStatusRefreshInProgress;
 
         #endregion
-        #region NprApiData
-        bool _NprRfqDataRefreshInProgress;
-
-        #endregion
 
         readonly IServiceProvider _ServiceProvider;
+        readonly IHttpClientFactory _HttpClientFactory;
 
         #endregion
 
         #region Constructor
 
-        public NPRAccessService(IServiceProvider serviceProvider, bool testing = false)
+        public NPRAccessService(IServiceProvider serviceProvider, IHttpClientFactory httpClientFactory, bool testing = false)
         {
             #region H1NPRView
 
@@ -64,11 +61,11 @@
             #region NprApiData
 
             _NprApiData = new List<NprApiData>();
-            _NprRfqDataRefreshInProgress = false;
 
             #endregion
 
             _ServiceProvider = serviceProvider;
+            _HttpClientFactory = httpClientFactory;
 
             if (testing)
             {
@@ -128,37 +125,155 @@
         #endregion
 
         #region NprApiData
-        public async Task<NprApiGrpcResponse> CreateNpr(CreateNprApiGrpcRequest request, CancellationToken cancellationToken)
+        public async Task<CreateNprApiGrpcResponse> CreateNpr(CreateNprApiGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            NprApiGrpcResponse response = new NprApiGrpcResponse();
-            if (request.NprApiData == null)
+
+            CreateNprApiGrpcResponse response = new CreateNprApiGrpcResponse();
+
+            if (request.NprApiData == null || !request.NprApiData.Any())
             {
                 return response;
             }
 
             string jsonList = JsonConvert.SerializeObject(request.NprApiData);
-            HttpClient httpClient = new HttpClient();
+            HttpClient httpClient = _HttpClientFactory.CreateClient("MyClient");
             string uri = "";
             HttpResponseMessage httpResponse = await httpClient.PostAsJsonAsync(uri, jsonList, cancellationToken);
-            httpClient.Dispose();
+
+            response.HttpStatusCode = httpResponse.StatusCode.ToString();
+
+            switch (httpResponse.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                return await HandleSuccess(httpResponse, request, response, cancellationToken);
+
+                case HttpStatusCode.BadRequest:
+                return await HandleBadRequest(httpResponse, response, cancellationToken);
+
+                case HttpStatusCode.Unauthorized:
+                response = HandleAuthFailure(response, "Unauthorized: missing or invalid authentication credentials.");
+                return response;
+
+                case HttpStatusCode.Forbidden:
+                response = HandleAuthFailure(response, "Forbidden: you do not have permission to perform this action.");
+                return response;
+
+                case HttpStatusCode.InternalServerError:
+                return await HandleServerError(httpResponse, response, cancellationToken);
+
+                default:
+                return await HandleUnexpectedStatus(httpResponse, response, cancellationToken);
+            }
+        }
+
+        async Task<CreateNprApiGrpcResponse> HandleSuccess(
+            HttpResponseMessage httpResponse,
+            CreateNprApiGrpcRequest request,
+            CreateNprApiGrpcResponse response,
+            CancellationToken cancellationToken)
+        {
             try
             {
                 string httpJsonString = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
                 List<NprApiData>? nprApiDatas = JsonConvert.DeserializeObject<List<NprApiData>>(httpJsonString);
+
                 if (nprApiDatas == null)
                 {
+                    response.Message = "Response body was empty or could not be deserialized.";
                     return response;
                 }
 
-                response.NprApiData.AddRange(nprApiDatas);
-                response.HttpStatusCode = httpResponse.StatusCode.ToString();
+                foreach (NprApiData data in nprApiDatas)
+                {
+                    NprApiDataGrpc grpc = data.ToNprApiDataGrpc();
+                    NprApiDataGrpc requestData = request.NprApiData
+                        .Where(x => x.SumitomoNumber == data.SumitomoNumber)
+                        .First();
+                    grpc.RfqNprRequestId = requestData.RfqNprRequestId;
+                    response.NprApiData.Add(grpc);
+                }
             }
-            catch (JsonException e) 
+            catch (JsonException e)
             {
-                response.Message = e.Message;
-                response.HttpStatusCode = httpResponse.StatusCode.ToString();
-                return response;
+                response.Message = $"Failed to deserialize success response: {e.Message}";
+            }
+
+            return response;
+        }
+
+        async Task<CreateNprApiGrpcResponse> HandleBadRequest(
+            HttpResponseMessage httpResponse,
+            CreateNprApiGrpcResponse response,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                string errorBody = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
+                response.Message = $"Validation error: {errorBody}";
+            }
+            catch (InvalidOperationException e)
+            {
+                // Thrown when the response content has already been read or disposed
+                response.Message = $"Bad request — response content unavailable: {e.Message}";
+            }
+            catch (OperationCanceledException e)
+            {
+                response.Message = $"Bad request — reading error body was cancelled: {e.Message}";
+            }
+
+            return response;
+        }
+
+        static CreateNprApiGrpcResponse HandleAuthFailure(
+            CreateNprApiGrpcResponse response,
+            string message)
+        {
+            response.Message = message;
+            return response;
+        }
+
+        async Task<CreateNprApiGrpcResponse> HandleServerError(
+            HttpResponseMessage httpResponse,
+            CreateNprApiGrpcResponse response,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                string errorBody = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
+                response.Message = $"Server error (500): {errorBody}";
+            }
+            catch (InvalidOperationException e)
+            {
+                // Thrown when the response content has already been read or disposed
+                response.Message = $"Server error (500) — response content unavailable: {e.Message}";
+            }
+            catch (OperationCanceledException e)
+            {
+                response.Message = $"Server error (500) — reading error body was cancelled: {e.Message}";
+            }
+
+            return response;
+        }
+
+        async Task<CreateNprApiGrpcResponse> HandleUnexpectedStatus(
+            HttpResponseMessage httpResponse,
+            CreateNprApiGrpcResponse response,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                string errorBody = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
+                response.Message = $"Unexpected status ({httpResponse.StatusCode}): {errorBody}";
+            }
+            catch (InvalidOperationException e)
+            {
+                // Thrown when the response content has already been read or disposed
+                response.Message = $"Unexpected status ({httpResponse.StatusCode}) — response content unavailable: {e.Message}";
+            }
+            catch (OperationCanceledException e)
+            {
+                response.Message = $"Unexpected status ({httpResponse.StatusCode}) — reading error body was cancelled: {e.Message}";
             }
 
             return response;
@@ -214,7 +329,7 @@
                         _RFQStatus.RFQStatusGrpc.AddRange(results.Value);
                     }
 
-                    _H1NPRViewRefreshInProgress = false;
+                    _RFQStatusRefreshInProgress = false;
                     return true;
                 }
             }

@@ -10,7 +10,7 @@
         #endregion
 
         #region NprApi
-        Task<NprApiGrpcResponse> CreateNpr(CreateNprApiGrpcRequest request, CancellationToken cancellationToken);
+        Task<CreateNprApiGrpcResponse> CreateNpr(CreateNprApiGrpcRequest request, CancellationToken cancellationToken);
         #endregion
 
         Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig,

@@ -252,5 +252,75 @@
             rfqNprRequest.IsActive = accessData.IsActive;
             return rfqNprRequest;
         }
+
+        public static NPR.NprApiDataGrpc ToNprApiAccessData(this NprApiDataGrpc nprApiData)
+        {
+            NPR.NprApiDataGrpc apiData = new NPR.NprApiDataGrpc();
+            apiData.NprId = nprApiData.NprId;
+            apiData.Reason = nprApiData.RfqNprRequest.Reason;
+            apiData.Customer = nprApiData.RfqNprRequest.Customer;
+            apiData.PlatformName = nprApiData.RfqNprRequest.PlatformName;
+            apiData.ProgramName = nprApiData.RfqNprRequest.ProgramName;
+            apiData.Project = nprApiData.RfqNprRequest.Project;
+            apiData.MaterialType = nprApiData.RfqNprRequest.MaterialType;
+            apiData.SuggestedSewsEManufacturingSite = nprApiData.RfqNprRequest.SuggestedSewsEManufacturingSite;
+            apiData.CustomerPartNumber = nprApiData.RfqNprRequest.CustomerPartNumber;
+            apiData.SupplierPartNumber = nprApiData.RfqNprRequest.SupplierPartNumber;
+            apiData.SumitomoNumber = nprApiData.RfqNprRequest.SumitomoNumber;
+            apiData.MaterialDescription = nprApiData.RfqNprRequest.MaterialDescription;
+            apiData.UnitOfMeasure = nprApiData.RfqNprRequest.UnitOfMeasure;
+            apiData.SupplierGroup = nprApiData.RfqNprRequest.SupplierGroup;
+            apiData.QtyPerVehicle = nprApiData.RfqNprRequest.QtyPerVehicle;
+            apiData.Quantity = nprApiData.RfqNprRequest.Quantity;
+            apiData.RequiredDate = nprApiData.RfqNprRequest.RequiredDate;
+            apiData.RaisedRemarks = nprApiData.RfqNprRequest.RaisedRemarks;
+            apiData.IsCustomerNominatedSupplier = nprApiData.RfqNprRequest.IsCustomerNominatedSupplier;
+            apiData.IsCustomerNominatedMaterial = nprApiData.RfqNprRequest.IsCustomerNominatedMaterial;
+            apiData.SamplesRequired = nprApiData.RfqNprRequest.SamplesRequired;
+            apiData.SampleSite = nprApiData.RfqNprRequest.SampleSite;
+            apiData.SampleQuantity = nprApiData.RfqNprRequest.SampleQuantity;
+            apiData.SampleRecipient = nprApiData.RfqNprRequest.SampleRecipient;
+            apiData.SampleRequiredDate = nprApiData.RfqNprRequest.SampleRequiredDate;
+            apiData.FreightAccount = nprApiData.RfqNprRequest.FreightAccount;
+            apiData.AssociatedParts = nprApiData.RfqNprRequest.AssociatedParts;
+            apiData.SuggestedManufacturer = nprApiData.RfqNprRequest.SuggestedManufacturer;
+            return apiData;
+        }
+        public static NprApiDataGrpc ToNprApiData(this NPR.NprApiDataGrpc nprAccessData)
+        {
+            NprApiDataGrpc apiData = new NprApiDataGrpc();
+            RfqNprRequestGrpc rfqNprRequestGrpc = new RfqNprRequestGrpc();
+            apiData.NprId = nprAccessData.NprId;
+            rfqNprRequestGrpc.Reason = nprAccessData.Reason;
+            rfqNprRequestGrpc.Customer = nprAccessData.Customer;
+            rfqNprRequestGrpc.PlatformName = nprAccessData.PlatformName;
+            rfqNprRequestGrpc.ProgramName = nprAccessData.ProgramName;
+            rfqNprRequestGrpc.Project = nprAccessData.Project;
+            rfqNprRequestGrpc.MaterialType = nprAccessData.MaterialType;
+            rfqNprRequestGrpc.SuggestedSewsEManufacturingSite = nprAccessData.SuggestedSewsEManufacturingSite;
+            rfqNprRequestGrpc.CustomerPartNumber = nprAccessData.CustomerPartNumber;
+            rfqNprRequestGrpc.SupplierPartNumber = nprAccessData.SupplierPartNumber;
+            rfqNprRequestGrpc.SumitomoNumber = nprAccessData.SumitomoNumber;
+            rfqNprRequestGrpc.MaterialDescription = nprAccessData.MaterialDescription;
+            rfqNprRequestGrpc.UnitOfMeasure = nprAccessData.UnitOfMeasure;
+            rfqNprRequestGrpc.SupplierGroup = nprAccessData.SupplierGroup;
+            rfqNprRequestGrpc.QtyPerVehicle = nprAccessData.QtyPerVehicle;
+            rfqNprRequestGrpc.Quantity = nprAccessData.Quantity;
+            rfqNprRequestGrpc.RequiredDate = nprAccessData.RequiredDate;
+            rfqNprRequestGrpc.RaisedRemarks = nprAccessData.RaisedRemarks;
+            rfqNprRequestGrpc.IsCustomerNominatedSupplier = nprAccessData.IsCustomerNominatedSupplier;
+            rfqNprRequestGrpc.IsCustomerNominatedMaterial = nprAccessData.IsCustomerNominatedMaterial;
+            rfqNprRequestGrpc.SamplesRequired = nprAccessData.SamplesRequired;
+            rfqNprRequestGrpc.SampleSite = nprAccessData.SampleSite;
+            rfqNprRequestGrpc.SampleQuantity = nprAccessData.SampleQuantity;
+            rfqNprRequestGrpc.SampleRecipient = nprAccessData.SampleRecipient;
+            rfqNprRequestGrpc.SampleRequiredDate = nprAccessData.SampleRequiredDate;
+            rfqNprRequestGrpc.FreightAccount = nprAccessData.FreightAccount;
+            rfqNprRequestGrpc.AssociatedParts = nprAccessData.AssociatedParts;
+            rfqNprRequestGrpc.SuggestedManufacturer = nprAccessData.SuggestedManufacturer;
+            rfqNprRequestGrpc.Id = nprAccessData.RfqNprRequestId;
+            apiData.RfqNprRequest = rfqNprRequestGrpc;
+            return apiData;
+        }
     }
 }

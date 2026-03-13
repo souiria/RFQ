@@ -72,6 +72,9 @@
             return data;
         }
 
+        #endregion
+
+        #region RfqStatus
         public static RFQStatusGrpc MapToRFQStatus(this DbRFQStatus entity)
         {
             RFQStatusGrpc data = new RFQStatusGrpc();
@@ -79,9 +82,43 @@
             data.NPRStage = entity.NPRStage;
             return data;
         }
-
         #endregion
 
-        
+        #region NprApi
+
+        public static NprApiDataGrpc ToNprApiDataGrpc(this NprApiData data)
+        {
+            NprApiDataGrpc grpc = new NprApiDataGrpc();
+            grpc.NprId = data.NprId.ToString();
+            grpc.Reason = data.Reason;
+            grpc.Customer = data.Customer;
+            grpc.PlatformName = data.PlatformName;
+            grpc.ProgramName = data.ProgramName;
+            grpc.Project = data.Project;
+            grpc.MaterialType = data.MaterialType;
+            grpc.SuggestedSewsEManufacturingSite = data.SuggestedSewsEManufacturingSite;
+            grpc.CustomerPartNumber = data.CustomerPartNumber;
+            grpc.SupplierPartNumber = data.SupplierPartNumber;
+            grpc.SumitomoNumber = data.SumitomoNumber;
+            grpc.MaterialDescription = data.MaterialDescription;
+            grpc.UnitOfMeasure = data.UnitOfMeasure;
+            grpc.SupplierGroup = data.SupplierGroup;
+            grpc.QtyPerVehicle = data.QtyPerVehicle;
+            grpc.Quantity = data.Quantity;
+            grpc.RequiredDate = data.RequiredDate?.ToUniversalTime().ToTimestamp();
+            grpc.RaisedRemarks = data.RaisedRemarks;
+            grpc.IsCustomerNominatedSupplier = data.IsCustomerNominatedSupplier;
+            grpc.IsCustomerNominatedMaterial = data.IsCustomerNominatedMaterial;
+            grpc.SamplesRequired = data.SamplesRequired;
+            grpc.SampleSite = data.SampleSite;
+            grpc.SampleQuantity = data.SampleQuantity;
+            grpc.SampleRecipient = data.SampleRecipient;
+            grpc.SampleRequiredDate = data.SampleRequiredDate?.ToUniversalTime().ToTimestamp();
+            grpc.FreightAccount = data.FreightAccount;
+            grpc.AssociatedParts = data.AssociatedParts;
+            grpc.SuggestedManufacturer = data.SuggestedManufacturer;
+            return grpc;
+        }
+        #endregion
     }
 }

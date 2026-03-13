@@ -35,6 +35,6 @@
         Task<UpdateRfqNprRequestGrpcResponse> UpdateRfqNprRequestGrpc(UpdateRfqNprRequestGrpcRequest request);
         Task<DeleteRfqNprRequestByIdGrpcResponse> DeleteRfqNprRequestByIdGrpc(DeleteRfqNprRequestByIdGrpcRequest request);
 
-        Task<CreateNprGrpcResponse> CreateNprGrpc(CreateNprApiGrpcRequest request);
+        Task<CreateNprGrpcResponse> CreateNprGrpc(CreateNprGrpcRequest request);
     }
 }
