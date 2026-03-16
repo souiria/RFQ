@@ -169,6 +169,22 @@ namespace Master.Endpoints.GrpcServices
             _Logger.GenericLogInformation("GetVehicleGrpcStream starting");
             ListVehicleGrpc results = await _MasterAccessService.GetAllVehicles(context.CancellationToken);
         }
+         
+        #endregion
+
+        #region SupplierGroup
+
+        public override async Task<ListSupplierGroupGrpc> GetSupplierGroupGrpc(SupplierGroupGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetSupplierGroupGrpc starting");
+            return await _MasterAccessService.GetAllSupplierGroups(context.CancellationToken, request.Position, request.Takeamount);
+        }
+
+        public override async Task GetSupplierGroupGrpcStream(SupplierGroupGrpcRequest request, IServerStreamWriter<SupplierGroupGrpc> responseStream, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetSupplierGroupGrpcStream starting");
+            ListSupplierGroupGrpc results = await _MasterAccessService.GetAllSupplierGroups(context.CancellationToken);
+        }
 
         #endregion
 
@@ -297,6 +313,16 @@ namespace Master.Endpoints.GrpcServices
                     ListVehicleGrpc returnList = new ListVehicleGrpc();
                     returnList.VehicleGrpc.AddRange(filterList);
                     returnResponse.VehicleGrpcList = returnList;
+                    returnResponse.Success = true;
+                }, context.CancellationToken);
+                break;
+                case "SUPPLIERGROUPGRPC":
+                await _MasterAccessService.HandleFilterCase<SupplierGroupGrpc>(filterExpressionString, parsingConfig,
+                filterList =>
+                {
+                    ListSupplierGroupGrpc returnList = new ListSupplierGroupGrpc();
+                    returnList.SupplierGroupGrpc.AddRange(filterList);
+                    returnResponse.SupplierGroupGrpcList = returnList;
                     returnResponse.Success = true;
                 }, context.CancellationToken);
                 break;

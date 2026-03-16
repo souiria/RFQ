@@ -49,6 +49,8 @@
                 await LogDataPopulationSuccess("Milestones", check);
                 check = await _MasterAccessService.PopulateVehiclesAsync(stoppingToken);
                 await LogDataPopulationSuccess("Vehicles", check);
+                check = await _MasterAccessService.PopulateSupplierGroupsAsync(stoppingToken);
+                await LogDataPopulationSuccess("SupplierGroups", check);
             }
 
             return true;

@@ -22,6 +22,7 @@
         public DbSet<DbProgramHierarchy> ProgramItems => Set<DbProgramHierarchy>();
         public DbSet<DbProjectHierarchy> ProjectItems => Set<DbProjectHierarchy>();
         public DbSet<DbVehicle> VehicleItems => Set<DbVehicle>();
+        public DbSet<DbSupplierGroup> SupplierGroup => Set<DbSupplierGroup>();
 
         #endregion
 

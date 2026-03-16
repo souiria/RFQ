@@ -50,6 +50,13 @@
 
         #endregion
 
+        #region SupplierGroup
+
+        ListSupplierGroupGrpc _SupplierGroups;
+        ListSupplierGroupGrpc _FilteredSupplierGroups;
+
+        #endregion
+
         #endregion
 
         #region Fields and Properties
@@ -93,6 +100,13 @@
 
         IQueryHandler<GetAllVehiclesQuery, List<VehicleGrpc>>? _VehicleHandler;
         bool _VehicleRefreshInProgress;
+
+        #endregion
+
+        #region SupplierGroup
+
+        IQueryHandler<GetAllSupplierGroupsQuery, List<SupplierGroupGrpc>>? _SupplierGroupHandler;
+        bool _SupplierGroupRefreshInProgress;
 
         #endregion
 
@@ -155,6 +169,14 @@
             _Vehicles = new ListVehicleGrpc();
             _FilteredVehicles = new ListVehicleGrpc();
             _VehicleRefreshInProgress = false;
+
+            #endregion
+
+            #region SupplierGroup
+
+            _SupplierGroups = new ListSupplierGroupGrpc();
+            _FilteredSupplierGroups = new ListSupplierGroupGrpc();
+            _SupplierGroupRefreshInProgress = false;
 
             #endregion
 
@@ -475,6 +497,32 @@
             {
                 await PopulateVehiclesAsync(cancellationToken);
                 return _Vehicles;
+            }
+        }
+
+        #endregion
+
+        #region SupplierGroup
+
+        public async Task<ListSupplierGroupGrpc> GetAllSupplierGroups(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_SupplierGroups.SupplierGroupGrpc.Any())
+            {
+                if (takeAmount <= 0)
+                {
+                    return _SupplierGroups;
+                }
+
+                ListSupplierGroupGrpc returnList = new ListSupplierGroupGrpc();
+                IQueryable<SupplierGroupGrpc> query = _SupplierGroups.SupplierGroupGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.SupplierGroupGrpc.AddRange(query);
+                return returnList;
+            }
+            else
+            {
+                await PopulateSupplierGroupsAsync(cancellationToken);
+                return _SupplierGroups;
             }
         }
 
@@ -812,6 +860,38 @@
 
         #endregion
 
+        #region SupplierGroup
+
+        public async Task<bool> PopulateSupplierGroupsAsync(CancellationToken cancellationToken)
+        {
+            if (!_SupplierGroupRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _SupplierGroupHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllSupplierGroupsQuery, List<SupplierGroupGrpc>>>();
+                    _SupplierGroupRefreshInProgress = true;
+                    GetAllSupplierGroupsQuery query = new GetAllSupplierGroupsQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<SupplierGroupGrpc>> results = await _SupplierGroupHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _SupplierGroups.SupplierGroupGrpc.Clear();
+                        _SupplierGroups.SupplierGroupGrpc.AddRange(results.Value);
+                    }
+
+                    _SupplierGroupRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
+
         #endregion
 
         public async Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig, Action<IEnumerable<T>> setResponseCollection,
@@ -841,6 +921,7 @@
                     "PROGRAMGRPC" => _Programs.ProgramGrpc.Cast<T>().Where(func).ToList(),
                     "PROJECTGRPC" => _Projects.ProjectGrpc.Cast<T>().Where(func).ToList(),
                     "VEHICLEGRPC" => _Vehicles.VehicleGrpc.Cast<T>().Where(func).ToList(),
+                    "SUPPLIERGROUPGRPC" => _SupplierGroups.SupplierGroupGrpc.Cast<T>().Where(func).ToList(),
                     _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
                 };
             }, cancellationToken);
@@ -859,6 +940,7 @@
             _Projects = SampleMasterDataService.PopulateProjectGrpc();
             _Milestones = SampleMasterDataService.PopulateMilestoneGrpc();
             _Vehicles = SampleMasterDataService.PopulateVehicleGrpc();
+            _SupplierGroups = SampleMasterDataService.PopulateSupplierGroupGrpc();
         }
     }
 }

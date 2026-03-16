@@ -42,6 +42,9 @@ service Master {
   rpc GetVehicleGrpc (VehicleGrpcRequest) returns (ListVehicleGrpc);
   rpc GetVehicleGrpcStream (VehicleGrpcRequest) returns (stream VehicleGrpc);
 
+  rpc GetSupplierGroupGrpc (SupplierGroupGrpcRequest) returns (ListSupplierGroupGrpc);
+  rpc GetSupplierGroupGrpcStream (SupplierGroupGrpcRequest) returns (stream SupplierGroupGrpc);
+
   rpc FilterMasterDataGrpc (MastersFilterRequestGrpc) returns (MastersFilterResponseGrpc);
 }
 
@@ -263,6 +266,30 @@ message ListVehicleGrpc {
     repeated VehicleGrpc VehicleGrpc = 1;
 }
 
+
+message SupplierGroupGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message ListSupplierGroupGrpc {
+    repeated SupplierGroupGrpc SupplierGroupGrpc = 1;
+}
+
+message SupplierGroupGrpc {
+    google.protobuf.StringValue SupplierGroupName = 1;
+    google.protobuf.StringValue SupplierApprovalStatusGuid = 2;
+    google.protobuf.StringValue SupplierPanelGuid = 3;
+    google.protobuf.BoolValue IsActive = 4;
+    google.protobuf.BoolValue IsSWSPartNumberRequired = 5;
+    google.protobuf.StringValue Id = 6;
+    google.protobuf.Timestamp CreatedDate = 7;
+    google.protobuf.Timestamp ModifiedDate = 8;
+    google.protobuf.StringValue CreatedBy = 9;
+    google.protobuf.StringValue ModifiedBy = 10;
+    google.protobuf.Int32Value SyncToCPD = 11;
+    google.protobuf.BoolValue IsEOLRequired = 12;
+}
 message MastersFilterRequestGrpc {
     string DatabaseList = 1;
     string FilterExpression = 2;
@@ -281,4 +308,5 @@ message MastersFilterResponseGrpc {
     ListProgramGrpc ProgramGrpcList = 10;
     ListProjectGrpc ProjectGrpcList = 11;
     ListVehicleGrpc VehicleGrpcList = 12;
+    ListSupplierGroupGrpc SupplierGroupGrpcList = 13;
 }

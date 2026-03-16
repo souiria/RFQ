@@ -141,5 +141,25 @@
         }
 
         #endregion
+
+        #region SupplierGroup
+        
+        public static SupplierGroupGrpc MapToSupplierGroupGrpc(this DbSupplierGroup entity)
+        {
+            SupplierGroupGrpc supplierGroupGrpc = new SupplierGroupGrpc();
+            supplierGroupGrpc.Id = entity.Id.ToString();
+            supplierGroupGrpc.SupplierGroupName = entity.SupplierGroupName;
+            supplierGroupGrpc.SupplierApprovalStatusGuid = entity.SupplierApprovalStatusGuid.ToString();
+            supplierGroupGrpc.SupplierPanelGuid = entity.SupplierPanelGuid.ToString();
+            supplierGroupGrpc.IsActive = entity.IsActive;
+            supplierGroupGrpc.IsSWSPartNumberRequired = entity.IsSWSPartNumberRequired;
+            supplierGroupGrpc.CreatedDate = entity.CreatedDate?.ToUniversalTime().ToTimestamp();
+            supplierGroupGrpc.ModifiedDate = entity.ModifiedDate?.ToUniversalTime().ToTimestamp();
+            supplierGroupGrpc.CreatedBy = entity.CreatedBy?.ToString();
+            supplierGroupGrpc.ModifiedBy = entity.ModifiedBy?.ToString();
+            supplierGroupGrpc.SyncToCPD = entity.SyncToCPD;
+            return supplierGroupGrpc;
+        }
+        #endregion
     }
 }
