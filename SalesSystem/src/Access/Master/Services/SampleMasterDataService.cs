@@ -1,6 +1,4 @@
-﻿using Master.Data.Model;
-
-namespace Master.Services
+﻿namespace Master.Services
 {
     public static class SampleMasterDataService
     {
