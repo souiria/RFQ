@@ -45,6 +45,9 @@ service Master {
   rpc GetSupplierGroupGrpc (SupplierGroupGrpcRequest) returns (ListSupplierGroupGrpc);
   rpc GetSupplierGroupGrpcStream (SupplierGroupGrpcRequest) returns (stream SupplierGroupGrpc);
 
+  rpc GetSupplierGrpc (SupplierGrpcRequest) returns (ListSupplierGrpc);
+  rpc GetSupplierGrpcStream (SupplierGrpcRequest) returns (stream SupplierGrpc);
+
   rpc FilterMasterDataGrpc (MastersFilterRequestGrpc) returns (MastersFilterResponseGrpc);
 }
 
@@ -290,6 +293,46 @@ message SupplierGroupGrpc {
     google.protobuf.Int32Value SyncToCPD = 11;
     google.protobuf.BoolValue IsEOLRequired = 12;
 }
+
+message SupplierGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message ListSupplierGrpc {
+    repeated SupplierGrpc SupplierGrpc = 1;
+}
+
+message SupplierGrpc {
+    google.protobuf.StringValue SupplierCode = 1;
+    google.protobuf.StringValue SupplierName = 2;
+    google.protobuf.StringValue Address1 = 3;
+    google.protobuf.StringValue Address2 = 4;
+    google.protobuf.StringValue Address3 = 5;
+    google.protobuf.StringValue City = 6;
+    google.protobuf.StringValue Region = 7;
+    google.protobuf.StringValue ZipCode = 8;
+    google.protobuf.StringValue CountryGuid = 9;
+    google.protobuf.StringValue SupplierTypeGuid = 10;
+    google.protobuf.StringValue SupplierGroupGuid = 11;
+    google.protobuf.StringValue SupplierIncoTermsGuid = 12;
+    google.protobuf.StringValue SupplierCurrencyGuid = 13;
+    google.protobuf.StringValue SupplierBuyerGuid = 14;
+    google.protobuf.StringValue SupplierDevelopmentTeamGuid = 15;
+    google.protobuf.StringValue PaymentTerms = 16;
+    google.protobuf.StringValue EPOCommodityGroupGuid = 17;
+    google.protobuf.StringValue POPriceEffectiveDateTypeGuid = 18;
+    google.protobuf.StringValue SupplierApprovalStatusGuid = 19;
+    google.protobuf.BoolValue IsActive = 20;
+    google.protobuf.StringValue Id = 21;
+    google.protobuf.Timestamp CreatedDate = 22;
+    google.protobuf.Timestamp ModifiedDate = 23;
+    google.protobuf.StringValue CreatedBy = 24;
+    google.protobuf.StringValue ModifiedBy = 25;
+    google.protobuf.Int32Value SyncToCPD = 26;
+    google.protobuf.StringValue DistributionCountryOfOriginGuid = 27;
+    google.protobuf.BoolValue IsEOLRequired = 28;
+}
 message MastersFilterRequestGrpc {
     string DatabaseList = 1;
     string FilterExpression = 2;
@@ -309,4 +352,5 @@ message MastersFilterResponseGrpc {
     ListProjectGrpc ProjectGrpcList = 11;
     ListVehicleGrpc VehicleGrpcList = 12;
     ListSupplierGroupGrpc SupplierGroupGrpcList = 13;
+    ListSupplierGrpc SupplierList = 14;
 }

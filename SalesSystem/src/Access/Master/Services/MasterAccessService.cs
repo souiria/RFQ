@@ -57,6 +57,13 @@
 
         #endregion
 
+        #region SupplierGroup
+
+        ListSupplierGrpc _Suppliers;
+        ListSupplierGrpc _FilteredSuppliers;
+
+        #endregion
+
         #endregion
 
         #region Fields and Properties
@@ -107,6 +114,13 @@
 
         IQueryHandler<GetAllSupplierGroupsQuery, List<SupplierGroupGrpc>>? _SupplierGroupHandler;
         bool _SupplierGroupRefreshInProgress;
+
+        #endregion
+
+        #region SupplierGroup
+
+        IQueryHandler<GetAllSuppliersQuery, List<SupplierGrpc>>? _SupplierHandler;
+        bool _SupplierRefreshInProgress;
 
         #endregion
 
@@ -177,6 +191,14 @@
             _SupplierGroups = new ListSupplierGroupGrpc();
             _FilteredSupplierGroups = new ListSupplierGroupGrpc();
             _SupplierGroupRefreshInProgress = false;
+
+            #endregion
+
+            #region Supplier
+
+            _Suppliers = new ListSupplierGrpc();
+            _FilteredSuppliers = new ListSupplierGrpc();
+            _SupplierRefreshInProgress = false;
 
             #endregion
 
@@ -523,6 +545,32 @@
             {
                 await PopulateSupplierGroupsAsync(cancellationToken);
                 return _SupplierGroups;
+            }
+        }
+
+        #endregion
+
+        #region Supplier
+
+        public async Task<ListSupplierGrpc> GetAllSuppliers(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_Suppliers.SupplierGrpc.Any())
+            {
+                if (takeAmount <= 0)
+                {
+                    return _Suppliers;
+                }
+
+                ListSupplierGrpc returnList = new ListSupplierGrpc();
+                IQueryable<SupplierGrpc> query = _Suppliers.SupplierGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.SupplierGrpc.AddRange(query);
+                return returnList;
+            }
+            else
+            {
+                await PopulateSuppliersAsync(cancellationToken);
+                return _Suppliers;
             }
         }
 
@@ -883,6 +931,38 @@
                     }
 
                     _SupplierGroupRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
+
+        #region Supplier
+
+        public async Task<bool> PopulateSuppliersAsync(CancellationToken cancellationToken)
+        {
+            if (!_SupplierRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _SupplierHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllSuppliersQuery, List<SupplierGrpc>>>();
+                    _SupplierRefreshInProgress = true;
+                    GetAllSuppliersQuery query = new GetAllSuppliersQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<SupplierGrpc>> results = await _SupplierHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _Suppliers.SupplierGrpc.Clear();
+                        _Suppliers.SupplierGrpc.AddRange(results.Value);
+                    }
+
+                    _SupplierRefreshInProgress = false;
                     return true;
                 }
             }

@@ -26,6 +26,8 @@
         { get; }
         DbSet<DbSupplierGroup> SupplierGroup
         { get; }
+        DbSet<DbSupplier> Supplier
+        { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

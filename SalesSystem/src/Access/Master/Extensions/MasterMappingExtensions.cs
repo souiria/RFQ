@@ -161,5 +161,41 @@
             return supplierGroupGrpc;
         }
         #endregion
+
+        #region Supplier
+        
+        public static SupplierGrpc MapToSupplierGrpc(this DbSupplier entity)
+        {
+            SupplierGrpc supplierGrpc = new SupplierGrpc();
+            supplierGrpc.SupplierCode = entity.SupplierCode;
+            supplierGrpc.SupplierName = entity.SupplierName;
+            supplierGrpc.Address1 = entity.Address1;
+            supplierGrpc.Address2 = entity.Address2;
+            supplierGrpc.Address3 = entity.Address3;
+            supplierGrpc.City = entity.City;
+            supplierGrpc.Region = entity.Region;
+            supplierGrpc.ZipCode = entity.ZipCode;
+            supplierGrpc.CountryGuid = entity.CountryGuid.ToString();
+            supplierGrpc.SupplierTypeGuid = entity.SupplierTypeGuid.ToString();
+            supplierGrpc.SupplierGroupGuid = entity.SupplierGroupGuid.ToString();
+            supplierGrpc.SupplierIncoTermsGuid = entity.SupplierIncoTermsGuid.ToString();
+            supplierGrpc.SupplierCurrencyGuid = entity.SupplierCurrencyGuid.ToString();
+            supplierGrpc.SupplierBuyerGuid = entity.SupplierBuyerGuid.ToString();
+            supplierGrpc.SupplierDevelopmentTeamGuid = entity.SupplierDevelopmentTeamGuid.ToString();
+            supplierGrpc.PaymentTerms = entity.PaymentTerms;
+            supplierGrpc.EPOCommodityGroupGuid = entity.EPOCommodityGroupGuid.ToString();
+            supplierGrpc.POPriceEffectiveDateTypeGuid = entity.POPriceEffectiveDateTypeGuid.ToString();
+            supplierGrpc.SupplierApprovalStatusGuid = entity.SupplierApprovalStatusGuid.ToString();
+            supplierGrpc.IsActive = entity.IsActive;
+            supplierGrpc.Id = entity.Id.ToString();
+            supplierGrpc.CreatedDate = entity.CreatedDate?.ToUniversalTime().ToTimestamp();
+            supplierGrpc.ModifiedDate = entity.ModifiedDate?.ToUniversalTime().ToTimestamp();
+            supplierGrpc.CreatedBy = entity.CreatedBy.ToString();
+            supplierGrpc.SyncToCPD = entity.SyncToCPD;
+            supplierGrpc.DistributionCountryOfOriginGuid = entity.DistributionCountryOfOriginGuid.ToString();
+            supplierGrpc.IsEOLRequired = entity.IsEOLRequired;
+            return supplierGrpc;
+        }
+        #endregion
     }
 }
