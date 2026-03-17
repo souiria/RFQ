@@ -279,5 +279,45 @@
             return platformList;
         }
         #endregion
+
+        #region SupplierGroup
+        public static ListSupplierGroupGrpc PopulateSupplierGroupGrpc()
+        {
+            ListSupplierGroupGrpc suppplierGroupList = new ListSupplierGroupGrpc();
+            for(int i = 0; i < 5; i++)
+            {
+                SupplierGroupGrpc supplierGroup = new SupplierGroupGrpc();
+                supplierGroup.SupplierGroupName = $"TestSupplierGroupName{i}".ToUpperInvariant();
+                supplierGroup.SupplierApprovalStatusGuid = Guid.NewGuid().ToString();
+                supplierGroup.SupplierPanelGuid = Guid.NewGuid().ToString();
+                supplierGroup.IsActive = true;
+                supplierGroup.Id = Guid.NewGuid().ToString();
+                supplierGroup.IsSWSPartNumberRequired = true;
+                supplierGroup.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                supplierGroup.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                supplierGroup.CreatedBy = Guid.NewGuid().ToString();
+                supplierGroup.ModifiedBy = Guid.NewGuid().ToString();
+                supplierGroup.SyncToCPD = i;
+                supplierGroup.IsEOLRequired = true;
+                suppplierGroupList.SupplierGroupGrpc.Add(supplierGroup);
+            }
+
+            SupplierGroupGrpc fixedSupplierGroup = new SupplierGroupGrpc();
+            fixedSupplierGroup.SupplierGroupName = $"TestFixedSupplierGroupName".ToUpperInvariant();
+            fixedSupplierGroup.SupplierApprovalStatusGuid = "766612A1-5C65-4D17-950D-2841E1888F0B";
+            fixedSupplierGroup.SupplierPanelGuid = "766612A1-5C65-4D17-950D-2841E1888F0B";
+            fixedSupplierGroup.IsActive = true;
+            fixedSupplierGroup.Id = "766612A1-5C65-4D17-950D-2841E1888F0B";
+            fixedSupplierGroup.IsSWSPartNumberRequired = true;
+            fixedSupplierGroup.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+            fixedSupplierGroup.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+            fixedSupplierGroup.CreatedBy = "766612A1-5C65-4D17-950D-2841E1888F0B";
+            fixedSupplierGroup.ModifiedBy = "766612A1-5C65-4D17-950D-2841E1888F0B";
+            fixedSupplierGroup.SyncToCPD = 0;
+            fixedSupplierGroup.IsEOLRequired = true;
+            suppplierGroupList.SupplierGroupGrpc.Add(fixedSupplierGroup);
+            return suppplierGroupList;
+        }
+        #endregion
     }
 }
