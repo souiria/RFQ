@@ -1002,6 +1002,7 @@
                     "PROJECTGRPC" => _Projects.ProjectGrpc.Cast<T>().Where(func).ToList(),
                     "VEHICLEGRPC" => _Vehicles.VehicleGrpc.Cast<T>().Where(func).ToList(),
                     "SUPPLIERGROUPGRPC" => _SupplierGroups.SupplierGroupGrpc.Cast<T>().Where(func).ToList(),
+                    "SUPPLIERGRPC" => _Suppliers.SupplierGrpc.Cast<T>().Where(func).ToList(),
                     _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
                 };
             }, cancellationToken);
@@ -1021,6 +1022,7 @@
             _Milestones = SampleMasterDataService.PopulateMilestoneGrpc();
             _Vehicles = SampleMasterDataService.PopulateVehicleGrpc();
             _SupplierGroups = SampleMasterDataService.PopulateSupplierGroupGrpc();
+            _Suppliers = SampleMasterDataService.PopulateSupplierGrpc();
         }
     }
 }
