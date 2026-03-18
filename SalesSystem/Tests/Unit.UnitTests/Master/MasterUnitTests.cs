@@ -632,6 +632,75 @@ namespace Unit.Tests.Master
             Assert.That(filterSupplierGroupByDisplayData.Result.SupplierGroupGrpcList.SupplierGroupGrpc.First().Id, idConstraint);
         }
         #endregion
+        #region Supplier
+
+        [Test]
+        [Category("Unit")]
+        public void GetSupplierGrpcTest_Success()
+        {
+            SupplierGrpcRequest supplierGrpcRequest = new SupplierGrpcRequest();
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.GetSupplierGrpc));
+
+            Task<ListSupplierGrpc> getSupplierGrpc = _GrpcService.GetSupplierGrpc(supplierGrpcRequest, serverCallContext);
+
+            Assert.That(getSupplierGrpc.Result.SupplierGrpc, Is.Not.Null);
+            EqualConstraint countConstraint = Is.EqualTo(6);
+            Assert.That(getSupplierGrpc.Result.SupplierGrpc.Count, countConstraint);
+        }
+
+        [Test]
+        [Category("Unit")]
+        public void FilterSupplierByIdDataTest_Success()
+        {
+            MastersFilterRequestGrpc filterRequest = new MastersFilterRequestGrpc();
+            filterRequest.DatabaseList = "SupplierGrpc".ToUpperInvariant();
+            filterRequest.FilterExpression = $"Id != null && Id == \"766612A1-5C65-4D17-950D-2841E1888F0B\"";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterMasterDataGrpc));
+
+            Task<MastersFilterResponseGrpc> filterSupplierByIdData = _GrpcService.FilterMasterDataGrpc(filterRequest, serverCallContext);
+
+            Assert.That(filterSupplierByIdData.Result.SupplierList.SupplierGrpc, Is.Not.Null);
+            EqualConstraint countConstraint = Is.EqualTo(1);
+            Assert.That(filterSupplierByIdData.Result.SupplierList.SupplierGrpc.Count, countConstraint);
+            EqualConstraint nameConstraint = Is.EqualTo("TESTFIXEDSUPPLIERCODE");
+            Assert.That(filterSupplierByIdData.Result.SupplierList.SupplierGrpc.First().SupplierCode, nameConstraint);
+        }
+
+        [Test]
+        [Category("Unit")]
+        public void GetSupplierByIdDataTest_False()
+        {
+            MastersFilterRequestGrpc filterRequest = new MastersFilterRequestGrpc();
+            filterRequest.DatabaseList = "SupplierGrpc".ToUpperInvariant();
+            filterRequest.FilterExpression = $"Id != null && Id == \"\"";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterMasterDataGrpc));
+
+            Task<MastersFilterResponseGrpc> filterSupplierByIdData = _GrpcService.FilterMasterDataGrpc(filterRequest, serverCallContext);
+
+            EqualConstraint countConstraint = Is.EqualTo(0);
+            Assert.That(filterSupplierByIdData.Result.SupplierList.SupplierGrpc.Count, countConstraint);
+        }
+
+        [Test]
+        [Category("Unit")]
+        public void GetSupplierBySupplierNameTest_Success()
+        {
+            MastersFilterRequestGrpc filterRequest = new MastersFilterRequestGrpc();
+            filterRequest.DatabaseList = "SupplierGrpc".ToUpperInvariant();
+            filterRequest.FilterExpression = $"SupplierName != null && SupplierName == \"TESTFIXEDSUPPLIERNAME\"";
+            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.FilterMasterDataGrpc));
+
+            Task<MastersFilterResponseGrpc> filterSupplierByDisplayData = _GrpcService.FilterMasterDataGrpc(filterRequest, serverCallContext);
+
+            Assert.That(filterSupplierByDisplayData.Result.SupplierList.SupplierGrpc, Is.Not.Null);
+            EqualConstraint countConstraint = Is.EqualTo(1);
+            Assert.That(filterSupplierByDisplayData.Result.SupplierList.SupplierGrpc.Count, countConstraint);
+            EqualConstraint nameConstraint = Is.EqualTo("TESTFIXEDSUPPLIERNAME");
+            Assert.That(filterSupplierByDisplayData.Result.SupplierList.SupplierGrpc.First().SupplierName, nameConstraint);
+            EqualConstraint idConstraint = Is.EqualTo("766612A1-5C65-4D17-950D-2841E1888F0B");
+            Assert.That(filterSupplierByDisplayData.Result.SupplierList.SupplierGrpc.First().Id, idConstraint);
+        }
+        #endregion
 
         ServerCallContext CreateServerContext(string methodName)
         {

@@ -1,4 +1,6 @@
-﻿namespace Master.Services
+﻿using Master.Data.Model;
+
+namespace Master.Services
 {
     public static class SampleMasterDataService
     {
@@ -316,6 +318,74 @@
             fixedSupplierGroup.SyncToCPD = 0;
             fixedSupplierGroup.IsEOLRequired = true;
             suppplierGroupList.SupplierGroupGrpc.Add(fixedSupplierGroup);
+            return suppplierGroupList;
+        }
+        #endregion
+        #region Supplier
+        public static ListSupplierGrpc PopulateSupplierGrpc()
+        {
+            ListSupplierGrpc suppplierGroupList = new ListSupplierGrpc();
+            for(int i = 0; i < 5; i++)
+            {
+                SupplierGrpc supplier = new SupplierGrpc();
+                supplier.SupplierCode = $"TestSupplierCode{i}".ToUpperInvariant();
+                supplier.SupplierName = $"TestSupplierName{i}".ToUpperInvariant();
+                supplier.Address1 = $"TestAddress1{i}".ToUpperInvariant();
+                supplier.Address2 = $"TestAddress2{i}".ToUpperInvariant();
+                supplier.Address2 = $"TestAddress2{i}".ToUpperInvariant();
+                supplier.City = $"TestCity{i}".ToUpperInvariant();
+                supplier.ZipCode = $"TestZipCode{i}".ToUpperInvariant();
+                supplier.ZipCode = $"TestZipCode{i}".ToUpperInvariant();
+                supplier.CountryGuid = Guid.NewGuid().ToString();
+                supplier.SupplierTypeGuid = Guid.NewGuid().ToString();
+                supplier.SupplierGroupGuid = Guid.NewGuid().ToString();
+                supplier.SupplierIncoTermsGuid = Guid.NewGuid().ToString();
+                supplier.SupplierCurrencyGuid = Guid.NewGuid().ToString();
+                supplier.SupplierBuyerGuid = Guid.NewGuid().ToString();
+                supplier.SupplierDevelopmentTeamGuid = Guid.NewGuid().ToString();
+                supplier.PaymentTerms = $"TestPaymentTerms{i}".ToUpperInvariant();
+                supplier.EPOCommodityGroupGuid = Guid.NewGuid().ToString();
+                supplier.POPriceEffectiveDateTypeGuid = Guid.NewGuid().ToString();
+                supplier.SupplierApprovalStatusGuid = Guid.NewGuid().ToString();
+                supplier.IsActive = true;
+                supplier.Id = Guid.NewGuid().ToString();
+                supplier.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                supplier.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                supplier.CreatedBy = Guid.NewGuid().ToString();
+                supplier.ModifiedBy = Guid.NewGuid().ToString();
+                supplier.SyncToCPD = i;
+                supplier.DistributionCountryOfOriginGuid = Guid.NewGuid().ToString();
+                supplier.IsEOLRequired = true;
+                suppplierGroupList.SupplierGrpc.Add(supplier);
+            }
+
+            SupplierGrpc fixedSupplier = new SupplierGrpc();
+            fixedSupplier.SupplierCode = $"TestFixedSupplierCode".ToUpperInvariant();
+            fixedSupplier.SupplierName = $"TestFixedSupplierName".ToUpperInvariant();
+            fixedSupplier.Address1 = $"TestAddress1".ToUpperInvariant();
+            fixedSupplier.Address2 = $"TestAddress2".ToUpperInvariant();
+            fixedSupplier.Address2 = $"TestAddress2".ToUpperInvariant();
+            fixedSupplier.City = $"TestCity".ToUpperInvariant();
+            fixedSupplier.ZipCode = $"TestZipCode".ToUpperInvariant();
+            fixedSupplier.CountryGuid = "766612A1-5C65-4D17-950D-2841E1888F0B";
+            fixedSupplier.SupplierTypeGuid = "766612A1-5C65-4D17-950D-2841E1888F0B";
+            fixedSupplier.SupplierIncoTermsGuid = "766612A1-5C65-4D17-950D-2841E1888F0B";
+            fixedSupplier.SupplierCurrencyGuid = "766612A1-5C65-4D17-950D-2841E1888F0B";
+            fixedSupplier.SupplierBuyerGuid = "766612A1-5C65-4D17-950D-2841E1888F0B";
+            fixedSupplier.SupplierDevelopmentTeamGuid = "766612A1-5C65-4D17-950D-2841E1888F0B";
+            fixedSupplier.PaymentTerms = $"TestFixedPaymentTerms".ToUpperInvariant();
+            fixedSupplier.EPOCommodityGroupGuid = "766612A1-5C65-4D17-950D-2841E1888F0B";
+            fixedSupplier.POPriceEffectiveDateTypeGuid = "766612A1-5C65-4D17-950D-2841E1888F0B";
+            fixedSupplier.SupplierApprovalStatusGuid = "766612A1-5C65-4D17-950D-2841E1888F0B";
+            fixedSupplier.Id = "766612A1-5C65-4D17-950D-2841E1888F0B";
+            fixedSupplier.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+            fixedSupplier.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+            fixedSupplier.CreatedBy = "766612A1-5C65-4D17-950D-2841E1888F0B";
+            fixedSupplier.ModifiedBy = "766612A1-5C65-4D17-950D-2841E1888F0B";
+            fixedSupplier.SyncToCPD = 0;
+            fixedSupplier.DistributionCountryOfOriginGuid = "766612A1-5C65-4D17-950D-2841E1888F0B";
+            fixedSupplier.IsEOLRequired = true;
+            suppplierGroupList.SupplierGrpc.Add(fixedSupplier);
             return suppplierGroupList;
         }
         #endregion

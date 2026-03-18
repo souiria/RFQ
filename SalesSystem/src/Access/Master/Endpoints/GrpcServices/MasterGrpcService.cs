@@ -187,6 +187,21 @@ namespace Master.Endpoints.GrpcServices
         }
 
         #endregion
+        #region Supplier
+
+        public override async Task<ListSupplierGrpc> GetSupplierGrpc(SupplierGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetSupplierGrpc starting");
+            return await _MasterAccessService.GetAllSuppliers(context.CancellationToken, request.Position, request.Takeamount);
+        }
+
+        public override async Task GetSupplierGrpcStream(SupplierGrpcRequest request, IServerStreamWriter<SupplierGrpc> responseStream, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetSupplierGrpcStream starting");
+            ListSupplierGrpc results = await _MasterAccessService.GetAllSuppliers(context.CancellationToken);
+        }
+
+        #endregion
 
         public override async Task<MastersFilterResponseGrpc> FilterMasterDataGrpc(MastersFilterRequestGrpc request, ServerCallContext context)
         {
@@ -323,6 +338,16 @@ namespace Master.Endpoints.GrpcServices
                     ListSupplierGroupGrpc returnList = new ListSupplierGroupGrpc();
                     returnList.SupplierGroupGrpc.AddRange(filterList);
                     returnResponse.SupplierGroupGrpcList = returnList;
+                    returnResponse.Success = true;
+                }, context.CancellationToken);
+                break;
+                case "SUPPLIERGRPC":
+                await _MasterAccessService.HandleFilterCase<SupplierGrpc>(filterExpressionString, parsingConfig,
+                filterList =>
+                {
+                    ListSupplierGrpc returnList = new ListSupplierGrpc();
+                    returnList.SupplierGrpc.AddRange(filterList);
+                    returnResponse.SupplierList = returnList;
                     returnResponse.Success = true;
                 }, context.CancellationToken);
                 break;
