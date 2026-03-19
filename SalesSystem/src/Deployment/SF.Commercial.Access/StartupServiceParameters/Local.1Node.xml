@@ -3,5 +3,6 @@
   <Parameters>
     <Parameter Name="SF.Access.CDbs_InstanceCount" Value="1" />
     <Parameter Name="SF.Access.Masters_InstanceCount" Value="1" />
+    <Parameter Name="SF.Access.Rfqs_InstanceCount" Value="1" />
   </Parameters>
 </StartupServices>

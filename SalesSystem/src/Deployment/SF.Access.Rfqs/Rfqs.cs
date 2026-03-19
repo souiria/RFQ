@@ -1,7 +1,7 @@
 namespace SF.Access.Rfqs
 {
     /// <summary>
-    /// An instance of this class is created for each service instance by the Service Fabric runtime.
+    /// The FabricRuntime creates an instance of this class for each service type instance.
     /// </summary>
     sealed class Rfqs : StatelessService
     {
@@ -10,9 +10,9 @@ namespace SF.Access.Rfqs
         { }
 
         /// <summary>
-        /// Optional override to create listeners (e.g., TCP, HTTP) for this service replica to handle client or user requests.
+        /// Optional override to create listeners (like tcp, http) for this service instance.
         /// </summary>
-        /// <returns>A collection of listeners.</returns>
+        /// <returns>The collection of listeners.</returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0300:Simplify collection initialization", Justification = "Service Fabric Boilerplate")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "Service Fabric Boilerplate")]
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
@@ -34,9 +34,9 @@ namespace SF.Access.Rfqs
                                         opt.Listen(IPAddress.IPv6Any, port, listenOptions =>
                                         {
 #if DEBUG
-                                            listenOptions.UseHttps(GetCertificateFromStore());
+                                          listenOptions.Protocols = HttpProtocols.Http1AndHttp2;  //listenOptions.UseHttps(GetCertificateFromStore());
 #else
-                                            listenOptions.UseHttps(FindMatchingCertificateBySubject("*.sews-e.com"));
+                                            //listenOptions.UseHttps(FindMatchingCertificateBySubject("*.sews-e.com"));
 #endif
                                             listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
                                         });
@@ -45,33 +45,11 @@ namespace SF.Access.Rfqs
                                     .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
                                     .UseUrls(url);
 
+                        
                         return Rfq.HostBuilder.CreateApp(builder, url);
 
                     }))
             };
-        }
-
-        /// <summary>
-        /// This is the main entry point for your service instance.
-        /// </summary>
-        /// <param name="cancellationToken">Canceled when Service Fabric needs to shut down this service instance.</param>
-        protected override async Task RunAsync(CancellationToken cancellationToken)
-        {
-            // TODO: Replace the following sample code with your own logic 
-            //       or remove this RunAsync override if it's not needed in your service.
-
-            long iterations = 0;
-
-            while (true)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                ServiceEventSource._Current.ServiceMessage(Context, "Working-{0}", ++iterations);
-
-                TimeSpan timeSpan = TimeSpan.FromSeconds(1);
-
-                await Task.Delay(timeSpan, cancellationToken);
-            }
         }
 
         /// <summary>

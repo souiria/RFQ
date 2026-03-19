@@ -3,5 +3,6 @@
   <Parameters>
     <Parameter Name="SF.Access.Masters_ASPNETCORE_ENVIRONMENT" Value="Development" />
     <Parameter Name="SF.Access.CDbs_CDB_DATABASE_CONNECTION" Value="Server=localhost;Database=H1.ComponentDB;User Id=dbdevusr;Password=OwnhjKZqZMCY0vL;MultipleActiveResultSets=true;Encrypt=No" />
+    <Parameter Name="SF.Access.Rfqs_ASPNETCORE_ENVIRONMENT" Value="Development" />
   </Parameters>
 </Application>

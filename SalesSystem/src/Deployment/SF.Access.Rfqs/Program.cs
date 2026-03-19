@@ -14,18 +14,18 @@ namespace SF.Access.Rfqs
                 // When Service Fabric creates an instance of this service type,
                 // an instance of the class is created in this host process.
 
-                ServiceRuntime.RegisterServiceAsync("SF.Access.RfqType",
+                ServiceRuntime.RegisterServiceAsync("SF.Access.RfqsType",
                     context => new Rfqs(context)).GetAwaiter().GetResult();
 
                 ServiceEventSource._Current.ServiceTypeRegistered(Environment.ProcessId, typeof(Rfqs).Name);
 
-                // Prevents this host process from terminating so services keep running.
+                // Prevents this host process from terminating so services keeps running. 
                 Thread.Sleep(Timeout.Infinite);
             }
             catch (Exception e)
             {
-                string errorMessage = e.ToString();
-                ServiceEventSource._Current.ServiceHostInitializationFailed(errorMessage);
+                string exceptionString = e.ToString();
+                ServiceEventSource._Current.ServiceHostInitializationFailed(exceptionString);
                 throw;
             }
         }

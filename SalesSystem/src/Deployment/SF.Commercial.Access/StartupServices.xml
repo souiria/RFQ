@@ -3,6 +3,7 @@
   <Parameters>
     <Parameter Name="SF.Access.CDbs_InstanceCount" DefaultValue="-1" />
     <Parameter Name="SF.Access.Masters_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="SF.Access.Rfqs_InstanceCount" DefaultValue="-1" />
   </Parameters>
   <Services>
     <!-- The section below creates instances of service types, when an instance of this 
@@ -17,6 +18,11 @@
     </Service>
     <Service Name="SF.Access.Masters" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SF.Access.MastersType" InstanceCount="[SF.Access.Masters_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
+    <Service Name="SF.Access.Rfqs" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="SF.Access.RfqsType" InstanceCount="[SF.Access.Rfqs_InstanceCount]">
         <SingletonPartition />
       </StatelessService>
     </Service>

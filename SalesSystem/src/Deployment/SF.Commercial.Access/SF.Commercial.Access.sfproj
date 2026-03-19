@@ -40,6 +40,7 @@
     <ProjectReference Include="..\SF.Access.Masters\SF.Access.Masters.csproj">
       <ServiceLaunchUrl>https://localhost:{ServicePort}/</ServiceLaunchUrl>
     </ProjectReference>
+    <ProjectReference Include="..\SF.Access.Rfqs\SF.Access.Rfqs.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <PropertyGroup>
