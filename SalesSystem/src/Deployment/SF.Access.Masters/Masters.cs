@@ -34,9 +34,9 @@ namespace SF.Access.Masters
                                         opt.Listen(IPAddress.IPv6Any, port, listenOptions =>
                                         {
 #if DEBUG
-                                            listenOptions.UseHttps(GetCertificateFromStore());
+                                          listenOptions.Protocols = HttpProtocols.Http1AndHttp2;  //listenOptions.UseHttps(GetCertificateFromStore());
 #else
-                                            listenOptions.UseHttps(FindMatchingCertificateBySubject("*.sews-e.com"));
+                                            //listenOptions.UseHttps(FindMatchingCertificateBySubject("*.sews-e.com"));
 #endif
                                             listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
                                         });

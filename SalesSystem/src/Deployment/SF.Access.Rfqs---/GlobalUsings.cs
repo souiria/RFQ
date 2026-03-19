@@ -1,0 +1,11 @@
+﻿global using System.Diagnostics.Tracing;
+global using System.Fabric;
+global using System.Globalization;
+global using System.Net;
+global using System.Security.Cryptography.X509Certificates;
+global using Microsoft.AspNetCore.Hosting;
+global using Microsoft.AspNetCore.Server.Kestrel.Core;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.ServiceFabric.Services.Communication.AspNetCore;
+global using Microsoft.ServiceFabric.Services.Communication.Runtime;
+global using Microsoft.ServiceFabric.Services.Runtime;
