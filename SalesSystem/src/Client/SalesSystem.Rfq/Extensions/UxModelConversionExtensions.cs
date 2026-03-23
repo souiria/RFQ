@@ -1,6 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-
-namespace SalesSystem.Rfq.Extensions
+﻿namespace SalesSystem.Rfq.Extensions
 {
     public static class UxModelConversionExtensions
 
