@@ -404,5 +404,56 @@
             apiData.RfqNprRequest = rfqNprRequestGrpc;
             return apiData;
         }
+
+        public static SupplierGrpc ToSupplierGrpc(this Master.SupplierGrpc supplier)
+        {
+            SupplierGrpc supplierGrpc = new SupplierGrpc();
+            supplierGrpc.SupplierCode = supplier.SupplierCode;
+            supplierGrpc.SupplierName = supplier.SupplierName;
+            supplierGrpc.Address1 = supplier.Address1;
+            supplierGrpc.Address2 = supplier.Address2;
+            supplierGrpc.Address3 = supplier.Address3;
+            supplierGrpc.City = supplier.City;
+            supplierGrpc.Region = supplier.Region;
+            supplierGrpc.ZipCode = supplier.ZipCode;
+            supplierGrpc.CountryGuid = supplier.CountryGuid;
+            supplierGrpc.SupplierTypeGuid = supplier.SupplierTypeGuid;
+            supplierGrpc.SupplierGroupGuid = supplier.SupplierGroupGuid;
+            supplierGrpc.SupplierIncoTermsGuid = supplier.SupplierIncoTermsGuid;
+            supplierGrpc.SupplierCurrencyGuid = supplier.SupplierCurrencyGuid;
+            supplierGrpc.SupplierBuyerGuid = supplier.SupplierBuyerGuid;
+            supplierGrpc.SupplierDevelopmentTeamGuid = supplier.SupplierDevelopmentTeamGuid;
+            supplierGrpc.PaymentTerms = supplier.PaymentTerms;
+            supplierGrpc.EPOCommodityGroupGuid = supplier.EPOCommodityGroupGuid;
+            supplierGrpc.POPriceEffectiveDateTypeGuid = supplier.POPriceEffectiveDateTypeGuid;
+            supplierGrpc.SupplierApprovalStatusGuid = supplier.SupplierApprovalStatusGuid;
+            supplierGrpc.IsActive = supplier.IsActive;
+            supplierGrpc.Id = supplier.Id;
+            supplierGrpc.CreatedDate = supplier.CreatedDate;
+            supplierGrpc.ModifiedDate = supplier.ModifiedDate;
+            supplierGrpc.CreatedBy = supplier.CreatedBy;
+            supplierGrpc.ModifiedBy = supplier.ModifiedBy;
+            supplierGrpc.SyncToCPD = supplier.SyncToCPD;
+            supplierGrpc.DistributionCountryOfOriginGuid = supplier.DistributionCountryOfOriginGuid;
+            supplierGrpc.IsEOLRequired = supplier.IsEOLRequired;
+            return supplierGrpc;
+        }
+
+        public static SupplierGroupGrpc ToSupplierGroupGrpc(this Master.SupplierGroupGrpc supplierGroup)
+        {
+            SupplierGroupGrpc supplierGroupGrpc = new SupplierGroupGrpc();
+            supplierGroupGrpc.SupplierGroupName = supplierGroup.SupplierGroupName;
+            supplierGroupGrpc.SupplierApprovalStatusGuid = supplierGroup.SupplierApprovalStatusGuid;
+            supplierGroupGrpc.SupplierPanelGuid = supplierGroup.SupplierPanelGuid;
+            supplierGroupGrpc.IsActive = supplierGroup.IsActive;
+            supplierGroupGrpc.Id = supplierGroup.Id;
+            supplierGroupGrpc.CreatedDate = supplierGroup.CreatedDate;
+            supplierGroupGrpc.ModifiedDate = supplierGroup.ModifiedDate;
+            supplierGroupGrpc.CreatedBy = supplierGroup.CreatedBy;
+            supplierGroupGrpc.ModifiedBy = supplierGroup.ModifiedBy;
+            supplierGroupGrpc.SyncToCPD = supplierGroup.SyncToCPD;
+            supplierGroupGrpc.IsEOLRequired = supplierGroup.IsEOLRequired;
+            return supplierGroupGrpc;
+        }
     }
 }

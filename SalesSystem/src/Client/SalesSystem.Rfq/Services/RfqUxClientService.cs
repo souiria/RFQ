@@ -21,6 +21,8 @@ namespace SalesSystem.Rfq.Services
         List<RfqReasonGrpc> _Reasons;
         List<RqfCustomerProjectAssociationUxModel> _CustomerProjectAssociations;
         List<string> _QuotationNumbers;
+        List<SupplierUxModel> _Suppliers;
+        List<SupplierGroupUxModel> _SupplierGroups;
         // AlternativeParts
         List<AlternativePartUxModel> _AlternativeParts;
         int _AlternativePartsTake;
@@ -91,6 +93,8 @@ namespace SalesSystem.Rfq.Services
             _AlternativePartsPosition = 0;
             _AlternativePartsTake = -1;
             _NprRequests = new();
+            _Suppliers = new();
+            _SupplierGroups = new();
             _NprRequestsHasChanges = false;
 
             _Logger.GenericLogInformation($">>> RfqUxClientService was created with storage via GRPC endpoints");
@@ -1353,6 +1357,83 @@ namespace SalesSystem.Rfq.Services
             catch (Exception ex)
             {
                 _Logger?.GenericLogError("Error in DeleteAllNprRequestsAsync", ex);
+                throw;
+            }
+        }
+        #endregion
+
+        #region Supplier and Supplier Group
+        public async Task<List<SupplierUxModel>> GetAllSuppliersAsync(int position = 0, int take = 100)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+
+            try
+            {
+                GetAllSuppliersGrpcRequest request = new GetAllSuppliersGrpcRequest();
+
+                request.Position = position;
+                request.Take = take;
+
+                GetAllSuppliersGrpcResponse response = await _Client.GetAllSuppliersGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                _Suppliers.Clear();
+                IOrderedEnumerable<SupplierGrpc> rpcSuppliers = response.SupplierGrpc.OrderByDescending(x => x.SupplierName);
+                foreach (SupplierGrpc? supplier in rpcSuppliers)
+                {
+                    if (supplier.IsActive.HasValue && !supplier.IsActive.Value)
+                    {
+                        continue; // skip inactive projects
+                    }
+
+                    SupplierUxModel? uxModel = supplier.ToUx();
+                    if (null != uxModel)
+                    {
+                        _Suppliers.Add(uxModel);
+                    }
+                }
+
+                return _Suppliers;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in GetAllSuppliersAsync with position {position} and take {take}", ex);
+                throw;
+            }
+        }
+        public async Task<List<SupplierGroupUxModel>> GetAllSupplierGroupsAsync(int position = 0, int take = 100)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+
+            try
+            {
+                GetAllSupplierGroupsGrpcRequest request = new GetAllSupplierGroupsGrpcRequest();
+
+                request.Position = position;
+                request.Take = take;
+
+                GetAllSupplierGroupsGrpcResponse response = await _Client.GetAllSupplierGroupsGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                _SupplierGroups.Clear();
+                IOrderedEnumerable<SupplierGroupGrpc> rpcSupplierGroups = response.SupplierGroupGrpc.OrderByDescending(x => x.SupplierGroupName);
+                foreach (SupplierGroupGrpc? supplierGroup in rpcSupplierGroups)
+                {
+                    if (supplierGroup.IsActive.HasValue && !supplierGroup.IsActive.Value)
+                    {
+                        continue; // skip inactive projects
+                    }
+
+                    SupplierGroupUxModel? uxModel = supplierGroup.ToUx();
+                    if (null != uxModel)
+                    {
+                        _SupplierGroups.Add(uxModel);
+                    }
+                }
+
+                return _SupplierGroups;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in GetAllSupplierGroupsAsync with position {position} and take {take}", ex);
                 throw;
             }
         }

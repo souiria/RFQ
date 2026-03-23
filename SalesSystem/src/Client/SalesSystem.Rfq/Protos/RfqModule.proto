@@ -40,6 +40,8 @@ service RfqModule {
   rpc CreateRfqNprRequestGrpc (CreateRfqNprRequestGrpcRequest) returns (CreateRfqNprRequestGrpcResponse);
   rpc UpdateRfqNprRequestGrpc (UpdateRfqNprRequestGrpcRequest) returns (UpdateRfqNprRequestGrpcResponse);
   rpc DeleteRfqNprRequestByIdGrpc (DeleteRfqNprRequestByIdGrpcRequest) returns (DeleteRfqNprRequestByIdGrpcResponse);
+  rpc GetAllSuppliersGrpc (GetAllSuppliersGrpcRequest) returns (GetAllSuppliersGrpcResponse);
+  rpc GetAllSupplierGroupsGrpc (GetAllSupplierGroupsGrpcRequest) returns (GetAllSupplierGroupsGrpcResponse);
    
  rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
 }
@@ -531,4 +533,67 @@ message DeleteRfqNprRequestByIdGrpcRequest {
 message DeleteRfqNprRequestByIdGrpcResponse {
 	bool Success = 1;
 	string Message = 2;
+}
+message GetAllSuppliersGrpcRequest {
+	int32 Position = 1;
+    int32 Take = 2;
+}
+
+message GetAllSuppliersGrpcResponse {
+	repeated SupplierGrpc SupplierGrpc = 1;
+}
+
+message SupplierGrpc {
+    google.protobuf.StringValue SupplierCode = 1;
+    google.protobuf.StringValue SupplierName = 2;
+    google.protobuf.StringValue Address1 = 3;
+    google.protobuf.StringValue Address2 = 4;
+    google.protobuf.StringValue Address3 = 5;
+    google.protobuf.StringValue City = 6;
+    google.protobuf.StringValue Region = 7;
+    google.protobuf.StringValue ZipCode = 8;
+    google.protobuf.StringValue CountryGuid = 9;
+    google.protobuf.StringValue SupplierTypeGuid = 10;
+    google.protobuf.StringValue SupplierGroupGuid = 11;
+    google.protobuf.StringValue SupplierIncoTermsGuid = 12;
+    google.protobuf.StringValue SupplierCurrencyGuid = 13;
+    google.protobuf.StringValue SupplierBuyerGuid = 14;
+    google.protobuf.StringValue SupplierDevelopmentTeamGuid = 15;
+    google.protobuf.StringValue PaymentTerms = 16;
+    google.protobuf.StringValue EPOCommodityGroupGuid = 17;
+    google.protobuf.StringValue POPriceEffectiveDateTypeGuid = 18;
+    google.protobuf.StringValue SupplierApprovalStatusGuid = 19;
+    google.protobuf.BoolValue IsActive = 20;
+    google.protobuf.StringValue Id = 21;
+    google.protobuf.Timestamp CreatedDate = 22;
+    google.protobuf.Timestamp ModifiedDate = 23;
+    google.protobuf.StringValue CreatedBy = 24;
+    google.protobuf.StringValue ModifiedBy = 25;
+    google.protobuf.Int32Value SyncToCPD = 26;
+    google.protobuf.StringValue DistributionCountryOfOriginGuid = 27;
+    google.protobuf.BoolValue IsEOLRequired = 28;
+}
+
+message GetAllSupplierGroupsGrpcRequest {
+	int32 Position = 1;
+    int32 Take = 2;
+}
+
+message GetAllSupplierGroupsGrpcResponse {
+	repeated SupplierGroupGrpc SupplierGroupGrpc = 1;
+}
+
+message SupplierGroupGrpc {
+    google.protobuf.StringValue SupplierGroupName = 1;
+    google.protobuf.StringValue SupplierApprovalStatusGuid = 2;
+    google.protobuf.StringValue SupplierPanelGuid = 3;
+    google.protobuf.BoolValue IsActive = 4;
+    google.protobuf.BoolValue IsSWSPartNumberRequired = 5;
+    google.protobuf.StringValue Id = 6;
+    google.protobuf.Timestamp CreatedDate = 7;
+    google.protobuf.Timestamp ModifiedDate = 8;
+    google.protobuf.StringValue CreatedBy = 9;
+    google.protobuf.StringValue ModifiedBy = 10;
+    google.protobuf.Int32Value SyncToCPD = 11;
+    google.protobuf.BoolValue IsEOLRequired = 12;
 }
