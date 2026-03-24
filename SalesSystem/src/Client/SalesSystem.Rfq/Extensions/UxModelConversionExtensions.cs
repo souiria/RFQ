@@ -1,6 +1,4 @@
-﻿using SharedKernel;
-
-namespace SalesSystem.Rfq.Extensions
+﻿namespace SalesSystem.Rfq.Extensions
 {
     public static class UxModelConversionExtensions
 
@@ -427,6 +425,72 @@ namespace SalesSystem.Rfq.Extensions
             model.UxStatus = grpc.IsActive == false ? UxObjectStatus.Deleted : UxObjectStatus.Read;
             
             return model;
+        }
+        #endregion
+
+        #region Suppliers and Supplier Group
+        public static SupplierUxModel? ToUx(this SupplierGrpc? supplier)
+        {
+            if (supplier == null)
+            {
+                return null;
+            }
+
+            SupplierUxModel uxModel = new SupplierUxModel();
+            uxModel.SupplierCode = supplier.SupplierCode;
+            uxModel.SupplierName = supplier.SupplierName;
+            uxModel.Address1 = supplier.Address1;
+            uxModel.Address2 = supplier.Address2;
+            uxModel.Address3 = supplier.Address3;
+            uxModel.City = supplier.City;
+            uxModel.Region = supplier.Region;
+            uxModel.ZipCode = supplier.ZipCode;
+            uxModel.ZipCode = supplier.ZipCode;
+            uxModel.CountryGuid = Guid.TryParse(supplier.CountryGuid, out Guid countryGuid) ? countryGuid : Guid.Empty;
+            uxModel.SupplierTypeGuid = Guid.TryParse(supplier.SupplierTypeGuid, out Guid supplierTypeGuid) ? supplierTypeGuid : Guid.Empty;
+            uxModel.SupplierGroupGuid = Guid.TryParse(supplier.SupplierGroupGuid, out Guid supplierGroupGuid) ? supplierGroupGuid : Guid.Empty;
+            uxModel.SupplierIncoTermsGuid = Guid.TryParse(supplier.SupplierIncoTermsGuid, out Guid supplierIncoTermsGuid) ? supplierIncoTermsGuid : Guid.Empty;
+            uxModel.SupplierCurrencyGuid = Guid.TryParse(supplier.SupplierCurrencyGuid, out Guid supplierCurrencyGuid) ? supplierCurrencyGuid : Guid.Empty;
+            uxModel.SupplierBuyerGuid = Guid.TryParse(supplier.SupplierBuyerGuid, out Guid supplierBuyerGuid) ? supplierBuyerGuid : Guid.Empty;
+            uxModel.SupplierDevelopmentTeamGuid = Guid.TryParse(supplier.SupplierDevelopmentTeamGuid, out Guid supplierDevelopmentTeamGuid) ? supplierDevelopmentTeamGuid : Guid.Empty;
+            uxModel.PaymentTerms = supplier.PaymentTerms;
+            uxModel.EPOCommodityGroupGuid = Guid.TryParse(supplier.EPOCommodityGroupGuid, out Guid ePOCommodityGroupGuid) ? ePOCommodityGroupGuid : Guid.Empty;
+            uxModel.POPriceEffectiveDateTypeGuid = Guid.TryParse(supplier.POPriceEffectiveDateTypeGuid, out Guid pOPriceEffectiveDateTypeGuid) ? pOPriceEffectiveDateTypeGuid : Guid.Empty;
+            uxModel.SupplierApprovalStatusGuid = Guid.TryParse(supplier.SupplierApprovalStatusGuid, out Guid supplierApprovalStatusGuid) ? supplierApprovalStatusGuid : Guid.Empty;
+            uxModel.IsActive = supplier.IsActive;
+            uxModel.Id = Guid.TryParse(supplier.Id, out Guid id) ? id : Guid.Empty;
+            uxModel.CreatedDate = supplier.CreatedDate?.ToDateTime();
+            uxModel.ModifiedDate = supplier.ModifiedDate?.ToDateTime();
+            uxModel.CreatedBy = Guid.TryParse(supplier.CreatedBy, out Guid createdBy) ? createdBy : Guid.Empty;
+            uxModel.ModifiedBy = Guid.TryParse(supplier.ModifiedBy, out Guid modifiedBy) ? modifiedBy : Guid.Empty;
+            uxModel.SyncToCPD = (short?)supplier.SyncToCPD;
+            uxModel.DistributionCountryOfOriginGuid = Guid.TryParse(supplier.DistributionCountryOfOriginGuid, out Guid distributionCountryOfOriginGuid) ? distributionCountryOfOriginGuid : Guid.Empty;
+            uxModel.IsEOLRequired = supplier.IsEOLRequired;
+
+            return uxModel;
+        }
+
+        public static SupplierGroupUxModel? ToUx(this SupplierGroupGrpc? supplierGroup)
+        {
+            if (supplierGroup == null)
+            {
+                return null;
+            }
+
+            SupplierGroupUxModel uxModel = new SupplierGroupUxModel();
+            uxModel.SupplierGroupName = supplierGroup.SupplierGroupName;
+            uxModel.SupplierApprovalStatusGuid = Guid.TryParse(supplierGroup.SupplierApprovalStatusGuid, out Guid supplierApprovalStatusGuid) ? supplierApprovalStatusGuid : Guid.Empty;
+            uxModel.SupplierPanelGuid = Guid.TryParse(supplierGroup.SupplierPanelGuid, out Guid supplierPanelGuid) ? supplierPanelGuid : Guid.Empty;
+            uxModel.IsActive = supplierGroup.IsActive;
+            uxModel.IsSWSPartNumberRequired = supplierGroup.IsSWSPartNumberRequired;
+            uxModel.Id = Guid.TryParse(supplierGroup.Id, out Guid id) ? id : Guid.Empty;
+            uxModel.CreatedDate = supplierGroup.CreatedDate?.ToDateTime();
+            uxModel.ModifiedDate = supplierGroup.ModifiedDate?.ToDateTime();
+            uxModel.CreatedBy = Guid.TryParse(supplierGroup.CreatedBy, out Guid createdBy) ? createdBy : Guid.Empty;
+            uxModel.ModifiedBy = Guid.TryParse(supplierGroup.ModifiedBy, out Guid modifiedBy) ? modifiedBy : Guid.Empty;
+            uxModel.SyncToCPD = (short?)supplierGroup.SyncToCPD;
+            uxModel.IsEOLRequired = supplierGroup.IsEOLRequired;
+            return uxModel;
         }
         #endregion
     }
