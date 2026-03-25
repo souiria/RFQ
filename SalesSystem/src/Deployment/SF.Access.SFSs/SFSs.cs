@@ -1,11 +1,11 @@
-namespace SF.Access.Cores
+namespace SF.Access.SFSs
 {
     /// <summary>
     /// The FabricRuntime creates an instance of this class for each service type instance.
     /// </summary>
-    sealed class Cores : StatelessService
+    sealed class SFSs : StatelessService
     {
-        public Cores(StatelessServiceContext context)
+        public SFSs(StatelessServiceContext context)
             : base(context)
         { }
 
@@ -46,7 +46,7 @@ namespace SF.Access.Cores
                                     .UseUrls(url);
 
                         
-                        return Core.HostBuilder.CreateApp(builder, url);
+                        return SFS.HostBuilder.CreateApp(builder, url);
 
                     }))
             };

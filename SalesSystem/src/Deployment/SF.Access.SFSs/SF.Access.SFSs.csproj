@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Access\Core\Core.csproj" />
+    <ProjectReference Include="..\..\Access\SFS\SFS.csproj" />
   </ItemGroup>
 
 </Project>

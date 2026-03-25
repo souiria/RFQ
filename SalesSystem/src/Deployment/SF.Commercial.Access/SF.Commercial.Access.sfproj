@@ -43,6 +43,7 @@
     </ProjectReference>
     <ProjectReference Include="..\SF.Access.Nprs\SF.Access.Nprs.csproj" />
     <ProjectReference Include="..\SF.Access.Rfqs\SF.Access.Rfqs.csproj" />
+    <ProjectReference Include="..\SF.Access.SFSs\SF.Access.SFSs.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <PropertyGroup>

@@ -1,6 +1,6 @@
-namespace SF.Access.Cores
+namespace SF.Access.SFSs
 {
-    [EventSource(Name = "MyCompany-SF.Commercial.Access-SF.Access.Cores")]
+    [EventSource(Name = "MyCompany-SF.Commercial.Access-SF.Access.SFSs")]
     sealed class ServiceEventSource : EventSource
     {
         public static readonly ServiceEventSource _Current;

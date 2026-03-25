@@ -6,5 +6,6 @@
     <Parameter Name="SF.Access.Nprs_InstanceCount" Value="1" />
     <Parameter Name="SF.Access.Adsss_InstanceCount" Value="1" />
     <Parameter Name="SF.Access.CPDs_InstanceCount" Value="1" />
+    <Parameter Name="SF.Access.SFSs_InstanceCount" Value="1" />
   </Parameters>
 </StartupServices>

@@ -1,4 +1,4 @@
-namespace SF.Access.Nprs
+namespace SF.Access.SFSs
 {
     static class Program
     {
@@ -14,10 +14,10 @@ namespace SF.Access.Nprs
                 // When Service Fabric creates an instance of this service type,
                 // an instance of the class is created in this host process.
 
-                ServiceRuntime.RegisterServiceAsync("SF.Access.NprsType",
-                    context => new Nprs(context)).GetAwaiter().GetResult();
+                ServiceRuntime.RegisterServiceAsync("SF.Access.SFSsType",
+                    context => new SFSs(context)).GetAwaiter().GetResult();
 
-                ServiceEventSource._Current.ServiceTypeRegistered(Environment.ProcessId, typeof(Nprs).Name);
+                ServiceEventSource._Current.ServiceTypeRegistered(Environment.ProcessId, typeof(SFSs).Name);
 
                 // Prevents this host process from terminating so services keeps running. 
                 Thread.Sleep(Timeout.Infinite);
