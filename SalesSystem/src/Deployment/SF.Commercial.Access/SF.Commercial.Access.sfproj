@@ -38,6 +38,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SF.Access.Adsss\SF.Access.Adsss.csproj" />
     <ProjectReference Include="..\SF.Access.CPDs\SF.Access.CPDs.csproj" />
+    <ProjectReference Include="..\SF.Access.EDIs\SF.Access.EDIs.csproj" />
     <ProjectReference Include="..\SF.Access.Emacss\SF.Access.Emacss.csproj" />
     <ProjectReference Include="..\SF.Access.Masters\SF.Access.Masters.csproj">
       <ServiceLaunchUrl>https://localhost:{ServicePort}/</ServiceLaunchUrl>
