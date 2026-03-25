@@ -1,6 +1,6 @@
-namespace SF.Access.RfqsClient
+namespace SF.Access.Emacss
 {
-    [EventSource(Name = "MyCompany-SF.Commercial.Access-SF.Access.RfqsClient")]
+    [EventSource(Name = "MyCompany-SF.Commercial.Access-SF.Access.Emacss")]
     sealed class ServiceEventSource : EventSource
     {
         public static readonly ServiceEventSource _Current;

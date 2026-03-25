@@ -1,11 +1,11 @@
-namespace SF.Access.RfqsClient
+namespace SF.Access.Emacss
 {
     /// <summary>
     /// The FabricRuntime creates an instance of this class for each service type instance.
     /// </summary>
-    sealed class RfqsClient : StatelessService
+    sealed class Emacss : StatelessService
     {
-        public RfqsClient(StatelessServiceContext context)
+        public Emacss(StatelessServiceContext context)
             : base(context)
         { }
 
@@ -46,7 +46,7 @@ namespace SF.Access.RfqsClient
                                     .UseUrls(url);
 
                         
-                        return SalesSystem.Rfq.HostBuilder.CreateApp(builder, url);
+                        return Emacs.HostBuilder.CreateApp(builder, url);
 
                     }))
             };

@@ -1,6 +1,0 @@
-@SF.Access.Masters_HostAddress = http://localhost:5165
-
-GET {{SF.Access.Masters_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
