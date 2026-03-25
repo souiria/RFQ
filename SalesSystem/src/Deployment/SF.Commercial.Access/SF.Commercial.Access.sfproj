@@ -36,10 +36,11 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SF.Access.CDbs\SF.Access.CDbs.csproj" />
+    <ProjectReference Include="..\SF.Access.Adsss\SF.Access.Adsss.csproj" />
     <ProjectReference Include="..\SF.Access.Masters\SF.Access.Masters.csproj">
       <ServiceLaunchUrl>https://localhost:{ServicePort}/</ServiceLaunchUrl>
     </ProjectReference>
+    <ProjectReference Include="..\SF.Access.Nprs\SF.Access.Nprs.csproj" />
     <ProjectReference Include="..\SF.Access.Rfqs\SF.Access.Rfqs.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />

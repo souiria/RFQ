@@ -2,19 +2,13 @@
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SF.Commercial.AccessType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="SF.Access.Masters_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
-    <Parameter Name="SF.Access.CDbs_CDB_DATABASE_CONNECTION" DefaultValue="" />
-    <Parameter Name="SF.Access.Rfqs_ASPNETCORE_ENVIRONMENT" DefaultValue="-1" />
+    <Parameter Name="SF.Access.Rfqs_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
+    <Parameter Name="SF.Access.Nprs_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
+    <Parameter Name="SF.Access.Adsss_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
        ServiceManifest.xml file. -->
-  <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SF.Access.CDbsPkg" ServiceManifestVersion="1.0.0" />
-    <ConfigOverrides />
-    <EnvironmentOverrides CodePackageRef="code">
-      <EnvironmentVariable Name="SF.Access.CDbs_CDB_DATABASE_CONNECTION" Value="[SF.Access.CDbs_CDB_DATABASE_CONNECTION]" />
-    </EnvironmentOverrides>
-  </ServiceManifestImport>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SF.Access.MastersPkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides />
@@ -27,6 +21,20 @@
     <ConfigOverrides />
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Rfqs_ASPNETCORE_ENVIRONMENT]" />
+    </EnvironmentOverrides>
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="SF.Access.NprsPkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides />
+    <EnvironmentOverrides CodePackageRef="code">
+      <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Nprs_ASPNETCORE_ENVIRONMENT]" />
+    </EnvironmentOverrides>
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="SF.Access.AdsssPkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides />
+    <EnvironmentOverrides CodePackageRef="code">
+      <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Adsss_ASPNETCORE_ENVIRONMENT]" />
     </EnvironmentOverrides>
   </ServiceManifestImport>
 </ApplicationManifest>
