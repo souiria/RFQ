@@ -5,6 +5,7 @@
     <Parameter Name="SF.Access.Rfqs_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
     <Parameter Name="SF.Access.Nprs_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
     <Parameter Name="SF.Access.Adsss_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
+    <Parameter Name="SF.Access.CPDs_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -35,6 +36,13 @@
     <ConfigOverrides />
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Adsss_ASPNETCORE_ENVIRONMENT]" />
+    </EnvironmentOverrides>
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="SF.Access.CPDsPkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides />
+    <EnvironmentOverrides CodePackageRef="code">
+      <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.CPDs_ASPNETCORE_ENVIRONMENT]" />
     </EnvironmentOverrides>
   </ServiceManifestImport>
 </ApplicationManifest>

@@ -5,6 +5,7 @@
     <Parameter Name="SF.Access.Rfqs_InstanceCount" DefaultValue="-1" />
     <Parameter Name="SF.Access.Nprs_InstanceCount" DefaultValue="-1" />
     <Parameter Name="SF.Access.Adsss_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="SF.Access.CPDs_InstanceCount" DefaultValue="-1" />
   </Parameters>
   <Services>
     <!-- The section below creates instances of service types, when an instance of this 
@@ -29,6 +30,11 @@
     </Service>
     <Service Name="SF.Access.Adsss" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SF.Access.AdsssType" InstanceCount="[SF.Access.Adsss_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
+    <Service Name="SF.Access.CPDs" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="SF.Access.CPDsType" InstanceCount="[SF.Access.CPDs_InstanceCount]">
         <SingletonPartition />
       </StatelessService>
     </Service>
