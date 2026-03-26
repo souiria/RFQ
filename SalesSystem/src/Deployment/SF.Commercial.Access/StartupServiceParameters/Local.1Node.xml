@@ -11,5 +11,7 @@
     <Parameter Name="SF.Access.EDIs_InstanceCount" Value="1" />
     <Parameter Name="SF.Access.Purchasings_InstanceCount" Value="1" />
     <Parameter Name="SF.Access.Cores_InstanceCount" Value="1" />
+    <Parameter Name="SF.Access.CDbs_InstanceCount" Value="1" />
+    <Parameter Name="SF.Access.CAEs_InstanceCount" Value="1" />
   </Parameters>
 </StartupServices>

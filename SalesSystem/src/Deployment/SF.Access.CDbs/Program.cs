@@ -14,18 +14,18 @@ namespace SF.Access.CDbs
                 // When Service Fabric creates an instance of this service type,
                 // an instance of the class is created in this host process.
 
-                ServiceRuntime.RegisterServiceAsync("SF.Access.CDbType",
+                ServiceRuntime.RegisterServiceAsync("SF.Access.CDbsType",
                     context => new CDbs(context)).GetAwaiter().GetResult();
 
                 ServiceEventSource._Current.ServiceTypeRegistered(Environment.ProcessId, typeof(CDbs).Name);
 
-                // Prevents this host process from terminating so services keep running.
+                // Prevents this host process from terminating so services keeps running. 
                 Thread.Sleep(Timeout.Infinite);
             }
             catch (Exception e)
             {
-                string errorMessage = e.ToString();
-                ServiceEventSource._Current.ServiceHostInitializationFailed(errorMessage);
+                string exceptionString = e.ToString();
+                ServiceEventSource._Current.ServiceHostInitializationFailed(exceptionString);
                 throw;
             }
         }

@@ -37,6 +37,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SF.Access.Adsss\SF.Access.Adsss.csproj" />
+    <ProjectReference Include="..\SF.Access.CAEs\SF.Access.CAEs.csproj" />
+    <ProjectReference Include="..\SF.Access.CDbs\SF.Access.CDbs.csproj" />
     <ProjectReference Include="..\SF.Access.Cores\SF.Access.Cores.csproj" />
     <ProjectReference Include="..\SF.Access.CPDs\SF.Access.CPDs.csproj" />
     <ProjectReference Include="..\SF.Access.EDIs\SF.Access.EDIs.csproj" />

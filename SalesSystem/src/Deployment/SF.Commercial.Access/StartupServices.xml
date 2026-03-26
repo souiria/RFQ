@@ -11,6 +11,8 @@
     <Parameter Name="SF.Access.EDIs_InstanceCount" DefaultValue="-1" />
     <Parameter Name="SF.Access.Purchasings_InstanceCount" DefaultValue="-1" />
     <Parameter Name="SF.Access.Cores_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="SF.Access.CDbs_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="SF.Access.CAEs_InstanceCount" DefaultValue="-1" />
   </Parameters>
   <Services>
     <!-- The section below creates instances of service types, when an instance of this 
@@ -65,6 +67,16 @@
     </Service>
     <Service Name="SF.Access.Cores" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SF.Access.CoresType" InstanceCount="[SF.Access.Cores_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
+    <Service Name="SF.Access.CDbs" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="SF.Access.CDbsType" InstanceCount="[SF.Access.CDbs_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
+    <Service Name="SF.Access.CAEs" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="SF.Access.CAEsType" InstanceCount="[SF.Access.CAEs_InstanceCount]">
         <SingletonPartition />
       </StatelessService>
     </Service>
