@@ -9,5 +9,6 @@
     <Parameter Name="SF.Access.SFSs_ASPNETCORE_ENVIRONMENT" Value="Development" />
     <Parameter Name="SF.Access.Emacss_ASPNETCORE_ENVIRONMENT" Value="Development" />
     <Parameter Name="SF.Access.EDIs_ASPNETCORE_ENVIRONMENT" Value="Development" />
+    <Parameter Name="SF.Access.Purchasings_ASPNETCORE_ENVIRONMENT" Value="Development" />
   </Parameters>
 </Application>

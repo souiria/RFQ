@@ -44,6 +44,7 @@
       <ServiceLaunchUrl>https://localhost:{ServicePort}/</ServiceLaunchUrl>
     </ProjectReference>
     <ProjectReference Include="..\SF.Access.Nprs\SF.Access.Nprs.csproj" />
+    <ProjectReference Include="..\SF.Access.Purchasings\SF.Access.Purchasings.csproj" />
     <ProjectReference Include="..\SF.Access.Rfqs\SF.Access.Rfqs.csproj" />
     <ProjectReference Include="..\SF.Access.SFSs\SF.Access.SFSs.csproj" />
   </ItemGroup>

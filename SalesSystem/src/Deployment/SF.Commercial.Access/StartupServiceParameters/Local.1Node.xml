@@ -9,5 +9,6 @@
     <Parameter Name="SF.Access.SFSs_InstanceCount" Value="1" />
     <Parameter Name="SF.Access.Emacss_InstanceCount" Value="1" />
     <Parameter Name="SF.Access.EDIs_InstanceCount" Value="1" />
+    <Parameter Name="SF.Access.Purchasings_InstanceCount" Value="1" />
   </Parameters>
 </StartupServices>
