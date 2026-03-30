@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Server.Kestrel.Core;
-
 namespace SF.Client.Rfqs
 {
     /// <summary>
