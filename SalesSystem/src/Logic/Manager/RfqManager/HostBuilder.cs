@@ -63,7 +63,8 @@
             });
             builder.Services.AddGrpcClient<Rfq.Rfq.RfqClient>(o =>
             {
-                o.Address = new Uri("https://localhost:7116");
+                /*o.Address = new Uri("https://localhost:7116"); */
+                o.Address = new Uri("https://tddasdev001.sews-tdd.com:37002");
             }).ConfigureChannel(options =>
             {
                 options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB

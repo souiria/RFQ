@@ -1,3 +1,6 @@
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
+
 namespace SF.Access.Rfqs
 {
     /// <summary>
@@ -33,12 +36,28 @@ namespace SF.Access.Rfqs
                                         int port = serviceContext.CodePackageActivationContext.GetEndpoint("ServiceEndpoint").Port;
                                         opt.Listen(IPAddress.IPv6Any, port, listenOptions =>
                                         {
-#if DEBUG
-                                          listenOptions.Protocols = HttpProtocols.Http1AndHttp2;  //listenOptions.UseHttps(GetCertificateFromStore());
-#else
-                                            //listenOptions.UseHttps(FindMatchingCertificateBySubject("*.sews-e.com"));
-#endif
-                                            listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+                                             // ------------------------------
+                                // Load certificate from DataPackage
+                                // ------------------------------
+                                string certPath = Path.Combine(
+                                    serviceContext.CodePackageActivationContext
+                                        .GetDataPackageObject("Certificates").Path,
+                                    "grpc-test.pfx");
+
+                                X509Certificate2 cert = X509CertificateLoader.LoadPkcs12FromFile(
+                                    certPath,
+                                    "123456",
+                                    X509KeyStorageFlags.MachineKeySet |
+                                    X509KeyStorageFlags.PersistKeySet |
+                                    X509KeyStorageFlags.Exportable);
+
+                                listenOptions.UseHttps(cert);
+
+                                // ------------------------------
+                                // ALLOW HTTP/1.1 and HTTP/2 (ALPN)
+                                // Required for Postman, .NET, curl, gRPC
+                                // ------------------------------
+                                listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
                                         });
                                     })
                                     .UseContentRoot(Directory.GetCurrentDirectory())
