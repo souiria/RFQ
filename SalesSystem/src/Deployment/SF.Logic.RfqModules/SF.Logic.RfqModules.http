@@ -1,0 +1,6 @@
+@SF.Logic.RfqModules_HostAddress = http://localhost:5110
+
+GET {{SF.Logic.RfqModules_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

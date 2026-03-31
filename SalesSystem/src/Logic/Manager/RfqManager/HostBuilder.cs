@@ -59,11 +59,11 @@
             builder.Services.AddSingleton<IRfqManagerService, RfqManagerService>();
             builder.Services.AddGrpcClient<MasterClient>(o =>
             {
-                o.Address = new Uri("https://localhost:7101");
+                o.Address = new Uri("https://localhost:37001");
             });
             builder.Services.AddGrpcClient<Rfq.Rfq.RfqClient>(o =>
             {
-                o.Address = new Uri("https://localhost:7116");
+                o.Address = new Uri("https://localhost:37002");
             }).ConfigureChannel(options =>
             {
                 options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
@@ -91,7 +91,7 @@
 
             builder.Services.AddGrpcClient<Emacs.Emacs.EmacsClient>(o =>
             {
-                o.Address = new Uri("https://localhost:7285");
+                o.Address = new Uri("https://localhost:37010");
             })
             .ConfigureChannel(options =>
             {
@@ -112,15 +112,15 @@
             });
             builder.Services.AddGrpcClient<Adss.AdssGrpc.AdssGrpcClient>(o =>
             {
-                o.Address = new Uri("https://localhost:7117");
+                o.Address = new Uri("https://localhost:37004");
             });
             builder.Services.AddGrpcClient<NPR.NPR.NPRClient>(o =>
             {
-                o.Address = new Uri("https://localhost:7265");
+                o.Address = new Uri("https://localhost:37003");
             });
             builder.Services.AddGrpcClient<CPD.CPD.CPDClient>(o =>
             {
-                o.Address = new Uri("https://localhost:7166");
+                o.Address = new Uri("https://localhost:37006");
             });
 
             // whatever you set after this is bs
