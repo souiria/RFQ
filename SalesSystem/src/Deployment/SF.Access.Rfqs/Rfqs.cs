@@ -30,45 +30,58 @@ namespace SF.Access.Rfqs
                         WebApplicationBuilder builder = WebApplication.CreateBuilder();
 
                         builder.Services.AddSingleton(serviceContext);
-                        builder.WebHost
-                                    .UseKestrel(opt =>
+                      builder.WebHost
+                                .UseKestrel(opt =>
+                                {
+                                    int port = serviceContext.CodePackageActivationContext.GetEndpoint("ServiceEndpoint").Port;
+
+                                    opt.Listen(IPAddress.Any, port, listenOptions =>
                                     {
-                                        int port = serviceContext.CodePackageActivationContext.GetEndpoint("ServiceEndpoint").Port;
-                                        opt.Listen(IPAddress.IPv6Any, port, listenOptions =>
-                                        {
-                                             // ------------------------------
-                                // Load certificate from DataPackage
-                                // ------------------------------
-                                string certPath = Path.Combine(
-                                    serviceContext.CodePackageActivationContext
-                                        .GetDataPackageObject("Certificates").Path,
-                                    "grpc-test.pfx");
+                                        string certPath = Path.Combine(
+                                            serviceContext.CodePackageActivationContext
+                                                .GetDataPackageObject("Certificates").Path,
+                                            "grpc-test.pfx");
 
-                                X509Certificate2 cert = X509CertificateLoader.LoadPkcs12FromFile(
-                                    certPath,
-                                    "123456",
-                                    X509KeyStorageFlags.MachineKeySet |
-                                    X509KeyStorageFlags.PersistKeySet |
-                                    X509KeyStorageFlags.Exportable);
+                                        X509Certificate2 cert = X509CertificateLoader.LoadPkcs12FromFile(
+                                            certPath,
+                                            "123456",
+                                            X509KeyStorageFlags.MachineKeySet |
+                                            X509KeyStorageFlags.PersistKeySet |
+                                            X509KeyStorageFlags.Exportable);
 
-                                listenOptions.UseHttps(cert);
+                                        listenOptions.UseHttps(cert);
+                                        listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+                                    });
+                                })
+                                .UseContentRoot(Directory.GetCurrentDirectory())
+                                               .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.UseUniqueServiceUrl);
 
-                                // ------------------------------
-                                // ALLOW HTTP/1.1 and HTTP/2 (ALPN)
-                                // Required for Postman, .NET, curl, gRPC
-                                // ------------------------------
-                                listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
-                                        });
-                                    })
-                                    .UseContentRoot(Directory.GetCurrentDirectory())
-                                    .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
-                                    .UseUrls(url);
+                            string pathBase = "/"; // default root
 
-                        
-                        return Rfq.HostBuilder.CreateApp(builder, url);
+                            int schemeSep = url.IndexOf("://", StringComparison.Ordinal);
+
+if (schemeSep < 0)
+{
+    return Rfq.HostBuilder.CreateApp(builder, pathBase);
+}
+
+// Find the next slash AFTER scheme (after host:port)
+int nextSlash = url.IndexOf('/', schemeSep + 3);
+
+// If no slash, skip parsing
+if (nextSlash < 0)
+{
+    return Rfq.HostBuilder.CreateApp(builder, pathBase);
+}
+
+// Extract pathBase
+pathBase = url.Substring(nextSlash);
+
+// Pass to Access HostBuilder
+return Rfq.HostBuilder.CreateApp(builder, pathBase);
 
                     }))
-            };
+                   };
         }
 
         /// <summary>

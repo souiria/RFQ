@@ -5,27 +5,20 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
         public static WebApplication CreateApp(WebApplicationBuilder? builder = null, params string[] args)
         {
-
             builder ??= WebApplication.CreateBuilder(args);
 
             #region Builder
 
             #region Kestrel
-            // ===== KESTREL CONFIGURATION =====
             builder.WebHost.ConfigureKestrel(options =>
             {
-                // Increase message size limits
-                options.Limits.MaxRequestBodySize = 64 * 1024 * 1024; // 256 MB
-
-                // Increase timeouts
+                options.Limits.MaxRequestBodySize = 64 * 1024 * 1024;
                 options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10);
                 options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(5);
-
-                // Disable minimum data rate (important for large/slow responses)
                 options.Limits.MinResponseDataRate = null;
                 options.Limits.MinRequestBodyDataRate = null;
 
-                // HTTP/2 specific settings
+                // HTTP/2 settings
                 options.Limits.Http2.MaxStreamsPerConnection = 100;
                 options.Limits.Http2.HeaderTableSize = 4096;
                 options.Limits.Http2.MaxFrameSize = 16384;
@@ -43,97 +36,91 @@
 
             builder.Services.AddEndpointsApiExplorer();
 
-            // *********************************************************************
-            // Add additional generic services here (anything ServiceFabric specific
-            // should go in Api.cs CreateServiceInstanceListeners method)
-            // *********************************************************************
-
             #region Additional Services
 
             builder.Logging.AddSeq();
+
             builder.Services.AddGrpc(options =>
             {
-                options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
-                options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
-            });
-            builder.Services.AddSingleton<IRfqManagerService, RfqManagerService>();
-            builder.Services.AddGrpcClient<MasterClient>(o =>
-            {
-                //o.Address = new Uri("https://localhost:7101");
-                o.Address = new Uri("https://localhost:37001");
-            });
-            builder.Services.AddGrpcClient<Rfq.Rfq.RfqClient>(o =>
-            {
-                /*o.Address = new Uri("https://localhost:7116"); */
-                o.Address = new Uri("https://localhost:37002");
-            }).ConfigureChannel(options =>
-            {
-                options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
-                options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
-            })
-            .ConfigurePrimaryHttpMessageHandler(() =>
-            new SocketsHttpHandler
-            {
-                PooledConnectionIdleTimeout = Timeout.InfiniteTimeSpan,
-                KeepAlivePingDelay = TimeSpan.FromSeconds(60),
-                KeepAlivePingTimeout = TimeSpan.FromSeconds(30),
-                EnableMultipleHttp2Connections = true
-            })
-            .ConfigureHttpClient(client =>
-            {
-                client.Timeout = TimeSpan.FromSeconds(600); // 60 seconds timeout
+                options.MaxReceiveMessageSize = 64 * 1024 * 1024;
+                options.MaxSendMessageSize = 64 * 1024 * 1024;
             });
 
-            // Configure resilience policy to allow longer timeouts
+            builder.Services.AddSingleton<IRfqManagerService, RfqManagerService>();
+
+            // -----------------------------
+            //  RFQ ACCESS CLIENT (FIXED)
+            // -----------------------------
+            builder.Services.AddGrpcClient<Rfq.Rfq.RfqClient>(o =>
+            {
+                o.Address = new Uri("https://tddasdev001.sews-tdd.com:37002");
+            })
+  .ConfigurePrimaryHttpMessageHandler(() =>
+  {
+      return new SocketsHttpHandler
+      {
+          // No override needed because certificate is trusted
+          PooledConnectionIdleTimeout = Timeout.InfiniteTimeSpan,
+          KeepAlivePingDelay = TimeSpan.FromSeconds(60),
+          KeepAlivePingTimeout = TimeSpan.FromSeconds(30),
+          EnableMultipleHttp2Connections = true
+      };
+  })
+  .ConfigureChannel(options =>
+  {
+      options.MaxReceiveMessageSize = 64 * 1024 * 1024;
+      options.MaxSendMessageSize = 64 * 1024 * 1024;
+  })
+  .ConfigureHttpClient(client =>
+  {
+      client.Timeout = TimeSpan.FromSeconds(600);
+  });
+
+            // Long timeouts for RFQ
             builder.Services.Configure<HttpStandardResilienceOptions>("GrpcClient.Rfq.Rfq+RfqClient", options =>
             {
                 options.TotalRequestTimeout.Timeout = TimeSpan.FromMinutes(10);
                 options.AttemptTimeout.Timeout = TimeSpan.FromMinutes(5);
             });
 
+            // -------------- Other clients unchanged --------------
+            builder.Services.AddGrpcClient<MasterClient>(o =>
+            {
+                o.Address = new Uri("http://localhost:37001");
+            });
+
             builder.Services.AddGrpcClient<Emacs.Emacs.EmacsClient>(o =>
             {
-                //o.Address = new Uri("https://localhost:7285");
-                o.Address = new Uri("https://localhost:37010");
-            })
-            .ConfigureChannel(options =>
-            {
-                options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
-                options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
+                o.Address = new Uri("http://localhost:37010");
             })
             .ConfigurePrimaryHttpMessageHandler(() =>
-            new SocketsHttpHandler
             {
-                PooledConnectionIdleTimeout = Timeout.InfiniteTimeSpan,
-                KeepAlivePingDelay = TimeSpan.FromSeconds(60),
-                KeepAlivePingTimeout = TimeSpan.FromSeconds(30),
-                EnableMultipleHttp2Connections = true
-            })
-            .ConfigureHttpClient(client =>
-            {
-                client.Timeout = TimeSpan.FromSeconds(600); // 60 seconds timeout
+                return new SocketsHttpHandler
+                {
+                    PooledConnectionIdleTimeout = Timeout.InfiniteTimeSpan,
+                    KeepAlivePingDelay = TimeSpan.FromSeconds(60),
+                    KeepAlivePingTimeout = TimeSpan.FromSeconds(30),
+                    EnableMultipleHttp2Connections = true
+                };
             });
+
             builder.Services.AddGrpcClient<Adss.AdssGrpc.AdssGrpcClient>(o =>
             {
-                //o.Address = new Uri("https://localhost:7117");
                 o.Address = new Uri("https://localhost:37004");
             });
+
             builder.Services.AddGrpcClient<NPR.NPR.NPRClient>(o =>
             {
-                //o.Address = new Uri("https://localhost:7265");
-                o.Address = new Uri("https://localhost:37003");
+                o.Address = new Uri("http://localhost:37003");
             });
+
             builder.Services.AddGrpcClient<CPD.CPD.CPDClient>(o =>
             {
-                //o.Address = new Uri("https://localhost:7166");µ
-                 o.Address = new Uri("https://localhost:37006");
+                o.Address = new Uri("http://localhost:37006");
             });
 
-            // whatever you set after this is bs
             builder.AddServiceDefaults();
-
             builder.Services.AddInfrastructure();
-
             #endregion
 
             #endregion
@@ -142,14 +129,13 @@
 
             WebApplication app = builder.Build();
 
-            // Log that the RfqManager service has started
-            ILogger<WebApplication> logger = app.Services.GetRequiredService<ILogger<WebApplication>>();
-#pragma warning disable CA1848 // Use the LoggerMessage delegates
-            logger.LogInformation("RfqManager service started successfully at {Timestamp}. Environment: {Environment}, Service: {ServiceName}", 
-                DateTime.UtcNow, 
-                app.Environment.EnvironmentName, 
-                "RfqManager");
-#pragma warning restore CA1848 // Use the LoggerMessage delegates
+            ILogger<WebApplication> logger = app.Services
+                .GetRequiredService<ILogger<WebApplication>>();
+
+            //logger.LogInformation(
+            //    "RfqManager service started at {Timestamp}. Environment: {Environment}" + 
+            //    DateTime.UtcNow +
+            //    app.Environment.EnvironmentName);
 
             if (app.Environment.IsDevelopment())
             {
@@ -161,12 +147,10 @@
                 app.UseHsts();
             }
 
-            GrpcWebOptions grpcWebOptions = new GrpcWebOptions();
-            grpcWebOptions.DefaultEnabled = true;
-            app.UseGrpcWeb(grpcWebOptions);
+            app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
             app.MapGrpcService<RfqGrpcService>();
-            app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
-            
+            app.MapGet("/", () =>
+                "RFQ Manager running. gRPC calls available.");
 
             #endregion
 

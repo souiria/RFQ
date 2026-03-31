@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ServiceManifest Name="SF.Access.RfqsPkg"
-                 Version="1.0.2"
+                 Version="2.0.2"
                  xmlns="http://schemas.microsoft.com/2011/01/fabric"
                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -9,8 +9,7 @@
     <StatelessServiceType ServiceTypeName="SF.Access.RfqsType" />
   </ServiceTypes>
 
-  <!-- Code package -->
-  <CodePackage Name="Code" Version="1.0.2">
+  <CodePackage Name="Code" Version="2.0.2">
     <EntryPoint>
       <ExeHost>
         <Program>SF.Access.Rfqs.exe</Program>
@@ -21,14 +20,9 @@
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="" />
     </EnvironmentVariables>
   </CodePackage>
+  <ConfigPackage Name="Config" Version="2.0.2" />
+  <DataPackage Name="Certificates" Version="2.0.0" />
 
-  <!-- Config package -->
-  <ConfigPackage Name="Config" Version="1.0.2" />
-
-  <!-- ADD THIS: Certificates DataPackage -->
-  <DataPackage Name="Certificates" Version="1.0.2" />
-
-  <!-- Resources -->
   <Resources>
     <Endpoints>
       <Endpoint Protocol="https" Name="ServiceEndpoint" Type="Input" Port="37002" />
