@@ -104,10 +104,42 @@
                                   Margin="Margin.Dense" />
                 </MudItem>
                 <MudItem xs="3">
-                    <MudTextField @bind-Value="NprRequest.SupplierGroup"
+                    <MudAutocomplete T="SupplierGroupUxModel"
+                                     @ref="_SupplierGroupAutocomplete"
+                                     @bind-Value="SelectedSupplierGroup"
+                                     Label="Supplier Group"
+                                     Placeholder="Search supplier group..."
+                                     SearchFunc="@SearchSupplierGroups"
+                                     ToStringFunc="@(sg => sg?.SupplierGroupName ?? "")"
+                                     Strict="false"
+                                     ResetValueOnEmptyText="false"
+                                     CoerceText="true"
+                                     CoerceValue="true"
+                                     SelectValueOnTab="true"
+                                     AdornmentIcon="@Icons.Material.Filled.Business"
+                                     AdornmentColor="Color.Primary"
+                                     Variant="Variant.Outlined"
+                                     Margin="Margin.Dense"
+                                     Clearable="true"
+                                     DebounceInterval="250"
+                                     MinCharacters="0"
+                                     ShowProgressIndicator="true"
+                                     MaxItems="50">
+                        <ItemTemplate Context="supplierGroup">
+                            <MudText Typo="Typo.body2">
+                                <strong>@supplierGroup.SupplierGroupName</strong>
+                            </MudText>
+                        </ItemTemplate>
+                        <NoItemsTemplate>
+                            <MudText Typo="Typo.body2" Align="Align.Center" Class="pa-2">
+                                No supplier groups found.
+                            </MudText>
+                        </NoItemsTemplate>
+                    </MudAutocomplete>
+@*                     <MudTextField @bind-Value="NprRequest.SupplierGroup"
                                   Label="Supplier Group"
                                   Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" />
+                                  Margin="Margin.Dense" /> *@
                 </MudItem>
 
                 @* Row 7: Quantities *@
@@ -203,10 +235,42 @@
                                   Margin="Margin.Dense" />
                 </MudItem>
                 <MudItem xs="4">
-                    <MudTextField @bind-Value="NprRequest.SuggestedManufacturer"
+                    <MudAutocomplete T="SupplierUxModel"
+                                     @ref="_SupplierAutocomplete"
+                                     @bind-Value="SelectedSupplier"
+                                     Label="Supplier"
+                                     Placeholder="Search supplier..."
+                                     SearchFunc="@SearchSuppliers"
+                                     ToStringFunc="@(sg => sg?.SupplierName ?? "")"
+                                     Strict="false"
+                                     ResetValueOnEmptyText="false"
+                                     CoerceText="true"
+                                     CoerceValue="true"
+                                     SelectValueOnTab="true"
+                                     AdornmentIcon="@Icons.Material.Filled.Business"
+                                     AdornmentColor="Color.Primary"
+                                     Variant="Variant.Outlined"
+                                     Margin="Margin.Dense"
+                                     Clearable="true"
+                                     DebounceInterval="250"
+                                     MinCharacters="0"
+                                     ShowProgressIndicator="true"
+                                     MaxItems="50">
+                        <ItemTemplate Context="supplier">
+                            <MudText Typo="Typo.body2">
+                                <strong>@supplier.SupplierName</strong>
+                            </MudText>
+                        </ItemTemplate>
+                        <NoItemsTemplate>
+                            <MudText Typo="Typo.body2" Align="Align.Center" Class="pa-2">
+                                No supplier found.
+                            </MudText>
+                        </NoItemsTemplate>
+                    </MudAutocomplete>
+                    @* <MudTextField @bind-Value="NprRequest.SuggestedManufacturer"
                                   Label="Suggested Manufacturer"
                                   Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" />
+                                  Margin="Margin.Dense" /> *@
                 </MudItem>
             </MudGrid>
         </MudForm>

@@ -1,0 +1,6 @@
+@SF.Client.Rfqs_HostAddress = http://localhost:5171
+
+GET {{SF.Client.Rfqs_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -109,6 +109,20 @@
             return response;
         }
 
+        public override async Task<GetAllSuppliersGrpcResponse> GetAllSuppliersGrpc(GetAllSuppliersGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetAllSuppliersGrpc starting");
+            GetAllSuppliersGrpcResponse response = await _RfqManagerService.GetAllSuppliersGrpc(request);
+            return response;
+        }
+
+        public override async Task<GetAllSupplierGroupsGrpcResponse> GetAllSupplierGroupsGrpc(GetAllSupplierGroupsGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetAllSupplierGroupsGrpc starting");
+            GetAllSupplierGroupsGrpcResponse response = await _RfqManagerService.GetAllSupplierGroupsGrpc(request);
+            return response;
+        }
+
         public override async Task<FilterGrpcResponse> FilterGrpc(FilterGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("FilterGrpc starting");

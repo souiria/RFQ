@@ -1348,6 +1348,41 @@
 
             return response;
         }
+
+        public async Task<GetAllSuppliersGrpcResponse> GetAllSuppliersGrpc(GetAllSuppliersGrpcRequest request)
+        {
+            await Task.Delay(0);
+            GetAllSuppliersGrpcResponse response = new GetAllSuppliersGrpcResponse();
+            SupplierGrpcRequest accessRequest = new SupplierGrpcRequest();
+            accessRequest.Position = request.Position;
+            accessRequest.Takeamount = request.Take;
+            ListSupplierGrpc accessResponse = await _MasterClient.GetSupplierGrpcAsync(accessRequest);
+            foreach (Master.SupplierGrpc? supplier in accessResponse.SupplierGrpc)
+            {
+                SupplierGrpc supplierGrpc = supplier.ToSupplierGrpc();
+                response.SupplierGrpc.Add(supplierGrpc);
+            }
+
+            return response;
+        }
+
+        public async Task<GetAllSupplierGroupsGrpcResponse> GetAllSupplierGroupsGrpc(GetAllSupplierGroupsGrpcRequest request)
+        {
+            await Task.Delay(0);
+            GetAllSupplierGroupsGrpcResponse response = new GetAllSupplierGroupsGrpcResponse();
+            SupplierGroupGrpcRequest accessRequest = new SupplierGroupGrpcRequest();
+            accessRequest.Position = request.Position;
+            accessRequest.Takeamount = request.Take;
+            ListSupplierGroupGrpc accessResponse = await _MasterClient.GetSupplierGroupGrpcAsync(accessRequest);
+            foreach(Master.SupplierGroupGrpc? supplierGroup in accessResponse.SupplierGroupGrpc)
+            {
+                SupplierGroupGrpc supplierGroupGrpc = supplierGroup.ToSupplierGroupGrpc();
+                response.SupplierGroupGrpc.Add(supplierGroupGrpc);
+            }
+
+            return response;
+        }
+
         #region Filtering
 
         public Task<FilterGrpcResponse> FilterByCustomerId(FilterGrpcRequest request)

@@ -53,7 +53,11 @@
             // -----------------------------
             builder.Services.AddGrpcClient<Rfq.Rfq.RfqClient>(o =>
             {
-                o.Address = new Uri("https://tddasdev001.sews-tdd.com:37002");
+                o.Address = new Uri("https://localhost:7116");
+            }).ConfigureChannel(options =>
+            {
+                options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
+                options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
             })
   .ConfigurePrimaryHttpMessageHandler(() =>
   {
@@ -91,7 +95,7 @@
 
             builder.Services.AddGrpcClient<Emacs.Emacs.EmacsClient>(o =>
             {
-                o.Address = new Uri("http://localhost:37010");
+                o.Address = new Uri("https://localhost:7285");
             })
             .ConfigurePrimaryHttpMessageHandler(() =>
             {
@@ -111,12 +115,12 @@
 
             builder.Services.AddGrpcClient<NPR.NPR.NPRClient>(o =>
             {
-                o.Address = new Uri("http://localhost:37003");
+                o.Address = new Uri("https://localhost:7265");
             });
 
             builder.Services.AddGrpcClient<CPD.CPD.CPDClient>(o =>
             {
-                o.Address = new Uri("http://localhost:37006");
+                o.Address = new Uri("https://localhost:7166");
             });
 
             builder.AddServiceDefaults();
