@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SF.Commercial.AccessType" ApplicationTypeVersion="2.0.2" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SF.Commercial.AccessType" ApplicationTypeVersion="1.0.1" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="SF.Access.Masters_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
     <Parameter Name="SF.Access.Rfqs_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
@@ -25,14 +25,14 @@
     </EnvironmentOverrides>
   </ServiceManifestImport>
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SF.Access.RfqsPkg" ServiceManifestVersion="2.0.2" />
+    <ServiceManifestRef ServiceManifestName="SF.Access.RfqsPkg" ServiceManifestVersion="1.0.1" />
     <ConfigOverrides />
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Rfqs_ASPNETCORE_ENVIRONMENT]" />
     </EnvironmentOverrides>
   </ServiceManifestImport>
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SF.Access.NprsPkg" ServiceManifestVersion="1.0.2" />
+    <ServiceManifestRef ServiceManifestName="SF.Access.NprsPkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides />
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Nprs_ASPNETCORE_ENVIRONMENT]" />
@@ -88,7 +88,7 @@
     </EnvironmentOverrides>
   </ServiceManifestImport>
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SF.Access.CDbsPkg" ServiceManifestVersion="1.0.1" />
+    <ServiceManifestRef ServiceManifestName="SF.Access.CDbsPkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides />
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.CDbs_ASPNETCORE_ENVIRONMENT]" />

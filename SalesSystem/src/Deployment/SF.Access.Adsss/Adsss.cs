@@ -34,11 +34,11 @@ namespace SF.Access.Adsss
                                         opt.Listen(IPAddress.IPv6Any, port, listenOptions =>
                                         {
 #if DEBUG
-                                          listenOptions.Protocols = HttpProtocols.Http1AndHttp2;  //listenOptions.UseHttps(GetCertificateFromStore());
+                                          listenOptions.Protocols = HttpProtocols.Http2;  //listenOptions.UseHttps(GetCertificateFromStore());
 #else
                                             //listenOptions.UseHttps(FindMatchingCertificateBySubject("*.sews-e.com"));
 #endif
-                                            listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+                                            listenOptions.Protocols = HttpProtocols.Http2;
                                         });
                                     })
                                     .UseContentRoot(Directory.GetCurrentDirectory())

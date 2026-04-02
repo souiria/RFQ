@@ -30,58 +30,28 @@ namespace SF.Access.Rfqs
                         WebApplicationBuilder builder = WebApplication.CreateBuilder();
 
                         builder.Services.AddSingleton(serviceContext);
-                      builder.WebHost
-                                .UseKestrel(opt =>
-                                {
-                                    int port = serviceContext.CodePackageActivationContext.GetEndpoint("ServiceEndpoint").Port;
-
-                                    opt.Listen(IPAddress.Any, port, listenOptions =>
+                        builder.WebHost
+                                    .UseKestrel(opt =>
                                     {
-                                        string certPath = Path.Combine(
-                                            serviceContext.CodePackageActivationContext
-                                                .GetDataPackageObject("Certificates").Path,
-                                            "grpc-test.pfx");
+                                        int port = serviceContext.CodePackageActivationContext.GetEndpoint("ServiceEndpoint").Port;
+                                        opt.Listen(IPAddress.IPv6Any, port, listenOptions =>
+                                        {
+#if DEBUG
+                                          listenOptions.Protocols = HttpProtocols.Http2;  //listenOptions.UseHttps(GetCertificateFromStore());
+#else
+                                            //listenOptions.UseHttps(FindMatchingCertificateBySubject("*.sews-e.com"));
+#endif
+                                            listenOptions.Protocols = HttpProtocols.Http2;
+                                        });
+                                    })
+                                    .UseContentRoot(Directory.GetCurrentDirectory())
+                                    .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
+                                    .UseUrls(url);
 
-                                        X509Certificate2 cert = X509CertificateLoader.LoadPkcs12FromFile(
-                                            certPath,
-                                            "123456",
-                                            X509KeyStorageFlags.MachineKeySet |
-                                            X509KeyStorageFlags.PersistKeySet |
-                                            X509KeyStorageFlags.Exportable);
-
-                                        listenOptions.UseHttps(cert);
-                                        listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
-                                    });
-                                })
-                                .UseContentRoot(Directory.GetCurrentDirectory())
-                                               .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.UseUniqueServiceUrl);
-
-                            string pathBase = "/"; // default root
-
-                            int schemeSep = url.IndexOf("://", StringComparison.Ordinal);
-
-if (schemeSep < 0)
-{
-    return Rfq.HostBuilder.CreateApp(builder, pathBase);
-}
-
-// Find the next slash AFTER scheme (after host:port)
-int nextSlash = url.IndexOf('/', schemeSep + 3);
-
-// If no slash, skip parsing
-if (nextSlash < 0)
-{
-    return Rfq.HostBuilder.CreateApp(builder, pathBase);
-}
-
-// Extract pathBase
-pathBase = url.Substring(nextSlash);
-
-// Pass to Access HostBuilder
-return Rfq.HostBuilder.CreateApp(builder, pathBase);
+                        return Rfq.HostBuilder.CreateApp(builder, url);
 
                     }))
-                   };
+            };
         }
 
         /// <summary>

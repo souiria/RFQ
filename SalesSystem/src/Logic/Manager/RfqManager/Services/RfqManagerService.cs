@@ -220,8 +220,7 @@
                 RfqFilterRequest reasonFilterRequest = new RfqFilterRequest();
                 reasonFilterRequest.DatabaseList = "RFQREASONGRPC";
                 reasonFilterRequest.FilterExpression = "ReasonTitle != null && ReasonTitle != \"\"";
-
-                RfqFilterResponse reasonFilterResponse = _RfqClient.FilterRfqGrpc(reasonFilterRequest);
+               RfqFilterResponse reasonFilterResponse = _RfqClient.FilterRfqGrpc(reasonFilterRequest);
 
                 ListRfqReasonGrpc rfqReasons = reasonFilterResponse.ListRfqReasonGrpc ?? new ListRfqReasonGrpc();
 
@@ -1633,7 +1632,7 @@
             }
             else if (filterOpperator == ".Contains")
             {
-                filterExpression = $"{filterType} != null && {filterType}.ToUpperInvariant(){filterOpperator}(\"{partNumber.ToUpperInvariant()}\")";
+                filterExpression = $"{filterType} != null &&RFQREASONGRPC {filterType}.ToUpperInvariant(){filterOpperator}(\"{partNumber.ToUpperInvariant()}\")";
             }
             else
             {

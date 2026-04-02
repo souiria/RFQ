@@ -2,15 +2,10 @@
 {
     public static class HostBuilder
     {
+        public static WebApplication CreateApp(WebApplicationBuilder? builder = null, params string[] args)
+        {
 
-        public static WebApplication CreateApp(
-               WebApplicationBuilder? builder = null,
-               string? pathBase = "/",
-               string[]? args = null)
-                    {
-
-            args ??= Array.Empty<string>();
-             builder ??= WebApplication.CreateBuilder(args);
+            builder ??= WebApplication.CreateBuilder(args);
 
             #region Builder
             #region Kestrel
@@ -50,16 +45,6 @@
             builder.Services.AddSingleton<IRfqAccessService, RfqAccessService>();
             builder.Services.AddHostedService<DataImportSchedulerService>();
 
-            builder.Services.AddCors(options =>
-            {
-                options.AddDefaultPolicy(policy =>
-                {
-                    policy.AllowAnyHeader()
-                          .AllowAnyMethod()
-                          .AllowAnyOrigin();
-                });
-            });
-
             #endregion
 
             #endregion
@@ -82,21 +67,11 @@
                 app.UseHsts();
             }
 
-            if (!string.IsNullOrEmpty(pathBase) && pathBase != "/")
-            {
-                app.UsePathBase(pathBase);
-            }
-
-            app.UseRouting();
-            app.UseCors();
             GrpcWebOptions grpcWebOptions = new GrpcWebOptions();
             grpcWebOptions.DefaultEnabled = true;
             app.UseGrpcWeb(grpcWebOptions);
-  
-            app.MapGrpcService<RfqGrpcService>()
-             .EnableGrpcWeb();
-   
-            app.MapGet("/", () => "RFQ AccessService running with HTTPS and gRPC-W");
+            app.MapGrpcService<RfqGrpcService>();
+            app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
             #endregion
 
             return app;
