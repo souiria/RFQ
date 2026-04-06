@@ -143,6 +143,8 @@ function Read-XmlElementAsHashtable
     return $hashtable
 }
 
+
+
 function Read-PublishProfile
 {
     Param (
@@ -188,6 +190,23 @@ if (!$ApplicationPackagePath)
 }
 
 $ApplicationPackagePath = Resolve-Path $ApplicationPackagePath
+$PublishProfileFile = Resolve-Path $PublishProfileFile
+
+# --- FIX: Ensure PublishProfileFile is a FILE, not a folder ---
+if (Test-Path $PublishProfileFile -PathType Container)
+{
+    $xmlFiles = Get-ChildItem $PublishProfileFile -Filter *.xml
+    if ($xmlFiles.Count -eq 1)
+    {
+        $PublishProfileFile = $xmlFiles[0].FullName
+    }
+    else
+    {
+        throw "PublishProfileFile resolved to a directory and a single .xml file could not be determined."
+    }
+}
+
+Write-Host "Using PublishProfileFile: $PublishProfileFile"
 
 $publishProfile = Read-PublishProfile $PublishProfileFile
 

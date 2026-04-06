@@ -7,8 +7,9 @@ namespace SF.Client.Rfqs
     {
         public Rfqs(StatelessServiceContext context)
             : base(context)
-        { }
-
+        { 
+        }
+  
         /// <summary>
         /// Optional override to create listeners (like tcp, http) for this service instance.
         /// </summary>

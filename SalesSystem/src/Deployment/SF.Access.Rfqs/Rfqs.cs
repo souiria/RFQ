@@ -26,9 +26,10 @@ namespace SF.Access.Rfqs
                     new KestrelCommunicationListener(serviceContext, "ServiceEndpoint", (url, listener) =>
                     {
                         ServiceEventSource._Current.ServiceMessage(serviceContext, $"Starting Kestrel on {url}");
+                       WebApplicationBuilder builder = WebApplication.CreateBuilder();
+                        //DataImportSchedulerService
 
-                        WebApplicationBuilder builder = WebApplication.CreateBuilder();
-
+                          builder.Services.AddHostedService<Rfq.Services.DataImportSchedulerService>();
                         builder.Services.AddSingleton(serviceContext);
                         builder.WebHost
                                     .UseKestrel(opt =>
@@ -47,8 +48,10 @@ namespace SF.Access.Rfqs
                                     .UseContentRoot(Directory.GetCurrentDirectory())
                                     .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
                                     .UseUrls(url);
-
-                        return Rfq.HostBuilder.CreateApp(builder, url);
+                       
+                        WebApplication app =Rfq.HostBuilder.CreateApp(builder, url);
+                    
+                        return app;
 
                     }))
             };

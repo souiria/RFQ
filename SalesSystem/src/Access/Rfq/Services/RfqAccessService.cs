@@ -5231,18 +5231,22 @@
         public async Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig, Action<IEnumerable<T>> setResponseCollection,
         CancellationToken cancellationToken)
         {
+            _Logger.GenericLogInformation($"III RfqAccessService.HandleFilterCase - Starting");
+            _Logger.GenericLogInformation($"III RfqAccessService.HandleFilterCase filterExpressionString : - {filterExpressionString}");
             Expression<Func<T, bool>> filterExpression = DynamicExpressionParser.ParseLambda<T, bool>(parsingConfig, false, filterExpressionString);
             Func<T, bool> compiledExpression = filterExpression.Compile();
             IEnumerable<T> filteredList = new List<T>();
             filteredList = await Filter(compiledExpression, cancellationToken);
             setResponseCollection(filteredList);
+            _Logger.GenericLogInformation($"III RfqAccessService.HandleFilterCase filteredList count : - {filteredList.Count()}");
         }
 
         public async Task<IEnumerable<T>> Filter<T>(Func<T, bool> func, CancellationToken cancellationToken)
         {
             return await Task.Run(() =>
             {
-                return typeof(T).Name.ToUpperInvariant() switch
+                _Logger.GenericLogInformation($"III RfqAccessService.Filter - Starting");
+                  return typeof(T).Name.ToUpperInvariant() switch
                 {
                     "RFQDRAWINGPARTNUMBERSGRPC" => _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Cast<T>().Where(func).ToList(),
                     "RFQREASONGRPC" => _ListRfqReasonsGrpc.RfqReasons.Cast<T>().Where(func).ToList(),

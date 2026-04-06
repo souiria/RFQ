@@ -4,9 +4,17 @@
     {
         public static WebApplication CreateApp(WebApplicationBuilder? builder = null, params string[] args)
         {
-
+            string dir = Directory.GetCurrentDirectory();
+        
             builder ??= WebApplication.CreateBuilder(args);
-
+            IConfigurationSection conf = builder.Configuration.GetSection("Logging");
+            builder.Configuration
+                .SetBasePath(dir)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddEnvironmentVariables();
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConfiguration(conf);
+            builder.Logging.AddSeq();
             #region Builder
             #region Kestrel
             builder.WebHost.ConfigureKestrel(options =>
