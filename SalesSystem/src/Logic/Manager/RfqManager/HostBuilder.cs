@@ -90,7 +90,7 @@
             // -------------- Other clients unchanged --------------
             builder.Services.AddGrpcClient<MasterClient>(o =>
             {
-                o.Address = new Uri("http://192.168.53.12:37001");
+                o.Address = new Uri("http://192.168.53.74:37001");
             });
 
             builder.Services.AddGrpcClient<Emacs.Emacs.EmacsClient>(o =>
