@@ -39,9 +39,7 @@
     <Content Include="StartupServiceParameters\Local.1Node.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SalesSystem\src\Deployment\SF.Client.Rfqs\SF.Client.Rfqs.csproj">
-      <ServiceLaunchUrl>https://localhost:{ServicePort}/</ServiceLaunchUrl>
-    </ProjectReference>
+    <ProjectReference Include="..\SF.Client.Rfqs\SF.Client.Rfqs.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <PropertyGroup>

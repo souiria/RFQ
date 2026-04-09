@@ -53,7 +53,7 @@
             // -----------------------------
             builder.Services.AddGrpcClient<Rfq.Rfq.RfqClient>(o =>
             {
-                o.Address = new Uri("http://192.168.53.79:37002");
+                o.Address = new Uri("https://ukhqh1uat.sews-e.com:37002");
             }).ConfigureChannel(options =>
             {
                 options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
@@ -90,12 +90,12 @@
             // -------------- Other clients unchanged --------------
             builder.Services.AddGrpcClient<MasterClient>(o =>
             {
-                o.Address = new Uri("http://192.168.53.74:37001");
+                o.Address = new Uri("https://ukhqh1uat.sews-e.com:37001");
             });
 
             builder.Services.AddGrpcClient<Emacs.Emacs.EmacsClient>(o =>
             {
-                o.Address = new Uri("http://192.168.53.74:37010");
+                o.Address = new Uri("https://ukhqh1uat.sews-e.com:37010");
             })
             .ConfigurePrimaryHttpMessageHandler(() =>
             {
@@ -110,17 +110,17 @@
 
             builder.Services.AddGrpcClient<Adss.AdssGrpc.AdssGrpcClient>(o =>
             {
-                o.Address = new Uri("http://192.168.53.73:37004");
+                o.Address = new Uri("https://ukhqh1uat.sews-e.com:37004");
             });
 
             builder.Services.AddGrpcClient<NPR.NPR.NPRClient>(o =>
             {
-                o.Address = new Uri("http://192.168.53.62:37003");
+                o.Address = new Uri("https://ukhqh1uat.sews-e.com:37003");
             });
 
             builder.Services.AddGrpcClient<CPD.CPD.CPDClient>(o =>
             {
-                o.Address = new Uri("http://192.168.53.72:37006");
+                o.Address = new Uri("https://ukhqh1uat.sews-e.com:37006");
             });
 
             builder.AddServiceDefaults();

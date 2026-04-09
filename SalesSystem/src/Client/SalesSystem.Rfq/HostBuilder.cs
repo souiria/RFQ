@@ -36,8 +36,8 @@
             builder.Services.AddRfqUxServices();
           builder.Services.AddGrpcClient<RfqModule.RfqModule.RfqModuleClient>(o =>
             {
-                //o.Address = new Uri("https://localhost:7207");
-        
+                o.Address = new Uri("https://ukhqh1uat.sews-e.com:38001");
+
             })
             .ConfigureChannel(options =>
             {

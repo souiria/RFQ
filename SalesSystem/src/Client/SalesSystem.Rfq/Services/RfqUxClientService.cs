@@ -58,7 +58,7 @@ namespace SalesSystem.Rfq.Services
         {
             _Logger = logger;
 
-            string serviceUrl = configuration["GrpcService:Url"] ?? "http://ukhqh1uat.sews-e.com:38001";
+            string serviceUrl = configuration["GrpcService:Url"] ?? "https://ukhqh1uat.sews-e.com:38001";
             int timeoutSeconds = configuration.GetValue("GrpcService:TimeoutSeconds", 120);
             _Timeout = TimeSpan.FromSeconds(300);
             _MAX_GRPC_RESPONSE_SIZE = 64 * 1024 * 1024;

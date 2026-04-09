@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\Client\SalesSystem.Rfq\SalesSystem.Rfq.csproj" />
+    <ProjectReference Include="..\..\Client\SalesSystem.Rfq\SalesSystem.Rfq.csproj" />
   </ItemGroup>
 
 </Project>
