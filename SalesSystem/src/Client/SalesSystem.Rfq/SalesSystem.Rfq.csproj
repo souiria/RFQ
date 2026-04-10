@@ -28,9 +28,6 @@
 	  <PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />	  
   </ItemGroup>
 
-
-
-
 	<Target Name="Tailwind" BeforeTargets="Compile">
 	<Exec Command="C:\Tailwind\tailwindcss.exe --input ./Styles/tailwind.css --output ./wwwroot/styles.css" />
   </Target>

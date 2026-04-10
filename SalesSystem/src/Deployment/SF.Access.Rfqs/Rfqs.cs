@@ -39,7 +39,7 @@ namespace SF.Access.Rfqs
                                         opt.Listen(IPAddress.IPv6Any, port, listenOptions =>
                                         {
                                             listenOptions.UseHttps(cert);
-                                            listenOptions.Protocols = HttpProtocols.Http2;
+                                            listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
                                         });
                                     })
                                     .UseContentRoot(Directory.GetCurrentDirectory())

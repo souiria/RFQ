@@ -1,4 +1,6 @@
-﻿namespace SalesSystem.Rfq
+﻿using Microsoft.AspNetCore.Hosting.StaticWebAssets;
+
+namespace SalesSystem.Rfq
 {
     public static class HostBuilder
     {
@@ -64,10 +66,12 @@
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles(); 
             app.UseRouting();
             app.UseAuthorization();
             app.UseAntiforgery();
-            app.MapStaticAssets();
+           // app.MapBlazorHub();     // REQUIRED
+            //app.MapStaticAssets();
             app.MapRazorPages().WithStaticAssets();
             app.MapRazorComponents<App>()
                 .WithStaticAssets()

@@ -4,12 +4,15 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
-    <ServerGarbageCollection>True</ServerGarbageCollection>
+
+    <IsServiceFabricServiceProject>true</IsServiceFabricServiceProject>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <SelfContained>True</SelfContained>
-	<ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
-	<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>  	 
+    <SelfContained>true</SelfContained>
+
+    <ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
+    <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +22,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Client\SalesSystem.Rfq\SalesSystem.Rfq.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="PackageRoot\Code\" />
   </ItemGroup>
 
 </Project>

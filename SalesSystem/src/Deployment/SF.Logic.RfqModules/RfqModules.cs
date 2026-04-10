@@ -25,8 +25,7 @@ namespace SF.Logic.RfqModules
                         ServiceEventSource._Current.ServiceMessage(serviceContext, $"Starting Kestrel on {url}");
 
                         WebApplicationBuilder builder = WebApplication.CreateBuilder();
-
-                        builder.Services.AddSingleton(serviceContext);
+                                            builder.Services.AddSingleton(serviceContext);
                         builder.WebHost
                                     .UseKestrel(opt =>
                                     {
@@ -35,7 +34,7 @@ namespace SF.Logic.RfqModules
                                         opt.Listen(IPAddress.IPv6Any, port, listenOptions =>
                                         {
                                             listenOptions.UseHttps(cert);
-                                            listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+                                            listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
                                         });
                                     })
                                     .UseContentRoot(Directory.GetCurrentDirectory())
