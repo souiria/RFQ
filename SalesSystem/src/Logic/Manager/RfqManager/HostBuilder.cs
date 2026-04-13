@@ -104,6 +104,11 @@ namespace RfqModule
             {
                 o.Address = new Uri("https://ukhqh1uat.sews-e.com:37010");
             })
+            .ConfigureChannel(options =>
+                    {
+                        options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
+                        options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
+              })
             .ConfigurePrimaryHttpMessageHandler(() =>
             {
                 return new SocketsHttpHandler

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting.StaticWebAssets;
-
-namespace SalesSystem.Rfq
+﻿namespace SalesSystem.Rfq
 {
     public static class HostBuilder
     {

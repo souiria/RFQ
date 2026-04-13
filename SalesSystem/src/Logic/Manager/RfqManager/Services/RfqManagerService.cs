@@ -1632,7 +1632,7 @@
             }
             else if (filterOpperator == ".Contains")
             {
-                filterExpression = $"{filterType} != null &&RFQREASONGRPC {filterType}.ToUpperInvariant(){filterOpperator}(\"{partNumber.ToUpperInvariant()}\")";
+                filterExpression = $"{filterType} != null && {filterType}.ToUpperInvariant(){filterOpperator}(\"{partNumber.ToUpperInvariant()}\")";
             }
             else
             {
