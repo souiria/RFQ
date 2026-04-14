@@ -8,6 +8,16 @@
             builder ??= WebApplication.CreateBuilder(args);
 
             #region Builder
+            builder.Configuration
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddEnvironmentVariables();
+            string? managerUrl = builder.Configuration["GrpcService:Url"]
+            ?? throw new InvalidOperationException("GrpcService:Url is missing in configuration.");
+
+            int timeoutSeconds = int.TryParse(builder.Configuration["GrpcService:TimeoutSeconds"], out var t)
+                ? t
+                : 120;
 
             // Add service defaults & Aspire client integrations.
             builder.AddServiceDefaults();
@@ -36,7 +46,7 @@
             builder.Services.AddRfqUxServices();
           builder.Services.AddGrpcClient<RfqModule.RfqModule.RfqModuleClient>(o =>
             {
-                o.Address = new Uri("https://ukhqh1uat.sews-e.com:38001");
+                o.Address = new Uri(managerUrl);
 
             })
             .ConfigureChannel(options =>

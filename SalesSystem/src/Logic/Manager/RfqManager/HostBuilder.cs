@@ -1,20 +1,38 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
-
-namespace RfqModule
+﻿namespace RfqModule
 {
     public static class HostBuilder
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
         public static WebApplication CreateApp(WebApplicationBuilder? builder = null, params string[] args)
         {
-            string dir = Directory.GetCurrentDirectory();
+            //string dir = Directory.GetCurrentDirectory();
             builder ??= WebApplication.CreateBuilder(args);
             IConfigurationSection conf = builder.Configuration.GetSection("Logging");
+
             builder.Configuration
-                .SetBasePath(dir)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddEnvironmentVariables();
+          .SetBasePath(AppContext.BaseDirectory)
+          .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+          .AddEnvironmentVariables();
+
             #region Builder
+            //
+            //IConfigurationSection grpc = builder.Configuration.GetSection("GrpcService");
+            string? coreUrl = builder.Configuration["GrpcService:Core-Url"]
+                   ?? throw new InvalidOperationException("GrpcService:Core-Url is missing in configuration.");
+            string? adssUrl = builder.Configuration["GrpcService:Adss-Url"]
+                   ?? throw new InvalidOperationException("GrpcService:Adss-Url is missing in configuration.");
+            string? masterUrl = builder.Configuration["GrpcService:Master-Url"]
+                   ?? throw new InvalidOperationException("GrpcService:Master-Url is missing in configuration.");
+            string? rfqUrl = builder.Configuration["GrpcService:RFQ-Url"]
+                   ?? throw new InvalidOperationException("GrpcService:RFQ-Url is missing in configuration.");
+            string? cpdUrl = builder.Configuration["GrpcService:CPD-Url"]
+                   ?? throw new InvalidOperationException("GrpcService:CPD-Url is missing in configuration.");
+            string? emacUrl = builder.Configuration["GrpcService:Emac-Url"]
+                   ?? throw new InvalidOperationException("GrpcService:Emac-Url is missing in configuration.");
+            string? nprUrl = builder.Configuration["GrpcService:Npr-Url"]
+                   ?? throw new InvalidOperationException("GrpcService:Npr-Url is missing in configuration.");
+            string? purchasingUrl = builder.Configuration["GrpcService:Purchasings-Url"]
+            ?? throw new InvalidOperationException("GrpcService:Purchasings-Url is missing in configuration.");
 
             #region Kestrel
             builder.WebHost.ConfigureKestrel(options =>
@@ -56,11 +74,11 @@ namespace RfqModule
             builder.Services.AddSingleton<IRfqManagerService, RfqManagerService>();
 
             // -----------------------------
-            //  RFQ ACCESS CLIENT (FIXED)
+            //  RFQ ACCESS CLIENT 
             // -----------------------------
             builder.Services.AddGrpcClient<Rfq.Rfq.RfqClient>(o =>
             {
-                o.Address = new Uri("https://ukhqh1uat.sews-e.com:37002");
+                o.Address = new Uri(rfqUrl);
             }).ConfigureChannel(options =>
             {
                 options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
@@ -97,18 +115,18 @@ namespace RfqModule
             // -------------- Other clients unchanged --------------
             builder.Services.AddGrpcClient<MasterClient>(o =>
             {
-                o.Address = new Uri("https://ukhqh1uat.sews-e.com:37001");
+                o.Address = new Uri(masterUrl);
             });
 
             builder.Services.AddGrpcClient<Emacs.Emacs.EmacsClient>(o =>
             {
-                o.Address = new Uri("https://ukhqh1uat.sews-e.com:37010");
+                o.Address = new Uri(emacUrl);
             })
             .ConfigureChannel(options =>
-                    {
-                        options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
-                        options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
-              })
+            {
+                options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
+                options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
+            })
             .ConfigurePrimaryHttpMessageHandler(() =>
             {
                 return new SocketsHttpHandler
@@ -122,17 +140,17 @@ namespace RfqModule
 
             builder.Services.AddGrpcClient<Adss.AdssGrpc.AdssGrpcClient>(o =>
             {
-                o.Address = new Uri("https://ukhqh1uat.sews-e.com:37004");
+                o.Address = new Uri(adssUrl);
             });
 
             builder.Services.AddGrpcClient<NPR.NPR.NPRClient>(o =>
             {
-                o.Address = new Uri("https://ukhqh1uat.sews-e.com:37003");
+                o.Address = new Uri(nprUrl);
             });
 
             builder.Services.AddGrpcClient<CPD.CPD.CPDClient>(o =>
             {
-                o.Address = new Uri("https://ukhqh1uat.sews-e.com:37006");
+                o.Address = new Uri(cpdUrl);
             });
 
             builder.AddServiceDefaults();

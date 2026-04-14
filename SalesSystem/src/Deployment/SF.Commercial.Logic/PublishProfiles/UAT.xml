@@ -7,7 +7,7 @@
          For example: <ClusterConnectionParameters />
   -->
   <ClusterConnectionParameters ConnectionEndpoint="ukhqh1uat.sews-e.com:19000" WindowsCredential="true" />
-  <ApplicationParameterFile Path="C:\Users\souiria\source\repos\Commercial Systems\SalesSystem\src\Deployment\SF.Commercial.Logic\ApplicationParameters\UAT.xml" />
+  <ApplicationParameterFile Path="..\ApplicationParameters\UAT.xml" />
   <CopyPackageParameters CompressPackage="true" />
   <UpgradeDeployment Mode="UnmonitoredAuto" Enabled="true">
     <Parameters Force="True" />
