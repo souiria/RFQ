@@ -31,14 +31,11 @@ namespace SF.Access.Purchasings
                                     .UseKestrel(opt =>
                                     {
                                         int port = serviceContext.CodePackageActivationContext.GetEndpoint("ServiceEndpoint").Port;
+                                        X509Certificate2 cert = FindMatchingCertificateBySubject("*.sews-e.com");
                                         opt.Listen(IPAddress.IPv6Any, port, listenOptions =>
                                         {
-#if DEBUG
-                                          listenOptions.Protocols = HttpProtocols.Http1AndHttp2;  //listenOptions.UseHttps(GetCertificateFromStore());
-#else
-                                            //listenOptions.UseHttps(FindMatchingCertificateBySubject("*.sews-e.com"));
-#endif
-                                            listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+                                            listenOptions.UseHttps(cert);
+                                            listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
                                         });
                                     })
                                     .UseContentRoot(Directory.GetCurrentDirectory())
@@ -82,7 +79,7 @@ namespace SF.Access.Purchasings
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0300:Simplify collection initialization", Justification = "Service Fabric Boilerplate")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "Service Fabric Boilerplate")]
-        X509Certificate2 FindMatchingCertificateBySubject(string subjectCommonName)
+        X509Certificate2 FindMatchingCertificateBySubject1(string subjectCommonName)
         {
             using X509Store store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
             store.Open(OpenFlags.OpenExistingOnly | OpenFlags.ReadOnly);
@@ -112,6 +109,31 @@ namespace SF.Access.Purchasings
             }
 
             return matchingCerts[0];
+        }
+        static X509Certificate2 FindMatchingCertificateBySubject(string subjectCommonName)
+        {
+            using X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
+            store.Open(OpenFlags.ReadOnly);
+
+            DateTime now = DateTime.UtcNow;
+
+            X509Certificate2? matchingCert = store.Certificates
+                .OfType<X509Certificate2>()
+                .Where(cert =>
+                    cert.HasPrivateKey &&
+                    //now >= cert.NotBefore &&
+                    now <= cert.NotAfter &&
+                    cert.Subject.Contains(subjectCommonName, StringComparison.OrdinalIgnoreCase))
+                .OrderByDescending(cert => cert.NotAfter)
+                .FirstOrDefault();
+
+            if (matchingCert == null)
+            {
+                throw new InvalidOperationException(
+                    $"Certificate '{subjectCommonName}' not found in LocalMachine\\My");
+            }
+
+            return matchingCert;
         }
     }
 }

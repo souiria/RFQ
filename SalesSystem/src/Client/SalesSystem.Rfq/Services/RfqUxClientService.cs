@@ -58,7 +58,7 @@ namespace SalesSystem.Rfq.Services
         {
             _Logger = logger;
 
-            string serviceUrl = configuration["GrpcService:Url"] ?? "https://localhost:7207";
+            string serviceUrl = configuration["GrpcService:Url"] ?? "GrpcService:Core-Url is missing in configuration.";
             int timeoutSeconds = configuration.GetValue("GrpcService:TimeoutSeconds", 120);
             _Timeout = TimeSpan.FromSeconds(300);
             _MAX_GRPC_RESPONSE_SIZE = 64 * 1024 * 1024;

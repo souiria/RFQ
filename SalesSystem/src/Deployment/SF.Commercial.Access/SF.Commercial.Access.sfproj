@@ -33,7 +33,10 @@
     <None Include="StartupServices.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ApplicationParameters\UAT.xml" />
     <Content Include="packages.config" />
+    <Content Include="PublishProfiles\UAT.xml" />
+    <Content Include="StartupServiceParameters\UAT.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SF.Access.Adsss\SF.Access.Adsss.csproj" />

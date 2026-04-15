@@ -8,6 +8,16 @@
             builder ??= WebApplication.CreateBuilder(args);
 
             #region Builder
+            builder.Configuration
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddEnvironmentVariables();
+            string? managerUrl = builder.Configuration["GrpcService:Url"]
+            ?? throw new InvalidOperationException("GrpcService:Url is missing in configuration.");
+
+            int timeoutSeconds = int.TryParse(builder.Configuration["GrpcService:TimeoutSeconds"], out var t)
+                ? t
+                : 120;
 
             // Add service defaults & Aspire client integrations.
             builder.AddServiceDefaults();
@@ -36,8 +46,8 @@
             builder.Services.AddRfqUxServices();
           builder.Services.AddGrpcClient<RfqModule.RfqModule.RfqModuleClient>(o =>
             {
-                //o.Address = new Uri("https://localhost:7207");
-                o.Address = new Uri("http://localhost:38001");
+                o.Address = new Uri(managerUrl);
+
             })
             .ConfigureChannel(options =>
             {
@@ -64,10 +74,12 @@
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles(); 
             app.UseRouting();
             app.UseAuthorization();
             app.UseAntiforgery();
-            app.MapStaticAssets();
+           // app.MapBlazorHub();     // REQUIRED
+            //app.MapStaticAssets();
             app.MapRazorPages().WithStaticAssets();
             app.MapRazorComponents<App>()
                 .WithStaticAssets()

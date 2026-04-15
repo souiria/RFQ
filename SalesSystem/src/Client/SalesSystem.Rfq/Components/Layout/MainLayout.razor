@@ -25,7 +25,7 @@
                   Spacing="1">
             <MudText Typo="Typo.body2"
                      Class="my-auto">
-                Welcome @globalValue!.FirstName
+                Welcome @globalValue!.FirstName 
             </MudText>
             <MudToggleIconButton @bind-Toggled="@_isDarkMode"
                                  Size="Size.Medium"
@@ -117,13 +117,39 @@
             userId = principal?.Guid;
         }
 #endif
-        globalValue = new GlobalValue
+        var authState1 = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var userA = authState1.User;
+
+        if (userA.Identity?.IsAuthenticated != true)
+            return;
+
+        // DOMAIN\username
+        var domainUsername = userA.Identity.Name;
+
+        if (string.IsNullOrWhiteSpace(domainUsername) || !domainUsername.Contains('\\'))
+            return;
+
+        // Split DOMAIN and username
+        var parts = domainUsername.Split('\\');
+        var domain = parts[0];
+        var samAccountName = parts[1];
+
+        using (var context = new PrincipalContext(ContextType.Domain, domain))
         {
-            DisplayName = displayName,
-            FirstName = firstName,
-            UserAccount = userName,
-            UserId = userId
-        };
+            var principal = UserPrincipal.FindByIdentity(
+                context,
+                IdentityType.SamAccountName,
+                samAccountName);
+
+            globalValue = new GlobalValue
+                {
+                    FirstName = principal?.GivenName,               
+                    DisplayName = principal?.DisplayName,          
+                    UserAccount = domainUsername,                   
+                    UserId = principal?.Guid
+                };
+        }
+
     }
 
     private MudTheme _baseTheme = new MudTheme()
@@ -190,4 +216,5 @@
     {
         NavManager.NavigateTo("/monthlyAccrualReport");
     }
+    
 }

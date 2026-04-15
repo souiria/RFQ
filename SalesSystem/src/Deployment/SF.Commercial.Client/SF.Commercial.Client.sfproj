@@ -28,17 +28,18 @@
     <None Include="PublishProfiles\Local.5Node.xml" />
     <None Include="Scripts\Deploy-FabricApplication.ps1" />
     <None Include="StartupServiceParameters\Cloud.xml" />
-    <None Include="StartupServiceParameters\Local.1Node.xml" />
+    <None Include="StartupServiceParameters\UAT.xml" />
     <None Include="StartupServiceParameters\Local.5Node.xml" />
     <None Include="StartupServices.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ApplicationParameters\UAT.xml" />
     <Content Include="packages.config" />
+    <Content Include="PublishProfiles\UAT.xml" />
+    <Content Include="StartupServiceParameters\Local.1Node.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SalesSystem\src\Deployment\SF.Client.Rfqs\SF.Client.Rfqs.csproj">
-      <ServiceLaunchUrl>https://localhost:{ServicePort}/</ServiceLaunchUrl>
-    </ProjectReference>
+    <ProjectReference Include="..\SF.Client.Rfqs\SF.Client.Rfqs.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <PropertyGroup>

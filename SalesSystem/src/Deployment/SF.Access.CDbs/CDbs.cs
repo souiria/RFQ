@@ -27,25 +27,21 @@ namespace SF.Access.CDbs
                         WebApplicationBuilder builder = WebApplication.CreateBuilder();
 
                         builder.Services.AddSingleton(serviceContext);
-                        builder.WebHost
+                            builder.WebHost
                                     .UseKestrel(opt =>
                                     {
                                         int port = serviceContext.CodePackageActivationContext.GetEndpoint("ServiceEndpoint").Port;
+                                        X509Certificate2 cert = FindMatchingCertificateBySubject("*.sews-e.com");
                                         opt.Listen(IPAddress.IPv6Any, port, listenOptions =>
                                         {
-#if DEBUG
-                                          listenOptions.Protocols = HttpProtocols.Http1AndHttp2;  //listenOptions.UseHttps(GetCertificateFromStore());
-#else
-                                            //listenOptions.UseHttps(FindMatchingCertificateBySubject("*.sews-e.com"));
-#endif
-                                            listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+                                            listenOptions.UseHttps(cert);
+                                            listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
                                         });
                                     })
                                     .UseContentRoot(Directory.GetCurrentDirectory())
                                     .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
                                     .UseUrls(url);
 
-                        
                         return CDb.HostBuilder.CreateApp(builder, url);
 
                     }))

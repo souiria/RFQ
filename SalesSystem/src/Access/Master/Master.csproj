@@ -4,34 +4,34 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-	<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+    <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
   </PropertyGroup>
-  
+
 
   <ItemGroup>
-		<PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
-		<PackageReference Include="Grpc.AspNetCore.Web" Version="2.71.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="Seq.Extensions.Logging" Version="8.0.0" />
-		<PackageReference Include="Scrutor" Version="6.0.1" />
-		<PackageReference Include="IDesign.Analyzers" Version="1.0.18" />
-		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.9" />
-	</ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
+    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.71.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Seq.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Scrutor" Version="6.0.1" />
+    <PackageReference Include="IDesign.Analyzers" Version="1.0.18" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.9" />
+  </ItemGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\..\Debug\SalesSystem.ServiceDefaults\SalesSystem.ServiceDefaults.csproj" />
-	  <ProjectReference Include="..\..\Utilities\SharedKernal\SharedKernel.csproj" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\Debug\SalesSystem.ServiceDefaults\SalesSystem.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\Utilities\SharedKernal\SharedKernel.csproj" />
     <ProjectReference Include="..\..\Utilities\GrpcProtos\GrpcProtos.csproj" />
 
   </ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="CQRS\Command\" />
-	  <Folder Include="Mediator\Response\" />
-	</ItemGroup>
+  <ItemGroup>
+    <Folder Include="CQRS\Command\" />
+    <Folder Include="Mediator\Response\" />
+  </ItemGroup>
 
-  
+
 
 </Project>

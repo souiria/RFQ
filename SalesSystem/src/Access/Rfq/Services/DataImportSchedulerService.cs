@@ -14,7 +14,7 @@
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _Logger.GenericLogInformation("Background service is running");
+            _Logger.GenericLogInformation("DataImportSchedulerService - Background service is running");
 
             await PopulateGlobalDataAsync(stoppingToken);
             await DailyWorker(23, 30, 00, async () => await PopulateGlobalDataAsync(stoppingToken), stoppingToken);
@@ -22,7 +22,7 @@
 
         async Task<bool> PopulateGlobalDataAsync(CancellationToken stoppingToken)
         {
-
+            _Logger.GenericLogInformation("DataImportSchedulerService - PopulateGlobalDataAsync");
             if (_RfqAccessService != null)
             {
                 bool check;

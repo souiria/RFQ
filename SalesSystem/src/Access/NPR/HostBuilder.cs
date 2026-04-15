@@ -30,6 +30,15 @@
                 opt.MaxReceiveMessageSize = int.MaxValue;
                 opt.MaxSendMessageSize = int.MaxValue;
             });
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowAnyOrigin();
+                });
+            });
             builder.Services.AddInfrastructure(builder.Configuration);
             IAsyncPolicy<HttpResponseMessage> policy = GetRetryPolicy();
             builder.Services.AddHttpClient("MyClient").AddPolicyHandler(policy);
@@ -86,8 +95,10 @@
             GrpcWebOptions grpcWebOptions = new GrpcWebOptions();
             grpcWebOptions.DefaultEnabled = true;
             app.UseGrpcWeb(grpcWebOptions);
-            app.MapGrpcService<NPRGrpcService>();
-            app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+            app.UseCors();
+            app.MapGrpcService<NPRGrpcService>()
+             .EnableGrpcWeb();
+                app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
 
             #endregion
 
