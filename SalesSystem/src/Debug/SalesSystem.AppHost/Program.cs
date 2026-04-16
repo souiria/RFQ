@@ -30,10 +30,10 @@
 
         IResourceBuilder<ProjectResource> adssAccessService = builder.AddProject<Projects.Adss>("adss-access-service");
 
-        builder.AddProject<Projects.SalesSystem_Rfq>("RfqFrontEnd");
-            //.WithExternalHttpEndpoints()
-            //.WithReference(apiService)
-            //.WaitFor(apiService);
+        builder.AddProject<Projects.SalesSystem_Rfq>("RfqFrontEnd")
+            .WithExternalHttpEndpoints()
+            .WithReference(apiService)
+            .WaitFor(apiService);
 
         builder.Build().Run();
     }

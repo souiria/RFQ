@@ -202,6 +202,16 @@ Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "SF.Commercial.Logic", "Sale
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SF.Client.Rfqs", "SalesSystem\src\Deployment\SF.Client.Rfqs\SF.Client.Rfqs.csproj", "{B78C65EB-FC3C-47ED-A603-3759EF3F5FF5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NprRequestApi", "NprRequestApi", "{A34334FB-1E3F-45EC-8356-974118E83C6E}"
+	ProjectSection(SolutionItems) = preProject
+		SalesSystem\docs\NprRequestApi\NPR-POST-REQUEST-PAYLOAD.json = SalesSystem\docs\NprRequestApi\NPR-POST-REQUEST-PAYLOAD.json
+		SalesSystem\docs\NprRequestApi\NPR-POST-RESPONSE-PAYLOAD.json = SalesSystem\docs\NprRequestApi\NPR-POST-RESPONSE-PAYLOAD.json
+		SalesSystem\docs\NprRequestApi\NPR-REQUEST-DATAMODELS.ods = SalesSystem\docs\NprRequestApi\NPR-REQUEST-DATAMODELS.ods
+		SalesSystem\docs\NprRequestApi\NPR_RFQ_API_Documentation_v1.pdf = SalesSystem\docs\NprRequestApi\NPR_RFQ_API_Documentation_v1.pdf
+		SalesSystem\docs\NprRequestApi\RfqNprRequestSampleSiteDataUxModel.csv = SalesSystem\docs\NprRequestApi\RfqNprRequestSampleSiteDataUxModel.csv
+		SalesSystem\docs\NprRequestApi\RfqNprRequestUxModel.csv = SalesSystem\docs\NprRequestApi\RfqNprRequestUxModel.csv
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -849,6 +859,7 @@ Global
 		{19BAF33B-A692-DAF7-41D0-49F2C0616003} = {89B6A227-43EB-4F2A-957C-AB70DC0ABF04}
 		{ADB7841F-15F1-4E1F-A3E1-767B0115B3A3} = {89B6A227-43EB-4F2A-957C-AB70DC0ABF04}
 		{B78C65EB-FC3C-47ED-A603-3759EF3F5FF5} = {89B6A227-43EB-4F2A-957C-AB70DC0ABF04}
+		{A34334FB-1E3F-45EC-8356-974118E83C6E} = {BC40E487-946F-47D0-AEBB-66312543C78E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {45532623-50AD-4761-959C-8E565670BB49}

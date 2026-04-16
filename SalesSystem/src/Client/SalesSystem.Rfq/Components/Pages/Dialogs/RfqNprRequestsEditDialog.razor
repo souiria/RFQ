@@ -1,4 +1,3 @@
-@using SalesSystem.Rfq.Models
 @using SalesSystem.Rfq.Enums
 @using MudBlazor
 
@@ -99,33 +98,33 @@
                                     </MudChip>
                                 </CellTemplate>
                             </PropertyColumn>
-                            <PropertyColumn Property="x => x.SumitomoNumber" Title="Sumitomo Number" Editable="true" />
+                            <PropertyColumn Property="x => x.SupplierRfqNo" Title="RFQ Number" Editable="true" />
+                            <PropertyColumn Property="x => x.CustomerCode" Title="Customer Code" Editable="true" />
+                            <PropertyColumn Property="x => x.RequestID" Title="Request ID" Editable="false" />
+                            <PropertyColumn Property="x => x.OriginatorName" Title="Originator" Editable="true" />
+                            <PropertyColumn Property="x => x.DeadlineDate" Title="Deadline Date" Format="dd.MM.yyyy" Editable="true" />
+                            <PropertyColumn Property="x => x.ReasonDescription" Title="Reason" Editable="true" />
+                            <PropertyColumn Property="x => x.MaterialNumber" Title="Material Number" Editable="true" />
+                            <PropertyColumn Property="x => x.MaterialDescription" Title="Material Description" Editable="true" />
+                            <PropertyColumn Property="x => x.MaterialTypeDescription" Title="Material Type" Editable="true" />
                             <PropertyColumn Property="x => x.CustomerPartNumber" Title="Customer P/N" Editable="true" />
                             <PropertyColumn Property="x => x.SupplierPartNumber" Title="Supplier P/N" Editable="true" />
-                            <PropertyColumn Property="x => x.MaterialDescription" Title="Material Description" Editable="true" />
-                            <PropertyColumn Property="x => x.Reason" Title="Reason" Editable="true" />
-                            <PropertyColumn Property="x => x.Customer" Title="Customer" Editable="true" />
-                            <PropertyColumn Property="x => x.PlatformName" Title="Platform" Editable="true" />
-                            <PropertyColumn Property="x => x.ProgramName" Title="Program" Editable="true" />
-                            <PropertyColumn Property="x => x.Project" Title="Project" Editable="true" />
-                            <PropertyColumn Property="x => x.MaterialType" Title="Material Type" Editable="true" />
-                            <PropertyColumn Property="x => x.SuggestedSewsEManufacturingSite" Title="Mfg. Site" Editable="true" />
-                            <PropertyColumn Property="x => x.UnitOfMeasure" Title="UoM" Editable="true" />
+                            <PropertyColumn Property="x => x.SEWSEUnitOfMeasurement" Title="UoM" Editable="true" />
                             <PropertyColumn Property="x => x.SupplierGroup" Title="Supplier Group" Editable="true" />
+                            <PropertyColumn Property="x => x.SupplierDetailComments" Title="Supplier Comments" Editable="true" />
+                            <PropertyColumn Property="x => x.ProjectCode" Title="Project" Editable="true" />
                             <PropertyColumn Property="x => x.QtyPerVehicle" Title="Qty/Vehicle" Editable="true" />
-                            <PropertyColumn Property="x => x.Quantity" Title="Quantity" Editable="true" />
-                            <PropertyColumn Property="x => x.RequiredDate" Title="Required Date" Format="dd.MM.yyyy" Editable="true" />
-                            <PropertyColumn Property="x => x.RaisedRemarks" Title="Remarks" Editable="true" />
+                            <PropertyColumn Property="x => x.VehicleTotalQuantity" Title="Total Qty" Editable="true" />
+                            <PropertyColumn Property="x => x.IsSampleDataRequired" Title="Samples Req." Editable="true" />
+                            <PropertyColumn Property="x => x.NPRRaisedRemarks" Title="Remarks" Editable="true" />
+                            <PropertyColumn Property="x => x.ManufacturingSite" Title="Mfg. Site" Editable="true" />
                             <PropertyColumn Property="x => x.IsCustomerNominatedSupplier" Title="Cust. Nom. Supplier" Editable="true" />
                             <PropertyColumn Property="x => x.IsCustomerNominatedMaterial" Title="Cust. Nom. Material" Editable="true" />
-                            <PropertyColumn Property="x => x.SamplesRequired" Title="Samples Req." Editable="true" />
-                            <PropertyColumn Property="x => x.SampleSite" Title="Sample Site" Editable="true" />
-                            <PropertyColumn Property="x => x.SampleQuantity" Title="Sample Qty" Editable="true" />
-                            <PropertyColumn Property="x => x.SampleRecipient" Title="Sample Recipient" Editable="true" />
-                            <PropertyColumn Property="x => x.SampleRequiredDate" Title="Sample Req. Date" Format="dd.MM.yyyy" Editable="true" />
-                            <PropertyColumn Property="x => x.FreightAccount" Title="Freight Account" Editable="true" />
+                            <PropertyColumn Property="x => x.PlatformName" Title="Platform" Editable="true" />
+                            <PropertyColumn Property="x => x.ProgramName" Title="Program" Editable="true" />
+                            <PropertyColumn Property="x => x.SuggestedManufacturerGroup" Title="Suggested Mfr. Group" Editable="true" />
                             <PropertyColumn Property="x => x.AssociatedParts" Title="Associated Parts" Editable="true" />
-                            <PropertyColumn Property="x => x.SuggestedManufacturer" Title="Suggested Mfr." Editable="true" />
+                            <PropertyColumn Property="x => x.NPRUploadSeqNo" Title="Upload Seq. No." Editable="false" />
                             <PropertyColumn Property="x => x.Created" Title="Created" Format="dd.MM.yyyy HH:mm" Editable="false" />
                             <PropertyColumn Property="x => x.Updated" Title="Updated" Format="dd.MM.yyyy HH:mm" Editable="false" />
                             <TemplateColumn CellClass="d-flex justify-end" StickyRight="true" Editable="false">
@@ -204,7 +203,7 @@
 
         Logger.LogInformation(
             $"RfqNprRequestsEditDialog.OnItemCommitted - " +
-            $"Updated request Id: {item.Id}, SumitomoNumber: {item.SumitomoNumber}");
+            $"Updated request Id: {item.Id}, Material: {item.MaterialNumber}");
 
         StateHasChanged();
     }
@@ -226,11 +225,11 @@
 
         Logger.LogInformation(
             $"RfqNprRequestsEditDialog.RemoveRequest - " +
-            $"Removed request Id: {request.Id}, SumitomoNumber: {request.SumitomoNumber}, " +
+            $"Removed request Id: {request.Id}, Material: {request.MaterialNumber}, " +
             $"set now has {RfqProject.NprRequests.Count(r => r.UxStatus != UxObjectStatus.Deleted)} active requests");
 
         Snackbar.Add(
-            $"Removed NPR request: {request.SumitomoNumber ?? request.CustomerPartNumber ?? request.Id.ToString()}",
+            $"Removed NPR request: {request.MaterialNumber ?? request.CustomerPartNumber ?? request.Id.ToString()}",
             Severity.Info);
 
         await Task.CompletedTask;
@@ -302,32 +301,32 @@
             _compiledQuickFilter = item =>
             {
                 if (item.UxStatus == UxObjectStatus.Deleted) return false;
-                if (item.RfqNumber?.Contains(filter, comparisonType) == true) return true;
-                if (item.SumitomoNumber?.Contains(filter, comparisonType) == true) return true;
+                if (item.SupplierRfqNo?.Contains(filter, comparisonType) == true) return true;
+                if (item.CustomerCode?.Contains(filter, comparisonType) == true) return true;
+                if (item.RequestID?.Contains(filter, comparisonType) == true) return true;
+                if (item.OriginatorName?.Contains(filter, comparisonType) == true) return true;
+                if (item.ReasonDescription?.Contains(filter, comparisonType) == true) return true;
+                if (item.MaterialNumber?.Contains(filter, comparisonType) == true) return true;
+                if (item.MaterialDescription?.Contains(filter, comparisonType) == true) return true;
+                if (item.MaterialTypeDescription?.Contains(filter, comparisonType) == true) return true;
                 if (item.CustomerPartNumber?.Contains(filter, comparisonType) == true) return true;
                 if (item.SupplierPartNumber?.Contains(filter, comparisonType) == true) return true;
-                if (item.MaterialDescription?.Contains(filter, comparisonType) == true) return true;
-                if (item.Reason?.Contains(filter, comparisonType) == true) return true;
-                if (item.Customer?.Contains(filter, comparisonType) == true) return true;
+                if (item.SEWSEUnitOfMeasurement?.Contains(filter, comparisonType) == true) return true;
+                if (item.SupplierGroup?.Contains(filter, comparisonType) == true) return true;
+                if (item.SupplierDetailComments?.Contains(filter, comparisonType) == true) return true;
+                if (item.ProjectCode?.Contains(filter, comparisonType) == true) return true;
+                if (item.NPRRaisedRemarks?.Contains(filter, comparisonType) == true) return true;
+                if (item.ManufacturingSite?.Contains(filter, comparisonType) == true) return true;
                 if (item.PlatformName?.Contains(filter, comparisonType) == true) return true;
                 if (item.ProgramName?.Contains(filter, comparisonType) == true) return true;
-                if (item.Project?.Contains(filter, comparisonType) == true) return true;
-                if (item.MaterialType?.Contains(filter, comparisonType) == true) return true;
-                if (item.SuggestedSewsEManufacturingSite?.Contains(filter, comparisonType) == true) return true;
-                if (item.UnitOfMeasure?.Contains(filter, comparisonType) == true) return true;
-                if (item.SupplierGroup?.Contains(filter, comparisonType) == true) return true;
-                if (item.RaisedRemarks?.Contains(filter, comparisonType) == true) return true;
-                if (item.SampleSite?.Contains(filter, comparisonType) == true) return true;
-                if (item.SampleRecipient?.Contains(filter, comparisonType) == true) return true;
-                if (item.FreightAccount?.Contains(filter, comparisonType) == true) return true;
+                if (item.SuggestedManufacturerGroup?.Contains(filter, comparisonType) == true) return true;
                 if (item.AssociatedParts?.Contains(filter, comparisonType) == true) return true;
-                if (item.SuggestedManufacturer?.Contains(filter, comparisonType) == true) return true;
 
                 if (isNumeric)
                 {
                     if (item.QtyPerVehicle?.ToString().Contains(filter, comparisonType) == true) return true;
-                    if (item.Quantity?.ToString().Contains(filter, comparisonType) == true) return true;
-                    if (item.SampleQuantity?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.VehicleTotalQuantity?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.NPRUploadSeqNo?.ToString().Contains(filter, comparisonType) == true) return true;
                 }
 
                 return false;
@@ -337,4 +336,3 @@
         return _compiledQuickFilter?.Invoke(x) ?? true;
     }
 }
-

@@ -482,7 +482,7 @@ else
                         continue;
                     }
 
-                    RfqNprRequestUxModel? found = RfqUxClientService.NprRequests.FirstOrDefault(x => (r?.CustomerPartNumber == x?.CustomerPartNumber && x?.RfqNumber != RfqProject.RfqNumber));
+                    RfqNprRequestUxModel? found = RfqUxClientService.NprRequests.FirstOrDefault(x => (r?.CustomerPartNumber == x?.CustomerPartNumber && x?.SupplierRfqNo != RfqProject.RfqNumber));
                     if (found != null)
                     {
                         preExistingNprRequests.Add(found);
@@ -515,7 +515,7 @@ else
                             if (nprRequest == null)
                             {
                                 nprRequest = part.ToNprRequest(RfqProject);
-                                nprRequest.RfqNumber = RfqProject.RfqNumber;
+                                nprRequest.SupplierRfqNo= RfqProject.RfqNumber;
                                 nprRequest.Created = now;
                                 nprRequest.Updated = now;
                                 nprRequest.UxStatus = UxObjectStatus.Created;
@@ -538,7 +538,7 @@ else
                     // update pre-existing ones
                     foreach (var r in preExistingNprRequests)
                     {
-                        r.RfqNumber = RfqProject.RfqNumber;
+                        r.SupplierRfqNo = RfqProject.RfqNumber;
                         r.Updated = DateTime.UtcNow;
                         r.UxStatus = UxObjectStatus.Updated;
                     }
@@ -563,7 +563,7 @@ else
                         if (nprRequest == null)
                         {
                             nprRequest = part.ToNprRequest(RfqProject);
-                            nprRequest.RfqNumber = RfqProject.RfqNumber;
+                            nprRequest.SupplierRfqNo = RfqProject.RfqNumber;
                             nprRequest.Created = now;
                             nprRequest.Updated = now;
                             nprRequest.UxStatus = UxObjectStatus.Created;

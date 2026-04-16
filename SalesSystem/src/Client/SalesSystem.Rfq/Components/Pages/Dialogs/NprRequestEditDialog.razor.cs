@@ -36,7 +36,7 @@ namespace SalesSystem.Rfq.Components.Pages.Dialogs
                 if (_SelectedSupplier != value)
                 {
                     _SelectedSupplier = value;
-                    NprRequest.SuggestedManufacturer = value?.SupplierName;
+                    NprRequest.SupplierGroup = value?.SupplierName;
                 }
             }
         }
@@ -51,7 +51,7 @@ namespace SalesSystem.Rfq.Components.Pages.Dialogs
 
         MudForm? _Form;
 
-        bool IsSamplesRequired => NprRequest.SamplesRequired == true;
+        bool IsSamplesRequired => NprRequest.IsSampleDataRequired == true;
 
         // List to cache supplier groups
         List<SupplierGroupUxModel> _SupplierGroups;
@@ -78,10 +78,10 @@ namespace SalesSystem.Rfq.Components.Pages.Dialogs
                     .FirstOrDefault(sg => sg.SupplierGroupName == NprRequest.SupplierGroup);
             }
 
-            if (!string.IsNullOrEmpty(NprRequest.SuggestedManufacturer))
+            if (!string.IsNullOrEmpty(NprRequest.SuggestedManufacturerGroup))
             {
                 SelectedSupplier = _Suppliers
-                    .FirstOrDefault(sg => sg.SupplierName == NprRequest.SuggestedManufacturer);
+                    .FirstOrDefault(sg => sg.SupplierName == NprRequest.SuggestedManufacturerGroup);
             }
         }
 
@@ -172,7 +172,7 @@ namespace SalesSystem.Rfq.Components.Pages.Dialogs
 
             if (SelectedSupplier != null)
             {
-                NprRequest.SuggestedManufacturer = SelectedSupplier.SupplierName;
+                NprRequest.SuggestedManufacturerGroup = SelectedSupplier.SupplierName;
             }
 
             DialogResult result = DialogResult.Ok(NprRequest);
