@@ -98,7 +98,7 @@
                                     </MudChip>
                                 </CellTemplate>
                             </PropertyColumn>
-                            <PropertyColumn Property="x => x.SupplierRfqNo" Title="RFQ Number" Editable="true" />
+                            <PropertyColumn Property="x => x.CustomerRfqNo" Title="RFQ Number" Editable="true" />
                             <PropertyColumn Property="x => x.CustomerCode" Title="Customer Code" Editable="true" />
                             <PropertyColumn Property="x => x.RequestID" Title="Request ID" Editable="false" />
                             <PropertyColumn Property="x => x.OriginatorName" Title="Originator" Editable="true" />
@@ -301,7 +301,7 @@
             _compiledQuickFilter = item =>
             {
                 if (item.UxStatus == UxObjectStatus.Deleted) return false;
-                if (item.SupplierRfqNo?.Contains(filter, comparisonType) == true) return true;
+                if (item.CustomerRfqNo?.Contains(filter, comparisonType) == true) return true;
                 if (item.CustomerCode?.Contains(filter, comparisonType) == true) return true;
                 if (item.RequestID?.Contains(filter, comparisonType) == true) return true;
                 if (item.OriginatorName?.Contains(filter, comparisonType) == true) return true;

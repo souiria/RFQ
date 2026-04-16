@@ -143,7 +143,7 @@
                     </MudTooltip>
                 </CellTemplate>
             </TemplateColumn>
-            <PropertyColumn Property="x => x.SupplierRfqNo" Title="RFQ Number" />
+            <PropertyColumn Property="x => x.CustomerRfqNo" Title="RFQ Number" />
             <PropertyColumn Property="x => x.IsActive" Title="Is Active?" />
             <PropertyColumn Property="x => x.UxStatus" Title="UxStatus" />
             <PropertyColumn Property="x => x.CustomerCode" Title="Customer Code" />
@@ -315,7 +315,7 @@
             var editCopy = new RfqNprRequestUxModel
             {
                 Id = nprRequest.Id,
-                SupplierRfqNo = nprRequest.SupplierRfqNo,
+                CustomerRfqNo = nprRequest.CustomerRfqNo,
                 CustomerCode = nprRequest.CustomerCode,
                 RequestID = nprRequest.RequestID,
                 OriginatorName = nprRequest.OriginatorName,
@@ -385,7 +385,7 @@
                 var updatedItem = result.Data as RfqNprRequestUxModel;
                 if (updatedItem != null)
                 {
-                    nprRequest.SupplierRfqNo = updatedItem.SupplierRfqNo;
+                    nprRequest.CustomerRfqNo = updatedItem.CustomerRfqNo;
                     nprRequest.CustomerCode = updatedItem.CustomerCode;
                     nprRequest.RequestID = updatedItem.RequestID;
                     nprRequest.OriginatorName = updatedItem.OriginatorName;
@@ -567,7 +567,7 @@
             _compiledQuickFilter = item =>
             {
                 if (item.UxStatus == UxObjectStatus.Deleted) return false;
-                if (item.SupplierRfqNo?.Contains(filter, comparisonType) == true) return true;
+                if (item.CustomerRfqNo?.Contains(filter, comparisonType) == true) return true;
                 if (item.CustomerCode?.Contains(filter, comparisonType) == true) return true;
                 if (item.RequestID?.Contains(filter, comparisonType) == true) return true;
                 if (item.OriginatorName?.Contains(filter, comparisonType) == true) return true;

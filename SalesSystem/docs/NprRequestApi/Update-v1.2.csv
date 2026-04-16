@@ -1,0 +1,3 @@
+"OriginalName","UpdatedOrNewName","UpdatedType","Constrain"
+"SupplierRfqNo","CustomerRfqNo","Renamed","RFQ number (Free Text); string; length 18"
+,"RequestID","New","NPR Request ID (Received in response); string; length 18"

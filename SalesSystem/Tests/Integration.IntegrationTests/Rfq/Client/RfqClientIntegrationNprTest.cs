@@ -1,5 +1,4 @@
-﻿using SalesSystem.Rfq.Enums;
-using SalesSystem.Rfq.Models;
+﻿using SalesSystem.Rfq.Models;
 using SalesSystem.Rfq.Services;
 
 namespace Integration.Tests.Rfq.Client
@@ -85,21 +84,21 @@ namespace Integration.Tests.Rfq.Client
 
         RfqNprRequestUxModel CreateTestRequest(
             string rfqNumber = "SEWS-25-025-DEADBEEF",
-            string? reason = "Test Reason",
-            string? customer = "Test Customer",
-            string? sumitomoNumber = "SUM-001",
-            int? quantity = 100)
+            string? reasonDescription = "Test Reason",
+            string? customerCode = "Test Customer",
+            string? materialNumber = "MAT-001",
+            int? vehicleTotalQuantity = 100)
         {
             RfqNprRequestUxModel request = new RfqNprRequestUxModel();
-            request.RfqNumber = rfqNumber;
-            request.Reason = reason;
-            request.Customer = customer;
-            request.SumitomoNumber = sumitomoNumber;
-            request.Quantity = quantity;
+            request.CustomerRfqNo = rfqNumber;
+            request.ReasonDescription = reasonDescription;
+            request.CustomerCode = customerCode;
+            request.MaterialNumber = materialNumber;
+            request.VehicleTotalQuantity = vehicleTotalQuantity;
             request.CustomerPartNumber = "CPN-001";
             request.MaterialDescription = "Test Material";
-            request.UnitOfMeasure = "EA";
-            request.RequiredDate = DateTime.UtcNow.AddDays(30);
+            request.SEWSEUnitOfMeasurement = "EA";
+            request.DeadlineDate = DateTime.UtcNow.AddDays(30);
 
             return request;
         }
@@ -109,7 +108,7 @@ namespace Integration.Tests.Rfq.Client
             List<RfqNprRequestUxModel> requests = new List<RfqNprRequestUxModel>();
             for (int i = 0; i < count; i++)
             {
-                RfqNprRequestUxModel request = CreateTestRequest(rfqNumber, sumitomoNumber: $"SUM-{i + 1:D3}");
+                RfqNprRequestUxModel request = CreateTestRequest(rfqNumber, materialNumber: $"MAT-{i + 1:D3}");
                 requests.Add(request);
             }
 
@@ -120,7 +119,7 @@ namespace Integration.Tests.Rfq.Client
             List<RfqNprRequestUxModel> requests = new List<RfqNprRequestUxModel>();
             for (int i = 0; i < count; i++)
             {
-                RfqNprRequestUxModel request = CreateTestRequest(rfqNumber, sumitomoNumber: $"SUM-{i + 1:D3}");
+                RfqNprRequestUxModel request = CreateTestRequest(rfqNumber, materialNumber: $"MAT-{i + 1:D3}");
                 requests.Add(request);
             }
 
@@ -189,7 +188,7 @@ namespace Integration.Tests.Rfq.Client
             // Assert
             Assert.That(found, Is.Not.Null);
             Assert.That(found!.Count, Is.EqualTo(3));
-            Assert.That(found.All(r => r.RfqNumber == "FIND-ME-RFQ"), Is.True);
+            Assert.That(found.All(r => r.CustomerRfqNo == "FIND-ME-RFQ"), Is.True);
         }
 
         [Test]
@@ -237,7 +236,7 @@ namespace Integration.Tests.Rfq.Client
             // Assert
             Assert.That(found, Is.Not.Null);
             Assert.That(found!.Count, Is.GreaterThan(0));
-            Assert.That(found!.First().RfqNumber, Is.EqualTo("ID-TEST-RFQ"));
+            Assert.That(found!.First().CustomerRfqNo, Is.EqualTo("ID-TEST-RFQ"));
         }
 
         [Test]
@@ -268,7 +267,7 @@ namespace Integration.Tests.Rfq.Client
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Count, Is.EqualTo(1));
-            Assert.That(result[0].RfqNumber, Is.EqualTo("NEW-RFQ"));
+            Assert.That(result[0].CustomerRfqNo, Is.EqualTo("NEW-RFQ"));
             Assert.That(result[0].Created, Is.Not.EqualTo(default(DateTime)));
 
         }
@@ -334,18 +333,18 @@ namespace Integration.Tests.Rfq.Client
             RfqNprRequestUxModel toUpdate = created[0];
 
             // Act
-            toUpdate.SumitomoNumber = "SUM-UPDATED";
+            toUpdate.MaterialNumber = "MAT-UPDATED";
             created[0] = toUpdate;
             List<RfqNprRequestUxModel> updated = await _Service.UpdateNprRequestsAsync(created);
 
             // Assert
-            Assert.That(updated[0].SumitomoNumber, Is.EqualTo("SUM-UPDATED"));
+            Assert.That(updated[0].MaterialNumber, Is.EqualTo("MAT-UPDATED"));
             Assert.That(updated[0].Updated, Is.Not.EqualTo(default(DateTime)));
 
             // Verify persistence
             List<RfqNprRequestUxModel>? reloaded = await _Service.GetNprRequestsByRfqProjectIdAsync(toUpdate.Id);
             Assert.That(reloaded, Is.Not.Null);
-            Assert.That(reloaded![0].SumitomoNumber, Is.EqualTo("SUM-UPDATED"));
+            Assert.That(reloaded![0].MaterialNumber, Is.EqualTo("MAT-UPDATED"));
         }
 
         [Test]
@@ -357,7 +356,7 @@ namespace Integration.Tests.Rfq.Client
             DateTime beforeUpdate = created[0].Created;
 
             // Act
-            created[0].Reason = "Updated Reason";
+            created[0].ReasonDescription = "Updated Reason";
             List<RfqNprRequestUxModel>? updated = await _Service.UpdateNprRequestsAsync(created);
 
             // Assert
@@ -399,13 +398,13 @@ namespace Integration.Tests.Rfq.Client
             List<RfqNprRequestUxModel> created = await CreateAndPersistTestRequestsAsync("MULTI-UPDATE-RFQ", 2);
 
             // Act
-            created[0].SumitomoNumber = "SUM-CHANGED";
+            created[0].MaterialNumber = "MAT-CHANGED";
             await _Service.UpdateNprRequestsAsync(created);
 
             // Assert
             RfqNprRequestUxModel? other = await _Service.GetNprRequestByIdAsync(created[1].Id);
             Assert.That(other, Is.Not.Null);
-            Assert.That(other!.SumitomoNumber, Is.EqualTo("SUM-002"));
+            Assert.That(other!.MaterialNumber, Is.EqualTo("MAT-002"));
         }
 
         #endregion
@@ -555,34 +554,41 @@ namespace Integration.Tests.Rfq.Client
             await _Service.DeleteAllNprRequestsAsync();
 
             RfqNprRequestUxModel request = new RfqNprRequestUxModel();
-            request.RfqNumber = "SERIAL-RFQ";
-            request.Reason = "Serialization Test";
-            request.Customer = "Acme Corp";
-            request.PlatformName = "Platform X";
-            request.ProgramName = "Program Y";
-            request.Project = "Project Z";
-            request.MaterialType = "Steel";
-            request.SuggestedSewsEManufacturingSite = "Site A";
+            request.CustomerRfqNo = "SERIAL-RFQ";
+            request.CustomerCode = "Acme Corp";
+            request.RequestID = "REQ-001";
+            request.OriginatorName = "Jane Smith";
+            request.DeadlineDate = new DateTime(2026, 6, 15, 0, 0, 0, DateTimeKind.Utc);
+            request.ReasonDescription = "Serialization Test";
+            request.MaterialNumber = "MAT-777";
+            request.MaterialDescription = "High-grade steel connector";
+            request.MaterialTypeDescription = "Steel";
             request.CustomerPartNumber = "CPN-999";
             request.SupplierPartNumber = "SPN-888";
-            request.SumitomoNumber = "SUM-777";
-            request.MaterialDescription = "High-grade steel connector";
-            request.UnitOfMeasure = "EA";
+            request.SEWSEUnitOfMeasurement = "EA";
             request.SupplierGroup = "Group Alpha";
-            request.QtyPerVehicle = 4;
-            request.Quantity = 500;
-            request.RequiredDate = new DateTime(2026, 6, 15, 0, 0, 0, DateTimeKind.Utc);
-            request.RaisedRemarks = "Urgent requirement";
+            request.SupplierDetailComments = "New supplier details";
+            request.ProjectCode = "Project Z";
+            request.QtyPerVehicle = 4.5m;
+            request.VehicleTotalQuantity = 500;
+            request.IsSampleDataRequired = true;
+            request.NPRRaisedRemarks = "Urgent requirement";
+            request.ManufacturingSite = "Site A";
             request.IsCustomerNominatedSupplier = true;
             request.IsCustomerNominatedMaterial = false;
-            request.SamplesRequired = true;
-            request.SampleSite = "Lab B";
-            request.SampleQuantity = 10;
-            request.SampleRecipient = "John Doe";
-            request.SampleRequiredDate = new DateTime(2026, 5, 1, 0, 0, 0, DateTimeKind.Utc);
-            request.FreightAccount = "FA-12345";
+            request.PlatformName = "Platform X";
+            request.ProgramName = "Program Y";
+            request.SuggestedManufacturerGroup = "MegaCorp";
             request.AssociatedParts = "AP-001, AP-002";
-            request.SuggestedManufacturer = "MegaCorp";
+            request.NPRUploadSeqNo = 1;
+
+            // Add sample site details
+            RfqNprRequestSampleSiteDataUxModel sampleSite = new RfqNprRequestSampleSiteDataUxModel();
+            sampleSite.SampleQty = 10;
+            sampleSite.SendSampleContactPersonName = "John Doe";
+            sampleSite.RequiredDate = new DateTime(2026, 5, 1, 0, 0, 0, DateTimeKind.Utc);
+            sampleSite.FreightAccount = "FA-12345";
+            request.SampleSiteDetails.Add(sampleSite);
 
             // Act
             List<RfqNprRequestUxModel> created = await _Service.CreateNprRequestsAsync(new List<RfqNprRequestUxModel> { request });
@@ -592,34 +598,41 @@ namespace Integration.Tests.Rfq.Client
 
             // Assert
             Assert.That(loaded, Is.Not.Null);
-            Assert.That(loaded!.RfqNumber, Is.EqualTo("SERIAL-RFQ"));
-            Assert.That(loaded.Reason, Is.EqualTo("Serialization Test"));
-            Assert.That(loaded.Customer, Is.EqualTo("Acme Corp"));
-            Assert.That(loaded.PlatformName, Is.EqualTo("Platform X"));
-            Assert.That(loaded.ProgramName, Is.EqualTo("Program Y"));
-            Assert.That(loaded.Project, Is.EqualTo("Project Z"));
-            Assert.That(loaded.MaterialType, Is.EqualTo("Steel"));
-            Assert.That(loaded.SuggestedSewsEManufacturingSite, Is.EqualTo("Site A"));
+            Assert.That(loaded!.CustomerRfqNo, Is.EqualTo("SERIAL-RFQ"));
+            Assert.That(loaded.CustomerCode, Is.EqualTo("Acme Corp"));
+            Assert.That(loaded.RequestID, Is.EqualTo("REQ-001"));
+            Assert.That(loaded.OriginatorName, Is.EqualTo("Jane Smith"));
+            Assert.That(loaded.DeadlineDate, Is.EqualTo(new DateTime(2026, 6, 15, 0, 0, 0, DateTimeKind.Utc)));
+            Assert.That(loaded.ReasonDescription, Is.EqualTo("Serialization Test"));
+            Assert.That(loaded.MaterialNumber, Is.EqualTo("MAT-777"));
+            Assert.That(loaded.MaterialDescription, Is.EqualTo("High-grade steel connector"));
+            Assert.That(loaded.MaterialTypeDescription, Is.EqualTo("Steel"));
             Assert.That(loaded.CustomerPartNumber, Is.EqualTo("CPN-999"));
             Assert.That(loaded.SupplierPartNumber, Is.EqualTo("SPN-888"));
-            Assert.That(loaded.SumitomoNumber, Is.EqualTo("SUM-777"));
-            Assert.That(loaded.MaterialDescription, Is.EqualTo("High-grade steel connector"));
-            Assert.That(loaded.UnitOfMeasure, Is.EqualTo("EA"));
+            Assert.That(loaded.SEWSEUnitOfMeasurement, Is.EqualTo("EA"));
             Assert.That(loaded.SupplierGroup, Is.EqualTo("Group Alpha"));
-            Assert.That(loaded.QtyPerVehicle, Is.EqualTo(4));
-            Assert.That(loaded.Quantity, Is.EqualTo(500));
-            Assert.That(loaded.RequiredDate, Is.EqualTo(new DateTime(2026, 6, 15, 0, 0, 0, DateTimeKind.Utc)));
-            Assert.That(loaded.RaisedRemarks, Is.EqualTo("Urgent requirement"));
+            Assert.That(loaded.SupplierDetailComments, Is.EqualTo("New supplier details"));
+            Assert.That(loaded.ProjectCode, Is.EqualTo("Project Z"));
+            Assert.That(loaded.QtyPerVehicle, Is.EqualTo(4.5m));
+            Assert.That(loaded.VehicleTotalQuantity, Is.EqualTo(500));
+            Assert.That(loaded.IsSampleDataRequired, Is.True);
+            Assert.That(loaded.NPRRaisedRemarks, Is.EqualTo("Urgent requirement"));
+            Assert.That(loaded.ManufacturingSite, Is.EqualTo("Site A"));
             Assert.That(loaded.IsCustomerNominatedSupplier, Is.True);
             Assert.That(loaded.IsCustomerNominatedMaterial, Is.False);
-            Assert.That(loaded.SamplesRequired, Is.True);
-            Assert.That(loaded.SampleSite, Is.EqualTo("Lab B"));
-            Assert.That(loaded.SampleQuantity, Is.EqualTo(10));
-            Assert.That(loaded.SampleRecipient, Is.EqualTo("John Doe"));
-            Assert.That(loaded.SampleRequiredDate, Is.EqualTo(new DateTime(2026, 5, 1, 0, 0, 0, DateTimeKind.Utc)));
-            Assert.That(loaded.FreightAccount, Is.EqualTo("FA-12345"));
+            Assert.That(loaded.PlatformName, Is.EqualTo("Platform X"));
+            Assert.That(loaded.ProgramName, Is.EqualTo("Program Y"));
+            Assert.That(loaded.SuggestedManufacturerGroup, Is.EqualTo("MegaCorp"));
             Assert.That(loaded.AssociatedParts, Is.EqualTo("AP-001, AP-002"));
-            Assert.That(loaded.SuggestedManufacturer, Is.EqualTo("MegaCorp"));
+            Assert.That(loaded.NPRUploadSeqNo, Is.EqualTo(1));
+
+            // Assert sample site details
+            Assert.That(loaded.SampleSiteDetails, Is.Not.Empty);
+            Assert.That(loaded.SampleSiteDetails.Count, Is.EqualTo(1));
+            Assert.That(loaded.SampleSiteDetails[0].SampleQty, Is.EqualTo(10));
+            Assert.That(loaded.SampleSiteDetails[0].SendSampleContactPersonName, Is.EqualTo("John Doe"));
+            Assert.That(loaded.SampleSiteDetails[0].RequiredDate, Is.EqualTo(new DateTime(2026, 5, 1, 0, 0, 0, DateTimeKind.Utc)));
+            Assert.That(loaded.SampleSiteDetails[0].FreightAccount, Is.EqualTo("FA-12345"));
         }
 
         #endregion

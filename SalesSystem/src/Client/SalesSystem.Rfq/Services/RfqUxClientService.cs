@@ -1081,7 +1081,7 @@ namespace SalesSystem.Rfq.Services
                 await SyncNprCacheFromDatabaseAsync();
                 _NprRequestsHasChanges = false;
                 List<RfqNprRequestUxModel> matching = _NprRequests
-                    .Where(r => r.SupplierRfqNo?.ToUpperInvariant().Trim() == rfqNumber?.ToUpperInvariant().Trim())
+                    .Where(r => r.CustomerRfqNo?.ToUpperInvariant().Trim() == rfqNumber?.ToUpperInvariant().Trim())
                     .ToList();
 
                 if (matching.Count == 0)
@@ -1206,7 +1206,7 @@ namespace SalesSystem.Rfq.Services
                     if (existing == null)
                     {
                         throw new InvalidOperationException(
-                            $"NPR request not found for Id: {request.Id}, SupplierRfqNo: {request.SupplierRfqNo}");
+                            $"NPR request not found for Id: {request.Id}, CustomerRfqNo: {request.CustomerRfqNo}");
                     }
                 }
 
@@ -1296,11 +1296,11 @@ namespace SalesSystem.Rfq.Services
                 }
 
                 List<RfqNprRequestUxModel>? rfqRequestsForRfqNumber
-                    = _NprRequests.Where(r => r.SupplierRfqNo == rfqNumber).ToList();
+                    = _NprRequests.Where(r => r.CustomerRfqNo == rfqNumber).ToList();
 
                 if (rfqRequestsForRfqNumber == null || rfqRequestsForRfqNumber.Count <= 0)
                 {
-                    _Logger?.GenericLogInformation($"NPR requests not found for deletion, SupplierRfqNo: {rfqNumber}");
+                    _Logger?.GenericLogInformation($"NPR requests not found for deletion, CustomerRfqNo: {rfqNumber}");
                     return false;
                 }
 

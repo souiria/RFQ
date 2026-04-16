@@ -322,7 +322,7 @@
             nprRequest.SupplierDetailComments = "";
             nprRequest.SupplierPartNumber = "";
             nprRequest.SEWSEUnitOfMeasurement = "";
-            nprRequest.SupplierRfqNo = "";
+            nprRequest.CustomerRfqNo = "";
             nprRequest.OriginatorName = "";
             // samples
             nprRequest.IsSampleDataRequired = false;
@@ -390,7 +390,7 @@
             nprGrpc.SubmissionStatus = (int?)model.Status;
             //nprGrpc.RemoteEndpointResponse = model.RemoteEndpointResponse;
             //nprGrpc.SubmittedAt = model.SubmittedAt?.ToUniversalTime().ToTimestamp();
-            nprGrpc.RfqNumber = model.SupplierRfqNo;
+            nprGrpc.RfqNumber = model.CustomerRfqNo;
 
             nprGrpc.IsActive = model.UxStatus != UxObjectStatus.Deleted;
 
@@ -444,7 +444,7 @@
             model.Status = grpc.SubmissionStatus.HasValue ? (RfqNprRequestSet)grpc.SubmissionStatus.Value : new RfqNprRequestSet();
             //nprGrpc.RemoteEndpointResponse = model.RemoteEndpointResponse;
             //nprGrpc.SubmittedAt = model.SubmittedAt?.ToUniversalTime().ToTimestamp();
-            model.SupplierRfqNo = grpc.RfqNumber;
+            model.CustomerRfqNo = grpc.RfqNumber;
 
             model.UxStatus = grpc.IsActive == false ? UxObjectStatus.Deleted : UxObjectStatus.Read;
 

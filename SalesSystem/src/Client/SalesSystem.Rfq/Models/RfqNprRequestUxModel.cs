@@ -13,7 +13,7 @@ namespace SalesSystem.Rfq.Models
 
         /// <summary>RFQ number (Free Text)</summary>
         [MaxLength(18)]
-        public string? SupplierRfqNo
+        public string? CustomerRfqNo
         { get; set; }
 
         /// <summary>Customer Code (Master)</summary>
