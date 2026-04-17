@@ -1628,11 +1628,11 @@
             string filterExpression = string.Empty;
             if (filterOpperator == "==")
             {
-                filterExpression = $"{filterType} != null && {filterType}.ToUpperInvariant() {filterOpperator} \"{partNumber.ToUpperInvariant()}\"";
+                filterExpression = $"{filterType} != null && {filterType}.ToUpperInvariant().TrimEnd() {filterOpperator} \"{partNumber.ToUpperInvariant().TrimEnd()}\"";
             }
             else if (filterOpperator == ".Contains")
             {
-                filterExpression = $"{filterType} != null && {filterType}.ToUpperInvariant(){filterOpperator}(\"{partNumber.ToUpperInvariant()}\")";
+                filterExpression = $"{filterType} != null && {filterType}.ToUpperInvariant().TrimEnd(){filterOpperator}(\"{partNumber.ToUpperInvariant().TrimEnd()}\")";
             }
             else
             {
