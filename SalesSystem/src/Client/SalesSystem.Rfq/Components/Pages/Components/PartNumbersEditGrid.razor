@@ -124,12 +124,13 @@
 
     private string RowStyleFunc(RfqDrawingPartNumberUxModel item, int index)
     {
-        if(item == null || item.SearchResultPartNumbers.Count == 0)
+        if(item == null)
         {
             return string.Empty;
         }
 
-        string color = item!.Status switch
+        // Return color based on Status property
+        string color = item.Status switch
         {
             RfqDrawingPartNumberStatus.Completed => "background-color: #66BB6A;",
             RfqDrawingPartNumberStatus.ContainsMatch => "background-color: lightyellow;",
@@ -139,12 +140,15 @@
             _ => string.Empty,
         };
 
-        if (item!.Status == RfqDrawingPartNumberStatus.ContainsMatch 
-            && 0 < item!.SearchResultPartNumbers.Count
-            && item!.SearchResultPartNumbers.Any(x => (0.0m < x.DrawingPartNumberPrice) == true))
+        // Special case: if ContainsMatch and has a priced result, use lighter green
+        if (item.Status == RfqDrawingPartNumberStatus.ContainsMatch 
+            && item.SearchResultPartNumbers != null
+            && item.SearchResultPartNumbers.Count > 0
+            && item.SearchResultPartNumbers.Any(x => (x?.DrawingPartNumberPrice ?? 0.0m) > 0.0m))
         {
             color = "background-color: #A5D6A7;";
         }
+        
         return color;
     }
 
