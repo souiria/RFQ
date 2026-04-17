@@ -1,5 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Collections.ObjectModel;
+﻿// version History:
+// 1.0 - Initial development - NPR_RFQ_API_Documentation_v1.pdf - 20260415
+// 1.2 - Added new fields and properties - NPR_RFQ_API_Documentation_v1.2.pdf - 20260416
+//       Data model changes:
+//           SupplierRfqNo field renamed to CustomerRfqNo to better reflect its meaning
+// 1.3 - Source data change and Master Field Description - NPR_RFQ_API_Documentation_v1.3.pdf - 20260416
+//       Data model metadata tweaks:
+//           OriginatorName description changed from "ADCommonName" to "Master"
+//           ManufacturingSite marked as "Master"
 
 namespace SalesSystem.Rfq.Models
 {
@@ -26,7 +33,7 @@ namespace SalesSystem.Rfq.Models
         public string? RequestID
         { get; set; }
 
-        /// <summary>NPR creator (ADCommonName)</summary>
+        /// <summary>NPR creator (Master)</summary>
         [MaxLength(100)]
         public string? OriginatorName
         { get; set; }
@@ -106,7 +113,7 @@ namespace SalesSystem.Rfq.Models
         public string? NPRRaisedRemarks
         { get; set; }
 
-        /// <summary>Site can be comma (,) separated in case of multiple sites</summary>
+        /// <summary>Site can be comma (,) separated in case of multiple sites (Master)</summary>
         public string? ManufacturingSite
         { get; set; }
 

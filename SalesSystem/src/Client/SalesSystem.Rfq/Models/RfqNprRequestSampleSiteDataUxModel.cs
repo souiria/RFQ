@@ -1,11 +1,15 @@
-using System.ComponentModel.DataAnnotations;
+// version History:
+// 1.0 - Initial development - NPR_RFQ_API_Documentation_v1.pdf - 20260415
+// 1.2 - No changes - NPR_RFQ_API_Documentation_v1.2.pdf - 20260416
+// 1.3 - Description change - NPR_RFQ_API_Documentation_v1.3.pdf - 20260416
+//       BusinessUnitCode sourced from Master data, description updated to reflect that
 
 namespace SalesSystem.Rfq.Models
 {
     public class RfqNprRequestSampleSiteDataUxModel
     {
         #region API Properties
-        /// <summary>Business Unit Code</summary>
+        /// <summary>Business Unit Code (Master)</summary>
         [MaxLength(4)]
         public string? BusinessUnitCode
         { get; set; }

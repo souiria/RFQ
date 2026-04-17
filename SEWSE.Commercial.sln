@@ -207,10 +207,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NprRequestApi", "NprRequest
 		SalesSystem\docs\NprRequestApi\NPR-POST-REQUEST-PAYLOAD.json = SalesSystem\docs\NprRequestApi\NPR-POST-REQUEST-PAYLOAD.json
 		SalesSystem\docs\NprRequestApi\NPR-POST-RESPONSE-PAYLOAD.json = SalesSystem\docs\NprRequestApi\NPR-POST-RESPONSE-PAYLOAD.json
 		SalesSystem\docs\NprRequestApi\NPR-REQUEST-DATAMODELS.ods = SalesSystem\docs\NprRequestApi\NPR-REQUEST-DATAMODELS.ods
+		\\rodvaps001.sews-e.com\canachl$\FSD\Rfq\NPR_RFQ_API_Documentation_v1.2.pdf = \\rodvaps001.sews-e.com\canachl$\FSD\Rfq\NPR_RFQ_API_Documentation_v1.2.pdf
+		\\rodvaps001.sews-e.com\canachl$\FSD\Rfq\NPR_RFQ_API_Documentation_v1.3.pdf = \\rodvaps001.sews-e.com\canachl$\FSD\Rfq\NPR_RFQ_API_Documentation_v1.3.pdf
 		SalesSystem\docs\NprRequestApi\NPR_RFQ_API_Documentation_v1.pdf = SalesSystem\docs\NprRequestApi\NPR_RFQ_API_Documentation_v1.pdf
+		SalesSystem\docs\NprRequestApi\RfqNprRequestSampleSiteDataUxModel-v1.3.csv = SalesSystem\docs\NprRequestApi\RfqNprRequestSampleSiteDataUxModel-v1.3.csv
 		SalesSystem\docs\NprRequestApi\RfqNprRequestSampleSiteDataUxModel.csv = SalesSystem\docs\NprRequestApi\RfqNprRequestSampleSiteDataUxModel.csv
+		SalesSystem\docs\NprRequestApi\RfqNprRequestUxModel-v1.3.csv = SalesSystem\docs\NprRequestApi\RfqNprRequestUxModel-v1.3.csv
 		SalesSystem\docs\NprRequestApi\RfqNprRequestUxModel.csv = SalesSystem\docs\NprRequestApi\RfqNprRequestUxModel.csv
 		SalesSystem\docs\NprRequestApi\Update-v1.2.csv = SalesSystem\docs\NprRequestApi\Update-v1.2.csv
+		SalesSystem\docs\NprRequestApi\Validation-v1.3.csv = SalesSystem\docs\NprRequestApi\Validation-v1.3.csv
 	EndProjectSection
 EndProject
 Global
