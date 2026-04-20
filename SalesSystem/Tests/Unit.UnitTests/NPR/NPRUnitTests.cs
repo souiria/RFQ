@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 using Moq.Language.Flow;
 using Moq.Protected;
 using NPR;
@@ -54,7 +55,8 @@ namespace Unit.Tests.NPR
             ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
             IHttpClientFactory httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
             Mock<ILogger<NPRGrpcService>> logger = new Mock<ILogger<NPRGrpcService>>();
-            _NPRAccessService = new NPRAccessService(serviceProvider, httpClientFactory, true);
+            IConfiguration configuration = new ConfigurationBuilder().Build();
+            _NPRAccessService = new NPRAccessService(serviceProvider, httpClientFactory, configuration, true);
             _GrpcService = new NPRGrpcService(_NPRAccessService, logger.Object);
         }
 
@@ -158,7 +160,7 @@ namespace Unit.Tests.NPR
             // Arrange — default handler returns 200 OK with empty array body
             CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
             NprApiDataGrpc entry = new NprApiDataGrpc();
-            entry.SumitomoNumber = "SN-001";
+            //entry.SumitomoNumber = "SN-001";
             entry.RfqNprRequestId = "RFQ-001";
             request.NprApiData.Add(entry);
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
@@ -190,7 +192,7 @@ namespace Unit.Tests.NPR
 
             CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
             NprApiDataGrpc entry = new NprApiDataGrpc();
-            entry.SumitomoNumber = "SN-001";
+            //entry.SumitomoNumber = "SN-001";
             request.NprApiData.Add(entry);
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
 
@@ -223,7 +225,7 @@ namespace Unit.Tests.NPR
 
             CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
             NprApiDataGrpc entry = new NprApiDataGrpc();
-            entry.SumitomoNumber = "SN-001";
+            //entry.SumitomoNumber = "SN-001";
             request.NprApiData.Add(entry);
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
 
@@ -254,7 +256,7 @@ namespace Unit.Tests.NPR
 
             CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
             NprApiDataGrpc entry = new NprApiDataGrpc();
-            entry.SumitomoNumber = "SN-001";
+            //entry.SumitomoNumber = "SN-001";
             request.NprApiData.Add(entry);
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
 
@@ -287,7 +289,7 @@ namespace Unit.Tests.NPR
 
             CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
             NprApiDataGrpc entry = new NprApiDataGrpc();
-            entry.SumitomoNumber = "SN-001";
+            //entry.SumitomoNumber = "SN-001";
             request.NprApiData.Add(entry);
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
 
@@ -322,7 +324,7 @@ namespace Unit.Tests.NPR
 
             CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
             NprApiDataGrpc entry = new NprApiDataGrpc();
-            entry.SumitomoNumber = "SN-001";
+            //entry.SumitomoNumber = "SN-001";
             request.NprApiData.Add(entry);
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
 
@@ -372,8 +374,9 @@ namespace Unit.Tests.NPR
             ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
             IHttpClientFactory httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
             Mock<ILogger<NPRGrpcService>> logger = new Mock<ILogger<NPRGrpcService>>();
+            IConfiguration configuration = new ConfigurationBuilder().Build();
 
-            NPRAccessService accessService = new NPRAccessService(serviceProvider, httpClientFactory, true);
+            NPRAccessService accessService = new NPRAccessService(serviceProvider, httpClientFactory, configuration, true);
             NPRGrpcService grpcService = new NPRGrpcService(accessService, logger.Object);
 
             return grpcService;

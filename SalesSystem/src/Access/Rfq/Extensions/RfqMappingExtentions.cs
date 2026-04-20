@@ -1890,99 +1890,113 @@
         {
             RfqNprRequestGrpc data = new RfqNprRequestGrpc();
             data.Id = entity.Id.ToString();
-            data.Reason = entity.Reason;
-            data.Customer = entity.Customer;
-            data.PlatformName = entity.PlatformName;
-            data.ProgramName = entity.ProgramName;
-            data.Project = entity.Project;
-            data.MaterialType = entity.MaterialType;
-            data.SuggestedSewsEManufacturingSite = entity.SuggestedSewsEManufacturingSite;
+            data.CustomerRfqNo = entity.CustomerRfqNo;
+            data.CustomerCode = entity.CustomerCode;
+            data.RequestID = entity.RequestID;
+            data.OriginatorName = entity.OriginatorName;
+            data.DeadlineDate = entity.DeadlineDate?.ToUniversalTime().ToTimestamp();
+            data.ReasonDescription = entity.ReasonDescription;
+            data.MaterialNumber = entity.MaterialNumber;
+            data.MaterialDescription = entity.MaterialDescription;
+            data.MaterialTypeDescription = entity.MaterialTypeDescription;
             data.CustomerPartNumber = entity.CustomerPartNumber;
             data.SupplierPartNumber = entity.SupplierPartNumber;
-            data.SumitomoNumber = entity.SumitomoNumber;
-            data.MaterialDescription = entity.MaterialDescription;
-            data.UnitOfMeasure = entity.UnitOfMeasure;
+            data.SEWSEUnitOfMeasurement = entity.SEWSEUnitOfMeasurement;
             data.SupplierGroup = entity.SupplierGroup;
-            data.QtyPerVehicle = entity.QtyPerVehicle;
-            data.Quantity = entity.Quantity;
-            data.RequiredDate = entity.RequiredDate?.ToUniversalTime().ToTimestamp();
-            data.RaisedRemarks = entity.RaisedRemarks;
+            data.SupplierDetailComments = entity.SupplierDetailComments;
+            data.ProjectCode = entity.ProjectCode;
+            data.QtyPerVehicle = (double?)entity.QtyPerVehicle;
+            data.VehicleTotalQuantity = entity.VehicleTotalQuantity;
+            data.IsSampleDataRequired = entity.IsSampleDataRequired;
+
+            // Map SampleSiteDetails
+            if (entity.SampleSiteDetails != null)
+            {
+                foreach (RfqNprSampleSiteData site in entity.SampleSiteDetails)
+                {
+                    RfqNprRequestSampleSiteDataGrpc sampleSite = new RfqNprRequestSampleSiteDataGrpc();
+                    sampleSite.BusinessUnitCode = site.BusinessUnitCode;
+                    sampleSite.SampleQty = site.SampleQty;
+                    sampleSite.SendSampleContactPersonName = site.SendSampleContactPersonName;
+                    sampleSite.RequiredDate = site.RequiredDate?.ToUniversalTime().ToTimestamp();
+                    sampleSite.FreightAccount = site.FreightAccount;
+                    data.SampleSiteDetails.Add(sampleSite);
+                }
+            }
+
+            data.NPRRaisedRemarks = entity.NPRRaisedRemarks;
+            data.ManufacturingSite = entity.ManufacturingSite;
             data.IsCustomerNominatedSupplier = entity.IsCustomerNominatedSupplier;
             data.IsCustomerNominatedMaterial = entity.IsCustomerNominatedMaterial;
-            data.SamplesRequired = entity.SamplesRequired;
-            data.SampleSite = entity.SampleSite;
-            data.SampleQuantity = entity.SampleQuantity;
-            data.SampleRecipient = entity.SampleRecipient;
-            data.SampleRequiredDate = entity.SampleRequiredDate?.ToUniversalTime().ToTimestamp();
-            data.FreightAccount = entity.FreightAccount;
+            data.PlatformName = entity.PlatformName;
+            data.ProgramName = entity.ProgramName;
+            data.SuggestedManufacturerGroup = entity.SuggestedManufacturerGroup;
             data.AssociatedParts = entity.AssociatedParts;
-            data.SuggestedManufacturer = entity.SuggestedManufacturer;
-            data.CreatedAt = entity.CreatedAt?.ToUniversalTime().ToTimestamp();
-            data.CreatedBy = entity.CreatedBy.ToString();
-            data.ModifiedAt = entity.ModifiedAt?.ToUniversalTime().ToTimestamp();
-            data.ModifiedBy = entity.ModifiedBy.ToString();
-            data.SubmissionStatus = (int?)entity.SubmissionStatus;
-            data.RemoteEndpointResponse = entity.RemoteEndpointResponse;
-            data.SubmittedAt = entity.SubmittedAt?.ToUniversalTime().ToTimestamp();
-            data.RfqNumber = entity.RfqNumber;
+            data.NPRUploadSeqNo = entity.NPRUploadSeqNo;
+            data.CreatedAt = entity.Created.ToUniversalTime().ToTimestamp();
+            data.ModifiedAt = entity.Updated.ToUniversalTime().ToTimestamp();
+            data.SubmissionStatus = (int?)entity.Status;
             data.IsActive = entity.IsActive;
+            data.SubmittedAt = entity.Closed?.ToUniversalTime().ToTimestamp();
+            data.RemoteEndpointResponse = entity.Reason;
             return data;
         }
 
         public static DbRfqNprRequestModel ToEntity(this RfqNprRequestGrpc grpc)
         {
             DbRfqNprRequestModel data = new DbRfqNprRequestModel();
-            data.Id = Guid.Parse(grpc.Id);
-            data.Reason = grpc.Reason;
-            data.Customer = grpc.Customer;
-            data.PlatformName = grpc.PlatformName;
-            data.ProgramName = grpc.ProgramName;
-            data.Project = grpc.Project;
-            data.MaterialType = grpc.MaterialType;
-            data.SuggestedSewsEManufacturingSite = grpc.SuggestedSewsEManufacturingSite;
+            data.Id = string.IsNullOrEmpty(grpc.Id) ? Guid.Empty : Guid.Parse(grpc.Id);
+            data.CustomerRfqNo = grpc.CustomerRfqNo;
+            data.CustomerCode = grpc.CustomerCode;
+            data.RequestID = grpc.RequestID;
+            data.OriginatorName = grpc.OriginatorName;
+            data.DeadlineDate = grpc.DeadlineDate?.ToDateTime();
+            data.ReasonDescription = grpc.ReasonDescription;
+            data.MaterialNumber = grpc.MaterialNumber;
+            data.MaterialDescription = grpc.MaterialDescription;
+            data.MaterialTypeDescription = grpc.MaterialTypeDescription;
             data.CustomerPartNumber = grpc.CustomerPartNumber;
             data.SupplierPartNumber = grpc.SupplierPartNumber;
-            data.SumitomoNumber = grpc.SumitomoNumber;
-            data.MaterialDescription = grpc.MaterialDescription;
-            data.UnitOfMeasure = grpc.UnitOfMeasure;
+            data.SEWSEUnitOfMeasurement = grpc.SEWSEUnitOfMeasurement;
             data.SupplierGroup = grpc.SupplierGroup;
-            data.QtyPerVehicle = grpc.QtyPerVehicle;
-            data.Quantity = grpc.Quantity;
-            data.RequiredDate = grpc.RequiredDate.ToDateTime();
-            data.RaisedRemarks = grpc.RaisedRemarks;
-            data.IsCustomerNominatedSupplier = grpc.IsCustomerNominatedSupplier;
-            data.IsCustomerNominatedMaterial = grpc.IsCustomerNominatedMaterial;
-            data.SamplesRequired = grpc.SamplesRequired;
-            data.SampleSite = grpc.SampleSite;
-            data.SampleQuantity = grpc.SampleQuantity;
-            data.SampleRecipient = grpc.SampleRecipient;
-            data.SampleRequiredDate = grpc.SampleRequiredDate is null
-                ? null
-                : grpc.SampleRequiredDate.ToDateTime();
-            data.FreightAccount = grpc.FreightAccount;
+            data.SupplierDetailComments = grpc.SupplierDetailComments;
+            data.ProjectCode = grpc.ProjectCode;
+            data.QtyPerVehicle = (decimal?)grpc.QtyPerVehicle;
+            data.VehicleTotalQuantity = grpc.VehicleTotalQuantity;
+            data.IsSampleDataRequired = grpc.IsSampleDataRequired ?? false;
+
+            // Map SampleSiteDetails
+            List<RfqNprSampleSiteData> sampleSiteList = new List<RfqNprSampleSiteData>();
+            foreach (RfqNprRequestSampleSiteDataGrpc site in grpc.SampleSiteDetails)
+            {
+                RfqNprSampleSiteData sampleSite = new RfqNprSampleSiteData();
+                sampleSite.BusinessUnitCode = site.BusinessUnitCode;
+                sampleSite.SampleQty = site.SampleQty;
+                sampleSite.SendSampleContactPersonName = site.SendSampleContactPersonName;
+                sampleSite.RequiredDate = site.RequiredDate?.ToDateTime();
+                sampleSite.FreightAccount = site.FreightAccount;
+                sampleSiteList.Add(sampleSite);
+            }
+
+            data.SampleSiteDetails = sampleSiteList;
+
+            data.NPRRaisedRemarks = grpc.NPRRaisedRemarks;
+            data.ManufacturingSite = grpc.ManufacturingSite;
+            data.IsCustomerNominatedSupplier = grpc.IsCustomerNominatedSupplier ?? false;
+            data.IsCustomerNominatedMaterial = grpc.IsCustomerNominatedMaterial ?? false;
+            data.PlatformName = grpc.PlatformName;
+            data.ProgramName = grpc.ProgramName;
+            data.SuggestedManufacturerGroup = grpc.SuggestedManufacturerGroup;
             data.AssociatedParts = grpc.AssociatedParts;
-            data.SuggestedManufacturer = grpc.SuggestedManufacturer;
-            data.CreatedAt = grpc.CreatedAt is null 
-                 ? null
-                 : grpc.CreatedAt.ToDateTime();
-            data.CreatedBy = grpc.CreatedBy is null 
-                                ? Guid.Empty 
-                                : Guid.Parse(grpc.CreatedBy);
-            data.ModifiedAt = grpc.ModifiedAt is null 
-                ? null 
-                : grpc.ModifiedAt.ToDateTime();
-            data.ModifiedBy = grpc.ModifiedBy is null 
-                                ? Guid.Empty
-                                :Guid.Parse(grpc.ModifiedBy);
-            data.SubmissionStatus = (SubmissionStatus?)grpc.SubmissionStatus;
-            data.RemoteEndpointResponse = grpc.RemoteEndpointResponse;
-            data.SubmittedAt = grpc.SubmittedAt is null 
-                ? null
-                : grpc.SubmittedAt.ToDateTime();
-            data.RfqNumber = grpc.RfqNumber;
-            data.IsActive = grpc.IsActive;
+            data.NPRUploadSeqNo = grpc.NPRUploadSeqNo;
+            data.Created = grpc.CreatedAt != null ? grpc.CreatedAt.ToDateTime() : DateTime.UtcNow;
+            data.Updated = grpc.ModifiedAt != null ? grpc.ModifiedAt.ToDateTime() : DateTime.UtcNow;
+            data.Status = (SubmissionStatus)(grpc.SubmissionStatus ?? 0);
+            data.Closed = grpc.SubmittedAt?.ToDateTime();
+            data.Reason = grpc.RemoteEndpointResponse;
             return data;
         }
+
         #endregion
 
     }

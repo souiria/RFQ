@@ -4757,7 +4757,7 @@
             foreach (RfqNprRequestGrpc grpcItem in safeItems)
             {
                 string iid = grpcItem.Id ?? string.Empty;
-                string customer = grpcItem.Customer ?? string.Empty;
+               // string customer = grpcItem.customer ?? string.Empty;
                 items.Add(grpcItem);
             }
 

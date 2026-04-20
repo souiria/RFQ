@@ -1182,7 +1182,7 @@
             rfqGrpcRequestParameter.RequestType = 70;
             foreach (RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
             {
-                Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRquestGrpcAccess();
+                Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRequestGrpcAccess();
                 rfqNprRequest.RfqNprRequestGrpcsToCreate.Add(accessRfqNprRequest);
             }
 
@@ -1227,7 +1227,7 @@
             rfqNprRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
             foreach (RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
             {
-                Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRquestGrpcAccess();
+                Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRequestGrpcAccess();
                 rfqNprRequest.RfqNprRequestGrpcsToUpdate.Add(accessRfqNprRequest);
             }
 
@@ -1247,7 +1247,7 @@
             rfqNprRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
             foreach(RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
             {
-                Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRquestGrpcAccess();
+                Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRequestGrpcAccess();
                 rfqNprRequest.RfqNprRequestGrpcsToDelete.Add(accessRfqNprRequest);
             }
 
@@ -1265,7 +1265,7 @@
             {
                 foreach (RfqNprRequestGrpc? mgrItem in request.Items)
                 {
-                                    Rfq.RfqNprRequestGrpc accessItem = mgrItem.ToRfqNprRquestGrpcAccess();
+                                    Rfq.RfqNprRequestGrpc accessItem = mgrItem.ToRfqNprRequestGrpcAccess();
                     accessRequest.Items.Add(accessItem);
                 }
             }
@@ -1320,7 +1320,7 @@
             List<NPR.NprApiDataGrpc> accessDataList = new List<NPR.NprApiDataGrpc>();
             foreach (NprApiDataGrpc? npr in request.NprApiData)
             {
-                Rfq.RfqNprRequestGrpc rfqNprRequest = npr.RfqNprRequest.ToRfqNprRquestGrpcAccess();
+                Rfq.RfqNprRequestGrpc rfqNprRequest = npr.RfqNprRequest.ToRfqNprRequestGrpcAccess();
                 NPR.NprApiDataGrpc nprAccessData = npr.ToNprApiAccessData();
                 accessDataList.Add(nprAccessData);
                 validateRequest.Items.Add(rfqNprRequest);

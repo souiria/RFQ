@@ -123,6 +123,13 @@
             return response;
         }
 
+        public override async Task<CreateNprGrpcResponse> CreateNprGrpc(CreateNprGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("CreateNprGrpc starting");
+            CreateNprGrpcResponse response = await _RfqManagerService.CreateNprGrpc(request);
+            return response;
+        }
+
         public override async Task<FilterGrpcResponse> FilterGrpc(FilterGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("FilterGrpc starting");

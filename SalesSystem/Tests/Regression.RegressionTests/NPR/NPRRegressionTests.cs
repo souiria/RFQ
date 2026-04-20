@@ -1,4 +1,5 @@
-﻿using NPR;
+﻿using Microsoft.Extensions.Configuration;
+using NPR;
 using NPR.Endpoints.GrpcServices;
 using NPR.Services;
 
@@ -16,8 +17,9 @@ namespace Regression.Tests.NPR
             serviceCollection.AddHttpClient();
             ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
             IHttpClientFactory httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
+            IConfiguration configuration = new ConfigurationBuilder().Build();
 
-            _NPRAccessService = new NPRAccessService(serviceProvider, httpClientFactory, true);
+            _NPRAccessService = new NPRAccessService(serviceProvider, httpClientFactory, configuration, true);
             Mock<ILogger<NPRGrpcService>> logger = new Mock<ILogger<NPRGrpcService>>();
             _GrpcService = new NPRGrpcService(_NPRAccessService, logger.Object);
         }

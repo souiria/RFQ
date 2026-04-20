@@ -15,7 +15,7 @@
         #endregion
         #region NprApiData
 
-        List<NprApiData> _NprApiData;
+        List<NprApiReturnData> _NprApiData;
 
         #endregion
         #endregion
@@ -37,12 +37,13 @@
 
         readonly IServiceProvider _ServiceProvider;
         readonly IHttpClientFactory _HttpClientFactory;
+        readonly IConfiguration _Configuration;
 
         #endregion
 
         #region Constructor
 
-        public NPRAccessService(IServiceProvider serviceProvider, IHttpClientFactory httpClientFactory, bool testing = false)
+        public NPRAccessService(IServiceProvider serviceProvider, IHttpClientFactory httpClientFactory, IConfiguration configuration, bool testing = false)
         {
             #region H1NPRView
 
@@ -60,12 +61,13 @@
 
             #region NprApiData
 
-            _NprApiData = new List<NprApiData>();
+            _NprApiData = new List<NprApiReturnData>();
 
             #endregion
 
             _ServiceProvider = serviceProvider;
             _HttpClientFactory = httpClientFactory;
+            _Configuration = configuration;
 
             if (testing)
             {
@@ -136,9 +138,16 @@
                 return response;
             }
 
-            string jsonList = JsonConvert.SerializeObject(request.NprApiData);
+            List<NprApiRequestData> requestDataList = new List<NprApiRequestData>();
+            foreach (NprApiDataGrpc data in request.NprApiData)
+            {
+                NprApiRequestData apiData = data.ToNprApiData();
+                requestDataList.Add(apiData);
+            }
+
+            string jsonList = JsonConvert.SerializeObject(requestDataList);
             HttpClient httpClient = _HttpClientFactory.CreateClient("MyClient");
-            string uri = "";
+            string? uri = _Configuration["NprApi:Url"];
             HttpResponseMessage httpResponse = await httpClient.PostAsJsonAsync(uri, jsonList, cancellationToken);
 
             response.HttpStatusCode = httpResponse.StatusCode.ToString();
@@ -148,15 +157,8 @@
                 case HttpStatusCode.OK:
                 return await HandleSuccess(httpResponse, request, response, cancellationToken);
 
-                case HttpStatusCode.BadRequest:
-                return await HandleBadRequest(httpResponse, response, cancellationToken);
-
-                case HttpStatusCode.Unauthorized:
-                response = HandleAuthFailure(response, "Unauthorized: missing or invalid authentication credentials.");
-                return response;
-
-                case HttpStatusCode.Forbidden:
-                response = HandleAuthFailure(response, "Forbidden: you do not have permission to perform this action.");
+                case HttpStatusCode.UnprocessableContent:
+                response = HandleAuthFailure(response, "Unprocessable Content");
                 return response;
 
                 case HttpStatusCode.InternalServerError:
@@ -176,7 +178,7 @@
             try
             {
                 string httpJsonString = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
-                List<NprApiData>? nprApiDatas = JsonConvert.DeserializeObject<List<NprApiData>>(httpJsonString);
+                List<NprApiReturnData>? nprApiDatas = JsonConvert.DeserializeObject<List<NprApiReturnData>>(httpJsonString);
 
                 if (nprApiDatas == null)
                 {
@@ -184,11 +186,11 @@
                     return response;
                 }
 
-                foreach (NprApiData data in nprApiDatas)
+                foreach (NprApiReturnData data in nprApiDatas)
                 {
                     NprApiDataGrpc grpc = data.ToNprApiDataGrpc();
                     NprApiDataGrpc requestData = request.NprApiData
-                        .Where(x => x.SumitomoNumber == data.SumitomoNumber)
+                        .Where(x => x.CustomerPartNumber == data.CustomerPartNumber)
                         .First();
                     grpc.RfqNprRequestId = requestData.RfqNprRequestId;
                     response.NprApiData.Add(grpc);
