@@ -1,6 +1,5 @@
 ﻿namespace Rfq.Data.Model
 {
-    [Keyless]
     public class RfqNprSampleSiteData
     {
         /// <summary>Business Unit Code (Master)</summary>
