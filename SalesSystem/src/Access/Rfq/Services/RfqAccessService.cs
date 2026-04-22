@@ -4029,10 +4029,9 @@
             string programName = item.ProgramName ?? "";
             string suggestedManufacturerGroup = item.SuggestedManufacturerGroup ?? "";
             string associatedParts = item.AssociatedParts ?? "";
-            //int NPRUploadSeqNo = item.NPRUploadSeqNo ?? 0;
-            //Guid Id = item.Id ?? Guid.NewGuid;
+            int nPRUploadSeqNo = item.NPRUploadSeqNo ?? 0;
 
-            //int submissionStatus = item.SubmissionStatus ?? 0;
+            int submissionStatus = item.SubmissionStatus ?? 0;
 
             //// -----------------------------
             //// REQUIRED FIELD VALIDATIONS

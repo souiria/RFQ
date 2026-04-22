@@ -14,6 +14,8 @@ global using Grpc.Core;
 global using Logging;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.ChangeTracking;
+global using Microsoft.EntityFrameworkCore.Design;
+global using Microsoft.EntityFrameworkCore.Diagnostics;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using Rfq.CQRS.Command;
 global using Rfq.CQRS.Query;
@@ -28,4 +30,5 @@ global using Rfq.Enums;
 global using Rfq.Extensions;
 global using Rfq.Services;
 global using SharedKernel;
+
 

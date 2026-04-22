@@ -6,6 +6,9 @@
         {
             builder.ToTable("RfqNprRequest");
             builder.HasKey(x => x.Id);
+            builder.Property(e => e.SampleSiteDetails)
+                       .HasMaxLength(1024)
+                       .IsUnicode(false);
         }
     }
 }
