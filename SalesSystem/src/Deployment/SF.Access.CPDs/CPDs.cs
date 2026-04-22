@@ -20,7 +20,7 @@ namespace SF.Access.CPDs
             return new ServiceInstanceListener[]
             {
                 new ServiceInstanceListener(serviceContext =>
-                    new KestrelCommunicationListener(serviceContext, "ServiceEndpoint", (url, listener) =>
+                    new KestrelCommunicationListener(serviceContext, "ServiceEndpointHttps", (url, listener) =>
                     {
                         ServiceEventSource._Current.ServiceMessage(serviceContext, $"Starting Kestrel on {url}");
 
@@ -30,7 +30,7 @@ namespace SF.Access.CPDs
                         builder.WebHost
                                     .UseKestrel(opt =>
                                     {
-                                        int port = serviceContext.CodePackageActivationContext.GetEndpoint("ServiceEndpoint").Port;
+                                        int port = serviceContext.CodePackageActivationContext.GetEndpoint( "ServiceEndpointHttps").Port;
                                         X509Certificate2 cert = FindMatchingCertificateBySubject("*.sews-e.com");
                                         opt.Listen(IPAddress.IPv6Any, port, listenOptions =>
                                         {
@@ -45,7 +45,7 @@ namespace SF.Access.CPDs
                         
                         return CPD.HostBuilder.CreateApp(builder, url);
 
-                    }))
+                    }),"ServiceEndpointHttps")
             };
         }
 
