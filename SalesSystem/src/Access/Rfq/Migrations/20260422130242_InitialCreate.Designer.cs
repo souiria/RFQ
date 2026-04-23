@@ -12,7 +12,7 @@ using Rfq.Data.Context;
 namespace Rfq.Migrations
 {
     [DbContext(typeof(RfqDbContext))]
-    [Migration("20260422112748_InitialCreate")]
+    [Migration("20260422130242_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
