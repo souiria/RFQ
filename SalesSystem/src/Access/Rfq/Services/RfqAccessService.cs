@@ -3894,18 +3894,19 @@
 
                 if (result.IsSuccess)
                 {
-                    //foreach (RfqNprRequestGrpc? deleted in request.RfqNprRequestGrpcsToDelete)
-                    //{
-                    //    RfqNprRequestGrpc? existing = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.FirstOrDefault(p => p.Id.ToUpperInvariant() == deleted.Id.ToUpperInvariant());
-                    //    if (existing != null)
-                    //    {
-                    //        int index = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.IndexOf(existing);
-                    //        if (index != -1)
-                    //        {
-                    //            _ListRfqNprRequestGrpc.RfqNprRequestGrpcs[index] = deleted;
-                    //        }
-                    //    }
-                    //}
+                    foreach (RfqNprRequestGrpc? deleted in request.RfqNprRequestGrpcsToDelete)
+                    {
+                        RfqNprRequestGrpc? existing = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.FirstOrDefault(p => p.Id.ToUpperInvariant() == deleted.Id.ToUpperInvariant());
+                        if (existing != null)
+                        {
+                            int index = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.IndexOf(existing);
+                            if (index != -1)
+                            {
+                                _ListRfqNprRequestGrpc.RfqNprRequestGrpcs[index] = deleted;
+                            }
+                        }
+                    }
+
                     await PopulateRfqNprRequest(cancellationToken);
                     return true;
                 }
@@ -3991,14 +3992,14 @@
             status.Id = item.Id ?? string.Empty;
             status.IsValid = true;
 
-            //void Err(string field, string message)
-            //{
-            //    status.IsValid = false;
-            //    ValidationErrorDto validation = new ValidationErrorDto();
-            //    validation.Field = field;
-            //    validation.Message = message;
-            //    status.Errors.Add(validation);
-            //}
+            void Err(string field, string message)
+            {
+                status.IsValid = false;
+                ValidationErrorDto validation = new ValidationErrorDto();
+                validation.Field = field;
+                validation.Message = message;
+                status.Errors.Add(validation);
+            }
 
             // Extract values safely
             string id = item.Id ?? "";
@@ -4020,7 +4021,7 @@
             double qtyPerVehicle = item.QtyPerVehicle ?? 0;
             int vehicleTotalQuantity = item.VehicleTotalQuantity ?? 0;
             bool isSampleDataRequired = item.IsSampleDataRequired ?? false;
-            //SampleSiteDetails
+            List<RfqNprRequestSampleSiteDataGrpc> sampleSiteDetails = item.SampleSiteDetails.ToList();
             string nPRRaisedRemarks = item.NPRRaisedRemarks ?? "";
             string manufacturingSite = item.ManufacturingSite ?? "";
             bool isCustomerNominatedSupplier = item.IsCustomerNominatedSupplier ?? false;
@@ -4036,88 +4037,143 @@
             //// -----------------------------
             //// REQUIRED FIELD VALIDATIONS
             //// -----------------------------
-            //if (string.IsNullOrWhiteSpace(id))
-            //{
-            //    Err(nameof(item.Id), "Id is required.");
-            //}
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                Err(nameof(item.Id), "Id is required.");
+            }
 
-            //if (string.IsNullOrWhiteSpace(customerRfqNo))
-            //{
-            //    Err(nameof(item.CustomerRfqNo), "Customer is required.");
-            //}
+            if (string.IsNullOrWhiteSpace(customerRfqNo))
+            {
+                Err(nameof(item.CustomerRfqNo), "Customer is required.");
+            }
 
-            //if (string.IsNullOrWhiteSpace(materialType))
-            //{
-            //    Err(nameof(item.MaterialType), "Material type is required.");
-            //}
+            if (string.IsNullOrWhiteSpace(customerCode))
+            {
+                Err(nameof(item.CustomerCode), "Customer code is required.");
+            }
 
-            //if (string.IsNullOrWhiteSpace(unitOfMeasure))
-            //{
-            //    Err(nameof(item.UnitOfMeasure), "Unit of measure is required.");
-            //}
+            if (string.IsNullOrWhiteSpace(requestId))
+            {
+                Err(nameof(item.RequestID), "requestId is required.");
+            }
 
-            //if (quantity <= 0)
-            //{
-            //    Err(nameof(item.Quantity), "Quantity must be greater than zero.");
-            //}
+            if (string.IsNullOrWhiteSpace(originatorName))
+            {
+                Err(nameof(item.OriginatorName), "Originator Name is required");
+            }
 
-            //if (string.IsNullOrWhiteSpace(reason))
-            //{
-            //    Err(nameof(item.Reason), "Reason is required.");
-            //}
+            if (deadlineDate.ToDateTime().Date < DateTime.UtcNow.Date)
+            {
+                Err(nameof(item.DeadlineDate), "Required date cannot be in the past.");
+            }
 
-            //if (string.IsNullOrWhiteSpace(materialDescription))
-            //{
-            //    Err(nameof(item.MaterialDescription), "Material description is required.");
-            //}
+            if (string.IsNullOrWhiteSpace(reasonDescription))
+            {
+                Err(nameof(item.ReasonDescription), "Reason Description is required.");
+            }
 
-            //if (requiredDate.HasValue && requiredDate.Value.Date < DateTime.UtcNow.Date)
-            //{
-            //    Err(nameof(item.RequiredDate), "Required date cannot be in the past.");
-            //}
+            if (string.IsNullOrWhiteSpace(materialNumber))
+            {
+                Err(nameof(item.MaterialNumber), "Material number is required.");
+            }
 
-            //if (samplesRequired)
-            //{
-            //    if (sampleQuantity <= 0)
-            //    {
-            //        Err(nameof(item.SampleQuantity), "Sample quantity must be > 0 when samples are required.");
-            //    }
+            if (string.IsNullOrWhiteSpace(materialDescription))
+            {
+                Err(nameof(item.MaterialDescription), "Material description is required.");
+            }
 
-            //    if (sampleRequiredDate.HasValue && sampleRequiredDate.Value.Date < DateTime.UtcNow.Date)
-            //    {
-            //        Err(nameof(item.SampleRequiredDate), "Sample required date cannot be in the past.");
-            //    }
-            //}
+            if (string.IsNullOrWhiteSpace(materialTypeDescription))
+            {
+                Err(nameof(item.MaterialTypeDescription), "Material type description is required.");
+            }
 
-            //if (qtyPerVehicle < 0)
-            //{
-            //    Err(nameof(item.QtyPerVehicle), "QtyPerVehicle cannot be negative.");
-            //}
+            if (string.IsNullOrWhiteSpace(customerPartNumber))
+            {
+                Err(nameof(item.CustomerPartNumber), "Customer part number is required.");
+            }
 
-            //if (submissionStatus < 0)
-            //{
-            //    Err(nameof(item.SubmissionStatus), "SubmissionStatus cannot be negative.");
-            //}
+            if (string.IsNullOrWhiteSpace(supplierPartNumber))
+            {
+                Err(nameof(item.SupplierPartNumber), "Supplier part number is required.");
+            }
 
-            //if (isCustomerNominatedSupplier && string.IsNullOrWhiteSpace(supplierPartNumber))
-            //{
-            //    Err(nameof(item.SupplierPartNumber), "Supplier part number is required when supplier is customer-nominated.");
-            //}
+            if (string.IsNullOrWhiteSpace(sEWSEUnitOfMeasurement))
+            {
+                Err(nameof(item.SEWSEUnitOfMeasurement), "SEWSE unit of measurement is required.");
+            }
 
-            //if (isCustomerNominatedMaterial && string.IsNullOrWhiteSpace(sumitomoNumber))
-            //{
-            //    Err(nameof(item.SumitomoNumber), "Sumitomo number is required when material is customer-nominated.");
-            //}
+            if (string.IsNullOrWhiteSpace(supplierGroup))
+            {
+                Err(nameof(item.SupplierGroup), "Supplier group is required.");
+            }
 
-            //if (samplesRequired && string.IsNullOrWhiteSpace(sampleSite))
-            //{
-            //    Err(nameof(item.SampleSite), "Sample site is required when samples are required.");
-            //}
+            if (string.IsNullOrWhiteSpace(supplierDetailComments))
+            {
+                Err(nameof(item.SupplierDetailComments), "Supplier detail comments is required.");
+            }
 
-            //if (samplesRequired && string.IsNullOrWhiteSpace(sampleRecipient))
-            //{
-            //    Err(nameof(item.SampleRecipient), "Sample recipient is required when samples are required.");
-            //}
+            if (string.IsNullOrWhiteSpace(projectCode))
+            {
+                Err(nameof(item.ProjectCode), "Project Code is required.");
+            }
+
+            if (qtyPerVehicle < 0)
+            {
+                Err(nameof(item.QtyPerVehicle), "QtyPerVehicle cannot be negative.");
+            }
+
+            if (vehicleTotalQuantity < 0)
+            {
+                Err(nameof(item.VehicleTotalQuantity), "Vehicle Total Quantity cannot be negative.");
+            }
+
+            if (isSampleDataRequired)
+            {
+                if (item.SampleSiteDetails.Count <= 0)
+                {
+                    Err(nameof(item.SampleSiteDetails), "Sample quantity must be > 0 when samples are required.");
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(nPRRaisedRemarks))
+            {
+                Err(nameof(item.NPRRaisedRemarks), "NPRRaisedRemarks is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(manufacturingSite))
+            {
+                Err(nameof(item.ManufacturingSite), "ManufacturingSite is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(platformName))
+            {
+                Err(nameof(item.PlatformName), "Platform name is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(programName))
+            {
+                Err(nameof(item.ProgramName), "Program name is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(programName))
+            {
+                Err(nameof(item.ProgramName), "Program name is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(suggestedManufacturerGroup))
+            {
+                Err(nameof(item.SuggestedManufacturerGroup), "Suggested manufacturer group is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(associatedParts))
+            {
+                Err(nameof(item.AssociatedParts), "Associated Parts is required.");
+            }
+
+            if (nPRUploadSeqNo < 0)
+            {
+                Err(nameof(item.NPRUploadSeqNo), "NprUploadSeqNo must be > 0.");
+            }
 
             return status;
         }
