@@ -141,8 +141,8 @@
             data.CustomerCode = grpc.CustomerCode;
             data.RequestID = grpc.RequestID;
             data.OriginatorName = grpc.OriginatorName;
-            DateTime deadlineDateTime = grpc.DeadlineDate.ToDateTime();
-            data.DeadlineDate = grpc.DeadlineDate != null ? DateOnly.FromDateTime(deadlineDateTime) : (DateOnly?)null;
+            DateTime? deadlineDateTime = grpc.DeadlineDate?.ToDateTime();
+            data.DeadlineDate = deadlineDateTime.HasValue ? DateOnly.FromDateTime(deadlineDateTime.Value) : (DateOnly?)null;
             data.ReasonDescription = grpc.ReasonDescription;
             data.MaterialNumber = grpc.MaterialNumber;
             data.MaterialDescription = grpc.MaterialDescription;

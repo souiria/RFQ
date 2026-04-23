@@ -164,6 +164,9 @@
                 case HttpStatusCode.InternalServerError:
                 return await HandleServerError(httpResponse, response, cancellationToken);
 
+                case HttpStatusCode.BadRequest:
+                return await HandleBadRequest(httpResponse, response, cancellationToken);
+
                 default:
                 return await HandleUnexpectedStatus(httpResponse, response, cancellationToken);
             }

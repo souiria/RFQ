@@ -177,22 +177,22 @@ namespace Unit.Tests.NPR
 
         [Test]
         [Category("Unit")]
-        public void CreateNprApiGrpcTest_Returns400_SetsValidationErrorMessage()
+        public void CreateNprApiGrpcTest_Returns422_SetsValidationErrorMessage()
         {
             // Arrange
-            string validationError = "The field SumitomoNumber is required.";
+            string validationError = "The field CustomerRfqNo is required.";
             StringContent content = new StringContent(validationError, Encoding.UTF8, "application/json");
 #pragma warning disable CA2000
             HttpResponseMessage httpResponse = new HttpResponseMessage();
 #pragma warning restore CA2000
-            httpResponse.StatusCode = HttpStatusCode.BadRequest;
+            httpResponse.StatusCode = HttpStatusCode.UnprocessableContent;
             httpResponse.Content = content;
 
             NPRGrpcService service = CreateGrpcServiceWithResponse(httpResponse);
 
             CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
             NprApiDataGrpc entry = new NprApiDataGrpc();
-            //entry.SumitomoNumber = "SN-001";
+            entry.CustomerRfqNo = "Rfq-001";
             request.NprApiData.Add(entry);
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
 
@@ -225,7 +225,7 @@ namespace Unit.Tests.NPR
 
             CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
             NprApiDataGrpc entry = new NprApiDataGrpc();
-            //entry.SumitomoNumber = "SN-001";
+            entry.CustomerRfqNo = "Rfq-001";
             request.NprApiData.Add(entry);
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
 
@@ -256,7 +256,7 @@ namespace Unit.Tests.NPR
 
             CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
             NprApiDataGrpc entry = new NprApiDataGrpc();
-            //entry.SumitomoNumber = "SN-001";
+            entry.CustomerRfqNo = "Rfq-001";
             request.NprApiData.Add(entry);
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
 
@@ -289,7 +289,7 @@ namespace Unit.Tests.NPR
 
             CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
             NprApiDataGrpc entry = new NprApiDataGrpc();
-            //entry.SumitomoNumber = "SN-001";
+            entry.CustomerRfqNo = "Rfq-001";
             request.NprApiData.Add(entry);
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
 
