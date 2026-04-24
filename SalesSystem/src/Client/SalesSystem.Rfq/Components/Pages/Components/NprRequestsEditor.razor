@@ -165,6 +165,10 @@
         {
             await RefreshNprRequestsAsync();
         }
+        else
+        {
+            Logger.GenericLogInformation($"III {RfqProject.NprRequests.Count} NprRequests in this project {RfqProject.RowId}");
+        }
         StateHasChanged();
     }
 
