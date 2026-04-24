@@ -135,6 +135,12 @@
             </MudText>
         </NoRecordsContent>
     </MudDataGrid>
+    <MudAlert Severity="Severity.Info" Dense="true">
+        Total: @(RfqProject?.NprRequests?.Count ?? 0) |
+        Active: @ActiveNprCount |
+        Deleted: @(RfqProject?.NprRequests?.Count(r => r.UxStatus == UxObjectStatus.Deleted) ?? 0) |
+        Search: "@_searchFilter"
+    </MudAlert>
 </div>
 
 @code {
