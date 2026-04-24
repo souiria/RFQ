@@ -106,7 +106,7 @@ namespace SalesSystem.Rfq.Models
 
         /// <summary>Required if IsSampleDataRequired is true. Array of sample sites</summary>
         public Collection<RfqNprRequestSampleSiteDataUxModel> SampleSiteDetails
-        { get; }
+        { get; } = new Collection<RfqNprRequestSampleSiteDataUxModel>();
 
         /// <summary>Remarks (Free Text)</summary>
         [MaxLength(500)]
@@ -205,6 +205,8 @@ namespace SalesSystem.Rfq.Models
             Status = RfqNprRequestSet.Draft;
             UxStatus = UxObjectStatus.Created;
             SampleSiteDetails = new Collection<RfqNprRequestSampleSiteDataUxModel>();
+            Created = DateTime.UtcNow;
+            Updated = DateTime.UtcNow;
         }
 
         #endregion

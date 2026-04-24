@@ -1994,7 +1994,8 @@
             data.Status = (SubmissionStatus)(grpc.SubmissionStatus ?? 0);
             data.Closed = grpc.SubmittedAt?.ToDateTime();
             data.Reason = grpc.RemoteEndpointResponse;
-            return data;
+            // 😁As IsActive is a non-nullable field in the entity, we need to provide a default value if it's null in the gRPC model. Assuming that if it's null, it should be treated as true (active), we can set it to true by default.
+            data.IsActive = grpc.IsActive == true;
         }
 
         #endregion
