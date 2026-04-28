@@ -45,12 +45,12 @@
                             opt.Listen(IPAddress.IPv6Any, port, listenOptions =>
                             {
                                 listenOptions.UseHttps(cert);
-                                listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+                                listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
                             });
                         })
                         .UseContentRoot(Directory.GetCurrentDirectory())
-                        .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None);
-                                    //.UseUrls(url);
+                        .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
+                        .UseUrls(url);
 
                         
                         return Core.HostBuilder.CreateApp(builder, url);
