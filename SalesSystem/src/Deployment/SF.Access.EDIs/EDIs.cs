@@ -28,19 +28,29 @@ namespace SF.Access.EDIs
 
                         builder.Services.AddSingleton(serviceContext);
                         builder.WebHost
-                                    .UseKestrel(opt =>
-                                    {
-                                        int port = serviceContext.CodePackageActivationContext.GetEndpoint("ServiceEndpointHttps").Port;
-                                        X509Certificate2 cert = FindMatchingCertificateBySubject("*.sews-e.com");
-                                        opt.Listen(IPAddress.IPv6Any, port, listenOptions =>
-                                        {
-                                            listenOptions.UseHttps(cert);
-                                            listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
-                                        });
-                                    })
-                                    .UseContentRoot(Directory.GetCurrentDirectory())
-                                    .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
-                                    .UseUrls(url);
+                        .UseKestrel(opt =>
+                        {
+                            string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "";
+
+                            bool isDevelopment =
+                                env.Equals("Development", StringComparison.OrdinalIgnoreCase);
+
+                            int port = serviceContext.CodePackageActivationContext
+                                .GetEndpoint("ServiceEndpointHttps").Port;
+
+                            X509Certificate2 cert = isDevelopment
+                                ? GetCertificateFromStore()                  // CN=localhost
+                                : FindMatchingCertificateBySubject("*.sews-e.com");
+
+                            opt.Listen(IPAddress.IPv6Any, port, listenOptions =>
+                            {
+                                listenOptions.UseHttps(cert);
+                                listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
+                            });
+                        })
+                        .UseContentRoot(Directory.GetCurrentDirectory())
+                        .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
+                        .UseUrls(url);
 
                         
                         return EDI.HostBuilder.CreateApp(builder, url);
@@ -55,26 +65,28 @@ namespace SF.Access.EDIs
         /// <returns>Returns the ASP .NET Core HTTPS development certificate</returns>
         static X509Certificate2 GetCertificateFromStore()
         {
-            string aspNetCoreEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
-            if (string.Equals(aspNetCoreEnvironment, "Development", StringComparison.OrdinalIgnoreCase))
+            using X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
+            store.Open(OpenFlags.ReadOnly);
+
+            DateTime now = DateTime.UtcNow;
+
+            X509Certificate2? cert = store.Certificates
+                .OfType<X509Certificate2>()
+                .Where(c =>
+                    c.HasPrivateKey &&
+                    c.NotBefore <= now &&
+                    now <= c.NotAfter &&
+                    c.Subject.Contains("CN=localhost", StringComparison.OrdinalIgnoreCase))
+                .OrderByDescending(c => c.NotAfter)
+                .FirstOrDefault();
+
+            if (cert == null)
             {
-                const string aspNetHttpsOid = "1.3.6.1.4.1.311.84.1.1";
-                const string cNName = "CN=localhost";
-                using (X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine))
-                {
-                    store.Open(OpenFlags.ReadOnly);
-                    X509Certificate2Collection certCollection = store.Certificates;
-                    X509Certificate2Collection currentCerts = certCollection.Find(X509FindType.FindByExtension, aspNetHttpsOid, true);
-                    currentCerts = currentCerts.Find(X509FindType.FindByIssuerDistinguishedName, cNName, true);
-#pragma warning disable CS8603 // Possible null reference return.
-                    return currentCerts.Count != 0 ? currentCerts[0] : null;
-#pragma warning restore CS8603 // Possible null reference return.
-                }
+                throw new InvalidOperationException(
+                    "Local development certificate 'CN=localhost' not found in LocalMachine\\My.");
             }
-            else
-            {
-                throw new NotImplementedException("GetCertificateFromStore should be updated to retrieve the certificate for non Development environment");
-            }
+
+            return cert;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0300:Simplify collection initialization", Justification = "Service Fabric Boilerplate")]
