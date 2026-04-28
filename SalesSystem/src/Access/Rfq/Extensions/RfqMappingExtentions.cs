@@ -1996,6 +1996,7 @@
             data.Reason = grpc.RemoteEndpointResponse;
             // 😁As IsActive is a non-nullable field in the entity, we need to provide a default value if it's null in the gRPC model. Assuming that if it's null, it should be treated as true (active), we can set it to true by default.
             data.IsActive = grpc.IsActive == true;
+            return data;
         }
 
         #endregion

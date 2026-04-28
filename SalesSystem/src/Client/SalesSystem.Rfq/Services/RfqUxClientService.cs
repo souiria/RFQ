@@ -814,16 +814,23 @@ namespace SalesSystem.Rfq.Services
         #region Low Level GRPC Datasource
         async Task<bool> CreateNpr(List<RfqNprRequestUxModel> list)
         {
-            CreateRfqNprRequestGrpcRequest createRequest = new CreateRfqNprRequestGrpcRequest();
+            CreateNprGrpcRequest createRequest = new CreateNprGrpcRequest();
             foreach (RfqNprRequestUxModel model in list)
             {
                 RfqNprRequestGrpc grpc = model.ToNprGrpc();
-                createRequest.RfqNprRequestGrpc.Add(grpc);
+                NprApiDataGrpc nprApiData = new NprApiDataGrpc();
+                nprApiData.RfqNprRequest = grpc;
+                createRequest.NprApiData.Add(nprApiData);
             }
 
-            CreateRfqNprRequestGrpcResponse response = await _Client.CreateRfqNprRequestGrpcAsync(createRequest);
+            CreateNprGrpcResponse response = await _Client.CreateNprGrpcAsync(createRequest);
             _Logger?.GenericLogInformation($"{response.Message}");
-            return response.Success;
+            if(response.HttpStatusCode == "200")
+            {
+                return true;
+            }
+
+            return false;
         }
         async Task<bool> UpdateNpr(List<RfqNprRequestUxModel> list)
         {

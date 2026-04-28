@@ -40,6 +40,7 @@ service RfqModule {
   rpc CreateRfqNprRequestGrpc (CreateRfqNprRequestGrpcRequest) returns (CreateRfqNprRequestGrpcResponse);
   rpc UpdateRfqNprRequestGrpc (UpdateRfqNprRequestGrpcRequest) returns (UpdateRfqNprRequestGrpcResponse);
   rpc DeleteRfqNprRequestByIdGrpc (DeleteRfqNprRequestByIdGrpcRequest) returns (DeleteRfqNprRequestByIdGrpcResponse);
+  rpc CreateNprGrpc (CreateNprGrpcRequest) returns (CreateNprGrpcResponse);
   rpc GetAllSuppliersGrpc (GetAllSuppliersGrpcRequest) returns (GetAllSuppliersGrpcResponse);
   rpc GetAllSupplierGroupsGrpc (GetAllSupplierGroupsGrpcRequest) returns (GetAllSupplierGroupsGrpcResponse);
    
@@ -586,6 +587,22 @@ message DeleteRfqNprRequestByIdGrpcResponse {
 	bool Success = 1;
 	string Message = 2;
 }
+
+message NprApiDataGrpc {
+	RfqNprRequestGrpc RfqNprRequest = 1;
+	google.protobuf.StringValue NprId = 2;
+}
+
+message CreateNprGrpcRequest {
+	repeated NprApiDataGrpc NprApiData = 1;
+}
+
+message CreateNprGrpcResponse {
+	repeated NprApiDataGrpc NprApiData = 1;
+	google.protobuf.StringValue message = 2;
+	google.protobuf.StringValue HttpStatusCode = 3;
+}
+
 message GetAllSuppliersGrpcRequest {
 	int32 Position = 1;
     int32 Take = 2;

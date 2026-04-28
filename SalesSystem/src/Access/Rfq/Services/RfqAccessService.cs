@@ -3860,7 +3860,7 @@
                 {
                     foreach (RfqNprRequestGrpc? updated in request.RfqNprRequestGrpcsToUpdate)
                     {
-                        RfqNprRequestGrpc? existing = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.FirstOrDefault(p => p.Id.ToUpperInvariant() == updated.Id.ToUpperInvariant());
+                        RfqNprRequestGrpc? existing = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.FirstOrDefault(p => p.RequestID.ToUpperInvariant() == updated.RequestID.ToUpperInvariant());
                         if (existing != null)
                         {
                             int index = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.IndexOf(existing);

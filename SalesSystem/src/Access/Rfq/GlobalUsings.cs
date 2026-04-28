@@ -17,6 +17,7 @@ global using Microsoft.EntityFrameworkCore.ChangeTracking;
 global using Microsoft.EntityFrameworkCore.Design;
 global using Microsoft.EntityFrameworkCore.Diagnostics;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using Newtonsoft.Json;
 global using Rfq.CQRS.Command;
 global using Rfq.CQRS.Query;
 global using Rfq.CQRS.Specification;
@@ -30,5 +31,4 @@ global using Rfq.Enums;
 global using Rfq.Extensions;
 global using Rfq.Services;
 global using SharedKernel;
-
 
