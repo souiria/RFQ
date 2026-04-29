@@ -1348,44 +1348,7 @@ namespace RfqModule.Services
             response.HttpStatusCode = apiResponse.HttpStatusCode;
             response.Message = apiResponse.Message;
 
-            // send all requests to create RfqNprRequests
-            RfqNprRequestGrpcRequest rfqNprRequestGrpcRequest = new RfqNprRequestGrpcRequest();
-            RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
-            rfqGrpcRequestParameter.RequestType = 70;
-
-            foreach (Rfq.RfqNprRequestGrpc rfqNpr in rfqNprRequestList)
-            {
-                NPR.NprApiDataGrpc? matchingNpr = apiResponse.NprApiData.Where(x => x.CustomerPartNumber == rfqNpr.CustomerPartNumber).FirstOrDefault();
-                if (matchingNpr == null)
-                {
-                    rfqNprRequestGrpcRequest.RfqNprRequestGrpcsToCreate.Add(rfqNpr);
-                }
-                else
-                {
-                    NprApiDataGrpc matchingNprApiData = matchingNpr.ToNprApiData();
-                    Rfq.RfqNprRequestGrpc matchingRfqNpr = matchingNprApiData.RfqNprRequest.ToRfqNprRequestGrpcAccess();
-                    rfqNprRequestGrpcRequest.RfqNprRequestGrpcsToCreate.Add(matchingRfqNpr);
-                }
-            }
-
-            rfqNprRequestGrpcRequest.RfqNprRequestGrpcsToCreate.AddRange(validateRequest.Items);
-            rfqNprRequestGrpcRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
-
-            RfqCrudGrpcResponse createRfqNprsResponse = await _RfqClient.CreateRfqNprRequestGrpcAsync(rfqNprRequestGrpcRequest);
-            
-            for(int i = 0; i < rfqNprRequestList.Count; i++)
-            {
-                string[] rfqNprRequestIds = createRfqNprsResponse.StringValue.Split(",", i);
-                NprApiDataGrpc returnNpr = new NprApiDataGrpc();
-                returnNpr.RfqNprRequest = rfqNprRequestList[i].ToRfqNprRequest();
-                returnNpr.NprId = rfqNprRequestList[i].Id ?? string.Empty;
-                response.NprApiData.Add(returnNpr);
-            }
-
-            if (createRfqNprsResponse.SaveSuccess)
-            {
-                response.Message = response.Message + " All NPR requests created successfully.";
-            }
+            //Update RfqNprRequests with the data from NPR API? CustomerPartNumber + CustomerRfqNo
 
             return response;
         }
