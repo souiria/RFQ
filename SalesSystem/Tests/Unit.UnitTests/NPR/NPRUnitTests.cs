@@ -201,7 +201,7 @@ namespace Unit.Tests.NPR
 
             // Assert
             Assert.That(reply.Result, Is.Not.Null);
-            string status = HttpStatusCode.BadRequest.ToString();
+            string status = HttpStatusCode.UnprocessableContent.ToString();
             EqualConstraint statusConstraint = Is.EqualTo(status);
             Assert.That(reply.Result.HttpStatusCode, statusConstraint);
             ContainsConstraint containsConstraint = Does.Contain("Validation error");
