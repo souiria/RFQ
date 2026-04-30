@@ -1348,7 +1348,33 @@ namespace RfqModule.Services
             response.HttpStatusCode = apiResponse.HttpStatusCode;
             response.Message = apiResponse.Message;
 
-            //Update RfqNprRequests with the data from NPR API? CustomerPartNumber + CustomerRfqNo
+            UpdateRfqNprRequestGrpcRequest updateRequest = new UpdateRfqNprRequestGrpcRequest();
+            foreach (NPR.NprApiDataGrpc? accessData in apiResponse.NprApiData)
+            {
+                NprApiDataGrpc mgrData = accessData.ToNprApiData();
+
+                NprApiDataGrpc? matchedRequest = request.NprApiData
+                    .FirstOrDefault(r => string.Equals(
+                        r.RfqNprRequest.CustomerPartNumber,
+                        mgrData.RfqNprRequest.CustomerPartNumber,
+                        StringComparison.OrdinalIgnoreCase));
+
+                if (matchedRequest != null && !string.IsNullOrEmpty(mgrData.RfqNprRequest.RequestID))
+                {
+                    matchedRequest.RfqNprRequest.CustomerRfqNo = mgrData.RfqNprRequest.RequestID;
+                    updateRequest.RfqNprRequestGrpc.Add(matchedRequest.RfqNprRequest);
+                }
+
+                response.NprApiData.Add(mgrData);
+            }
+
+            UpdateRfqNprRequestGrpcResponse updateResponse = new UpdateRfqNprRequestGrpcResponse();
+            if (0 < updateRequest.RfqNprRequestGrpc.Count)
+            {
+                updateResponse = await UpdateRfqNprRequestGrpc(updateRequest);
+            }
+
+            response.Message = response.Message + $" {updateResponse.Message}";
 
             return response;
         }
