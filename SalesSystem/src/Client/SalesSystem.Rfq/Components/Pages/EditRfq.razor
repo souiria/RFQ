@@ -998,14 +998,16 @@ else
                     string cleanedUpPn = part.CustomerPartNumber.Replace("-", "").Replace(" ", "").ToUpperInvariant();
 
                     // Search EMACS for Sumitomo part numbers
-                    SearchResultUxModel emacsExactResponse = await RfqUxClientService.SearchEmacsExactCustomerPn(cleanedUpPn);
+                    SearchResultUxModel emacsExactResponse = await RfqUxClientService.SearchEmacsExactCustomerPn(currentPartNumber);
                     SearchResultUxModel emacsContainsResponse = await RfqUxClientService.SearchEmacsContainsCustomerPn(cleanedUpPn);
 
                     totalSearched++;
+                    part.SearchResultPartNumbers.Clear();
 
                     if (emacsExactResponse.IsSuccessful && emacsExactResponse.StringList != null && emacsExactResponse.StringList.Count > 0)
                     {
                         part.Status = RfqDrawingPartNumberStatus.ExactMatch;
+                        part.SearchResultPartNumbers.Clear();
 
                         foreach (var emacsPart in emacsExactResponse.StringList)
                         {
@@ -1013,9 +1015,17 @@ else
                             var nprPartSearch = await RfqUxClientService.SearchNprSewsePn(emacsPart);
                             if (nprPartSearch.IsSuccessful && nprPartSearch.StringList != null && nprPartSearch.StringList.Count > 0)
                             {
-                                part.SearchResultPartNumbers.AddRange(nprPartSearch.ToCompletedPartNumbersList(true));
+                                List<RfqDrawingPartNumberUxModel> exactPartWithPriceList = nprPartSearch.ToCompletedPartNumbersList(true);
+                                foreach (var p in exactPartWithPriceList)
+                                {
+                                    p.CustomerPartNumber = currentPartNumber;
+                                    p.Status = RfqDrawingPartNumberStatus.Completed;
+                                }
+                                part.SearchResultPartNumbers.Clear();
+                                part.SearchResultPartNumbers.AddRange(exactPartWithPriceList);
                                 part.MultiMatch = nprPartSearch.StringList.Count > 1;
-
+                                partsToMove.AddRange(part.SearchResultPartNumbers);
+                                totalCompleted++;
                                 Logger.GenericLogInformation($"EditRfq.SearchAllInProgressPartsAsync - NPR Exact match found for EMACS part: {emacsPart} -> {nprPartSearch.StringList.Count}");
                             }
                             else
@@ -1024,7 +1034,10 @@ else
                                 exactPartNoPrice.CustomerPartNumber = part.CustomerPartNumber;
                                 exactPartNoPrice.DrawingPartNumber = emacsPart;
                                 exactPartNoPrice.IsExactMatch = true;
+                                exactPartNoPrice.Status = RfqDrawingPartNumberStatus.ExactMatch;
                                 part.SearchResultPartNumbers.Add(exactPartNoPrice);
+                                InProgressParts.Remove(part);
+                                InProgressParts.AddRange(part.SearchResultPartNumbers);
                                 Logger.GenericLogInformation($"EditRfq.SearchAllInProgressPartsAsync - No NPR Exact match found for EMACS part: {emacsPart}");
                             }
                         }
@@ -1032,38 +1045,37 @@ else
                     else
                     {
                         Logger.GenericLogInformation($"EditRfq.SearchAllInProgressPartsAsync - No exact EMACS match for: {currentPartNumber}");
-                    }
-
-                    if (emacsContainsResponse.IsSuccessful && emacsContainsResponse.StringList != null && emacsContainsResponse.StringList.Count > 0)
-                    {
-                        part.Status = RfqDrawingPartNumberStatus.ContainsMatch;
-
-                        foreach (var emacsPart in emacsContainsResponse.StringList)
+                        if (emacsContainsResponse.IsSuccessful && emacsContainsResponse.StringList != null && emacsContainsResponse.StringList.Count > 0)
                         {
-                            Logger.GenericLogInformation($"EditRfq.SearchAllInProgressPartsAsync - EMACS Contains match found for: {currentPartNumber} -> {emacsPart}");
-                            var nprPartSearch = await RfqUxClientService.SearchNprSewsePn(emacsPart);
-                            if (nprPartSearch.IsSuccessful && nprPartSearch.StringList != null && nprPartSearch.StringList.Count > 0)
-                            {
-                                part.SearchResultPartNumbers.AddRange(nprPartSearch.ToCompletedPartNumbersList(false));
-                                part.MultiMatch = part.MultiMatch == true ? true : nprPartSearch.StringList.Count > 1;
+                            part.Status = RfqDrawingPartNumberStatus.ContainsMatch;
 
-                                Logger.GenericLogInformation($"EditRfq.SearchAllInProgressPartsAsync - NPR Contains match found for EMACS part: {emacsPart} -> {nprPartSearch.StringList.Count}");
-                            }
-                            else
+                            foreach (var emacsPart in emacsContainsResponse.StringList)
                             {
-                                var containsPartNoPrice = new RfqDrawingPartNumberUxModel();
-                                containsPartNoPrice.CustomerPartNumber = part.CustomerPartNumber;
-                                containsPartNoPrice.DrawingPartNumber = emacsPart;
-                                containsPartNoPrice.IsExactMatch = false;
-                                part.SearchResultPartNumbers.Add(containsPartNoPrice);
-                                Logger.GenericLogInformation($"EditRfq.SearchAllInProgressPartsAsync - No NPR Contains match found for EMACS part: {emacsPart}");
+                                Logger.GenericLogInformation($"EditRfq.SearchAllInProgressPartsAsync - EMACS Contains match found for: {currentPartNumber} -> {emacsPart}");
+                                var nprPartSearch = await RfqUxClientService.SearchNprSewsePn(emacsPart);
+                                if (nprPartSearch.IsSuccessful && nprPartSearch.StringList != null && nprPartSearch.StringList.Count > 0)
+                                {
+                                    part.SearchResultPartNumbers.AddRange(nprPartSearch.ToCompletedPartNumbersList(false));
+                                    part.MultiMatch = part.MultiMatch == true ? true : nprPartSearch.StringList.Count > 1;
+
+                                    Logger.GenericLogInformation($"EditRfq.SearchAllInProgressPartsAsync - NPR Contains match found for EMACS part: {emacsPart} -> {nprPartSearch.StringList.Count}");
+                                }
+                                else
+                                {
+                                    var containsPartNoPrice = new RfqDrawingPartNumberUxModel();
+                                    containsPartNoPrice.CustomerPartNumber = part.CustomerPartNumber;
+                                    containsPartNoPrice.DrawingPartNumber = emacsPart;
+                                    containsPartNoPrice.IsExactMatch = false;
+                                    part.SearchResultPartNumbers.Add(containsPartNoPrice);
+                                    Logger.GenericLogInformation($"EditRfq.SearchAllInProgressPartsAsync - No NPR Contains match found for EMACS part: {emacsPart}");
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        totalInProgress++;
-                        Logger.GenericLogInformation($"EditRfq.SearchAllInProgressPartsAsync - No EMACS results (exact or contains) for: {currentPartNumber}");
+                        else
+                        {
+                            totalInProgress++;
+                            Logger.GenericLogInformation($"EditRfq.SearchAllInProgressPartsAsync - No EMACS results (exact or contains) for: {currentPartNumber}");
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -1090,7 +1102,7 @@ else
             // Move ONLY exact matched parts from InProgressParts to CompletedParts
             foreach (var part in partsToMove)
             {
-                InProgressParts.Remove(part);
+                InProgressParts.Where(p => p?.CustomerPartNumber == part.CustomerPartNumber).ToList().ForEach(p => InProgressParts.Remove(p));
                 CompletedParts.Add(part);
             }
 

@@ -8,8 +8,9 @@
   -->
   <ClusterConnectionParameters ConnectionEndpoint="ukhqh1uat.sews-e.com:19000" WindowsCredential="true" />
   <ApplicationParameterFile Path="..\ApplicationParameters\UAT.xml" />
+  <StartupServiceParameterFile Path="..\StartupServiceParameters\UAT.xml" />
   <CopyPackageParameters CompressPackage="true" />
-  <UpgradeDeployment Mode="UnmonitoredAuto" Enabled="true">
+  <UpgradeDeployment Mode="UnmonitoredAuto" Enabled="false">
     <Parameters Force="True" />
   </UpgradeDeployment>
 </PublishProfile>

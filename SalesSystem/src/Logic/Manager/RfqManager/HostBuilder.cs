@@ -1,18 +1,31 @@
-﻿namespace RfqModule
+﻿using System;
+using System.IO;
+using System.Net.Http;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.CookiePolicy;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+namespace RfqModule
 {
     public static class HostBuilder
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "<Pending>")]
         public static WebApplication CreateApp(WebApplicationBuilder? builder = null, params string[] args)
         {
+
             //string dir = Directory.GetCurrentDirectory();
             builder ??= WebApplication.CreateBuilder(args);
             IConfigurationSection conf = builder.Configuration.GetSection("Logging");
 
             builder.Configuration
-          .SetBasePath(AppContext.BaseDirectory)
-          .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-          .AddEnvironmentVariables();
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddEnvironmentVariables();
 
             #region Builder
             //
@@ -32,7 +45,7 @@
             string? nprUrl = builder.Configuration["GrpcService:Npr-Url"]
                    ?? throw new InvalidOperationException("GrpcService:Npr-Url is missing in configuration.");
             string? purchasingUrl = builder.Configuration["GrpcService:Purchasings-Url"]
-            ?? throw new InvalidOperationException("GrpcService:Purchasings-Url is missing in configuration.");
+                   ?? throw new InvalidOperationException("GrpcService:Purchasings-Url is missing in configuration.");
 
             #region Kestrel
             builder.WebHost.ConfigureKestrel(options =>
@@ -73,6 +86,71 @@
 
             builder.Services.AddSingleton<IRfqManagerService, RfqManagerService>();
 
+            static X509Certificate2 FindMatchingCertificateBySubject(string subjectCommonName)
+            {
+                using X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
+                store.Open(OpenFlags.ReadOnly);
+
+                DateTime now = DateTime.UtcNow;
+
+                X509Certificate2? matchingCert = store.Certificates
+                    .OfType<X509Certificate2>()
+                    .Where(cert =>
+                        cert.HasPrivateKey &&
+                        //now >= cert.NotBefore &&
+                        now <= cert.NotAfter &&
+                        cert.Subject.Contains(subjectCommonName, StringComparison.OrdinalIgnoreCase))
+                    .OrderByDescending(cert => cert.NotAfter)
+                    .FirstOrDefault();
+
+                if (matchingCert == null)
+                {
+                    throw new InvalidOperationException(
+                        $"Certificate '{subjectCommonName}' not found in LocalMachine\\My");
+                }
+
+                return matchingCert;
+            }
+
+            // Helper to create SocketsHttpHandler with optional client certificate
+            SocketsHttpHandler CreateHandlerWithClientCert()
+            {
+                SocketsHttpHandler handler = new SocketsHttpHandler
+                {
+                    PooledConnectionIdleTimeout = Timeout.InfiniteTimeSpan,
+                    KeepAlivePingDelay = TimeSpan.FromSeconds(60),
+                    KeepAlivePingTimeout = TimeSpan.FromSeconds(30),
+                    EnableMultipleHttp2Connections = true
+                };
+
+                try
+                {
+                    X509Certificate2 cert = FindMatchingCertificateBySubject("*.sews-e.com");
+                    handler.SslOptions.ClientCertificates ??= new X509CertificateCollection();
+                    handler.SslOptions.ClientCertificates.Add(cert);
+                 
+#pragma warning disable CA5359 // Do Not Disable Certificate Validation
+                    handler.SslOptions.RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) =>
+                    {
+                        //Accept any server certificate(not recommended for production)
+                        
+                            return true;
+                    };
+#pragma warning restore CA5359 // Do Not Disable Certificate Validation
+
+                    //}
+                }
+                catch (Exception ex) 
+                {
+                        // Log the exception if logging is available, otherwise ignore
+                        Console.WriteLine($"Error loading client certificate: {ex.Message}");
+                    // Suppress certificate loading errors during service registration
+                    throw;
+                }
+
+                return handler;
+            }
+
             // -----------------------------
             //  RFQ ACCESS CLIENT 
             // -----------------------------
@@ -84,26 +162,16 @@
                 options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
                 options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
             })
-  .ConfigurePrimaryHttpMessageHandler(() =>
-  {
-      return new SocketsHttpHandler
-      {
-          // No override needed because certificate is trusted
-          PooledConnectionIdleTimeout = Timeout.InfiniteTimeSpan,
-          KeepAlivePingDelay = TimeSpan.FromSeconds(60),
-          KeepAlivePingTimeout = TimeSpan.FromSeconds(30),
-          EnableMultipleHttp2Connections = true
-      };
-  })
-  .ConfigureChannel(options =>
-  {
-      options.MaxReceiveMessageSize = 64 * 1024 * 1024;
-      options.MaxSendMessageSize = 64 * 1024 * 1024;
-  })
-  .ConfigureHttpClient(client =>
-  {
-      client.Timeout = TimeSpan.FromSeconds(600);
-  });
+            .ConfigurePrimaryHttpMessageHandler(CreateHandlerWithClientCert)
+            .ConfigureChannel(options =>
+            {
+                options.MaxReceiveMessageSize = 64 * 1024 * 1024;
+                options.MaxSendMessageSize = 64 * 1024 * 1024;
+            })
+            .ConfigureHttpClient(client =>
+            {
+                client.Timeout = TimeSpan.FromSeconds(600);
+            });
 
             // Long timeouts for RFQ
             builder.Services.Configure<HttpStandardResilienceOptions>("GrpcClient.Rfq.Rfq+RfqClient", options =>
@@ -116,7 +184,12 @@
             builder.Services.AddGrpcClient<MasterClient>(o =>
             {
                 o.Address = new Uri(masterUrl);
-            });
+            }).ConfigureChannel(options =>
+            {
+                options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
+                options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
+            })
+            .ConfigurePrimaryHttpMessageHandler(CreateHandlerWithClientCert);
 
             builder.Services.AddGrpcClient<Emacs.Emacs.EmacsClient>(o =>
             {
@@ -127,31 +200,37 @@
                 options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
                 options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
             })
-            .ConfigurePrimaryHttpMessageHandler(() =>
-            {
-                return new SocketsHttpHandler
-                {
-                    PooledConnectionIdleTimeout = Timeout.InfiniteTimeSpan,
-                    KeepAlivePingDelay = TimeSpan.FromSeconds(60),
-                    KeepAlivePingTimeout = TimeSpan.FromSeconds(30),
-                    EnableMultipleHttp2Connections = true
-                };
-            });
+            .ConfigurePrimaryHttpMessageHandler(CreateHandlerWithClientCert);
 
             builder.Services.AddGrpcClient<Adss.AdssGrpc.AdssGrpcClient>(o =>
             {
                 o.Address = new Uri(adssUrl);
-            });
+            }).ConfigureChannel(options =>
+            {
+                options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
+                options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
+            })
+            .ConfigurePrimaryHttpMessageHandler(CreateHandlerWithClientCert);
 
             builder.Services.AddGrpcClient<NPR.NPR.NPRClient>(o =>
             {
                 o.Address = new Uri(nprUrl);
-            });
+            }).ConfigureChannel(options =>
+            {
+                options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
+                options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
+            })
+            .ConfigurePrimaryHttpMessageHandler(CreateHandlerWithClientCert);
 
             builder.Services.AddGrpcClient<CPD.CPD.CPDClient>(o =>
             {
                 o.Address = new Uri(cpdUrl);
-            });
+            }).ConfigureChannel(options =>
+            {
+                options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
+                options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
+            })
+            .ConfigurePrimaryHttpMessageHandler(CreateHandlerWithClientCert);
 
             builder.AddServiceDefaults();
             builder.Services.AddInfrastructure();

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ServiceManifest Name="SF.Logic.RfqModulesPkg"
-                 Version="1.2.8"
+                 Version="1.0.0"
                  xmlns="http://schemas.microsoft.com/2011/01/fabric"
                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -11,7 +11,7 @@
   </ServiceTypes>
 
   <!-- Code package is your service executable. -->
-  <CodePackage Name="Code" Version="1.2.8">
+  <CodePackage Name="Code" Version="1.0.0">
     <EntryPoint>
       <ExeHost>
         <Program>SF.Logic.RfqModules.exe</Program>
@@ -25,14 +25,14 @@
 
   <!-- Config package is the contents of the Config directory under PackageRoot that contains an 
        independently-updateable and versioned set of custom configuration settings for your service. -->
-  <ConfigPackage Name="Config" Version="1.2.8" />
+  <ConfigPackage Name="Config" Version="1.0.0" />
 
   <Resources>
     <Endpoints>
       <!-- This endpoint is used by the communication listener to obtain the port on which to 
            listen. Please note that if your service is partitioned, this port is shared with 
            replicas of different partitions that are placed in your code. -->
-      <Endpoint Protocol="https" Name="ServiceEndpoint" Type="Input" Port="38001" />
+      <Endpoint Protocol="https" Name="ServiceEndpointHttps" Type="Input" Port="38001" />
     </Endpoints>
   </Resources>
 </ServiceManifest>
