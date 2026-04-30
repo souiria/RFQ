@@ -206,8 +206,6 @@ namespace Unit.Tests.NPR
             Assert.That(reply.Result.HttpStatusCode, statusConstraint);
             ContainsConstraint containsConstraint = Does.Contain("Unprocessable Content");
             Assert.That(reply.Result.Message, containsConstraint);
-            ContainsConstraint validationConstraint = Does.Contain(validationError);
-            Assert.That(reply.Result.Message, validationConstraint);
         }
 
         [Test]

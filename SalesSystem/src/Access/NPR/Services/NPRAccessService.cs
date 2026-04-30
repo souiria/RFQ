@@ -158,7 +158,7 @@
                 return await HandleSuccess(httpResponse, request, response, cancellationToken);
 
                 case HttpStatusCode.UnprocessableContent:
-                response = HandleAuthFailure(response, "Unprocessable Content");
+                response = HandleAuthFailure(response, "Unprocessable Content: " + response.Message);
                 return response;
 
                 case HttpStatusCode.InternalServerError:
