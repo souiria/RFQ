@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-
-namespace Rfq.Data.Context
+﻿namespace Rfq.Data.Context
 {
     public class RfqDbContextFactory : IDesignTimeDbContextFactory<RfqDbContext>
     {
