@@ -4047,9 +4047,22 @@
                 Err(nameof(item.CustomerRfqNo), "Customer is required.");
             }
 
+            customerCode = item.CustomerCode ?? string.Empty;
+
+
             if (string.IsNullOrWhiteSpace(customerCode))
             {
-                Err(nameof(item.CustomerCode), "Customer code is required.");
+                Err(nameof(item.CustomerCode),
+                    "Customer can not be blank");
+            }
+            else
+            {
+
+                if (18 < customerCode.Length)
+                {
+                    Err(nameof(item.CustomerCode),
+                        "CustomerCode exceeds maximum length of 18 characters");
+                }
             }
 
             if (string.IsNullOrWhiteSpace(requestId))
@@ -4057,29 +4070,93 @@
                 Err(nameof(item.RequestID), "requestId is required.");
             }
 
+            if (string.IsNullOrWhiteSpace(manufacturingSite))
+            {
+                Err(nameof(item.ManufacturingSite), "ManufacturingSite is required.");
+            }
+
             if (string.IsNullOrWhiteSpace(originatorName))
             {
                 Err(nameof(item.OriginatorName), "Originator Name is required");
             }
 
-            if (deadlineDate.ToDateTime().Date < DateTime.UtcNow.Date)
+            if (item.DeadlineDate == null)
             {
-                Err(nameof(item.DeadlineDate), "Required date cannot be in the past.");
+                Err(nameof(item.DeadlineDate),
+                    "DeadlineDate can not be blank, and should be greater than today's date");
             }
+            else
+            {
+                DateTime deadline = item.DeadlineDate.ToDateTime().Date;
+                DateTime today = DateTime.UtcNow.Date;
+
+                // covers past + today
+                if (deadline <= today)
+                {
+                    Err(nameof(item.DeadlineDate),
+                        "DeadlineDate should be greater than today's date");
+                }
+
+                // creation date check
+                if (item.CreatedAt != null)
+                {
+                    DateTime createdAt = item.CreatedAt.ToDateTime().Date;
+
+                    if (deadline < createdAt)
+                    {
+                        Err(nameof(item.DeadlineDate),
+             "DeadlineDate should be greater than creation's date");
+                    }
+                }
+            }
+
+            reasonDescription = item.ReasonDescription ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(reasonDescription))
             {
-                Err(nameof(item.ReasonDescription), "Reason Description is required.");
+                Err(nameof(item.ReasonDescription),
+                    "Reason Description is required.");
             }
+            else
+            {
+                if (50 < reasonDescription.Length)
+                {
+                    Err(nameof(item.ReasonDescription),
+                        "Reason Description can not be greater than 50 characters.");
+                }
+            }
+
+            materialNumber = item.MaterialNumber ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(materialNumber))
             {
-                Err(nameof(item.MaterialNumber), "Material number is required.");
+                Err(nameof(item.MaterialNumber),
+                    "MaterialNumber Can not be blank!");
             }
+            else
+            {
+                if (materialNumber.Length < 8 || 26 < materialNumber.Length)
+                {
+                    Err(nameof(item.MaterialNumber),
+                        "MaterialNumber Can not be less than 8 and greater than 26 characters");
+                }
+            }
+
+            materialDescription = item.MaterialDescription ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(materialDescription))
             {
-                Err(nameof(item.MaterialDescription), "Material description is required.");
+                Err(nameof(item.MaterialDescription),
+                    "MaterialDescription Can not be blank!");
+            }
+            else
+            {
+
+                if (materialDescription.Length < 1 || 15 < materialDescription.Length)
+                {
+                    Err(nameof(item.MaterialDescription),
+                        "Material Description Can not be less than 1 and greater than 15 characters.");
+                }
             }
 
             if (string.IsNullOrWhiteSpace(materialTypeDescription))
@@ -4087,29 +4164,65 @@
                 Err(nameof(item.MaterialTypeDescription), "Material type description is required.");
             }
 
-            if (string.IsNullOrWhiteSpace(customerPartNumber))
+            //if (string.IsNullOrWhiteSpace(customerPartNumber))
+            //{
+            //    Err(nameof(item.CustomerPartNumber), "Customer part number is required.");
+            //}
+
+            supplierPartNumber = item.SupplierPartNumber ?? string.Empty;
+            materialNumber = item.MaterialNumber ?? string.Empty;
+
+            bool hasSupplierPartNumber = !string.IsNullOrWhiteSpace(supplierPartNumber);
+            bool hasMaterialNumber = !string.IsNullOrWhiteSpace(materialNumber);
+
+
+            if (!hasMaterialNumber && !hasSupplierPartNumber)
             {
-                Err(nameof(item.CustomerPartNumber), "Customer part number is required.");
+                Err("MaterialNumber,SupplierPartNumber",
+                    "Provide either the Material Number or the Supplier Part Number.");
             }
 
-            if (string.IsNullOrWhiteSpace(supplierPartNumber))
+            if (!hasMaterialNumber && !hasSupplierPartNumber)
             {
-                Err(nameof(item.SupplierPartNumber), "Supplier part number is required.");
+                Err(nameof(item.SupplierPartNumber),
+                    "Supplier Part number cannot be blank");
             }
+
+            sEWSEUnitOfMeasurement = item.SEWSEUnitOfMeasurement ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(sEWSEUnitOfMeasurement))
             {
-                Err(nameof(item.SEWSEUnitOfMeasurement), "SEWSE unit of measurement is required.");
+                Err(nameof(item.SEWSEUnitOfMeasurement),
+                    "SEWSE unit of measurement is required.");
+            }
+            else
+            {
+                if (10 < sEWSEUnitOfMeasurement.Length)
+                {
+                    Err(nameof(item.SEWSEUnitOfMeasurement),
+                        "SEWSE unit of measurement can not be greater than 10 characters.");
+                }
             }
 
-            if (string.IsNullOrWhiteSpace(supplierGroup))
-            {
-                Err(nameof(item.SupplierGroup), "Supplier group is required.");
-            }
+            //if (string.IsNullOrWhiteSpace(supplierGroup))
+            //{
+            //    Err(nameof(item.SupplierGroup), "Supplier group is required.");
+            //}
+
+            supplierDetailComments = item.SupplierDetailComments ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(supplierDetailComments))
             {
-                Err(nameof(item.SupplierDetailComments), "Supplier detail comments is required.");
+                Err(nameof(item.SupplierDetailComments),
+                    "Supplier detail comments is required.");
+            }
+            else
+            {
+                if (500 < supplierDetailComments.Length)
+                {
+                    Err(nameof(item.SupplierDetailComments),
+                        "Supplier detail comments can not be greater than 500 characters.");
+                }
             }
 
             if (string.IsNullOrWhiteSpace(projectCode))
@@ -4117,14 +4230,14 @@
                 Err(nameof(item.ProjectCode), "Project Code is required.");
             }
 
-            if (qtyPerVehicle < 0)
+            if (qtyPerVehicle <= 0)
             {
-                Err(nameof(item.QtyPerVehicle), "QtyPerVehicle cannot be negative.");
+                Err(nameof(item.QtyPerVehicle), "QtyPerVehicle cannot be Less than 1.");
             }
 
-            if (vehicleTotalQuantity < 0)
+            if (vehicleTotalQuantity <= 0)
             {
-                Err(nameof(item.VehicleTotalQuantity), "Vehicle Total Quantity cannot be negative.");
+                Err(nameof(item.VehicleTotalQuantity), "Vehicle Total Quantity cannot be Less than 1.");
             }
 
             if (isSampleDataRequired)
@@ -4135,44 +4248,176 @@
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(nPRRaisedRemarks))
-            {
-                Err(nameof(item.NPRRaisedRemarks), "NPRRaisedRemarks is required.");
-            }
+            //if (string.IsNullOrWhiteSpace(nPRRaisedRemarks))
+            //{
+            //    Err(nameof(item.NPRRaisedRemarks), "NPRRaisedRemarks is required.");
+            //}
 
             if (string.IsNullOrWhiteSpace(manufacturingSite))
             {
                 Err(nameof(item.ManufacturingSite), "ManufacturingSite is required.");
             }
 
+            platformName = item.PlatformName ?? string.Empty;
+
             if (string.IsNullOrWhiteSpace(platformName))
             {
-                Err(nameof(item.PlatformName), "Platform name is required.");
+                Err(nameof(item.PlatformName),
+                    "Platform name is required.");
             }
+            else
+            {
+
+                if (50 < platformName.Length)
+                {
+                    Err(nameof(item.PlatformName),
+                        "Platform name can not be greater than 50 characters.");
+                }
+            }
+
+            programName = item.ProgramName ?? string.Empty;
+
 
             if (string.IsNullOrWhiteSpace(programName))
             {
-                Err(nameof(item.ProgramName), "Program name is required.");
+                Err(nameof(item.ProgramName),
+                    "Program name is required.");
+            }
+            else
+            {
+                if (50 < programName.Length)
+                {
+                    Err(nameof(item.ProgramName),
+                        "Program name can not be greater than 50 characters.");
+                }
             }
 
-            if (string.IsNullOrWhiteSpace(programName))
-            {
-                Err(nameof(item.ProgramName), "Program name is required.");
-            }
+            suggestedManufacturerGroup = item.SuggestedManufacturerGroup ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(suggestedManufacturerGroup))
             {
-                Err(nameof(item.SuggestedManufacturerGroup), "Suggested manufacturer group is required.");
+                Err(nameof(item.SuggestedManufacturerGroup),
+                    "Suggested Manufacturer Can not be blank!");
             }
+            else
+            {
+                if (50 < suggestedManufacturerGroup.Length)
+                {
+                    Err(nameof(item.SuggestedManufacturerGroup),
+                        "SuggestedManufacturerGroup exceeds maximum length of 50 characters");
+                }
+            }
+
+            associatedParts = item.AssociatedParts ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(associatedParts))
             {
-                Err(nameof(item.AssociatedParts), "Associated Parts is required.");
+                Err(nameof(item.AssociatedParts),
+                    "Associated Parts: can not be blank");
+            }
+            else
+            {
+                string value = associatedParts.Trim().ToUpperInvariant();
+
+                if (value != "YES" && value != "NO" && value != "UNKNOWN")
+                {
+                    Err(nameof(item.AssociatedParts),
+                        "AssociatedParts: Incorrect Value");
+                }
+
+                if (50 < associatedParts.Length)
+                {
+                    Err(nameof(item.AssociatedParts),
+                        "AssociatedParts exceeds maximum length of 50 characters");
+                }
             }
 
-            if (nPRUploadSeqNo < 0)
+            //if (nPRUploadSeqNo < 0)
+            //{
+            //    Err(nameof(item.NPRUploadSeqNo), "NprUploadSeqNo must be > 0.");
+            //}
+
+            bool? nullableIsSampleDataRequired = item.IsSampleDataRequired;
+            isSampleDataRequired = nullableIsSampleDataRequired.GetValueOrDefault();
+
+            if (isSampleDataRequired)
             {
-                Err(nameof(item.NPRUploadSeqNo), "NprUploadSeqNo must be > 0.");
+                sampleSiteDetails =
+                     item.SampleSiteDetails?.ToList() ?? new List<RfqNprRequestSampleSiteDataGrpc>();
+
+                int sampleSiteCount = sampleSiteDetails.Count;
+
+                if (sampleSiteCount == 0)
+                {
+                    Err(nameof(item.SampleSiteDetails),
+                        "The Sample Required is True, provide Sample Site, Sample Quantity (greater than 0), Sample Recipient, and a Sample Required Date that is today or later.");
+                }
+                else
+                {
+                    foreach (RfqNprRequestSampleSiteDataGrpc site in sampleSiteDetails)
+                    {
+                        string businessUnitCode = site.BusinessUnitCode ?? string.Empty;
+                        int sampleQty = site.SampleQty ?? 0;
+                        string sendSampleContactPersonName = site.SendSampleContactPersonName ?? string.Empty;
+                        Timestamp requiredDateTimestamp = site.RequiredDate;
+
+                        if (string.IsNullOrWhiteSpace(businessUnitCode))
+                        {
+                            Err(nameof(site.BusinessUnitCode),
+                                "Sample Site can not be blank");
+                        }
+                        else
+                        {
+                            int businessUnitCodeLength = businessUnitCode.Length;
+
+                            if (4 < businessUnitCodeLength)
+                            {
+                                Err(nameof(site.BusinessUnitCode),
+                                    "Sample Site can not be greater than 4 characters.");
+                            }
+                        }
+
+                        if (sampleQty <= 0)
+                        {
+                            Err(nameof(site.SampleQty),
+                                "Sample Quantity must be greater than 0");
+                        }
+
+                        if (string.IsNullOrWhiteSpace(sendSampleContactPersonName))
+                        {
+                            Err(nameof(site.SendSampleContactPersonName),
+                                "Sample Recipient can not be blank");
+                        }
+                        else
+                        {
+                            int sendSampleContactPersonNameLength = sendSampleContactPersonName.Length;
+
+                            if (100 < sendSampleContactPersonNameLength)
+                            {
+                                Err(nameof(site.SendSampleContactPersonName),
+                                    "Sample Recipient can not be greater than 100 characters.");
+                            }
+                        }
+
+                        // RequiredDate: required and must be today or later
+                        if (requiredDateTimestamp == null)
+                        {
+                            Err(nameof(site.RequiredDate),
+                                "Sample Required Date can not be blank");
+                        }
+                        else
+                        {
+                            DateTime requiredDate = requiredDateTimestamp.ToDateTime().Date;
+                            DateTime today = DateTime.UtcNow.Date;
+
+                            if (requiredDate < today)
+                            {
+                                Err(nameof(site.RequiredDate),
+                                    "Sample Required Date must be today or later");
+                            }
+                        }
+                    }
+                }
             }
 
             return status;
