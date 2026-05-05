@@ -1,0 +1,44 @@
+{
+    "data": [
+        {
+            "requestID": "",
+            "error": "If Sample Required is True, provide Sample Site...",
+            "id": "e1787d1c-9e2e48bd-ae13-1b9bcc4783df",
+            "originatorName": "Singh, Vishwadeep (MTSL)",
+            "reasonDescription": "TEST2",
+            "customerCode": "TMMT",
+            "platformName": "TMMT",
+            "programName": "TMMT",
+            "projectCode": "177D",
+            "materialDescription": "Test Mat desc",
+            "materialTypeDescription": "Component",
+            "manufacturingSite": "DEVA,KENI",
+            "customerPartNumber": "19062024AC",
+            "supplierPartNumber": "SUMITOMOp18062027",
+            "materialNumber": "",
+            "sewseUnitOfMeasurement": "Bag",
+            "SupplierGroup": "New Supplier",
+            "ManufacturerGroup": "New Supplier",
+            "supplierDetailComments": "Test RFQ",
+            "qtyPerVehicle": "100.0",
+            "vehicleTotalQuantity": "1000",
+            "deadlineDate": "2026-11-30T00:00:00",
+            "nprRaisedRemarks": "Test",
+            "isCustomerNominatedSupplier": "false",
+            "isCustomerNominatedMaterial": "false",
+            "isSampleDataRequired": "true",
+            "sampleSiteDetails": [
+                {
+                    "businessUnitCode": "AIN1",
+                    "sampleQty": "10",
+                    "sendSampleContactPersonName": "virendra.pal",
+                    "requiredDate": "2026-03-25",
+                    "freightAccount": "FA-987654"
+                }
+            ],
+            "associatedParts": "NO",
+            "suggestedManufacturerGroup": "1ACAPLAST",
+            "supplierRfqNo": "RFQ-26-001-008831"
+        }
+    ]
+}

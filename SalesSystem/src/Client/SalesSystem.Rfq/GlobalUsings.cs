@@ -1,4 +1,5 @@
-﻿global using SalesSystem.Rfq;
+﻿global using System.ComponentModel.DataAnnotations;
+global using SalesSystem.Rfq;
 global using SalesSystem.Rfq.Components;
 global using SalesSystem.Rfq.Components.Pages.Components;
 global using SalesSystem.Rfq.Components.Pages.Dialogs;

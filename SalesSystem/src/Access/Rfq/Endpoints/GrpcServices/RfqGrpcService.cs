@@ -4633,9 +4633,10 @@
             {
                 responseMessage.Message = $"{request.RfqNprRequestGrpcsToCreate.Count} RfqNprRequest types created successfully.";
                 responseMessage.SaveSuccess = true;
+
                 foreach (RfqNprRequestGrpc item in response.RfqNprRequestGrpcs)
                 {
-                    responseMessage.StringValue += item.Id.ToString(CultureInfo.InvariantCulture) + ",";
+                    responseMessage.StringValue += JsonConvert.SerializeObject(item) + ",";
                 }
             }
             else
@@ -4757,7 +4758,7 @@
             foreach (RfqNprRequestGrpc grpcItem in safeItems)
             {
                 string iid = grpcItem.Id ?? string.Empty;
-                string customer = grpcItem.Customer ?? string.Empty;
+               // string customer = grpcItem.customer ?? string.Empty;
                 items.Add(grpcItem);
             }
 

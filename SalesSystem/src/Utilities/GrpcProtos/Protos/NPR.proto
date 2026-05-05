@@ -189,36 +189,78 @@ message RfqNprRequestGrpc {
   google.protobuf.StringValue suggested_manufacturer = 28;
 }
 
+//message NprApiDataGrpc {
+//	google.protobuf.StringValue NprId = 1;
+//	google.protobuf.StringValue Reason = 2;
+//	google.protobuf.StringValue Customer = 3;
+//	google.protobuf.StringValue PlatformName = 4;
+//	google.protobuf.StringValue ProgramName = 5;
+//	google.protobuf.StringValue Project = 6;
+//	google.protobuf.StringValue MaterialType = 7;
+//	google.protobuf.StringValue SuggestedSewsEManufacturingSite = 8;
+//	google.protobuf.StringValue CustomerPartNumber = 9;
+//	google.protobuf.StringValue SupplierPartNumber = 10;
+//	google.protobuf.StringValue SumitomoNumber = 11;
+//	google.protobuf.StringValue MaterialDescription = 12;
+//	google.protobuf.StringValue UnitOfMeasure = 13;
+//	google.protobuf.StringValue SupplierGroup = 14;
+//	google.protobuf.Int32Value QtyPerVehicle = 15;
+//	google.protobuf.Int32Value Quantity = 16;
+//	google.protobuf.Timestamp RequiredDate = 17;
+//	google.protobuf.StringValue RaisedRemarks = 18;
+//	google.protobuf.BoolValue IsCustomerNominatedSupplier = 19;
+//	google.protobuf.BoolValue IsCustomerNominatedMaterial = 20;
+//	google.protobuf.BoolValue SamplesRequired = 21;
+//	google.protobuf.StringValue SampleSite = 22;
+//	google.protobuf.Int32Value SampleQuantity = 23;
+//	google.protobuf.StringValue SampleRecipient = 24;
+//	google.protobuf.Timestamp SampleRequiredDate = 25;
+//	google.protobuf.StringValue FreightAccount = 26;
+//	google.protobuf.StringValue AssociatedParts = 27;
+//	google.protobuf.StringValue SuggestedManufacturer = 28;
+//	google.protobuf.StringValue RfqNprRequestId = 29;
+//}
+
 message NprApiDataGrpc {
-	google.protobuf.StringValue NprId = 1;
-	google.protobuf.StringValue Reason = 2;
-	google.protobuf.StringValue Customer = 3;
-	google.protobuf.StringValue PlatformName = 4;
-	google.protobuf.StringValue ProgramName = 5;
-	google.protobuf.StringValue Project = 6;
-	google.protobuf.StringValue MaterialType = 7;
-	google.protobuf.StringValue SuggestedSewsEManufacturingSite = 8;
-	google.protobuf.StringValue CustomerPartNumber = 9;
-	google.protobuf.StringValue SupplierPartNumber = 10;
-	google.protobuf.StringValue SumitomoNumber = 11;
-	google.protobuf.StringValue MaterialDescription = 12;
-	google.protobuf.StringValue UnitOfMeasure = 13;
-	google.protobuf.StringValue SupplierGroup = 14;
-	google.protobuf.Int32Value QtyPerVehicle = 15;
-	google.protobuf.Int32Value Quantity = 16;
-	google.protobuf.Timestamp RequiredDate = 17;
-	google.protobuf.StringValue RaisedRemarks = 18;
-	google.protobuf.BoolValue IsCustomerNominatedSupplier = 19;
-	google.protobuf.BoolValue IsCustomerNominatedMaterial = 20;
-	google.protobuf.BoolValue SamplesRequired = 21;
-	google.protobuf.StringValue SampleSite = 22;
-	google.protobuf.Int32Value SampleQuantity = 23;
-	google.protobuf.StringValue SampleRecipient = 24;
-	google.protobuf.Timestamp SampleRequiredDate = 25;
-	google.protobuf.StringValue FreightAccount = 26;
+	google.protobuf.StringValue CustomerRfqNo = 1;
+	google.protobuf.StringValue CustomerCode = 2;
+	google.protobuf.StringValue RequestID = 3;
+	google.protobuf.StringValue OriginatorName = 4;
+	google.protobuf.Timestamp DeadlineDate = 5;
+	google.protobuf.StringValue ReasonDescription = 6;
+	google.protobuf.StringValue MaterialNumber = 7;
+	google.protobuf.StringValue MaterialDescription = 8;
+	google.protobuf.StringValue MaterialTypeDescription = 9;
+	google.protobuf.StringValue CustomerPartNumber = 10;
+	google.protobuf.StringValue SupplierPartNumber = 11;
+	google.protobuf.StringValue SEWSEUnitOfMeasurement = 12;
+	google.protobuf.StringValue SupplierGroup = 13;
+	google.protobuf.StringValue SupplierDetailComments = 14;
+	google.protobuf.StringValue ProjectCode = 15;
+	google.protobuf.DoubleValue QtyPerVehicle = 16; 
+	google.protobuf.Int32Value VehicleTotalQuantity = 17;
+	google.protobuf.BoolValue IsSampleDataRequired = 18;
+	repeated SampleSiteDetailsGrpc SampleSiteDetails = 19;
+	google.protobuf.StringValue NPRRaisedRemarks = 20;
+	google.protobuf.StringValue ManufacturingSite = 21;
+	google.protobuf.BoolValue IsCustomerNominatedSupplier = 22;
+	google.protobuf.BoolValue IsCustomerNominatedMaterial = 23;
+	google.protobuf.StringValue PlatformName = 24;
+	google.protobuf.StringValue ProgramName = 25;
+	google.protobuf.StringValue SuggestedManufacturerGroup = 26;
 	google.protobuf.StringValue AssociatedParts = 27;
-	google.protobuf.StringValue SuggestedManufacturer = 28;
-	google.protobuf.StringValue RfqNprRequestId = 29;
+	google.protobuf.Int32Value NPRUploadSeqNo = 28;
+	google.protobuf.StringValue Id = 29;
+	google.protobuf.StringValue RfqNprRequestId = 30;
+	google.protobuf.StringValue Error = 31;
+}
+
+message SampleSiteDetailsGrpc {
+	google.protobuf.StringValue BusinessUnitCode = 1;
+	google.protobuf.Int32Value SampleQty = 2;
+	google.protobuf.StringValue SendSampleContactPersonName = 3;
+	google.protobuf.Timestamp RequiredDate = 4;
+	google.protobuf.StringValue FreightAccount = 5;
 }
 
 message CreateNprApiGrpcRequest {

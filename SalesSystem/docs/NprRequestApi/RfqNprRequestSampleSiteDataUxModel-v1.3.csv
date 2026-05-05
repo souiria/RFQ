@@ -1,0 +1,6 @@
+"Field","Description","Data Type","Length"
+"BusinessUnitCode","Business Unit Code (Master)","string","4"
+"SampleQty","Sample Qty","int",""
+"SendSampleContactPersonName","Username (Master)","string","100"
+"RequiredDate","yyyy-MM-dd","date",""
+"FreightAccount","(Free Text)","string",""

@@ -1,4 +1,3 @@
-@using Google.Protobuf.WellKnownTypes
 @using SalesSystem.Rfq.Components.Pages.Components
 @using SalesSystem.Rfq.Components.Pages.Dialogs
 @using SalesSystem.Rfq.Enums
@@ -100,34 +99,33 @@
                     </MudTooltip>
                 </CellTemplate>
             </TemplateColumn>
-            <PropertyColumn Property="x => x.Project" Title="RfqProject" />
-            <PropertyColumn Property="x => x.CustomerPartNumber" Title="Customer P/N" />
-            <PropertyColumn Property="x => x.Customer" Title="Customer" />
-            <PropertyColumn Property="x => x.SumitomoNumber" Title="Sumitomo Number" />
-            <PropertyColumn Property="x => x.SupplierPartNumber" Title="Supplier P/N" />
+            <PropertyColumn Property="x => x.CustomerRfqNo" Title="RFQ Number" />
+            <PropertyColumn Property="x => x.CustomerCode" Title="Customer Code" />
+            <PropertyColumn Property="x => x.RequestID" Title="Request ID" />
+            <PropertyColumn Property="x => x.OriginatorName" Title="Originator" />
+            <PropertyColumn Property="x => x.DeadlineDate" Title="Deadline Date" Format="dd.MM.yyyy" />
+            <PropertyColumn Property="x => x.ReasonDescription" Title="Reason" />
+            <PropertyColumn Property="x => x.MaterialNumber" Title="Material Number" />
             <PropertyColumn Property="x => x.MaterialDescription" Title="Material Description" />
-            <PropertyColumn Property="x => x.Reason" Title="Reason" />
-            <PropertyColumn Property="x => x.PlatformName" Title="Platform" />
-            <PropertyColumn Property="x => x.ProgramName" Title="Program" />
-            <PropertyColumn Property="x => x.Project" Title="Project" />
-            <PropertyColumn Property="x => x.MaterialType" Title="Material Type" />
-            <PropertyColumn Property="x => x.SuggestedSewsEManufacturingSite" Title="Mfg. Site" />
-            <PropertyColumn Property="x => x.UnitOfMeasure" Title="UoM" />
+            <PropertyColumn Property="x => x.MaterialTypeDescription" Title="Material Type" />
+            <PropertyColumn Property="x => x.CustomerPartNumber" Title="Customer P/N" />
+            <PropertyColumn Property="x => x.SupplierPartNumber" Title="Supplier P/N" />
+            <PropertyColumn Property="x => x.SEWSEUnitOfMeasurement" Title="UoM" />
             <PropertyColumn Property="x => x.SupplierGroup" Title="Supplier Group" />
+            <PropertyColumn Property="x => x.SupplierDetailComments" Title="Supplier Comments" />
+            <PropertyColumn Property="x => x.ProjectCode" Title="Project" />
             <PropertyColumn Property="x => x.QtyPerVehicle" Title="Qty/Vehicle" />
-            <PropertyColumn Property="x => x.Quantity" Title="Quantity" />
-            <PropertyColumn Property="x => x.RequiredDate" Title="Required Date" Format="dd.MM.yyyy" />
-            <PropertyColumn Property="x => x.RaisedRemarks" Title="Remarks" />
+            <PropertyColumn Property="x => x.VehicleTotalQuantity" Title="Total Qty" />
+            <PropertyColumn Property="x => x.IsSampleDataRequired" Title="Samples Req." />
+            <PropertyColumn Property="x => x.NPRRaisedRemarks" Title="Remarks" />
+            <PropertyColumn Property="x => x.ManufacturingSite" Title="Mfg. Site" />
             <PropertyColumn Property="x => x.IsCustomerNominatedSupplier" Title="Cust. Nom. Supplier" />
             <PropertyColumn Property="x => x.IsCustomerNominatedMaterial" Title="Cust. Nom. Material" />
-            <PropertyColumn Property="x => x.SamplesRequired" Title="Samples Req." />
-            <PropertyColumn Property="x => x.SampleSite" Title="Sample Site" />
-            <PropertyColumn Property="x => x.SampleQuantity" Title="Sample Qty" />
-            <PropertyColumn Property="x => x.SampleRecipient" Title="Sample Recipient" />
-            <PropertyColumn Property="x => x.SampleRequiredDate" Title="Sample Req. Date" Format="dd.MM.yyyy" />
-            <PropertyColumn Property="x => x.FreightAccount" Title="Freight Account" />
+            <PropertyColumn Property="x => x.PlatformName" Title="Platform" />
+            <PropertyColumn Property="x => x.ProgramName" Title="Program" />
+            <PropertyColumn Property="x => x.SuggestedManufacturerGroup" Title="Suggested Mfr. Group" />
             <PropertyColumn Property="x => x.AssociatedParts" Title="Associated Parts" />
-            <PropertyColumn Property="x => x.SuggestedManufacturer" Title="Suggested Mfr." />
+            <PropertyColumn Property="x => x.NPRUploadSeqNo" Title="Upload Seq. No." />
             <PropertyColumn Property="x => x.Created" Title="Created" Format="dd.MM.yyyy HH:mm" />
             <PropertyColumn Property="x => x.Updated" Title="Updated" Format="dd.MM.yyyy HH:mm" />
         </Columns>
@@ -137,6 +135,12 @@
             </MudText>
         </NoRecordsContent>
     </MudDataGrid>
+    <MudAlert Severity="Severity.Info" Dense="true">
+        Total: @(RfqProject?.NprRequests?.Count ?? 0) |
+        Active: @ActiveNprCount |
+        Deleted: @(RfqProject?.NprRequests?.Count(r => r.UxStatus == UxObjectStatus.Deleted) ?? 0) |
+        Search: "@_searchFilter"
+    </MudAlert>
 </div>
 
 @code {
@@ -166,6 +170,10 @@
         if (RfqProject.NprRequests == null || RfqProject.NprRequests.Count == 0)
         {
             await RefreshNprRequestsAsync();
+        }
+        else
+        {
+            Logger.GenericLogInformation($"III {RfqProject.NprRequests.Count} NprRequests in this project {RfqProject.RowId}");
         }
         StateHasChanged();
     }
@@ -267,43 +275,55 @@
         {
             Logger.GenericLogInformation(
                 $"NprRequestsEditor.EditNprRequest - Editing NPR request Id: {nprRequest.Id}, " +
-                $"Sumitomo: {nprRequest.SumitomoNumber}, Customer P/N: {nprRequest.CustomerPartNumber}");
+                $"Material: {nprRequest.MaterialNumber}, Customer P/N: {nprRequest.CustomerPartNumber}");
 
             var editCopy = new RfqNprRequestUxModel
             {
                 Id = nprRequest.Id,
-                RfqNumber = nprRequest.RfqNumber,
-                SumitomoNumber = nprRequest.SumitomoNumber,
+                CustomerRfqNo = nprRequest.CustomerRfqNo,
+                CustomerCode = nprRequest.CustomerCode,
+                RequestID = nprRequest.RequestID,
+                OriginatorName = nprRequest.OriginatorName,
+                DeadlineDate = nprRequest.DeadlineDate,
+                ReasonDescription = nprRequest.ReasonDescription,
+                MaterialNumber = nprRequest.MaterialNumber,
+                MaterialDescription = nprRequest.MaterialDescription,
+                MaterialTypeDescription = nprRequest.MaterialTypeDescription,
                 CustomerPartNumber = nprRequest.CustomerPartNumber,
                 SupplierPartNumber = nprRequest.SupplierPartNumber,
-                MaterialDescription = nprRequest.MaterialDescription,
-                Reason = nprRequest.Reason,
-                Customer = nprRequest.Customer,
-                PlatformName = nprRequest.PlatformName,
-                ProgramName = nprRequest.ProgramName,
-                Project = nprRequest.Project,
-                MaterialType = nprRequest.MaterialType,
-                SuggestedSewsEManufacturingSite = nprRequest.SuggestedSewsEManufacturingSite,
-                UnitOfMeasure = nprRequest.UnitOfMeasure,
+                SEWSEUnitOfMeasurement = nprRequest.SEWSEUnitOfMeasurement,
                 SupplierGroup = nprRequest.SupplierGroup,
+                SupplierDetailComments = nprRequest.SupplierDetailComments,
+                ProjectCode = nprRequest.ProjectCode,
                 QtyPerVehicle = nprRequest.QtyPerVehicle,
-                Quantity = nprRequest.Quantity,
-                RequiredDate = nprRequest.RequiredDate,
-                RaisedRemarks = nprRequest.RaisedRemarks,
+                VehicleTotalQuantity = nprRequest.VehicleTotalQuantity,
+                IsSampleDataRequired = nprRequest.IsSampleDataRequired,
+                NPRRaisedRemarks = nprRequest.NPRRaisedRemarks,
+                ManufacturingSite = nprRequest.ManufacturingSite,
                 IsCustomerNominatedSupplier = nprRequest.IsCustomerNominatedSupplier,
                 IsCustomerNominatedMaterial = nprRequest.IsCustomerNominatedMaterial,
-                SamplesRequired = nprRequest.SamplesRequired,
-                SampleSite = nprRequest.SampleSite,
-                SampleQuantity = nprRequest.SampleQuantity,
-                SampleRecipient = nprRequest.SampleRecipient,
-                SampleRequiredDate = nprRequest.SampleRequiredDate,
-                FreightAccount = nprRequest.FreightAccount,
+                PlatformName = nprRequest.PlatformName,
+                ProgramName = nprRequest.ProgramName,
+                SuggestedManufacturerGroup = nprRequest.SuggestedManufacturerGroup,
                 AssociatedParts = nprRequest.AssociatedParts,
-                SuggestedManufacturer = nprRequest.SuggestedManufacturer,
+                NPRUploadSeqNo = nprRequest.NPRUploadSeqNo,
                 Created = nprRequest.Created,
                 Updated = nprRequest.Updated,
                 UxStatus = nprRequest.UxStatus
             };
+
+            // Copy SampleSiteDetails collection
+            foreach (var site in nprRequest.SampleSiteDetails)
+            {
+                editCopy.SampleSiteDetails.Add(new RfqNprRequestSampleSiteDataUxModel
+                {
+                    SampleQty = site.SampleQty,
+                    SendSampleContactPersonName = site.SendSampleContactPersonName,
+                    RequiredDate = site.RequiredDate,
+                    FreightAccount = site.FreightAccount,
+                    UxStatus = site.UxStatus
+                });
+            }
 
             var parameters = new DialogParameters<NprRequestEditDialog>
             {
@@ -319,7 +339,7 @@
             };
 
             var dialog = await DialogService.ShowAsync<NprRequestEditDialog>(
-                $"Edit NPR: {nprRequest.SumitomoNumber ?? nprRequest.CustomerPartNumber ?? "New"}",
+                $"Edit NPR: {nprRequest.MaterialNumber ?? nprRequest.CustomerPartNumber ?? "New"}",
                 parameters,
                 options);
 
@@ -330,33 +350,41 @@
                 var updatedItem = result.Data as RfqNprRequestUxModel;
                 if (updatedItem != null)
                 {
-                    nprRequest.SumitomoNumber = updatedItem.SumitomoNumber;
+                    nprRequest.CustomerRfqNo = updatedItem.CustomerRfqNo;
+                    nprRequest.CustomerCode = updatedItem.CustomerCode;
+                    nprRequest.RequestID = updatedItem.RequestID;
+                    nprRequest.OriginatorName = updatedItem.OriginatorName;
+                    nprRequest.DeadlineDate = updatedItem.DeadlineDate;
+                    nprRequest.ReasonDescription = updatedItem.ReasonDescription;
+                    nprRequest.MaterialNumber = updatedItem.MaterialNumber;
+                    nprRequest.MaterialDescription = updatedItem.MaterialDescription;
+                    nprRequest.MaterialTypeDescription = updatedItem.MaterialTypeDescription;
                     nprRequest.CustomerPartNumber = updatedItem.CustomerPartNumber;
                     nprRequest.SupplierPartNumber = updatedItem.SupplierPartNumber;
-                    nprRequest.MaterialDescription = updatedItem.MaterialDescription;
-                    nprRequest.Reason = updatedItem.Reason;
-                    nprRequest.Customer = updatedItem.Customer;
-                    nprRequest.PlatformName = updatedItem.PlatformName;
-                    nprRequest.ProgramName = updatedItem.ProgramName;
-                    nprRequest.Project = updatedItem.Project;
-                    nprRequest.MaterialType = updatedItem.MaterialType;
-                    nprRequest.SuggestedSewsEManufacturingSite = updatedItem.SuggestedSewsEManufacturingSite;
-                    nprRequest.UnitOfMeasure = updatedItem.UnitOfMeasure;
+                    nprRequest.SEWSEUnitOfMeasurement = updatedItem.SEWSEUnitOfMeasurement;
                     nprRequest.SupplierGroup = updatedItem.SupplierGroup;
+                    nprRequest.SupplierDetailComments = updatedItem.SupplierDetailComments;
+                    nprRequest.ProjectCode = updatedItem.ProjectCode;
                     nprRequest.QtyPerVehicle = updatedItem.QtyPerVehicle;
-                    nprRequest.Quantity = updatedItem.Quantity;
-                    nprRequest.RequiredDate = updatedItem.RequiredDate;
-                    nprRequest.RaisedRemarks = updatedItem.RaisedRemarks;
+                    nprRequest.VehicleTotalQuantity = updatedItem.VehicleTotalQuantity;
+                    nprRequest.IsSampleDataRequired = updatedItem.IsSampleDataRequired;
+                    nprRequest.NPRRaisedRemarks = updatedItem.NPRRaisedRemarks;
+                    nprRequest.ManufacturingSite = updatedItem.ManufacturingSite;
                     nprRequest.IsCustomerNominatedSupplier = updatedItem.IsCustomerNominatedSupplier;
                     nprRequest.IsCustomerNominatedMaterial = updatedItem.IsCustomerNominatedMaterial;
-                    nprRequest.SamplesRequired = updatedItem.SamplesRequired;
-                    nprRequest.SampleSite = updatedItem.SampleSite;
-                    nprRequest.SampleQuantity = updatedItem.SampleQuantity;
-                    nprRequest.SampleRecipient = updatedItem.SampleRecipient;
-                    nprRequest.SampleRequiredDate = updatedItem.SampleRequiredDate;
-                    nprRequest.FreightAccount = updatedItem.FreightAccount;
+                    nprRequest.PlatformName = updatedItem.PlatformName;
+                    nprRequest.ProgramName = updatedItem.ProgramName;
+                    nprRequest.SuggestedManufacturerGroup = updatedItem.SuggestedManufacturerGroup;
                     nprRequest.AssociatedParts = updatedItem.AssociatedParts;
-                    nprRequest.SuggestedManufacturer = updatedItem.SuggestedManufacturer;
+                    nprRequest.NPRUploadSeqNo = updatedItem.NPRUploadSeqNo;
+
+                    // Update SampleSiteDetails collection
+                    nprRequest.SampleSiteDetails.Clear();
+                    foreach (var site in updatedItem.SampleSiteDetails)
+                    {
+                        nprRequest.SampleSiteDetails.Add(site);
+                    }
+
                     nprRequest.Updated = DateTime.UtcNow;
 
                     if (nprRequest.UxStatus == UxObjectStatus.Read)
@@ -367,7 +395,7 @@
                     Logger.GenericLogInformation(
                         $"NprRequestsEditor.EditNprRequest - Updated NPR request Id: {nprRequest.Id}");
                     Snackbar.Add(
-                        $"NPR request '{nprRequest.SumitomoNumber ?? nprRequest.CustomerPartNumber}' updated. Save to persist.",
+                        $"NPR request '{nprRequest.MaterialNumber ?? nprRequest.CustomerPartNumber}' updated. Save to persist.",
                         Severity.Success);
 
                     StateHasChanged();
@@ -396,14 +424,14 @@
 
             Logger.LogInformation(
                 $"NprRequestsEditor.RemoveRequest - " +
-                $"Removed request Id: {nprRequest.Id}, SumitomoNumber: {nprRequest.SumitomoNumber}, " +
+                $"Removed request Id: {nprRequest.Id}, Material: {nprRequest.MaterialNumber}, " +
                 $"set now has {ActiveNprCount} active requests");
 
             Snackbar.Add(
-                $"Removed NPR request: {nprRequest.SumitomoNumber ?? nprRequest.CustomerPartNumber ?? nprRequest.Id.ToString()}",
+                $"Removed NPR request: {nprRequest.MaterialNumber ?? nprRequest.CustomerPartNumber ?? nprRequest.Id.ToString()}",
                 Severity.Info);
-            
-            
+
+
             StateHasChanged();
         }
         catch (Exception ex)
@@ -447,32 +475,32 @@
             _compiledQuickFilter = item =>
             {
                 if (item.UxStatus == UxObjectStatus.Deleted) return false;
-                if (item.RfqNumber?.Contains(filter, comparisonType) == true) return true;
-                if (item.SumitomoNumber?.Contains(filter, comparisonType) == true) return true;
+                if (item.CustomerRfqNo?.Contains(filter, comparisonType) == true) return true;
+                if (item.CustomerCode?.Contains(filter, comparisonType) == true) return true;
+                if (item.RequestID?.Contains(filter, comparisonType) == true) return true;
+                if (item.OriginatorName?.Contains(filter, comparisonType) == true) return true;
+                if (item.ReasonDescription?.Contains(filter, comparisonType) == true) return true;
+                if (item.MaterialNumber?.Contains(filter, comparisonType) == true) return true;
+                if (item.MaterialDescription?.Contains(filter, comparisonType) == true) return true;
+                if (item.MaterialTypeDescription?.Contains(filter, comparisonType) == true) return true;
                 if (item.CustomerPartNumber?.Contains(filter, comparisonType) == true) return true;
                 if (item.SupplierPartNumber?.Contains(filter, comparisonType) == true) return true;
-                if (item.MaterialDescription?.Contains(filter, comparisonType) == true) return true;
-                if (item.Reason?.Contains(filter, comparisonType) == true) return true;
-                if (item.Customer?.Contains(filter, comparisonType) == true) return true;
+                if (item.SEWSEUnitOfMeasurement?.Contains(filter, comparisonType) == true) return true;
+                if (item.SupplierGroup?.Contains(filter, comparisonType) == true) return true;
+                if (item.SupplierDetailComments?.Contains(filter, comparisonType) == true) return true;
+                if (item.ProjectCode?.Contains(filter, comparisonType) == true) return true;
+                if (item.NPRRaisedRemarks?.Contains(filter, comparisonType) == true) return true;
+                if (item.ManufacturingSite?.Contains(filter, comparisonType) == true) return true;
                 if (item.PlatformName?.Contains(filter, comparisonType) == true) return true;
                 if (item.ProgramName?.Contains(filter, comparisonType) == true) return true;
-                if (item.Project?.Contains(filter, comparisonType) == true) return true;
-                if (item.MaterialType?.Contains(filter, comparisonType) == true) return true;
-                if (item.SuggestedSewsEManufacturingSite?.Contains(filter, comparisonType) == true) return true;
-                if (item.UnitOfMeasure?.Contains(filter, comparisonType) == true) return true;
-                if (item.SupplierGroup?.Contains(filter, comparisonType) == true) return true;
-                if (item.RaisedRemarks?.Contains(filter, comparisonType) == true) return true;
-                if (item.SampleSite?.Contains(filter, comparisonType) == true) return true;
-                if (item.SampleRecipient?.Contains(filter, comparisonType) == true) return true;
-                if (item.FreightAccount?.Contains(filter, comparisonType) == true) return true;
+                if (item.SuggestedManufacturerGroup?.Contains(filter, comparisonType) == true) return true;
                 if (item.AssociatedParts?.Contains(filter, comparisonType) == true) return true;
-                if (item.SuggestedManufacturer?.Contains(filter, comparisonType) == true) return true;
 
                 if (isNumeric)
                 {
                     if (item.QtyPerVehicle?.ToString().Contains(filter, comparisonType) == true) return true;
-                    if (item.Quantity?.ToString().Contains(filter, comparisonType) == true) return true;
-                    if (item.SampleQuantity?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.VehicleTotalQuantity?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.NPRUploadSeqNo?.ToString().Contains(filter, comparisonType) == true) return true;
                 }
 
                 return false;

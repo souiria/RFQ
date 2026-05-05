@@ -2,9 +2,9 @@
 {
     public class RfqDbContext : DbContext, IRfqDbContext
     {
-        readonly IDomainEventsDispatcher _Dispatcher;
+        readonly IDomainEventsDispatcher? _Dispatcher;
 
-        public RfqDbContext(DbContextOptions<RfqDbContext> options, IDomainEventsDispatcher dispatcher) : base(options)
+        public RfqDbContext(DbContextOptions<RfqDbContext> options, IDomainEventsDispatcher? dispatcher) : base(options)
         {
             _Dispatcher = dispatcher;
         }
@@ -72,6 +72,11 @@
 
         async Task PublishDomainEventsAsync()
         {
+            if (_Dispatcher is null)
+            {
+                return;
+            }
+
             List<IDomainEvent> domainEvents = ChangeTracker
                 .Entries<Entity>()
                 .Select(entry => entry.Entity)

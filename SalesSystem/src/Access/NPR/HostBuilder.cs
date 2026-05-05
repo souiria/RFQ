@@ -7,7 +7,6 @@
             builder ??= WebApplication.CreateBuilder(args);
 
             #region Builder
-
             builder.Services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => true;

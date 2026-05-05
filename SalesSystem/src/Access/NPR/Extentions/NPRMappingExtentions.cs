@@ -86,38 +86,103 @@
 
         #region NprApi
 
-        public static NprApiDataGrpc ToNprApiDataGrpc(this NprApiData data)
+        public static NprApiDataGrpc ToNprApiDataGrpc(this NprApiReturnData data)
         {
             NprApiDataGrpc grpc = new NprApiDataGrpc();
-            grpc.NprId = data.NprId.ToString();
-            grpc.Reason = data.Reason;
-            grpc.Customer = data.Customer;
-            grpc.PlatformName = data.PlatformName;
-            grpc.ProgramName = data.ProgramName;
-            grpc.Project = data.Project;
-            grpc.MaterialType = data.MaterialType;
-            grpc.SuggestedSewsEManufacturingSite = data.SuggestedSewsEManufacturingSite;
+            grpc.Id = data.Id?.ToString();
+            grpc.CustomerRfqNo = data.CustomerRfqNo;
+            grpc.CustomerCode = data.CustomerCode;
+            grpc.RequestID = data.RequestID;
+            grpc.OriginatorName = data.OriginatorName;
+            grpc.DeadlineDate = data.DeadlineDate?.ToUniversalTime().ToTimestamp();
+            grpc.ReasonDescription = data.ReasonDescription;
+            grpc.MaterialNumber = data.MaterialNumber;
+            grpc.MaterialDescription = data.MaterialDescription;
+            grpc.MaterialTypeDescription = data.MaterialTypeDescription;
             grpc.CustomerPartNumber = data.CustomerPartNumber;
             grpc.SupplierPartNumber = data.SupplierPartNumber;
-            grpc.SumitomoNumber = data.SumitomoNumber;
-            grpc.MaterialDescription = data.MaterialDescription;
-            grpc.UnitOfMeasure = data.UnitOfMeasure;
+            grpc.SEWSEUnitOfMeasurement = data.SewseUnitOfMeasurement;
             grpc.SupplierGroup = data.SupplierGroup;
-            grpc.QtyPerVehicle = data.QtyPerVehicle;
-            grpc.Quantity = data.Quantity;
-            grpc.RequiredDate = data.RequiredDate?.ToUniversalTime().ToTimestamp();
-            grpc.RaisedRemarks = data.RaisedRemarks;
+            grpc.SupplierDetailComments = data.SupplierDetailComments;
+            grpc.ProjectCode = data.ProjectCode;
+            grpc.VehicleTotalQuantity = data.VehicleTotalQuantity;
+            grpc.IsSampleDataRequired = data.IsSampleDataRequired;
+
+            // Map SampleSiteDetails
+            if (data.SampleSiteDetails != null)
+            {
+                foreach (NprApiSampleSiteDetails s in data.SampleSiteDetails)
+                {
+                    SampleSiteDetailsGrpc sampleSite = new SampleSiteDetailsGrpc();
+                    sampleSite.BusinessUnitCode = s.BusinessUnitCode;
+                    sampleSite.SampleQty = s.SampleQty;
+                    sampleSite.SendSampleContactPersonName = s.SendSampleContactPersonName;
+                    sampleSite.RequiredDate = s.RequiredDate?.ToUniversalTime().ToTimestamp();
+                    sampleSite.FreightAccount = s.FreightAccount;
+                    grpc.SampleSiteDetails.Add(sampleSite);
+                }
+            }
+
+            grpc.NPRRaisedRemarks = data.NprRaisedRemarks;
+            grpc.ManufacturingSite = data.ManufacturingSite;
             grpc.IsCustomerNominatedSupplier = data.IsCustomerNominatedSupplier;
             grpc.IsCustomerNominatedMaterial = data.IsCustomerNominatedMaterial;
-            grpc.SamplesRequired = data.SamplesRequired;
-            grpc.SampleSite = data.SampleSite;
-            grpc.SampleQuantity = data.SampleQuantity;
-            grpc.SampleRecipient = data.SampleRecipient;
-            grpc.SampleRequiredDate = data.SampleRequiredDate?.ToUniversalTime().ToTimestamp();
-            grpc.FreightAccount = data.FreightAccount;
+            grpc.PlatformName = data.PlatformName;
+            grpc.ProgramName = data.ProgramName;
+            grpc.SuggestedManufacturerGroup = data.SuggestedManufacturerGroup;
             grpc.AssociatedParts = data.AssociatedParts;
-            grpc.SuggestedManufacturer = data.SuggestedManufacturer;
             return grpc;
+        }
+
+        public static NprApiRequestData ToNprApiData(this NprApiDataGrpc grpc)
+        {
+            NprApiRequestData data = new NprApiRequestData();
+            data.CustomerRfqNo = grpc.CustomerRfqNo;
+            data.CustomerCode = grpc.CustomerCode;
+            data.RequestID = grpc.RequestID;
+            data.OriginatorName = grpc.OriginatorName;
+            DateTime? deadlineDateTime = grpc.DeadlineDate?.ToDateTime();
+            data.DeadlineDate = deadlineDateTime.HasValue ? DateOnly.FromDateTime(deadlineDateTime.Value) : (DateOnly?)null;
+            data.ReasonDescription = grpc.ReasonDescription;
+            data.MaterialNumber = grpc.MaterialNumber;
+            data.MaterialDescription = grpc.MaterialDescription;
+            data.CustomerPartNumber = grpc.CustomerPartNumber;
+            data.SupplierPartNumber = grpc.SupplierPartNumber;
+            data.SEWSEUnitOfMeasurement = grpc.SEWSEUnitOfMeasurement;
+            data.SupplierGroup = grpc.SupplierGroup;
+            data.SupplierDetailComments = grpc.SupplierDetailComments;
+            data.ProjectCode = grpc.ProjectCode;
+            data.VehicleTotalQuantity = grpc.VehicleTotalQuantity;
+            data.IsSampleDataRequired = grpc.IsSampleDataRequired;
+
+            // Map SampleSiteDetails
+            List<SampleSiteDetailsGrpc> sampleSiteList = new List<SampleSiteDetailsGrpc>();
+            if (grpc.SampleSiteDetails != null)
+            {
+                foreach (SampleSiteDetailsGrpc s in grpc.SampleSiteDetails)
+                {
+                    SampleSiteDetailsGrpc sampleSite = new SampleSiteDetailsGrpc();
+                    sampleSite.BusinessUnitCode = s.BusinessUnitCode;
+                    sampleSite.SampleQty = s.SampleQty;
+                    sampleSite.SendSampleContactPersonName = s.SendSampleContactPersonName;
+                    sampleSite.RequiredDate = s.RequiredDate;
+                    sampleSite.FreightAccount = s.FreightAccount;
+                    sampleSiteList.Add(sampleSite);
+                }
+            }
+
+            data.SampleSiteDetails = sampleSiteList;
+
+            data.NPRRaisedRemarks = grpc.NPRRaisedRemarks;
+            data.ManufacturingSite = grpc.ManufacturingSite;
+            data.IsCustomerNominatedSupplier = grpc.IsCustomerNominatedSupplier;
+            data.IsCustomerNominatedMaterial = grpc.IsCustomerNominatedMaterial;
+            data.PlatformName = grpc.PlatformName;
+            data.ProgramName = grpc.ProgramName;
+            data.SuggestedManufacturerGroup = grpc.SuggestedManufacturerGroup;
+            data.AssociatedParts = grpc.AssociatedParts;
+            data.NPRUploadSeqNo = grpc.NPRUploadSeqNo;
+            return data;
         }
         #endregion
     }

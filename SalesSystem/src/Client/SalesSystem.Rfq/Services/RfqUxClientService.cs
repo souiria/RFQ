@@ -825,6 +825,7 @@ namespace SalesSystem.Rfq.Services
             _Logger?.GenericLogInformation($"{response.Message}");
             return response.Success;
         }
+
         async Task<bool> UpdateNpr(List<RfqNprRequestUxModel> list)
         {
             UpdateRfqNprRequestGrpcRequest updateRequest = new UpdateRfqNprRequestGrpcRequest();
@@ -1081,7 +1082,7 @@ namespace SalesSystem.Rfq.Services
                 await SyncNprCacheFromDatabaseAsync();
                 _NprRequestsHasChanges = false;
                 List<RfqNprRequestUxModel> matching = _NprRequests
-                    .Where(r => r.RfqNumber?.ToUpperInvariant().Trim() == rfqNumber?.ToUpperInvariant().Trim())
+                    .Where(r => r.CustomerRfqNo?.ToUpperInvariant().Trim() == rfqNumber?.ToUpperInvariant().Trim())
                     .ToList();
 
                 if (matching.Count == 0)
@@ -1206,7 +1207,7 @@ namespace SalesSystem.Rfq.Services
                     if (existing == null)
                     {
                         throw new InvalidOperationException(
-                            $"NPR request not found for Id: {request.Id}, RfqNumber: {request.RfqNumber}");
+                            $"NPR request not found for Id: {request.Id}, CustomerRfqNo: {request.CustomerRfqNo}");
                     }
                 }
 
@@ -1296,11 +1297,11 @@ namespace SalesSystem.Rfq.Services
                 }
 
                 List<RfqNprRequestUxModel>? rfqRequestsForRfqNumber
-                    = _NprRequests.Where(r => r.RfqNumber == rfqNumber).ToList();
+                    = _NprRequests.Where(r => r.CustomerRfqNo == rfqNumber).ToList();
 
                 if (rfqRequestsForRfqNumber == null || rfqRequestsForRfqNumber.Count <= 0)
                 {
-                    _Logger?.GenericLogInformation($"NPR requests not found for deletion, RfqNumber: {rfqNumber}");
+                    _Logger?.GenericLogInformation($"NPR requests not found for deletion, CustomerRfqNo: {rfqNumber}");
                     return false;
                 }
 

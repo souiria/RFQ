@@ -1838,8 +1838,8 @@ namespace Unit.Tests.Rfq
             Assert.That(filterByRowIdReply.Result.ListRfqNprRequestGrpc.RfqNprRequestGrpcs, Is.Not.Null);
             EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(filterByRowIdReply.Result.ListRfqNprRequestGrpc.RfqNprRequestGrpcs.Count, countConstraint);
-            EqualConstraint reasonConstraint = Is.EqualTo("Project2");
-            Assert.That(filterByRowIdReply.Result.ListRfqNprRequestGrpc.RfqNprRequestGrpcs.First().Project, reasonConstraint);
+            EqualConstraint reasonConstraint = Is.EqualTo("CustomerCode2");
+            Assert.That(filterByRowIdReply.Result.ListRfqNprRequestGrpc.RfqNprRequestGrpcs.First().CustomerCode, reasonConstraint);
         }
 
         [Test]

@@ -80,9 +80,9 @@
     private MudThemeProvider? _mudThemeProvider;
     GlobalValue? globalValue;
     string? userName;
-    string? firstName;
-    string? displayName;
-    Guid? userId;
+    // string? firstName;
+    // string? displayName;
+    // Guid? userId;
     protected override async Task OnInitializedAsync()
     {
         var authState = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
@@ -98,33 +98,39 @@
             Console.WriteLine("User is not authenticated.");
         }
 
-#if DEBUG
-        using (PrincipalContext context2 = new PrincipalContext(ContextType.Domain))
-        {
-            UserPrincipal principal = UserPrincipal.FindByIdentity(context2, "williad");
-            firstName = principal?.GivenName;
-            // string lastName = principal.Surname;
-            displayName = principal?.DisplayName;
-            userId = new Guid("86380EFD-5651-4552-8145-E59E785F099A");
-        }
-#else
-        using (PrincipalContext context2 = new PrincipalContext(ContextType.Domain))
-        {
-            UserPrincipal principal = UserPrincipal.FindByIdentity(context2, userName);
-            firstName = principal?.GivenName;
-            // string lastName = principal.Surname;
-            displayName = principal?.DisplayName;
-            userId = principal?.Guid;
-        }
-#endif
-        var authState1 = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-        var userA = authState1.User;
+        // #if DEBUG
+        //         using (PrincipalContext context2 = new PrincipalContext(ContextType.Domain))
+        //         {
+        //             UserPrincipal principal = UserPrincipal.FindByIdentity(context2, "williad");
+        //             firstName = principal?.GivenName;
+        //             // string lastName = principal.Surname;
+        //             displayName = principal?.DisplayName;
+        //             userId = new Guid("86380EFD-5651-4552-8145-E59E785F099A");
+        //         }
+        // #else
+        //         using (PrincipalContext context2 = new PrincipalContext(ContextType.Domain))
+        //         {
+        //             UserPrincipal principal = UserPrincipal.FindByIdentity(context2, userName);
+        //             firstName = principal?.GivenName;
+        //             // string lastName = principal.Surname;
+        //             displayName = principal?.DisplayName;
+        //             userId = principal?.Guid;
+        //         }
+        // #endif
+        //         var authState1 = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        //         var userA = authState1.User;
 
-        if (userA.Identity?.IsAuthenticated != true)
+        //         if (userA.Identity?.IsAuthenticated != true)
+        //             return;
+
+        //         // DOMAIN\username
+        //         var domainUsername = userA.Identity.Name;
+
+        if (user.Identity?.IsAuthenticated != true)
             return;
 
         // DOMAIN\username
-        var domainUsername = userA.Identity.Name;
+        var domainUsername = user.Identity.Name;
 
         if (string.IsNullOrWhiteSpace(domainUsername) || !domainUsername.Contains('\\'))
             return;
@@ -134,20 +140,40 @@
         var domain = parts[0];
         var samAccountName = parts[1];
 
-        using (var context = new PrincipalContext(ContextType.Domain, domain))
+        try
         {
-            var principal = UserPrincipal.FindByIdentity(
-                context,
-                IdentityType.SamAccountName,
-                samAccountName);
 
-            globalValue = new GlobalValue
+            using (var context = new PrincipalContext(ContextType.Domain, domain))
+            {
+                var principal = UserPrincipal.FindByIdentity(
+                    context,
+                    IdentityType.SamAccountName,
+                    samAccountName);
+
+                globalValue = new GlobalValue
                 {
-                    FirstName = principal?.GivenName,               
-                    DisplayName = principal?.DisplayName,          
-                    UserAccount = domainUsername,                   
+                    FirstName = principal?.GivenName,
+                    DisplayName = principal?.DisplayName,
+                    UserAccount = domainUsername,
                     UserId = principal?.Guid
                 };
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error retrieving user information: {ex.Message}");
+            #if DEBUG
+                globalValue = new GlobalValue
+                {
+                    FirstName = "Darran",
+                    DisplayName = "Darran, Williams",
+                    UserAccount = "williad",
+                    UserId = new Guid("86380EFD-5651-4552-8145-E59E785F099A")
+                };
+            #else
+                globalValue = null;
+                throw; // Optionally rethrow or handle as needed    
+            #endif
         }
 
     }

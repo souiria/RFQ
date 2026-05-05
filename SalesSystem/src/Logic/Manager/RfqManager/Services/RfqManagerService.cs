@@ -1,4 +1,6 @@
-﻿namespace RfqModule.Services
+﻿using static Rfq.Rfq;
+
+namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {
@@ -1182,7 +1184,7 @@
             rfqGrpcRequestParameter.RequestType = 70;
             foreach (RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
             {
-                Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRquestGrpcAccess();
+                Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRequestGrpcAccess();
                 rfqNprRequest.RfqNprRequestGrpcsToCreate.Add(accessRfqNprRequest);
             }
 
@@ -1227,7 +1229,7 @@
             rfqNprRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
             foreach (RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
             {
-                Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRquestGrpcAccess();
+                Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRequestGrpcAccess();
                 rfqNprRequest.RfqNprRequestGrpcsToUpdate.Add(accessRfqNprRequest);
             }
 
@@ -1247,7 +1249,7 @@
             rfqNprRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
             foreach(RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
             {
-                Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRquestGrpcAccess();
+                Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRequestGrpcAccess();
                 rfqNprRequest.RfqNprRequestGrpcsToDelete.Add(accessRfqNprRequest);
             }
 
@@ -1265,7 +1267,7 @@
             {
                 foreach (RfqNprRequestGrpc? mgrItem in request.Items)
                 {
-                                    Rfq.RfqNprRequestGrpc accessItem = mgrItem.ToRfqNprRquestGrpcAccess();
+                                    Rfq.RfqNprRequestGrpc accessItem = mgrItem.ToRfqNprRequestGrpcAccess();
                     accessRequest.Items.Add(accessItem);
                 }
             }
@@ -1318,32 +1320,61 @@
             CreateNprGrpcResponse response = new CreateNprGrpcResponse();
             ValidateNprRequestRequest validateRequest = new ValidateNprRequestRequest();
             List<NPR.NprApiDataGrpc> accessDataList = new List<NPR.NprApiDataGrpc>();
+            List<Rfq.RfqNprRequestGrpc> rfqNprRequestList = new List<Rfq.RfqNprRequestGrpc>();
+
+            //Validate the incoming request first
             foreach (NprApiDataGrpc? npr in request.NprApiData)
             {
-                Rfq.RfqNprRequestGrpc rfqNprRequest = npr.RfqNprRequest.ToRfqNprRquestGrpcAccess();
-                NPR.NprApiDataGrpc nprAccessData = npr.ToNprApiAccessData();
-                accessDataList.Add(nprAccessData);
+                Rfq.RfqNprRequestGrpc rfqNprRequest = npr.RfqNprRequest.ToRfqNprRequestGrpcAccess();
+                rfqNprRequestList.Add(rfqNprRequest);
                 validateRequest.Items.Add(rfqNprRequest);
             }
 
             ValidateNprRequestResponse validateResponse = await _RfqClient.ValidateNprRequestGrpcAsync(validateRequest);
-            if (!validateResponse.AllValid)
+            List<Rfq.RfqNprRequestGrpc> validRequests = validateRequest.Items.Where(item => item.Id != null && validateResponse.LineStatuses.Any(line => line.Id == item.Id && line.IsValid)).ToList();
+
+            // send all requests to create RfqNprRequests replacing with the ones from NPR API for the valid requests to capture any additional data from NPR API and to update the status of the RfqNprRequest
+            NprApiDataGrpc nprApiDataGrpc = new NprApiDataGrpc();
+            foreach (Rfq.RfqNprRequestGrpc validRequest in validRequests)
             {
-                response.Message = "Not all RfqNprRequests are valid";
-                response.HttpStatusCode = HttpStatusCode.BadRequest.ToString();
-                return response;
+                nprApiDataGrpc.RfqNprRequest = validRequest.ToRfqNprRequest();
+                NPR.NprApiDataGrpc nprAccessData = nprApiDataGrpc.ToNprApiAccessData();
+                accessDataList.Add(nprAccessData);
             }
 
             CreateNprApiGrpcRequest createNprApiGrpcRequest = new CreateNprApiGrpcRequest();
             createNprApiGrpcRequest.NprApiData.AddRange(accessDataList);
-            CreateNprApiGrpcResponse accessResponse = await _NPRGrpcClient.CreateNprApiGrpcAsync(createNprApiGrpcRequest);
-            response.HttpStatusCode = accessResponse.HttpStatusCode;
-            response.Message = accessResponse.Message;
-            foreach(NPR.NprApiDataGrpc? responseNpr in accessResponse.NprApiData)
+            CreateNprApiGrpcResponse apiResponse = await _NPRGrpcClient.CreateNprApiGrpcAsync(createNprApiGrpcRequest);
+            response.HttpStatusCode = apiResponse.HttpStatusCode;
+            response.Message = apiResponse.Message;
+
+            UpdateRfqNprRequestGrpcRequest updateRequest = new UpdateRfqNprRequestGrpcRequest();
+            foreach (NPR.NprApiDataGrpc? accessData in apiResponse.NprApiData)
             {
-                NprApiDataGrpc apiData = responseNpr.ToNprApiData();
-                response.NprApiData.Add(apiData);
+                NprApiDataGrpc mgrData = accessData.ToNprApiData();
+
+                NprApiDataGrpc? matchedRequest = request.NprApiData
+                    .FirstOrDefault(r => string.Equals(
+                        r.RfqNprRequest.CustomerPartNumber,
+                        mgrData.RfqNprRequest.CustomerPartNumber,
+                        StringComparison.OrdinalIgnoreCase));
+
+                if (matchedRequest != null && !string.IsNullOrEmpty(mgrData.RfqNprRequest.RequestID))
+                {
+                    matchedRequest.RfqNprRequest.CustomerRfqNo = mgrData.RfqNprRequest.RequestID;
+                    updateRequest.RfqNprRequestGrpc.Add(matchedRequest.RfqNprRequest);
+                }
+
+                response.NprApiData.Add(mgrData);
             }
+
+            UpdateRfqNprRequestGrpcResponse updateResponse = new UpdateRfqNprRequestGrpcResponse();
+            if (0 < updateRequest.RfqNprRequestGrpc.Count)
+            {
+                updateResponse = await UpdateRfqNprRequestGrpc(updateRequest);
+            }
+
+            response.Message = response.Message + $" {updateResponse.Message}";
 
             return response;
         }

@@ -1,0 +1,115 @@
+@using SalesSystem.Rfq.Models
+@using MudBlazor
+
+<MudItem xs="12">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-2">
+        <MudText Typo="Typo.subtitle2">Sample Sites</MudText>
+        <MudSpacer />
+        <MudTooltip Text="Add sample site">
+            <MudIconButton Icon="@Icons.Material.Filled.Add"
+                           Color="Color.Primary"
+                           Size="Size.Small"
+                           OnClick="AddSample" />
+        </MudTooltip>
+    </MudStack>
+    <MudDataGrid T="RfqNprRequestSampleSiteDataUxModel"
+                 Items="@Samples"
+                 Dense="true"
+                 Bordered="true"
+                 ReadOnly="false"
+                 EditMode="DataGridEditMode.Cell"
+                 EditTrigger="DataGridEditTrigger.OnRowClick"
+                 CommittedItemChanges="@OnItemCommitted"
+                 FixedHeader="true"
+                 Height="200px"
+                 Style="overflow: auto;">
+        <Columns>
+            <PropertyColumn Property="x => x.UxStatus"
+                            Title="Status"
+                            Editable="false">
+                <CellTemplate>
+                    <MudChip T="string"
+                             Size="Size.Small"
+                             Color="@GetStatusColor(context.Item.UxStatus)"
+                             Variant="Variant.Outlined">
+                        @context.Item.UxStatus
+                    </MudChip>
+                </CellTemplate>
+            </PropertyColumn>
+            <PropertyColumn Property="x => x.BusinessUnitCode"
+                            Title="BU Code"
+                            Editable="true" />
+            <PropertyColumn Property="x => x.SampleQty"
+                            Title="Sample Qty"
+                            Editable="true" />
+            <PropertyColumn Property="x => x.SendSampleContactPersonName"
+                            Title="Contact Person"
+                            Editable="true" />
+            <PropertyColumn Property="x => x.RequiredDate"
+                            Title="Required Date"
+                            Format="dd.MM.yyyy"
+                            Editable="true" />
+            <PropertyColumn Property="x => x.FreightAccount"
+                            Title="Freight Account"
+                            Editable="true" />
+            <TemplateColumn CellClass="d-flex justify-end" Editable="false">
+                <CellTemplate>
+                    <MudIconButton Size="Size.Small"
+                                   Icon="@Icons.Material.Filled.Delete"
+                                   Color="Color.Error"
+                                   aria-label="delete"
+                                   OnClick="@(() => RemoveSample(context.Item))" />
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <NoRecordsContent>
+            <MudText Typo="Typo.body2" Align="Align.Center" Class="pa-4">
+                No sample sites added.
+            </MudText>
+        </NoRecordsContent>
+    </MudDataGrid>
+</MudItem>
+
+@code {
+    [Parameter]
+    public Collection<RfqNprRequestSampleSiteDataUxModel> Samples { get; set; } = new();
+
+    Color GetStatusColor(UxObjectStatus status) => status switch
+    {
+        UxObjectStatus.Created => Color.Info,
+        UxObjectStatus.Updated => Color.Warning,
+        UxObjectStatus.Deleted => Color.Error,
+        UxObjectStatus.Read => Color.Default,
+        _ => Color.Default
+    };
+
+    void AddSample()
+    {
+        Samples.Add(new RfqNprRequestSampleSiteDataUxModel());
+        StateHasChanged();
+    }
+
+    void RemoveSample(RfqNprRequestSampleSiteDataUxModel sample)
+    {
+        if (sample.UxStatus == UxObjectStatus.Created)
+        {
+            Samples.Remove(sample);
+        }
+        else
+        {
+            sample.UxStatus = UxObjectStatus.Deleted;
+        }
+
+        StateHasChanged();
+    }
+
+    void OnItemCommitted(RfqNprRequestSampleSiteDataUxModel item)
+    {
+        if (item.UxStatus == UxObjectStatus.Read)
+        {
+            item.UxStatus = UxObjectStatus.Updated;
+        }
+
+        StateHasChanged();
+    }
+}

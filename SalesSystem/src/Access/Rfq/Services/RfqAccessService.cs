@@ -3860,7 +3860,7 @@
                 {
                     foreach (RfqNprRequestGrpc? updated in request.RfqNprRequestGrpcsToUpdate)
                     {
-                        RfqNprRequestGrpc? existing = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.FirstOrDefault(p => p.Id.ToUpperInvariant() == updated.Id.ToUpperInvariant());
+                        RfqNprRequestGrpc? existing = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.FirstOrDefault(p => p.RequestID.ToUpperInvariant() == updated.RequestID.ToUpperInvariant());
                         if (existing != null)
                         {
                             int index = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.IndexOf(existing);
@@ -3894,18 +3894,19 @@
 
                 if (result.IsSuccess)
                 {
-                    //foreach (RfqNprRequestGrpc? deleted in request.RfqNprRequestGrpcsToDelete)
-                    //{
-                    //    RfqNprRequestGrpc? existing = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.FirstOrDefault(p => p.Id.ToUpperInvariant() == deleted.Id.ToUpperInvariant());
-                    //    if (existing != null)
-                    //    {
-                    //        int index = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.IndexOf(existing);
-                    //        if (index != -1)
-                    //        {
-                    //            _ListRfqNprRequestGrpc.RfqNprRequestGrpcs[index] = deleted;
-                    //        }
-                    //    }
-                    //}
+                    foreach (RfqNprRequestGrpc? deleted in request.RfqNprRequestGrpcsToDelete)
+                    {
+                        RfqNprRequestGrpc? existing = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.FirstOrDefault(p => p.Id.ToUpperInvariant() == deleted.Id.ToUpperInvariant());
+                        if (existing != null)
+                        {
+                            int index = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.IndexOf(existing);
+                            if (index != -1)
+                            {
+                                _ListRfqNprRequestGrpc.RfqNprRequestGrpcs[index] = deleted;
+                            }
+                        }
+                    }
+
                     await PopulateRfqNprRequest(cancellationToken);
                     return true;
                 }
@@ -3933,21 +3934,21 @@
 
                 int totalQuantity = result.TotalQuantity;
                 int quantity = 0;
-                int qty = 0;
+                double qty = 0;
 
-                int? nullableQuantity = item.Quantity;
+                double? nullableQuantity = item.QtyPerVehicle;
                 bool hasQuantity = nullableQuantity.HasValue;
 
                 if (hasQuantity)
                 {
-                    int quantityValue = nullableQuantity.GetValueOrDefault();
+                    double quantityValue = nullableQuantity.GetValueOrDefault();
                     qty = quantityValue;
                 }
 
                 int newTotal = totalQuantity + quantity;
                 result.TotalQuantity = newTotal;
 
-                string customer = item.Customer;
+                string customer = item.CustomerCode;
                 bool hasCustomer = !string.IsNullOrWhiteSpace(customer);
 
                 if (hasCustomer)
@@ -4002,74 +4003,78 @@
 
             // Extract values safely
             string id = item.Id ?? "";
-            string reason = item.Reason ?? "";
-            string customer = item.Customer ?? "";
-            string platformName = item.PlatformName ?? "";
-            string programName = item.ProgramName ?? "";
-            string project = item.Project ?? "";
-            string materialType = item.MaterialType ?? "";
-            string suggestedSewsSite = item.SuggestedSewsEManufacturingSite ?? "";
+            string customerRfqNo = item.CustomerRfqNo ?? "";
+            string customerCode = item.CustomerCode ?? "";
+            string requestId = item.RequestID ?? "";
+            string originatorName = item.OriginatorName ?? "";
+            Timestamp deadlineDate = item.DeadlineDate ?? DateTime.Now.ToTimestamp();
+            string reasonDescription = item.ReasonDescription ?? "";
+            string materialNumber = item.MaterialNumber ?? "";
+            string materialDescription = item.MaterialDescription ?? "";
+            string materialTypeDescription = item.MaterialTypeDescription ?? "";
             string customerPartNumber = item.CustomerPartNumber ?? "";
             string supplierPartNumber = item.SupplierPartNumber ?? "";
-            string sumitomoNumber = item.SumitomoNumber ?? "";
-            string materialDescription = item.MaterialDescription ?? "";
-            string unitOfMeasure = item.UnitOfMeasure ?? "";
+            string sEWSEUnitOfMeasurement = item.SEWSEUnitOfMeasurement ?? "";
             string supplierGroup = item.SupplierGroup ?? "";
-            string raisedRemarks = item.RaisedRemarks ?? "";
-            string sampleSite = item.SampleSite ?? "";
-            string sampleRecipient = item.SampleRecipient ?? "";
-            string freightAccount = item.FreightAccount ?? "";
-            string associatedParts = item.AssociatedParts ?? "";
-            string suggestedManufacturer = item.SuggestedManufacturer ?? "";
-            string createdBy = item.CreatedBy ?? "";
-            string modifiedBy = item.ModifiedBy ?? "";
-            string remoteEndpointResponse = item.RemoteEndpointResponse ?? "";
-
-            int qtyPerVehicle = item.QtyPerVehicle ?? 0;
-            int quantity = item.Quantity ?? 0;
-            int sampleQuantity = item.SampleQuantity ?? 0;
-
+            string supplierDetailComments = item.SupplierDetailComments ?? "";
+            string projectCode = item.ProjectCode ?? "";
+            double qtyPerVehicle = item.QtyPerVehicle ?? 0;
+            int vehicleTotalQuantity = item.VehicleTotalQuantity ?? 0;
+            bool isSampleDataRequired = item.IsSampleDataRequired ?? false;
+            List<RfqNprRequestSampleSiteDataGrpc> sampleSiteDetails = item.SampleSiteDetails.ToList();
+            string nPRRaisedRemarks = item.NPRRaisedRemarks ?? "";
+            string manufacturingSite = item.ManufacturingSite ?? "";
             bool isCustomerNominatedSupplier = item.IsCustomerNominatedSupplier ?? false;
             bool isCustomerNominatedMaterial = item.IsCustomerNominatedMaterial ?? false;
-            bool samplesRequired = item.SamplesRequired ?? false;
-
-            DateTime? requiredDate = item.RequiredDate?.ToDateTime();
-            DateTime? sampleRequiredDate = item.SampleRequiredDate?.ToDateTime();
-            DateTime? submittedAt = item.SubmittedAt?.ToDateTime();
+            string platformName = item.PlatformName ?? "";
+            string programName = item.ProgramName ?? "";
+            string suggestedManufacturerGroup = item.SuggestedManufacturerGroup ?? "";
+            string associatedParts = item.AssociatedParts ?? "";
+            int nPRUploadSeqNo = item.NPRUploadSeqNo ?? 0;
 
             int submissionStatus = item.SubmissionStatus ?? 0;
 
-            // -----------------------------
-            // REQUIRED FIELD VALIDATIONS
-            // -----------------------------
+            //// -----------------------------
+            //// REQUIRED FIELD VALIDATIONS
+            //// -----------------------------
             if (string.IsNullOrWhiteSpace(id))
             {
                 Err(nameof(item.Id), "Id is required.");
             }
 
-            if (string.IsNullOrWhiteSpace(customer))
+            if (string.IsNullOrWhiteSpace(customerRfqNo))
             {
-                Err(nameof(item.Customer), "Customer is required.");
+                Err(nameof(item.CustomerRfqNo), "Customer is required.");
             }
 
-            if (string.IsNullOrWhiteSpace(materialType))
+            if (string.IsNullOrWhiteSpace(customerCode))
             {
-                Err(nameof(item.MaterialType), "Material type is required.");
+                Err(nameof(item.CustomerCode), "Customer code is required.");
             }
 
-            if (string.IsNullOrWhiteSpace(unitOfMeasure))
+            if (string.IsNullOrWhiteSpace(requestId))
             {
-                Err(nameof(item.UnitOfMeasure), "Unit of measure is required.");
+                Err(nameof(item.RequestID), "requestId is required.");
             }
 
-            if (quantity <= 0)
+            if (string.IsNullOrWhiteSpace(originatorName))
             {
-                Err(nameof(item.Quantity), "Quantity must be greater than zero.");
+                Err(nameof(item.OriginatorName), "Originator Name is required");
             }
 
-            if (string.IsNullOrWhiteSpace(reason))
+            if (deadlineDate.ToDateTime().Date < DateTime.UtcNow.Date)
             {
-                Err(nameof(item.Reason), "Reason is required.");
+                Err(nameof(item.DeadlineDate), "Required date cannot be in the past.");
+            }
+
+            if (string.IsNullOrWhiteSpace(reasonDescription))
+            {
+                Err(nameof(item.ReasonDescription), "Reason Description is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(materialNumber))
+            {
+                Err(nameof(item.MaterialNumber), "Material number is required.");
             }
 
             if (string.IsNullOrWhiteSpace(materialDescription))
@@ -4077,22 +4082,39 @@
                 Err(nameof(item.MaterialDescription), "Material description is required.");
             }
 
-            if (requiredDate.HasValue && requiredDate.Value.Date < DateTime.UtcNow.Date)
+            if (string.IsNullOrWhiteSpace(materialTypeDescription))
             {
-                Err(nameof(item.RequiredDate), "Required date cannot be in the past.");
+                Err(nameof(item.MaterialTypeDescription), "Material type description is required.");
             }
 
-            if (samplesRequired)
+            if (string.IsNullOrWhiteSpace(customerPartNumber))
             {
-                if (sampleQuantity <= 0)
-                {
-                    Err(nameof(item.SampleQuantity), "Sample quantity must be > 0 when samples are required.");
-                }
+                Err(nameof(item.CustomerPartNumber), "Customer part number is required.");
+            }
 
-                if (sampleRequiredDate.HasValue && sampleRequiredDate.Value.Date < DateTime.UtcNow.Date)
-                {
-                    Err(nameof(item.SampleRequiredDate), "Sample required date cannot be in the past.");
-                }
+            if (string.IsNullOrWhiteSpace(supplierPartNumber))
+            {
+                Err(nameof(item.SupplierPartNumber), "Supplier part number is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(sEWSEUnitOfMeasurement))
+            {
+                Err(nameof(item.SEWSEUnitOfMeasurement), "SEWSE unit of measurement is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(supplierGroup))
+            {
+                Err(nameof(item.SupplierGroup), "Supplier group is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(supplierDetailComments))
+            {
+                Err(nameof(item.SupplierDetailComments), "Supplier detail comments is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(projectCode))
+            {
+                Err(nameof(item.ProjectCode), "Project Code is required.");
             }
 
             if (qtyPerVehicle < 0)
@@ -4100,29 +4122,57 @@
                 Err(nameof(item.QtyPerVehicle), "QtyPerVehicle cannot be negative.");
             }
 
-            if (submissionStatus < 0)
+            if (vehicleTotalQuantity < 0)
             {
-                Err(nameof(item.SubmissionStatus), "SubmissionStatus cannot be negative.");
+                Err(nameof(item.VehicleTotalQuantity), "Vehicle Total Quantity cannot be negative.");
             }
 
-            if (isCustomerNominatedSupplier && string.IsNullOrWhiteSpace(supplierPartNumber))
+            if (isSampleDataRequired)
             {
-                Err(nameof(item.SupplierPartNumber), "Supplier part number is required when supplier is customer-nominated.");
+                if (item.SampleSiteDetails.Count <= 0)
+                {
+                    Err(nameof(item.SampleSiteDetails), "Sample quantity must be > 0 when samples are required.");
+                }
             }
 
-            if (isCustomerNominatedMaterial && string.IsNullOrWhiteSpace(sumitomoNumber))
+            if (string.IsNullOrWhiteSpace(nPRRaisedRemarks))
             {
-                Err(nameof(item.SumitomoNumber), "Sumitomo number is required when material is customer-nominated.");
+                Err(nameof(item.NPRRaisedRemarks), "NPRRaisedRemarks is required.");
             }
 
-            if (samplesRequired && string.IsNullOrWhiteSpace(sampleSite))
+            if (string.IsNullOrWhiteSpace(manufacturingSite))
             {
-                Err(nameof(item.SampleSite), "Sample site is required when samples are required.");
+                Err(nameof(item.ManufacturingSite), "ManufacturingSite is required.");
             }
 
-            if (samplesRequired && string.IsNullOrWhiteSpace(sampleRecipient))
+            if (string.IsNullOrWhiteSpace(platformName))
             {
-                Err(nameof(item.SampleRecipient), "Sample recipient is required when samples are required.");
+                Err(nameof(item.PlatformName), "Platform name is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(programName))
+            {
+                Err(nameof(item.ProgramName), "Program name is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(programName))
+            {
+                Err(nameof(item.ProgramName), "Program name is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(suggestedManufacturerGroup))
+            {
+                Err(nameof(item.SuggestedManufacturerGroup), "Suggested manufacturer group is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(associatedParts))
+            {
+                Err(nameof(item.AssociatedParts), "Associated Parts is required.");
+            }
+
+            if (nPRUploadSeqNo < 0)
+            {
+                Err(nameof(item.NPRUploadSeqNo), "NprUploadSeqNo must be > 0.");
             }
 
             return status;

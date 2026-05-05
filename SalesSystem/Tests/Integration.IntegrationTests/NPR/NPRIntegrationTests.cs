@@ -18,9 +18,10 @@ namespace Integration.Tests.NPR
             serviceCollection.AddHttpClient();
             ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
             IHttpClientFactory httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
+            IConfiguration configuration = new ConfigurationBuilder().Build();
 
-            _NPRAccessService = new NPRAccessService(serviceProvider, httpClientFactory, testing: true);
-
+            _NPRAccessService = new NPRAccessService(serviceProvider, httpClientFactory, configuration, testing: true);
+            
             _LoggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
             ILogger<NPRGrpcService> logger = _LoggerFactory.CreateLogger<NPRGrpcService>();
 

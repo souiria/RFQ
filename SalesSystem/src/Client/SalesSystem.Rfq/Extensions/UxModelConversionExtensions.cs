@@ -296,75 +296,104 @@
         #endregion
 
         #region NprRequests
-        // convert a drawing number in a given rfq prject into a npr request
+        // convert a drawing number in a given rfq project into a npr request
         public static RfqNprRequestUxModel ToNprRequest(this RfqDrawingPartNumberUxModel partNumber, RqfProjectUxModel rfqProject)
         {
             RfqNprRequestUxModel nprRequest = new RfqNprRequestUxModel();
-            nprRequest.RequiredDate = rfqProject.RfqResponseDeadline;
+            nprRequest.DeadlineDate = rfqProject.RfqResponseDeadline;
             nprRequest.IsCustomerNominatedMaterial = false;
             nprRequest.IsCustomerNominatedSupplier = false;
             nprRequest.QtyPerVehicle = 1;
-            nprRequest.Quantity = 1;
+            nprRequest.VehicleTotalQuantity = 1;
             nprRequest.AssociatedParts = "";
-            nprRequest.Customer = rfqProject.CustomerBusinessUnit;
+            nprRequest.CustomerCode = rfqProject.CustomerBusinessUnit;
             nprRequest.CustomerPartNumber = partNumber.CustomerPartNumber;
-            nprRequest.FreightAccount = "";
             nprRequest.MaterialDescription = "";
-            nprRequest.MaterialType = "";
+            nprRequest.MaterialTypeDescription = "";
+            nprRequest.MaterialNumber = "";
             nprRequest.PlatformName = "";
             nprRequest.ProgramName = "";
-            nprRequest.Project = rfqProject.Project;
-            nprRequest.RaisedRemarks = "";
-            nprRequest.Reason = rfqProject.RfqReason;
-            nprRequest.SuggestedManufacturer =  "";
-            nprRequest.SuggestedSewsEManufacturingSite = rfqProject.CustomerLocation;
-            nprRequest.SumitomoNumber = "";
+            nprRequest.ProjectCode = rfqProject.Project;
+            nprRequest.NPRRaisedRemarks = "";
+            nprRequest.ReasonDescription = rfqProject.RfqReason;
+            nprRequest.SuggestedManufacturerGroup = "";
+            nprRequest.ManufacturingSite = rfqProject.CustomerLocation;
             nprRequest.SupplierGroup = "";
+            nprRequest.SupplierDetailComments = "";
             nprRequest.SupplierPartNumber = "";
-            nprRequest.UnitOfMeasure = "";
+            nprRequest.SEWSEUnitOfMeasurement = "";
+            nprRequest.CustomerRfqNo = "";
+            nprRequest.OriginatorName = "";
             // samples
-            nprRequest.SamplesRequired = false;
-            nprRequest.SampleRequiredDate = null;
-            nprRequest.SampleQuantity = 0;
-            nprRequest.SampleRecipient = "";
-            nprRequest.SampleSite = "";
+            nprRequest.IsSampleDataRequired = false;
 
             nprRequest.UxStatus = UxObjectStatus.Created;
 
             return nprRequest;
         }
-        // dto to/from ux conversion
-        public static RfqNprRequestGrpc ToNprGrpc (this RfqNprRequestUxModel model)
+
+        // SampleSiteData gRPC <-> UX conversion
+        public static RfqNprRequestSampleSiteDataGrpc ToSampleSiteGrpc(this RfqNprRequestSampleSiteDataUxModel model)
         {
-            RfqNprRequestGrpc nprGrpc = new RfqNprRequestGrpc ();
+            RfqNprRequestSampleSiteDataGrpc grpc = new RfqNprRequestSampleSiteDataGrpc();
+            grpc.BusinessUnitCode = model.BusinessUnitCode;
+            grpc.SampleQty = model.SampleQty;
+            grpc.SendSampleContactPersonName = model.SendSampleContactPersonName;
+            grpc.RequiredDate = model.RequiredDate?.ToUniversalTime().ToTimestamp();
+            grpc.FreightAccount = model.FreightAccount;
+            return grpc;
+        }
+
+        public static RfqNprRequestSampleSiteDataUxModel ToSampleSiteUx(this RfqNprRequestSampleSiteDataGrpc grpc)
+        {
+            RfqNprRequestSampleSiteDataUxModel model = new RfqNprRequestSampleSiteDataUxModel();
+            model.BusinessUnitCode = grpc.BusinessUnitCode;
+            model.SampleQty = grpc.SampleQty;
+            model.SendSampleContactPersonName = grpc.SendSampleContactPersonName;
+            model.RequiredDate = grpc.RequiredDate is null ? null : grpc.RequiredDate.ToDateTime();
+            model.FreightAccount = grpc.FreightAccount;
+            model.UxStatus = UxObjectStatus.Read;
+            return model;
+        }
+
+        // NprRequest gRPC -> UX conversion
+        public static RfqNprRequestGrpc ToNprGrpc(this RfqNprRequestUxModel model)
+        {
+            RfqNprRequestGrpc nprGrpc = new RfqNprRequestGrpc();
             nprGrpc.Id = model.Id.ToString();
-            nprGrpc.Reason = model.Reason;
-            nprGrpc.Customer = model.Customer;
+            nprGrpc.ReasonDescription = model.ReasonDescription;
+            nprGrpc.CustomerCode = model.CustomerCode;
             nprGrpc.PlatformName = model.PlatformName;
             nprGrpc.ProgramName = model.ProgramName;
-            nprGrpc.Project = model.Project;
-            nprGrpc.MaterialType = model.MaterialType;
-            nprGrpc.SuggestedSewsEManufacturingSite = model.SuggestedSewsEManufacturingSite;
+            nprGrpc.ProjectCode = model.ProjectCode;
+            nprGrpc.MaterialTypeDescription = model.MaterialTypeDescription;
+            nprGrpc.ManufacturingSite = model.ManufacturingSite;
             nprGrpc.CustomerPartNumber = model.CustomerPartNumber;
             nprGrpc.SupplierPartNumber = model.SupplierPartNumber;
-            nprGrpc.SumitomoNumber = model.SumitomoNumber;
+            nprGrpc.MaterialNumber = model.MaterialNumber;
             nprGrpc.MaterialDescription = model.MaterialDescription;
-            nprGrpc.UnitOfMeasure = model.UnitOfMeasure;
+            nprGrpc.SEWSEUnitOfMeasurement = model.SEWSEUnitOfMeasurement;
             nprGrpc.SupplierGroup = model.SupplierGroup;
-            nprGrpc.QtyPerVehicle = model.QtyPerVehicle;
-            nprGrpc.Quantity = model.Quantity;
-            nprGrpc.RequiredDate = model.RequiredDate?.ToUniversalTime().ToTimestamp();
-            nprGrpc.RaisedRemarks = model.RaisedRemarks;
+            nprGrpc.SupplierDetailComments = model.SupplierDetailComments;
+            nprGrpc.QtyPerVehicle = (double?)model.QtyPerVehicle;
+            nprGrpc.VehicleTotalQuantity = model.VehicleTotalQuantity;
+            nprGrpc.DeadlineDate = model.DeadlineDate?.ToUniversalTime().ToTimestamp();
+            nprGrpc.NPRRaisedRemarks = model.NPRRaisedRemarks;
             nprGrpc.IsCustomerNominatedSupplier = model.IsCustomerNominatedSupplier;
             nprGrpc.IsCustomerNominatedMaterial = model.IsCustomerNominatedMaterial;
-            nprGrpc.SamplesRequired = model.SamplesRequired;
-            nprGrpc.SampleSite = model.SampleSite;
-            nprGrpc.SampleQuantity = model.SampleQuantity;
-            nprGrpc.SampleRecipient = model.SampleRecipient;
-            nprGrpc.SampleRequiredDate = model.SampleRequiredDate?.ToUniversalTime().ToTimestamp();
-            nprGrpc.FreightAccount = model.FreightAccount;
+            nprGrpc.IsSampleDataRequired = model.IsSampleDataRequired;
+
+            // Map SampleSiteDetails collection
+            foreach (RfqNprRequestSampleSiteDataUxModel site in model.SampleSiteDetails)
+            {
+                if (site.UxStatus != UxObjectStatus.Deleted)
+                {
+                    nprGrpc.SampleSiteDetails.Add(site.ToSampleSiteGrpc());
+                }
+            }
+
             nprGrpc.AssociatedParts = model.AssociatedParts;
-            nprGrpc.SuggestedManufacturer = model.SuggestedManufacturer;
+            nprGrpc.SuggestedManufacturerGroup = model.SuggestedManufacturerGroup;
             nprGrpc.CreatedAt = model.Created.ToUniversalTime().ToTimestamp();
             //nprGrpc.CreatedBy = model.CreatedBy.ToString();
             nprGrpc.ModifiedAt = model.Updated.ToUniversalTime().ToTimestamp();
@@ -372,58 +401,69 @@
             nprGrpc.SubmissionStatus = (int?)model.Status;
             //nprGrpc.RemoteEndpointResponse = model.RemoteEndpointResponse;
             //nprGrpc.SubmittedAt = model.SubmittedAt?.ToUniversalTime().ToTimestamp();
-            nprGrpc.RfqNumber = model.RfqNumber;
+            nprGrpc.CustomerRfqNo = model.CustomerRfqNo;
+            nprGrpc.RequestID = model.RequestID;
+            nprGrpc.OriginatorName = model.OriginatorName;
+            nprGrpc.NPRUploadSeqNo = model.NPRUploadSeqNo;
 
             nprGrpc.IsActive = model.UxStatus != UxObjectStatus.Deleted;
 
             return nprGrpc;
         }
-        public static RfqNprRequestUxModel ToNprUx (this RfqNprRequestGrpc grpc)
+
+        // NprRequest UX -> gRPC conversion
+        public static RfqNprRequestUxModel ToNprUx(this RfqNprRequestGrpc grpc)
         {
             RfqNprRequestUxModel model = new RfqNprRequestUxModel();
             model.Id = Guid.Parse(grpc.Id);
-            model.Reason = grpc.Reason;
-            model.Customer = grpc.Customer;
+            model.ReasonDescription = grpc.ReasonDescription;
+            model.CustomerCode = grpc.CustomerCode;
             model.PlatformName = grpc.PlatformName;
             model.ProgramName = grpc.ProgramName;
-            model.Project = grpc.Project;
-            model.MaterialType = grpc.MaterialType;
-            model.SuggestedSewsEManufacturingSite = grpc.SuggestedSewsEManufacturingSite;
+            model.ProjectCode = grpc.ProjectCode;
+            model.MaterialTypeDescription = grpc.MaterialTypeDescription;
+            model.ManufacturingSite = grpc.ManufacturingSite;
             model.CustomerPartNumber = grpc.CustomerPartNumber;
             model.SupplierPartNumber = grpc.SupplierPartNumber;
-            model.SumitomoNumber = grpc.SumitomoNumber;
+            model.MaterialNumber = grpc.MaterialNumber;
             model.MaterialDescription = grpc.MaterialDescription;
-            model.UnitOfMeasure = grpc.UnitOfMeasure;
+            model.SEWSEUnitOfMeasurement = grpc.SEWSEUnitOfMeasurement;
             model.SupplierGroup = grpc.SupplierGroup;
-            model.QtyPerVehicle = grpc.QtyPerVehicle;
-            model.Quantity = grpc.Quantity;
-            model.RequiredDate = grpc.RequiredDate.ToDateTime();
-            model.RaisedRemarks = grpc.RaisedRemarks;
+            model.SupplierDetailComments = grpc.SupplierDetailComments;
+            model.QtyPerVehicle = grpc.QtyPerVehicle.HasValue ? (decimal)grpc.QtyPerVehicle.Value : null;
+            model.VehicleTotalQuantity = grpc.VehicleTotalQuantity;
+            model.DeadlineDate = grpc.DeadlineDate?.ToDateTime();
+            model.NPRRaisedRemarks = grpc.NPRRaisedRemarks;
             model.IsCustomerNominatedSupplier = grpc.IsCustomerNominatedSupplier ?? false;
             model.IsCustomerNominatedMaterial = grpc.IsCustomerNominatedMaterial ?? false;
-            model.SamplesRequired = grpc.SamplesRequired ?? false;
-            model.SampleSite = grpc.SampleSite;
-            model.SampleQuantity = grpc.SampleQuantity;
-            model.SampleRecipient = grpc.SampleRecipient;
-            model.SampleRequiredDate = grpc.SampleRequiredDate is null ? null : grpc.SampleRequiredDate.ToDateTime();
-            model.FreightAccount = grpc.FreightAccount;
+            model.IsSampleDataRequired = grpc.IsSampleDataRequired ?? false;
+
+            // Map SampleSiteDetails collection
+            foreach (RfqNprRequestSampleSiteDataGrpc siteGrpc in grpc.SampleSiteDetails)
+            {
+                model.SampleSiteDetails.Add(siteGrpc.ToSampleSiteUx());
+            }
+
             model.AssociatedParts = grpc.AssociatedParts;
-            model.SuggestedManufacturer = grpc.SuggestedManufacturer;
-            model.Created = grpc.CreatedAt is null 
+            model.SuggestedManufacturerGroup = grpc.SuggestedManufacturerGroup;
+            model.RequestID = grpc.RequestID;
+            model.OriginatorName = grpc.OriginatorName;
+            model.NPRUploadSeqNo = grpc.NPRUploadSeqNo;
+            model.Created = grpc.CreatedAt is null
                 ? DateTime.UtcNow
                 : grpc.CreatedAt.ToDateTime();
             //nprGrpc.CreatedBy = model.CreatedBy.ToString();
-            model.Updated = grpc.ModifiedAt is null 
+            model.Updated = grpc.ModifiedAt is null
                 ? DateTime.UtcNow
                 : grpc.ModifiedAt.ToDateTime();
             //nprGrpc.ModifiedBy = model.ModifiedBy.ToString();
-            model.Status = grpc.SubmissionStatus.HasValue? (RfqNprRequestSet)grpc.SubmissionStatus.Value: new RfqNprRequestSet();
+            model.Status = grpc.SubmissionStatus.HasValue ? (RfqNprRequestSet)grpc.SubmissionStatus.Value : new RfqNprRequestSet();
             //nprGrpc.RemoteEndpointResponse = model.RemoteEndpointResponse;
             //nprGrpc.SubmittedAt = model.SubmittedAt?.ToUniversalTime().ToTimestamp();
-            model.RfqNumber = grpc.RfqNumber;
+            model.CustomerRfqNo = grpc.CustomerRfqNo;
 
             model.UxStatus = grpc.IsActive == false ? UxObjectStatus.Deleted : UxObjectStatus.Read;
-            
+
             return model;
         }
         #endregion

@@ -1,5 +1,6 @@
 ﻿global using System.Collections.Concurrent;
 global using System.Collections.ObjectModel;
+global using System.ComponentModel.DataAnnotations;
 global using System.ComponentModel.DataAnnotations.Schema;
 global using System.Globalization;
 global using System.Linq.Dynamic.Core;
@@ -13,7 +14,10 @@ global using Grpc.Core;
 global using Logging;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.ChangeTracking;
+global using Microsoft.EntityFrameworkCore.Design;
+global using Microsoft.EntityFrameworkCore.Diagnostics;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using Newtonsoft.Json;
 global using Rfq.CQRS.Command;
 global using Rfq.CQRS.Query;
 global using Rfq.CQRS.Specification;
