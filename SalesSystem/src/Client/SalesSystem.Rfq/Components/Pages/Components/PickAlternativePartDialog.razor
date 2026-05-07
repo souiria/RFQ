@@ -438,8 +438,8 @@
                 Logger.GenericLogInformation($"Picked action");
                 RfqDrawingPartNumberUxModel pickResult = new RfqDrawingPartNumberUxModel();
 
-                pickResult.SwappedPartNumber = selectedPart.SumitomoNumber;
-                pickResult.SwappedPartNumberPrice = (decimal?)selectedPart.Price;
+                pickResult.SwappedPartNumber = selectedPart.SumitomoNumber ?? "";
+                pickResult.SwappedPartNumberPrice = selectedPart.Price > 0 ? Convert.ToDecimal(selectedPart.Price) : 0.0m;
 
                 MudDialog.Close(DialogResult.Ok(result));
             }
@@ -462,8 +462,8 @@
         {
             var result = new RfqDrawingPartNumberUxModel();
 
-            result.SwappedPartNumber = AlternativePartNumber;
-            result.SwappedPartNumberPrice = AlternativePrice;
+            result.SwappedPartNumber = AlternativePartNumber ?? "";
+            result.SwappedPartNumberPrice = Convert.ToDecimal(AlternativePrice);
 
             MudDialog.Close(DialogResult.Ok(result));
         }

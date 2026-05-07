@@ -327,7 +327,7 @@
 
         try
         {
-            Logger.GenericLogInformation($"Applying NPR data: Part={nprSearchResult.DrawingPartNumber}, Price={nprSearchResult.DrawingPartNumberPrice?.ToString(new CultureInfo("fr-FR")):F5}");
+            Logger.GenericLogInformation($"Applying NPR data: Part={nprSearchResult.DrawingPartNumber}, Price={nprSearchResult.DrawingPartNumberPrice.ToString(new CultureInfo("fr-FR")):F5}");
 
             // Update the part number with NPR data - price already has proper precision
             SearchedPartNumber.DrawingPartNumber = nprSearchResult.DrawingPartNumber;
@@ -363,7 +363,7 @@
                 SearchedPartNumber.Comments += $"||<<<{commentJson}";
             }
 
-            Logger.GenericLogInformation($"Successfully applied NPR data to part number: {SearchedPartNumber.CustomerPartNumber}/{SearchedPartNumber.DrawingPartNumber}, Price={nprSearchResult.DrawingPartNumberPrice?.ToString(new CultureInfo("fr-FR")):F5}");
+            Logger.GenericLogInformation($"Successfully applied NPR data to part number: {SearchedPartNumber.CustomerPartNumber}/{SearchedPartNumber.DrawingPartNumber}, Price={nprSearchResult.DrawingPartNumberPrice.ToString(new CultureInfo("fr-FR")):F5}");
             Snackbar.Add($"Applied NPR part: {nprSearchResult.DrawingPartNumber} (${nprSearchResult.DrawingPartNumberPrice:N5})", Severity.Success);
 
             // Close the dialog and return the updated part number
@@ -421,7 +421,7 @@
         {
             return false;
         }
-        return nprIndex < matchedPart.SearchResultPartNumbers.Count && matchedPart.SearchResultPartNumbers[nprIndex].DrawingPartNumberPrice.HasValue && matchedPart.SearchResultPartNumbers[nprIndex].DrawingPartNumberPrice > 0;
+        return nprIndex < matchedPart.SearchResultPartNumbers.Count && matchedPart.SearchResultPartNumbers[nprIndex].DrawingPartNumberPrice > 0;
     }
 
     private decimal? GetNprPrice(int index, int nprIndex)
@@ -431,7 +431,7 @@
         {
             return null; // Change 0 to null
         }
-        if (nprIndex < matchedPart.SearchResultPartNumbers.Count && matchedPart.SearchResultPartNumbers[nprIndex].DrawingPartNumberPrice.HasValue)
+        if (nprIndex < matchedPart.SearchResultPartNumbers.Count && matchedPart.SearchResultPartNumbers[nprIndex].DrawingPartNumberPrice > 0)
         {
             return matchedPart.SearchResultPartNumbers[nprIndex].DrawingPartNumberPrice;
         }

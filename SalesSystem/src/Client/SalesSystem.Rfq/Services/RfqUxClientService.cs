@@ -411,14 +411,14 @@ namespace SalesSystem.Rfq.Services
                 grpcPartNumber.RowId = partNumberUx.RowId;
                 grpcPartNumber.RfqId = partNumberUx.RfqId;
                 grpcPartNumber.OriginalPartNumber = partNumberUx.DrawingPartNumber ?? string.Empty;
-                grpcPartNumber.OriginalPartNumberPrice = partNumberUx.DrawingPartNumberPrice.HasValue ? Convert.ToDouble(partNumberUx.DrawingPartNumberPrice.Value) : 0;
-                grpcPartNumber.SwappedPartNumber = partNumberUx.SwappedPartNumber ?? string.Empty;
-                grpcPartNumber.SwappedPartNumberPrice = partNumberUx.SwappedPartNumberPrice.HasValue ? Convert.ToDouble(partNumberUx.SwappedPartNumberPrice.Value) : 0;
+                grpcPartNumber.OriginalPartNumberPrice = Convert.ToDouble(partNumberUx.DrawingPartNumberPrice, CultureInfo.InvariantCulture);
+                grpcPartNumber.SwappedPartNumber = partNumberUx.SwappedPartNumber;
+                grpcPartNumber.SwappedPartNumberPrice = Convert.ToDouble(partNumberUx.SwappedPartNumberPrice, CultureInfo.InvariantCulture);
                 grpcPartNumber.PriceSource = partNumberUx.PriceSource ?? string.Empty;
-                grpcPartNumber.IsExactMatch = partNumberUx.IsExactMatch ?? false;
-                grpcPartNumber.IsSwapped = partNumberUx.IsSwapped ?? false;
-                grpcPartNumber.Comments = partNumberUx.Comments ?? string.Empty;
-                grpcPartNumber.SumitomoPartNumber = partNumberUx.CustomerPartNumber ?? string.Empty;
+                grpcPartNumber.IsExactMatch = partNumberUx.IsExactMatch == true;
+                grpcPartNumber.IsSwapped = partNumberUx.IsSwapped == true;
+                grpcPartNumber.Comments = partNumberUx.Comments;
+                grpcPartNumber.SumitomoPartNumber = partNumberUx.CustomerPartNumber;
 
                 _Logger?.GenericLogInformation($"Delete not yet implemented for PartNumber: {partNumberUx.CustomerPartNumber}/{partNumberUx.DrawingPartNumber}");
                 return false;
@@ -825,13 +825,20 @@ namespace SalesSystem.Rfq.Services
             _Logger?.GenericLogInformation($"{response.Message}");
             return response.Success;
         }
-
         async Task<bool> UpdateNpr(List<RfqNprRequestUxModel> list)
         {
             UpdateRfqNprRequestGrpcRequest updateRequest = new UpdateRfqNprRequestGrpcRequest();
             foreach (RfqNprRequestUxModel model in list)
             {
+                _Logger?.GenericLogInformation(
+                    $"UpdateNpr - Sending Id={model.Id}, RequestID='{model.RequestID}', " +
+                    $"CustomerRfqNo='{model.CustomerRfqNo}', UxStatus={model.UxStatus}");
+
                 RfqNprRequestGrpc grpc = model.ToNprGrpc();
+
+                _Logger?.GenericLogInformation(
+                    $"UpdateNpr - gRPC Id='{grpc.Id}'");
+
                 updateRequest.RfqNprRequestGrpc.Add(grpc);
             }
 
@@ -839,6 +846,19 @@ namespace SalesSystem.Rfq.Services
             _Logger?.GenericLogInformation($"{response.Message}");
             return response.Success;
         }
+        //async Task<bool> UpdateNpr(List<RfqNprRequestUxModel> list)
+        //{
+        //    UpdateRfqNprRequestGrpcRequest updateRequest = new UpdateRfqNprRequestGrpcRequest();
+        //    foreach (RfqNprRequestUxModel model in list)
+        //    {
+        //        RfqNprRequestGrpc grpc = model.ToNprGrpc();
+        //        updateRequest.RfqNprRequestGrpc.Add(grpc);
+        //    }
+
+        //    UpdateRfqNprRequestGrpcResponse response = await _Client.UpdateRfqNprRequestGrpcAsync(updateRequest);
+        //    _Logger?.GenericLogInformation($"{response.Message}");
+        //    return response.Success;
+        //}
         async Task<bool> DeleteNpr(List<RfqNprRequestUxModel> list)
         {
             DeleteRfqNprRequestByIdGrpcRequest deleteRequest = new DeleteRfqNprRequestByIdGrpcRequest();
@@ -877,19 +897,29 @@ namespace SalesSystem.Rfq.Services
 
                 foreach (RfqNprRequestUxModel model in requests)
                 {
+                    // Defensive: any malformed Id is an in-memory cache bug — skip & log
+                    if (model.Id == Guid.Empty && model.UxStatus != UxObjectStatus.Created)
+                    {
+                        _Logger?.GenericLogInformation(
+                            $"SaveNprRequestsToDatabaseAsync - Skipping item with empty Id: " +
+                            $"RequestID='{model.RequestID}', CustomerRfqNo='{model.CustomerRfqNo}', " +
+                            $"UxStatus={model.UxStatus}");
+                        continue;
+                    }
+
                     switch (model.UxStatus)
                     {
                         case UxObjectStatus.Created:
-                        createList.Add(model);
-                        break;
+                            createList.Add(model);
+                            break;
                         case UxObjectStatus.Updated:
-                        updateList.Add(model);
-                        break;
+                            updateList.Add(model);
+                            break;
                         case UxObjectStatus.Deleted:
-                        deleteList.Add(model);
-                        break;
+                            deleteList.Add(model);
+                            break;
                         case UxObjectStatus.Read:
-                        break;
+                            break;
                     }
                 }
 
@@ -928,6 +958,16 @@ namespace SalesSystem.Rfq.Services
 
                 foreach (RfqNprRequestUxModel model in requests)
                 {
+                    // Defensive: any malformed Id is an in-memory cache bug — skip & log
+                    if (model.Id == Guid.Empty && model.UxStatus != UxObjectStatus.Created)
+                    {
+                        _Logger?.GenericLogError(
+                            $"SaveNprRequestsToDatabaseAsync - Skipping item with empty Id: " +
+                            $"RequestID='{model.RequestID}', CustomerRfqNo='{model.CustomerRfqNo}', " +
+                            $"UxStatus={model.UxStatus}", null);
+                        continue;
+                    }
+
                     switch (model.UxStatus)
                     {
                         case UxObjectStatus.Created:

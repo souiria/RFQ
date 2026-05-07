@@ -114,9 +114,9 @@
                 uxModel.DrawingPartNumber = dto.SumitomoPartNumber;
             }
 
-            uxModel.DrawingPartNumberPrice = dto.OriginalPartNumberPrice != 0 ? Convert.ToDecimal(dto.OriginalPartNumberPrice) : null;
+            uxModel.DrawingPartNumberPrice = Convert.ToDecimal(dto.OriginalPartNumberPrice, CultureInfo.InvariantCulture);
             uxModel.SwappedPartNumber = dto.SwappedPartNumber;
-            uxModel.SwappedPartNumberPrice = dto.SwappedPartNumberPrice != 0 ? Convert.ToDecimal(dto.SwappedPartNumberPrice) : null;
+            uxModel.SwappedPartNumberPrice = Convert.ToDecimal(dto.SwappedPartNumberPrice, CultureInfo.InvariantCulture);
             uxModel.PriceSource = dto.PriceSource;
             if (dto.IsSwapped)
             {
@@ -151,12 +151,12 @@
             dto.RfqId = uxModel.RfqId;
             dto.OriginalPartNumber = uxModel.CustomerPartNumber;
             dto.SumitomoPartNumber = uxModel.DrawingPartNumber;
-            dto.OriginalPartNumberPrice = uxModel.DrawingPartNumberPrice.HasValue ? Convert.ToDouble(uxModel.DrawingPartNumberPrice.Value) : 0;
+            dto.OriginalPartNumberPrice = Convert.ToDouble(uxModel.DrawingPartNumberPrice, CultureInfo.InvariantCulture);
             dto.SwappedPartNumber = uxModel.SwappedPartNumber;
-            dto.SwappedPartNumberPrice = uxModel.SwappedPartNumberPrice.HasValue ? Convert.ToDouble(uxModel.SwappedPartNumberPrice.Value) : 0;
+            dto.SwappedPartNumberPrice = Convert.ToDouble(uxModel.SwappedPartNumberPrice, CultureInfo.InvariantCulture);
             dto.PriceSource = uxModel.PriceSource;
-            dto.IsExactMatch = uxModel.IsExactMatch ?? false;
-            dto.IsSwapped = uxModel.IsSwapped ?? false;
+            dto.IsExactMatch = uxModel.IsExactMatch == true;
+            dto.IsSwapped = uxModel.IsSwapped == true;
             // dto.IsActive = uxModel.IsActive;
             if(!string.IsNullOrEmpty(uxModel.Comments) && uxModel.Comments.Contains("||<<<", StringComparison.OrdinalIgnoreCase))
             {
@@ -357,10 +357,19 @@
         }
 
         // NprRequest gRPC -> UX conversion
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public static RfqNprRequestGrpc ToNprGrpc(this RfqNprRequestUxModel model)
         {
             RfqNprRequestGrpc nprGrpc = new RfqNprRequestGrpc();
-            nprGrpc.Id = model.Id.ToString();
+            try
+            {
+                nprGrpc.Id = model.Id.ToString();
+            }
+            catch (Exception ex)
+            {
+                nprGrpc.Id = Guid.Empty.ToString();
+                Console.WriteLine($"Error converting Id to string: {ex.Message}");
+            }   
             nprGrpc.ReasonDescription = model.ReasonDescription;
             nprGrpc.CustomerCode = model.CustomerCode;
             nprGrpc.PlatformName = model.PlatformName;

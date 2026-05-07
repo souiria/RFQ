@@ -461,12 +461,12 @@
         messageBuilder.AppendLine($"RFQ ID: {item.RfqId}");
         messageBuilder.AppendLine($"Customer Part Number: {item.CustomerPartNumber ?? "N/A"}");
         messageBuilder.AppendLine($"Drawing Part Number: {item.DrawingPartNumber ?? "N/A"}");
-        messageBuilder.AppendLine($"Drawing Part Number Price: {(item.DrawingPartNumberPrice.HasValue ? $"${item.DrawingPartNumberPrice.Value.ToString(new CultureInfo("fr-FR")):N5}" : "N/A")}");
+        messageBuilder.AppendLine($"Drawing Part Number Price: {(item.DrawingPartNumberPrice >0 ? $"${item.DrawingPartNumberPrice.ToString("C5")}" : "N/A")}");
         messageBuilder.AppendLine($"Dummy/Alt. Part Number: {item.SwappedPartNumber ?? "N/A"}");
-        messageBuilder.AppendLine($"Dummy/Alt. Price: {(item.SwappedPartNumberPrice.HasValue ? $"${item.SwappedPartNumberPrice.Value.ToString(new CultureInfo("fr-FR")):N5}" : "N/A")}");
+        messageBuilder.AppendLine($"Dummy/Alt. Price: {(item.SwappedPartNumberPrice >0 ? $"${item.SwappedPartNumberPrice.ToString("C5")}" : "N/A")}");
         messageBuilder.AppendLine($"Price Source: {item.PriceSource ?? "N/A"}");
-        messageBuilder.AppendLine($"Is Exact Match: {(item.IsExactMatch.HasValue ? item.IsExactMatch.Value.ToString() : "N/A")}");
-        messageBuilder.AppendLine($"Is Swapped: {(item.IsSwapped.HasValue ? item.IsSwapped.Value.ToString() : "N/A")}");
+        messageBuilder.AppendLine($"Is Exact Match: {(item.IsExactMatch==true ? "YES" : "NO")}");
+        messageBuilder.AppendLine($"Is Swapped: {(item.IsSwapped==true ? "YES" : "NO")}");
         messageBuilder.AppendLine($"Is Matched: {item.IsCompleted}");
         messageBuilder.AppendLine($"Comments: {item.Comments ?? "N/A"}");
 
