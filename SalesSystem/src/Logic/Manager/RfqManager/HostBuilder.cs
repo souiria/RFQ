@@ -25,6 +25,7 @@ namespace RfqModule
             builder.Configuration
                 .SetBasePath(AppContext.BaseDirectory)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();
 
             #region Builder
@@ -125,7 +126,7 @@ namespace RfqModule
 
                 try
                 {
-                    X509Certificate2 cert = FindMatchingCertificateBySubject("*.sews-e.com");
+                    X509Certificate2 cert = FindMatchingCertificateBySubject("CN=localhost");
                     handler.SslOptions.ClientCertificates ??= new X509CertificateCollection();
                     handler.SslOptions.ClientCertificates.Add(cert);
                  
