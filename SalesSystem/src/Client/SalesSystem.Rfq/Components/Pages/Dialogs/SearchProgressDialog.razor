@@ -1,0 +1,175 @@
+@using SalesSystem.Rfq.Models
+@using MudBlazor
+
+@implements IDisposable
+
+<MudDialog>
+    <DialogContent>
+        <div class="d-flex flex-column align-center pa-4" style="min-width: 520px; max-width: 720px;">
+            <MudText Typo="Typo.h6" Class="mb-2">Search All Part Numbers</MudText>
+
+            @if (ProgressState.IsCompleted)
+            {
+                @if (ProgressState.HasError)
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.Error"
+                             Color="Color.Error"
+                             Size="Size.Large"
+                             Class="mb-2" />
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircle"
+                             Color="Color.Success"
+                             Size="Size.Large"
+                             Class="mb-2" />
+                }
+
+                <MudText Typo="Typo.subtitle1"
+                         Align="Align.Center"
+                         Class="mb-2"
+                         Color="@(ProgressState.HasError ? Color.Error : Color.Success)">
+                    @(ProgressState.HasError ? "Search completed with errors" : "Search complete")
+                </MudText>
+            }
+            else
+            {
+                <MudProgressCircular Color="Color.Primary"
+                                     Size="Size.Large"
+                                     Indeterminate="true"
+                                     Class="mb-2" />
+            }
+
+            <MudText Typo="Typo.body1"
+                     Align="Align.Center"
+                     Class="mb-2"
+                     Style="min-height: 24px;">
+                @ProgressState.CurrentMessage
+            </MudText>
+
+            <MudProgressLinear Color="Color.Primary"
+                               Value="@(ProgressState.ProgressFraction * 100d)"
+                               Class="my-2"
+                               Style="width: 100%;" />
+
+            <MudText Typo="Typo.caption" Align="Align.Center" Class="mb-2">
+                @ProgressState.ProcessedCount / @ProgressState.TotalCount processed
+                — Exact: @ProgressState.ExactMatchCount,
+                Contains: @ProgressState.ContainsMatchCount,
+                Unmatched: @ProgressState.UnmatchedCount
+            </MudText>
+
+            <MudDivider Class="my-2 w-100" />
+
+            <MudText Typo="Typo.subtitle2" Class="mb-2 align-self-start">Parts:</MudText>
+
+            <div class="w-100" style="max-height: 320px; overflow-y: auto;">
+                @foreach (CheckpointProgress checkpoint in ProgressState.Checkpoints)
+                {
+                    <div class="d-flex align-center mb-1">
+                        @if (checkpoint.IsCompleted)
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle"
+                                     Color="Color.Success"
+                                     Size="Size.Small"
+                                     Class="mr-2" />
+                        }
+                        else if (checkpoint.IsActive)
+                        {
+                            <MudProgressCircular Color="Color.Primary"
+                                                 Size="Size.Small"
+                                                 Indeterminate="true"
+                                                 Class="mr-2" />
+                        }
+                        else
+                        {
+                            <MudIcon Icon="@Icons.Material.Outlined.RadioButtonUnchecked"
+                                     Color="Color.Secondary"
+                                     Size="Size.Small"
+                                     Class="mr-2" />
+                        }
+
+                        <MudText Typo="Typo.body2"
+                                 Color="@(checkpoint.IsCompleted ? Color.Success : checkpoint.IsActive ? Color.Primary : Color.Secondary)">
+                            @checkpoint.Message
+                        </MudText>
+
+                        @if (checkpoint.IsCompleted && !string.IsNullOrEmpty(checkpoint.Details))
+                        {
+                            <MudText Typo="Typo.caption"
+                                     Color="Color.Secondary"
+                                     Class="ml-auto">
+                                @checkpoint.Details
+                            </MudText>
+                        }
+                    </div>
+                }
+            </div>
+
+            @if (ProgressState.HasError)
+            {
+                <MudAlert Severity="Severity.Error" Class="mt-3 w-100">
+                    <MudText Typo="Typo.body2">@ProgressState.ErrorMessage</MudText>
+                </MudAlert>
+            }
+        </div>
+    </DialogContent>
+
+    <DialogActions>
+        @if (ProgressState.IsCompleted)
+        {
+            <MudButton OnClick="Close"
+                       Color="@(ProgressState.HasError ? Color.Error : Color.Success)"
+                       Variant="Variant.Filled">
+                @(ProgressState.HasError ? "Close" : "Done")
+            </MudButton>
+        }
+        else
+        {
+            <MudButton OnClick="Cancel"
+                       Color="Color.Warning"
+                       Variant="Variant.Outlined">
+                Cancel
+            </MudButton>
+        }
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public IMudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter]
+    public SearchProgressState ProgressState { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        if (ProgressState != null)
+        {
+            ProgressState.PropertyChanged += OnProgressStateChanged;
+        }
+    }
+
+    private void OnProgressStateChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void Cancel()
+    {
+        ProgressState.RequestCancel();
+    }
+
+    private void Close()
+    {
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    public void Dispose()
+    {
+        if (ProgressState != null)
+        {
+            ProgressState.PropertyChanged -= OnProgressStateChanged;
+        }
+    }
+}
