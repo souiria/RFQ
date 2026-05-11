@@ -1,6 +1,4 @@
-﻿using static Rfq.Rfq;
-
-namespace RfqModule.Services
+﻿namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {
@@ -1236,6 +1234,51 @@ namespace RfqModule.Services
             RfqCrudGrpcResponse accessResponse = _RfqClient.UpdateRfqNprRequestGrpc(rfqNprRequest);
             response.Success = accessResponse.SaveSuccess;
             response.Message = accessResponse.Message;
+            return response;
+        }
+
+        public async Task<RefreshRfqNprRequestStatusGrpcResponse> RefreshRfqNprRequestStatusGrpc(RefreshRfqNprRequestStatusGrpcRequest request)
+        {
+            await Task.Delay(0);
+            RefreshRfqNprRequestStatusGrpcResponse response = new RefreshRfqNprRequestStatusGrpcResponse();
+            //GetAllRfqNprRequestGrpcRequest rfqNprRequest = new GetAllRfqNprRequestGrpcRequest();
+            //GetAllRfqNprRequestGrpcResponse allRfqNprRequests = await GetAllRfqNprRequestGrpc(rfqNprRequest);
+            //NPRFilterRequest nprFilterRequest = new NPRFilterRequest();
+            //nprFilterRequest.DatabaseList = "H1NPRVIEWGRPC";
+            //foreach (RfqNprRequestGrpc? npr in allRfqNprRequests.RfqNprRequestGrpcs)
+            //{
+            //    if (npr == null)
+            //    {
+            //        continue;
+            //    }
+
+            //    nprFilterRequest.FilterExpression = $"RefNo != null && RefNo.ToUpperInvariant().TrimEnd() == \"{npr.RequestID.ToUpperInvariant().TrimEnd()}\"";
+            //    NPRFilterResponse s = await _NPRGrpcClient.FilterNPRGrpcAsync(nprFilterRequest);
+
+            //    H1NPRViewGrpc firstNpr = s.ListH1NPRViewGrpc.H1NPRViewGrpc.First();
+            //    if (firstNpr.Status != npr.Status?.ToString(CultureInfo.InvariantCulture))
+            //    {
+            //        RfqNprRequestGrpcRequest rfqNprRequestToUpdate = new RfqNprRequestGrpcRequest();
+            //        RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            //        rfqGrpcRequestParameter.RequestType = 80;
+            //        rfqNprRequestToUpdate.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
+            //        Rfq.RfqNprRequestGrpc accessRfqNprRequest = npr.ToRfqNprRequestGrpcAccess();
+
+            //        if (int.TryParse(firstNpr.Status, out int parsedStatus))
+            //        {
+            //            accessRfqNprRequest.Status = parsedStatus;
+            //        }
+
+            //        if (firstNpr.Price != null)
+            //        {
+            //            accessRfqNprRequest.PriceReceivedDate = DateTime.UtcNow.ToTimestamp();
+            //        }
+
+            //        rfqNprRequestToUpdate.RfqNprRequestGrpcsToUpdate.Add(accessRfqNprRequest);
+            //        _RfqClient.UpdateRfqNprRequestGrpc(rfqNprRequestToUpdate);
+            //    }
+            //}
+
             return response;
         }
 

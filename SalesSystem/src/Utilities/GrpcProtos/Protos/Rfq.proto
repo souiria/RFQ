@@ -1451,6 +1451,9 @@ message RfqNprRequestGrpc {
 	google.protobuf.StringValue OriginatorName = 35;
 	google.protobuf.StringValue SupplierDetailComments = 36;
 	google.protobuf.Int32Value NPRUploadSeqNo = 37;
+	google.protobuf.Int32Value Status = 38;
+	google.protobuf.Timestamp Closed = 39;
+	google.protobuf.StringValue Reason = 40;
 }
 
 message RfqFilterRequest {
