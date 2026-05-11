@@ -169,6 +169,17 @@ else
                                         Add NPRs
                                     </MudButton>
                                 </MudTooltip>
+                                <MudTooltip Text="Submit existing NPR Requests to the NPR API">
+                                    <MudButton Color="Color.Success"
+                                               OnClick="@SubmitNprRequestsAsync"
+                                               Variant="Variant.Filled"
+                                               Size="Size.Small"
+                                               StartIcon="@Icons.Material.Filled.CloudUpload"
+                                               FullWidth="true"
+                                               Disabled="@(_IsSubmittingNprs || RfqProject?.NprRequests == null || RfqProject.NprRequests.Count == 0)">
+                                        Submit NPRs
+                                    </MudButton>
+                                </MudTooltip>
                             </MudStack>
 
                             @* Column 2: Status, Reload, Update *@

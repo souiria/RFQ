@@ -1399,6 +1399,60 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
+
+        /// <summary>
+        /// Submits a batch of NPR requests to the NPR API via the manager's
+        /// CreateNprGrpc endpoint (which internally calls _RfqManagerService.CreateNprGrpc).
+        /// </summary>
+        /// <param name="nprRequests">UX models to submit.</param>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
+        /// <returns>The raw <see cref="CreateNprGrpcResponse"/> from the manager service.</returns>
+        public async Task<CreateNprGrpcResponse> CreateNprGrpcAsync(
+            List<RfqNprRequestUxModel> nprRequests,
+            CancellationToken cancellationToken = default)
+        {
+            ArgumentNullException.ThrowIfNull(nprRequests);
+
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+            using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(
+                timeoutCts.Token,
+                cancellationToken);
+
+            try
+            {
+                CreateNprGrpcRequest request = new CreateNprGrpcRequest();
+                foreach (RfqNprRequestUxModel model in nprRequests)
+                {
+                    NprApiDataGrpc apiData = new NprApiDataGrpc();
+                    apiData.RfqNprRequest = model.ToNprGrpc();
+                    request.NprApiData.Add(apiData);
+                }
+
+                _Logger?.GenericLogInformation(
+                    $"CreateNprGrpcAsync - Sending {request.NprApiData.Count} NPR API request(s) to manager");
+
+                CreateNprGrpcResponse response = await _Client.CreateNprGrpcAsync(
+                    request,
+                    cancellationToken: linkedCts.Token);
+
+                _Logger?.GenericLogInformation(
+                    $"CreateNprGrpcAsync - Manager response: HttpStatusCode='{response.HttpStatusCode}', " +
+                    $"Message='{response.Message}', returned {response.NprApiData.Count} entry(ies)");
+
+                return response;
+            }
+            catch (OperationCanceledException)
+            {
+                _Logger?.GenericLogInformation("CreateNprGrpcAsync - Operation was cancelled or timed out");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError("Error in CreateNprGrpcAsync", ex);
+                throw;
+            }
+        }
+
         #endregion
 
         #region Supplier and Supplier Group

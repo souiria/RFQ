@@ -35,6 +35,9 @@
         // Part numbers data - changed to List for mutability
         List<RfqDrawingPartNumberUxModel?> _CompletedParts = new List<RfqDrawingPartNumberUxModel?>();
         List<RfqDrawingPartNumberUxModel?> _InProgressParts = new List<RfqDrawingPartNumberUxModel?>();
+
+        // Submit NPRs state tracking
+        bool _IsSubmittingNprs;
         #endregion
 
         public EditRfq()
@@ -455,6 +458,84 @@
                 Logger.GenericLogError("EditRfq.NprAllInProgressPartsAsync - Unexpected error creating NPR for parts", ex);
                 Snackbar.Add($"Error creating NPR requests: {ex.Message}", Severity.Error);
                 throw;
+            }
+        }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
+        async Task SubmitNprRequestsAsync()
+        {
+            if (RfqProject?.NprRequests == null || RfqProject.NprRequests.Count == 0)
+            {
+                Snackbar.Add("No NPR requests to submit", Severity.Info);
+                return;
+            }
+
+            // Only submit requests that are not soft-deleted.
+            List<RfqNprRequestUxModel> toSubmit = RfqProject.NprRequests
+                .Where(r => r.UxStatus != UxObjectStatus.Deleted)
+                .ToList();
+
+            if (toSubmit.Count == 0)
+            {
+                Snackbar.Add("No active NPR requests to submit", Severity.Info);
+                return;
+            }
+
+            bool? confirm = await DialogService.ShowMessageBox(
+                "Submit NPR Requests",
+                $"Submit {toSubmit.Count} NPR request(s) to the NPR API?",
+                yesText: $"Submit {toSubmit.Count}",
+                cancelText: "Cancel"
+            );
+
+            if (confirm != true)
+            {
+                return;
+            }
+
+            _IsSubmittingNprs = true;
+            StateHasChanged();
+
+            try
+            {
+                // Persist any pending NPR edits BEFORE submitting so the API sees the latest data.
+                if (_ComponentNprEditor != null && _ComponentNprEditor.HasPendingChanges)
+                {
+                    await _ComponentNprEditor.SaveNprRequestsAsync();
+                }
+
+                Logger.GenericLogInformation(
+                    $"EditRfq.SubmitNprRequestsAsync - Submitting {toSubmit.Count} NPR request(s) for RFQ {RfqProject.RfqNumber}");
+
+                CreateNprGrpcResponse response = await RfqUxClientService.CreateNprGrpcAsync(toSubmit);
+
+                Logger.GenericLogInformation(
+                    $"EditRfq.SubmitNprRequestsAsync - Response: HttpStatusCode='{response.HttpStatusCode}', " +
+                    $"Message='{response.Message}', returned {response.NprApiData.Count} entry(ies)");
+
+                bool ok = string.Equals(response.HttpStatusCode, "OK", StringComparison.OrdinalIgnoreCase);
+
+                Snackbar.Add(
+                    ok
+                        ? $"Submitted {response.NprApiData.Count} NPR request(s) successfully. {response.Message}"
+                        : $"NPR submission returned {response.HttpStatusCode}: {response.Message}",
+                    ok ? Severity.Success : Severity.Warning);
+
+                // Refresh from DB so any RequestID assignments / status changes are picked up.
+                await LoadNprRequests();
+                if (_ComponentNprEditor != null)
+                {
+                    _ComponentNprEditor.NotifyStateChanged();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.GenericLogError("EditRfq.SubmitNprRequestsAsync - Error submitting NPR requests", ex);
+                Snackbar.Add($"Error submitting NPR requests: {ex.Message}", Severity.Error);
+            }
+            finally
+            {
+                _IsSubmittingNprs = false;
+                StateHasChanged();
             }
         }
         async Task ShowDatasetStatusAsync()
