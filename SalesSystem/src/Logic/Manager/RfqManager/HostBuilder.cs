@@ -1,16 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Net.Http;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.CookiePolicy;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-
-namespace RfqModule
+﻿namespace RfqModule
 {
     public static class HostBuilder
     {

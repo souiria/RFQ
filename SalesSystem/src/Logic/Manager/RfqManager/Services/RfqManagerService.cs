@@ -1,6 +1,4 @@
-﻿using static Rfq.Rfq;
-
-namespace RfqModule.Services
+﻿namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {

@@ -2,6 +2,7 @@
 global using System.Globalization;
 global using System.Linq.Dynamic.Core;
 global using System.Net;
+global using System.Security.Cryptography.X509Certificates;
 global using System.Text.RegularExpressions;
 global using CPD;
 global using Emacs;

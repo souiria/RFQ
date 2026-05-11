@@ -1,5 +1,3 @@
-using DocumentFormat.OpenXml.Wordprocessing;
-
 namespace SalesSystem.Rfq.Services
 {
     public class RfqUxClientService : IDisposable
