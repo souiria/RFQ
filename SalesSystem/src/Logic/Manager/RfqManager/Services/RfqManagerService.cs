@@ -1,4 +1,4 @@
-﻿using static Rfq.Rfq;
+﻿using System.Diagnostics;
 
 namespace RfqModule.Services
 {
@@ -241,6 +241,7 @@ namespace RfqModule.Services
                 throw;
             }
         }
+        #region RfqProject
         public async Task<RfqCrudResponse> DeleteRfqProjectByRowIdGrpc(RfqProjectRequest request)
         {
             try
@@ -521,6 +522,104 @@ namespace RfqModule.Services
                 throw;
             }
         }
+
+        public async Task<CreateRfqProjectGrpcResponse> CreateRfqProject(CreateRfqProjectGrpcRequest request)
+        {
+            //GetProjectAssociationsByCustomerIdRequest req = new GetProjectAssociationsByCustomerIdRequest();
+            //req.CustomerId = request.Project.CustomerBusinessUnitGuid;
+
+            //await GetProjectAssociationsByCustomerId(req);
+
+            ProjectGrpc project = _Projects.First(p => p.Id.ToUpperInvariant() == request.Project.ProjectGuid.ToUpperInvariant());
+            string projectCode = project.CustomerProjectCode;
+            List<VehicleGrpc> vehiclesResponse = await GetVehiclesByProjectCodeGrpc(projectCode);
+            CreateRfqProjectGrpcResponse response = new CreateRfqProjectGrpcResponse();
+            if (0 == vehiclesResponse.Count)
+            {
+                response.Success = false;
+                response.Message = $"No vehicles found for the project code {projectCode} (id {request.Project.ProjectGuid.ToUpperInvariant()})";
+                return response;
+            }
+
+            VehicleGrpc vehicle = vehiclesResponse.First();
+            request.Project.CarModelGuid = vehicle.Id;
+
+            RfqProjectGrpc rfqProject = new RfqProjectGrpc();
+            RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
+
+            rfqProject.CustomerBusinessUnitGuid = request.Project.CustomerBusinessUnitGuid.ToUpperInvariant();
+            rfqProject.CustomerLocationGuid = request.Project.CustomerLocationGuid.ToUpperInvariant();
+            rfqProject.ProjectGuid = request.Project.ProjectGuid.ToUpperInvariant();
+            rfqProject.RfqReasonId = request.Project.RfqReasonId;
+            rfqProject.RfqResponseDeadline = request.Project.RfqResponseDeadline;
+            rfqProject.CarModelGuid = request.Project.CarModelGuid.ToUpperInvariant();
+            rfqProject.VehicleVolume = request.Project.VehicleVolume;
+            rfqProject.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+            rfqProject.IsActive = request.Project.IsActive ?? false;
+
+            RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            rfqProjectRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
+            rfqProjectRequest.RfqGrpcRequestParameter.RequestType = 70;
+            rfqProjectRequest.RfqProjectGrpcsToCreate.Add(rfqProject);
+            RfqCrudGrpcResponse createResponse = _RfqClient.CreateRfqProjectGrpc(rfqProjectRequest);
+            if (createResponse.SaveSuccess == false)
+            {
+                response.Success = false;
+                response.Message = "Failed to create RFQ Project";
+                return response;
+            }
+
+            response.Success = true; // haha
+            response.Message = createResponse.Message;
+            response.CreatedProjectId = createResponse.StringValue.Split(',').First();
+            return response;
+        }
+
+        public async Task<UpdateRfqProjectGrpcResponse> UpdateRfqProject(UpdateRfqProjectGrpcRequest request)
+        {
+            if (request.Project == null
+                || string.IsNullOrEmpty(request.Project.RfqNumber))
+            {
+                throw new ArgumentNullException(nameof(request), "Project or RFQ Number cannot be null");
+            }
+
+            try
+            {
+                await Task.Delay(1);
+
+                RfqProjectGrpc rfqProject = new RfqProjectGrpc();
+                rfqProject.RowId = request.Project.RowId;
+                rfqProject.RfqNumber = request.Project.RfqNumber; // it is needed to identify the record to update
+                rfqProject.CustomerBusinessUnitGuid = request.Project.CustomerBusinessUnitGuid.ToUpperInvariant();
+                rfqProject.CustomerLocationGuid = request.Project.CustomerLocationGuid.ToUpperInvariant();
+                rfqProject.ProjectGuid = request.Project.ProjectGuid.ToUpperInvariant();
+                rfqProject.RfqReasonId = request.Project.RfqReasonId;
+                rfqProject.RfqResponseDeadline = request.Project.RfqResponseDeadline;
+                rfqProject.CarModelGuid = request.Project.CarModelGuid.ToUpperInvariant();
+                rfqProject.VehicleVolume = request.Project.VehicleVolume;
+                rfqProject.IsActive = request.Project.IsActive ?? false;
+
+                RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
+                rfqProjectRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                rfqProjectRequest.RfqGrpcRequestParameter.RequestType = 80;
+                rfqProjectRequest.RfqProjectGrpcsToUpdate.Add(rfqProject);
+
+                RfqCrudGrpcResponse updateResponse = _RfqClient.UpdateRfqProjectGrpc(rfqProjectRequest);
+
+                UpdateRfqProjectGrpcResponse response = new UpdateRfqProjectGrpcResponse();
+                response.Success = updateResponse.SaveSuccess;
+                response.Message = updateResponse.Message;
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError("Error Updating RFQ project", ex);
+                throw;
+            }
+        }
+        #endregion
+        #region RfqDrawingPartNumbers
         public async Task<UpdateRfqDrawingPartNumbersGrpcResponse> UpdateRfqDrawingPartNumbers(UpdateRfqDrawingPartNumbersGrpcRequest request)
         {
             try
@@ -609,6 +708,69 @@ namespace RfqModule.Services
                 throw;
             }
         }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
+        RfqCrudGrpcResponse CreateRfqDrawingPartNumbers(string projectId, List<CustomerParts> customerParts)
+        {
+            RfqDrawingPartNumbersGrpcRequest partRequest = new RfqDrawingPartNumbersGrpcRequest();
+            RfqCrudGrpcResponse partResponse = new();
+            partResponse.SaveSuccess = false;
+
+            try
+            {
+                _Logger.GenericLogInformation($"III RfqManaerService.CreateRfqDrawingPartNumbers - start GRPC to the access layer - sending {customerParts.Count} parts");
+
+                partRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                partRequest.RfqGrpcRequestParameter.RequestType = 70;
+                foreach (CustomerParts customerPart in customerParts)
+                {
+                    RfqDrawingPartNumbersGrpc part = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber1);
+                    partRequest.RfqDrawingPartNumbersGrpcsToCreate.Add(part);
+                    if (customerPart.PartNumber2 != null)
+                    {
+                        RfqDrawingPartNumbersGrpc part2 = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber2);
+                        partRequest.RfqDrawingPartNumbersGrpcsToCreate.Add(part2);
+                    }
+
+                    if (customerPart.PartNumber3 != null)
+                    {
+                        RfqDrawingPartNumbersGrpc part3 = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber3);
+                        partRequest.RfqDrawingPartNumbersGrpcsToCreate.Add(part3);
+                    }
+                }
+
+                partResponse = _RfqClient.CreateRfqDrawingPartNumbersGrpc(partRequest);
+
+                string msg = partResponse.SaveSuccess == true ? "successfully" : "failed somehow";
+                _Logger.GenericLogInformation($"III RfqManaerService.CreateRfqDrawingPartNumbers - access layer returned over GRPC - {msg}");
+                return partResponse;
+
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError($"EEE RfqManaerService.CreateRfqDrawingPartNumbers - access layer returned over GRPC - {ex.Message}", ex);
+            }
+
+            return partResponse;
+
+        }
+
+        RfqDrawingPartNumbersGrpc ToRfqDrawingPartNumbers(string projectId, string partNumber)
+        {
+            RfqDrawingPartNumbersGrpc part = new RfqDrawingPartNumbersGrpc();
+            part.RfqId = (long)Convert.ToDouble(projectId, CultureInfo.InvariantCulture);
+            part.OriginalPartNumber = partNumber;
+            part.OriginalPartNumberPrice = 0;
+            part.SwappedPartNumber = "";
+            part.SwappedPartNumberPrice = 0;
+            part.PriceSource = "";
+            // part.IsExactMatch = true;
+            part.IsExactMatch = false; // assume no exact match on upload
+            part.IsSwapped = false;
+            part.Comments = "";
+            return part;
+        }
+        #endregion
         public async Task<UploadPartsRequestGrpcResponse> UploadPartsGrpc(UploadPartsRequestGrpcRequest request)
         {
             UploadPartsRequestGrpcResponse uploadResponse = new UploadPartsRequestGrpcResponse();
@@ -737,102 +899,6 @@ namespace RfqModule.Services
             return customerParts;
         }
 
-        public async Task<CreateRfqProjectGrpcResponse> CreateRfqProject(CreateRfqProjectGrpcRequest request)
-        {
-            //GetProjectAssociationsByCustomerIdRequest req = new GetProjectAssociationsByCustomerIdRequest();
-            //req.CustomerId = request.Project.CustomerBusinessUnitGuid;
-
-            //await GetProjectAssociationsByCustomerId(req);
-
-            ProjectGrpc project = _Projects.First(p => p.Id.ToUpperInvariant() == request.Project.ProjectGuid.ToUpperInvariant());
-            string projectCode = project.CustomerProjectCode;
-            List<VehicleGrpc> vehiclesResponse = await GetVehiclesByProjectCodeGrpc(projectCode);
-            CreateRfqProjectGrpcResponse response = new CreateRfqProjectGrpcResponse();
-            if (0 == vehiclesResponse.Count)
-            {
-                response.Success = false;
-                response.Message = $"No vehicles found for the project code {projectCode} (id {request.Project.ProjectGuid.ToUpperInvariant()})";
-                return response;
-            }
-
-            VehicleGrpc vehicle = vehiclesResponse.First();
-            request.Project.CarModelGuid = vehicle.Id;
-
-            RfqProjectGrpc rfqProject = new RfqProjectGrpc();
-            RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
-
-            rfqProject.CustomerBusinessUnitGuid = request.Project.CustomerBusinessUnitGuid.ToUpperInvariant();
-            rfqProject.CustomerLocationGuid = request.Project.CustomerLocationGuid.ToUpperInvariant();
-            rfqProject.ProjectGuid = request.Project.ProjectGuid.ToUpperInvariant();
-            rfqProject.RfqReasonId = request.Project.RfqReasonId;
-            rfqProject.RfqResponseDeadline = request.Project.RfqResponseDeadline;
-            rfqProject.CarModelGuid = request.Project.CarModelGuid.ToUpperInvariant();
-            rfqProject.VehicleVolume = request.Project.VehicleVolume;
-            rfqProject.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
-            rfqProject.IsActive = request.Project.IsActive ?? false;
-
-            RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
-            rfqProjectRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
-            rfqProjectRequest.RfqGrpcRequestParameter.RequestType = 70;
-            rfqProjectRequest.RfqProjectGrpcsToCreate.Add(rfqProject);
-            RfqCrudGrpcResponse createResponse = _RfqClient.CreateRfqProjectGrpc(rfqProjectRequest);
-            if (createResponse.SaveSuccess == false)
-            {
-                response.Success = false;
-                response.Message = "Failed to create RFQ Project";
-                return response;
-            }
-
-            response.Success = true; // haha
-            response.Message = createResponse.Message;
-            response.CreatedProjectId = createResponse.StringValue.Split(',').First();
-            return response;
-        }
-
-        public async Task<UpdateRfqProjectGrpcResponse> UpdateRfqProject(UpdateRfqProjectGrpcRequest request)
-        {
-            if(request.Project == null
-                || string.IsNullOrEmpty(request.Project.RfqNumber))
-            {
-                throw new ArgumentNullException(nameof(request), "Project or RFQ Number cannot be null");
-            }
-
-            try
-            {
-                await Task.Delay(1);
-
-                RfqProjectGrpc rfqProject = new RfqProjectGrpc();
-                rfqProject.RowId = request.Project.RowId;
-                rfqProject.RfqNumber = request.Project.RfqNumber; // it is needed to identify the record to update
-                rfqProject.CustomerBusinessUnitGuid = request.Project.CustomerBusinessUnitGuid.ToUpperInvariant();
-                rfqProject.CustomerLocationGuid = request.Project.CustomerLocationGuid.ToUpperInvariant();
-                rfqProject.ProjectGuid = request.Project.ProjectGuid.ToUpperInvariant();
-                rfqProject.RfqReasonId = request.Project.RfqReasonId;
-                rfqProject.RfqResponseDeadline = request.Project.RfqResponseDeadline;
-                rfqProject.CarModelGuid = request.Project.CarModelGuid.ToUpperInvariant();
-                rfqProject.VehicleVolume = request.Project.VehicleVolume;
-                rfqProject.IsActive = request.Project.IsActive ?? false;
-
-                RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
-                rfqProjectRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
-                rfqProjectRequest.RfqGrpcRequestParameter.RequestType = 80; 
-                rfqProjectRequest.RfqProjectGrpcsToUpdate.Add(rfqProject);
-
-                RfqCrudGrpcResponse updateResponse = _RfqClient.UpdateRfqProjectGrpc(rfqProjectRequest);
-
-                UpdateRfqProjectGrpcResponse response = new UpdateRfqProjectGrpcResponse();
-                response.Success = updateResponse.SaveSuccess;
-                response.Message = updateResponse.Message;
-
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _Logger.GenericLogError("Error Updating RFQ project", ex);
-                throw;
-            }
-        }
-
         List<CustomerParts> GetCustomerParts(List<string> newParts, List<CustomerParts> customerParts)
         {
             List<CustomerParts> newCustomerParts = new List<CustomerParts>();
@@ -853,68 +919,6 @@ namespace RfqModule.Services
             }
 
             return newCustomerParts;
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
-        RfqCrudGrpcResponse CreateRfqDrawingPartNumbers(string projectId, List<CustomerParts> customerParts)
-        {
-            RfqDrawingPartNumbersGrpcRequest partRequest = new RfqDrawingPartNumbersGrpcRequest();
-            RfqCrudGrpcResponse partResponse = new();
-            partResponse.SaveSuccess = false;
-
-            try
-            {
-                _Logger.GenericLogInformation($"III RfqManaerService.CreateRfqDrawingPartNumbers - start GRPC to the access layer - sending {customerParts.Count} parts");
-
-                partRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
-                partRequest.RfqGrpcRequestParameter.RequestType = 70;
-                foreach (CustomerParts customerPart in customerParts)
-                {
-                    RfqDrawingPartNumbersGrpc part = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber1);
-                    partRequest.RfqDrawingPartNumbersGrpcsToCreate.Add(part);
-                    if (customerPart.PartNumber2 != null)
-                    {
-                        RfqDrawingPartNumbersGrpc part2 = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber2);
-                        partRequest.RfqDrawingPartNumbersGrpcsToCreate.Add(part2);
-                    }
-
-                    if (customerPart.PartNumber3 != null)
-                    {
-                        RfqDrawingPartNumbersGrpc part3 = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber3);
-                        partRequest.RfqDrawingPartNumbersGrpcsToCreate.Add(part3);
-                    }
-                }
-
-                partResponse = _RfqClient.CreateRfqDrawingPartNumbersGrpc(partRequest);
-
-                string msg = partResponse.SaveSuccess == true ? "successfully" : "failed somehow";
-                _Logger.GenericLogInformation($"III RfqManaerService.CreateRfqDrawingPartNumbers - access layer returned over GRPC - {msg}");
-                return partResponse;
-
-            }
-            catch (Exception ex)
-            {
-                _Logger.GenericLogError($"EEE RfqManaerService.CreateRfqDrawingPartNumbers - access layer returned over GRPC - {ex.Message}", ex);
-            }
-
-            return partResponse;
-
-        }
-
-        RfqDrawingPartNumbersGrpc ToRfqDrawingPartNumbers(string projectId, string partNumber)
-        {
-            RfqDrawingPartNumbersGrpc part = new RfqDrawingPartNumbersGrpc();
-            part.RfqId = (long)Convert.ToDouble(projectId, CultureInfo.InvariantCulture);
-            part.OriginalPartNumber = partNumber;
-            part.OriginalPartNumberPrice = 0;
-            part.SwappedPartNumber = "";
-            part.SwappedPartNumberPrice = 0;
-            part.PriceSource = "";
-            // part.IsExactMatch = true;
-            part.IsExactMatch = false; // assume no exact match on upload
-            part.IsSwapped = false;
-            part.Comments = "";
-            return part;
         }
 
         public async Task<GetCustomerLocationsByUserIdResponse> GetCustomerLocationsByUserId(string userId)
@@ -1086,6 +1090,105 @@ namespace RfqModule.Services
             }
         }
 
+        public async Task<SearchPartPricesGrpcResponse> SearchPartPricesGrpc(SearchPartPricesGrpcRequest request)
+        {
+            await Task.Delay(1);
+            SearchPartPricesGrpcResponse response = new SearchPartPricesGrpcResponse();
+
+            if (request.PartNumbers == null || request.PartNumbers.Count == 0)
+            {
+                return response;
+            }
+
+            // Step 1: Resolve all part numbers to Sumitomo numbers in parallel
+            IEnumerable<Task<PriceResponse?>> emacsLookupTasks = request.PartNumbers
+                .Where(pn => !string.IsNullOrWhiteSpace(pn))
+                .Select(async partNumber =>
+                {
+                    FilterGrpcRequest filterRequest = new FilterGrpcRequest();
+                    filterRequest.StringValue = partNumber;
+
+                    FilterGrpcResponse exactResponse = await FilterEmacsByExactPartNumber(filterRequest);
+                    if (0 < exactResponse.StringList.Count)
+                    {
+                        PriceResponse priceResponse = new PriceResponse();
+                        priceResponse.CustomerPartNumber = partNumber;
+                        priceResponse.ExactMatch = true;
+
+                        PriceInformation priceInformation = new PriceInformation();
+                        priceInformation.SumitomoNumber = exactResponse.StringList.First();
+                        return priceResponse;
+                    }
+
+                    string cleanedUpPn = partNumber
+                        .Replace("-", "", StringComparison.InvariantCulture)
+                        .Replace(" ", "", StringComparison.InvariantCulture)
+                        .ToUpperInvariant();
+
+                    filterRequest.StringValue = cleanedUpPn;
+                    FilterGrpcResponse containsResponse = await FilterEmacsByContainingPartNumber(filterRequest);
+                    if (0 < containsResponse.StringList.Count)
+                    {
+                        PriceResponse priceResponse = new PriceResponse();
+                        priceResponse.CustomerPartNumber = partNumber;
+                        priceResponse.ExactMatch = true;
+
+                        foreach (string sumitomoNumber in containsResponse.StringList)
+                        {
+                            PriceInformation priceInformation = new PriceInformation();
+                            priceInformation.SumitomoNumber = sumitomoNumber;
+                            priceResponse.PriceInformation.Add(priceInformation);
+                        }
+
+                        return priceResponse;
+                    }
+
+                    return null;
+                });
+
+            PriceResponse?[] emacsResults = await Task.WhenAll(emacsLookupTasks);
+            List<PriceResponse> sumitomoNumberSearchResults = emacsResults
+                .Where(r => r != null)
+                .Select(r => r!)
+                .ToList();
+
+            // Step 2: Resolve prices for all PriceInformation entries in parallel
+            // if price > 0 then add to response with price source, if not then skip (don't return zero price)
+            IEnumerable<Task> priceLookupTasks = sumitomoNumberSearchResults
+                .Select(async item =>
+                {
+                    IEnumerable<Task> innerTasks = item.PriceInformation
+                        .Select(async priceInfo =>
+                        {
+                            FilterGrpcRequest filterRequest = new FilterGrpcRequest();
+                            filterRequest.StringValue = priceInfo.SumitomoNumber;
+
+                            FilterGrpcResponse cpdResponse = await FilterCPDBySumitomoPartNumber(filterRequest);
+                            if (0 < cpdResponse.StringList.Count)
+                            {
+                                priceInfo.Price = cpdResponse.DoubleList.First();
+                                priceInfo.PriceSource = "CPD";
+                                return;
+                            }
+
+                            FilterGrpcResponse nprResponse = await FilterNPRBySumitomoPartNumber(filterRequest);
+                            if (0 < nprResponse.StringList.Count)
+                            {
+                                priceInfo.Price = nprResponse.DoubleList.First();
+                                priceInfo.PriceSource = "NPR";
+                            }
+                        });
+
+                    await Task.WhenAll(innerTasks);
+                });
+
+            await Task.WhenAll(priceLookupTasks);
+
+            response.PriceResponse.AddRange(sumitomoNumberSearchResults);
+            return response;
+        }
+
+        #region RfqNprRequest
         public async Task<GetRfqNprRequestByRfqNumberGrpcResponse> GetRfqNprRequestByRfqNumberGrpc(GetRfqNprRequestByRfqNumberGrpcRequest request)
         {
             await Task.Delay(1);
@@ -1215,7 +1318,9 @@ namespace RfqModule.Services
         //    }
 
         //    RfqCrudGrpcResponse accessResponse = _RfqClient.UpdateRfqNprRequestGrpc(rfqNprRequest);
+
         //    response.Message = accessResponse.Message;
+
         //    return response;
         //}
 
@@ -1378,6 +1483,8 @@ namespace RfqModule.Services
 
             return response;
         }
+        #endregion
+        #region Suppliers
 
         public async Task<GetAllSuppliersGrpcResponse> GetAllSuppliersGrpc(GetAllSuppliersGrpcRequest request)
         {
@@ -1412,6 +1519,7 @@ namespace RfqModule.Services
 
             return response;
         }
+        #endregion
 
         #region Filtering
 
@@ -1519,6 +1627,11 @@ namespace RfqModule.Services
             response.Success = true;
             foreach( H1NPRViewGrpc part in filteredList)
             {
+                if (part.ExpiryDate == null || part.ExpiryDate.ToDateTime() < DateTime.UtcNow)
+                {
+                    continue;
+                }
+
                 string sumitmoNumberString = part.SumitomoNo.ToString();
                 double price = part.Price ?? 0;
                 response.StringList.Add(sumitmoNumberString);
@@ -1537,8 +1650,16 @@ namespace RfqModule.Services
             CPDFilterResponse cpdResponse = FilterSumitomoNumber<CPDFilterResponse>(request.StringValue, "MaterialNo", "==");
             filteredList = ExtractCPDResponseData<MatSuppMstViewGrpc>(cpdResponse);
             response.Success = true;
+
+            DateTime sixMonthsAgo = DateTime.UtcNow.AddMonths(-6);
+
             foreach (MatSuppMstViewGrpc part in filteredList)
             {
+                if (part.UpdDt == null || part.UpdDt.ToDateTime() < sixMonthsAgo)
+                {
+                    continue;
+                }
+
                 string sumitmoNumberString = part.MaterialNo.ToString();
                 double price = part.PoPrice ?? 0;
                 response.StringList.Add(sumitmoNumberString);
