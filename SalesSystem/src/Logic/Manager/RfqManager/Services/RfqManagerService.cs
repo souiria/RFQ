@@ -1117,6 +1117,7 @@ namespace RfqModule.Services
 
                         PriceInformation priceInformation = new PriceInformation();
                         priceInformation.SumitomoNumber = exactResponse.StringList.First();
+                        priceResponse.PriceInformation.Add(priceInformation);
                         return priceResponse;
                     }
 
