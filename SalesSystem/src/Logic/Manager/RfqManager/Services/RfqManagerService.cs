@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace RfqModule.Services
+﻿namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {
