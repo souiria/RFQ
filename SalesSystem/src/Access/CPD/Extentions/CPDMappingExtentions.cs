@@ -24,7 +24,7 @@
             data.UpdFlg = entity.Upd_Flg;
             data.Userid = entity.Userid;
             data.EntDt = entity.Ent_Dt?.ToUniversalTime().ToTimestamp();
-            data.EntDt = entity.Upd_Dt?.ToUniversalTime().ToTimestamp();
+            data.UpdDt = entity.Upd_Dt?.ToUniversalTime().ToTimestamp();
             data.StandardBoxLength = (double?)entity.Standard_Box_Length;
             data.StandardBoxWidth = (double?)entity.Standard_Box_Width;
             data.StandardBoxHeigh = (double?)entity.Standard_Box_Heigh;

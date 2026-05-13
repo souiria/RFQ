@@ -130,6 +130,13 @@
             return response;
         }
 
+        public override async Task<SearchPartPricesGrpcResponse> SearchPartPricesGrpc(SearchPartPricesGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("SearchPartPricesGrpc starting");
+            SearchPartPricesGrpcResponse response = await _RfqManagerService.SearchPartPricesGrpc(request);
+            return response;
+        }
+
         public override async Task<FilterGrpcResponse> FilterGrpc(FilterGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("FilterGrpc starting");
