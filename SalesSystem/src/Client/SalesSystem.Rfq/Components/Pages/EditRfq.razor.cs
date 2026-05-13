@@ -986,10 +986,10 @@
             CancellationToken cancellationToken = _SearchCancellationTokenSource.Token;
             _SearchInitialTotalParts = TotalParts;
 
-            // Snapshot the in-progress list so we can mutate _InProgressParts safely as we move items out.
+            // Snapshot so we can mutate _InProgressParts safely while iterating.
             List<RfqDrawingPartNumberUxModel?> partsSnapshot = _InProgressParts.ToList();
 
-            // Build the per-part progress state and open the dialog.
+            // Build per-part progress state and open the dialog.
             SearchProgressState progressState = new SearchProgressState();
             progressState.Initialize(partsSnapshot.Select(p => p?.CustomerPartNumber ?? "(unknown)"));
             progressState.OnCancelRequested = () =>
@@ -1000,7 +1000,7 @@
                 }
                 catch (ObjectDisposedException)
                 {
-                    // Token source already disposed - nothing to do.
+                    // Already disposed — nothing to do.
                 }
             };
 
@@ -1018,7 +1018,8 @@
                 FullWidth = true
             };
 
-            IDialogReference dialog = await DialogService.ShowAsync<SearchProgressDialog>("Search All Part Numbers", parameters, options);
+            IDialogReference dialog = await DialogService.ShowAsync<SearchProgressDialog>(
+                "Search All Part Numbers", parameters, options);
 
             int processed = 0;
             int movedExact = 0;
@@ -1029,6 +1030,10 @@
             {
                 StateHasChanged();
 
+                // ----------------------------------------------------------------
+                // Search each part successively so the dialog updates after every
+                // individual gRPC call rather than waiting for a full batch.
+                // ----------------------------------------------------------------
                 for (int partIndex = 0; partIndex < partsSnapshot.Count; partIndex++)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -1041,24 +1046,23 @@
                         continue;
                     }
 
-                    progressState.StartPart(partIndex, $"Searching {partIndex + 1} of {partsSnapshot.Count}: {item.CustomerPartNumber}");
+                    // Mark this checkpoint active in the dialog immediately.
+                    progressState.StartPart(
+                        partIndex,
+                        $"Searching {partIndex + 1} of {partsSnapshot.Count}: {item.CustomerPartNumber}");
 
                     processed++;
 
                     // Reset previous search state on the part (mirrors PartNumbersEditGrid.OnSearch).
-                    // NOTE: `item` is the SAME reference held by _InProgressParts (snapshot only copies
-                    //       the list, not the elements), so mutations here are persisted on the
-                    //       in-progress part object.
+                    // `item` is the SAME reference held by _InProgressParts — mutations persist on the
+                    // in-progress object.
                     item.SearchResultPartNumbers.Clear();
                     item.Comments = string.Empty;
 
-                    string? cleanedUpPn = item.CustomerPartNumber?
-                        .Replace("-", "", StringComparison.InvariantCultureIgnoreCase)
-                        .Replace(" ", "", StringComparison.InvariantCultureIgnoreCase)
-                        .ToUpperInvariant();
-                    if (string.IsNullOrEmpty(cleanedUpPn) || string.IsNullOrEmpty(item.CustomerPartNumber))
+                    if (string.IsNullOrEmpty(item.CustomerPartNumber))
                     {
-                        Logger.GenericLogInformation($"EditRfq.SearchAllPartNumbersAsync - No valid part number for Row ID: {item.RowId}");
+                        Logger.GenericLogInformation(
+                            $"EditRfq.SearchAllPartNumbersAsync - No valid part number for Row ID: {item.RowId}");
                         progressState.CompletePartAsUnmatched(partIndex, "invalid part number");
                         unmatched++;
                         continue;
@@ -1066,69 +1070,68 @@
 
                     try
                     {
-                        SearchResultUxModel responseExact = await RfqUxClientService.SearchEmacsExactCustomerPn(item.CustomerPartNumber);
-                        SearchResultUxModel responseContains = await RfqUxClientService.SearchEmacsContainsCustomerPn(cleanedUpPn);
+                        // One gRPC call per part — response arrives and the dialog checkpoint
+                        // is completed before we move on to the next part.
+                        SearchPartPricesGrpcResponse response = await RfqUxClientService.SearchPartPricesAsync(
+                            new List<string> { item.CustomerPartNumber },
+                            cancellationToken);
 
-                        Logger.GenericLogInformation($"EditRfq.SearchAllPartNumbersAsync - {item.CustomerPartNumber}: exact={responseExact.StringList.Count}, contains={responseContains.StringList.Count}");
+                        // The service returns one PriceResponse per input part number.
+                        PriceResponse? priceResponse = response.PriceResponse
+                            .FirstOrDefault(pr =>
+                                string.Equals(
+                                    pr.CustomerPartNumber,
+                                    item.CustomerPartNumber,
+                                    StringComparison.OrdinalIgnoreCase));
 
-                        // ----------------------------------------------------------------
-                        // SAVE the search results onto the in-progress part's
-                        // SearchResultPartNumbers list. This is preserved whether or not we
-                        // end up auto-matching the part - so unmatched parts retain the
-                        // candidate list for later manual review via the per-row Search
-                        // dialog.
-                        // ----------------------------------------------------------------
-                        int index = 0;
-
-                        for (int i = 0; i < responseExact.StringList.Count; i++)
+                        if (priceResponse != null)
                         {
-                            RfqDrawingPartNumberUxModel candidate = new RfqDrawingPartNumberUxModel();
-                            candidate.IsExactMatch = true;
-                            candidate.Index = index++;
-                            candidate.DrawingPartNumber = responseExact.StringList[i];
-                            if (i < responseExact.DoubleList.Count)
+                            bool isExactMatch = priceResponse.ExactMatch ?? false;
+                            int candidateIndex = 0;
+
+                            // -------------------------------------------------------
+                            // Save ALL returned price lines onto the in-progress part's
+                            // SearchResultPartNumbers list for later manual review.
+                            // -------------------------------------------------------
+                            foreach (PriceInformation priceInfo in priceResponse.PriceInformation)
                             {
-                                candidate.DrawingPartNumberPrice = Convert.ToDecimal(responseExact.DoubleList[i], CultureInfo.InvariantCulture);
+                                RfqDrawingPartNumberUxModel candidate = new RfqDrawingPartNumberUxModel();
+                                candidate.IsExactMatch = isExactMatch;
+                                candidate.Index = candidateIndex++;
+                                candidate.DrawingPartNumber = priceInfo.SumitomoNumber ?? string.Empty;
+                                candidate.DrawingPartNumberPrice = priceInfo.Price is double d
+                                    ? Convert.ToDecimal(d, CultureInfo.InvariantCulture)
+                                    : 0m;
+                                candidate.PriceSource = priceInfo.PriceSource ?? string.Empty;
+                                item.SearchResultPartNumbers.Add(candidate);
                             }
 
-                            item.SearchResultPartNumbers.Add(candidate);
+                            Logger.GenericLogInformation(
+                                $"EditRfq.SearchAllPartNumbersAsync - {item.CustomerPartNumber}: " +
+                                $"exactMatch={isExactMatch}, candidates={item.SearchResultPartNumbers.Count}");
                         }
 
-                        for (int i = 0; i < responseContains.StringList.Count; i++)
-                        {
-                            RfqDrawingPartNumberUxModel candidate = new RfqDrawingPartNumberUxModel();
-                            candidate.IsExactMatch = false;
-                            candidate.Index = index++;
-                            candidate.DrawingPartNumber = responseContains.StringList[i];
-                            if (i < responseContains.DoubleList.Count)
-                            {
-                                candidate.DrawingPartNumberPrice = Convert.ToDecimal(responseContains.DoubleList[i], CultureInfo.InvariantCulture);
-                            }
-
-                            item.SearchResultPartNumbers.Add(candidate);
-                        }
-
-                        // Pick the best priced candidate already stored on the part.
+                        // Pick the best priced candidate from the (now populated) list.
                         RfqDrawingPartNumberUxModel? bestExact = item.SearchResultPartNumbers
                             .FirstOrDefault(x => x.IsExactMatch && x.DrawingPartNumberPrice > 0m);
 
                         RfqDrawingPartNumberUxModel? bestContains = bestExact == null
-                            ? item.SearchResultPartNumbers.FirstOrDefault(x => !x.IsExactMatch && x.DrawingPartNumberPrice > 0m)
+                            ? item.SearchResultPartNumbers
+                                .FirstOrDefault(x => !x.IsExactMatch && x.DrawingPartNumberPrice > 0m)
                             : null;
 
                         RfqDrawingPartNumberUxModel? bestMatch = bestExact ?? bestContains;
 
                         if (bestMatch != null)
                         {
-                            // Auto-match: swap the matched part number / price into the part.
-                            // The SearchResultPartNumbers list is intentionally NOT cleared,
-                            // so the chosen candidate (and siblings) remain visible on the
-                            // completed row.
+                            // Auto-match: swap the matched part number / price into the part's fields.
+                            // SearchResultPartNumbers is intentionally NOT cleared so all candidates
+                            // remain visible on the completed row.
                             item.DrawingPartNumber = bestMatch.DrawingPartNumber;
                             item.DrawingPartNumberPrice = bestMatch.DrawingPartNumberPrice;
                             item.IsExactMatch = bestExact != null;
                             item.IsSwapped = false;
-                            item.PriceSource = "EMACS";
+                            item.PriceSource = bestMatch.PriceSource;
                             item.Status = bestExact != null
                                 ? RfqDrawingPartNumberStatus.ExactMatch
                                 : RfqDrawingPartNumberStatus.ContainsMatch;
@@ -1151,21 +1154,22 @@
                                         $"contains: {item.DrawingPartNumber} @ {item.DrawingPartNumberPrice:0.##### €}");
                                 }
 
-                                Logger.GenericLogInformation($"EditRfq.SearchAllPartNumbersAsync - Auto-matched ({item.Status}): {item.CustomerPartNumber} -> {item.DrawingPartNumber} @ {item.DrawingPartNumberPrice}");
+                                Logger.GenericLogInformation(
+                                    $"EditRfq.SearchAllPartNumbersAsync - Auto-matched ({item.Status}): " +
+                                    $"{item.CustomerPartNumber} -> {item.DrawingPartNumber} @ {item.DrawingPartNumberPrice}");
                             }
                             else
                             {
-                                Logger.GenericLogInformation($"EditRfq.SearchAllPartNumbersAsync - Failed to persist auto-match for {item.CustomerPartNumber}");
+                                Logger.GenericLogInformation(
+                                    $"EditRfq.SearchAllPartNumbersAsync - Failed to persist auto-match for {item.CustomerPartNumber}");
                                 progressState.CompletePartAsUnmatched(partIndex, "persist failed");
                                 unmatched++;
                             }
                         }
                         else
                         {
-                            // Keep part in In-Progress. SearchResultPartNumbers were already
-                            // saved above and remain on the in-progress part for review.
+                            // No priced hit — keep in In-Progress; candidate list preserved for manual review.
                             unmatched++;
-
                             int candidateCount = item.SearchResultPartNumbers.Count;
                             progressState.CompletePartAsUnmatched(
                                 partIndex,
@@ -1174,7 +1178,8 @@
                                     : $"{candidateCount} candidate(s) saved, no price");
 
                             Logger.GenericLogInformation(
-                                $"EditRfq.SearchAllPartNumbersAsync - No priced match for {item.CustomerPartNumber}; saved {candidateCount} candidate(s) on the in-progress part for review");
+                                $"EditRfq.SearchAllPartNumbersAsync - No priced match for {item.CustomerPartNumber}; " +
+                                $"saved {candidateCount} candidate(s) on the in-progress part for review");
                         }
                     }
                     catch (OperationCanceledException)
@@ -1183,15 +1188,19 @@
                     }
                     catch (Exception ex)
                     {
-                        Logger.GenericLogError($"EditRfq.SearchAllPartNumbersAsync - Error searching {item.CustomerPartNumber}", ex);
+                        Logger.GenericLogError(
+                            $"EditRfq.SearchAllPartNumbersAsync - Error processing {item.CustomerPartNumber}", ex);
                         progressState.CompletePartAsUnmatched(partIndex, $"error: {ex.Message}");
                         unmatched++;
                     }
 
+                    // Yield to the Blazor renderer so the dialog re-renders with this
+                    // part's completed checkpoint before starting the next search call.
                     StateHasChanged();
+                    await Task.Yield();
                 }
 
-                // Move every auto-matched part out of In-Progress and into Completed.
+                // Move every auto-matched part from In-Progress to Completed.
                 List<RfqDrawingPartNumberUxModel?> toMove = _InProgressParts
                     .Where(p => p != null
                         && (p.Status == RfqDrawingPartNumberStatus.ExactMatch
@@ -1204,13 +1213,15 @@
                     _CompletedParts.Add(p);
                 }
 
-                // Invariant: the total BOM size must remain unchanged across a Search All run.
+                // Invariant: total BOM size must not change across a Search All run.
                 System.Diagnostics.Debug.Assert(
                     _CompletedParts.Count + _InProgressParts.Count == _SearchInitialTotalParts,
                     "SearchAllPartNumbersAsync changed total BOM size");
 
-                string summary = $"Processed {processed}, exact-matched {movedExact}, contains-matched {movedContains}, unmatched {unmatched}";
+                string summary = $"Processed {processed}, exact-matched {movedExact}, " +
+                                 $"contains-matched {movedContains}, unmatched {unmatched}";
                 progressState.SetCompleted(summary);
+
                 Snackbar.Add(
                     $"Search All complete: {summary}",
                     unmatched == 0 && (movedExact + movedContains) > 0 ? Severity.Success : Severity.Info);
@@ -1232,8 +1243,6 @@
                 _IsSearchingAll = false;
                 progressState.OnCancelRequested = null;
                 StateHasChanged();
-
-                // Wait for the user to dismiss the dialog (or auto-dismiss on errors that already closed it).
                 _ = await dialog.Result;
             }
         }

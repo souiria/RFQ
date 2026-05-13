@@ -213,6 +213,11 @@ namespace SalesSystem.Rfq.Models
             HasError = hasError;
         }
 
+        public void UpdateMessage(string message)
+        {
+            CurrentMessage = message;
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName)

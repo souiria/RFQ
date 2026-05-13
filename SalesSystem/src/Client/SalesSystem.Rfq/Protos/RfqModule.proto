@@ -44,6 +44,7 @@ rpc ValidateNprRequestGrpc (MgrValidateNprRequestRequest) returns (MgrValidateNp
   rpc CreateNprGrpc (CreateNprGrpcRequest) returns (CreateNprGrpcResponse);
   rpc GetAllSuppliersGrpc (GetAllSuppliersGrpcRequest) returns (GetAllSuppliersGrpcResponse);
   rpc GetAllSupplierGroupsGrpc (GetAllSupplierGroupsGrpcRequest) returns (GetAllSupplierGroupsGrpcResponse);
+  rpc SearchPartPricesGrpc (SearchPartPricesGrpcRequest) returns (SearchPartPricesGrpcResponse);
    
  rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
 }
@@ -687,4 +688,24 @@ message SupplierGroupGrpc {
     google.protobuf.StringValue ModifiedBy = 10;
     google.protobuf.Int32Value SyncToCPD = 11;
     google.protobuf.BoolValue IsEOLRequired = 12;
+}
+
+message SearchPartPricesGrpcRequest {
+	repeated google.protobuf.StringValue PartNumbers = 1;
+}
+
+message SearchPartPricesGrpcResponse {
+	repeated PriceResponse PriceResponse = 1;
+}
+
+message PriceResponse {
+	google.protobuf.StringValue CustomerPartNumber = 1;
+	repeated PriceInformation PriceInformation = 2;
+	google.protobuf.BoolValue ExactMatch = 3;
+}
+
+message PriceInformation {
+	google.protobuf.StringValue SumitomoNumber = 1;
+	google.protobuf.DoubleValue Price = 2;
+	google.protobuf.StringValue PriceSource = 3;
 }

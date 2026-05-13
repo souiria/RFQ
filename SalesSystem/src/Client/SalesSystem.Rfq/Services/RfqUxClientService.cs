@@ -660,6 +660,55 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
+        // unified Cpn search
+        /// <summary>
+        /// Calls SearchPartPricesGrpc with a batch of customer part numbers and returns
+        /// the full priced result set in one round-trip.  Each <see cref="PriceResponse"/>
+        /// entry contains an <c>ExactMatch</c> flag plus one <see cref="PriceInformation"/>
+        /// per Sumitomo number / price source combination found.
+        /// </summary>
+        public async Task<SearchPartPricesGrpcResponse> SearchPartPricesAsync(
+            IEnumerable<string> partNumbers,
+            CancellationToken cancellationToken = default)
+        {
+            ArgumentNullException.ThrowIfNull(partNumbers);
+
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+            using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(
+                timeoutCts.Token,
+                cancellationToken);
+
+            try
+            {
+                SearchPartPricesGrpcRequest request = new SearchPartPricesGrpcRequest();
+                foreach (string pn in partNumbers)
+                {
+                    request.PartNumbers.Add(pn);
+                }
+
+                _Logger?.GenericLogInformation(
+                    $"SearchPartPricesAsync - Requesting prices for {request.PartNumbers.Count} part(s)");
+
+                SearchPartPricesGrpcResponse response = await _Client.SearchPartPricesGrpcAsync(
+                    request,
+                    cancellationToken: linkedCts.Token);
+
+                _Logger?.GenericLogInformation(
+                    $"SearchPartPricesAsync - Received {response.PriceResponse.Count} price response(s)");
+
+                return response;
+            }
+            catch (OperationCanceledException)
+            {
+                _Logger?.GenericLogInformation("SearchPartPricesAsync - Operation was cancelled or timed out");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError("Error in SearchPartPricesAsync", ex);
+                throw;
+            }
+        }
         #endregion
 
         #region Filtering
