@@ -1237,10 +1237,10 @@
             return response;
         }
 
-        public async Task<RefreshRfqNprRequestStatusGrpcResponse> RefreshRfqNprRequestStatusGrpc(RefreshRfqNprRequestStatusGrpcRequest request)
+        public async Task<UpdateRfqNprRequestStatusGrpcResponse> UpdateRfqNprRequestStatusGrpc(UpdateRfqNprRequestStatusGrpcRequest request)
         {
             await Task.Delay(0);
-            RefreshRfqNprRequestStatusGrpcResponse response = new RefreshRfqNprRequestStatusGrpcResponse();
+            UpdateRfqNprRequestStatusGrpcResponse response = new UpdateRfqNprRequestStatusGrpcResponse();
             GetAllRfqNprRequestGrpcRequest rfqNprRequest = new GetAllRfqNprRequestGrpcRequest();
             GetAllRfqNprRequestGrpcResponse allRfqNprRequests = await GetAllRfqNprRequestGrpc(rfqNprRequest);
             NPRFilterRequest nprFilterRequest = new NPRFilterRequest();

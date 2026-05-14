@@ -228,6 +228,12 @@
             UpdateRfqNprRequestGrpcResponse response = await _RfqManagerService.UpdateRfqNprRequestGrpc(request);
             return response;
         }
+        public override async Task<UpdateRfqNprRequestStatusGrpcResponse> UpdateRfqNprRequestStatusGrpc(UpdateRfqNprRequestStatusGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation($"UpdateRfqNprRequestStatusGrpc starting");
+            UpdateRfqNprRequestStatusGrpcResponse response = await _RfqManagerService.UpdateRfqNprRequestStatusGrpc(request);
+            return response;
+        }
         public override async Task<DeleteRfqNprRequestByIdGrpcResponse> DeleteRfqNprRequestByIdGrpc(DeleteRfqNprRequestByIdGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation($"DeleteRfqNprRequestByIdGrpc starting");

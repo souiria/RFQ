@@ -39,7 +39,7 @@ service RfqModule {
   rpc GetAllRfqNprRequestGrpc (GetAllRfqNprRequestGrpcRequest) returns (GetAllRfqNprRequestGrpcResponse);
   rpc CreateRfqNprRequestGrpc (CreateRfqNprRequestGrpcRequest) returns (CreateRfqNprRequestGrpcResponse);
   rpc UpdateRfqNprRequestGrpc (UpdateRfqNprRequestGrpcRequest) returns (UpdateRfqNprRequestGrpcResponse);
-  rpc RefreshRfqNprRequestStatusGrpc (RefreshRfqNprRequestStatusGrpcRequest) returns (RefreshRfqNprRequestStatusGrpcResponse);
+  rpc UpdateRfqNprRequestStatusGrpc (UpdateRfqNprRequestStatusGrpcRequest) returns (UpdateRfqNprRequestStatusGrpcResponse);
   rpc DeleteRfqNprRequestByIdGrpc (DeleteRfqNprRequestByIdGrpcRequest) returns (DeleteRfqNprRequestByIdGrpcResponse);
 rpc ValidateNprRequestGrpc (MgrValidateNprRequestRequest) returns (MgrValidateNprRequestResponse);
   rpc CreateNprGrpc (CreateNprGrpcRequest) returns (CreateNprGrpcResponse);
@@ -582,9 +582,9 @@ message UpdateRfqNprRequestGrpcResponse {
   string Message = 2;
 }
 
-message RefreshRfqNprRequestStatusGrpcRequest {
+message UpdateRfqNprRequestStatusGrpcRequest {
 }
-message RefreshRfqNprRequestStatusGrpcResponse {
+message UpdateRfqNprRequestStatusGrpcResponse {
   bool Success = 1;
   string Message = 2;
 }
