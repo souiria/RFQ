@@ -29,6 +29,9 @@ namespace SalesSystem.Rfq.Components.Pages
         [Parameter] public Guid? UserId
         { get; set; }
 
+        [CascadingParameter(Name = "GlobalValue")]
+        public GlobalValue? GlobalValue { get; set; }
+
         [SupportedOSPlatform("windows")]
         protected override async Task OnInitializedAsync()
         {

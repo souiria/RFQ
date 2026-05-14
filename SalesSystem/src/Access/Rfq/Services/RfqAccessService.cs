@@ -4065,10 +4065,10 @@
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(requestId))
-            {
-                Err(nameof(item.RequestID), "requestId is required.");
-            }
+            //if (string.IsNullOrWhiteSpace(requestId))
+            //{
+            //    Err(nameof(item.RequestID), "requestId is required.");
+            //}
 
             if (string.IsNullOrWhiteSpace(manufacturingSite))
             {

@@ -102,6 +102,8 @@
     [Parameter] public Guid? UserId { get; set; }
     private bool IsLoading = true;
 
+    [Parameter] public GlobalValue GlobalValue { get; set; } = null!;
+
     protected override async Task OnInitializedAsync()
     {
         await RefreshAsync();
@@ -137,9 +139,10 @@
 
     private void NavigateToEdit(RqfProjectUxModel project)
     {
-        if (UserId.HasValue)
+        Guid? userId = UserId ?? GlobalValue?.UserId;
+        if (userId.HasValue)
         {
-            Navigation.NavigateTo($"/editRfq/{UserId}/{project.RowId}");
+            Navigation.NavigateTo($"/editRfq/{userId}/{project.RowId}");
         }
         else
         {

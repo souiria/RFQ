@@ -51,6 +51,7 @@
 
         [Parameter] public Guid? UserId { get; set; }
         [Parameter] public long RfqProjectId { get; set; }
+        [Parameter] public GlobalValue GlobalValue { get; set; } = null!; // cascaded
         #endregion
 
         #region Events
@@ -384,6 +385,15 @@
                                     nprRequests.Add(nprRequest);
                                 }
                             }
+                        }
+
+                        // update all relevant attributes
+                        foreach (RfqNprRequestUxModel nprRequest in nprRequests)
+                        {
+                            nprRequest.CustomerCode = RfqProject.CustomerBusinessUnit;
+                            nprRequest.ManufacturingSite = RfqProject.Project;
+                            nprRequest.OriginatorName = GlobalValue.UserAccount;
+
                         }
 
                         // persist

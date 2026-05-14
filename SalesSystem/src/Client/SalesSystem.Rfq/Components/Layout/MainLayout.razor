@@ -72,7 +72,9 @@
     </MudAppBar>
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.ExtraLarge">
-            @Body
+            <CascadingValue Value="@globalValue" Name="GlobalValue">
+                @Body
+            </CascadingValue>
         </MudContainer>
     </MudMainContent>
 </MudLayout>

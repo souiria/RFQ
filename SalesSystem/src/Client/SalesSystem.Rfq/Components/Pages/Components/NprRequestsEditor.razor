@@ -80,6 +80,28 @@
                               Class="mt-0" />
             </MudTooltip>
             <MudSpacer />
+            @if (_validationRun)
+            {
+                <MudChip T="string" Size="Size.Small"
+                         Color="@(_invalidCount == 0 ? Color.Success : Color.Error)"
+                         Variant="Variant.Filled"
+                         Class="mr-2">
+                    @(_invalidCount == 0
+                        ? $"All {_validCount} valid"
+                        : $"{_invalidCount} invalid / {_validCount} valid")
+                </MudChip>
+            }
+            <MudTooltip Text="Validate all NPR requests">
+                <MudButton Color="Color.Secondary"
+                           Variant="Variant.Filled"
+                           Size="Size.Small"
+                           StartIcon="@Icons.Material.Filled.PlaylistAddCheck"
+                           OnClick="ValidateAllNprRequests"
+                           Disabled="@(RfqProject?.NprRequests == null || RfqProject.NprRequests.Count == 0)"
+                           Class="mr-2">
+                    Validate All
+                </MudButton>
+            </MudTooltip>
             @if (HasPendingChanges)
             {
                 <MudChip T="string" Size="Size.Small" Color="Color.Warning" Variant="Variant.Filled">
@@ -96,6 +118,13 @@
                                        Icon="@Icons.Material.Filled.Edit"
                                        aria-label="edit"
                                        OnClick="@(() => EditNprRequest(context.Item))" />
+                    </MudTooltip>
+                    <MudTooltip Text="Validate NPR Request">
+                        <MudIconButton Size="@Size.Small"
+                                       Color="Color.Primary"
+                                       Icon="@Icons.Material.Filled.Check"
+                                       aria-label="validate"
+                                       OnClick="@(() => ValidateNprRequest(context.Item))" />
                     </MudTooltip>
                 </CellTemplate>
             </TemplateColumn>
@@ -149,6 +178,11 @@
     Func<RfqNprRequestUxModel, bool>? _compiledQuickFilter;
     MudDataGrid<RfqNprRequestUxModel>? _dataGrid;
 
+    // Validation state — populated by ValidateAllNprRequests
+    bool _validationRun;
+    int _validCount;
+    int _invalidCount;
+
     Func<RfqNprRequestUxModel, bool> QuickFilter => _quickFilterFunc;
 
     [Parameter] public RqfProjectUxModel RfqProject { get; set; } = new();
@@ -180,14 +214,76 @@
 
     private string RowStyleFunc(RfqNprRequestUxModel item, int index)
     {
+        // Validation result takes priority when a validate run has been done.
+        if (_validationRun)
+        {
+            if (item.IsValid)
+            {
+                return "background-color: #c8e6c9;";  // light green  — valid
+            }
+
+            if (item.ValidationErrors.Count > 0)
+            {
+                return "background-color: #ffcdd2;";  // light red — invalid
+            }
+
+            // Not yet validated (e.g. row added after the last validate run) — fall through.
+        }
+
+        // Default UxStatus coloring when no validation run has taken place.
         return item.UxStatus switch
         {
-            UxObjectStatus.Created => "background-color: #c8e6c9;",
+            UxObjectStatus.Created => "background-color: #fff9c4;",
             UxObjectStatus.Updated => "background-color: #fff9c4;",
             UxObjectStatus.Deleted => "background-color: #ffcdd2;",
             UxObjectStatus.Read => string.Empty,
             _ => string.Empty
         };
+    }
+
+    private void ValidateAllNprRequests()
+    {
+        if (RfqProject?.NprRequests == null || RfqProject.NprRequests.Count == 0)
+        {
+            Snackbar.Add("No NPR requests to validate", Severity.Info);
+            return;
+        }
+
+        _validCount = 0;
+        _invalidCount = 0;
+
+        foreach (RfqNprRequestUxModel request in RfqProject.NprRequests)
+        {
+            if (request.UxStatus == UxObjectStatus.Deleted)
+            {
+                continue;
+            }
+
+            bool isValid = request.Validate();
+
+            if (isValid)
+            {
+                _validCount++;
+            }
+            else
+            {
+                _invalidCount++;
+            }
+        }
+
+        _validationRun = true;
+
+        Logger.GenericLogInformation(
+            $"NprRequestsEditor.ValidateAllNprRequests - " +
+            $"Valid: {_validCount}, Invalid: {_invalidCount}");
+
+        Snackbar.Add(
+            _invalidCount == 0
+                ? $"All {_validCount} NPR request(s) are valid"
+                : $"{_invalidCount} invalid / {_validCount} valid NPR request(s)",
+            _invalidCount == 0 ? Severity.Success : Severity.Warning);
+
+        StateHasChanged();
     }
 
     #region NPR Tab - inline management (public methods callable by parent)
@@ -407,6 +503,39 @@
             Logger.GenericLogError($"NprRequestsEditor.EditNprRequest - Error editing NPR request: {nprRequest.CustomerPartNumber}", ex);
             Snackbar.Add($"Error editing NPR request: {ex.Message}", Severity.Error);
         }
+    }
+
+    private async Task ValidateNprRequest(RfqNprRequestUxModel nprRequest)
+    {
+        bool isValid = nprRequest.Validate();
+
+        string partLabel = nprRequest.MaterialNumber
+            ?? nprRequest.CustomerPartNumber
+            ?? nprRequest.Id.ToString();
+
+        Logger.GenericLogInformation(
+            $"NprRequestsEditor.ValidateNprRequest - " +
+            $"Part: {partLabel}, Valid: {isValid}, Errors: {nprRequest.ValidationErrors.Count}");
+
+        DialogParameters<NprValidationResultDialog> parameters = new DialogParameters<NprValidationResultDialog>
+        {
+            { x => x.IsValid, isValid },
+            { x => x.PartLabel, partLabel },
+            { x => x.ValidationErrors, nprRequest.ValidationErrors }
+        };
+
+        DialogOptions options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Large,
+            FullWidth = true,
+            CloseOnEscapeKey = true,
+            BackdropClick = false
+        };
+
+        await DialogService.ShowAsync<NprValidationResultDialog>(
+            isValid ? "Validation Passed" : "Validation Errors",
+            parameters,
+            options);
     }
 
     private void RemoveNprRequest(RfqNprRequestUxModel nprRequest)
