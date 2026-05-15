@@ -11,7 +11,7 @@
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 
-<MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Dashboard</MudText>
+<MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Dashboard [@GlobalValue?.DisplayName]</MudText>
 <MudGrid>
     <MudItem xs="12" sm="6" md="3">
         <MudPaper Elevation="24" Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
@@ -114,7 +114,7 @@
                 </CardHeaderContent>
             </MudCardHeader>
             <MudCardContent Class="px-2 pt-0 pb-2" Style="height: calc(100vh - 624px); min-height: 300px;">
-                <RecentRfqs UserId="@UserId" GlobalValue="@GlobalValue" />
+                <RecentRfqs GlobalValue="@GlobalValue" />
             </MudCardContent>
         </MudCard>
     </MudItem>

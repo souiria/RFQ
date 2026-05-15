@@ -1008,10 +1008,10 @@ namespace SalesSystem.Rfq.Services
                     // Defensive: any malformed Id is an in-memory cache bug — skip & log
                     if (model.Id == Guid.Empty && model.UxStatus != UxObjectStatus.Created)
                     {
-                        _Logger?.GenericLogError(
+                        _Logger?.GenericLogInformation(
                             $"SaveNprRequestsToDatabaseAsync - Skipping item with empty Id: " +
                             $"RequestID='{model.RequestID}', CustomerRfqNo='{model.CustomerRfqNo}', " +
-                            $"UxStatus={model.UxStatus}", null);
+                            $"UxStatus={model.UxStatus}");
                         continue;
                     }
 

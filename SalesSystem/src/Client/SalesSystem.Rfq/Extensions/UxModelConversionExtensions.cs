@@ -332,6 +332,20 @@
             return nprRequest;
         }
 
+        public static RfqNprRequestUxModel Update(this RfqNprRequestUxModel nprRequest, RqfProjectUxModel rfqProject, GlobalValue globalValue)
+        {
+            nprRequest.CustomerCode = rfqProject.CustomerBusinessUnit;
+            nprRequest.OriginatorName = globalValue.DisplayName;
+            nprRequest.CustomerRfqNo = rfqProject.RfqNumber;
+            nprRequest.DeadlineDate = rfqProject.RfqResponseDeadline;
+            nprRequest.SEWSEUnitOfMeasurement = "EU";
+            nprRequest.ProjectCode = rfqProject.Project;
+            nprRequest.VehicleTotalQuantity = rfqProject.VehicleVolume;
+            nprRequest.ManufacturingSite = rfqProject.CustomerLocation;
+            
+            return nprRequest;
+        }
+
         // SampleSiteData gRPC <-> UX conversion
         public static RfqNprRequestSampleSiteDataGrpc ToSampleSiteGrpc(this RfqNprRequestSampleSiteDataUxModel model)
         {

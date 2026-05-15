@@ -36,14 +36,15 @@ namespace SalesSystem.Rfq.Components.Pages
         int VehicleVolume 
         { get; set; }
 
-        [Parameter] public Guid? UserId { get; set; }
-
+        //[Parameter] public Guid? UserId { get; set; }
+        [CascadingParameter(Name = "GlobalValue")]
+        public GlobalValue? GlobalValue { get; set; }
         protected override async Task OnInitializedAsync()
         {
-            if (UserId == null || UserId == Guid.Empty)
+            if (GlobalValue?.UserId == null || GlobalValue.UserId == Guid.Empty)
             {
                 Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-                Snackbar.Add("UserId is missing in the URL", Severity.Error);
+                Snackbar.Add("Not an authenticated user", Severity.Error);
                 Logger.GenericLogInformation("CreateRfq.OnInitializedAsync - UserId is missing in the URL");
                 return;
             }
@@ -51,8 +52,8 @@ namespace SalesSystem.Rfq.Components.Pages
             if (RfqUxClientService.Customers.Count == 0)
             {
                 Func<Guid, Task<int>> guidAsyncService = RfqUxClientService.GetCustomersByUserIdAsync;
-                (long timing, int count) = await guidAsyncService.TimeAsyncGuidIntService((Guid)UserId);
-                Logger.GenericLogInformation($"CreateRfq.OnInitializedAsync - Loaded {count} customers for UserId {UserId} in {timing}ms");
+                (long timing, int count) = await guidAsyncService.TimeAsyncGuidIntService((Guid)GlobalValue.UserId);
+                Logger.GenericLogInformation($"CreateRfq.OnInitializedAsync - Loaded {count} customers for UserId {GlobalValue?.UserId} in {timing}ms");
             }
 
             if (RfqUxClientService.Reasons.Count == 0)

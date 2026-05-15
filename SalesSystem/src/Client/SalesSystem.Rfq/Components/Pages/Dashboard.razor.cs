@@ -35,51 +35,54 @@ namespace SalesSystem.Rfq.Components.Pages
         [SupportedOSPlatform("windows")]
         protected override async Task OnInitializedAsync()
         {
-            Guid? userId;
-            string? userName;
-            string? firstName;
-            string? displayName;
+            await Task.Delay(1); // Ensure this runs asynchronously
+            //Guid? userId;
+            //string? userName;
+            //string? firstName;
+            //string? displayName;
 
             if (UserId == null || UserId == Guid.Empty)
             {
-                AuthenticationState authState = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-                ClaimsPrincipal user = authState.User;
-                if (user.Identity!.IsAuthenticated)
-                {
-                    userName = user.Identity.Name;
-                    Logger.GenericLogInformation($">>> Loading Rfq.Dashboard with authenticated user: {userName}");
-                    if (!string.IsNullOrEmpty(userName) && userName.Trim().ToUpperInvariant().EndsWith("CANACHL", StringComparison.OrdinalIgnoreCase))
-                    {
-                        _ShowAdmin = true;
-                        _AdminName = userName;
-                    }
-                }
-                else
-                {
-                    userName = "Anonymous";
-                    Logger.GenericLogInformation($">>> Loading Rfq.Dashboard, cannot get authenticated user");
-                }
+                Logger.GenericLogInformation($">>> Loading Rfq.Dashboard with authenticated user: {GlobalValue?.DisplayName}");
 
-#if DEBUG
-                using (PrincipalContext context2 = new PrincipalContext(ContextType.Domain))
-                {
-                    UserPrincipal principal = UserPrincipal.FindByIdentity(context2, "williad");
-                    firstName = principal?.GivenName;
-                    // string lastName = principal.Surname;
-                    displayName = principal?.DisplayName;
-                    userId = new Guid("86380EFD-5651-4552-8145-E59E785F099A");
-                }
-#else
-                using (PrincipalContext context2 = new PrincipalContext(ContextType.Domain))
-                {
-                    UserPrincipal principal = UserPrincipal.FindByIdentity(context2, userName);
-                    firstName = principal?.GivenName;
-                    // string lastName = principal.Surname;
-                    displayName = principal?.DisplayName;
-                    userId = principal?.Guid;
-                }
-#endif
-                UserId = userId;
+                //AuthenticationState authState = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+                //ClaimsPrincipal user = authState.User;
+                //if (user.Identity!.IsAuthenticated)
+                //{
+                //    userName = user.Identity.Name;
+                //    Logger.GenericLogInformation($">>> Loading Rfq.Dashboard with authenticated user: {userName}");
+                //    if (!string.IsNullOrEmpty(userName) && userName.Trim().ToUpperInvariant().EndsWith("CANACHL", StringComparison.OrdinalIgnoreCase))
+                //    {
+                //        _ShowAdmin = true;
+                //        _AdminName = userName;
+                //    }
+                //}
+                //else
+                //{
+                //    userName = "Anonymous";
+                //    Logger.GenericLogInformation($">>> Loading Rfq.Dashboard, cannot get authenticated user");
+                //}
+
+//#if DEBUG
+//                using (PrincipalContext context2 = new PrincipalContext(ContextType.Domain))
+//                {
+//                    UserPrincipal principal = UserPrincipal.FindByIdentity(context2, "williad");
+//                    firstName = principal?.GivenName;
+//                    // string lastName = principal.Surname;
+//                    displayName = principal?.DisplayName;
+//                    userId = new Guid("86380EFD-5651-4552-8145-E59E785F099A");
+//                }
+//#else
+//                using (PrincipalContext context2 = new PrincipalContext(ContextType.Domain))
+//                {
+//                    UserPrincipal principal = UserPrincipal.FindByIdentity(context2, userName);
+//                    firstName = principal?.GivenName;
+//                    // string lastName = principal.Surname;
+//                    displayName = principal?.DisplayName;
+//                    userId = principal?.Guid;
+//                }
+//#endif
+                //UserId = GlobalValue?.UserId;
 
                 // Preload alternative parts in background
                 _ = PreloadAlternativePartsAsync();

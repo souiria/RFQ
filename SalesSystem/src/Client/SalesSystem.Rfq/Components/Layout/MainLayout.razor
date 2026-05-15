@@ -84,10 +84,7 @@
     private bool _isDarkMode;
     private MudThemeProvider? _mudThemeProvider;
     GlobalValue? globalValue;
-    // string? userName;
-    // string? firstName;
-    // string? displayName;
-    // Guid? userId;
+
     protected override async Task OnInitializedAsync()
     {
         await Task.Delay(1); // Simulate async work, e.g., fetching user info
@@ -107,12 +104,11 @@
         var user = authState.User;
         if (user.Identity!.IsAuthenticated)
         {
-            userName = user.Identity.Name;
-            Console.WriteLine($"User is authenticated: {userName}");
+            Console.WriteLine($"User is authenticated: {globalValue?.UserAccount}");
         }
         else
         {
-            userName = "Anonymous";
+            globalValue = null; 
             Console.WriteLine("User is not authenticated.");
         }
 

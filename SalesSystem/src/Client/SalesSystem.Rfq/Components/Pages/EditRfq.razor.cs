@@ -1,4 +1,6 @@
-﻿namespace SalesSystem.Rfq.Components.Pages
+﻿using Azure.Core;
+
+namespace SalesSystem.Rfq.Components.Pages
 {
     public partial class EditRfq : IDisposable
     {
@@ -49,18 +51,19 @@
 
         #region Parameters
 
-        [Parameter] public Guid? UserId { get; set; }
+        //[Parameter] public Guid? UserId { get; set; }
         [Parameter] public long RfqProjectId { get; set; }
-        [Parameter] public GlobalValue GlobalValue { get; set; } = null!; // cascaded
+        [CascadingParameter(Name = "GlobalValue")]
+        public GlobalValue? GlobalValue { get; set; }
         #endregion
 
         #region Events
         protected override async Task OnInitializedAsync()
         {
-            if (UserId == null || UserId == Guid.Empty)
+            if (GlobalValue?.UserId == null || GlobalValue.UserId == Guid.Empty)
             {
                 Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-                Snackbar.Add("UserId is missing in the URL", Severity.Error);
+                Snackbar.Add("Not an authenticated user", Severity.Error);
                 Logger.GenericLogInformation("EditRfq.OnInitializedAsync - UserId is missing in the URL");
                 IsLoading = false;
                 NavigationManager.NavigateTo("/");
@@ -182,11 +185,17 @@
         #region Load rfq data
         async Task<bool> LoadDataAsync()
         {
+            if(GlobalValue?.UserId == null || GlobalValue.UserId == Guid.Empty)
+            {
+                Logger.GenericLogInformation($"EditRfq.LoadDataAsync - UserId is missing, cannot load data");
+                return false;
+            }
+
             if (RfqUxClientService.Customers.Count == 0)
             {
                 Func<Guid, Task<int>> guidAsyncService = RfqUxClientService.GetCustomersByUserIdAsync;
-                (long timing, int count) = await guidAsyncService.TimeAsyncGuidIntService((Guid)UserId!);
-                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded {count} customers for UserId {UserId} in {timing}ms");
+                (long timing, int count) = await guidAsyncService.TimeAsyncGuidIntService((Guid)GlobalValue.UserId);
+                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded {count} customers for UserId {GlobalValue?.UserId} in {timing}ms");
             }
 
             if (RfqUxClientService.Reasons.Count == 0)
@@ -388,12 +397,12 @@
                         }
 
                         // update all relevant attributes
-                        foreach (RfqNprRequestUxModel nprRequest in nprRequests)
+                        if(GlobalValue != null)
                         {
-                            nprRequest.CustomerCode = RfqProject.CustomerBusinessUnit;
-                            nprRequest.ManufacturingSite = RfqProject.Project;
-                            nprRequest.OriginatorName = GlobalValue.UserAccount;
-
+                            foreach (RfqNprRequestUxModel nprRequest in nprRequests)
+                            {
+                                nprRequest.Update(RfqProject, GlobalValue);
+                            }
                         }
 
                         // persist

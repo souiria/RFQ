@@ -1,5 +1,5 @@
 ﻿@page "/createRfq"
-@page "/createRfq/{UserId:guid}"
+@* @page "/createRfq/{UserId:guid}" *@
 @inject ISnackbar Snackbar
 @inject RfqUxClientService RfqUxClientService
 @inject ILogger<CreateRfq> Logger
@@ -11,7 +11,7 @@
 @using SalesSystem.Rfq.Extensions
 @using SalesSystem.Rfq.Models
 
-<MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Create RFI/RFQ</MudText>
+<MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Create RFI/RFQ [@GlobalValue?.DisplayName]</MudText>
 <MudGrid Class="position-fixed">
     @* Attributes *@
     <MudItem xs="12">

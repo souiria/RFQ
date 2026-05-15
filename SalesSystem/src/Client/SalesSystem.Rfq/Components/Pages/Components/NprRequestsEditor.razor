@@ -91,6 +91,17 @@
                         : $"{_invalidCount} invalid / {_validCount} valid")
                 </MudChip>
             }
+            <MudTooltip Text="Update all NPR requests">
+                <MudButton Color="Color.Primary"
+                           Variant="Variant.Filled"
+                           Size="Size.Small"
+                           StartIcon="@Icons.Material.Filled.Update"
+                           OnClick="UpdateAllNprRequests"
+                           Disabled="@(RfqProject?.NprRequests == null || RfqProject.NprRequests.Count == 0)"
+                           Class="mr-2">
+                    Update All
+                </MudButton>
+            </MudTooltip>
             <MudTooltip Text="Validate all NPR requests">
                 <MudButton Color="Color.Secondary"
                            Variant="Variant.Filled"
@@ -182,10 +193,12 @@
     bool _validationRun;
     int _validCount;
     int _invalidCount;
+    int _updateCount;
 
     Func<RfqNprRequestUxModel, bool> QuickFilter => _quickFilterFunc;
 
     [Parameter] public RqfProjectUxModel RfqProject { get; set; } = new();
+    [Parameter] public GlobalValue GlobalValue { get; set; } = null!;
 
     public bool HasPendingChanges =>
         RfqProject?.NprRequests?.Any(r => r.UxStatus == UxObjectStatus.Updated) ?? false;
@@ -239,6 +252,42 @@
             UxObjectStatus.Read => string.Empty,
             _ => string.Empty
         };
+    }
+
+    private void UpdateAllNprRequests()
+    {
+        if (RfqProject?.NprRequests == null || RfqProject.NprRequests.Count == 0)
+        {
+            Snackbar.Add("No NPR requests to update", Severity.Info);
+            return;
+        }
+
+        _updateCount = 0;
+
+        foreach (RfqNprRequestUxModel request in RfqProject.NprRequests)
+        {
+            if (request.UxStatus == UxObjectStatus.Deleted)
+            {
+                continue;
+            }
+
+            request.Update(RfqProject, GlobalValue);
+
+            _updateCount++;
+        }
+
+
+        Logger.GenericLogInformation(
+            $"NprRequestsEditor.UpdateAllNprRequests - " +
+            $"Updated: {_updateCount}");
+
+        Snackbar.Add(
+            _updateCount == 0
+                ? "No NPR requests to update"
+                : $"{_updateCount} NPR request(s) updated",
+            _updateCount == 0 ? Severity.Info : Severity.Success);
+
+        StateHasChanged();
     }
 
     private void ValidateAllNprRequests()
