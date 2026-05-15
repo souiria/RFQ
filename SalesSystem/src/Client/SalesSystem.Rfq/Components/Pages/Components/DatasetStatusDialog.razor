@@ -191,11 +191,11 @@
 
     // Matched parts: Parts with DrawingPartNumberPrice set (from both InProgress and Completed datasets)
     private List<RfqDrawingPartNumberUxModel?> ActualMatchedParts =>
-        AllParts.Where(p => p?.DrawingPartNumberPrice.HasValue == true && p.DrawingPartNumberPrice.Value > 0).ToList();
+        AllParts.Where(p => p?.DrawingPartNumberPrice > 0).ToList();
 
     // Alternative parts: Parts with SwappedPartNumberPrice set (from both InProgress and Completed datasets)
     private List<RfqDrawingPartNumberUxModel?> ActualAlternativeParts =>
-        AllParts.Where(p => p?.SwappedPartNumberPrice.HasValue == true && p.SwappedPartNumberPrice.Value > 0).ToList();
+        AllParts.Where(p => p?.SwappedPartNumberPrice > 0).ToList();
 
     // Unmatched parts: Parts without DrawingPartNumberPrice and without SwappedPartNumberPrice
     private List<RfqDrawingPartNumberUxModel?> ActualUnmatchedParts =>
@@ -212,36 +212,42 @@
     private double UnmatchedPercentage => TotalParts > 0 ? Math.Round((UnmatchedCount * 100.0) / TotalParts, 1) : 0;
 
     // Price calculations
-    private decimal TotalMatchedPrice =>
-        ActualMatchedParts
-            .Where(p => p?.DrawingPartNumberPrice.HasValue == true)
-            .Sum(p => p!.DrawingPartNumberPrice!.Value);
+    private decimal TotalMatchedPrice
+    {
+        get
+        {
+            var x = ActualMatchedParts
+            .Where(p => p?.DrawingPartNumberPrice > 0)
+            .Sum(p => p!.DrawingPartNumberPrice!);
+            return x;
+        }
+    }
 
     private decimal TotalAlternativePrice =>
-        ActualAlternativeParts
-            .Where(p => p?.SwappedPartNumberPrice.HasValue == true)
-            .Sum(p => p!.SwappedPartNumberPrice!.Value);
+    ActualAlternativeParts
+            .Where(p => p?.SwappedPartNumberPrice > 0)
+            .Sum(p => p!.SwappedPartNumberPrice!);
 
     private decimal TotalUnmatchedPrice =>
         ActualUnmatchedParts
-            .Where(p => p?.DrawingPartNumberPrice.HasValue == true)
-            .Sum(p => p!.DrawingPartNumberPrice!.Value);
+            .Where(p => p?.DrawingPartNumberPrice > 0)
+            .Sum(p => p!.DrawingPartNumberPrice!);
 
     private decimal TotalPrice => TotalMatchedPrice + TotalAlternativePrice + TotalUnmatchedPrice;
 
     private int PartsWithMatchedPrice =>
-        ActualMatchedParts.Count(p => p?.DrawingPartNumberPrice.HasValue == true);
+        ActualMatchedParts.Count(p => p?.DrawingPartNumberPrice > 0);
 
     private int PartsWithAlternativePrice =>
-        ActualAlternativeParts.Count(p => p?.SwappedPartNumberPrice.HasValue == true);
+        ActualAlternativeParts.Count(p => p?.SwappedPartNumberPrice > 0);
 
     private int PartsWithUnmatchedPrice =>
-        ActualUnmatchedParts.Count(p => p?.DrawingPartNumberPrice.HasValue == true);
+        ActualUnmatchedParts.Count(p => p?.DrawingPartNumberPrice > 0);
 
     private int PartsWithAnyPrice =>
         AllParts.Count(p =>
-            (p?.DrawingPartNumberPrice.HasValue == true && p.DrawingPartNumberPrice.Value > 0) ||
-            (p?.SwappedPartNumberPrice.HasValue == true && p.SwappedPartNumberPrice.Value > 0));
+            (p?.DrawingPartNumberPrice > 0) ||
+            (p?.SwappedPartNumberPrice > 0));
 
     private double PriceCoveragePercentage =>
         TotalParts > 0 ? Math.Round((PartsWithAnyPrice * 100.0) / TotalParts, 1) : 0;

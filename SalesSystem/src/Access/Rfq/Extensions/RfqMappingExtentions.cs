@@ -1945,7 +1945,10 @@
         public static DbRfqNprRequestModel ToEntity(this RfqNprRequestGrpc grpc)
         {
             DbRfqNprRequestModel data = new DbRfqNprRequestModel();
-            data.Id = string.IsNullOrEmpty(grpc.Id) ? Guid.Empty : Guid.Parse(grpc.Id);
+            //data.Id = string.IsNullOrEmpty(grpc.Id) ? Guid.Empty : Guid.Parse(grpc.Id);
+            data.Id = string.IsNullOrEmpty(grpc.Id) || !Guid.TryParse(grpc.Id, out Guid parsedId)
+                ? Guid.Empty
+                : parsedId;
             data.CustomerRfqNo = grpc.CustomerRfqNo;
             data.CustomerCode = grpc.CustomerCode;
             data.RequestID = grpc.RequestID;

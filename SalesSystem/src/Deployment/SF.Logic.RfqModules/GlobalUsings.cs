@@ -1,5 +1,6 @@
 ﻿global using System.Diagnostics.Tracing;
 global using System.Fabric;
+global using System.Globalization;
 global using System.Net;
 global using System.Security.Cryptography.X509Certificates;
 global using Microsoft.AspNetCore.Server.Kestrel.Core;

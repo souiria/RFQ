@@ -40,9 +40,11 @@ service RfqModule {
   rpc CreateRfqNprRequestGrpc (CreateRfqNprRequestGrpcRequest) returns (CreateRfqNprRequestGrpcResponse);
   rpc UpdateRfqNprRequestGrpc (UpdateRfqNprRequestGrpcRequest) returns (UpdateRfqNprRequestGrpcResponse);
   rpc DeleteRfqNprRequestByIdGrpc (DeleteRfqNprRequestByIdGrpcRequest) returns (DeleteRfqNprRequestByIdGrpcResponse);
+rpc ValidateNprRequestGrpc (MgrValidateNprRequestRequest) returns (MgrValidateNprRequestResponse);
   rpc CreateNprGrpc (CreateNprGrpcRequest) returns (CreateNprGrpcResponse);
   rpc GetAllSuppliersGrpc (GetAllSuppliersGrpcRequest) returns (GetAllSuppliersGrpcResponse);
   rpc GetAllSupplierGroupsGrpc (GetAllSupplierGroupsGrpcRequest) returns (GetAllSupplierGroupsGrpcResponse);
+  rpc SearchPartPricesGrpc (SearchPartPricesGrpcRequest) returns (SearchPartPricesGrpcResponse);
    
  rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
 }
@@ -434,51 +436,50 @@ int32 position = 1;
 int32 take = 2; 
 string requestType = 3;
 }
-
 message GetAllAlternativePartsGrpcResponse
 {
     repeated RfqAlternativePartsGrpc alternativeParts = 1;
 }
 
-// message RfqNprRequestGrpc {
-// 	google.protobuf.StringValue Id = 1;
-// 	google.protobuf.StringValue Reason = 2;
-// 	google.protobuf.StringValue Customer = 3;
-// 	google.protobuf.StringValue PlatformName = 4;
-// 	google.protobuf.StringValue ProgramName = 5;
-// 	google.protobuf.StringValue Project = 6;
-// 	google.protobuf.StringValue MaterialType = 7;
-// 	google.protobuf.StringValue SuggestedSewsEManufacturingSite = 8;
-// 	google.protobuf.StringValue CustomerPartNumber = 9;
-// 	google.protobuf.StringValue SupplierPartNumber = 10;
-// 	google.protobuf.StringValue SumitomoNumber = 11;
-// 	google.protobuf.StringValue MaterialDescription = 12;
-// 	google.protobuf.StringValue UnitOfMeasure = 13;
-// 	google.protobuf.StringValue SupplierGroup = 14;
-// 	google.protobuf.Int32Value QtyPerVehicle = 15;
-// 	google.protobuf.Int32Value Quantity = 16;
-// 	google.protobuf.Timestamp RequiredDate = 17;
-// 	google.protobuf.StringValue RaisedRemarks = 18;
-// 	google.protobuf.BoolValue IsCustomerNominatedSupplier = 19;
-// 	google.protobuf.BoolValue IsCustomerNominatedMaterial = 20;
-// 	google.protobuf.BoolValue SamplesRequired = 21;
-// 	google.protobuf.StringValue SampleSite = 22;
-// 	google.protobuf.Int32Value SampleQuantity = 23;
-// 	google.protobuf.StringValue SampleRecipient = 24;
-// 	google.protobuf.Timestamp SampleRequiredDate = 25;
-// 	google.protobuf.StringValue FreightAccount = 26;
-// 	google.protobuf.StringValue AssociatedParts = 27;
-// 	google.protobuf.StringValue SuggestedManufacturer = 28;
-// 	google.protobuf.Timestamp CreatedAt = 29;
-// 	google.protobuf.StringValue CreatedBy = 30;
-// 	google.protobuf.Timestamp ModifiedAt = 31;
-// 	google.protobuf.StringValue ModifiedBy = 32;
-// 	google.protobuf.Int32Value SubmissionStatus = 33;
-// 	google.protobuf.StringValue RemoteEndpointResponse = 34;
-// 	google.protobuf.Timestamp SubmittedAt = 35;
-// 	google.protobuf.StringValue RfqNumber = 36;
-// 	google.protobuf.BoolValue IsActive = 37;
-// }
+//message RfqNprRequestGrpc {
+//	google.protobuf.StringValue Id = 1;
+//	google.protobuf.StringValue Reason = 2;
+//	google.protobuf.StringValue Customer = 3;
+//	google.protobuf.StringValue PlatformName = 4;
+//	google.protobuf.StringValue ProgramName = 5;
+//	google.protobuf.StringValue Project = 6;
+//	google.protobuf.StringValue MaterialType = 7;
+//	google.protobuf.StringValue SuggestedSewsEManufacturingSite = 8;
+//	google.protobuf.StringValue CustomerPartNumber = 9;
+//	google.protobuf.StringValue SupplierPartNumber = 10;
+//	google.protobuf.StringValue SumitomoNumber = 11;
+//	google.protobuf.StringValue MaterialDescription = 12;
+//	google.protobuf.StringValue UnitOfMeasure = 13;
+//	google.protobuf.StringValue SupplierGroup = 14;
+//	google.protobuf.Int32Value QtyPerVehicle = 15;
+//	google.protobuf.Int32Value Quantity = 16;
+//	google.protobuf.Timestamp RequiredDate = 17;
+//	google.protobuf.StringValue RaisedRemarks = 18;
+//	google.protobuf.BoolValue IsCustomerNominatedSupplier = 19;
+//	google.protobuf.BoolValue IsCustomerNominatedMaterial = 20;
+//	google.protobuf.BoolValue SamplesRequired = 21;
+//	google.protobuf.StringValue SampleSite = 22;
+//	google.protobuf.Int32Value SampleQuantity = 23;
+//	google.protobuf.StringValue SampleRecipient = 24;
+//	google.protobuf.Timestamp SampleRequiredDate = 25;
+//	google.protobuf.StringValue FreightAccount = 26;
+//	google.protobuf.StringValue AssociatedParts = 27;
+//	google.protobuf.StringValue SuggestedManufacturer = 28;
+//	google.protobuf.Timestamp CreatedAt = 29;
+//	google.protobuf.StringValue CreatedBy = 30;
+//	google.protobuf.Timestamp ModifiedAt = 31;
+//	google.protobuf.StringValue ModifiedBy = 32;
+//	google.protobuf.Int32Value SubmissionStatus = 33;
+//	google.protobuf.StringValue RemoteEndpointResponse = 34;
+//	google.protobuf.Timestamp SubmittedAt = 35;
+//	google.protobuf.StringValue RfqNumber = 36;
+//	google.protobuf.BoolValue IsActive = 37;
+//}
 
 message RfqNprRequestSampleSiteDataGrpc {
 	google.protobuf.StringValue BusinessUnitCode = 1;
@@ -533,11 +534,9 @@ message GetRfqNprRequestByRfqNumberGrpcRequest {
 	int32 take = 2; 
 	string RfqNumber = 3;
 }
-
 message GetRfqNprRequestByRfqNumberGrpcResponse {
 	repeated RfqNprRequestGrpc RfqNprRequestGrpcs = 1;
 }
-
 message GetRfqNprRequestByRfqProjectIdGrpcRequest {
 	int32 position = 1;
 	int32 take = 2; 
@@ -586,6 +585,30 @@ message DeleteRfqNprRequestByIdGrpcRequest {
 message DeleteRfqNprRequestByIdGrpcResponse {
 	bool Success = 1;
 	string Message = 2;
+}
+
+
+message MgrValidateNprRequestRequest {
+  repeated RfqNprRequestGrpc items = 1;
+}
+
+message MgrValidationError {
+  string field = 1;
+  string message = 2;
+}
+
+message MgrSubmitNprLineStatus {
+  string id = 1;
+  bool isValid = 2;
+  repeated MgrValidationError errors = 3;
+}
+
+message MgrValidateNprRequestResponse {
+  bool allValid = 1;
+  repeated MgrSubmitNprLineStatus lineStatuses = 2;
+  int32 itemCount = 3;
+  map<string, int32> byCustomerCounts = 4;
+  int32 totalQuantity = 5;
 }
 
 message NprApiDataGrpc {
@@ -665,4 +688,24 @@ message SupplierGroupGrpc {
     google.protobuf.StringValue ModifiedBy = 10;
     google.protobuf.Int32Value SyncToCPD = 11;
     google.protobuf.BoolValue IsEOLRequired = 12;
+}
+
+message SearchPartPricesGrpcRequest {
+	repeated google.protobuf.StringValue PartNumbers = 1;
+}
+
+message SearchPartPricesGrpcResponse {
+	repeated PriceResponse PriceResponse = 1;
+}
+
+message PriceResponse {
+	google.protobuf.StringValue CustomerPartNumber = 1;
+	repeated PriceInformation PriceInformation = 2;
+	google.protobuf.BoolValue ExactMatch = 3;
+}
+
+message PriceInformation {
+	google.protobuf.StringValue SumitomoNumber = 1;
+	google.protobuf.DoubleValue Price = 2;
+	google.protobuf.StringValue PriceSource = 3;
 }

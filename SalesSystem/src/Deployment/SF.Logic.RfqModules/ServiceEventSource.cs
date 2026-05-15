@@ -1,5 +1,3 @@
-using System.Globalization;
-
 namespace SF.Logic.RfqModules
 {
     [EventSource(Name = "MyCompany-SF.Commercial.Logic-SF.Logic.RfqModules")]

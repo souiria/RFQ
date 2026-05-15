@@ -3860,7 +3860,7 @@
                 {
                     foreach (RfqNprRequestGrpc? updated in request.RfqNprRequestGrpcsToUpdate)
                     {
-                        RfqNprRequestGrpc? existing = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.FirstOrDefault(p => p.RequestID.ToUpperInvariant() == updated.RequestID.ToUpperInvariant());
+                        RfqNprRequestGrpc? existing = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.FirstOrDefault(p => p.Id.ToUpperInvariant() == updated.Id.ToUpperInvariant());
                         if (existing != null)
                         {
                             int index = _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.IndexOf(existing);
@@ -4065,10 +4065,10 @@
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(requestId))
-            {
-                Err(nameof(item.RequestID), "requestId is required.");
-            }
+            //if (string.IsNullOrWhiteSpace(requestId))
+            //{
+            //    Err(nameof(item.RequestID), "requestId is required.");
+            //}
 
             if (string.IsNullOrWhiteSpace(manufacturingSite))
             {

@@ -13,7 +13,7 @@
 <MudMenu Icon="@Icons.Material.Filled.Menu"
          AriaLabel="Open user menu">
     <MudMenuItem Label="Dashboard" OnClick="@(() => GoTo("/"))" />
-    <MudMenuItem Label="Create RFQ" OnClick="@(() => GoTo($"/createRfq/{globalValue?.UserId}"))" />
+    <MudMenuItem Label="Create RFQ" OnClick="@(() => GoTo($"/createRfq"))" />
 </MudMenu>
 @code{
     [Parameter] public GlobalValue? globalValue { get; set; }

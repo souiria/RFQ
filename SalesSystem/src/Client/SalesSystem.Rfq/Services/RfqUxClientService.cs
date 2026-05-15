@@ -1,5 +1,3 @@
-using DocumentFormat.OpenXml.Wordprocessing;
-
 namespace SalesSystem.Rfq.Services
 {
     public class RfqUxClientService : IDisposable
@@ -411,14 +409,14 @@ namespace SalesSystem.Rfq.Services
                 grpcPartNumber.RowId = partNumberUx.RowId;
                 grpcPartNumber.RfqId = partNumberUx.RfqId;
                 grpcPartNumber.OriginalPartNumber = partNumberUx.DrawingPartNumber ?? string.Empty;
-                grpcPartNumber.OriginalPartNumberPrice = partNumberUx.DrawingPartNumberPrice.HasValue ? Convert.ToDouble(partNumberUx.DrawingPartNumberPrice.Value) : 0;
-                grpcPartNumber.SwappedPartNumber = partNumberUx.SwappedPartNumber ?? string.Empty;
-                grpcPartNumber.SwappedPartNumberPrice = partNumberUx.SwappedPartNumberPrice.HasValue ? Convert.ToDouble(partNumberUx.SwappedPartNumberPrice.Value) : 0;
+                grpcPartNumber.OriginalPartNumberPrice = Convert.ToDouble(partNumberUx.DrawingPartNumberPrice, CultureInfo.InvariantCulture);
+                grpcPartNumber.SwappedPartNumber = partNumberUx.SwappedPartNumber;
+                grpcPartNumber.SwappedPartNumberPrice = Convert.ToDouble(partNumberUx.SwappedPartNumberPrice, CultureInfo.InvariantCulture);
                 grpcPartNumber.PriceSource = partNumberUx.PriceSource ?? string.Empty;
-                grpcPartNumber.IsExactMatch = partNumberUx.IsExactMatch ?? false;
-                grpcPartNumber.IsSwapped = partNumberUx.IsSwapped ?? false;
-                grpcPartNumber.Comments = partNumberUx.Comments ?? string.Empty;
-                grpcPartNumber.SumitomoPartNumber = partNumberUx.CustomerPartNumber ?? string.Empty;
+                grpcPartNumber.IsExactMatch = partNumberUx.IsExactMatch == true;
+                grpcPartNumber.IsSwapped = partNumberUx.IsSwapped == true;
+                grpcPartNumber.Comments = partNumberUx.Comments;
+                grpcPartNumber.SumitomoPartNumber = partNumberUx.CustomerPartNumber;
 
                 _Logger?.GenericLogInformation($"Delete not yet implemented for PartNumber: {partNumberUx.CustomerPartNumber}/{partNumberUx.DrawingPartNumber}");
                 return false;
@@ -662,6 +660,55 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
+        // unified Cpn search
+        /// <summary>
+        /// Calls SearchPartPricesGrpc with a batch of customer part numbers and returns
+        /// the full priced result set in one round-trip.  Each <see cref="PriceResponse"/>
+        /// entry contains an <c>ExactMatch</c> flag plus one <see cref="PriceInformation"/>
+        /// per Sumitomo number / price source combination found.
+        /// </summary>
+        public async Task<SearchPartPricesGrpcResponse> SearchPartPricesAsync(
+            IEnumerable<string> partNumbers,
+            CancellationToken cancellationToken = default)
+        {
+            ArgumentNullException.ThrowIfNull(partNumbers);
+
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+            using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(
+                timeoutCts.Token,
+                cancellationToken);
+
+            try
+            {
+                SearchPartPricesGrpcRequest request = new SearchPartPricesGrpcRequest();
+                foreach (string pn in partNumbers)
+                {
+                    request.PartNumbers.Add(pn);
+                }
+
+                _Logger?.GenericLogInformation(
+                    $"SearchPartPricesAsync - Requesting prices for {request.PartNumbers.Count} part(s)");
+
+                SearchPartPricesGrpcResponse response = await _Client.SearchPartPricesGrpcAsync(
+                    request,
+                    cancellationToken: linkedCts.Token);
+
+                _Logger?.GenericLogInformation(
+                    $"SearchPartPricesAsync - Received {response.PriceResponse.Count} price response(s)");
+
+                return response;
+            }
+            catch (OperationCanceledException)
+            {
+                _Logger?.GenericLogInformation("SearchPartPricesAsync - Operation was cancelled or timed out");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError("Error in SearchPartPricesAsync", ex);
+                throw;
+            }
+        }
         #endregion
 
         #region Filtering
@@ -825,13 +872,20 @@ namespace SalesSystem.Rfq.Services
             _Logger?.GenericLogInformation($"{response.Message}");
             return response.Success;
         }
-
         async Task<bool> UpdateNpr(List<RfqNprRequestUxModel> list)
         {
             UpdateRfqNprRequestGrpcRequest updateRequest = new UpdateRfqNprRequestGrpcRequest();
             foreach (RfqNprRequestUxModel model in list)
             {
+                _Logger?.GenericLogInformation(
+                    $"UpdateNpr - Sending Id={model.Id}, RequestID='{model.RequestID}', " +
+                    $"CustomerRfqNo='{model.CustomerRfqNo}', UxStatus={model.UxStatus}");
+
                 RfqNprRequestGrpc grpc = model.ToNprGrpc();
+
+                _Logger?.GenericLogInformation(
+                    $"UpdateNpr - gRPC Id='{grpc.Id}'");
+
                 updateRequest.RfqNprRequestGrpc.Add(grpc);
             }
 
@@ -839,6 +893,19 @@ namespace SalesSystem.Rfq.Services
             _Logger?.GenericLogInformation($"{response.Message}");
             return response.Success;
         }
+        //async Task<bool> UpdateNpr(List<RfqNprRequestUxModel> list)
+        //{
+        //    UpdateRfqNprRequestGrpcRequest updateRequest = new UpdateRfqNprRequestGrpcRequest();
+        //    foreach (RfqNprRequestUxModel model in list)
+        //    {
+        //        RfqNprRequestGrpc grpc = model.ToNprGrpc();
+        //        updateRequest.RfqNprRequestGrpc.Add(grpc);
+        //    }
+
+        //    UpdateRfqNprRequestGrpcResponse response = await _Client.UpdateRfqNprRequestGrpcAsync(updateRequest);
+        //    _Logger?.GenericLogInformation($"{response.Message}");
+        //    return response.Success;
+        //}
         async Task<bool> DeleteNpr(List<RfqNprRequestUxModel> list)
         {
             DeleteRfqNprRequestByIdGrpcRequest deleteRequest = new DeleteRfqNprRequestByIdGrpcRequest();
@@ -877,19 +944,29 @@ namespace SalesSystem.Rfq.Services
 
                 foreach (RfqNprRequestUxModel model in requests)
                 {
+                    // Defensive: any malformed Id is an in-memory cache bug — skip & log
+                    if (model.Id == Guid.Empty && model.UxStatus != UxObjectStatus.Created)
+                    {
+                        _Logger?.GenericLogInformation(
+                            $"SaveNprRequestsToDatabaseAsync - Skipping item with empty Id: " +
+                            $"RequestID='{model.RequestID}', CustomerRfqNo='{model.CustomerRfqNo}', " +
+                            $"UxStatus={model.UxStatus}");
+                        continue;
+                    }
+
                     switch (model.UxStatus)
                     {
                         case UxObjectStatus.Created:
-                        createList.Add(model);
-                        break;
+                            createList.Add(model);
+                            break;
                         case UxObjectStatus.Updated:
-                        updateList.Add(model);
-                        break;
+                            updateList.Add(model);
+                            break;
                         case UxObjectStatus.Deleted:
-                        deleteList.Add(model);
-                        break;
+                            deleteList.Add(model);
+                            break;
                         case UxObjectStatus.Read:
-                        break;
+                            break;
                     }
                 }
 
@@ -928,6 +1005,16 @@ namespace SalesSystem.Rfq.Services
 
                 foreach (RfqNprRequestUxModel model in requests)
                 {
+                    // Defensive: any malformed Id is an in-memory cache bug — skip & log
+                    if (model.Id == Guid.Empty && model.UxStatus != UxObjectStatus.Created)
+                    {
+                        _Logger?.GenericLogInformation(
+                            $"SaveNprRequestsToDatabaseAsync - Skipping item with empty Id: " +
+                            $"RequestID='{model.RequestID}', CustomerRfqNo='{model.CustomerRfqNo}', " +
+                            $"UxStatus={model.UxStatus}");
+                        continue;
+                    }
+
                     switch (model.UxStatus)
                     {
                         case UxObjectStatus.Created:
@@ -1361,6 +1448,60 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
+
+        /// <summary>
+        /// Submits a batch of NPR requests to the NPR API via the manager's
+        /// CreateNprGrpc endpoint (which internally calls _RfqManagerService.CreateNprGrpc).
+        /// </summary>
+        /// <param name="nprRequests">UX models to submit.</param>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
+        /// <returns>The raw <see cref="CreateNprGrpcResponse"/> from the manager service.</returns>
+        public async Task<CreateNprGrpcResponse> CreateNprGrpcAsync(
+            List<RfqNprRequestUxModel> nprRequests,
+            CancellationToken cancellationToken = default)
+        {
+            ArgumentNullException.ThrowIfNull(nprRequests);
+
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+            using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(
+                timeoutCts.Token,
+                cancellationToken);
+
+            try
+            {
+                CreateNprGrpcRequest request = new CreateNprGrpcRequest();
+                foreach (RfqNprRequestUxModel model in nprRequests)
+                {
+                    NprApiDataGrpc apiData = new NprApiDataGrpc();
+                    apiData.RfqNprRequest = model.ToNprGrpc();
+                    request.NprApiData.Add(apiData);
+                }
+
+                _Logger?.GenericLogInformation(
+                    $"CreateNprGrpcAsync - Sending {request.NprApiData.Count} NPR API request(s) to manager");
+
+                CreateNprGrpcResponse response = await _Client.CreateNprGrpcAsync(
+                    request,
+                    cancellationToken: linkedCts.Token);
+
+                _Logger?.GenericLogInformation(
+                    $"CreateNprGrpcAsync - Manager response: HttpStatusCode='{response.HttpStatusCode}', " +
+                    $"Message='{response.Message}', returned {response.NprApiData.Count} entry(ies)");
+
+                return response;
+            }
+            catch (OperationCanceledException)
+            {
+                _Logger?.GenericLogInformation("CreateNprGrpcAsync - Operation was cancelled or timed out");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError("Error in CreateNprGrpcAsync", ex);
+                throw;
+            }
+        }
+
         #endregion
 
         #region Supplier and Supplier Group

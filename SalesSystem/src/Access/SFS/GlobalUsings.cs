@@ -1,4 +1,5 @@
-﻿global using Ardalis.Specification;
+﻿global using System.Globalization;
+global using Ardalis.Specification;
 global using Ardalis.Specification.EntityFrameworkCore;
 global using Google.Protobuf.WellKnownTypes;
 global using Grpc.Core;

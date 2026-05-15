@@ -33,6 +33,7 @@
                                      Format="0.#####"
                                      Adornment="Adornment.End"
                                      AdornmentText="€"
+                                     Disabled="true"
                                      Min="0m" />
                 </MudItem>
                 @* Pick list from search results stored in the commment after data aseparator *@
@@ -51,7 +52,7 @@
                                                     <strong>@matchedPart.DrawingPartNumber</strong>
                                                 </MudText>
                                                 <MudText Typo="Typo.body2" Color="Color.Default">
-                                                    Price: @(matchedPart.DrawingPartNumberPrice.HasValue? matchedPart.DrawingPartNumberPrice.Value.ToString("C5", new CultureInfo("fr-FR")) : "N/A")
+                                                    Price: @(matchedPart.DrawingPartNumberPrice > 0 ? matchedPart.DrawingPartNumberPrice.ToString("C5") : "N/A")
                                                     @if (matchedPart.IsExactMatch == true)
                                                     {
                                                         <MudChip T="string"
@@ -105,6 +106,7 @@
                                      Format="0.#####"
                                      Adornment="Adornment.End"
                                      AdornmentText="€"
+                                     Disabled="true"
                                      Min="0m" />
                 </MudItem>
                 <MudItem xs="12">
@@ -177,7 +179,7 @@
             Create NPR
         </MudButton>
         <MudButton OnClick="Complete"
-                   Disabled="!EditedItem.IsCompleted"
+                   Disabled="!EditedItem.IsCompleted || !(0 < EditedItem.DrawingPartNumberPrice)"
                    Color="Color.Info"
                    Variant="Variant.Filled"
                    StartIcon="@Icons.Material.Filled.IncompleteCircle"
@@ -317,18 +319,57 @@
 
         DialogResult? result = await dialog.Result;
 
-        if (result != null && !result.Canceled && result.Data is RfqDrawingPartNumberUxModel alternativePart && alternativePart.SwappedPartNumberPrice > 0.0m)
+        // Bail out on cancel or non-priced selection
+        if (result == null
+            || result.Canceled
+            || result.Data is not RfqDrawingPartNumberUxModel alternativePart)
         {
-            // Update the EditedItem with dummy part data
-            EditedItem.SwappedPartNumber = alternativePart.SwappedPartNumber;
-            EditedItem.SwappedPartNumberPrice = alternativePart.SwappedPartNumberPrice;
-            EditedItem.IsSwapped = true;
-            EditedItem.IsExactMatch = false;
-            EditedItem.PriceSource = "Emacs, alternative part pick";
-            EditedItem.Status = RfqDrawingPartNumberStatus.AlternativePartSelected;
+            return;
+        }
 
-            // Force UI refresh
-            StateHasChanged();
+        if (string.IsNullOrWhiteSpace(alternativePart.SwappedPartNumber)
+            || alternativePart.SwappedPartNumberPrice <= 0.0m)
+        {
+            Logger.GenericLogInformation(
+                $"PickDummy - Selection rejected: SwappedPartNumber='{alternativePart.SwappedPartNumber}', " +
+                $"SwappedPartNumberPrice={alternativePart.SwappedPartNumberPrice}");
+            return;
+        }
+
+        // Apply the picked dummy part to the edited item
+        EditedItem.SwappedPartNumber = alternativePart.SwappedPartNumber;
+        EditedItem.SwappedPartNumberPrice = alternativePart.SwappedPartNumberPrice;
+        EditedItem.IsSwapped = true;
+        EditedItem.IsExactMatch = false;
+        EditedItem.PriceSource = "Emacs, alternative part pick";
+        EditedItem.Status = RfqDrawingPartNumberStatus.AlternativePartSelected;
+
+        // Audit trail in comments so the user can see what happened
+        EditedItem.Comments = string.IsNullOrWhiteSpace(EditedItem.Comments)
+            ? $"[Dummy picked: {EditedItem.SwappedPartNumber} @ {EditedItem.SwappedPartNumberPrice:C5}]"
+            : $"{EditedItem.Comments} [Dummy picked: {EditedItem.SwappedPartNumber} @ {EditedItem.SwappedPartNumberPrice:C5}]";
+
+        // Force UI refresh so the user sees the new values reflected in the form
+        StateHasChanged();
+
+        Logger.GenericLogInformation(
+            $"PickDummy - Applied dummy part: {EditedItem.SwappedPartNumber} @ {EditedItem.SwappedPartNumberPrice:C5} " +
+            $"to CustomerPartNumber={EditedItem.CustomerPartNumber}, RowId={EditedItem.RowId}");
+
+        // Auto-complete: a priced dummy part satisfies the Complete criteria
+        // (hasSwappedPartNumberWithPrice == true), so close the dialog with
+        // the completed item. The parent's HandlePartNumberUpdated will then
+        // move the part from InProgressParts to CompletedParts because
+        // IsCompleted == true on the returned model.
+        bool? confirm = await DialogService.ShowMessageBox(
+            "Auto-Complete",
+            $"Mark this part as completed using dummy {EditedItem.SwappedPartNumber} @ {EditedItem.SwappedPartNumberPrice:C5}?",
+            yesText: "Complete",
+            cancelText: "No, just apply");
+
+        if (confirm == true)
+        {
+            await Complete();
         }
     }
 
@@ -349,11 +390,15 @@
 
         DialogResult? result = await dialog.Result;
 
-        if (result != null && !result.Canceled && result.Data is CreateNprDialog.NprData nprData)
+        if (result != null 
+            
+            && !result.Canceled 
+            && result.Data is CreateNprDialog.NprData nprData
+            && nprData.NprEstimatedPrice>0)
         {
             // Update the EditedItem with dummy part data
-            EditedItem.SwappedPartNumber = nprData.NprNumber;
-            EditedItem.SwappedPartNumberPrice = nprData.NprEstimatedPrice;
+            EditedItem.SwappedPartNumber = nprData.NprNumber ?? "";
+            EditedItem.SwappedPartNumberPrice = nprData.NprEstimatedPrice ?? 0.0m;
             EditedItem.IsSwapped = true;
             EditedItem.IsExactMatch = false;
             EditedItem.PriceSource = "Npr Request";
@@ -376,12 +421,10 @@
 
         // Check if the part has drawing part number with price OR swapped part number with swapped price
         bool hasDrawingPartNumberWithPrice = !string.IsNullOrWhiteSpace(EditedItem.DrawingPartNumber) 
-            && EditedItem.DrawingPartNumberPrice.HasValue 
-            && EditedItem.DrawingPartNumberPrice.Value > 0;
+            && EditedItem.DrawingPartNumberPrice > 0;
 
         bool hasSwappedPartNumberWithPrice = !string.IsNullOrWhiteSpace(EditedItem.SwappedPartNumber) 
-            && EditedItem.SwappedPartNumberPrice.HasValue 
-            && EditedItem.SwappedPartNumberPrice.Value > 0;
+            && EditedItem.SwappedPartNumberPrice > 0;
 
         if (hasDrawingPartNumberWithPrice || hasSwappedPartNumberWithPrice)
         {

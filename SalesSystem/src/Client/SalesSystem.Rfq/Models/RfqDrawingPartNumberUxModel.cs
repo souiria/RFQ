@@ -10,32 +10,38 @@
             Status = RfqDrawingPartNumberStatus.New;
             IsExactMatch  = false;
             IsSwapped = false;
-            MultiMatch = false; 
+            MultiMatch = false;
+
+            CustomerPartNumber = string.Empty;
+            DrawingPartNumber = string.Empty;
+            SwappedPartNumber = string.Empty;
+            PriceSource = string.Empty;
+            Comments = string.Empty;
         }
 
         public long RowId
         { get; set; }
         public long RfqId
         { get; set; }
-        public string? CustomerPartNumber
+        public string CustomerPartNumber
         { get; set; }
-        public string? DrawingPartNumber
-        { get; set; }
-        [Column(TypeName = "decimal(12, 5)")]
-        public decimal? DrawingPartNumberPrice
-        { get; set; }
-        public string? SwappedPartNumber
+        public string DrawingPartNumber
         { get; set; }
         [Column(TypeName = "decimal(12, 5)")]
-        public decimal? SwappedPartNumberPrice
+        public decimal DrawingPartNumberPrice
         { get; set; }
-        public string? PriceSource      // JSON Material_Code & Supplier Code & System_Name
+        public string SwappedPartNumber
         { get; set; }
-        public bool? IsExactMatch
+        [Column(TypeName = "decimal(12, 5)")]
+        public decimal SwappedPartNumberPrice
         { get; set; }
-        public bool? IsSwapped
+        public string PriceSource      // JSON Material_Code & Supplier Code & System_Name
         { get; set; }
-        public string? Comments
+        public bool IsExactMatch
+        { get; set; }
+        public bool IsSwapped
+        { get; set; }
+        public string Comments
         { get; set; }
         public bool IsCompleted
         {
@@ -48,12 +54,10 @@
 
                 // Check if drawing part number is set with a price
                 bool hasDrawingPartNumberWithPrice = !string.IsNullOrWhiteSpace(DrawingPartNumber)
-                    && DrawingPartNumberPrice.HasValue
-                    && 0 <= DrawingPartNumberPrice;
+                    && 0 <= DrawingPartNumberPrice; 
 
                 // Check if swapped part number is set with a swapped price
                 bool hasSwappedPartNumberWithPrice = !string.IsNullOrWhiteSpace(SwappedPartNumber)
-                    && SwappedPartNumberPrice.HasValue
                     && 0 <= SwappedPartNumberPrice;
 
                 return hasDrawingPartNumberWithPrice || hasSwappedPartNumberWithPrice;

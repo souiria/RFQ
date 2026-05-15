@@ -169,6 +169,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{BC40E487-946F-47D0-AEBB-66312543C78E}"
 	ProjectSection(SolutionItems) = preProject
 		SalesSystem\docs\NPRRequest.docx = SalesSystem\docs\NPRRequest.docx
+		SalesSystem\docs\SearchWorkflow.txt = SalesSystem\docs\SearchWorkflow.txt
 		SalesSystem\docs\SelectAlternativePart.docx = SalesSystem\docs\SelectAlternativePart.docx
 	EndProjectSection
 EndProject

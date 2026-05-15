@@ -1,0 +1,63 @@
+
+
+Start: CustomerPartNumber (CPN)
+
+1. Search CPN in Emacs exactly to get a SumitomoPartNumber (SPN)
+    - if at least a SPN is found AND its Price>0, then CPN is excat match with the SPN with a CPD price
+    Response:
+        RowId
+        RfqId
+        OriginalPartNumber - CPN
+        SumitomoPartNumber - SPN
+        OriginalPartNumberPrice - the Price>0
+        SwappedPartNumber - null
+        SwappedPartNumberPrice - 0
+        PriceSource - CPD
+        IsExactMatch - Y
+        IsSwapped- N
+    
+    
+    - if SPN exists, but none has Price>0, then Look into Npr (2)           
+    - if no SPN is found at al, then tell user it has to either pick an alternative part (3) OR raise an NPR request
+    (4) - the decision is in the UX
+        Response:
+            RowId
+            RfqId
+            OriginalPartNumber - CPN
+            SumitomoPartNumber - null
+            OriginalPartNumberPrice - 0
+            SwappedPartNumber - null
+            SwappedPartNumberPrice - 0
+            PriceSource - null
+            IsExactMatch - N
+            IsSwapped- N        
+            
+2. Search SPN in the NPR for a Price>0
+    - if at least one record is returned, then the CPN will be like an exact match, but the source price is marked 
+    as being from Npr (Price>0)
+        Response:
+            RowId
+            RfqId
+            OriginalPartNumber - CPN
+            SumitomoPartNumber - SPN
+            OriginalPartNumberPrice - Price
+            SwappedPartNumber - null
+            SwappedPartNumberPrice - 0
+            PriceSource - NPR
+            IsExactMatch - Y
+            IsSwapped - N     
+    - there is SPN for that CPN, but no price (5) - the decision is in the UX
+        Response:
+            RowId
+            RfqId
+            OriginalPartNumber - CPN
+            SumitomoPartNumber - SPN
+            OriginalPartNumberPrice - 0
+            SwappedPartNumber - null
+            SwappedPartNumberPrice - 0
+            PriceSource - null
+            IsExactMatch - Y
+            IsSwapped- N 
+
+
+10. Repeat 1 for cleaned up CPN, all IsExactMatch are set to N

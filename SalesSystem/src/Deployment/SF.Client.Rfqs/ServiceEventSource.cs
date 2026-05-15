@@ -1,5 +1,3 @@
-using System.Globalization;
-
 namespace SF.Client.Rfqs
 {
     [EventSource(Name = "MyCompany-SF.Commercial.Client-SF.Client.Rfqs")]

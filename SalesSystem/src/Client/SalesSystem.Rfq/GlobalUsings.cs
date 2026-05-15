@@ -31,3 +31,6 @@ global using MudBlazor.Services;
 global using RfqModule;
 global using SharedModels.Filtering;
 global using SharedModels.Global;
+global using Microsoft.AspNetCore.Components.Authorization;
+global using System.Runtime.Versioning;
+global using System.Security.Claims;

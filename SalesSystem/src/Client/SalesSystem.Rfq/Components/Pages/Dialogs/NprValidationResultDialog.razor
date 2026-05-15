@@ -1,0 +1,83 @@
+@using SalesSystem.Rfq.Models
+@using MudBlazor
+
+<MudDialog>
+    <DialogContent>
+        <div style="min-width: 560px;">
+            @if (IsValid)
+            {
+                <div class="d-flex flex-column align-center pa-4">
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircle"
+                             Color="Color.Success"
+                             Size="Size.Large"
+                             Class="mb-3" />
+                    <MudText Typo="Typo.h6" Color="Color.Success">Validation Passed</MudText>
+                    <MudText Typo="Typo.body2" Class="mt-2">
+                        NPR request for <strong>@PartLabel</strong> is valid and ready for submission.
+                    </MudText>
+                </div>
+            }
+            else
+            {
+                <MudText Typo="Typo.subtitle1" Class="mb-3">
+                    <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Error" Class="mr-1" />
+                    Validation failed for <strong>@PartLabel</strong> — @ValidationErrors.Count error(s) found:
+                </MudText>
+
+                <MudTable Items="@ValidationErrors.Values"
+                          Dense="true"
+                          Bordered="true"
+                          Hover="true"
+                          Elevation="0">
+                    <HeaderContent>
+                        <MudTh>Field</MudTh>
+                        <MudTh>Current Value</MudTh>
+                        <MudTh>Error</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Field">
+                            <MudText Typo="Typo.body2" Color="Color.Error">
+                                <strong>@context.FieldName</strong>
+                            </MudText>
+                        </MudTd>
+                        <MudTd DataLabel="Current Value">
+                            <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                @(string.IsNullOrEmpty(context.CurrentValue) ? "(empty)" : context.CurrentValue)
+                            </MudText>
+                        </MudTd>
+                        <MudTd DataLabel="Error">
+                            <MudText Typo="Typo.body2">@context.Message</MudText>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            }
+        </div>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="Close"
+                   Color="@(IsValid ? Color.Success : Color.Error)"
+                   Variant="Variant.Filled">
+            Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public IMudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter]
+    public bool IsValid { get; set; }
+
+    [Parameter]
+    public string PartLabel { get; set; } = string.Empty;
+
+    [Parameter]
+    public Dictionary<string, ValidationError> ValidationErrors { get; set; } = new();
+
+    private void Close()
+    {
+        MudDialog.Close(DialogResult.Ok(IsValid));
+    }
+}

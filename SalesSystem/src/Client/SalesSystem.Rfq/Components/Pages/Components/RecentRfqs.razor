@@ -96,11 +96,11 @@
 
 @code {
     MudDataGrid<RqfProjectUxModel> _DataGrid = null!;
-    // IEnumerable<RqfProjectUxModel> _RfqProjects = new List<RqfProjectUxModel>();
     string? _SearchString = string.Empty;
 
-    [Parameter] public Guid? UserId { get; set; }
     private bool IsLoading = true;
+
+    [Parameter] public GlobalValue GlobalValue { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -137,9 +137,9 @@
 
     private void NavigateToEdit(RqfProjectUxModel project)
     {
-        if (UserId.HasValue)
+        if (GlobalValue?.UserId != null && GlobalValue.UserId != Guid.Empty)
         {
-            Navigation.NavigateTo($"/editRfq/{UserId}/{project.RowId}");
+            Navigation.NavigateTo($"/editRfq/{project.RowId}");
         }
         else
         {
