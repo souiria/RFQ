@@ -4049,7 +4049,6 @@
 
             customerCode = item.CustomerCode ?? string.Empty;
 
-
             if (string.IsNullOrWhiteSpace(customerCode))
             {
                 Err(nameof(item.CustomerCode),
@@ -4175,7 +4174,6 @@
             bool hasSupplierPartNumber = !string.IsNullOrWhiteSpace(supplierPartNumber);
             bool hasMaterialNumber = !string.IsNullOrWhiteSpace(materialNumber);
 
-
             if (!hasMaterialNumber && !hasSupplierPartNumber)
             {
                 Err("MaterialNumber,SupplierPartNumber",
@@ -4276,7 +4274,6 @@
             }
 
             programName = item.ProgramName ?? string.Empty;
-
 
             if (string.IsNullOrWhiteSpace(programName))
             {

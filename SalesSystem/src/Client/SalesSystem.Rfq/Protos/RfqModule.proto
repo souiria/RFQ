@@ -39,6 +39,7 @@ service RfqModule {
   rpc GetAllRfqNprRequestGrpc (GetAllRfqNprRequestGrpcRequest) returns (GetAllRfqNprRequestGrpcResponse);
   rpc CreateRfqNprRequestGrpc (CreateRfqNprRequestGrpcRequest) returns (CreateRfqNprRequestGrpcResponse);
   rpc UpdateRfqNprRequestGrpc (UpdateRfqNprRequestGrpcRequest) returns (UpdateRfqNprRequestGrpcResponse);
+  rpc UpdateRfqNprRequestStatusGrpc (UpdateRfqNprRequestStatusGrpcRequest) returns (UpdateRfqNprRequestStatusGrpcResponse);
   rpc DeleteRfqNprRequestByIdGrpc (DeleteRfqNprRequestByIdGrpcRequest) returns (DeleteRfqNprRequestByIdGrpcResponse);
 rpc ValidateNprRequestGrpc (MgrValidateNprRequestRequest) returns (MgrValidateNprRequestResponse);
   rpc CreateNprGrpc (CreateNprGrpcRequest) returns (CreateNprGrpcResponse);
@@ -527,6 +528,9 @@ message RfqNprRequestGrpc {
 	google.protobuf.StringValue OriginatorName = 35;
 	google.protobuf.StringValue SupplierDetailComments = 36;
 	google.protobuf.Int32Value NPRUploadSeqNo = 37;
+	google.protobuf.Int32Value Status = 38;
+	google.protobuf.Timestamp Closed = 39;
+	google.protobuf.StringValue Reason = 40;
 }
 
 message GetRfqNprRequestByRfqNumberGrpcRequest {
@@ -575,6 +579,12 @@ message UpdateRfqNprRequestGrpcRequest {
 	repeated RfqNprRequestGrpc RfqNprRequestGrpc = 1;
 }
 message UpdateRfqNprRequestGrpcResponse {
+  bool Success = 1;
+  string Message = 2;
+}
+message UpdateRfqNprRequestStatusGrpcRequest {
+}
+message UpdateRfqNprRequestStatusGrpcResponse {
   bool Success = 1;
   string Message = 2;
 }

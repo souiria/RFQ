@@ -1343,6 +1343,46 @@
             return response;
         }
 
+        public async Task<UpdateRfqNprRequestStatusGrpcResponse> UpdateRfqNprRequestStatusGrpc(UpdateRfqNprRequestStatusGrpcRequest request)
+        {
+            await Task.Delay(0);
+            UpdateRfqNprRequestStatusGrpcResponse response = new UpdateRfqNprRequestStatusGrpcResponse();
+            GetAllRfqNprRequestGrpcRequest rfqNprRequest = new GetAllRfqNprRequestGrpcRequest();
+            GetAllRfqNprRequestGrpcResponse allRfqNprRequests = await GetAllRfqNprRequestGrpc(rfqNprRequest);
+            NPRFilterRequest nprFilterRequest = new NPRFilterRequest();
+            nprFilterRequest.DatabaseList = "H1NPRVIEWGRPC";
+            foreach (RfqNprRequestGrpc? npr in allRfqNprRequests.RfqNprRequestGrpcs)
+            {
+                if (npr == null)
+                {
+                    continue;
+                }
+
+                nprFilterRequest.FilterExpression = $"RefNo != null && RefNo.ToUpperInvariant().TrimEnd() == \"{npr.RequestID.ToUpperInvariant().TrimEnd()}\"";
+                NPRFilterResponse s = await _NPRGrpcClient.FilterNPRGrpcAsync(nprFilterRequest);
+
+                H1NPRViewGrpc firstNpr = s.ListH1NPRViewGrpc.H1NPRViewGrpc.First();
+                if (firstNpr.Status != npr.Status?.ToString(CultureInfo.InvariantCulture))
+                {
+                    RfqNprRequestGrpcRequest rfqNprRequestToUpdate = new RfqNprRequestGrpcRequest();
+                    RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                    rfqGrpcRequestParameter.RequestType = 80;
+                    rfqNprRequestToUpdate.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
+                    Rfq.RfqNprRequestGrpc accessRfqNprRequest = npr.ToRfqNprRequestGrpcAccess();
+
+                    if (int.TryParse(firstNpr.Status, out int parsedStatus))
+                    {
+                        accessRfqNprRequest.Status = parsedStatus;
+                    }
+
+                    rfqNprRequestToUpdate.RfqNprRequestGrpcsToUpdate.Add(accessRfqNprRequest);
+                    _RfqClient.UpdateRfqNprRequestGrpc(rfqNprRequestToUpdate);
+                }
+            }
+
+            return response;
+        }
+
         public async Task<DeleteRfqNprRequestByIdGrpcResponse> DeleteRfqNprRequestByIdGrpc(DeleteRfqNprRequestByIdGrpcRequest request)
         {
             await Task.Delay(0);
