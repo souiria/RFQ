@@ -1,4 +1,6 @@
-﻿namespace RfqModule.Extentions
+﻿using SharedModels.Global;
+
+namespace RfqModule.Extentions
 {
     public static class RfqModuleMapping
     {
@@ -74,15 +76,15 @@
             project.CustomerBusinessUnitGuid = rfqProjectGrpc.CustomerBusinessUnitGuid;
             project.CustomerLocationGuid = rfqProjectGrpc.CustomerLocationGuid;
             project.ProjectGuid = rfqProjectGrpc.ProjectGuid;
-            project.RfqReasonId = rfqProjectGrpc.RfqReasonId ??0;
+            project.RfqReasonId = rfqProjectGrpc.RfqReasonId ?? 0;
             project.RfqResponseDeadline = rfqProjectGrpc.RfqResponseDeadline;
             project.CarModelGuid = rfqProjectGrpc.CarModelGuid;
-            project.VehicleVolume = rfqProjectGrpc.VehicleVolume ??0;
+            project.VehicleVolume = rfqProjectGrpc.VehicleVolume ?? 0;
             project.CreatedDate = rfqProjectGrpc.CreatedDate;
             project.RfqReasonName = rfqProjectGrpc.RfqReasonName;
-            project.IsActive = rfqProjectGrpc.IsActive; 
+            project.IsActive = rfqProjectGrpc.IsActive;
             project.ProjectName = rfqProjectGrpc.ProjectName;
-            project.CustomerBusinessGroupCode= rfqProjectGrpc.CustomerBusinessGroupCode;
+            project.CustomerBusinessGroupCode = rfqProjectGrpc.CustomerBusinessGroupCode;
             project.CustomerLocationName = rfqProjectGrpc.CustomerLocationName;
             project.CarModelName = rfqProjectGrpc.CarModelName;
             return project;
@@ -93,9 +95,9 @@
             part.RowId = rfqPartGrpc.RowId;
             part.RfqId = rfqPartGrpc.RfqId;
             part.OriginalPartNumber = rfqPartGrpc.OriginalPartNumber;
-            part.OriginalPartNumberPrice = rfqPartGrpc.OriginalPartNumberPrice ??0;
+            part.OriginalPartNumberPrice = rfqPartGrpc.OriginalPartNumberPrice ?? 0;
             part.SwappedPartNumber = rfqPartGrpc.SwappedPartNumber;
-            part.SwappedPartNumberPrice = rfqPartGrpc.SwappedPartNumberPrice??0;
+            part.SwappedPartNumberPrice = rfqPartGrpc.SwappedPartNumberPrice ?? 0;
             part.PriceSource = rfqPartGrpc.PriceSource;
             part.IsExactMatch = rfqPartGrpc.IsExactMatch ?? false;
             part.IsSwapped = rfqPartGrpc.IsSwapped ?? false;
@@ -511,6 +513,123 @@
             supplierGroupGrpc.SyncToCPD = supplierGroup.SyncToCPD;
             supplierGroupGrpc.IsEOLRequired = supplierGroup.IsEOLRequired;
             return supplierGroupGrpc;
+        }
+        public static DsiBendGrpc ToDsiBend(this BranchConfigurationDto branchConfiguration, string userId)
+        {
+            DsiBendGrpc dsiBendGrpc = new DsiBendGrpc();
+            dsiBendGrpc.BendId = Guid.NewGuid().ToString();
+            dsiBendGrpc.Bend = branchConfiguration.Bend;
+            dsiBendGrpc.CreatedBy = userId;
+            return dsiBendGrpc;
+        }
+        public static DsiBranchConfigurationGrpc ToBranchConfiguration(this BranchConfigurationDto branchConfiguration)
+        {
+            DsiBranchConfigurationGrpc branchConfigurationGrpc = new DsiBranchConfigurationGrpc();
+            branchConfigurationGrpc.BranchConfigurationId = Guid.NewGuid().ToString();
+            branchConfigurationGrpc.StartNode = branchConfiguration.StartNode;
+            branchConfigurationGrpc.StartRoute = branchConfiguration.StartRoute;
+            branchConfigurationGrpc.StartCoordinates = branchConfiguration.StartCoordinates;
+            branchConfigurationGrpc.EndNode = branchConfiguration.EndNode;
+            branchConfigurationGrpc.EndRoute = branchConfiguration.EndRoute;
+            branchConfigurationGrpc.EndCoordinates = branchConfiguration.EndCoordinates;
+            branchConfigurationGrpc.Length = branchConfiguration.Length;
+            branchConfigurationGrpc.BundleDiameter = branchConfiguration.BundleDiameter;
+            branchConfigurationGrpc.UserModule = branchConfiguration.UserModule;
+            branchConfigurationGrpc.AssignedModule = branchConfiguration.AssignedModule;
+            branchConfigurationGrpc.ModuleFrom = branchConfiguration.ModuleFrom;
+            branchConfigurationGrpc.BendString = branchConfiguration.BendString;
+            return branchConfigurationGrpc;
+        }
+        public static DsiBranchInsulationGrpc ToBranchInsulation(this BranchInsulationDto branchInsulation)
+        {
+            DsiBranchInsulationGrpc dsiBranchInsulationGrpc = new DsiBranchInsulationGrpc();
+            dsiBranchInsulationGrpc.StartNode = branchInsulation.StartNode;
+            dsiBranchInsulationGrpc.StartRoute = branchInsulation.StartRoute;
+            dsiBranchInsulationGrpc.EndNode = branchInsulation.EndNode;
+            dsiBranchInsulationGrpc.EndRoute = branchInsulation.EndRoute;
+            dsiBranchInsulationGrpc.PieceCode = branchInsulation.PieceCode;
+            dsiBranchInsulationGrpc.InsulationCode = branchInsulation.InsulationCode;
+            dsiBranchInsulationGrpc.Diameter = branchInsulation.Diameter;
+            dsiBranchInsulationGrpc.InsulationNote = branchInsulation.InsulationNote;
+            dsiBranchInsulationGrpc.UserModule = branchInsulation.UserModule;
+            dsiBranchInsulationGrpc.AssignedModule = branchInsulation.AssignedModule;
+            dsiBranchInsulationGrpc.ModuleFrom = branchInsulation.ModuleFrom;
+            dsiBranchInsulationGrpc.CalculationMethod = branchInsulation.CalculationMethod;
+            dsiBranchInsulationGrpc.ManualAmount = branchInsulation.ManualAmount;
+            dsiBranchInsulationGrpc.SplitValue = branchInsulation.SplitValue;
+            dsiBranchInsulationGrpc.JoinNumber = branchInsulation.JoinNumber;
+            dsiBranchInsulationGrpc.AssemblyItemNumber = branchInsulation.AssemblyItemNumber;
+            dsiBranchInsulationGrpc.Layer = branchInsulation.Layer;
+            dsiBranchInsulationGrpc.InsulationType = branchInsulation.InsulationType;
+            dsiBranchInsulationGrpc.PartNumber1 = branchInsulation.PartNumber1;
+            dsiBranchInsulationGrpc.PartNumber2 = branchInsulation.PartNumber2;
+            dsiBranchInsulationGrpc.PartNumber3 = branchInsulation.PartNumber3;
+            dsiBranchInsulationGrpc.Colour = branchInsulation.Colour;
+            dsiBranchInsulationGrpc.Type = branchInsulation.Type;
+            dsiBranchInsulationGrpc.Material = branchInsulation.Material;
+            dsiBranchInsulationGrpc.WallThickness = branchInsulation.WallThickness;
+            dsiBranchInsulationGrpc.NumberOfTurns = branchInsulation.NumberOfTurns;
+            dsiBranchInsulationGrpc.TurnsPerBreakout = branchInsulation.TurnsPerBreakout;
+            dsiBranchInsulationGrpc.TurnsPerBranch = branchInsulation.TurnsPerBranch;
+            dsiBranchInsulationGrpc.DistanceBetweenItems = branchInsulation.DistanceBetweenItems;
+            dsiBranchInsulationGrpc.LongestDistance = branchInsulation.LongestDistance;
+            dsiBranchInsulationGrpc.LongestDistance = branchInsulation.LongestDistance;
+            dsiBranchInsulationGrpc.DistanceFromConnector = branchInsulation.DistanceFromConnector;
+            dsiBranchInsulationGrpc.TubeSelectionType = branchInsulation.TubeSelectionType;
+            dsiBranchInsulationGrpc.TubeSelectionFactor = branchInsulation.TubeSelectionFactor;
+            dsiBranchInsulationGrpc.CutBack = branchInsulation.CutBack;
+            dsiBranchInsulationGrpc.IsConvoluted = branchInsulation.IsConvoluted;
+            dsiBranchInsulationGrpc.IsSlit = branchInsulation.IsSlit;
+            dsiBranchInsulationGrpc.ModuleSpecificData = branchInsulation.ModuleSpecificData;
+            dsiBranchInsulationGrpc.HarnessId = branchInsulation.HarnessID.ToString();
+            dsiBranchInsulationGrpc.CreatedDate = Timestamp.FromDateTime(DateTime.UtcNow);
+            return dsiBranchInsulationGrpc;
+        }
+        public static DsiBranchInsulationThroughNodeGrpc ToBranchInsulationThroughNode(this BranchInsulationThroughNodeDto branchInsulationThroughNode)
+        {
+            DsiBranchInsulationThroughNodeGrpc dsiBranchInsulationThroughNodeGrpc = new DsiBranchInsulationThroughNodeGrpc();
+            dsiBranchInsulationThroughNodeGrpc.PieceCode = branchInsulationThroughNode.PieceCode;
+            dsiBranchInsulationThroughNodeGrpc.ThroughOrder = branchInsulationThroughNode.ThroughOrder;
+            dsiBranchInsulationThroughNodeGrpc.ThroughNode = branchInsulationThroughNode.ThroughNode;
+            dsiBranchInsulationThroughNodeGrpc.ThroughRoute = branchInsulationThroughNode.ThroughRoute;
+            dsiBranchInsulationThroughNodeGrpc.IsThroughFlag = branchInsulationThroughNode.IsThroughFlag;
+            return dsiBranchInsulationThroughNodeGrpc;
+        }
+        public static DsiComponentGrpc ToComponent(this ComponentDto component)
+        {
+            DsiComponentGrpc dsiComponentGrpc = new DsiComponentGrpc();
+            dsiComponentGrpc.NodeName = component.NodeName;
+            dsiComponentGrpc.CavityName = component.CavityName;
+            dsiComponentGrpc.WireName = component.WireName;
+            dsiComponentGrpc.SequenceNumber = component.SequenceNumber;
+            dsiComponentGrpc.ComponentTypeCode1 = component.ComponentTypeCode1;
+            dsiComponentGrpc.ComponentOption = component.ComponentOption;
+            dsiComponentGrpc.ServiceFunction = component.ServiceFunction;
+            dsiComponentGrpc.Route = component.Route;
+            dsiComponentGrpc.PartNumber1 = component.PartNumber1;
+            dsiComponentGrpc.PartNumber2 = component.PartNumber2;
+            dsiComponentGrpc.PartNumber3 = component.PartNumber3;
+            dsiComponentGrpc.Quantity = component.Quantity ?? 0;
+            dsiComponentGrpc.CrossSectionalArea = component.CrossSectionalArea ?? 0;
+            dsiComponentGrpc.IsSelectTerminal = component.IsSelectTerminal ?? false;
+            dsiComponentGrpc.IsSeal = component.IsSeal ?? false;
+            dsiComponentGrpc.IsPlugged = component.IsPlugged ?? false;
+            dsiComponentGrpc.BlockNumber = component.BlockNumber;
+            dsiComponentGrpc.TerminationMethod = component.TerminationMethod;
+            dsiComponentGrpc.MaterialCode = component.MaterialCode;
+            dsiComponentGrpc.ComponentTypeCode2 = component.ComponentTypeCode2;
+            dsiComponentGrpc.InsulationType = component.InsulationType;
+            dsiComponentGrpc.UserModule = component.UserModule;
+            dsiComponentGrpc.AssignedModule = component.AssignedModule;
+            dsiComponentGrpc.ModuleFrom = component.ModuleFrom;
+            dsiComponentGrpc.SplitValue = component.SplitValue;
+            dsiComponentGrpc.Datum = component.Datum;
+            dsiComponentGrpc.AssemblyItemNumber = component.AssemblyItemNumber ?? 0;
+            dsiComponentGrpc.ColourCode = component.ColourCode;
+            dsiComponentGrpc.NumberOfCavities = component.NumberOfCavities ?? 0;
+            dsiComponentGrpc.IsBackshell = component.IsBackshell ?? false;
+            dsiComponentGrpc.WireOption = component.WireOption;
+            return dsiComponentGrpc;
         }
     }
 }

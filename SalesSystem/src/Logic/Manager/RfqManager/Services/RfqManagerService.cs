@@ -1,4 +1,13 @@
-﻿namespace RfqModule.Services
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Google.Protobuf;
+using Microsoft.AspNetCore.Components.Server;
+using Microsoft.IdentityModel.Tokens;
+using OpenTelemetry;
+using RfqModule.Extentions;
+using SharedModels.DocumentConverter.DSI.Aggregates;
+using SharedModels.Global;
+
+namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {
@@ -845,6 +854,7 @@
                     // Handle DSI file processing
                     _Logger.GenericLogInformation("Processing DSI file: " + fileName);
                     dsiAggregate = DocumentTransformer.ConvertDsiFile(fileData);
+                    _ = Task.Run(async () => await SaveDsiAggregateAsync(dsiAggregate, request.UserId));
                     break;
                     default:
                     _Logger.GenericLogInformation("Unsupported file type:" + fileExtension);
@@ -895,6 +905,161 @@
             }
 
             return customerParts;
+        }
+
+        async Task SaveDsiAggregateAsync(DsiAggregate dsiAggregate, string userId)
+        {
+            try
+            {
+                await Task.Delay(1);
+                await SaveBranchConfigurationAsync(dsiAggregate, userId);
+                await SaveBranchInsulationAsync(dsiAggregate);
+                await SaveBranchInsulationThroughNodeAsync(dsiAggregate);
+                await SaveComponentAsync(dsiAggregate);
+
+            }
+            catch (IOException ex)
+            {
+                _Logger.GenericLogError("Error saving DSI aggregate", ex);
+                throw;
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                _Logger.GenericLogError("Error saving DSI aggregate", ex);
+                throw;
+            }
+            // Optionally, catch other specific exceptions as needed
+        }
+
+        async Task SaveBranchConfigurationAsync(DsiAggregate dsiAggregate, string userId)
+        {
+            DsiBendGrpcRequest bendRequest = new DsiBendGrpcRequest();
+            DsiBranchConfigurationGrpcRequest branchConfigurationRequest = new DsiBranchConfigurationGrpcRequest();
+            DsiBranchConfigurationBendAssociationGrpcRequest bendAssociationGrpcRequest = new DsiBranchConfigurationBendAssociationGrpcRequest();
+            List<DsiBranchConfigurationBendAssociationGrpc> bendAssociations = new List<DsiBranchConfigurationBendAssociationGrpc>();
+
+            // Handle bend
+            if (dsiAggregate.BranchConfigurationList != null)
+            {
+                foreach (BranchConfigurationDto branch in dsiAggregate.BranchConfigurationList)
+                {
+                    DsiBranchConfigurationGrpc branchGrpc = branch.ToBranchConfiguration();
+                    if (!string.IsNullOrWhiteSpace(branch.CircuitOption))
+                    {
+                        DsiCircuitOptionGrpcRequest circuitOptionRequest = new DsiCircuitOptionGrpcRequest();
+                        circuitOptionRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                        circuitOptionRequest.RfqGrpcRequestParameter.RequestType = 1;
+                        ListDsiCircuitOptionGrpc circuitOptions = await _RfqClient.ReadDsiCircuitOptionGrpcAsync(circuitOptionRequest);
+
+                        branchGrpc.CircuitOptionId = circuitOptions.DsiCircuitOptionGrpcs.FirstOrDefault(m => m.OptionName == branch.CircuitOption)?.CircuitOptionId;
+                    }
+
+                    branchConfigurationRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                    branchConfigurationRequest.RfqGrpcRequestParameter.RequestType = 70;
+                    branchConfigurationRequest.DsiBranchConfigurationGrpcsToCreate.Add(branchGrpc);
+
+                    if (!string.IsNullOrEmpty(branch.Bend))
+                    {
+                        List<string> bendList = branch.Bend.Split(',').Select(x => x.Trim()).ToList();
+                        foreach (string bend in bendList)
+                        {
+                            DsiBranchConfigurationBendAssociationGrpc dsiBranchConfigurationBendAssociation = new DsiBranchConfigurationBendAssociationGrpc();
+                            DsiBendGrpc bendGrpc = new DsiBendGrpc();
+                            bendGrpc.Bend = bend;
+                            bendGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                            bendGrpc.CreatedBy = userId;
+                            bendRequest.DsiBendGrpcsToCreate.Add(bendGrpc);
+                            dsiBranchConfigurationBendAssociation.BendId = bendGrpc.BendId;
+                            dsiBranchConfigurationBendAssociation.BranchConfigurationId = branchGrpc.BranchConfigurationId;
+                            dsiBranchConfigurationBendAssociation.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                            dsiBranchConfigurationBendAssociation.CreatedBy = userId;
+                            bendAssociations.Add(dsiBranchConfigurationBendAssociation);
+                        }
+
+                        _RfqClient.CreateDsiBendGrpc(bendRequest);
+                    }
+                }
+
+                DsiBranchConfigurationBendAssociationGrpc dsiBranchConfigurationBendAssociationGrpc = new DsiBranchConfigurationBendAssociationGrpc();
+                bendAssociationGrpcRequest.DsiBranchConfigurationBendAssociationGrpcsToCreate.AddRange(bendAssociations);
+                RfqCrudGrpcResponse bendReturn = _RfqClient.CreateDsiBendGrpc(bendRequest);
+                RfqCrudGrpcResponse branchConfigurationReturn = _RfqClient.CreateDsiBranchConfigurationGrpc(branchConfigurationRequest);
+                if(bendReturn == null || branchConfigurationReturn == null || bendReturn.SaveSuccess == false || branchConfigurationReturn.SaveSuccess == false)
+                {
+                    _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save bend or branch configuration");
+                }
+            }
+        }
+
+        async Task SaveBranchInsulationAsync(DsiAggregate dsiAggregate)
+        {
+            DsiBranchInsulationGrpcRequest branchInsulationRequest = new DsiBranchInsulationGrpcRequest();
+            if (dsiAggregate.BranchInsulationList != null)
+            {
+                foreach (BranchInsulationDto branchInsulation in dsiAggregate.BranchInsulationList)
+                {
+                    DsiBranchInsulationGrpc branchInsulationGrpc = branchInsulation.ToBranchInsulation();
+                    branchInsulationRequest.DsiBranchInsulationGrpcsToCreate.Add(branchInsulationGrpc);
+                }
+            }
+
+            branchInsulationRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            branchInsulationRequest.RfqGrpcRequestParameter.RequestType = 70;
+            RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiBranchInsulationGrpcAsync(branchInsulationRequest);
+            if(clientReturn == null || clientReturn.SaveSuccess == false)
+            {
+                _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save branch insulation");
+            }
+        }
+        async Task SaveBranchInsulationThroughNodeAsync(DsiAggregate dsiAggregate)
+        {
+            DsiBranchInsulationThroughNodeGrpcRequest branchInsulationThroughNodeRequest = new DsiBranchInsulationThroughNodeGrpcRequest();
+            if (dsiAggregate.BranchInsulationThroughNodeList != null)
+            {
+                foreach (BranchInsulationThroughNodeDto branchInsulationThroughNode in dsiAggregate.BranchInsulationThroughNodeList)
+                {
+                    DsiBranchInsulationThroughNodeGrpc branchInsulationThroughNodeGrpc = branchInsulationThroughNode.ToBranchInsulationThroughNode();
+                    if (dsiAggregate.Harness != null)
+                    {
+                        branchInsulationThroughNodeGrpc.HarnessId = dsiAggregate.Harness.HarnessId.ToString();
+                    }
+
+                    branchInsulationThroughNodeRequest.DsiBranchInsulationThroughNodeGrpcsToCreate.Add(branchInsulationThroughNodeGrpc);
+                }
+            }
+
+            branchInsulationThroughNodeRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            branchInsulationThroughNodeRequest.RfqGrpcRequestParameter.RequestType = 70;
+            RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiBranchInsulationThroughNodeGrpcAsync(branchInsulationThroughNodeRequest);
+            if(clientReturn == null || clientReturn.SaveSuccess == false)
+            {
+                _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save branch insulation through node");
+            }
+        }
+        async Task SaveComponentAsync(DsiAggregate dsiAggregate)
+        {
+            DsiComponentGrpcRequest componentRequest = new DsiComponentGrpcRequest();
+            if (dsiAggregate.ComponentList != null)
+            {
+                foreach (ComponentDto component in dsiAggregate.ComponentList)
+                {
+                    DsiComponentGrpc componentGrpc = component.ToComponent();
+                    componentGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
+                    componentRequest.DsiComponentGrpcsToCreate.Add(componentGrpc);
+                }
+            }
+
+            componentRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            componentRequest.RfqGrpcRequestParameter.RequestType = 70;
+            RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiComponentGrpcAsync(componentRequest);
+            if(clientReturn == null || clientReturn.SaveSuccess == false)
+            {
+                _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save components");
+            }
+        }
+        async Task SaveCompositeDetails(DsiAggregate dsiAggregate)
+        {
+
         }
 
         List<CustomerParts> GetCustomerParts(List<string> newParts, List<CustomerParts> customerParts)

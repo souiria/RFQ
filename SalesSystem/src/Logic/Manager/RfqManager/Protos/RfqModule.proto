@@ -152,6 +152,7 @@ message UploadPartsRequestGrpcRequest {
   bytes FileData = 1;
   string FileName = 2;
   string ProjectId = 3;
+  google.protobuf.StringValue UserId = 4;   
 }
 
 message RfqProject {
