@@ -1,11 +1,6 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using Google.Protobuf;
-using Microsoft.AspNetCore.Components.Server;
-using Microsoft.IdentityModel.Tokens;
-using OpenTelemetry;
-using RfqModule.Extentions;
-using SharedModels.DocumentConverter.DSI.Aggregates;
-using SharedModels.Global;
+﻿using Azure;
+using Google.Protobuf.WellKnownTypes;
+using Rfq;
 
 namespace RfqModule.Services
 {
@@ -912,10 +907,37 @@ namespace RfqModule.Services
             try
             {
                 await Task.Delay(1);
+                DsiHarnessGrpc harness = await SaveHarness(dsiAggregate, userId);
+                if(harness == null)
+                {
+                    _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save harness");
+                    return;
+                }
+
+                if(dsiAggregate.Harness != null)
+                {
+                    dsiAggregate.Harness.HarnessId = Guid.Parse(harness.HarnessId);
+                }
+
+                await SaveHarness(dsiAggregate, userId);
                 await SaveBranchConfigurationAsync(dsiAggregate, userId);
-                await SaveBranchInsulationAsync(dsiAggregate);
-                await SaveBranchInsulationThroughNodeAsync(dsiAggregate);
-                await SaveComponentAsync(dsiAggregate);
+                await SaveBranchInsulationAsync(dsiAggregate, userId);
+                await SaveBranchInsulationThroughNodeAsync(dsiAggregate, userId);
+                await SaveComponentAsync(dsiAggregate, userId);
+                await SaveCircuitOptionAsync(dsiAggregate, userId);
+                await SaveCompositeDetailsAsync(dsiAggregate, userId);
+                await SaveCompositeOptionAsync(dsiAggregate, userId);
+                await SaveScopeAsync(dsiAggregate, userId);
+                await SaveHarnessScope(dsiAggregate, userId);
+                await SaveManualBomQuantity(dsiAggregate, userId);
+                await SaveMidWireComponent(dsiAggregate, userId);
+                await SaveModuleChildDetail(dsiAggregate, userId);
+                await SaveModuleCompatibility(dsiAggregate, userId);
+                await SaveMulticoreSpecification(dsiAggregate, userId);
+                await SavePinMapping(dsiAggregate, userId);
+                await SaveWireMulticoreMarker(dsiAggregate, userId);
+                await SaveWireSpecification(dsiAggregate, userId);
+                await SaveWireThroughNode(dsiAggregate, userId);
 
             }
             catch (IOException ex)
@@ -930,7 +952,7 @@ namespace RfqModule.Services
             }
             // Optionally, catch other specific exceptions as needed
         }
-
+        #region DsiSave
         async Task SaveBranchConfigurationAsync(DsiAggregate dsiAggregate, string userId)
         {
             DsiBendGrpcRequest bendRequest = new DsiBendGrpcRequest();
@@ -939,8 +961,9 @@ namespace RfqModule.Services
             List<DsiBranchConfigurationBendAssociationGrpc> bendAssociations = new List<DsiBranchConfigurationBendAssociationGrpc>();
 
             // Handle bend
-            if (dsiAggregate.BranchConfigurationList != null)
+            if (dsiAggregate.BranchConfigurationList != null && dsiAggregate.BranchConfigurationList.Any())
             {
+                
                 foreach (BranchConfigurationDto branch in dsiAggregate.BranchConfigurationList)
                 {
                     DsiBranchConfigurationGrpc branchGrpc = branch.ToBranchConfiguration();
@@ -956,6 +979,8 @@ namespace RfqModule.Services
 
                     branchConfigurationRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
                     branchConfigurationRequest.RfqGrpcRequestParameter.RequestType = 70;
+                    branchGrpc.HarnessId = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
+                    branchGrpc.CreatedBy = userId;
                     branchConfigurationRequest.DsiBranchConfigurationGrpcsToCreate.Add(branchGrpc);
 
                     if (!string.IsNullOrEmpty(branch.Bend))
@@ -975,14 +1000,16 @@ namespace RfqModule.Services
                             dsiBranchConfigurationBendAssociation.CreatedBy = userId;
                             bendAssociations.Add(dsiBranchConfigurationBendAssociation);
                         }
-
-                        _RfqClient.CreateDsiBendGrpc(bendRequest);
                     }
                 }
 
                 DsiBranchConfigurationBendAssociationGrpc dsiBranchConfigurationBendAssociationGrpc = new DsiBranchConfigurationBendAssociationGrpc();
+                bendAssociationGrpcRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                bendAssociationGrpcRequest.RfqGrpcRequestParameter.RequestType = 70;
                 bendAssociationGrpcRequest.DsiBranchConfigurationBendAssociationGrpcsToCreate.AddRange(bendAssociations);
-                RfqCrudGrpcResponse bendReturn = _RfqClient.CreateDsiBendGrpc(bendRequest);
+                bendRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                bendRequest.RfqGrpcRequestParameter.RequestType = 70;
+                RfqCrudGrpcResponse bendReturn = await _RfqClient.CreateDsiBendGrpcAsync(bendRequest);
                 RfqCrudGrpcResponse branchConfigurationReturn = _RfqClient.CreateDsiBranchConfigurationGrpc(branchConfigurationRequest);
                 if(bendReturn == null || branchConfigurationReturn == null || bendReturn.SaveSuccess == false || branchConfigurationReturn.SaveSuccess == false)
                 {
@@ -990,15 +1017,17 @@ namespace RfqModule.Services
                 }
             }
         }
-
-        async Task SaveBranchInsulationAsync(DsiAggregate dsiAggregate)
+        async Task SaveBranchInsulationAsync(DsiAggregate dsiAggregate, string userId)
         {
             DsiBranchInsulationGrpcRequest branchInsulationRequest = new DsiBranchInsulationGrpcRequest();
-            if (dsiAggregate.BranchInsulationList != null)
+            if (dsiAggregate.BranchInsulationList != null && dsiAggregate.BranchInsulationList.Any())
             {
                 foreach (BranchInsulationDto branchInsulation in dsiAggregate.BranchInsulationList)
                 {
                     DsiBranchInsulationGrpc branchInsulationGrpc = branchInsulation.ToBranchInsulation();
+                    branchInsulationGrpc.CreatedBy = userId;
+                    branchInsulationGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    branchInsulationGrpc.HarnessId = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
                     branchInsulationRequest.DsiBranchInsulationGrpcsToCreate.Add(branchInsulationGrpc);
                 }
             }
@@ -1011,10 +1040,10 @@ namespace RfqModule.Services
                 _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save branch insulation");
             }
         }
-        async Task SaveBranchInsulationThroughNodeAsync(DsiAggregate dsiAggregate)
+        async Task SaveBranchInsulationThroughNodeAsync(DsiAggregate dsiAggregate, string userId)
         {
             DsiBranchInsulationThroughNodeGrpcRequest branchInsulationThroughNodeRequest = new DsiBranchInsulationThroughNodeGrpcRequest();
-            if (dsiAggregate.BranchInsulationThroughNodeList != null)
+            if (dsiAggregate.BranchInsulationThroughNodeList != null && dsiAggregate.BranchInsulationThroughNodeList.Any())
             {
                 foreach (BranchInsulationThroughNodeDto branchInsulationThroughNode in dsiAggregate.BranchInsulationThroughNodeList)
                 {
@@ -1024,6 +1053,8 @@ namespace RfqModule.Services
                         branchInsulationThroughNodeGrpc.HarnessId = dsiAggregate.Harness.HarnessId.ToString();
                     }
 
+                    branchInsulationThroughNodeGrpc.CreatedBy = userId;
+                    branchInsulationThroughNodeGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
                     branchInsulationThroughNodeRequest.DsiBranchInsulationThroughNodeGrpcsToCreate.Add(branchInsulationThroughNodeGrpc);
                 }
             }
@@ -1036,15 +1067,17 @@ namespace RfqModule.Services
                 _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save branch insulation through node");
             }
         }
-        async Task SaveComponentAsync(DsiAggregate dsiAggregate)
+        async Task SaveComponentAsync(DsiAggregate dsiAggregate, string userId)
         {
             DsiComponentGrpcRequest componentRequest = new DsiComponentGrpcRequest();
-            if (dsiAggregate.ComponentList != null)
+            if (dsiAggregate.ComponentList != null && dsiAggregate.ComponentList.Any())
             {
                 foreach (ComponentDto component in dsiAggregate.ComponentList)
                 {
+                    component.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId : null;
+                    component.CreatedBy = Guid.Parse(userId);
+                    component.CreatedDate = DateTime.UtcNow;
                     DsiComponentGrpc componentGrpc = component.ToComponent();
-                    componentGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
                     componentRequest.DsiComponentGrpcsToCreate.Add(componentGrpc);
                 }
             }
@@ -1057,11 +1090,506 @@ namespace RfqModule.Services
                 _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save components");
             }
         }
-        async Task SaveCompositeDetails(DsiAggregate dsiAggregate)
+        async Task SaveCircuitOptionAsync(DsiAggregate dsiAggregate, string userId)
         {
+            DsiCircuitOptionGrpcRequest request = new DsiCircuitOptionGrpcRequest();
+            request.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            request.RfqGrpcRequestParameter.RequestType = 1;
+            ListDsiCircuitOptionGrpc currentCircuitOptions = await _RfqClient.ReadDsiCircuitOptionGrpcAsync(request);
 
+            // Build a HashSet of all existing option names for O(1) lookup
+            HashSet<string> existingOptionNames = currentCircuitOptions.DsiCircuitOptionGrpcs
+                .Where(o => !string.IsNullOrWhiteSpace(o.OptionName))
+                .Select(o => o.OptionName)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            DsiCircuitOptionGrpcRequest circuitOptionGrpcRequest = new DsiCircuitOptionGrpcRequest();
+            circuitOptionGrpcRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            circuitOptionGrpcRequest.RfqGrpcRequestParameter.RequestType = 70;
+
+            if (dsiAggregate.CompositeDetailList != null && dsiAggregate.CompositeDetailList.Any())
+            {
+                foreach (CompositeDetailDto compositeDetail in dsiAggregate.CompositeDetailList)
+                {
+                    if (string.IsNullOrWhiteSpace(compositeDetail.CircuitOption))
+                    {
+                        continue;
+                    }
+
+                    string[] options = compositeDetail.CircuitOption.Split(',');
+                    foreach (string option in options)
+                    {
+                        string trimmedOption = option.Trim();
+                        if (string.IsNullOrWhiteSpace(trimmedOption))
+                        {
+                            continue;
+                        }
+
+                        if (!existingOptionNames.Contains(trimmedOption))
+                        {
+                            DsiCircuitOptionGrpc newCircuitOption = new DsiCircuitOptionGrpc();
+                            newCircuitOption.CircuitOptionId = Guid.NewGuid().ToString();
+                            newCircuitOption.OptionName = trimmedOption;
+                            newCircuitOption.CreatedBy = userId;
+                            newCircuitOption.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                            circuitOptionGrpcRequest.DsiCircuitOptionGrpcsToCreate.Add(newCircuitOption);
+
+                            existingOptionNames.Add(trimmedOption);
+                        }
+                    }
+                }
+            }
+
+            if (0 < circuitOptionGrpcRequest.DsiCircuitOptionGrpcsToCreate.Count)
+            {
+                RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiCircuitOptionGrpcAsync(circuitOptionGrpcRequest);
+                if (clientReturn == null || clientReturn.SaveSuccess == false)
+                {
+                    _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save circuit options");
+                }
+            }
+        }
+        async Task SaveCompositeOptionAsync(DsiAggregate dsiAggregate, string userId)
+        {
+            DsiCompositeOptionGrpcRequest compositeOptionRequest = new DsiCompositeOptionGrpcRequest();
+            if (dsiAggregate.CompositeOptionList != null && dsiAggregate.CompositeOptionList.Any())
+            {
+                foreach (CompositeOptionDto compositeOption in dsiAggregate.CompositeOptionList)
+                {
+                    compositeOption.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId : null;
+                    compositeOption.CompositeOptionId = Guid.NewGuid();
+                    DsiCompositeOptionGrpc compositeOptionGrpc = compositeOption.ToCompositeOption();
+                    compositeOptionGrpc.CreatedBy = userId;
+                    compositeOptionGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    compositeOptionRequest.DsiCompositeOptionGrpcsToCreate.Add(compositeOptionGrpc);
+                }
+            }
+
+            compositeOptionRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            compositeOptionRequest.RfqGrpcRequestParameter.RequestType = 70;
+            RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiCompositeOptionGrpcAsync(compositeOptionRequest);
+            if(clientReturn == null || clientReturn.SaveSuccess == false)
+            {
+                _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save composite options");
+            }
         }
 
+        async Task SaveCompositeDetailsAsync(DsiAggregate dsiAggregate, string userId)
+        {
+            DsiCircuitOptionGrpcRequest request = new DsiCircuitOptionGrpcRequest();
+            request.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            request.RfqGrpcRequestParameter.RequestType = 1;
+            ListDsiCircuitOptionGrpc currentCircuitOptions = await _RfqClient.ReadDsiCircuitOptionGrpcAsync(request);
+
+            DsiCompositeDetailGrpcRequest compositeDetailGrpcRequest = new DsiCompositeDetailGrpcRequest();
+            compositeDetailGrpcRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            compositeDetailGrpcRequest.RfqGrpcRequestParameter.RequestType = 70;
+
+            DsiCompositeDetailCircuitOptionAssociationGrpcRequest compositeDetailCircuitOptionAssociationRequest = new DsiCompositeDetailCircuitOptionAssociationGrpcRequest();
+            compositeDetailCircuitOptionAssociationRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            compositeDetailCircuitOptionAssociationRequest.RfqGrpcRequestParameter.RequestType = 70;
+
+            if (dsiAggregate.CompositeDetailList != null && dsiAggregate.CompositeDetailList.Any())
+            {
+                foreach (CompositeDetailDto compositeDetail in dsiAggregate.CompositeDetailList)
+                {
+                    compositeDetail.HarnessId = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId : null;
+                    DsiCompositeDetailGrpc compositeDetailGrpc = compositeDetail.ToCompositeDetail();
+                    compositeDetailGrpc.CompositeDetailId = Guid.NewGuid().ToString();
+                    compositeDetailGrpc.CreatedBy = userId;
+                    compositeDetailGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    if (compositeDetail.CircuitOption != null)
+                    {
+                        DsiCompositeDetailCircuitOptionAssociationGrpc dsiCompositeDetailCircuitOptionAssociationGrpc = new DsiCompositeDetailCircuitOptionAssociationGrpc();
+                        string[] options = compositeDetail.CircuitOption.Split(',');
+                        foreach(string option in options)
+                        {
+                            DsiCircuitOptionGrpc? existingOption = currentCircuitOptions.DsiCircuitOptionGrpcs.Where(x => x.OptionName == option).FirstOrDefault();
+                            if (existingOption == null)
+                            {
+                                continue;
+                            }
+
+                            dsiCompositeDetailCircuitOptionAssociationGrpc.CircuitOptionId = existingOption.CircuitOptionId;
+                            dsiCompositeDetailCircuitOptionAssociationGrpc.CompositeDetailId = compositeDetailGrpc.CompositeDetailId;
+                            compositeDetailCircuitOptionAssociationRequest.DsiCompositeDetailCircuitOptionAssociationGrpcsToCreate.Add(dsiCompositeDetailCircuitOptionAssociationGrpc);
+                        }
+                    }
+
+                    compositeDetailGrpcRequest.DsiCompositeDetailGrpcsToCreate.Add(compositeDetailGrpc);
+                }
+
+                RfqCrudGrpcResponse compositeDetailResponse = await _RfqClient.CreateDsiCompositeDetailGrpcAsync(compositeDetailGrpcRequest);
+                RfqCrudGrpcResponse associationResponse = await _RfqClient.CreateDsiCompositeDetailCircuitOptionAssociationGrpcAsync(compositeDetailCircuitOptionAssociationRequest);
+
+                if (compositeDetailResponse == null || compositeDetailResponse.SaveSuccess == false || associationResponse == null || associationResponse.SaveSuccess == false)
+                {
+                    _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save compositeDetail or compositeDetailOptionAssociation");
+                }
+            }
+        }
+        async Task<DsiHarnessGrpc> SaveHarness(DsiAggregate dsiAggregate, string userId)
+        {
+            DsiHarnessGrpcRequest harnessRequest = new DsiHarnessGrpcRequest();
+            harnessRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            harnessRequest.RfqGrpcRequestParameter.RequestType = 1;
+            ListDsiHarnessGrpc allHarnesses = await _RfqClient.ReadDsiHarnessGrpcAsync(harnessRequest);
+            if(dsiAggregate.Harness != null)
+            {
+                DsiHarnessGrpc? existingHarness = allHarnesses.DsiHarnessGrpcs.Where(x => x.HarnessName1 == dsiAggregate.Harness.HarnessName1).FirstOrDefault();
+                if (existingHarness != null)
+                {
+                    dsiAggregate.Harness.HarnessId = Guid.Parse(existingHarness.HarnessId);
+                    return existingHarness;
+                }
+            }
+
+            harnessRequest.RfqGrpcRequestParameter.RequestType = 70;
+            if (dsiAggregate.Harness != null)
+            {
+                dsiAggregate.Harness.HarnessId = Guid.NewGuid();
+                DsiHarnessGrpc harnessGrpc = dsiAggregate.Harness.ToHarness();
+                harnessGrpc.CreatedBy = userId;
+                harnessGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                harnessRequest.DsiHarnessGrpcsToCreate.Add(harnessGrpc);
+            }
+
+            RfqCrudGrpcResponse response = await _RfqClient.CreateDsiHarnessGrpcAsync(harnessRequest);
+            if (response == null || response.SaveSuccess == false)
+            {
+                _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save harness");
+            }
+
+            return harnessRequest.DsiHarnessGrpcsToCreate.FirstOrDefault() ?? new DsiHarnessGrpc();
+        }
+        async Task SaveScopeAsync(DsiAggregate dsiAggregate, string userId)
+        {
+            DsiScopeGrpcRequest request = new DsiScopeGrpcRequest();
+            request.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            request.RfqGrpcRequestParameter.RequestType = 1;
+            ListDsiScopeGrpc currentScopes = await _RfqClient.ReadDsiScopeGrpcAsync(request);
+
+            HashSet<string> existingOptionNames = currentScopes.DsiScopeGrpcs
+                .Where(o => !string.IsNullOrWhiteSpace(o.Scope))
+                .Select(o => o.Scope)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            DsiScopeGrpcRequest scopeGrpcRequest = new DsiScopeGrpcRequest();
+            scopeGrpcRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            scopeGrpcRequest.RfqGrpcRequestParameter.RequestType = 70;
+
+            if (dsiAggregate.HarnessScopeList != null && dsiAggregate.HarnessScopeList.Any())
+            {
+                foreach (HarnessScopeDto harnessScope in dsiAggregate.HarnessScopeList)
+                {
+                    if (string.IsNullOrWhiteSpace(harnessScope.Scope))
+                    {
+                        continue;
+                    }
+
+                    string[] scopes = harnessScope.Scope.Split(',');
+                    foreach (string scope in scopes)
+                    {
+                        string trimmedOption = scope.Trim();
+                        if (string.IsNullOrWhiteSpace(trimmedOption))
+                        {
+                            continue;
+                        }
+
+                        // Only add if this option does NOT already exist in the current list
+                        if (!existingOptionNames.Contains(trimmedOption))
+                        {
+                            DsiScopeGrpc newScope = new DsiScopeGrpc();
+                            newScope.Scope = trimmedOption;
+                            newScope.CreatedBy = userId;
+                            newScope.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                            scopeGrpcRequest.DsiScopeGrpcsToCreate.Add(newScope);
+
+                            // Track it so we don't add duplicates within this same batch
+                            existingOptionNames.Add(trimmedOption);
+                        }
+                    }
+                }
+
+                if (0 < scopeGrpcRequest.DsiScopeGrpcsToCreate.Count)
+                {
+                    RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiScopeGrpcAsync(scopeGrpcRequest);
+                    if (clientReturn == null || clientReturn.SaveSuccess == false)
+                    {
+                        _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save scope");
+                    }
+                }
+            }
+        }
+        async Task SaveHarnessScope(DsiAggregate dsiAggregate, string userId)
+        {
+            DsiScopeGrpcRequest request = new DsiScopeGrpcRequest();
+            request.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            request.RfqGrpcRequestParameter.RequestType = 1;
+            ListDsiScopeGrpc currentScopes = await _RfqClient.ReadDsiScopeGrpcAsync(request);
+
+            DsiHarnessScopeGrpcRequest harnessScopeRequest = new DsiHarnessScopeGrpcRequest();
+            harnessScopeRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            harnessScopeRequest.RfqGrpcRequestParameter.RequestType = 70;
+
+            DsiHarnessScopeScopeAssociationGrpcRequest harnessScopeAssociationRequest = new DsiHarnessScopeScopeAssociationGrpcRequest();
+            harnessScopeAssociationRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            harnessScopeAssociationRequest.RfqGrpcRequestParameter.RequestType = 70;
+            if (dsiAggregate.HarnessScopeList != null && dsiAggregate.HarnessScopeList.Any())
+            {
+
+                foreach (HarnessScopeDto harnessScope in dsiAggregate.HarnessScopeList)
+                {
+                    DsiHarnessScopeGrpc harnessScopeGrpc = harnessScope.ToHarnessScope();
+                    if (dsiAggregate.Harness != null)
+                    {
+                        harnessScopeGrpc.HarnessScopeId = dsiAggregate.Harness.HarnessId.ToString();
+                    }
+
+                    if (harnessScope.Scope != null)
+                    {
+                        DsiHarnessScopeScopeAssociationGrpc dsiHarnessScopeScopeAssociationGrpc = new DsiHarnessScopeScopeAssociationGrpc();
+                        string[] scopes = harnessScope.Scope.Split(',');
+                        foreach (string scope in scopes)
+                        {
+                            DsiScopeGrpc? existingScope = currentScopes.DsiScopeGrpcs.Where(x => x.Scope == scope).FirstOrDefault();
+                            if (existingScope == null)
+                            {
+                                continue;
+                            }
+
+                            dsiHarnessScopeScopeAssociationGrpc.ScopeID = existingScope.RowId.ToString(CultureInfo.InvariantCulture);
+                            dsiHarnessScopeScopeAssociationGrpc.HarnessScopeID = harnessScopeGrpc.HarnessScopeId;
+                            harnessScopeAssociationRequest.DsiHarnessScopeScopeAssociationGrpcsToCreate.Add(dsiHarnessScopeScopeAssociationGrpc);
+                        }
+                    }
+
+                    harnessScopeGrpc.CreatedBy = userId;
+                    harnessScopeGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    harnessScopeRequest.DsiHarnessScopeGrpcsToCreate.Add(harnessScopeGrpc);
+                }
+            }
+
+            RfqCrudGrpcResponse harnessScopeResponse = await _RfqClient.CreateDsiHarnessScopeGrpcAsync(harnessScopeRequest);
+            if(harnessScopeResponse == null || harnessScopeResponse.SaveSuccess == false)
+            {
+                _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save harness scope");
+            }
+
+            RfqCrudGrpcResponse associationResponse = await _RfqClient.CreateDsiHarnessScopeScopeAssociationGrpcAsync(harnessScopeAssociationRequest);
+            if(associationResponse == null || associationResponse.SaveSuccess == false)
+            {
+                _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save harness scope association");
+            }
+        }
+        async Task SaveManualBomQuantity(DsiAggregate dsiAggregate, string userId)
+        {
+            DsiManualBomQuantityGrpcRequest manualBomQuantityGrpcRequest = new DsiManualBomQuantityGrpcRequest();
+            if (dsiAggregate.ManualBomQuantityList != null && dsiAggregate.ManualBomQuantityList.Any())
+            {
+                foreach (ManualBomQuantityDto bomQuantityDto in dsiAggregate.ManualBomQuantityList)
+                {
+                    DsiManualBomQuantityGrpc manualBomQuantityGrpc = bomQuantityDto.ToManualBomQuantity();
+                    manualBomQuantityGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
+                    manualBomQuantityGrpc.CreatedBy = userId;
+                    manualBomQuantityGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    manualBomQuantityGrpcRequest.DsiManualBomQuantityGrpcsToCreate.Add(manualBomQuantityGrpc);
+                }
+            }
+
+            manualBomQuantityGrpcRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            manualBomQuantityGrpcRequest.RfqGrpcRequestParameter.RequestType = 70;
+            RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiManualBomQuantityGrpcAsync(manualBomQuantityGrpcRequest);
+            if (clientReturn == null || clientReturn.SaveSuccess == false)
+            {
+                _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save manualBomQuantity");
+            }
+        }
+        async Task SaveMidWireComponent(DsiAggregate dsiAggregate, string userId)
+        {
+            DsiMidWireComponentGrpcRequest midWireComponentRequest = new DsiMidWireComponentGrpcRequest();
+            if (dsiAggregate.MidWireComponentList != null && dsiAggregate.MidWireComponentList.Any())
+            {
+                foreach (MidWireComponentDto midWireComponent in dsiAggregate.MidWireComponentList)
+                {
+                    DsiMidWireComponentGrpc midWireComponentGrpc = midWireComponent.ToMidWireComponent();
+                    midWireComponentGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
+                    midWireComponentGrpc.CreatedBy = userId;
+                    midWireComponentGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    midWireComponentRequest.DsiMidWireComponentGrpcsToCreate.Add(midWireComponentGrpc);
+                }
+            }
+
+            midWireComponentRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            midWireComponentRequest.RfqGrpcRequestParameter.RequestType = 70;
+            RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiMidWireComponentGrpcAsync(midWireComponentRequest);
+            if (clientReturn == null || clientReturn.SaveSuccess == false)
+            {
+                _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save mid wire component");
+            }
+        }   
+        async Task SaveModuleChildDetail(DsiAggregate dsiAggregate, string userId)
+        {
+            DsiModuleChildDetailGrpcRequest moduleChildDetailRequest = new DsiModuleChildDetailGrpcRequest();
+            if (dsiAggregate.ModuleChildDetailList != null && dsiAggregate.ModuleChildDetailList.Any())
+            {
+                foreach (ModuleChildDetailDto moduleChildDetail in dsiAggregate.ModuleChildDetailList)
+                {
+                    DsiModuleChildDetailGrpc moduleChildDetailGrpc = moduleChildDetail.ToModuleChildDetail();
+                    moduleChildDetailGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
+                    moduleChildDetailGrpc.CreatedBy = userId;
+                    moduleChildDetailGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    moduleChildDetailRequest.DsiModuleChildDetailGrpcsToCreate.Add(moduleChildDetailGrpc);
+                }
+            }
+
+            moduleChildDetailRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            moduleChildDetailRequest.RfqGrpcRequestParameter.RequestType = 70;
+            RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiModuleChildDetailGrpcAsync(moduleChildDetailRequest);
+            if (clientReturn == null || clientReturn.SaveSuccess == false)
+            {
+                _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save module child detail");
+            }
+        }
+        async Task SaveModuleCompatibility(DsiAggregate dsiAggregate, string userId)
+        {
+            DsiModuleCompatibilityGrpcRequest moduleCompatibilityRequest = new DsiModuleCompatibilityGrpcRequest();
+            if (dsiAggregate.ModuleCompatibilityList != null && dsiAggregate.ModuleCompatibilityList.Any())
+            {
+                foreach (ModuleCompatibilityDto moduleCompatibility in dsiAggregate.ModuleCompatibilityList)
+                {
+                    DsiModuleCompatibilityGrpc moduleCompatibilityGrpc = moduleCompatibility.ToModuleCompatibility();
+                    moduleCompatibilityGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
+                    moduleCompatibilityGrpc.CreatedBy = userId;
+                    moduleCompatibilityGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    moduleCompatibilityRequest.DsiModuleCompatibilityGrpcsToCreate.Add(moduleCompatibilityGrpc);
+                }
+            }
+
+            moduleCompatibilityRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            moduleCompatibilityRequest.RfqGrpcRequestParameter.RequestType = 70;
+            RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiModuleCompatibilityGrpcAsync(moduleCompatibilityRequest);
+            if (clientReturn == null || clientReturn.SaveSuccess == false)
+            {
+                _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save module compatibility");
+            }
+        }
+        async Task SaveMulticoreSpecification(DsiAggregate dsiAggregate, string userId)
+        {
+            DsiMulticoreSpecificationGrpcRequest multicoreSpecificationRequest = new DsiMulticoreSpecificationGrpcRequest();
+            if (dsiAggregate.MulticoreSpecificationList != null && dsiAggregate.MulticoreSpecificationList.Any())
+            {
+                foreach (MulticoreSpecificationDto multicoreSpecification in dsiAggregate.MulticoreSpecificationList)
+                {
+                    DsiMulticoreSpecificationGrpc multicoreSpecificationGrpc = multicoreSpecification.ToMulticoreSpecification();
+                    multicoreSpecificationGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
+                    multicoreSpecificationGrpc.CreatedBy = userId;
+                    multicoreSpecificationGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    multicoreSpecificationRequest.DsiMulticoreSpecificationGrpcsToCreate.Add(multicoreSpecificationGrpc);
+                }
+            }
+
+            multicoreSpecificationRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            multicoreSpecificationRequest.RfqGrpcRequestParameter.RequestType = 70;
+            RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiMulticoreSpecificationGrpcAsync(multicoreSpecificationRequest);
+            if (clientReturn == null || clientReturn.SaveSuccess == false)
+            {
+                _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save multicore specification");
+            }
+        }
+        async Task SavePinMapping(DsiAggregate dsiAggregate, string userId)
+        {
+            DsiPinMappingGrpcRequest pinMappingRequest = new DsiPinMappingGrpcRequest();
+            if (dsiAggregate.PinMappingList != null && dsiAggregate.PinMappingList.Any())
+            {
+                foreach (PinMappingDto pinMapping in dsiAggregate.PinMappingList)
+                {
+                    DsiPinMappingGrpc pinMappingGrpc = pinMapping.ToPinMapping();
+                    pinMappingGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
+                    pinMappingGrpc.CreatedBy = userId;
+                    pinMappingGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    pinMappingRequest.DsiPinMappingGrpcsToCreate.Add(pinMappingGrpc);
+                }
+            }
+
+            pinMappingRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            pinMappingRequest.RfqGrpcRequestParameter.RequestType = 70;
+            RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiPinMappingGrpcAsync(pinMappingRequest);
+            if (clientReturn == null || clientReturn.SaveSuccess == false)
+            {
+                _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save pin mapping");
+            }
+        }
+        async Task SaveWireMulticoreMarker(DsiAggregate dsiAggregate, string userId)
+        {
+            DsiWireMulticoreMarkerGrpcRequest wireMulticoreMarkerRequest = new DsiWireMulticoreMarkerGrpcRequest();
+            if (dsiAggregate.WireMulticoreMarkerList != null && dsiAggregate.WireMulticoreMarkerList.Any())
+            {
+                foreach (WireMulticoreMarkerDto wireMulticoreMarker in dsiAggregate.WireMulticoreMarkerList)
+                {
+                    DsiWireMulticoreMarkerGrpc wireMulticoreMarkerGrpc = wireMulticoreMarker.ToWireMulticoreMarker();
+                    wireMulticoreMarkerGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
+                    wireMulticoreMarkerGrpc.CreatedBy = userId;
+                    wireMulticoreMarkerGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    wireMulticoreMarkerRequest.DsiWireMulticoreMarkerGrpcsToCreate.Add(wireMulticoreMarkerGrpc);
+                }
+            }
+
+            wireMulticoreMarkerRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            wireMulticoreMarkerRequest.RfqGrpcRequestParameter.RequestType = 70;
+            RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiWireMulticoreMarkerGrpcAsync(wireMulticoreMarkerRequest);
+            if (clientReturn == null || clientReturn.SaveSuccess == false)
+            {
+                _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save wire multicore marker");
+            }
+        }
+        async Task SaveWireSpecification(DsiAggregate dsiAggregate, string userId)
+        {
+            DsiWireSpecificationGrpcRequest wireSpecificationRequest = new DsiWireSpecificationGrpcRequest();
+            if (dsiAggregate.WireSpecificationList != null && dsiAggregate.WireSpecificationList.Any())
+            {
+                foreach (WireSpecificationDto wireSpecification in dsiAggregate.WireSpecificationList)
+                {
+                    DsiWireSpecificationGrpc wireSpecificationGrpc = wireSpecification.ToWireSpecification();
+                    wireSpecificationGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
+                    wireSpecificationGrpc.CreatedBy = userId;
+                    wireSpecificationGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    wireSpecificationRequest.DsiWireSpecificationGrpcsToCreate.Add(wireSpecificationGrpc);
+                }
+            }
+
+            wireSpecificationRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            wireSpecificationRequest.RfqGrpcRequestParameter.RequestType = 70;
+            RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiWireSpecificationGrpcAsync(wireSpecificationRequest);
+            if (clientReturn == null || clientReturn.SaveSuccess == false)
+            {
+                _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save wire specification");
+            }
+        }
+        async Task SaveWireThroughNode(DsiAggregate dsiAggregate, string userId)
+        {
+            DsiWireThroughNodeGrpcRequest dsiWireThroughNodeRequest = new DsiWireThroughNodeGrpcRequest();
+            if (dsiAggregate.WireThroughNodeList != null && dsiAggregate.WireThroughNodeList.Any())
+            {
+                foreach(WireThroughNodeDto wireThroughNode in dsiAggregate.WireThroughNodeList)
+                {
+                    DsiWireThroughNodeGrpc wireThroughNodeGrpc = wireThroughNode.ToWireThroughNode();
+                    wireThroughNodeGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
+                    wireThroughNodeGrpc.CreatedBy = userId;
+                    wireThroughNodeGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    dsiWireThroughNodeRequest.DsiWireThroughNodeGrpcsToCreate.Add(wireThroughNodeGrpc);
+                }
+            }
+
+            dsiWireThroughNodeRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            dsiWireThroughNodeRequest.RfqGrpcRequestParameter.RequestType = 70;
+            RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiWireThroughNodeGrpcAsync(dsiWireThroughNodeRequest);
+            if (clientReturn == null || clientReturn.SaveSuccess == false)
+            {
+                _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save wire through node");
+            }
+        }
+        #endregion
         List<CustomerParts> GetCustomerParts(List<string> newParts, List<CustomerParts> customerParts)
         {
             List<CustomerParts> newCustomerParts = new List<CustomerParts>();

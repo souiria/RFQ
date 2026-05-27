@@ -538,6 +538,10 @@ namespace RfqModule.Extentions
             branchConfigurationGrpc.AssignedModule = branchConfiguration.AssignedModule;
             branchConfigurationGrpc.ModuleFrom = branchConfiguration.ModuleFrom;
             branchConfigurationGrpc.BendString = branchConfiguration.BendString;
+            branchConfigurationGrpc.CreatedBy = branchConfiguration.CreatedBy.ToString();
+            branchConfigurationGrpc.CreatedDate = Timestamp.FromDateTime(DateTime.UtcNow);
+            branchConfigurationGrpc.ModifiedBy = branchConfiguration.ModifiedBy.ToString();
+            branchConfigurationGrpc.ModifiedDate = branchConfiguration.ModifiedDate.HasValue ? Timestamp.FromDateTime(branchConfiguration.ModifiedDate.Value) : null;
             return branchConfigurationGrpc;
         }
         public static DsiBranchInsulationGrpc ToBranchInsulation(this BranchInsulationDto branchInsulation)
@@ -629,7 +633,342 @@ namespace RfqModule.Extentions
             dsiComponentGrpc.NumberOfCavities = component.NumberOfCavities ?? 0;
             dsiComponentGrpc.IsBackshell = component.IsBackshell ?? false;
             dsiComponentGrpc.WireOption = component.WireOption;
+            dsiComponentGrpc.HarnessID = component.HarnessID.ToString();
+            dsiComponentGrpc.CreatedDate = component.CreatedDate.HasValue ? Timestamp.FromDateTime(component.CreatedDate.Value) : null;
+            dsiComponentGrpc.ModifiedDate = component.ModifiedDate.HasValue ? Timestamp.FromDateTime(component.ModifiedDate.Value) : null;
+            dsiComponentGrpc.CreatedBy = component.CreatedBy.ToString();
             return dsiComponentGrpc;
+        }
+        public static DsiCompositeDetailGrpc ToCompositeDetail(this CompositeDetailDto compositeDetail)
+        {
+            DsiCompositeDetailGrpc dsiCompositeDetailGrpc = new DsiCompositeDetailGrpc();
+            dsiCompositeDetailGrpc.HarnessID = compositeDetail.HarnessId.ToString();
+            dsiCompositeDetailGrpc.HarnessName1 = compositeDetail.HarnessName1;
+            dsiCompositeDetailGrpc.SimilarHarnessName1 = compositeDetail.SimilarHarnessName1;
+            dsiCompositeDetailGrpc.HarnessIssue1 = compositeDetail.HarnessIssue1;
+            dsiCompositeDetailGrpc.SimilarHarnessIssue1 = compositeDetail.SimilarHarnessIssue1;
+            if (compositeDetail.HarnessDate1.HasValue)
+            {
+                DateTime harnessDate1 = compositeDetail.HarnessDate1.Value.ToUniversalTime();
+                dsiCompositeDetailGrpc.HarnessDate1 = Timestamp.FromDateTime(harnessDate1);
+            }
+
+            dsiCompositeDetailGrpc.HarnessName2 = compositeDetail.HarnessName2;
+            dsiCompositeDetailGrpc.HarnessIssue2 = compositeDetail.HarnessIssue2;
+            dsiCompositeDetailGrpc.SimilarHarnessIssue2 = compositeDetail.SimilarHarnessIssue2;
+            if (compositeDetail.HarnessDate2.HasValue)
+            {
+                DateTime harnessDate2 = compositeDetail.HarnessDate2.Value.ToUniversalTime();
+                dsiCompositeDetailGrpc.HarnessDate2 = Timestamp.FromDateTime(harnessDate2);
+            }
+
+            dsiCompositeDetailGrpc.Customer = compositeDetail.Customer;
+            dsiCompositeDetailGrpc.Site = compositeDetail.Site;
+            dsiCompositeDetailGrpc.Range = compositeDetail.Range;
+            dsiCompositeDetailGrpc.BoardLength = compositeDetail.BoardLength ?? 0;
+            dsiCompositeDetailGrpc.BoardWidth = compositeDetail.BoardWidth ?? 0;
+            dsiCompositeDetailGrpc.BoardLength = compositeDetail.BoardLength ?? 0;
+            dsiCompositeDetailGrpc.BoardWidth = compositeDetail.BoardWidth ?? 0;
+            dsiCompositeDetailGrpc.Datum = compositeDetail.Datum;
+            dsiCompositeDetailGrpc.UserField1 = compositeDetail.UserField1;
+            dsiCompositeDetailGrpc.UserField2 = compositeDetail.UserField2;
+            dsiCompositeDetailGrpc.UserField3 = compositeDetail.UserField3;
+            dsiCompositeDetailGrpc.UserField4 = compositeDetail.UserField4;
+            dsiCompositeDetailGrpc.UserField5 = compositeDetail.UserField5;
+            dsiCompositeDetailGrpc.UserField5 = compositeDetail.UserField5;
+            dsiCompositeDetailGrpc.Checker = compositeDetail.Checker;
+            dsiCompositeDetailGrpc.Inputter = compositeDetail.Inputter;
+            dsiCompositeDetailGrpc.DraftedBy = compositeDetail.DraftedBy;
+            dsiCompositeDetailGrpc.PreparedBy = compositeDetail.PreparedBy;
+            dsiCompositeDetailGrpc.Type = compositeDetail.Type;
+            dsiCompositeDetailGrpc.Title = compositeDetail.Title;
+            dsiCompositeDetailGrpc.EngineSize = compositeDetail.EngineSize;
+            dsiCompositeDetailGrpc.ManufacturingCell = compositeDetail.ManufacturingCell;
+            dsiCompositeDetailGrpc.Trim = compositeDetail.Trim;
+            dsiCompositeDetailGrpc.HandDrive = compositeDetail.HandDrive;
+            dsiCompositeDetailGrpc.TubeAddOnType = compositeDetail.TubeAddOnType;
+            dsiCompositeDetailGrpc.TubeAddOnFactor = compositeDetail.TubeAddOnFactor ?? 0;
+            dsiCompositeDetailGrpc.IsManualTerminal = compositeDetail.IsManualTerminal ?? false;
+            dsiCompositeDetailGrpc.IsAllConnectorsSealed = compositeDetail.IsAllConnectorsSealed ?? false;
+            dsiCompositeDetailGrpc.AlphaCode = compositeDetail.AlphaCode;
+            dsiCompositeDetailGrpc.CircuitOption = compositeDetail.CircuitOption;
+            return dsiCompositeDetailGrpc;
+        }
+        public static DsiCompositeOptionGrpc ToCompositeOption(this CompositeOptionDto compositeOption)
+        {
+            DsiCompositeOptionGrpc dsiCompositeOptionGrpc = new DsiCompositeOptionGrpc();
+            dsiCompositeOptionGrpc.CompositeOptionId = compositeOption.CompositeOptionId.ToString();
+            dsiCompositeOptionGrpc.OptionName = compositeOption.OptionName;
+            dsiCompositeOptionGrpc.Description = compositeOption.Description;
+            dsiCompositeOptionGrpc.HarnessID = compositeOption.HarnessID.ToString();
+            dsiCompositeOptionGrpc.CreatedDate = Timestamp.FromDateTime(DateTime.UtcNow);
+            dsiCompositeOptionGrpc.CreatedBy = compositeOption.CreatedBy.ToString();
+            return dsiCompositeOptionGrpc;
+        }
+        public static DsiHarnessGrpc ToHarness(this HarnessDto harness)
+        {
+            DsiHarnessGrpc harnessGrpc = new DsiHarnessGrpc();
+            harnessGrpc.HarnessId = harness.HarnessId.ToString();
+            harnessGrpc.HarnessName1 = harness.HarnessName1;
+            harnessGrpc.SimilarHarnessName1 = harness.SimilarHarnessName1;
+            harnessGrpc.HarnessIssue1 = harness.HarnessIssue1;
+            harnessGrpc.SimilarHarnessIssue1 = harness.SimilarHarnessIssue1;
+            if (harness.HarnessDate1.HasValue)
+            {
+                DateTime harnessDate1 = harness.HarnessDate1.Value.ToUniversalTime();
+                harnessGrpc.HarnessDate1 = Timestamp.FromDateTime(harnessDate1);
+            }
+
+            harnessGrpc.HarnessName2 = harness.HarnessName2;
+            harnessGrpc.SimilarHarnessName2 = harness.SimilarHarnessName2;
+            harnessGrpc.HarnessIssue2 = harness.HarnessIssue2;
+            harnessGrpc.SimilarHarnessIssue2 = harness.SimilarHarnessIssue2;
+            if (harness.HarnessDate2.HasValue)
+            {
+                DateTime harnessDate2 = harness.HarnessDate2.Value.ToUniversalTime();
+                harnessGrpc.HarnessDate2 = Timestamp.FromDateTime(harnessDate2);
+            }
+
+            harnessGrpc.FileVersion = harness.FileVersion ?? 0;
+            harnessGrpc.Customer = harness.Customer;
+            harnessGrpc.Site = harness.Site;
+            harnessGrpc.Range = harness.Range;
+            harnessGrpc.BoardLength = harness.BoardLength ?? 0;
+            harnessGrpc.BoardWidth = harness.BoardWidth ?? 0;
+            harnessGrpc.Datum = harness.Datum;
+            harnessGrpc.UserField1 = harness.UserField1;
+            harnessGrpc.UserField2 = harness.UserField2;
+            harnessGrpc.UserField3 = harness.UserField3;
+            harnessGrpc.UserField4 = harness.UserField4;
+            harnessGrpc.UserField5 = harness.UserField5;
+            harnessGrpc.Checker = harness.Checker;
+            harnessGrpc.Inputter = harness.Inputter;
+            harnessGrpc.DraftedBy = harness.DraftedBy;
+            harnessGrpc.PreparedBy = harness.PreparedBy;
+            harnessGrpc.Type = harness.Type;
+            harnessGrpc.Title = harness.Title;
+            harnessGrpc.EngineSize = harness.EngineSize;
+            harnessGrpc.ManufacturingCell = harness.ManufacturingCell;
+            harnessGrpc.Trim = harness.Trim;
+            harnessGrpc.HandDrive = harness.HandDrive;
+            harnessGrpc.TubeAddOnType = harness.TubeAddOnType;
+            harnessGrpc.TubeAddOnFactor = harness.TubeAddOnFactor ?? 0;
+            harnessGrpc.IsManualTerminal = harness.IsManualTerminal ?? false;
+            harnessGrpc.IsAllConnectorsSealed = harness.IsAllConnectorsSealed ?? false;
+            harnessGrpc.DatumNode = harness.DatumNode;
+            harnessGrpc.DatumRoute = harness.DatumRoute;
+            harnessGrpc.IsModule = harness.IsModule ?? false;
+            harnessGrpc.AlphaCode = harness.AlphaCode;
+            harnessGrpc.IsPitchTableUsed = harness.IsPitchTableUsed ?? false;
+            harnessGrpc.AdditionalComments = harness.AdditionalComments;
+            return harnessGrpc;
+        }
+        public static DsiHarnessScopeGrpc ToHarnessScope(this HarnessScopeDto harnessScope)
+        {
+            DsiHarnessScopeGrpc dsiHarnessScopeGrpc = new DsiHarnessScopeGrpc();
+            dsiHarnessScopeGrpc.HarnessName1 = harnessScope.HarnessName1;
+            dsiHarnessScopeGrpc.HarnessIssue1 = harnessScope.HarnessIssue1;
+            dsiHarnessScopeGrpc.HarnessName2 = harnessScope.HarnessName2;
+            dsiHarnessScopeGrpc.HarnessIssue2 = harnessScope.HarnessIssue2;
+            dsiHarnessScopeGrpc.ScopeCategory = harnessScope.ScopeCategory;
+            dsiHarnessScopeGrpc.CreatedDate = Timestamp.FromDateTime(DateTime.UtcNow);
+            return dsiHarnessScopeGrpc;
+        }
+        public static DsiManualBomQuantityGrpc ToManualBomQuantity(this ManualBomQuantityDto manualBomQuantity)
+        {
+            DsiManualBomQuantityGrpc dsiManualBomQuantityGrpc = new DsiManualBomQuantityGrpc();
+            dsiManualBomQuantityGrpc.SplitValue = manualBomQuantity.SplitValue;
+            dsiManualBomQuantityGrpc.ModuleCode = manualBomQuantity.ModuleCode;
+            dsiManualBomQuantityGrpc.Percentage = manualBomQuantity.Percentage ?? 0;
+            dsiManualBomQuantityGrpc.HarnessID = manualBomQuantity.HarnessID?.ToString();
+            dsiManualBomQuantityGrpc.CreatedDate = Timestamp.FromDateTime(DateTime.UtcNow);
+            return dsiManualBomQuantityGrpc;
+        }
+        public static DsiMidWireComponentGrpc ToMidWireComponent(this MidWireComponentDto midWireComponent)
+        {
+            DsiMidWireComponentGrpc dsiMidWireComponentGrpc = new DsiMidWireComponentGrpc();
+            dsiMidWireComponentGrpc.NodeName = midWireComponent.NodeName;
+            dsiMidWireComponentGrpc.Route = midWireComponent.Route;
+            dsiMidWireComponentGrpc.WireName = midWireComponent.WireName;
+            dsiMidWireComponentGrpc.Option = midWireComponent.Option;
+            dsiMidWireComponentGrpc.MidWireOption = midWireComponent.MidWireOption;
+            dsiMidWireComponentGrpc.Cavity = midWireComponent.Cavity;
+            dsiMidWireComponentGrpc.ThroughOrder = midWireComponent.ThroughOrder ?? 0;
+            dsiMidWireComponentGrpc.HarnessID = midWireComponent.HarnessID?.ToString();
+            dsiMidWireComponentGrpc.CreatedDate = Timestamp.FromDateTime(DateTime.UtcNow);
+            return dsiMidWireComponentGrpc;
+        }
+        public static DsiModuleChildDetailGrpc ToModuleChildDetail(this ModuleChildDetailDto moduleChildDetail)
+        {
+            DsiModuleChildDetailGrpc dsiModuleChildDetailGrpc = new DsiModuleChildDetailGrpc();
+            dsiModuleChildDetailGrpc.ModuleCode = moduleChildDetail.ModuleCode;
+            dsiModuleChildDetailGrpc.IsCoreModule = moduleChildDetail.IsCoreModule ?? false;
+            dsiModuleChildDetailGrpc.HarnessName1 = moduleChildDetail.HarnessName1;
+            dsiModuleChildDetailGrpc.HarnessIssue1 = moduleChildDetail.HarnessIssue1;
+            if (moduleChildDetail.HarnessDate1 != null)
+            {
+                DateTime dateTime = moduleChildDetail.HarnessDate1.Value.ToUniversalTime();
+                Timestamp timestamp = Timestamp.FromDateTime(dateTime);
+                dsiModuleChildDetailGrpc.HarnessDate1 = timestamp;
+            }
+
+            dsiModuleChildDetailGrpc.SimilarHarnessName1 = moduleChildDetail.SimilarHarnessName1;
+            dsiModuleChildDetailGrpc.SimilarHarnessIssue1 = moduleChildDetail.SimilarHarnessIssue1;
+            dsiModuleChildDetailGrpc.HarnessName2 = moduleChildDetail.HarnessName2;
+            dsiModuleChildDetailGrpc.HarnessIssue2 = moduleChildDetail.HarnessIssue2;
+            if (moduleChildDetail.HarnessDate2 != null)
+            {
+                DateTime dateTime = moduleChildDetail.HarnessDate2.Value.ToUniversalTime();
+                Timestamp timestamp = Timestamp.FromDateTime(dateTime);
+                dsiModuleChildDetailGrpc.HarnessDate2 = timestamp;
+            }
+
+            dsiModuleChildDetailGrpc.SimilarHarnessName2 = moduleChildDetail.SimilarHarnessName2;
+            dsiModuleChildDetailGrpc.SimilarHarnessIssue2 = moduleChildDetail.SimilarHarnessIssue2;
+            dsiModuleChildDetailGrpc.Customer = moduleChildDetail.Customer;
+            dsiModuleChildDetailGrpc.Site = moduleChildDetail.Site;
+            dsiModuleChildDetailGrpc.Range = moduleChildDetail.Range;
+            dsiModuleChildDetailGrpc.BoardLength = moduleChildDetail.BoardLength ?? 0;
+            dsiModuleChildDetailGrpc.BoardWidth = moduleChildDetail.BoardWidth ?? 0;
+            dsiModuleChildDetailGrpc.Datum = moduleChildDetail.Datum;
+            dsiModuleChildDetailGrpc.UserField1 = moduleChildDetail.UserField1;
+            dsiModuleChildDetailGrpc.UserField2 = moduleChildDetail.UserField2;
+            dsiModuleChildDetailGrpc.UserField3 = moduleChildDetail.UserField3;
+            dsiModuleChildDetailGrpc.UserField4 = moduleChildDetail.UserField4;
+            dsiModuleChildDetailGrpc.UserField5 = moduleChildDetail.UserField5;
+            dsiModuleChildDetailGrpc.Checker = moduleChildDetail.Checker;
+            dsiModuleChildDetailGrpc.Inputter = moduleChildDetail.Inputter;
+            dsiModuleChildDetailGrpc.DraftedBy = moduleChildDetail.DraftedBy;
+            dsiModuleChildDetailGrpc.PreparedBy = moduleChildDetail.PreparedBy;
+            dsiModuleChildDetailGrpc.Type = moduleChildDetail.Type;
+            dsiModuleChildDetailGrpc.Title = moduleChildDetail.Title;
+            dsiModuleChildDetailGrpc.EngineSize = moduleChildDetail.EngineSize;
+            dsiModuleChildDetailGrpc.ManufacturingCell = moduleChildDetail.ManufacturingCell;
+            dsiModuleChildDetailGrpc.Trim = moduleChildDetail.Trim;
+            dsiModuleChildDetailGrpc.HandDrive = moduleChildDetail.HandDrive;
+            dsiModuleChildDetailGrpc.TubeAddOnType = moduleChildDetail.TubeAddOnType;
+            dsiModuleChildDetailGrpc.TubeAddOnFactor = moduleChildDetail.TubeAddOnFactor ?? 0;
+            return dsiModuleChildDetailGrpc;
+        }
+        public static DsiModuleCompatibilityGrpc ToModuleCompatibility(this ModuleCompatibilityDto moduleCompatibility)
+        {
+            DsiModuleCompatibilityGrpc dsiModuleCompatibilityGrpc = new DsiModuleCompatibilityGrpc();
+            dsiModuleCompatibilityGrpc.ModuleCode1 = moduleCompatibility.ModuleCode1;
+            dsiModuleCompatibilityGrpc.ModuleCode2 = moduleCompatibility.ModuleCode2;
+            dsiModuleCompatibilityGrpc.Relationship = moduleCompatibility.Relationship;
+            dsiModuleCompatibilityGrpc.CreatedDate = Timestamp.FromDateTime(DateTime.UtcNow);
+            return dsiModuleCompatibilityGrpc;
+        }
+
+        public static DsiMulticoreSpecificationGrpc ToMulticoreSpecification(this MulticoreSpecificationDto multicoreSpecification)
+        {
+            DsiMulticoreSpecificationGrpc dsiMulticoreSpecificationGrpc = new DsiMulticoreSpecificationGrpc();
+            dsiMulticoreSpecificationGrpc.MulticoreName = multicoreSpecification.MulticoreName ?? string.Empty;
+            dsiMulticoreSpecificationGrpc.IsIncludedOnBom = multicoreSpecification.IsIncludedOnBom ?? false;
+            dsiMulticoreSpecificationGrpc.IsIncludedOnChart = multicoreSpecification.IsIncludedOnChart ?? false;
+            dsiMulticoreSpecificationGrpc.Tag = multicoreSpecification.Tag ?? string.Empty;
+            dsiMulticoreSpecificationGrpc.Note = multicoreSpecification.Note ?? string.Empty;
+            dsiMulticoreSpecificationGrpc.LengthChangeType = multicoreSpecification.LengthChangeType ?? string.Empty;
+            dsiMulticoreSpecificationGrpc.LengthChangeValue = multicoreSpecification.LengthChangeValue ?? 0;
+            dsiMulticoreSpecificationGrpc.OuterSheathCutBackAtEnd1Type = multicoreSpecification.OuterSheathCutBackAtEnd1Type ?? string.Empty;
+            dsiMulticoreSpecificationGrpc.OuterSheathCutBackAtEnd1Value = multicoreSpecification.OuterSheathCutBackAtEnd1Value ?? 0;
+            dsiMulticoreSpecificationGrpc.OuterSheathCutBackAtEnd2Type = multicoreSpecification.OuterSheathCutBackAtEnd2Type ?? string.Empty;
+            dsiMulticoreSpecificationGrpc.OuterSheathCutBackAtEnd2Value = multicoreSpecification.OuterSheathCutBackAtEnd2Value ?? 0;
+            dsiMulticoreSpecificationGrpc.Colour = multicoreSpecification.Colour ?? string.Empty;
+            dsiMulticoreSpecificationGrpc.Material = multicoreSpecification.Material ?? string.Empty;
+            dsiMulticoreSpecificationGrpc.Specification = multicoreSpecification.Specification ?? string.Empty;
+            dsiMulticoreSpecificationGrpc.IsSheathed = multicoreSpecification.IsSheathed ?? false;
+            dsiMulticoreSpecificationGrpc.UserModule = multicoreSpecification.UserModule ?? string.Empty;
+            dsiMulticoreSpecificationGrpc.AssemblyItemNumber = multicoreSpecification.AssemblyItemNumber ?? 0;
+            dsiMulticoreSpecificationGrpc.ParentMulticoreName = multicoreSpecification.ParentMulticoreName ?? string.Empty;
+            dsiMulticoreSpecificationGrpc.MulticoreOption = multicoreSpecification.MulticoreOption ?? string.Empty;
+            dsiMulticoreSpecificationGrpc.ParentMulticoreOption = multicoreSpecification.ParentMulticoreOption ?? string.Empty;
+            dsiMulticoreSpecificationGrpc.UnmodifiedMulticoreLength = multicoreSpecification.UnmodifiedMulticoreLength ?? 0;
+            dsiMulticoreSpecificationGrpc.ModifiedMulticoreLength = multicoreSpecification.ModifiedMulticoreLength ?? 0;
+            dsiMulticoreSpecificationGrpc.PartNumber1 = multicoreSpecification.PartNumber1 ?? string.Empty;
+            dsiMulticoreSpecificationGrpc.PartNumber2 = multicoreSpecification.PartNumber2 ?? string.Empty;
+            dsiMulticoreSpecificationGrpc.PartNumber3 = multicoreSpecification.PartNumber3 ?? string.Empty;
+
+            return dsiMulticoreSpecificationGrpc;
+        }
+
+        public static DsiPinMappingGrpc ToPinMapping(this PinMappingDto pinMapping)
+        {
+            DsiPinMappingGrpc dsiPinMappingGrpc = new DsiPinMappingGrpc();
+            dsiPinMappingGrpc.Node1 = pinMapping.Node1;
+            dsiPinMappingGrpc.Node2 = pinMapping.Node2;
+            dsiPinMappingGrpc.HarnessName1 = pinMapping.HarnessName1;
+            dsiPinMappingGrpc.HarnessIssue1 = pinMapping.HarnessIssue1;
+            dsiPinMappingGrpc.HarnessName2 = pinMapping.HarnessName2;
+            dsiPinMappingGrpc.HarnessIssue2 = pinMapping.HarnessIssue2;
+            dsiPinMappingGrpc.Separator = pinMapping.Separator;
+            dsiPinMappingGrpc.HarnessID = pinMapping.HarnessID?.ToString();
+            dsiPinMappingGrpc.CreatedDate = Timestamp.FromDateTime(DateTime.UtcNow);
+            return dsiPinMappingGrpc;
+        }
+        public static DsiWireMulticoreMarkerGrpc ToWireMulticoreMarker(this WireMulticoreMarkerDto wireMulticoreMarker)
+        {
+            DsiWireMulticoreMarkerGrpc dsiWireMulticoreMarkerGrpc = new DsiWireMulticoreMarkerGrpc();
+            dsiWireMulticoreMarkerGrpc.ItemType = wireMulticoreMarker.ItemType;
+            dsiWireMulticoreMarkerGrpc.ItemName = wireMulticoreMarker.ItemName;
+            dsiWireMulticoreMarkerGrpc.Option = wireMulticoreMarker.Option;
+            dsiWireMulticoreMarkerGrpc.Location = wireMulticoreMarker.Location;
+            dsiWireMulticoreMarkerGrpc.Text = wireMulticoreMarker.Text;
+            dsiWireMulticoreMarkerGrpc.ColourCode = wireMulticoreMarker.ColourCode;
+            dsiWireMulticoreMarkerGrpc.Spacing = wireMulticoreMarker.Spacing ?? 0;
+            dsiWireMulticoreMarkerGrpc.HarnessID = wireMulticoreMarker.HarnessID?.ToString();
+            dsiWireMulticoreMarkerGrpc.CreatedDate = Timestamp.FromDateTime(DateTime.UtcNow);
+            return dsiWireMulticoreMarkerGrpc;
+        }
+        public static DsiWireSpecificationGrpc ToWireSpecification(this WireSpecificationDto wireSpecification)
+        {
+            DsiWireSpecificationGrpc dsiWireSpecificationGrpc = new DsiWireSpecificationGrpc();
+            dsiWireSpecificationGrpc.WireName = wireSpecification.WireName ?? string.Empty;
+            dsiWireSpecificationGrpc.CompositeOptionString = wireSpecification.CompositeOptionString ?? string.Empty;
+            dsiWireSpecificationGrpc.WireType = wireSpecification.WireType ?? string.Empty;
+            dsiWireSpecificationGrpc.Colour = wireSpecification.Colour ?? string.Empty;
+            dsiWireSpecificationGrpc.CrossSectionalArea = wireSpecification.CrossSectionalArea ?? 0;
+            dsiWireSpecificationGrpc.Material = wireSpecification.Material ?? string.Empty;
+            dsiWireSpecificationGrpc.UserModule = wireSpecification.UserModule ?? string.Empty;
+            dsiWireSpecificationGrpc.MulticoreName = wireSpecification.MulticoreName ?? string.Empty;
+            dsiWireSpecificationGrpc.End1NodeName = wireSpecification.End1NodeName ?? string.Empty;
+            dsiWireSpecificationGrpc.End1Route = wireSpecification.End1Route ?? string.Empty;
+            dsiWireSpecificationGrpc.End1Cavity = wireSpecification.End1Cavity ?? string.Empty;
+            dsiWireSpecificationGrpc.End1MaterialCode = wireSpecification.End1MaterialCode ?? string.Empty;
+            dsiWireSpecificationGrpc.End2NodeName = wireSpecification.End2NodeName ?? string.Empty;
+            dsiWireSpecificationGrpc.End2Route = wireSpecification.End2Route ?? string.Empty;
+            dsiWireSpecificationGrpc.End2Cavity = wireSpecification.End2Cavity ?? string.Empty;
+            dsiWireSpecificationGrpc.End2MaterialCode = wireSpecification.End2MaterialCode ?? string.Empty;
+            dsiWireSpecificationGrpc.IsIncludedOnBom = wireSpecification.IsIncludedOnBom ?? false;
+            dsiWireSpecificationGrpc.IsIncludedOnChart = wireSpecification.IsIncludedOnChart ?? false;
+            dsiWireSpecificationGrpc.WireTag = wireSpecification.WireTag ?? string.Empty;
+            dsiWireSpecificationGrpc.WireNote = wireSpecification.WireNote ?? string.Empty;
+            dsiWireSpecificationGrpc.WireLengthChangeType = wireSpecification.WireLengthChangeType ?? string.Empty;
+            dsiWireSpecificationGrpc.WireLengthChangeValue = wireSpecification.WireLengthChangeValue ?? 0;
+            dsiWireSpecificationGrpc.AssemblyItemNumber = wireSpecification.AssemblyItemNumber ?? 0;
+            dsiWireSpecificationGrpc.MulticoreOption = wireSpecification.MulticoreOption ?? string.Empty;
+            dsiWireSpecificationGrpc.UnmodifiedWireLength = wireSpecification.UnmodifiedWireLength ?? 0;
+            dsiWireSpecificationGrpc.ModifiedWireLength = wireSpecification.ModifiedWireLength ?? 0;
+            dsiWireSpecificationGrpc.CutbackAtEnd1 = wireSpecification.CutbackAtEnd1 ?? 0;
+            dsiWireSpecificationGrpc.CutbackAtEnd2 = wireSpecification.CutbackAtEnd2 ?? 0;
+            dsiWireSpecificationGrpc.PartNumber1 = wireSpecification.PartNumber1 ?? string.Empty;
+            dsiWireSpecificationGrpc.PartNumber2 = wireSpecification.PartNumber2 ?? string.Empty;
+            dsiWireSpecificationGrpc.PartNumber3 = wireSpecification.PartNumber3 ?? string.Empty;
+            dsiWireSpecificationGrpc.Signal = wireSpecification.Signal ?? string.Empty;
+            dsiWireSpecificationGrpc.CreatedDate = Timestamp.FromDateTime(DateTime.UtcNow);
+            return dsiWireSpecificationGrpc;
+        }
+        public static DsiWireThroughNodeGrpc ToWireThroughNode(this WireThroughNodeDto wireThroughNode)
+        {
+            DsiWireThroughNodeGrpc wireThroughNodeGrpc = new DsiWireThroughNodeGrpc();
+            wireThroughNodeGrpc.WireName = wireThroughNode.WireName ?? string.Empty;
+            wireThroughNodeGrpc.Option = wireThroughNode.Option ?? string.Empty;
+            wireThroughNodeGrpc.ThroughOrder = wireThroughNode.ThroughOrder ?? 0;
+            wireThroughNodeGrpc.ThroughNode = wireThroughNode.ThroughNode ?? string.Empty;
+            wireThroughNodeGrpc.ThroughRoute = wireThroughNode.ThroughRoute ?? string.Empty;
+            wireThroughNodeGrpc.IsThroughFlag = wireThroughNode.IsThroughFlag ?? false;
+            wireThroughNodeGrpc.CreatedDate = Timestamp.FromDateTime(DateTime.UtcNow);
+            return wireThroughNodeGrpc;
         }
     }
 }

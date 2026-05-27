@@ -34,5 +34,13 @@
         { get; set; }
         public string? Bend
         { get; set; }
+        public DateTime? CreatedDate
+        { get; set; }
+        public DateTime? ModifiedDate
+        { get; set; }
+        public Guid? CreatedBy
+        { get; set; }
+        public DateTime? ModifiedBy
+        { get; set; }
     }
 }

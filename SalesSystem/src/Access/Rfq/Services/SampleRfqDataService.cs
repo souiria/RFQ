@@ -272,7 +272,7 @@
                 dsiBranchInsulationGrpc.DistanceFromConnector = i;
                 dsiBranchInsulationGrpc.TubeSelectionType = "TubeSelectionType" + i;
                 dsiBranchInsulationGrpc.TubeSelectionFactor = i;
-                dsiBranchInsulationGrpc.Cutback = i;
+                dsiBranchInsulationGrpc.CutBack = i;
                 dsiBranchInsulationGrpc.IsConvoluted = false;
                 dsiBranchInsulationGrpc.IsSlit = false;
                 dsiBranchInsulationGrpc.ModuleSpecificData = "ModuleSpecificData" + i;
@@ -317,7 +317,7 @@
             fixedDsiBranchInsulationGrpc.DistanceFromConnector = 1;
             fixedDsiBranchInsulationGrpc.TubeSelectionType = "FixedTubeSelectionType";
             fixedDsiBranchInsulationGrpc.TubeSelectionFactor = 1;
-            fixedDsiBranchInsulationGrpc.Cutback = 1;
+            fixedDsiBranchInsulationGrpc.CutBack = 1;
             fixedDsiBranchInsulationGrpc.IsConvoluted = false;
             fixedDsiBranchInsulationGrpc.IsSlit = false;
             fixedDsiBranchInsulationGrpc.ModuleSpecificData = "FixedModuleSpecificData";

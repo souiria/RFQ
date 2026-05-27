@@ -509,7 +509,7 @@ message DsiCircuitOptionGrpcRequest {
 
 message DsiCircuitOptionGrpc {
   int64 RowId = 1;
-  string CircuitOptionId = 2;
+  google.protobuf.StringValue CircuitOptionId = 2;
   google.protobuf.StringValue OptionName = 3;
   google.protobuf.Timestamp CreatedDate = 4;
   google.protobuf.Timestamp ModifiedDate = 5;

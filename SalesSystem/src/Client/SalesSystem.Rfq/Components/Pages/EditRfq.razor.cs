@@ -417,7 +417,7 @@ namespace SalesSystem.Rfq.Components.Pages
                     if (0 < preExistingNprRequests.Count)
                     {
                         // update pre-existing ones
-                        foreach (var r in preExistingNprRequests)
+                        foreach (RfqNprRequestUxModel r in preExistingNprRequests)
                         {
                             r.CustomerRfqNo = RfqProject.RfqNumber;
                             r.Updated = DateTime.UtcNow;
@@ -715,7 +715,7 @@ namespace SalesSystem.Rfq.Components.Pages
 
         #region Project Autocomplete
         // Search function for MudAutocomplete (same as CreateRfq)
-        private async Task<IEnumerable<RqfCustomerProjectAssociationUxModel>> SearchProjects(string searchText, CancellationToken cancellationToken)
+        async Task<IEnumerable<RqfCustomerProjectAssociationUxModel>> SearchProjects(string searchText, CancellationToken cancellationToken)
         {
             await Task.Delay(0, cancellationToken);
 
@@ -825,7 +825,7 @@ namespace SalesSystem.Rfq.Components.Pages
                         fileCount++;
                         progressState.UpdateProgress($"Uploading file {fileCount} of {totalFiles}: {fileObject.File.Name}", 1);
 
-                        UploadPartsRequestGrpcResponse uploadFileResponse = await RfqUxClientService.UploadPartsAsync(RfqProjectId.ToString(CultureInfo.InvariantCulture), fileObject.File, 16_000_000);
+                        UploadPartsRequestGrpcResponse uploadFileResponse = await RfqUxClientService.UploadPartsAsync(RfqProjectId.ToString(CultureInfo.InvariantCulture), fileObject.File, GlobalValue?.UserId, 16_000_000);
                         fileObject.UploadStatus = new FileObjectUploadStatus(uploadFileResponse);
                         allOk = allOk && uploadFileResponse.Success;
 
@@ -934,7 +934,7 @@ namespace SalesSystem.Rfq.Components.Pages
                     await _ComponentNprEditor.SaveNprRequestsAsync();
                 }
 
-                var partsUpdateResult = await RfqUxClientService.UpdateRfqDrawingPartNumbersAsync(allParts);
+                UpdateRfqDrawingPartNumbersGrpcResponse partsUpdateResult = await RfqUxClientService.UpdateRfqDrawingPartNumbersAsync(allParts);
                 UpdateRfqProjectGrpcResponse rfqUpdateResult = await RfqUxClientService.UpdateRfqProjectAsync(RfqProject!);
 
                 if (partsUpdateResult.Success && rfqUpdateResult.Success)
@@ -1233,7 +1233,7 @@ namespace SalesSystem.Rfq.Components.Pages
                 }
 
                 // Invariant: total BOM size must not change across a Search All run.
-                System.Diagnostics.Debug.Assert(
+                Debug.Assert(
                     _CompletedParts.Count + _InProgressParts.Count == _SearchInitialTotalParts,
                     "SearchAllPartNumbersAsync changed total BOM size");
 

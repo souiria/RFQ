@@ -482,6 +482,7 @@ namespace SalesSystem.Rfq.Services
         #region Parts
         public async Task<UploadPartsRequestGrpcResponse> UploadPartsAsync(string projectId,
                                                                            IBrowserFile file,
+                                                                           Guid? userId,
                                                                            long maxAllowedSize = 10_000_000)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
@@ -491,6 +492,7 @@ namespace SalesSystem.Rfq.Services
                 UploadPartsRequestGrpcRequest request = new UploadPartsRequestGrpcRequest();
                 request.ProjectId = projectId;
                 request.FileName = file.Name;
+                request.UserId = userId.ToString();
 
                 using MemoryStream memoryStream = new MemoryStream();
                 await file.OpenReadStream(maxAllowedSize: maxAllowedSize).CopyToAsync(memoryStream);
@@ -511,6 +513,7 @@ namespace SalesSystem.Rfq.Services
         public async Task<UploadPartsRequestGrpcResponse> UploadPartsAsync(string projectId,
                                                                            byte[] fileData,
                                                                            string fileName,
+                                                                           Guid? userId,
                                                                            long maxAllowedSize = 16_777_216)
         {
             ArgumentException.ThrowIfNullOrEmpty(projectId);
@@ -526,6 +529,7 @@ namespace SalesSystem.Rfq.Services
                 request.ProjectId = projectId;
                 request.FileName = fileName;
                 request.FileData = ByteString.CopyFrom(fileData);
+                request.UserId = userId.ToString();
 
                 UploadPartsRequestGrpcResponse response = await _Client.UploadPartsGrpcAsync(request, cancellationToken: timeoutCts.Token);
 

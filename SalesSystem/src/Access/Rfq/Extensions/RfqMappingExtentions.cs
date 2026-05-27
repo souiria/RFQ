@@ -198,7 +198,7 @@
         {
             DbDsiBranchConfiguration data = new DbDsiBranchConfiguration();
             data.RowId = grpc.RowId;
-            data.BranchConfigurationId = Guid.Parse(grpc.BranchConfigurationId);
+            data.BranchConfigurationId = Guid.Parse(grpc.BranchConfigurationId ?? Guid.Empty.ToString());
             data.StartNode = grpc.StartNode;
             data.StartRoute = grpc.StartRoute;
             data.StartCoordinates = grpc.StartCoordinates;
@@ -206,17 +206,27 @@
             data.EndRoute = grpc.EndRoute;
             data.EndCoordinates = grpc.EndCoordinates;
             data.Length = grpc.Length ?? 0;
-            data.CircuitOptionId = Guid.Parse(grpc.CircuitOptionId);
+            data.CircuitOptionId = Guid.Parse(grpc.CircuitOptionId ?? Guid.Empty.ToString());
             data.BundleDiameter = grpc.BundleDiameter ?? 0;
             data.UserModule = grpc.UserModule;
             data.AssignedModule = grpc.AssignedModule;
             data.ModuleFrom = grpc.ModuleFrom;
             data.BendString = grpc.BendString;
-            data.HarnessId = Guid.Parse(grpc.HarnessId);
+            data.HarnessId = Guid.Parse(grpc.HarnessId ?? Guid.Empty.ToString());
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -245,8 +255,18 @@
             data.BendId = Guid.Parse(grpc.BendId);
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -291,7 +311,7 @@
             data.DistanceFromConnector = entity.DistanceFromConnector;
             data.TubeSelectionType = entity.TubeSelectionType;
             data.TubeSelectionFactor = entity.TubeSelectionFactor;
-            data.Cutback = entity.Cutback;
+            data.CutBack = entity.Cutback;
             data.IsConvoluted = entity.IsConvoluted;
             data.IsSlit = entity.IsSlit;
             data.ModuleSpecificData = entity.ModuleSpecificData;
@@ -313,7 +333,7 @@
             data.PieceCode = grpc.PieceCode;
             data.InsulationCode = grpc.InsulationCode;
             data.Diameter = grpc.Diameter ?? 0;
-            data.CircuitOptionId = Guid.Parse(grpc.CircuitOptionId);
+            data.CircuitOptionId = Guid.Parse(grpc.CircuitOptionId ?? Guid.Empty.ToString());
             data.InsulationNote = grpc.InsulationNote;
             data.UserModule = grpc.UserModule;
             data.AssignedModule = grpc.AssignedModule;
@@ -340,15 +360,25 @@
             data.DistanceFromConnector = grpc.DistanceFromConnector ?? 0;
             data.TubeSelectionType = grpc.TubeSelectionType;
             data.TubeSelectionFactor = grpc.TubeSelectionFactor ?? 0;
-            data.Cutback = grpc.Cutback ?? 0;
+            data.Cutback = grpc.CutBack ?? 0;
             data.IsConvoluted = grpc.IsConvoluted ?? false;
             data.IsSlit = grpc.IsSlit ?? false;
             data.ModuleSpecificData = grpc.ModuleSpecificData;
-            data.HarnessId = Guid.Parse(grpc.HarnessId);
+            data.HarnessId = Guid.Parse(grpc.HarnessId ?? Guid.Empty.ToString());
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -382,11 +412,21 @@
             data.ThroughNode = grpc.ThroughNode;
             data.ThroughRoute = grpc.ThroughRoute;
             data.IsThroughFlag = grpc.IsThroughFlag ?? false;
-            data.HarnessId = Guid.Parse(grpc.HarnessId);
+            data.HarnessId = Guid.Parse(grpc.HarnessId ?? Guid.Empty.ToString());
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -411,12 +451,22 @@
         {
             DbDsiCavityMapping data = new DbDsiCavityMapping();
             data.RowId = grpc.RowId;
-            data.CavityMappingId = Guid.Parse(grpc.CavityMappingId);
+            data.CavityMappingId = Guid.Parse(grpc.CavityMappingId ?? Guid.Empty.ToString());
             data.CavityMapping = grpc.CavityMapping;
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -495,11 +545,21 @@
             data.LengthChangeValue = grpc.LengthChangeValue;
             data.Option = grpc.Option;
             data.ThroughOrder = grpc.ThroughOrder;
-            data.HarnessID = Guid.Parse(grpc.HarnessID);
+            data.HarnessID = Guid.Parse(grpc.HarnessID ?? Guid.Empty.ToString());
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -524,12 +584,22 @@
         {
             DbDsiCircuitOption data = new DbDsiCircuitOption();
             data.RowId = grpc.RowId;
-            data.CircuitOptionId = Guid.Parse(grpc.CircuitOptionId);
+            data.CircuitOptionId = Guid.Parse(grpc.CircuitOptionId ?? Guid.Empty.ToString());
             data.OptionName = grpc.OptionName;
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -615,11 +685,21 @@
             data.NumberOfCavities = grpc.NumberOfCavities;
             data.IsBackshell = grpc.IsBackshell;
             data.WireOption = grpc.WireOption;
-            data.HarnessID = Guid.Parse(grpc.HarnessID);
+            data.HarnessID = Guid.Parse(grpc.HarnessID ?? Guid.Empty.ToString());
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -718,12 +798,22 @@
             data.IsManualTerminal = grpc.IsManualTerminal;
             data.IsAllConnectorsSealed = grpc.IsAllConnectorsSealed;
             data.AlphaCode = grpc.AlphaCode;
-            data.HarnessID = Guid.Parse(grpc.HarnessID);
+            data.HarnessID = Guid.Parse(grpc.HarnessID ?? Guid.Empty.ToString());
             data.CircuitOption = grpc.CircuitOption;
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
         #endregion
@@ -747,12 +837,22 @@
         {
             DbDsiCompositeDetailCircuitOptionAssociation data = new DbDsiCompositeDetailCircuitOptionAssociation();
             data.RowId = grpc.RowId;
-            data.CompositeDetailId = Guid.Parse(grpc.CompositeDetailId);
-            data.CircuitOptionId = Guid.Parse(grpc.CircuitOptionId);
-            data.CreatedDate = grpc.CreatedDate.ToDateTime();
+            data.CompositeDetailId = Guid.Parse(grpc.CompositeDetailId ?? Guid.Empty.ToString());
+            data.CircuitOptionId = Guid.Parse(grpc.CircuitOptionId ?? Guid.Empty.ToString());
+            data.CreatedDate = grpc.CreatedDate.ToDateTime();// This !!
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -782,11 +882,21 @@
             data.CompositeOptionId = Guid.Parse(grpc.CompositeOptionId);
             data.OptionName = grpc.OptionName;
             data.Description = grpc.Description;
-            data.HarnessID = Guid.Parse(grpc.HarnessID);
+            data.HarnessID = Guid.Parse(grpc.HarnessID ?? Guid.Empty.ToString());
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -852,7 +962,7 @@
         {
             DbDsiHarness data = new DbDsiHarness();
             data.RowId = grpc.RowId;
-            data.HarnessId = Guid.Parse(grpc.HarnessId);
+            data.HarnessId = Guid.Parse(grpc.HarnessId ?? Guid.Empty.ToString());
             data.HarnessName1 = grpc.HarnessName1;
             data.SimilarHarnessName1 = grpc.SimilarHarnessName1;
             data.HarnessIssue1 = grpc.HarnessIssue1;
@@ -897,8 +1007,18 @@
             data.AdditionalComments = grpc.AdditionalComments;
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -934,11 +1054,21 @@
             data.HarnessName2 = grpc.HarnessName2;
             data.HarnessIssue2 = grpc.HarnessIssue2;
             data.ScopeCategory = grpc.ScopeCategory;
-            data.HarnessID = Guid.Parse(grpc.HarnessID);
+            data.HarnessID = Guid.Parse(grpc.HarnessID ?? Guid.Empty.ToString());
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -963,12 +1093,22 @@
         {
             DbDsiHarnessScopeScopeAssociation data = new DbDsiHarnessScopeScopeAssociation();
             data.RowId = grpc.RowId;
-            data.HarnessScopeID = Guid.Parse(grpc.HarnessScopeID);
-            data.ScopeID = Guid.Parse(grpc.ScopeID);
+            data.HarnessScopeID = Guid.Parse(grpc.HarnessScopeID ?? Guid.Empty.ToString());
+            data.ScopeID = Guid.Parse(grpc.ScopeID ?? Guid.Empty.ToString());
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -998,11 +1138,21 @@
             data.SplitValue = grpc.SplitValue;
             data.ModuleCode = grpc.ModuleCode;
             data.Percentage = grpc.Percentage;
-            data.HarnessID = Guid.Parse(grpc.HarnessID);
+            data.HarnessID = Guid.Parse(grpc.HarnessID ?? Guid.Empty.ToString());
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -1040,11 +1190,21 @@
             data.MidWireOption = grpc.MidWireOption;
             data.Cavity = grpc.Cavity;
             data.ThroughOrder = grpc.ThroughOrder;
-            data.HarnessID = Guid.Parse(grpc.HarnessID);
+            data.HarnessID = Guid.Parse(grpc.HarnessID ?? Guid.Empty.ToString());
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -1144,11 +1304,21 @@
             data.IsManualTerminal = grpc.IsManualTerminal;
             data.IsAllConnectorSealed = grpc.IsAllConnectorSealed;
             data.AlphaCode = grpc.AlphaCode;
-            data.HarnessID = Guid.Parse(grpc.HarnessID);
+            data.HarnessID = Guid.Parse(grpc.HarnessID ?? Guid.Empty.ToString());
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -1178,11 +1348,21 @@
             data.ModuleCode1 = grpc.ModuleCode1;
             data.ModuleCode2 = grpc.ModuleCode2;
             data.Relationship = grpc.Relationship;
-            data.HarnessID = Guid.Parse(grpc.HarnessID);
+            data.HarnessID = Guid.Parse(grpc.HarnessID ?? Guid.Empty.ToString());
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -1256,11 +1436,21 @@
             data.PartNumber1 = grpc.PartNumber1;
             data.PartNumber2 = grpc.PartNumber2;
             data.PartNumber3 = grpc.PartNumber3;
-            data.HarnessID = Guid.Parse(grpc.HarnessID);
+            data.HarnessID = Guid.Parse(grpc.HarnessID ?? Guid.Empty.ToString());
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -1292,7 +1482,7 @@
         {
             DbDsiPinMapping data = new DbDsiPinMapping();
             data.RowId = grpc.RowId;
-            data.PinMappingId = Guid.Parse(grpc.PinMappingId);
+            data.PinMappingId = Guid.Parse(grpc.PinMappingId ?? Guid.Empty.ToString());
             data.Node1 = grpc.Node1;
             data.Node2 = grpc.Node2;
             data.HarnessName1 = grpc.HarnessName1;
@@ -1300,11 +1490,21 @@
             data.HarnessName2 = grpc.HarnessName2;
             data.HarnessIssue2 = grpc.HarnessIssue2;
             data.Separator = grpc.Separator;
-            data.HarnessID = Guid.Parse(grpc.HarnessID);
+            data.HarnessID = Guid.Parse(grpc.HarnessID ?? Guid.Empty.ToString());
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -1330,8 +1530,8 @@
         {
             DbDsiPinMappingCavityMappingAssociation data = new DbDsiPinMappingCavityMappingAssociation();
             data.RowId = grpc.RowId;
-            data.PinMappingID = Guid.Parse(grpc.PinMappingID);
-            data.CavityMappingID = Guid.Parse(grpc.CavityMappingID);
+            data.PinMappingID = Guid.Parse(grpc.PinMappingID ?? Guid.Empty.ToString());
+            data.CavityMappingID = Guid.Parse(grpc.CavityMappingID ?? Guid.Empty.ToString());
             data.MappingNumber = grpc.MappingNumber;
             data.CreatedDate = grpc.CreatedDate;
             data.ModifiedDate = grpc.ModifiedDate;
@@ -1363,8 +1563,18 @@
             data.Scope = grpc.Scope;
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -1461,12 +1671,22 @@
             data.IsManualTerminal = grpc.IsManualTerminal;
             data.IsAllConnectorsSealed = grpc.IsAllConnectorsSealed;
             data.AlphaCode = grpc.AlphaCode;
-            data.HarnessID = Guid.Parse(grpc.HarnessID);
+            data.HarnessID = Guid.Parse(grpc.HarnessID ?? Guid.Empty.ToString());
             data.CircuitOption = grpc.CircuitOption;
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -1575,8 +1795,18 @@
             data.AdditionalComments = grpc.AdditionalComments;
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -1676,11 +1906,21 @@
             data.IsManualTerminal = grpc.IsManualTerminal;
             data.IsAllConnectorSealed = grpc.IsAllConnectorSealed;
             data.AlphaCode = grpc.AlphaCode;
-            data.HarnessID = Guid.Parse(grpc.HarnessID);
+            data.HarnessID = Guid.Parse(grpc.HarnessID ?? Guid.Empty.ToString());
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -1742,11 +1982,21 @@
             data.Text = grpc.Text;
             data.ColourCode = grpc.ColourCode;
             data.Spacing = grpc.Spacing;
-            data.HarnessID = Guid.Parse(grpc.HarnessID);
+            data.HarnessID = Guid.Parse(grpc.HarnessID ?? Guid.Empty.ToString());
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate.ToDateTime();
-            data.CreatedBy = string.IsNullOrEmpty(grpc.CreatedBy) ? null : Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -1834,11 +2084,21 @@
             data.PartNumber2 = grpc.PartNumber2;
             data.PartNumber3 = grpc.PartNumber3;
             data.Signal = grpc.Signal;
-            data.HarnessID = Guid.Parse(grpc.HarnessID);
+            data.HarnessID = Guid.Parse(grpc.HarnessID ?? Guid.Empty.ToString());
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 
@@ -1877,8 +2137,18 @@
             data.HarnessID = string.IsNullOrEmpty(grpc.HarnessID) ? null : Guid.Parse(grpc.HarnessID);
             data.CreatedDate = grpc.CreatedDate.ToDateTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime();
-            data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
+            if (!Guid.TryParse(grpc.CreatedBy, out Guid createdBy))
+            {
+                createdBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = createdBy;
+            if (!Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy))
+            {
+                modifiedBy = Guid.Empty;
+            }
+
+            data.ModifiedBy = modifiedBy;
             return data;
         }
 

@@ -6,6 +6,12 @@
         {
 
             builder ??= WebApplication.CreateBuilder(args);
+            string dir = Directory.GetCurrentDirectory();
+            builder.Configuration
+                .SetBasePath(dir)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables();
 
             #region Builder
 
