@@ -1212,6 +1212,8 @@ namespace RfqModule.Services
 
                             dsiCompositeDetailCircuitOptionAssociationGrpc.CircuitOptionId = existingOption.CircuitOptionId;
                             dsiCompositeDetailCircuitOptionAssociationGrpc.CompositeDetailId = compositeDetailGrpc.CompositeDetailId;
+                            dsiCompositeDetailCircuitOptionAssociationGrpc.CreatedBy = userId;
+                            dsiCompositeDetailCircuitOptionAssociationGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
                             compositeDetailCircuitOptionAssociationRequest.DsiCompositeDetailCircuitOptionAssociationGrpcsToCreate.Add(dsiCompositeDetailCircuitOptionAssociationGrpc);
                         }
                     }
