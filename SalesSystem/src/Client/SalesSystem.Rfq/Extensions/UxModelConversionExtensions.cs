@@ -304,15 +304,15 @@
             nprRequest.IsCustomerNominatedMaterial = false;
             nprRequest.IsCustomerNominatedSupplier = false;
             nprRequest.QtyPerVehicle = 1;
-            nprRequest.VehicleTotalQuantity = 1;
+            //nprRequest.VehicleTotalQuantity = 1;
             nprRequest.AssociatedParts = "";
             nprRequest.CustomerCode = rfqProject.CustomerBusinessUnit;
             nprRequest.CustomerPartNumber = partNumber.CustomerPartNumber;
             nprRequest.MaterialDescription = "";
             nprRequest.MaterialTypeDescription = "";
             nprRequest.MaterialNumber = "";
-            nprRequest.PlatformName = "";
-            nprRequest.ProgramName = "";
+            //nprRequest.PlatformName = "";
+            //nprRequest.ProgramName = "";
             nprRequest.ProjectCode = rfqProject.Project;
             nprRequest.NPRRaisedRemarks = "";
             nprRequest.ReasonDescription = rfqProject.RfqReason;
@@ -321,7 +321,7 @@
             nprRequest.SupplierGroup = "";
             nprRequest.SupplierDetailComments = "";
             nprRequest.SupplierPartNumber = "";
-            nprRequest.SEWSEUnitOfMeasurement = "";
+            nprRequest.BOMUnitOfMeasurement = "";
             nprRequest.CustomerRfqNo = "";
             nprRequest.OriginatorName = "";
             // samples
@@ -338,9 +338,9 @@
             nprRequest.OriginatorName = globalValue.DisplayName;
             nprRequest.CustomerRfqNo = rfqProject.RfqNumber;
             nprRequest.DeadlineDate = rfqProject.RfqResponseDeadline;
-            nprRequest.SEWSEUnitOfMeasurement = "EU";
+            nprRequest.BOMUnitOfMeasurement = "EU";
             nprRequest.ProjectCode = rfqProject.Project;
-            nprRequest.VehicleTotalQuantity = rfqProject.VehicleVolume;
+            //nprRequest.VehicleTotalQuantity = rfqProject.VehicleVolume;
             nprRequest.ManufacturingSite = rfqProject.CustomerLocation;
             
             return nprRequest;
@@ -386,8 +386,8 @@
             }   
             nprGrpc.ReasonDescription = model.ReasonDescription;
             nprGrpc.CustomerCode = model.CustomerCode;
-            nprGrpc.PlatformName = model.PlatformName;
-            nprGrpc.ProgramName = model.ProgramName;
+            // nprGrpc.PlatformName = model.PlatformName;
+            // nprGrpc.ProgramName = model.ProgramName;
             nprGrpc.ProjectCode = model.ProjectCode;
             nprGrpc.MaterialTypeDescription = model.MaterialTypeDescription;
             nprGrpc.ManufacturingSite = model.ManufacturingSite;
@@ -395,11 +395,11 @@
             nprGrpc.SupplierPartNumber = model.SupplierPartNumber;
             nprGrpc.MaterialNumber = model.MaterialNumber;
             nprGrpc.MaterialDescription = model.MaterialDescription;
-            nprGrpc.SEWSEUnitOfMeasurement = model.SEWSEUnitOfMeasurement;
+            nprGrpc.SEWSEUnitOfMeasurement = model.BOMUnitOfMeasurement;
             nprGrpc.SupplierGroup = model.SupplierGroup;
             nprGrpc.SupplierDetailComments = model.SupplierDetailComments;
             nprGrpc.QtyPerVehicle = (double?)model.QtyPerVehicle;
-            nprGrpc.VehicleTotalQuantity = model.VehicleTotalQuantity;
+            //nprGrpc.VehicleTotalQuantity = model.VehicleTotalQuantity;
             nprGrpc.DeadlineDate = model.DeadlineDate?.ToUniversalTime().ToTimestamp();
             nprGrpc.NPRRaisedRemarks = model.NPRRaisedRemarks;
             nprGrpc.IsCustomerNominatedSupplier = model.IsCustomerNominatedSupplier;
@@ -441,8 +441,8 @@
             model.Id = Guid.Parse(grpc.Id);
             model.ReasonDescription = grpc.ReasonDescription;
             model.CustomerCode = grpc.CustomerCode;
-            model.PlatformName = grpc.PlatformName;
-            model.ProgramName = grpc.ProgramName;
+            //model.PlatformName = grpc.PlatformName;
+            //model.ProgramName = grpc.ProgramName;
             model.ProjectCode = grpc.ProjectCode;
             model.MaterialTypeDescription = grpc.MaterialTypeDescription;
             model.ManufacturingSite = grpc.ManufacturingSite;
@@ -450,11 +450,11 @@
             model.SupplierPartNumber = grpc.SupplierPartNumber;
             model.MaterialNumber = grpc.MaterialNumber;
             model.MaterialDescription = grpc.MaterialDescription;
-            model.SEWSEUnitOfMeasurement = grpc.SEWSEUnitOfMeasurement;
+            model.BOMUnitOfMeasurement = grpc.SEWSEUnitOfMeasurement;
             model.SupplierGroup = grpc.SupplierGroup;
             model.SupplierDetailComments = grpc.SupplierDetailComments;
             model.QtyPerVehicle = grpc.QtyPerVehicle.HasValue ? (decimal)grpc.QtyPerVehicle.Value : null;
-            model.VehicleTotalQuantity = grpc.VehicleTotalQuantity;
+            //model.VehicleTotalQuantity = grpc.VehicleTotalQuantity;
             model.DeadlineDate = grpc.DeadlineDate?.ToDateTime();
             model.NPRRaisedRemarks = grpc.NPRRaisedRemarks;
             model.IsCustomerNominatedSupplier = grpc.IsCustomerNominatedSupplier ?? false;
