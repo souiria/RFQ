@@ -155,6 +155,7 @@
             switch (httpResponse.StatusCode)
             {
                 case HttpStatusCode.OK:
+                await PopulateH1NPRViewAsync(cancellationToken);
                 return await HandleSuccess(httpResponse, request, response, cancellationToken);
 
                 case HttpStatusCode.UnprocessableContent:
