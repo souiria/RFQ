@@ -114,7 +114,11 @@
 
                 try
                 {
+#if DEBUG
+                    X509Certificate2 cert = FindMatchingCertificateBySubject("CN=localhost");
+#else
                     X509Certificate2 cert = FindMatchingCertificateBySubject("*.sews-e.com");
+#endif
                     handler.SslOptions.ClientCertificates ??= new X509CertificateCollection();
                     handler.SslOptions.ClientCertificates.Add(cert);
                  

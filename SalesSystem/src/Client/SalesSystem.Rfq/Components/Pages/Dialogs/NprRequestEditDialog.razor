@@ -65,16 +65,16 @@
 
                 @* Row 4: Platform & Program *@
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="NprRequest.PlatformName"
+                    @* <MudTextField @bind-Value="NprRequest.PlatformName"
                                   Label="Platform"
                                   Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" />
+                                  Margin="Margin.Dense" /> *@
                 </MudItem>
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="NprRequest.ProgramName"
+                    @* <MudTextField @bind-Value="NprRequest.ProgramName"
                                   Label="Program"
                                   Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" />
+                                  Margin="Margin.Dense" /> *@
                 </MudItem>
 
                 @* Row 5: Project & Material *@
@@ -111,7 +111,7 @@
                                   Margin="Margin.Dense" />
                 </MudItem>
                 <MudItem xs="3">
-                    <MudTextField @bind-Value="NprRequest.SEWSEUnitOfMeasurement"
+                    <MudTextField @bind-Value="NprRequest.BOMUnitOfMeasurement"
                                   Label="UoM"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense" />
@@ -163,10 +163,10 @@
                                      Margin="Margin.Dense" />
                 </MudItem>
                 <MudItem xs="3">
-                    <MudNumericField @bind-Value="NprRequest.VehicleTotalQuantity"
+                    @* <MudNumericField @bind-Value="NprRequest.VehicleTotalQuantity"
                                      Label="Vehicle Total Quantity"
                                      Variant="Variant.Outlined"
-                                     Margin="Margin.Dense" />
+                                     Margin="Margin.Dense" /> *@
                 </MudItem>
                 <MudItem xs="6">
                     <MudDatePicker @bind-Date="NprRequest.DeadlineDate"

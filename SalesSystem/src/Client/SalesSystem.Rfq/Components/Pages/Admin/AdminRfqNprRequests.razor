@@ -156,19 +156,19 @@
             <PropertyColumn Property="x => x.MaterialTypeDescription" Title="Material Type" />
             <PropertyColumn Property="x => x.CustomerPartNumber" Title="Customer P/N" />
             <PropertyColumn Property="x => x.SupplierPartNumber" Title="Supplier P/N" />
-            <PropertyColumn Property="x => x.SEWSEUnitOfMeasurement" Title="UoM" />
+            <PropertyColumn Property="x => x.BOMUnitOfMeasurement" Title="UoM" />
             <PropertyColumn Property="x => x.SupplierGroup" Title="Supplier Group" />
             <PropertyColumn Property="x => x.SupplierDetailComments" Title="Supplier Comments" />
             <PropertyColumn Property="x => x.ProjectCode" Title="Project" />
             <PropertyColumn Property="x => x.QtyPerVehicle" Title="Qty/Vehicle" />
-            <PropertyColumn Property="x => x.VehicleTotalQuantity" Title="Total Qty" />
+            @* <PropertyColumn Property="x => x.VehicleTotalQuantity" Title="Total Qty" /> *@
             <PropertyColumn Property="x => x.IsSampleDataRequired" Title="Samples Req." />
             <PropertyColumn Property="x => x.NPRRaisedRemarks" Title="Remarks" />
             <PropertyColumn Property="x => x.ManufacturingSite" Title="Mfg. Site" />
             <PropertyColumn Property="x => x.IsCustomerNominatedSupplier" Title="Cust. Nom. Supplier" />
             <PropertyColumn Property="x => x.IsCustomerNominatedMaterial" Title="Cust. Nom. Material" />
-            <PropertyColumn Property="x => x.PlatformName" Title="Platform" />
-            <PropertyColumn Property="x => x.ProgramName" Title="Program" />
+            @* <PropertyColumn Property="x => x.PlatformName" Title="Platform" /> *@
+            @* <PropertyColumn Property="x => x.ProgramName" Title="Program" /> *@
             <PropertyColumn Property="x => x.SuggestedManufacturerGroup" Title="Suggested Mfr. Group" />
             <PropertyColumn Property="x => x.AssociatedParts" Title="Associated Parts" />
             <PropertyColumn Property="x => x.NPRUploadSeqNo" Title="Upload Seq. No." />
@@ -326,19 +326,19 @@
                 MaterialTypeDescription = nprRequest.MaterialTypeDescription,
                 CustomerPartNumber = nprRequest.CustomerPartNumber,
                 SupplierPartNumber = nprRequest.SupplierPartNumber,
-                SEWSEUnitOfMeasurement = nprRequest.SEWSEUnitOfMeasurement,
+                BOMUnitOfMeasurement = nprRequest.BOMUnitOfMeasurement,
                 SupplierGroup = nprRequest.SupplierGroup,
                 SupplierDetailComments = nprRequest.SupplierDetailComments,
                 ProjectCode = nprRequest.ProjectCode,
                 QtyPerVehicle = nprRequest.QtyPerVehicle,
-                VehicleTotalQuantity = nprRequest.VehicleTotalQuantity,
+                // VehicleTotalQuantity = nprRequest.VehicleTotalQuantity,
                 IsSampleDataRequired = nprRequest.IsSampleDataRequired,
                 NPRRaisedRemarks = nprRequest.NPRRaisedRemarks,
                 ManufacturingSite = nprRequest.ManufacturingSite,
                 IsCustomerNominatedSupplier = nprRequest.IsCustomerNominatedSupplier,
                 IsCustomerNominatedMaterial = nprRequest.IsCustomerNominatedMaterial,
-                PlatformName = nprRequest.PlatformName,
-                ProgramName = nprRequest.ProgramName,
+                // PlatformName = nprRequest.PlatformName,
+                // ProgramName = nprRequest.ProgramName,
                 SuggestedManufacturerGroup = nprRequest.SuggestedManufacturerGroup,
                 AssociatedParts = nprRequest.AssociatedParts,
                 NPRUploadSeqNo = nprRequest.NPRUploadSeqNo,
@@ -396,19 +396,19 @@
                     nprRequest.MaterialTypeDescription = updatedItem.MaterialTypeDescription;
                     nprRequest.CustomerPartNumber = updatedItem.CustomerPartNumber;
                     nprRequest.SupplierPartNumber = updatedItem.SupplierPartNumber;
-                    nprRequest.SEWSEUnitOfMeasurement = updatedItem.SEWSEUnitOfMeasurement;
+                    nprRequest.BOMUnitOfMeasurement = updatedItem.BOMUnitOfMeasurement;
                     nprRequest.SupplierGroup = updatedItem.SupplierGroup;
                     nprRequest.SupplierDetailComments = updatedItem.SupplierDetailComments;
                     nprRequest.ProjectCode = updatedItem.ProjectCode;
                     nprRequest.QtyPerVehicle = updatedItem.QtyPerVehicle;
-                    nprRequest.VehicleTotalQuantity = updatedItem.VehicleTotalQuantity;
+                    // nprRequest.VehicleTotalQuantity = updatedItem.VehicleTotalQuantity;
                     nprRequest.IsSampleDataRequired = updatedItem.IsSampleDataRequired;
                     nprRequest.NPRRaisedRemarks = updatedItem.NPRRaisedRemarks;
                     nprRequest.ManufacturingSite = updatedItem.ManufacturingSite;
                     nprRequest.IsCustomerNominatedSupplier = updatedItem.IsCustomerNominatedSupplier;
                     nprRequest.IsCustomerNominatedMaterial = updatedItem.IsCustomerNominatedMaterial;
-                    nprRequest.PlatformName = updatedItem.PlatformName;
-                    nprRequest.ProgramName = updatedItem.ProgramName;
+                    // nprRequest.PlatformName = updatedItem.PlatformName;
+                    // nprRequest.ProgramName = updatedItem.ProgramName;
                     nprRequest.SuggestedManufacturerGroup = updatedItem.SuggestedManufacturerGroup;
                     nprRequest.AssociatedParts = updatedItem.AssociatedParts;
                     nprRequest.NPRUploadSeqNo = updatedItem.NPRUploadSeqNo;
@@ -577,21 +577,21 @@
                 if (item.MaterialTypeDescription?.Contains(filter, comparisonType) == true) return true;
                 if (item.CustomerPartNumber?.Contains(filter, comparisonType) == true) return true;
                 if (item.SupplierPartNumber?.Contains(filter, comparisonType) == true) return true;
-                if (item.SEWSEUnitOfMeasurement?.Contains(filter, comparisonType) == true) return true;
+                if (item.BOMUnitOfMeasurement?.Contains(filter, comparisonType) == true) return true;
                 if (item.SupplierGroup?.Contains(filter, comparisonType) == true) return true;
                 if (item.SupplierDetailComments?.Contains(filter, comparisonType) == true) return true;
                 if (item.ProjectCode?.Contains(filter, comparisonType) == true) return true;
                 if (item.NPRRaisedRemarks?.Contains(filter, comparisonType) == true) return true;
                 if (item.ManufacturingSite?.Contains(filter, comparisonType) == true) return true;
-                if (item.PlatformName?.Contains(filter, comparisonType) == true) return true;
-                if (item.ProgramName?.Contains(filter, comparisonType) == true) return true;
+                // if (item.PlatformName?.Contains(filter, comparisonType) == true) return true;
+                // if (item.ProgramName?.Contains(filter, comparisonType) == true) return true;
                 if (item.SuggestedManufacturerGroup?.Contains(filter, comparisonType) == true) return true;
                 if (item.AssociatedParts?.Contains(filter, comparisonType) == true) return true;
 
                 if (isNumeric)
                 {
                     if (item.QtyPerVehicle?.ToString().Contains(filter, comparisonType) == true) return true;
-                    if (item.VehicleTotalQuantity?.ToString().Contains(filter, comparisonType) == true) return true;
+                    // if (item.VehicleTotalQuantity?.ToString().Contains(filter, comparisonType) == true) return true;
                     if (item.NPRUploadSeqNo?.ToString().Contains(filter, comparisonType) == true) return true;
                 }
 

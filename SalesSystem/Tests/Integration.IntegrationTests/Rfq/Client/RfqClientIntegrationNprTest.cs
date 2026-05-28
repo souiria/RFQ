@@ -97,7 +97,7 @@ namespace Integration.Tests.Rfq.Client
             request.VehicleTotalQuantity = vehicleTotalQuantity;
             request.CustomerPartNumber = "CPN-001";
             request.MaterialDescription = "Test Material";
-            request.SEWSEUnitOfMeasurement = "EA";
+            request.BOMUnitOfMeasurement = "EA";
             request.DeadlineDate = DateTime.UtcNow.AddDays(30);
 
             return request;
@@ -565,7 +565,7 @@ namespace Integration.Tests.Rfq.Client
             request.MaterialTypeDescription = "Steel";
             request.CustomerPartNumber = "CPN-999";
             request.SupplierPartNumber = "SPN-888";
-            request.SEWSEUnitOfMeasurement = "EA";
+            request.BOMUnitOfMeasurement = "EA";
             request.SupplierGroup = "Group Alpha";
             request.SupplierDetailComments = "New supplier details";
             request.ProjectCode = "Project Z";
@@ -609,7 +609,7 @@ namespace Integration.Tests.Rfq.Client
             Assert.That(loaded.MaterialTypeDescription, Is.EqualTo("Steel"));
             Assert.That(loaded.CustomerPartNumber, Is.EqualTo("CPN-999"));
             Assert.That(loaded.SupplierPartNumber, Is.EqualTo("SPN-888"));
-            Assert.That(loaded.SEWSEUnitOfMeasurement, Is.EqualTo("EA"));
+            Assert.That(loaded.BOMUnitOfMeasurement, Is.EqualTo("EA"));
             Assert.That(loaded.SupplierGroup, Is.EqualTo("Group Alpha"));
             Assert.That(loaded.SupplierDetailComments, Is.EqualTo("New supplier details"));
             Assert.That(loaded.ProjectCode, Is.EqualTo("Project Z"));
