@@ -586,7 +586,6 @@ namespace RfqModule.Extentions
             dsiBranchInsulationGrpc.IsSlit = branchInsulation.IsSlit;
             dsiBranchInsulationGrpc.ModuleSpecificData = branchInsulation.ModuleSpecificData;
             dsiBranchInsulationGrpc.HarnessId = branchInsulation.HarnessID.ToString();
-            dsiBranchInsulationGrpc.CreatedDate = Timestamp.FromDateTime(DateTime.UtcNow);
             return dsiBranchInsulationGrpc;
         }
         public static DsiBranchInsulationThroughNodeGrpc ToBranchInsulationThroughNode(this BranchInsulationThroughNodeDto branchInsulationThroughNode)

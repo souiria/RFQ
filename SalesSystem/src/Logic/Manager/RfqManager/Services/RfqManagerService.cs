@@ -1,6 +1,8 @@
 ﻿using Azure;
 using Google.Protobuf.WellKnownTypes;
 using Rfq;
+using System.Globalization;
+using Transformation.TypeConversion.DSI;
 
 namespace RfqModule.Services
 {
@@ -1024,6 +1026,7 @@ namespace RfqModule.Services
             {
                 foreach (BranchInsulationDto branchInsulation in dsiAggregate.BranchInsulationList)
                 {
+                    branchInsulation.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId : null;
                     DsiBranchInsulationGrpc branchInsulationGrpc = branchInsulation.ToBranchInsulation();
                     branchInsulationGrpc.CreatedBy = userId;
                     branchInsulationGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
@@ -1173,7 +1176,6 @@ namespace RfqModule.Services
                 _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save composite options");
             }
         }
-
         async Task SaveCompositeDetailsAsync(DsiAggregate dsiAggregate, string userId)
         {
             DsiCircuitOptionGrpcRequest request = new DsiCircuitOptionGrpcRequest();
@@ -1391,8 +1393,8 @@ namespace RfqModule.Services
             {
                 foreach (ManualBomQuantityDto bomQuantityDto in dsiAggregate.ManualBomQuantityList)
                 {
+                    bomQuantityDto.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId : null;
                     DsiManualBomQuantityGrpc manualBomQuantityGrpc = bomQuantityDto.ToManualBomQuantity();
-                    manualBomQuantityGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
                     manualBomQuantityGrpc.CreatedBy = userId;
                     manualBomQuantityGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
                     manualBomQuantityGrpcRequest.DsiManualBomQuantityGrpcsToCreate.Add(manualBomQuantityGrpc);
@@ -1414,8 +1416,8 @@ namespace RfqModule.Services
             {
                 foreach (MidWireComponentDto midWireComponent in dsiAggregate.MidWireComponentList)
                 {
+                    midWireComponent.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId : null;
                     DsiMidWireComponentGrpc midWireComponentGrpc = midWireComponent.ToMidWireComponent();
-                    midWireComponentGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
                     midWireComponentGrpc.CreatedBy = userId;
                     midWireComponentGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
                     midWireComponentRequest.DsiMidWireComponentGrpcsToCreate.Add(midWireComponentGrpc);
@@ -1437,8 +1439,8 @@ namespace RfqModule.Services
             {
                 foreach (ModuleChildDetailDto moduleChildDetail in dsiAggregate.ModuleChildDetailList)
                 {
+                    moduleChildDetail.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId : null;
                     DsiModuleChildDetailGrpc moduleChildDetailGrpc = moduleChildDetail.ToModuleChildDetail();
-                    moduleChildDetailGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
                     moduleChildDetailGrpc.CreatedBy = userId;
                     moduleChildDetailGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
                     moduleChildDetailRequest.DsiModuleChildDetailGrpcsToCreate.Add(moduleChildDetailGrpc);
@@ -1460,8 +1462,8 @@ namespace RfqModule.Services
             {
                 foreach (ModuleCompatibilityDto moduleCompatibility in dsiAggregate.ModuleCompatibilityList)
                 {
+                    moduleCompatibility.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId : null;
                     DsiModuleCompatibilityGrpc moduleCompatibilityGrpc = moduleCompatibility.ToModuleCompatibility();
-                    moduleCompatibilityGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
                     moduleCompatibilityGrpc.CreatedBy = userId;
                     moduleCompatibilityGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
                     moduleCompatibilityRequest.DsiModuleCompatibilityGrpcsToCreate.Add(moduleCompatibilityGrpc);
@@ -1483,8 +1485,8 @@ namespace RfqModule.Services
             {
                 foreach (MulticoreSpecificationDto multicoreSpecification in dsiAggregate.MulticoreSpecificationList)
                 {
+                    multicoreSpecification.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId : null;
                     DsiMulticoreSpecificationGrpc multicoreSpecificationGrpc = multicoreSpecification.ToMulticoreSpecification();
-                    multicoreSpecificationGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
                     multicoreSpecificationGrpc.CreatedBy = userId;
                     multicoreSpecificationGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
                     multicoreSpecificationRequest.DsiMulticoreSpecificationGrpcsToCreate.Add(multicoreSpecificationGrpc);
@@ -1506,8 +1508,8 @@ namespace RfqModule.Services
             {
                 foreach (PinMappingDto pinMapping in dsiAggregate.PinMappingList)
                 {
+                    pinMapping.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId : null;
                     DsiPinMappingGrpc pinMappingGrpc = pinMapping.ToPinMapping();
-                    pinMappingGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
                     pinMappingGrpc.CreatedBy = userId;
                     pinMappingGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
                     pinMappingRequest.DsiPinMappingGrpcsToCreate.Add(pinMappingGrpc);
@@ -1529,8 +1531,8 @@ namespace RfqModule.Services
             {
                 foreach (WireMulticoreMarkerDto wireMulticoreMarker in dsiAggregate.WireMulticoreMarkerList)
                 {
+                    wireMulticoreMarker.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId : null;
                     DsiWireMulticoreMarkerGrpc wireMulticoreMarkerGrpc = wireMulticoreMarker.ToWireMulticoreMarker();
-                    wireMulticoreMarkerGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
                     wireMulticoreMarkerGrpc.CreatedBy = userId;
                     wireMulticoreMarkerGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
                     wireMulticoreMarkerRequest.DsiWireMulticoreMarkerGrpcsToCreate.Add(wireMulticoreMarkerGrpc);
@@ -1552,8 +1554,8 @@ namespace RfqModule.Services
             {
                 foreach (WireSpecificationDto wireSpecification in dsiAggregate.WireSpecificationList)
                 {
+                    wireSpecification.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId : null;
                     DsiWireSpecificationGrpc wireSpecificationGrpc = wireSpecification.ToWireSpecification();
-                    wireSpecificationGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
                     wireSpecificationGrpc.CreatedBy = userId;
                     wireSpecificationGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
                     wireSpecificationRequest.DsiWireSpecificationGrpcsToCreate.Add(wireSpecificationGrpc);
@@ -1575,8 +1577,8 @@ namespace RfqModule.Services
             {
                 foreach(WireThroughNodeDto wireThroughNode in dsiAggregate.WireThroughNodeList)
                 {
+                    wireThroughNode.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId : null;
                     DsiWireThroughNodeGrpc wireThroughNodeGrpc = wireThroughNode.ToWireThroughNode();
-                    wireThroughNodeGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
                     wireThroughNodeGrpc.CreatedBy = userId;
                     wireThroughNodeGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
                     dsiWireThroughNodeRequest.DsiWireThroughNodeGrpcsToCreate.Add(wireThroughNodeGrpc);
