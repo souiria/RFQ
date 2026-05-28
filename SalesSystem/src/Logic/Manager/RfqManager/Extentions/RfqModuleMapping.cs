@@ -359,11 +359,10 @@
             apiData.MaterialTypeDescription = nprApiData.RfqNprRequest.MaterialTypeDescription;
             apiData.CustomerPartNumber = nprApiData.RfqNprRequest.CustomerPartNumber;
             apiData.SupplierPartNumber = nprApiData.RfqNprRequest.SupplierPartNumber;
-            apiData.SEWSEUnitOfMeasurement = nprApiData.RfqNprRequest.SEWSEUnitOfMeasurement;
+            apiData.BOMUnitOfMeasurement = nprApiData.RfqNprRequest.SEWSEUnitOfMeasurement;
             apiData.SupplierGroup = nprApiData.RfqNprRequest.SupplierGroup;
             apiData.SupplierDetailComments = nprApiData.RfqNprRequest.SupplierDetailComments;
             apiData.ProjectCode = nprApiData.RfqNprRequest.ProjectCode;
-            apiData.VehicleTotalQuantity = nprApiData.RfqNprRequest.VehicleTotalQuantity;
             apiData.IsSampleDataRequired = nprApiData.RfqNprRequest.IsSampleDataRequired;
 
             // Map SampleSiteDetails from RfqNprRequestSampleSiteDataGrpc to NPR.SampleSiteDetailsGrpc
@@ -382,8 +381,6 @@
             apiData.ManufacturingSite = nprApiData.RfqNprRequest.ManufacturingSite;
             apiData.IsCustomerNominatedSupplier = nprApiData.RfqNprRequest.IsCustomerNominatedSupplier;
             apiData.IsCustomerNominatedMaterial = nprApiData.RfqNprRequest.IsCustomerNominatedMaterial;
-            apiData.PlatformName = nprApiData.RfqNprRequest.PlatformName;
-            apiData.ProgramName = nprApiData.RfqNprRequest.ProgramName;
             apiData.SuggestedManufacturerGroup = nprApiData.RfqNprRequest.SuggestedManufacturerGroup;
             apiData.AssociatedParts = nprApiData.RfqNprRequest.AssociatedParts;
             apiData.NPRUploadSeqNo = nprApiData.RfqNprRequest.NPRUploadSeqNo;
@@ -407,11 +404,10 @@
             rfqNprRequestGrpc.MaterialTypeDescription = nprAccessData.MaterialTypeDescription;
             rfqNprRequestGrpc.CustomerPartNumber = nprAccessData.CustomerPartNumber;
             rfqNprRequestGrpc.SupplierPartNumber = nprAccessData.SupplierPartNumber;
-            rfqNprRequestGrpc.SEWSEUnitOfMeasurement = nprAccessData.SEWSEUnitOfMeasurement;
+            rfqNprRequestGrpc.SEWSEUnitOfMeasurement = nprAccessData.BOMUnitOfMeasurement;
             rfqNprRequestGrpc.SupplierGroup = nprAccessData.SupplierGroup;
             rfqNprRequestGrpc.SupplierDetailComments = nprAccessData.SupplierDetailComments;
             rfqNprRequestGrpc.ProjectCode = nprAccessData.ProjectCode;
-            rfqNprRequestGrpc.VehicleTotalQuantity = nprAccessData.VehicleTotalQuantity;
             rfqNprRequestGrpc.IsSampleDataRequired = nprAccessData.IsSampleDataRequired;
 
             // Map SampleSiteDetails from NPR.SampleSiteDetailsGrpc to RfqNprRequestSampleSiteDataGrpc
@@ -430,8 +426,6 @@
             rfqNprRequestGrpc.ManufacturingSite = nprAccessData.ManufacturingSite;
             rfqNprRequestGrpc.IsCustomerNominatedSupplier = nprAccessData.IsCustomerNominatedSupplier;
             rfqNprRequestGrpc.IsCustomerNominatedMaterial = nprAccessData.IsCustomerNominatedMaterial;
-            rfqNprRequestGrpc.PlatformName = nprAccessData.PlatformName;
-            rfqNprRequestGrpc.ProgramName = nprAccessData.ProgramName;
             rfqNprRequestGrpc.SuggestedManufacturerGroup = nprAccessData.SuggestedManufacturerGroup;
             rfqNprRequestGrpc.AssociatedParts = nprAccessData.AssociatedParts;
             rfqNprRequestGrpc.NPRUploadSeqNo = nprAccessData.NPRUploadSeqNo;

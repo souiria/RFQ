@@ -23,12 +23,6 @@
         public string? CustomerCode
         { get; set; }
 
-        public string? PlatformName
-        { get; set; }
-
-        public string? ProgramName
-        { get; set; }
-
         public string? ProjectCode
         { get; set; }
 
@@ -50,7 +44,7 @@
         public string? MaterialNumber
         { get; set; }
 
-        public string? SewseUnitOfMeasurement
+        public string? BOMUnitOfMeasurement
         { get; set; }
 
         public string? SupplierGroup
@@ -63,9 +57,6 @@
         { get; set; }
 
         public double? QtyPerVehicle
-        { get; set; }
-
-        public int? VehicleTotalQuantity
         { get; set; }
 
         public DateTime? DeadlineDate
