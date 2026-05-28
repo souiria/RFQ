@@ -11,6 +11,7 @@
             builder.Configuration
                 .SetBasePath(dir)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();
             builder.Logging.ClearProviders();
             builder.Logging.AddConfiguration(conf);
