@@ -113,6 +113,17 @@
                     Validate All
                 </MudButton>
             </MudTooltip>
+            <MudTooltip Text="Send valid NPRs to Eng.API">
+                <MudButton StartIcon="@Icons.Material.Filled.Send"
+                           Color="Color.Success"
+                           Variant="Variant.Filled"
+                           Size="Size.Small"
+                           Class="ml-2"
+                           Disabled="@(_isBusy || _isModalOpen)"
+                           OnClick="OnSendValidsClicked">
+                    Send Valid NPRs
+                </MudButton>
+            </MudTooltip>
             @if (HasPendingChanges)
             {
                 <MudChip T="string" Size="Size.Small" Color="Color.Warning" Variant="Variant.Filled">
@@ -194,6 +205,11 @@
     int _validCount;
     int _invalidCount;
     int _updateCount;
+
+    //valid sends
+    bool _isBusy;
+    bool _isModalOpen = false;
+    MarkupString _markupContent;
 
     Func<RfqNprRequestUxModel, bool> QuickFilter => _quickFilterFunc;
 
@@ -333,6 +349,41 @@
             _invalidCount == 0 ? Severity.Success : Severity.Warning);
 
         StateHasChanged();
+    }
+
+
+    private void CloseValidationModal()
+    {
+        _isModalOpen = false;
+    }
+
+    private async Task OnSendValidsClicked()
+    {
+        await Task.Delay(1); // simulate some delay
+        _isBusy = true;
+        try
+        {
+            var validNprs = RfqUxClientService.NprRequests.Where(npr => npr.Validate()).ToList();
+
+            CreateNprGrpcResponse response = await RfqUxClientService.CreateNprGrpcAsync(validNprs);
+
+            string rawMessage = response.Message;
+            string logText = ErrorMarkupFormatter.FormatForMessageBox(rawMessage);
+            Logger?.GenericLogInformation(
+                $"OnSendValidsClicked - Manager response: HttpStatusCode='{response.HttpStatusCode}', " +
+                $"Message='{logText}', returned {response.NprApiData.Count} entry(ies)");
+
+            _markupContent = ErrorMarkupFormatter.ConvertToHtmlMarkup(rawMessage);
+            _isModalOpen = true;
+        }
+        catch (Exception ex)
+        {
+            Logger?.GenericLogError($"OnSendValidsClicked - Exception: {ex.Message}", ex);
+        }
+        finally
+        {
+            _isBusy = false;
+        }
     }
 
     #region NPR Tab - inline management (public methods callable by parent)

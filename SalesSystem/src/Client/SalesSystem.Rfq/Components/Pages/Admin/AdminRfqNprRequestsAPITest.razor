@@ -1,5 +1,8 @@
 @using Google.Protobuf
+@using SalesSystem.Rfq.Components.Pages.Dialogs
 @using SalesSystem.Rfq.Services
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
 @inject ISnackbar Snackbar
 @inject RfqUxClientService RfqUxClientService
 @inject ILogger<AdminRfqNprRequests> Logger
@@ -113,6 +116,24 @@
             </MudTooltip>
         </ToolBarContent>
         <Columns>
+            <TemplateColumn Title="Actions" CellClass="d-flex justify-start">
+                <CellTemplate>
+                    <MudTooltip Text="Edit NPR Request">
+                        <MudIconButton Size="@Size.Small"
+                                       Color="Color.Primary"
+                                       Icon="@Icons.Material.Filled.Edit"
+                                       aria-label="edit"
+                                       OnClick="@(() => EditNprRequest(context.Item))" />
+                    </MudTooltip>
+                    <MudTooltip Text="Validate NPR Request">
+                        <MudIconButton Size="@Size.Small"
+                                       Color="Color.Primary"
+                                       Icon="@Icons.Material.Filled.Check"
+                                       aria-label="validate"
+                                       OnClick="@(() => ValidateNprRequest(context.Item))" />
+                    </MudTooltip>
+                </CellTemplate>
+            </TemplateColumn>
             <PropertyColumn Property="x => x.CustomerRfqNo" Title="RFQ Number" />
             <PropertyColumn Property="x => x.IsActive" Title="Is Active?" />
             <PropertyColumn Property="x => x.UxStatus" Title="UxStatus" />
@@ -153,11 +174,18 @@
     </MudDataGrid>
 </div>
 
+<ErrorMessageDialog IsOpen="_isModalOpen" 
+                    Content="_markupContent" 
+                    OnClose="CloseValidationModal" />
+
 @code {
 
     string _searchFilter = "";
     string _lastCompiledFilter = "";
     bool _isBusy;
+    bool _isModalOpen = false;
+    MarkupString _markupContent;
+
     List<RfqNprRequestUxModel> TestNprRequests = new List<RfqNprRequestUxModel>()
     {
         new RfqNprRequestUxModel(){
@@ -241,6 +269,11 @@
     private int ActiveNprCount =>
     RfqUxClientService.NprRequests?.Count(r => r.UxStatus != UxObjectStatus.Deleted) ?? 0;
 
+    private void CloseValidationModal()
+    {
+        _isModalOpen = false;
+    }
+
     private async Task OnValidateClicked()
     {
         await Task.Delay(1); // simulate some delay
@@ -289,21 +322,19 @@
 
     private async Task OnSendClicked()
     {
-        await Task.Delay(100); // simulate some delay
+        await Task.Delay(1); // simulate some delay
         _isBusy = true;
         try
         {
             CreateNprGrpcResponse response = await RfqUxClientService.CreateNprGrpcAsync(TestNprRequests);
 
+            string logText = ErrorMarkupFormatter.FormatForMessageBox(response.Message);
             Logger?.GenericLogInformation(
                 $"OnSendClicked - Manager response: HttpStatusCode='{response.HttpStatusCode}', " +
-                $"Message='{response.Message}', returned {response.NprApiData.Count} entry(ies)");
+                $"Message='{logText}', returned {response.NprApiData.Count} entry(ies)");
 
-            await DialogService.ShowMessageBox(
-                $"NPR API Response — {response.HttpStatusCode}",
-                $"Message: {response.Message}\n\nReturned {response.NprApiData.Count} entry(ies).",
-                yesText: "OK"
-            );
+            _markupContent = ErrorMarkupFormatter.ConvertToHtmlMarkup(logText);
+            _isModalOpen = true;
         }
         finally
         {
@@ -321,20 +352,196 @@
 
             CreateNprGrpcResponse response = await RfqUxClientService.CreateNprGrpcAsync(validNprs);
 
+            string rawMessage = response.Message;
+            string logText = ErrorMarkupFormatter.FormatForMessageBox(rawMessage);
             Logger?.GenericLogInformation(
                 $"OnSendValidsClicked - Manager response: HttpStatusCode='{response.HttpStatusCode}', " +
-                $"Message='{response.Message}', returned {response.NprApiData.Count} entry(ies)");
+                $"Message='{logText}', returned {response.NprApiData.Count} entry(ies)");
 
-            await DialogService.ShowMessageBox(
-                $"NPR API Response — {response.HttpStatusCode}",
-                $"Message: {response.Message}\n\nReturned {response.NprApiData.Count} entry(ies).",
-                yesText: "OK"
-            );
+            _markupContent = ErrorMarkupFormatter.ConvertToHtmlMarkup(rawMessage);
+            _isModalOpen = true;
+        }
+        catch(Exception ex)
+        {
+            Logger?.GenericLogError($"OnSendValidsClicked - Exception: {ex.Message}", ex);
         }
         finally
         {
             _isBusy = false;
         }
+    }
+
+    private async Task EditNprRequest(RfqNprRequestUxModel nprRequest)
+    {
+        try
+        {
+            Logger.GenericLogInformation(
+                $"NprRequestsEditor.EditNprRequest - Editing NPR request Id: {nprRequest.Id}, " +
+                $"Material: {nprRequest.MaterialNumber}, Customer P/N: {nprRequest.CustomerPartNumber}");
+
+            var editCopy = new RfqNprRequestUxModel
+            {
+                Id = nprRequest.Id,
+                CustomerRfqNo = nprRequest.CustomerRfqNo,
+                CustomerCode = nprRequest.CustomerCode,
+                RequestID = nprRequest.RequestID,
+                OriginatorName = nprRequest.OriginatorName,
+                DeadlineDate = nprRequest.DeadlineDate,
+                ReasonDescription = nprRequest.ReasonDescription,
+                MaterialNumber = nprRequest.MaterialNumber,
+                MaterialDescription = nprRequest.MaterialDescription,
+                MaterialTypeDescription = nprRequest.MaterialTypeDescription,
+                CustomerPartNumber = nprRequest.CustomerPartNumber,
+                SupplierPartNumber = nprRequest.SupplierPartNumber,
+                BOMUnitOfMeasurement = nprRequest.BOMUnitOfMeasurement,
+                SupplierGroup = nprRequest.SupplierGroup,
+                SupplierDetailComments = nprRequest.SupplierDetailComments,
+                ProjectCode = nprRequest.ProjectCode,
+                QtyPerVehicle = nprRequest.QtyPerVehicle,
+                // VehicleTotalQuantity = nprRequest.VehicleTotalQuantity,
+                IsSampleDataRequired = nprRequest.IsSampleDataRequired,
+                NPRRaisedRemarks = nprRequest.NPRRaisedRemarks,
+                ManufacturingSite = nprRequest.ManufacturingSite,
+                IsCustomerNominatedSupplier = nprRequest.IsCustomerNominatedSupplier,
+                IsCustomerNominatedMaterial = nprRequest.IsCustomerNominatedMaterial,
+                // PlatformName = nprRequest.PlatformName,
+                // ProgramName = nprRequest.ProgramName,
+                SuggestedManufacturerGroup = nprRequest.SuggestedManufacturerGroup,
+                AssociatedParts = nprRequest.AssociatedParts,
+                NPRUploadSeqNo = nprRequest.NPRUploadSeqNo,
+                Created = nprRequest.Created,
+                Updated = nprRequest.Updated,
+                UxStatus = nprRequest.UxStatus
+            };
+
+            // Copy SampleSiteDetails collection
+            foreach (var site in nprRequest.SampleSiteDetails)
+            {
+                editCopy.SampleSiteDetails.Add(new RfqNprRequestSampleSiteDataUxModel
+                {
+                    SampleQty = site.SampleQty,
+                    SendSampleContactPersonName = site.SendSampleContactPersonName,
+                    RequiredDate = site.RequiredDate,
+                    FreightAccount = site.FreightAccount,
+                    UxStatus = site.UxStatus
+                });
+            }
+
+            var parameters = new DialogParameters<NprRequestEditDialog>
+            {
+                { x => x.NprRequest, editCopy }
+            };
+
+            var options = new DialogOptions
+            {
+                MaxWidth = MaxWidth.Medium,
+                FullWidth = true,
+                CloseOnEscapeKey = true,
+                BackdropClick = false
+            };
+
+            var dialog = await DialogService.ShowAsync<NprRequestEditDialog>(
+                $"Edit NPR: {nprRequest.MaterialNumber ?? nprRequest.CustomerPartNumber ?? "New"}",
+                parameters,
+                options);
+
+            var result = await dialog.Result;
+
+            if (result != null && !result.Canceled)
+            {
+                var updatedItem = result.Data as RfqNprRequestUxModel;
+                if (updatedItem != null)
+                {
+                    nprRequest.CustomerRfqNo = updatedItem.CustomerRfqNo;
+                    nprRequest.CustomerCode = updatedItem.CustomerCode;
+                    nprRequest.RequestID = updatedItem.RequestID;
+                    nprRequest.OriginatorName = updatedItem.OriginatorName;
+                    nprRequest.DeadlineDate = updatedItem.DeadlineDate;
+                    nprRequest.ReasonDescription = updatedItem.ReasonDescription;
+                    nprRequest.MaterialNumber = updatedItem.MaterialNumber;
+                    nprRequest.MaterialDescription = updatedItem.MaterialDescription;
+                    nprRequest.MaterialTypeDescription = updatedItem.MaterialTypeDescription;
+                    nprRequest.CustomerPartNumber = updatedItem.CustomerPartNumber;
+                    nprRequest.SupplierPartNumber = updatedItem.SupplierPartNumber;
+                    nprRequest.BOMUnitOfMeasurement = updatedItem.BOMUnitOfMeasurement;
+                    nprRequest.SupplierGroup = updatedItem.SupplierGroup;
+                    nprRequest.SupplierDetailComments = updatedItem.SupplierDetailComments;
+                    nprRequest.ProjectCode = updatedItem.ProjectCode;
+                    nprRequest.QtyPerVehicle = updatedItem.QtyPerVehicle;
+                    // nprRequest.VehicleTotalQuantity = updatedItem.VehicleTotalQuantity;
+                    nprRequest.IsSampleDataRequired = updatedItem.IsSampleDataRequired;
+                    nprRequest.NPRRaisedRemarks = updatedItem.NPRRaisedRemarks;
+                    nprRequest.ManufacturingSite = updatedItem.ManufacturingSite;
+                    nprRequest.IsCustomerNominatedSupplier = updatedItem.IsCustomerNominatedSupplier;
+                    nprRequest.IsCustomerNominatedMaterial = updatedItem.IsCustomerNominatedMaterial;
+                    // nprRequest.PlatformName = updatedItem.PlatformName;
+                    // nprRequest.ProgramName = updatedItem.ProgramName;
+                    nprRequest.SuggestedManufacturerGroup = updatedItem.SuggestedManufacturerGroup;
+                    nprRequest.AssociatedParts = updatedItem.AssociatedParts;
+                    nprRequest.NPRUploadSeqNo = updatedItem.NPRUploadSeqNo;
+
+                    // Update SampleSiteDetails collection
+                    nprRequest.SampleSiteDetails.Clear();
+                    foreach (var site in updatedItem.SampleSiteDetails)
+                    {
+                        nprRequest.SampleSiteDetails.Add(site);
+                    }
+
+                    nprRequest.Updated = DateTime.UtcNow;
+
+                    if (nprRequest.UxStatus == UxObjectStatus.Read)
+                    {
+                        nprRequest.UxStatus = UxObjectStatus.Updated;
+                    }
+
+                    Logger.GenericLogInformation(
+                        $"NprRequestsEditor.EditNprRequest - Updated NPR request Id: {nprRequest.Id}");
+                    Snackbar.Add(
+                        $"NPR request '{nprRequest.MaterialNumber ?? nprRequest.CustomerPartNumber}' updated. Save to persist.",
+                        Severity.Success);
+
+                    StateHasChanged();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError($"NprRequestsEditor.EditNprRequest - Error editing NPR request: {nprRequest.CustomerPartNumber}", ex);
+            Snackbar.Add($"Error editing NPR request: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task ValidateNprRequest(RfqNprRequestUxModel nprRequest)
+    {
+        bool isValid = nprRequest.Validate();
+
+        string partLabel = nprRequest.MaterialNumber
+            ?? nprRequest.CustomerPartNumber
+            ?? nprRequest.Id.ToString();
+
+        Logger.GenericLogInformation(
+            $"NprRequestsEditor.ValidateNprRequest - " +
+            $"Part: {partLabel}, Valid: {isValid}, Errors: {nprRequest.ValidationErrors.Count}");
+
+        DialogParameters<NprValidationResultDialog> parameters = new DialogParameters<NprValidationResultDialog>
+        {
+            { x => x.IsValid, isValid },
+            { x => x.PartLabel, partLabel },
+            { x => x.ValidationErrors, nprRequest.ValidationErrors }
+        };
+
+        DialogOptions options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Large,
+            FullWidth = true,
+            CloseOnEscapeKey = true,
+            BackdropClick = false
+        };
+
+        await DialogService.ShowAsync<NprValidationResultDialog>(
+            isValid ? "Validation Passed" : "Validation Errors",
+            parameters,
+            options);
     }
 
     private string RowStyleFunc(RfqNprRequestUxModel item, int index)
