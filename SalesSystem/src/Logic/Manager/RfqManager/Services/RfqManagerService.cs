@@ -1462,7 +1462,7 @@
         {
             await Task.Delay(0);
             CreateNprGrpcResponse response = new CreateNprGrpcResponse();
-            ValidateNprRequestRequest validateRequest = new ValidateNprRequestRequest();
+            // ValidateNprRequestRequest validateRequest = new ValidateNprRequestRequest();
             List<NPR.NprApiDataGrpc> accessDataList = new List<NPR.NprApiDataGrpc>();
             List<Rfq.RfqNprRequestGrpc> rfqNprRequestList = new List<Rfq.RfqNprRequestGrpc>();
 
@@ -1471,15 +1471,14 @@
             {
                 Rfq.RfqNprRequestGrpc rfqNprRequest = npr.RfqNprRequest.ToRfqNprRequestGrpcAccess();
                 rfqNprRequestList.Add(rfqNprRequest);
-                validateRequest.Items.Add(rfqNprRequest);
+                // validateRequest.Items.Add(rfqNprRequest);
             }
 
-            ValidateNprRequestResponse validateResponse = await _RfqClient.ValidateNprRequestGrpcAsync(validateRequest);
-            List<Rfq.RfqNprRequestGrpc> validRequests = validateRequest.Items.Where(item => item.Id != null && validateResponse.LineStatuses.Any(line => line.Id == item.Id && line.IsValid)).ToList();
-
+            // ValidateNprRequestResponse validateResponse = await _RfqClient.ValidateNprRequestGrpcAsync(validateRequest);
+            // List<Rfq.RfqNprRequestGrpc> validRequests = validateRequest.Items.Where(item => item.Id != null && validateResponse.LineStatuses.Any(line => line.Id == item.Id && line.IsValid)).ToList();  
             // send all requests to create RfqNprRequests replacing with the ones from NPR API for the valid requests to capture any additional data from NPR API and to update the status of the RfqNprRequest
             NprApiDataGrpc nprApiDataGrpc = new NprApiDataGrpc();
-            foreach (Rfq.RfqNprRequestGrpc validRequest in validRequests)
+            foreach (Rfq.RfqNprRequestGrpc validRequest in rfqNprRequestList) //validRequests)
             {
                 nprApiDataGrpc.RfqNprRequest = validRequest.ToRfqNprRequest();
                 NPR.NprApiDataGrpc nprAccessData = nprApiDataGrpc.ToNprApiAccessData();

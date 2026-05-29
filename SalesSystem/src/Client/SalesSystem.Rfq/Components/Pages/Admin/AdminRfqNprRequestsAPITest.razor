@@ -1,0 +1,406 @@
+@using Google.Protobuf
+@using SalesSystem.Rfq.Services
+@inject ISnackbar Snackbar
+@inject RfqUxClientService RfqUxClientService
+@inject ILogger<AdminRfqNprRequests> Logger
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+@inject ILogger<RfqUxClientService> Logger
+
+<style>
+    .mud-npr-req-grid .mud-table-head {
+        background-color: lightgrey;
+    }
+
+        .mud-npr-req-grid .mud-table-head th {
+            background-color: lightgrey;
+        }
+
+    .mud-npr-req-grid {
+        overflow-x: hidden !important;
+        border: 1px solid #bdbdbd;
+        border-radius: 4px;
+    }
+
+    .mud-table-sticky-header {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background-color: var(--mud-palette-surface);
+    }
+
+    /* First row: column headers */
+    .mud-npr-req-grid .mud-table-head tr:first-child th {
+        position: sticky;
+        top: 0;
+        z-index: 3;
+        background-color: lightgrey;
+    }
+
+    /* Second row: filter inputs */
+    .mud-npr-req-grid .mud-table-head tr:nth-child(2) th {
+        position: sticky;
+        top: 36px;
+        z-index: 3;
+        background-color: #f5f5f5;
+    }
+</style>
+<div class="d-flex flex-column"
+     style="border: 2px solid crimson; height: 100%; width: 100%; min-height: calc(100vh - 340px); overflow: hidden;">
+    <MudDataGrid T="RfqNprRequestUxModel"
+                 @ref="_dataGrid"
+                 Items="TestNprRequests"
+                 ReadOnly="true"
+                 Bordered="true"
+                 Dense="true"
+                 EditTrigger="DataGridEditTrigger.Manual"
+                 FixedHeader="true"
+                 Height="calc(100% - 64px)"
+                 Class="mud-npr-req-grid"
+                 Style="flex: 1 1 auto; min-height: 0; overflow-y: auto; margin: 8px 0;"
+                 RowStyleFunc="@RowStyleFunc"
+                 ColumnResizeMode="ResizeMode.Column"
+                 Filterable="true"
+                 FilterMode="DataGridFilterMode.ColumnFilterRow"
+                 FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive"
+                 QuickFilter="@QuickFilter">
+        <ToolBarContent>
+            <MudText Typo="Typo.subtitle1" Class="mr-4">
+                NPR Requests (@ActiveNprCount)
+            </MudText>
+            <MudTooltip Text="Full text search">
+                <MudTextField @bind-Value="_searchFilter"
+                              Placeholder="Search"
+                              Adornment="Adornment.Start"
+                              Immediate="true"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              IconSize="Size.Medium"
+                              Class="mt-0" />
+            </MudTooltip>
+            <MudSpacer />
+            <MudTooltip Text="Validate">
+                <MudButton StartIcon="@Icons.Material.Filled.Check"
+                           Color="Color.Secondary"
+                           Variant="Variant.Filled"
+                           Size="Size.Small"
+                           Class="ml-2"
+                           Disabled="@_isBusy"
+                           OnClick="OnValidateClicked">
+                    Ckeck
+                </MudButton>
+            </MudTooltip>
+            <MudTooltip Text="Test  send this dataset to Eng.API">
+                <MudButton StartIcon="@Icons.Material.Filled.Send"
+                           Color="Color.Success"
+                           Variant="Variant.Filled"
+                           Size="Size.Small"
+                           Class="ml-2"
+                           Disabled="@_isBusy"
+                           OnClick="OnSendClicked">
+                    Test Send All
+                </MudButton>
+            </MudTooltip>
+            <MudTooltip Text="Test valid NPRs to Eng.API">
+                <MudButton StartIcon="@Icons.Material.Filled.Send"
+                           Color="Color.Success"
+                           Variant="Variant.Filled"
+                           Size="Size.Small"
+                           Class="ml-2"
+                           Disabled="@_isBusy"
+                           OnClick="OnSendValidsClicked">
+                    Test Send Valids
+                </MudButton>
+            </MudTooltip>
+        </ToolBarContent>
+        <Columns>
+            <PropertyColumn Property="x => x.CustomerRfqNo" Title="RFQ Number" />
+            <PropertyColumn Property="x => x.IsActive" Title="Is Active?" />
+            <PropertyColumn Property="x => x.UxStatus" Title="UxStatus" />
+            <PropertyColumn Property="x => x.CustomerCode" Title="Customer Code" />
+            <PropertyColumn Property="x => x.RequestID" Title="Request ID" />
+            <PropertyColumn Property="x => x.OriginatorName" Title="Originator" />
+            <PropertyColumn Property="x => x.DeadlineDate" Title="Deadline Date" Format="dd.MM.yyyy" />
+            <PropertyColumn Property="x => x.ReasonDescription" Title="Reason" />
+            <PropertyColumn Property="x => x.MaterialNumber" Title="Material Number" />
+            <PropertyColumn Property="x => x.MaterialDescription" Title="Material Description" />
+            <PropertyColumn Property="x => x.MaterialTypeDescription" Title="Material Type" />
+            <PropertyColumn Property="x => x.CustomerPartNumber" Title="Customer P/N" />
+            <PropertyColumn Property="x => x.SupplierPartNumber" Title="Supplier P/N" />
+            <PropertyColumn Property="x => x.BOMUnitOfMeasurement" Title="UoM" />
+            <PropertyColumn Property="x => x.SupplierGroup" Title="Supplier Group" />
+            <PropertyColumn Property="x => x.SupplierDetailComments" Title="Supplier Comments" />
+            <PropertyColumn Property="x => x.ProjectCode" Title="Project" />
+            <PropertyColumn Property="x => x.QtyPerVehicle" Title="Qty/Vehicle" />
+            @* <PropertyColumn Property="x => x.VehicleTotalQuantity" Title="Total Qty" /> *@
+            <PropertyColumn Property="x => x.IsSampleDataRequired" Title="Samples Req." />
+            <PropertyColumn Property="x => x.NPRRaisedRemarks" Title="Remarks" />
+            <PropertyColumn Property="x => x.ManufacturingSite" Title="Mfg. Site" />
+            <PropertyColumn Property="x => x.IsCustomerNominatedSupplier" Title="Cust. Nom. Supplier" />
+            <PropertyColumn Property="x => x.IsCustomerNominatedMaterial" Title="Cust. Nom. Material" />
+            @* <PropertyColumn Property="x => x.PlatformName" Title="Platform" /> *@
+            @* <PropertyColumn Property="x => x.ProgramName" Title="Program" /> *@
+            <PropertyColumn Property="x => x.SuggestedManufacturerGroup" Title="Suggested Mfr. Group" />
+            <PropertyColumn Property="x => x.AssociatedParts" Title="Associated Parts" />
+            <PropertyColumn Property="x => x.NPRUploadSeqNo" Title="Upload Seq. No." />
+            <PropertyColumn Property="x => x.Created" Title="Created" Format="dd.MM.yyyy HH:mm" />
+            <PropertyColumn Property="x => x.Updated" Title="Updated" Format="dd.MM.yyyy HH:mm" />
+        </Columns>
+        <NoRecordsContent>
+            <MudText Typo="Typo.body2" Align="Align.Center" Class="pa-4">
+                No NPR requests in this set.
+            </MudText>
+        </NoRecordsContent>
+    </MudDataGrid>
+</div>
+
+@code {
+
+    string _searchFilter = "";
+    string _lastCompiledFilter = "";
+    bool _isBusy;
+    List<RfqNprRequestUxModel> TestNprRequests = new List<RfqNprRequestUxModel>()
+    {
+        new RfqNprRequestUxModel(){
+            Id = Guid.NewGuid(),
+            CustomerRfqNo = "R",
+            CustomerCode = "TTMT",
+            OriginatorName = "Singh, Vishwadeep(MTSL)",
+            DeadlineDate = DateTime.UtcNow.AddDays(7),
+            ReasonDescription = "TEST2",
+            MaterialNumber = "M15052026_9",
+            MaterialDescription = "Test Mat desc",
+            MaterialTypeDescription = "Type A",
+            CustomerPartNumber = "19062024AC",
+            SupplierPartNumber = "15OCT2024003",
+            BOMUnitOfMeasurement = "BG",
+            SupplierGroup = "New Supplier",
+            SupplierDetailComments = "TestRFQ",
+            ProjectCode = "177D",
+            QtyPerVehicle = 10,
+            IsSampleDataRequired = false,
+            // SampleSiteDetails = new List<RfqNprRequestSampleSiteDataUxModel>
+            // {
+            //     new RfqNprRequestSampleSiteDataUxModel
+            //     {
+            //         SampleQty = 5,
+            //         SendSampleContactPersonName = "John Doe",
+            //         RequiredDate = DateTime.UtcNow.AddDays(10),
+            //         FreightAccount = "FA12345",
+            //         UxStatus = UxObjectStatus.Read
+            //     }
+            // },
+            NPRRaisedRemarks = "NTest",
+            ManufacturingSite = "DEVA,KENI",
+            IsCustomerNominatedSupplier = false,
+            IsCustomerNominatedMaterial = false,
+            SuggestedManufacturerGroup = "ACAPLAST",
+            AssociatedParts = "NO",
+            NPRUploadSeqNo = 1,
+            Created = DateTime.UtcNow.AddDays(-1),
+            Updated = DateTime.UtcNow,
+            UxStatus = UxObjectStatus.Read
+        },
+        // a bad record to test filtering
+        new RfqNprRequestUxModel(){
+            Id = Guid.NewGuid(),
+            CustomerRfqNo = "",         // bad value
+            CustomerCode = "",          // bad value
+            OriginatorName = "",        // bad value
+            DeadlineDate = DateTime.UtcNow.AddDays(7),
+            ReasonDescription = "TEST2",
+            MaterialNumber = "BADMATERIAL_5",
+            MaterialDescription = "Test Mat desc",
+            MaterialTypeDescription = "Type A",
+            CustomerPartNumber = "19062024AC",
+            SupplierPartNumber = "15OCT2024003",
+            BOMUnitOfMeasurement = "BG",
+            SupplierGroup = "New Supplier",
+            SupplierDetailComments = "TestRFQ",
+            ProjectCode = "177D",
+            QtyPerVehicle = 10,
+            IsSampleDataRequired = false,
+            NPRRaisedRemarks = "NTest",
+            ManufacturingSite = "DEVA,KENI",
+            IsCustomerNominatedSupplier = false,
+            IsCustomerNominatedMaterial = false,
+            SuggestedManufacturerGroup = "ACAPLAST",
+            AssociatedParts = "NO",
+            NPRUploadSeqNo = 1,
+            Created = DateTime.UtcNow.AddDays(-1),
+            Updated = DateTime.UtcNow,
+            UxStatus = UxObjectStatus.Read
+
+        }
+    };
+
+    Func<RfqNprRequestUxModel, bool>? _compiledQuickFilter;
+    MudDataGrid<RfqNprRequestUxModel>? _dataGrid;
+
+    Func<RfqNprRequestUxModel, bool> QuickFilter => _quickFilterFunc;
+
+    private int ActiveNprCount =>
+    RfqUxClientService.NprRequests?.Count(r => r.UxStatus != UxObjectStatus.Deleted) ?? 0;
+
+    private async Task OnValidateClicked()
+    {
+        await Task.Delay(1); // simulate some delay
+        _isBusy = true;
+        try
+        {
+            foreach(var nprRequest in TestNprRequests)
+            {
+                bool isValid = nprRequest.Validate();
+
+                string partLabel = nprRequest.MaterialNumber
+                    ?? nprRequest.CustomerPartNumber
+                    ?? nprRequest.Id.ToString();
+
+                Logger.GenericLogInformation(
+                    $"NprRequestsEditor.ValidateNprRequest - " +
+                    $"Part: {partLabel}, Valid: {isValid}, Errors: {nprRequest.ValidationErrors.Count}");
+
+                DialogParameters<NprValidationResultDialog> parameters = new DialogParameters<NprValidationResultDialog>
+                {
+                    { x => x.IsValid, isValid },
+                    { x => x.PartLabel, partLabel },
+                    { x => x.ValidationErrors, nprRequest.ValidationErrors }
+                };
+
+                DialogOptions options = new DialogOptions
+                {
+                    MaxWidth = MaxWidth.Large,
+                    FullWidth = true,
+                    CloseOnEscapeKey = true,
+                    BackdropClick = false
+                };
+
+                await DialogService.ShowAsync<NprValidationResultDialog>(
+                    isValid ? "Validation Passed" : "Validation Errors",
+                    parameters,
+                    options);
+            }
+
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+
+    private async Task OnSendClicked()
+    {
+        await Task.Delay(100); // simulate some delay
+        _isBusy = true;
+        try
+        {
+            CreateNprGrpcResponse response = await RfqUxClientService.CreateNprGrpcAsync(TestNprRequests);
+
+            Logger?.GenericLogInformation(
+                $"OnSendClicked - Manager response: HttpStatusCode='{response.HttpStatusCode}', " +
+                $"Message='{response.Message}', returned {response.NprApiData.Count} entry(ies)");
+
+            await DialogService.ShowMessageBox(
+                $"NPR API Response — {response.HttpStatusCode}",
+                $"Message: {response.Message}\n\nReturned {response.NprApiData.Count} entry(ies).",
+                yesText: "OK"
+            );
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+
+    private async Task OnSendValidsClicked()
+    {
+        await Task.Delay(1); // simulate some delay
+        _isBusy = true;
+        try
+        {
+            var validNprs = TestNprRequests.Where(npr => npr.Validate()).ToList();
+
+            CreateNprGrpcResponse response = await RfqUxClientService.CreateNprGrpcAsync(validNprs);
+
+            Logger?.GenericLogInformation(
+                $"OnSendValidsClicked - Manager response: HttpStatusCode='{response.HttpStatusCode}', " +
+                $"Message='{response.Message}', returned {response.NprApiData.Count} entry(ies)");
+
+            await DialogService.ShowMessageBox(
+                $"NPR API Response — {response.HttpStatusCode}",
+                $"Message: {response.Message}\n\nReturned {response.NprApiData.Count} entry(ies).",
+                yesText: "OK"
+            );
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+
+    private string RowStyleFunc(RfqNprRequestUxModel item, int index)
+    {
+        return item.UxStatus switch
+        {
+            UxObjectStatus.Created => "background-color: #c8e6c9;",
+            UxObjectStatus.Updated => "background-color: #fff9c4;",
+            UxObjectStatus.Deleted => "background-color: #ffcdd2;",
+            UxObjectStatus.Read => string.Empty,
+            _ => string.Empty
+        };
+    }
+
+
+    bool _quickFilterFunc(RfqNprRequestUxModel x)
+    {
+
+        if (string.IsNullOrWhiteSpace(_searchFilter))
+        {
+            return true;
+        }
+
+        if (_lastCompiledFilter != _searchFilter)
+        {
+            _lastCompiledFilter = _searchFilter;
+            string filter = _searchFilter.Trim();
+            StringComparison comparisonType = StringComparison.OrdinalIgnoreCase;
+            bool isNumeric = int.TryParse(filter, out _);
+
+            _compiledQuickFilter = item =>
+            {
+                if (item.UxStatus == UxObjectStatus.Deleted) return false;
+                if (item.CustomerRfqNo?.Contains(filter, comparisonType) == true) return true;
+                if (item.CustomerCode?.Contains(filter, comparisonType) == true) return true;
+                if (item.RequestID?.Contains(filter, comparisonType) == true) return true;
+                if (item.OriginatorName?.Contains(filter, comparisonType) == true) return true;
+                if (item.ReasonDescription?.Contains(filter, comparisonType) == true) return true;
+                if (item.MaterialNumber?.Contains(filter, comparisonType) == true) return true;
+                if (item.MaterialDescription?.Contains(filter, comparisonType) == true) return true;
+                if (item.MaterialTypeDescription?.Contains(filter, comparisonType) == true) return true;
+                if (item.CustomerPartNumber?.Contains(filter, comparisonType) == true) return true;
+                if (item.SupplierPartNumber?.Contains(filter, comparisonType) == true) return true;
+                if (item.BOMUnitOfMeasurement?.Contains(filter, comparisonType) == true) return true;
+                if (item.SupplierGroup?.Contains(filter, comparisonType) == true) return true;
+                if (item.SupplierDetailComments?.Contains(filter, comparisonType) == true) return true;
+                if (item.ProjectCode?.Contains(filter, comparisonType) == true) return true;
+                if (item.NPRRaisedRemarks?.Contains(filter, comparisonType) == true) return true;
+                if (item.ManufacturingSite?.Contains(filter, comparisonType) == true) return true;
+                // if (item.PlatformName?.Contains(filter, comparisonType) == true) return true;
+                // if (item.ProgramName?.Contains(filter, comparisonType) == true) return true;
+                if (item.SuggestedManufacturerGroup?.Contains(filter, comparisonType) == true) return true;
+                if (item.AssociatedParts?.Contains(filter, comparisonType) == true) return true;
+
+                if (isNumeric)
+                {
+                    if (item.QtyPerVehicle?.ToString().Contains(filter, comparisonType) == true) return true;
+                    // if (item.VehicleTotalQuantity?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.NPRUploadSeqNo?.ToString().Contains(filter, comparisonType) == true) return true;
+                }
+
+                return false;
+            };
+        }
+
+        return _compiledQuickFilter?.Invoke(x) ?? true;
+    }
+
+}

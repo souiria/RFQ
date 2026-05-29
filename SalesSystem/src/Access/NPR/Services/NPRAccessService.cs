@@ -151,7 +151,7 @@ namespace NPR.Services
             string jsonList = JsonConvert.SerializeObject(requestDataList);
             HttpClient httpClient = _HttpClientFactory.CreateClient("MyClient");
             string? uri = _Configuration["NprApi:Url"];
-            HttpResponseMessage httpResponse = await httpClient.PostAsJsonAsync(uri, jsonList, cancellationToken);
+            HttpResponseMessage httpResponse = await httpClient.PostAsJsonAsync(uri, requestDataList, cancellationToken);
 
             response.HttpStatusCode = httpResponse.StatusCode.ToString();
 

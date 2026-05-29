@@ -8,11 +8,11 @@
 //           OriginatorName description changed from "ADCommonName" to "Master"
 //           ManufacturingSite marked as "Master"
 // v 2.0 - Remove fields and properties - NPR_RFQ_API_Documentation_v2.0.pdf - 20240610
-//Replace SEWSEUnitOfMeasurement with BOMUnitOfMeasurement
-// Remove RequestID from request payload
-// Remove VehicleTotalQuantity
-// Remove PlatformName
-// Remove ProgramName
+//          Replace SEWSEUnitOfMeasurement with BOMUnitOfMeasurement
+//          Remove RequestID from request payload
+//          Remove VehicleTotalQuantity
+//          Remove PlatformName
+//          Remove ProgramName
 
 namespace SalesSystem.Rfq.Models
 {
