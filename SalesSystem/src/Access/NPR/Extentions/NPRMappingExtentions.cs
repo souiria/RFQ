@@ -101,12 +101,12 @@
             grpc.MaterialTypeDescription = data.MaterialTypeDescription;
             grpc.CustomerPartNumber = data.CustomerPartNumber;
             grpc.SupplierPartNumber = data.SupplierPartNumber;
-            grpc.BOMUnitOfMeasurement = data.BOMUnitOfMeasurement;
+            grpc.BOMUnitOfMeasurement = data.SEWSEUnitOfMeasurement;
             grpc.SupplierGroup = data.SupplierGroup;
             grpc.SupplierDetailComments = data.SupplierDetailComments;
-            grpc.QtyPerVehicle = data.QtyPerVehicle;
+            grpc.QtyPerVehicle = double.TryParse(data.QtyPerVehicle, out double qty) ? qty : (double?)null;
             grpc.ProjectCode = data.ProjectCode;
-            grpc.IsSampleDataRequired = data.IsSampleDataRequired;
+            grpc.IsSampleDataRequired = bool.TryParse(data.IsSampleDataRequired, out bool isSample) ? isSample : (bool?)null;
 
             // Map SampleSiteDetails
             if (data.SampleSiteDetails != null)
@@ -125,8 +125,9 @@
 
             grpc.NPRRaisedRemarks = data.NprRaisedRemarks;
             grpc.ManufacturingSite = data.ManufacturingSite;
-            grpc.IsCustomerNominatedSupplier = data.IsCustomerNominatedSupplier;
-            grpc.IsCustomerNominatedMaterial = data.IsCustomerNominatedMaterial;
+            // Replace these lines in ToNprApiDataGrpc method:
+            grpc.IsCustomerNominatedSupplier = bool.TryParse(data.IsCustomerNominatedSupplier, out bool nominatedSupplier) ? nominatedSupplier : (bool?)null;
+            grpc.IsCustomerNominatedMaterial = bool.TryParse(data.IsCustomerNominatedMaterial, out bool nominatedMaterial) ? nominatedMaterial : (bool?)null;
             grpc.SuggestedManufacturerGroup = data.SuggestedManufacturerGroup;
             grpc.AssociatedParts = data.AssociatedParts;
             return grpc;

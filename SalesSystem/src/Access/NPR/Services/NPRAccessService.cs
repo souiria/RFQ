@@ -1,4 +1,6 @@
-﻿namespace NPR.Services
+﻿using Azure;
+
+namespace NPR.Services
 {
     public sealed class NPRAccessService : INPRAccessService
     {
@@ -181,21 +183,18 @@
             {
                 string httpJsonString = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
                 List<NprApiReturnData>? nprApiDatas = JsonConvert.DeserializeObject<List<NprApiReturnData>>(httpJsonString);
-
-                if (nprApiDatas == null)
+                NprApiResponseData? nprApiData = JsonConvert.DeserializeObject<NprApiResponseData>(httpJsonString);
+                if (nprApiData != null && nprApiData.Data != null)
                 {
-                    response.Message = "Response body was empty or could not be deserialized.";
-                    return response;
-                }
-
-                foreach (NprApiReturnData data in nprApiDatas)
-                {
-                    NprApiDataGrpc grpc = data.ToNprApiDataGrpc();
-                    NprApiDataGrpc requestData = request.NprApiData
-                        .Where(x => x.CustomerPartNumber == data.CustomerPartNumber)
-                        .First();
-                    grpc.RfqNprRequestId = requestData.RfqNprRequestId;
-                    response.NprApiData.Add(grpc);
+                    foreach (NprApiReturnData data in nprApiData.Data)
+                    {
+                        NprApiDataGrpc grpc = data.ToNprApiDataGrpc();
+                        NprApiDataGrpc requestData = request.NprApiData
+                            .Where(x => x.CustomerPartNumber == data.CustomerPartNumber)
+                            .First();
+                        grpc.RfqNprRequestId = requestData.RfqNprRequestId;
+                        response.NprApiData.Add(grpc);
+                    }
                 }
             }
             catch (JsonException e)
@@ -214,6 +213,13 @@
             try
             {
                 string errorBody = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
+                NprApiResponseData? nprApiData = JsonConvert.DeserializeObject<NprApiResponseData>(errorBody);
+                if (nprApiData != null && nprApiData.Data != null)
+                {
+                    NprApiReturnData data = nprApiData.Data.First();
+                    response.Message = $"Validation error: {data.Error}";
+                }
+
                 response.Message = $"Validation error: {errorBody}";
             }
             catch (InvalidOperationException e)
@@ -237,10 +243,11 @@
             try
             {
                 string httpJsonString = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
-                List<NprApiReturnData>? nprApiDatas = JsonConvert.DeserializeObject<List<NprApiReturnData>>(httpJsonString);
-                if (nprApiDatas != null && nprApiDatas.Any())
+                NprApiResponseData? nprApiData = JsonConvert.DeserializeObject<NprApiResponseData>(httpJsonString);
+                if (nprApiData != null && nprApiData.Data != null)
                 {
-                    NprApiReturnData data = nprApiDatas.First();
+                    //List<NprApiReturnData>? returnDatas =  JsonConvert.DeserializeObject<List<NprApiReturnData>>(nprApiData.Data);
+                    NprApiReturnData data = nprApiData.Data.First();
                     response.Message = $"UnprocessableContent: Error Message: {data.Error}";
                 }
             }catch (JsonException e)
@@ -282,7 +289,12 @@
             try
             {
                 string errorBody = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
-                response.Message = $"Unexpected status ({httpResponse.StatusCode}): {errorBody}";
+                NprApiResponseData? nprApiData = JsonConvert.DeserializeObject<NprApiResponseData>(errorBody);
+                if (nprApiData != null && nprApiData.Data != null)
+                {
+                    NprApiReturnData data = nprApiData.Data.First();
+                    response.Message = $"Unexpected status ({httpResponse.StatusCode}): {data.Error}";
+                }
             }
             catch (InvalidOperationException e)
             {

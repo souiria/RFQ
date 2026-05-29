@@ -2,84 +2,126 @@
 {
     public class NprApiReturnData
     {
-        public string? RequestID
+        [JsonProperty("requestID")]
+        public string? RequestID 
         { get; set; }
 
-        public string? Error
+        [JsonProperty("error")]
+        public string? Error 
         { get; set; }
 
-        public Guid? Id
+        [JsonProperty("id")]
+        public Guid? Id 
         { get; set; }
 
-        public string? Name
+        [JsonProperty("name")]
+        public string? Name 
         { get; set; }
 
-        public string? OriginatorName
+        [JsonProperty("originatorName")]
+        public string? OriginatorName 
         { get; set; }
 
+        [JsonProperty("reasonDescription")]
         public string? ReasonDescription
         { get; set; }
 
+        [JsonProperty("customerCode")]
         public string? CustomerCode
         { get; set; }
 
-        public string? ProjectCode
+        [JsonProperty("platformName")]
+        public string? PlatformName
         { get; set; }
 
-        public string? MaterialDescription
+        [JsonProperty("programName")]
+        public string? ProgramName
         { get; set; }
 
-        public string? MaterialTypeDescription
+        [JsonProperty("projectCode")]
+        public string? ProjectCode 
         { get; set; }
 
-        public string? ManufacturingSite
+        [JsonProperty("materialDescription")]
+        public string? MaterialDescription 
         { get; set; }
 
-        public string? CustomerPartNumber
+        [JsonProperty("materialTypeDescription")]
+        public string? MaterialTypeDescription 
         { get; set; }
 
+        [JsonProperty("manufacturingSite")]
+        public string? ManufacturingSite 
+        { get; set; }
+
+        [JsonProperty("customerPartNumber")]
+        public string? CustomerPartNumber 
+        { get; set; }
+
+        [JsonProperty("supplierPartNumber")]
         public string? SupplierPartNumber
         { get; set; }
 
-        public string? MaterialNumber
+        [JsonProperty("materialNumber")]
+        public string? MaterialNumber 
         { get; set; }
 
-        public string? BOMUnitOfMeasurement
+        [JsonProperty("sewseUnitOfMeasurement")]
+        public string? SEWSEUnitOfMeasurement 
         { get; set; }
 
-        public string? SupplierGroup
+        public string? SupplierGroup 
         { get; set; }
 
-        public string? ManufacturerGroup
+        public string? ManufacturerGroup 
         { get; set; }
 
-        public string? SupplierDetailComments
+        [JsonProperty("supplierDetailComments")]
+        public string? SupplierDetailComments 
         { get; set; }
 
-        public double? QtyPerVehicle
+        [JsonProperty("qtyPerVehicle")]
+        public string? QtyPerVehicle 
         { get; set; }
 
+        [JsonProperty("vehicleTotalQuantity")]
+        public string? VehicleTotalQuantity 
+        { get; set; }
+
+        [JsonProperty("deadlineDate")]
         public DateTime? DeadlineDate
         { get; set; }
 
-        public string? NprRaisedRemarks
+        [JsonProperty("nprRaisedRemarks")]
+        public string? NprRaisedRemarks 
         { get; set; }
 
-        public bool? IsCustomerNominatedSupplier
+        [JsonProperty("isCustomerNominatedSupplier")]
+        public string? IsCustomerNominatedSupplier 
         { get; set; }
 
-        public bool? IsCustomerNominatedMaterial
+        [JsonProperty("isCustomerNominatedMaterial")]
+        public string? IsCustomerNominatedMaterial
         { get; set; }
 
-        public bool? IsSampleDataRequired
+        [JsonProperty("isSampleDataRequired")]
+        public string? IsSampleDataRequired 
         { get; set; }
-        public Collection<NprApiSampleSiteDetails>? SampleSiteDetails
-        { get; }
-        public string? AssociatedParts
+
+        [JsonProperty("sampleSiteDetails")]
+        public Collection<NprApiSampleSiteDetails> SampleSiteDetails 
+        { get; } = new();  // initialized, no setter
+
+        [JsonProperty("associatedParts")]
+        public string? AssociatedParts 
         { get; set; }
-        public string? SuggestedManufacturerGroup
+
+        [JsonProperty("suggestedManufacturerGroup")]
+        public string? SuggestedManufacturerGroup 
         { get; set; }
-        public string? CustomerRfqNo
+
+        [JsonProperty("customerRfqNo")]
+        public string? CustomerRfqNo 
         { get; set; }
     }
 }
