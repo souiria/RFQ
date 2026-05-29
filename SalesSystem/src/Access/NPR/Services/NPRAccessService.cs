@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Threading;
-
-namespace NPR.Services
+﻿namespace NPR.Services
 {
     public sealed class NPRAccessService : INPRAccessService
     {

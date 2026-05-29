@@ -28,7 +28,6 @@
             });
             #endregion
 
-
             builder.Services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => true;

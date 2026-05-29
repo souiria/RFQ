@@ -17,7 +17,6 @@
             builder.Logging.ClearProviders();
             builder.Logging.AddConfiguration(conf);
 
-
             #region Builder
 
             builder.Services.Configure<CookiePolicyOptions>(options =>
