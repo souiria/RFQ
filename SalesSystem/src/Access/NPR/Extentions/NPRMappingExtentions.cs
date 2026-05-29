@@ -148,6 +148,7 @@
             data.BOMUnitOfMeasurement = grpc.BOMUnitOfMeasurement;
             data.SupplierGroup = grpc.SupplierGroup;
             data.SupplierDetailComments = grpc.SupplierDetailComments;
+            data.QtyPerVehicle = grpc.QtyPerVehicle;
             data.ProjectCode = grpc.ProjectCode;
             data.IsSampleDataRequired = grpc.IsSampleDataRequired;
 
