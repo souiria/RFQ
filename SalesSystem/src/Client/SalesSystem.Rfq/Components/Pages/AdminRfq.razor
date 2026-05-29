@@ -54,6 +54,7 @@ else
                             <MudSelectItem Value='"RfqProjects"'>Projects</MudSelectItem>
                             <MudSelectItem Value='"Alternative Parts"'>Alt.Parts</MudSelectItem>
                             <MudSelectItem Value='"RfqNprRequests"'>NprRequests</MudSelectItem>
+                            <MudSelectItem Value='"RfqNprRequestsAPITest"'>NprRequestsAPI Test</MudSelectItem>
                         </MudSelect>
                     </MudStack>
                 </MudPaper>
@@ -66,6 +67,10 @@ else
             @if (SelectedDataset == "RfqNprRequests")
             {
                 <AdminRfqNprRequests />
+            }
+            else if (SelectedDataset == "RfqNprRequestsAPITest")
+            {
+                <AdminRfqNprRequestsAPITest />
             }
             else if (!string.IsNullOrEmpty(SelectedDataset))
             {
