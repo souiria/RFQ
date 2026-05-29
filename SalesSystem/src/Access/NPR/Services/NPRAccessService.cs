@@ -1,4 +1,7 @@
-﻿namespace NPR.Services
+﻿using Microsoft.AspNetCore.Http;
+using System.Threading;
+
+namespace NPR.Services
 {
     public sealed class NPRAccessService : INPRAccessService
     {
@@ -159,8 +162,7 @@
                 return await HandleSuccess(httpResponse, request, response, cancellationToken);
 
                 case HttpStatusCode.UnprocessableContent:
-                response = HandleAuthFailure(response, "Unprocessable Content: " + response.Message);
-                return response;
+                return await HandleAuthFailure(httpResponse, response, cancellationToken); ;
 
                 case HttpStatusCode.InternalServerError:
                 return await HandleServerError(httpResponse, response, cancellationToken);
@@ -231,11 +233,25 @@
             return response;
         }
 
-        static CreateNprApiGrpcResponse HandleAuthFailure(
+        async Task<CreateNprApiGrpcResponse> HandleAuthFailure(
+            HttpResponseMessage httpResponse,
             CreateNprApiGrpcResponse response,
-            string message)
+            CancellationToken cancellationToken)
         {
-            response.Message = message;
+            try
+            {
+                string httpJsonString = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
+                List<NprApiReturnData>? nprApiDatas = JsonConvert.DeserializeObject<List<NprApiReturnData>>(httpJsonString);
+                if (nprApiDatas != null && nprApiDatas.Any())
+                {
+                    NprApiReturnData data = nprApiDatas.First();
+                    response.Message = $"UnprocessableContent: Error Message: {data.Error}";
+                }
+            }catch (JsonException e)
+            {
+                response.Message = $"Failed to deserialize auth failure response: {e.Message}";
+            }
+
             return response;
         }
 
