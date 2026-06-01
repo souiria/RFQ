@@ -249,6 +249,7 @@ namespace SalesSystem.Rfq.Components.Pages
                     .FirstOrDefault(p => p.ProjectId == RfqProject.ProjectId);
                 if (SelectedProject != null)
                 {
+                    RfqProject.Project = SelectedProject.ProjectName;
                     RfqProject.CustomerCode = SelectedProject.CustomerCode ?? string.Empty;
                 }
 
