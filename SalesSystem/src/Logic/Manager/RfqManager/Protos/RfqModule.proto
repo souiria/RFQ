@@ -115,6 +115,7 @@ message ProjectAssociation {
     string CustomerLocationName = 3;
     string CustomerProjectName = 4;
     string Id = 5;
+	string CustomerCode = 6;
 }
 
 message GetRfqReasonsGrpcRequest {

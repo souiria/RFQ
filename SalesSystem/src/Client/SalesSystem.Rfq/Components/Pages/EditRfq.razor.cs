@@ -247,9 +247,12 @@ namespace SalesSystem.Rfq.Components.Pages
                 // Set the selected project from the loaded RfqProject
                 SelectedProject = RfqUxClientService.CustomerProjectAssociations
                     .FirstOrDefault(p => p.ProjectId == RfqProject.ProjectId);
+                if (SelectedProject != null)
+                {
+                    RfqProject.CustomerCode = SelectedProject.CustomerCode ?? string.Empty;
+                }
 
                 _PreviousSelectedProject = SelectedProject;
-
                 IsLoading = false;
                 success = true;
                 Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded RFQ Project with Id {RfqProject.RowId} - {RfqProject.RfqNumber} {RfqProject.ProjectId}");
@@ -401,6 +404,12 @@ namespace SalesSystem.Rfq.Components.Pages
                         {
                             foreach (RfqNprRequestUxModel nprRequest in nprRequests)
                             {
+                                if(SelectedProject == null)
+                                {
+                                    Logger.GenericLogInformation($"EditRfq.NprAllInProgressPartsAsync - SelectedProject is null, cannot update NPR request for part {nprRequest.CustomerPartNumber}");
+                                    continue;
+                                }
+
                                 nprRequest.Update(RfqProject, GlobalValue);
                             }
                         }
@@ -417,7 +426,7 @@ namespace SalesSystem.Rfq.Components.Pages
                     if (0 < preExistingNprRequests.Count)
                     {
                         // update pre-existing ones
-                        foreach (var r in preExistingNprRequests)
+                        foreach (RfqNprRequestUxModel r in preExistingNprRequests)
                         {
                             r.CustomerRfqNo = RfqProject.RfqNumber;
                             r.Updated = DateTime.UtcNow;
@@ -715,7 +724,7 @@ namespace SalesSystem.Rfq.Components.Pages
 
         #region Project Autocomplete
         // Search function for MudAutocomplete (same as CreateRfq)
-        private async Task<IEnumerable<RqfCustomerProjectAssociationUxModel>> SearchProjects(string searchText, CancellationToken cancellationToken)
+        async Task<IEnumerable<RqfCustomerProjectAssociationUxModel>> SearchProjects(string searchText, CancellationToken cancellationToken)
         {
             await Task.Delay(0, cancellationToken);
 
@@ -934,7 +943,7 @@ namespace SalesSystem.Rfq.Components.Pages
                     await _ComponentNprEditor.SaveNprRequestsAsync();
                 }
 
-                var partsUpdateResult = await RfqUxClientService.UpdateRfqDrawingPartNumbersAsync(allParts);
+                UpdateRfqDrawingPartNumbersGrpcResponse partsUpdateResult = await RfqUxClientService.UpdateRfqDrawingPartNumbersAsync(allParts);
                 UpdateRfqProjectGrpcResponse rfqUpdateResult = await RfqUxClientService.UpdateRfqProjectAsync(RfqProject!);
 
                 if (partsUpdateResult.Success && rfqUpdateResult.Success)
@@ -1233,7 +1242,7 @@ namespace SalesSystem.Rfq.Components.Pages
                 }
 
                 // Invariant: total BOM size must not change across a Search All run.
-                System.Diagnostics.Debug.Assert(
+                Debug.Assert(
                     _CompletedParts.Count + _InProgressParts.Count == _SearchInitialTotalParts,
                     "SearchAllPartNumbersAsync changed total BOM size");
 

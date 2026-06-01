@@ -363,6 +363,7 @@
             apiData.SupplierGroup = nprApiData.RfqNprRequest.SupplierGroup;
             apiData.SupplierDetailComments = nprApiData.RfqNprRequest.SupplierDetailComments;
             apiData.ProjectCode = nprApiData.RfqNprRequest.ProjectCode;
+            apiData.QtyPerVehicle = nprApiData.RfqNprRequest.QtyPerVehicle;
             apiData.IsSampleDataRequired = nprApiData.RfqNprRequest.IsSampleDataRequired;
 
             // Map SampleSiteDetails from RfqNprRequestSampleSiteDataGrpc to NPR.SampleSiteDetailsGrpc

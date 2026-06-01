@@ -37,6 +37,8 @@
         { get; set; }
         public bool IsActive
         { get; set; }
+        public string CustomerCode
+        { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "While in Dev/Test mode")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "While in Dev/Test mode")]
@@ -59,6 +61,7 @@
             ProjectId = string.Empty;
             RfqReasonId = 0;
             IsActive = false;
+            CustomerCode = string.Empty;
 
             _NprRequests = new();
 

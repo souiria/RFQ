@@ -139,6 +139,7 @@
                             ProjectAssociation projectAssociation = new ProjectAssociation();
                             projectAssociation.CustomerLocationGuid = location.Id.ToUpperInvariant();
                             projectAssociation.CustomerLocationName = location.CustomerName;
+                            projectAssociation.CustomerCode = location.CustomerCode;
                             projectAssociation.CustomerProjectGuid = project.Id.ToUpperInvariant();
                             projectAssociation.CustomerProjectName = project.CustomerProjectCode;
                             projectAssociation.Id = customerProjectAssociation.Id;

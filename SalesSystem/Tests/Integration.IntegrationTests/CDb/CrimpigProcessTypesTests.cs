@@ -90,7 +90,7 @@ namespace Integration.Tests.CDb
             // Assert
             // The HasData in the DbCrimpingProcessType adds 7 records to the database
             Assert.That(response.Result.CrimpingProcessTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.GreaterThanOrEqualConstraint countConstraint = Is.GreaterThanOrEqualTo(4);
+            GreaterThanOrEqualConstraint countConstraint = Is.GreaterThanOrEqualTo(4);
             Assert.That(response.Result.CrimpingProcessTypeGrpcs.Count, countConstraint);
         }
         [Test]
@@ -109,19 +109,19 @@ namespace Integration.Tests.CDb
             // Assert
             // The HasData in the DbCrimpingProcessType adds Unknown crimping process type
             Assert.That(response.Result.ListCrimpingProcessTypes.CrimpingProcessTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(response.Result.ListCrimpingProcessTypes.CrimpingProcessTypeGrpcs.Count, countConstraint);
 
             // Check if the CrimpingProcessTypeGrpc has the expected ID
-            NUnit.Framework.Constraints.EqualConstraint idConstraint = Is.EqualTo("5C427CEA-D05E-42B1-871E-6E2ED2A5ACE9");
+            EqualConstraint idConstraint = Is.EqualTo("5C427CEA-D05E-42B1-871E-6E2ED2A5ACE9");
             CultureInfo cultureInfo = CultureInfo.InvariantCulture;
             string crimpigProcessTypeId = response.Result.ListCrimpingProcessTypes.CrimpingProcessTypeGrpcs[0].Id.ToUpper(cultureInfo);
             Assert.That(crimpigProcessTypeId, idConstraint);
             // Check if the CrimpingProcessTypeGrpc has the expected Name
-            NUnit.Framework.Constraints.EqualConstraint codeConstraint = Is.EqualTo("Unknown");
+            EqualConstraint codeConstraint = Is.EqualTo("Unknown");
             Assert.That(response.Result.ListCrimpingProcessTypes.CrimpingProcessTypeGrpcs[0].Code, codeConstraint);
             // Check if the CrimpingProcessTypeGrpc has the expected Description
-            NUnit.Framework.Constraints.EqualConstraint descriptionConstraint = Is.EqualTo("Unknown");
+            EqualConstraint descriptionConstraint = Is.EqualTo("Unknown");
             Assert.That(response.Result.ListCrimpingProcessTypes.CrimpingProcessTypeGrpcs[0].Description, descriptionConstraint);
 
         }
@@ -141,11 +141,11 @@ namespace Integration.Tests.CDb
             // Assert
             // The HasData in the DbCrimpingProcessType adds Unknown crimping process type
             Assert.That(response.Result.ListCrimpingProcessTypes.CrimpingProcessTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(response.Result.ListCrimpingProcessTypes.CrimpingProcessTypeGrpcs.Count, countConstraint);
 
             // Check if the CrimpingProcessTypeGrpc has the expected ID
-            NUnit.Framework.Constraints.EqualConstraint codeConstraint = Is.EqualTo("Unknown");
+            EqualConstraint codeConstraint = Is.EqualTo("Unknown");
             string crimpigProcessTypeId = response.Result.ListCrimpingProcessTypes.CrimpingProcessTypeGrpcs[0].Code;
             Assert.That(crimpigProcessTypeId, codeConstraint);
 
@@ -166,7 +166,7 @@ namespace Integration.Tests.CDb
             // Assert
             // Once run, if deadbeef is in the database, this will fail
             Assert.That(response.Result.ListCrimpingProcessTypes.CrimpingProcessTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(response.Result.ListCrimpingProcessTypes.CrimpingProcessTypeGrpcs.Count, countConstraint);
 
             // Arrange
@@ -189,7 +189,7 @@ namespace Integration.Tests.CDb
 
             // Assert
             Assert.That(crudResponse, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint statusConstraint = Is.EqualTo(true);
+            EqualConstraint statusConstraint = Is.EqualTo(true);
             Assert.That(crudResponse.SaveSuccess, statusConstraint);
         }
 
@@ -261,7 +261,7 @@ namespace Integration.Tests.CDb
 
             // Assert
             Assert.That(response.Result.ListCrimpingProcessTypes.CrimpingProcessTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(response.Result.ListCrimpingProcessTypes.CrimpingProcessTypeGrpcs.Count, countConstraint);
 
         }

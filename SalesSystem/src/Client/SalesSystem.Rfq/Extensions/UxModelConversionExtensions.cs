@@ -16,6 +16,7 @@
             projectAssociation.ProjectName = association.CustomerProjectName;
             projectAssociation.CustomerId = association.CustomerLocationGuid.ToUpperInvariant();
             projectAssociation.CustomerName = association.CustomerLocationName;
+            projectAssociation.CustomerCode = association.CustomerCode;
             projectAssociation.Id = association.Id.ToUpperInvariant();
             return projectAssociation;
         }
@@ -306,7 +307,7 @@
             nprRequest.QtyPerVehicle = 1;
             //nprRequest.VehicleTotalQuantity = 1;
             nprRequest.AssociatedParts = "";
-            nprRequest.CustomerCode = rfqProject.CustomerBusinessUnit;
+            nprRequest.CustomerCode = rfqProject.CustomerCode;
             nprRequest.CustomerPartNumber = partNumber.CustomerPartNumber;
             nprRequest.MaterialDescription = "";
             nprRequest.MaterialTypeDescription = "";
@@ -334,7 +335,7 @@
 
         public static RfqNprRequestUxModel Update(this RfqNprRequestUxModel nprRequest, RqfProjectUxModel rfqProject, GlobalValue globalValue)
         {
-            nprRequest.CustomerCode = rfqProject.CustomerBusinessUnit;
+            nprRequest.CustomerCode = rfqProject.CustomerCode;
             nprRequest.OriginatorName = globalValue.DisplayName;
             nprRequest.CustomerRfqNo = rfqProject.RfqNumber;
             nprRequest.DeadlineDate = rfqProject.RfqResponseDeadline;
@@ -384,6 +385,7 @@
                 nprGrpc.Id = Guid.Empty.ToString();
                 Console.WriteLine($"Error converting Id to string: {ex.Message}");
             }   
+
             nprGrpc.ReasonDescription = model.ReasonDescription;
             nprGrpc.CustomerCode = model.CustomerCode;
             // nprGrpc.PlatformName = model.PlatformName;
