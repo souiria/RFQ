@@ -46,7 +46,7 @@ rpc ValidateNprRequestGrpc (MgrValidateNprRequestRequest) returns (MgrValidateNp
   rpc GetAllSuppliersGrpc (GetAllSuppliersGrpcRequest) returns (GetAllSuppliersGrpcResponse);
   rpc GetAllSupplierGroupsGrpc (GetAllSupplierGroupsGrpcRequest) returns (GetAllSupplierGroupsGrpcResponse);
   rpc SearchPartPricesGrpc (SearchPartPricesGrpcRequest) returns (SearchPartPricesGrpcResponse);
-   
+ rpc WhoAmI (google.protobuf.Empty) returns (WhoAmIResponse);
  rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
 }
 
@@ -720,4 +720,10 @@ message PriceInformation {
 	google.protobuf.StringValue SumitomoNumber = 1;
 	google.protobuf.DoubleValue Price = 2;
 	google.protobuf.StringValue PriceSource = 3;
+}
+
+
+
+message WhoAmIResponse {
+  string user = 1;
 }

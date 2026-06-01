@@ -227,6 +227,7 @@
 
             builder.AddServiceDefaults();
             builder.Services.AddInfrastructure();
+            builder.Services.AddHttpContextAccessor();
             #endregion
 
             #endregion

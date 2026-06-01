@@ -10,7 +10,7 @@
         readonly NPR.NPR.NPRClient _NPRGrpcClient;
         readonly CPD.CPD.CPDClient _CPDClient;
         readonly ILogger<RfqManagerService> _Logger;
-
+        readonly IHttpContextAccessor _HttpContextAccessor;
         List<ProjectGrpc> _Projects;
 
         public RfqManagerService(ILogger<RfqManagerService> logger,
@@ -19,7 +19,8 @@
             Emacs.Emacs.EmacsClient emacsClient,
             Adss.AdssGrpc.AdssGrpcClient adssGrpcClient,
             NPR.NPR.NPRClient nprClient,
-            CPD.CPD.CPDClient cPDClient
+            CPD.CPD.CPDClient cPDClient,
+            IHttpContextAccessor httpContextAccessor
             )
         {
             _Logger = logger;
@@ -30,6 +31,7 @@
             _AdssGrpcClient = adssGrpcClient;
             _NPRGrpcClient = nprClient;
             _CPDClient = cPDClient;
+            _HttpContextAccessor = httpContextAccessor;
         }
         #region Master Requests
         public async Task<GetAllCustomersGrpcResponse> GetAllCustomersGrpc (GetAllCustomersGrpcRequest request)
@@ -1457,10 +1459,26 @@
 
             return response;
         }
+        string GetCurrentUser()
+        {
 
+            ClaimsPrincipal? user = _HttpContextAccessor.HttpContext?.User;
+
+            if (user == null || !user.Identity?.IsAuthenticated == true)
+            {
+                return "UNKNOWN";
+            }
+
+            return user.FindFirst(ClaimTypes.Name)?.Value
+                ?? user.FindFirst("preferred_username")?.Value
+                ?? user.FindFirst("email")?.Value
+                ?? "UNKNOWN";
+
+        }
         public async Task<CreateNprGrpcResponse> CreateNprGrpc (CreateNprGrpcRequest request)
         {
             await Task.Delay(0);
+            string currentUser = GetCurrentUser();
             CreateNprGrpcResponse response = new CreateNprGrpcResponse();
             // ValidateNprRequestRequest validateRequest = new ValidateNprRequestRequest();
             List<NPR.NprApiDataGrpc> accessDataList = new List<NPR.NprApiDataGrpc>();
@@ -1478,10 +1496,11 @@
             // List<Rfq.RfqNprRequestGrpc> validRequests = validateRequest.Items.Where(item => item.Id != null && validateResponse.LineStatuses.Any(line => line.Id == item.Id && line.IsValid)).ToList();  
             // send all requests to create RfqNprRequests replacing with the ones from NPR API for the valid requests to capture any additional data from NPR API and to update the status of the RfqNprRequest
             NprApiDataGrpc nprApiDataGrpc = new NprApiDataGrpc();
+        
             foreach (Rfq.RfqNprRequestGrpc validRequest in rfqNprRequestList) //validRequests)
             {
                 nprApiDataGrpc.RfqNprRequest = validRequest.ToRfqNprRequest();
-                NPR.NprApiDataGrpc nprAccessData = nprApiDataGrpc.ToNprApiAccessData();
+                NPR.NprApiDataGrpc nprAccessData = nprApiDataGrpc.ToNprApiAccessData(currentUser);
                 accessDataList.Add(nprAccessData);
             }
 

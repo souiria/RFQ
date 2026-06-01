@@ -343,7 +343,7 @@
             return rfqNprRequest;
         }
 
-        public static NPR.NprApiDataGrpc ToNprApiAccessData(this NprApiDataGrpc nprApiData)
+        public static NPR.NprApiDataGrpc ToNprApiAccessData(this NprApiDataGrpc nprApiData, string currentUser)
         {
             NPR.NprApiDataGrpc apiData = new NPR.NprApiDataGrpc();
             apiData.Id = nprApiData.RfqNprRequest.Id;
@@ -351,7 +351,7 @@
             apiData.CustomerRfqNo = nprApiData.RfqNprRequest.CustomerRfqNo;
             apiData.CustomerCode = nprApiData.RfqNprRequest.CustomerCode;
             apiData.RequestID = nprApiData.RfqNprRequest.RequestID;
-            apiData.OriginatorName = nprApiData.RfqNprRequest.OriginatorName;
+            apiData.OriginatorName = currentUser;
             apiData.DeadlineDate = nprApiData.RfqNprRequest.DeadlineDate;
             apiData.ReasonDescription = nprApiData.RfqNprRequest.ReasonDescription;
             apiData.MaterialNumber = nprApiData.RfqNprRequest.MaterialNumber;

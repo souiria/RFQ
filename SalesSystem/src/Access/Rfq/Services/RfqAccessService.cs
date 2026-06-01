@@ -3986,7 +3986,7 @@
 
         #endregion
         #region Validation (RfqNprRequest)
-        NprValidationLineDto ValidateNprItem(RfqNprRequestGrpc item)
+        public NprValidationLineDto ValidateNprItem(RfqNprRequestGrpc item)
         {
             NprValidationLineDto status = new NprValidationLineDto();
             status.Id = item.Id ?? string.Empty;
