@@ -144,6 +144,7 @@ namespace NPR.Services
             foreach (NprApiDataGrpc data in request.NprApiData)
             {
                 NprApiRequestData apiData = data.ToNprApiData();
+                apiData.ProjectCode = "177D";
                 requestDataList.Add(apiData);
             }
 

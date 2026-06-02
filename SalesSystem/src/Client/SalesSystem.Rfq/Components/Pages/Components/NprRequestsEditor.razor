@@ -363,7 +363,20 @@
         _isBusy = true;
         try
         {
-            var validNprs = RfqUxClientService.NprRequests.Where(npr => npr.Validate()).ToList();
+            // // Persist any pending NPR edits BEFORE submitting so the API sees the latest data.
+            // if (HasPendingChanges)
+            // {
+            //     await SaveNprRequestsAsync();
+            // }
+
+            var validNprs = RfqProject.NprRequests.Where(npr => npr.Validate()).ToList();
+
+            List<RfqNprRequestUxModel> nprs = new List<RfqNprRequestUxModel>();
+            // foreach (RfqNprRequestUxModel npr in validNprs)
+            // {
+            //     npr.ProjectCode = RfqProject.Project;
+            //     nprs.Add(npr);
+            // }
 
             CreateNprGrpcResponse response = await RfqUxClientService.CreateNprGrpcAsync(validNprs);
 

@@ -18,6 +18,8 @@
         { get; set; }
         public string? CustomerPartNumber
         { get; set; }
+        public string? MaterialTypeDescription
+        { get; set; }
         public string? SupplierPartNumber
         { get; set; }
         public string? BOMUnitOfMeasurement

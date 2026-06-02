@@ -17,6 +17,7 @@
             projectAssociation.CustomerId = association.CustomerLocationGuid.ToUpperInvariant();
             projectAssociation.CustomerName = association.CustomerLocationName;
             projectAssociation.CustomerCode = association.CustomerCode;
+            projectAssociation.ProjectCode = association.CustomerProjectCode;
             projectAssociation.Id = association.Id.ToUpperInvariant();
             return projectAssociation;
         }
@@ -310,11 +311,11 @@
             nprRequest.CustomerCode = rfqProject.CustomerCode;
             nprRequest.CustomerPartNumber = partNumber.CustomerPartNumber;
             nprRequest.MaterialDescription = "";
-            nprRequest.MaterialTypeDescription = "";
+            nprRequest.MaterialTypeDescription = "Component";
             nprRequest.MaterialNumber = "";
             //nprRequest.PlatformName = "";
             //nprRequest.ProgramName = "";
-            nprRequest.ProjectCode = rfqProject.Project;
+            nprRequest.ProjectCode = rfqProject.ProjectCode;
             nprRequest.NPRRaisedRemarks = "";
             nprRequest.ReasonDescription = rfqProject.RfqReason;
             nprRequest.SuggestedManufacturerGroup = "";
@@ -336,13 +337,13 @@
         public static RfqNprRequestUxModel Update(this RfqNprRequestUxModel nprRequest, RqfProjectUxModel rfqProject, GlobalValue globalValue)
         {
             nprRequest.CustomerCode = rfqProject.CustomerCode;
-            nprRequest.OriginatorName = globalValue.DisplayName;
+            nprRequest.OriginatorName = globalValue.UserAccount;
             nprRequest.CustomerRfqNo = rfqProject.RfqNumber;
             nprRequest.DeadlineDate = rfqProject.RfqResponseDeadline;
-            nprRequest.BOMUnitOfMeasurement = "EU";
-            nprRequest.ProjectCode = rfqProject.Project;
+            //nprRequest.BOMUnitOfMeasurement = "";
+            nprRequest.ProjectCode = rfqProject.ProjectCode;
             //nprRequest.VehicleTotalQuantity = rfqProject.VehicleVolume;
-            nprRequest.ManufacturingSite = rfqProject.CustomerLocation;
+            nprRequest.ManufacturingSite = rfqProject.CustomerLocation ?? nprRequest.ManufacturingSite;
             
             return nprRequest;
         }

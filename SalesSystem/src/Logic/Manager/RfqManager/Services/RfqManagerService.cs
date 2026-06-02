@@ -141,7 +141,8 @@
                             projectAssociation.CustomerLocationName = location.CustomerName;
                             projectAssociation.CustomerCode = location.CustomerCode;
                             projectAssociation.CustomerProjectGuid = project.Id.ToUpperInvariant();
-                            projectAssociation.CustomerProjectName = project.CustomerProjectCode;
+                            projectAssociation.CustomerProjectName = project.ProjectName;
+                            projectAssociation.CustomerProjectCode = project.CustomerProjectCode;
                             projectAssociation.Id = customerProjectAssociation.Id;
                             response.ProjectAssociation.Add(projectAssociation);
                         }

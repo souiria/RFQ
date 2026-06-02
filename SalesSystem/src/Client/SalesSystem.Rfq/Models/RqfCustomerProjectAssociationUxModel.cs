@@ -12,6 +12,8 @@
         { get; set; }
         public string? CustomerCode
         { get; set; }
+        public string? ProjectCode
+        { get; set; }
         public string? Id
         { get; set; }
     }

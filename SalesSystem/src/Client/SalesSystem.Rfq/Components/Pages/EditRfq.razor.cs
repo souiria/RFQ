@@ -168,7 +168,7 @@ namespace SalesSystem.Rfq.Components.Pages
                     if (SelectedProject != null)
                     {
                         RfqProject!.ProjectId = SelectedProject.ProjectId!;
-                        Logger.GenericLogInformation($"EditRfq.OnAfterRender - Project changed to {SelectedProject.Id} - {SelectedProject.ProjectName}");
+                        Logger.GenericLogInformation($"EditRfq.OnAfterRender - Project changed to {SelectedProject.Id} - {SelectedProject.ProjectCode}");
                     }
                     else
                     {
@@ -249,9 +249,12 @@ namespace SalesSystem.Rfq.Components.Pages
                     .FirstOrDefault(p => p.ProjectId == RfqProject.ProjectId);
                 if (SelectedProject != null)
                 {
+                    RfqProject.ProjectCode = SelectedProject.ProjectCode;
                     RfqProject.Project = SelectedProject.ProjectName;
                     RfqProject.CustomerCode = SelectedProject.CustomerCode ?? string.Empty;
                 }
+
+                RfqProject.RfqReason = RfqUxClientService.Reasons.FirstOrDefault(r => r.RowId == RfqProject.RfqReasonId)?.RfqReasonTitle ?? string.Empty;
 
                 _PreviousSelectedProject = SelectedProject;
                 IsLoading = false;
@@ -405,11 +408,6 @@ namespace SalesSystem.Rfq.Components.Pages
                         {
                             foreach (RfqNprRequestUxModel nprRequest in nprRequests)
                             {
-                                if(SelectedProject == null)
-                                {
-                                    Logger.GenericLogInformation($"EditRfq.NprAllInProgressPartsAsync - SelectedProject is null, cannot update NPR request for part {nprRequest.CustomerPartNumber}");
-                                    continue;
-                                }
 
                                 nprRequest.Update(RfqProject, GlobalValue);
                             }
@@ -733,17 +731,17 @@ namespace SalesSystem.Rfq.Components.Pages
             if (string.IsNullOrWhiteSpace(searchText))
             {
                 return RfqUxClientService.CustomerProjectAssociations
-                    .OrderBy(p => p.ProjectName)
+                    .OrderBy(p => p.ProjectCode)
                     .ThenBy(p => p.CustomerName);
             }
 
             // Search across project name and customer name
             return RfqUxClientService.CustomerProjectAssociations
                 .Where(p =>
-                    (p.ProjectName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (p.ProjectCode?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
                     (p.CustomerName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false))
-                .OrderBy(p => p.ProjectName?.StartsWith(searchText, StringComparison.OrdinalIgnoreCase) == true ? 0 : 1)
-                .ThenBy(p => p.ProjectName)
+                .OrderBy(p => p.ProjectCode?.StartsWith(searchText, StringComparison.OrdinalIgnoreCase) == true ? 0 : 1)
+                .ThenBy(p => p.ProjectCode)
                 .ThenBy(p => p.CustomerName);
         }
         #endregion
@@ -752,9 +750,11 @@ namespace SalesSystem.Rfq.Components.Pages
         async Task OnReasonValueChanged(int? value)
         {
             RfqProject!.RfqReasonId = value ?? 0;
+
             await Task.Delay(0);
 
             RfqReasonGrpc? reason = RfqUxClientService.Reasons.FirstOrDefault(r => r.RowId == (value ?? 0));
+
             Logger.GenericLogInformation($"EditRfq.OnReasonValueChanged - Reason changed to {reason?.RowId} - {reason?.RfqReasonTitle}");
 
             StateHasChanged();
