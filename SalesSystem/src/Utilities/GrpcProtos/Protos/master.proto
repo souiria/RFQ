@@ -49,6 +49,10 @@ service Master {
   rpc GetSupplierGrpcStream (SupplierGrpcRequest) returns (stream SupplierGrpc);
 
   rpc FilterMasterDataGrpc (MastersFilterRequestGrpc) returns (MastersFilterResponseGrpc);
+  
+  rpc GetUnitOfMeasureGrpc (UnitOfMeasureGrpcRequest) returns (ListUnitOfMeasureGrpc);
+  rpc GetUnitOfMeasureGrpcStream (UnitOfMeasureGrpcRequest) returns (stream UnitOfMeasureGrpc);
+
 }
 
 // The request message containing the user's name.
@@ -353,4 +357,20 @@ message MastersFilterResponseGrpc {
     ListVehicleGrpc VehicleGrpcList = 12;
     ListSupplierGroupGrpc SupplierGroupGrpcList = 13;
     ListSupplierGrpc SupplierList = 14;
+     ListUnitOfMeasureGrpc UnitOfMeasureGrpcList = 15;
+}
+message UnitOfMeasureGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message UnitOfMeasureGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue Code = 2;
+    google.protobuf.StringValue UnitOfMeasureDescription = 3;
+    google.protobuf.BoolValue IsActive = 4;
+}
+
+message ListUnitOfMeasureGrpc {
+    repeated UnitOfMeasureGrpc UnitOfMeasureGrpc = 1;
 }

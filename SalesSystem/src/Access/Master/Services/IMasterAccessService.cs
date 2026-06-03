@@ -2,6 +2,14 @@
 {
     public interface IMasterAccessService
     {
+        #region UnitOfMeasure
+
+        Task<ListUnitOfMeasureGrpc> GetAllUnitOfMeasures(CancellationToken cancellationToken,int position = 0,int takeAmount = 0);
+
+        Task<bool> PopulateUnitOfMeasuresAsync(CancellationToken cancellationToken);
+
+        #endregion
+
         #region Currency
         Task<ListCurrencyGrpc> GetAllCurrencies(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<bool> PopulateCurrenciesAsync(CancellationToken cancellationToken);

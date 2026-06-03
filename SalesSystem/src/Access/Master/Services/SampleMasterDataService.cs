@@ -2,7 +2,37 @@
 {
     public static class SampleMasterDataService
     {
+        #region UnitOfMeasure
 
+        public static ListUnitOfMeasureGrpc PopulateUnitOfMeasureGrpc()
+        {
+            ListUnitOfMeasureGrpc listUnitOfMeasureGrpc = new ListUnitOfMeasureGrpc();
+
+            for (int i = 0; i < 5; i++)
+            {
+                UnitOfMeasureGrpc unitOfMeasureGrpc = new UnitOfMeasureGrpc();
+
+                unitOfMeasureGrpc.Code = $"TestCode{i}".ToUpperInvariant();
+                unitOfMeasureGrpc.UnitOfMeasureDescription = $"TestDescription{i}".ToUpperInvariant();
+                unitOfMeasureGrpc.Id = Guid.NewGuid().ToString().ToUpperInvariant();
+                unitOfMeasureGrpc.IsActive = true;
+
+                listUnitOfMeasureGrpc.UnitOfMeasureGrpc.Add(unitOfMeasureGrpc);
+            }
+
+            UnitOfMeasureGrpc fixedUnitOfMeasureGrpc = new UnitOfMeasureGrpc();
+
+            fixedUnitOfMeasureGrpc.Code = "TestCode".ToUpperInvariant();
+            fixedUnitOfMeasureGrpc.UnitOfMeasureDescription = "TestDescription".ToUpperInvariant();
+            fixedUnitOfMeasureGrpc.Id = "ec44e5cd-5832-48dd-b5a3-440b5cb49451".ToUpperInvariant();
+            fixedUnitOfMeasureGrpc.IsActive = true;
+
+            listUnitOfMeasureGrpc.UnitOfMeasureGrpc.Add(fixedUnitOfMeasureGrpc);
+
+            return listUnitOfMeasureGrpc;
+        }
+
+        #endregion
         #region Currency
         public static ListCurrencyGrpc PopulateCurrencyGrpc()
         {

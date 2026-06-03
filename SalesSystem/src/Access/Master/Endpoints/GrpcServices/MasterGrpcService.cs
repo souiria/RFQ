@@ -18,7 +18,39 @@ namespace Master.Endpoints.GrpcServices
             Task<HelloReply> result = Task.FromResult(reply);
             return result;
         }
+        #region UnitOfMeasure
 
+        public override async Task<ListUnitOfMeasureGrpc> GetUnitOfMeasureGrpc(
+            UnitOfMeasureGrpcRequest request,
+            ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetUnitOfMeasureGrpc starting");
+
+            return await _MasterAccessService.GetAllUnitOfMeasures(
+                context.CancellationToken,
+                request.Position,
+                request.Takeamount);
+        }
+
+        public override async Task GetUnitOfMeasureGrpcStream(
+            UnitOfMeasureGrpcRequest request,
+            IServerStreamWriter<UnitOfMeasureGrpc> responseStream,
+            ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetUnitOfMeasureGrpcStream starting");
+
+            ListUnitOfMeasureGrpc results = await _MasterAccessService.GetAllUnitOfMeasures(
+                context.CancellationToken,
+                request.Position,
+                request.Takeamount);
+
+            foreach (UnitOfMeasureGrpc result in results.UnitOfMeasureGrpc)
+            {
+                await responseStream.WriteAsync(result);
+            }
+        }
+
+        #endregion
         #region Currency
         public override async Task<ListCurrencyGrpc> GetCurrencyGrpc(CurrencyGrpcRequest request, ServerCallContext context)
         {
@@ -232,6 +264,22 @@ namespace Master.Endpoints.GrpcServices
                     returnResponse.Success = true;
                 }, context.CancellationToken);
                 break;
+                case "UNITOFMEASUREGRPC":
+                await _MasterAccessService.HandleFilterCase<UnitOfMeasureGrpc>(
+                    filterExpressionString,
+                    parsingConfig,
+                    filterList =>
+                    {
+                        ListUnitOfMeasureGrpc returnList = new ListUnitOfMeasureGrpc();
+                        returnList.UnitOfMeasureGrpc.AddRange(filterList);
+
+                        returnResponse.UnitOfMeasureGrpcList = returnList;
+                        returnResponse.Success = true;
+                    },
+                    context.CancellationToken);
+
+                break;
+                ///////////////////////////////
                 case "CUSTOMERLOCATIONGRPC":
                 try
                 {

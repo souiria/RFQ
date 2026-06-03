@@ -7,7 +7,12 @@
     public sealed class MasterAccessService : IMasterAccessService
     {
         #region In Memory Datasets
+        #region UnitOfMeasure
 
+        ListUnitOfMeasureGrpc _UnitOfMeasures;
+        ListUnitOfMeasureGrpc _FilteredUnitOfMeasures;
+
+        #endregion
         #region Currency
 
         ListCurrencyGrpc _Currencies;
@@ -67,6 +72,13 @@
         #endregion
 
         #region Fields and Properties
+
+        #region UnitOfMeasure
+
+        IQueryHandler<GetUnitOfMeasuresQuery, List<UnitOfMeasureGrpc>>? _UnitOfMeasureHandler;
+        bool _UnitOfMeasureRefreshInProgress;
+
+        #endregion
 
         #region Currency
 
@@ -131,6 +143,14 @@
         #region Constructor
         public MasterAccessService(IServiceProvider serviceProvider, bool testing = false)
         {
+
+            #region UnitOfMeasure
+
+            _UnitOfMeasures = new ListUnitOfMeasureGrpc();
+            _FilteredUnitOfMeasures = new ListUnitOfMeasureGrpc();
+            _UnitOfMeasureRefreshInProgress = false;
+
+            #endregion
 
             #region Currency
 
@@ -212,7 +232,42 @@
         #endregion
 
         #region Handlers
+        #region UnitOfMeasure
 
+        public async Task<ListUnitOfMeasureGrpc> GetAllUnitOfMeasures(
+            CancellationToken cancellationToken,
+            int position = 0,
+            int takeAmount = 0)
+        {
+            await Task.Delay(1, cancellationToken);
+
+            if (_UnitOfMeasures.UnitOfMeasureGrpc.Any())
+            {
+                if (takeAmount <= 0)
+                {
+                    return _UnitOfMeasures;
+                }
+
+                ListUnitOfMeasureGrpc returnList = new ListUnitOfMeasureGrpc();
+
+                IQueryable<UnitOfMeasureGrpc> query = _UnitOfMeasures.UnitOfMeasureGrpc
+                    .AsQueryable()
+                    .Skip(position)
+                    .Take(takeAmount);
+
+                returnList.UnitOfMeasureGrpc.AddRange(query);
+
+                return returnList;
+            }
+            else
+            {
+                await PopulateUnitOfMeasuresAsync(cancellationToken);
+
+                return _UnitOfMeasures;
+            }
+        }
+
+        #endregion
         #region Currency
 
         public async Task<ListCurrencyGrpc> GetAllCurrencies(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
@@ -585,6 +640,45 @@
         #endregion
 
         #region Data Imports
+
+        #region UnitOfMeasure
+        public async Task<bool> PopulateUnitOfMeasuresAsync(CancellationToken cancellationToken)
+        {
+            if (!_UnitOfMeasureRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _UnitOfMeasureHandler = scope.ServiceProvider
+                        .GetRequiredService<IQueryHandler<GetUnitOfMeasuresQuery, List<UnitOfMeasureGrpc>>>();
+
+                    _UnitOfMeasureRefreshInProgress = true;
+
+                    GetUnitOfMeasuresQuery query = new GetUnitOfMeasuresQuery();
+
+                    await Task.Delay(1, cancellationToken);
+
+                    Result<List<UnitOfMeasureGrpc>> results =
+                        await _UnitOfMeasureHandler.Handle(query, cancellationToken);
+
+                    if (results.Value.Count <= 0)
+                    {
+                        // No unit of measures found
+                    }
+                    else
+                    {
+                        _UnitOfMeasures.UnitOfMeasureGrpc.Clear();
+                        _UnitOfMeasures.UnitOfMeasureGrpc.AddRange(results.Value);
+                    }
+
+                    _UnitOfMeasureRefreshInProgress = false;
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
 
         #region Currency
         public async Task<bool> PopulateCurrenciesAsync(CancellationToken cancellationToken)
@@ -1003,6 +1097,7 @@
                     "VEHICLEGRPC" => _Vehicles.VehicleGrpc.Cast<T>().Where(func).ToList(),
                     "SUPPLIERGROUPGRPC" => _SupplierGroups.SupplierGroupGrpc.Cast<T>().Where(func).ToList(),
                     "SUPPLIERGRPC" => _Suppliers.SupplierGrpc.Cast<T>().Where(func).ToList(),
+                    "UNITOFMEASUREGRPC" => _UnitOfMeasures.UnitOfMeasureGrpc.Cast<T>().Where(func).ToList(),
                     _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
                 };
             }, cancellationToken);

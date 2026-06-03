@@ -197,5 +197,21 @@
             return supplierGrpc;
         }
         #endregion
+
+        #region UnitOfMeasure
+
+        public static UnitOfMeasureGrpc MapToUnitOfMeasureGrpc(this DbUnitOfMeasure entity)
+        {
+            UnitOfMeasureGrpc data = new UnitOfMeasureGrpc();
+
+            data.Id = entity.Id.ToString();
+            data.Code = entity.Code;
+            data.UnitOfMeasureDescription = entity.UnitOfMeasureDescription;
+            data.IsActive = entity.IsActive;
+
+            return data;
+        }
+
+        #endregion
     }
 }
