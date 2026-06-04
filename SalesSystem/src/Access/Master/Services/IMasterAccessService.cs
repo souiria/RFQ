@@ -57,12 +57,19 @@
         Task<bool> PopulateSupplierGroupsAsync(CancellationToken cancellationToken);
 
         #endregion
+
         #region Supplier
 
         Task<ListSupplierGrpc> GetAllSuppliers(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<bool> PopulateSuppliersAsync(CancellationToken cancellationToken);
 
         #endregion
+        #region BusinessUnit
+
+        Task<ListBusinessUnitGrpc> GetAllBusinessUnits(CancellationToken cancellationToken,int position = 0,int takeAmount = 0);
+        Task<bool> PopulateBusinessUnitsAsync(CancellationToken cancellationToken);
+
+         #endregion
 
         Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig,
             Action<IEnumerable<T>> setResponseCollection, CancellationToken cancellationToken);

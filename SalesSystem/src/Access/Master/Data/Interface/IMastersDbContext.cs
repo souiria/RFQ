@@ -30,6 +30,8 @@
         { get; }
          DbSet<DbUnitOfMeasure> UnitOfMeasures
          { get; }
+        DbSet<DbBusinessUnit> BusinessUnits
+        { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

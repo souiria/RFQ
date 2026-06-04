@@ -18,6 +18,40 @@ namespace Master.Endpoints.GrpcServices
             Task<HelloReply> result = Task.FromResult(reply);
             return result;
         }
+        #region BusinessUnit
+
+        public override async Task<ListBusinessUnitGrpc> GetBusinessUnitGrpc(
+            BusinessUnitGrpcRequest request,
+            ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetBusinessUnitGrpc starting");
+
+            return await _MasterAccessService.GetAllBusinessUnits(
+                context.CancellationToken,
+                request.Position,
+                request.Takeamount);
+        }
+
+        public override async Task GetBusinessUnitGrpcStream(
+            BusinessUnitGrpcRequest request,
+            IServerStreamWriter<BusinessUnitGrpc> responseStream,
+            ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetBusinessUnitGrpcStream starting");
+
+            ListBusinessUnitGrpc results = await _MasterAccessService.GetAllBusinessUnits(
+                context.CancellationToken,
+                request.Position,
+                request.Takeamount);
+
+            foreach (BusinessUnitGrpc result in results.BusinessUnitGrpc)
+            {
+                await responseStream.WriteAsync(result);
+            }
+        }
+
+        #endregion
+
         #region UnitOfMeasure
 
         public override async Task<ListUnitOfMeasureGrpc> GetUnitOfMeasureGrpc(
@@ -219,6 +253,7 @@ namespace Master.Endpoints.GrpcServices
         }
 
         #endregion
+
         #region Supplier
 
         public override async Task<ListSupplierGrpc> GetSupplierGrpc(SupplierGrpcRequest request, ServerCallContext context)
@@ -244,7 +279,21 @@ namespace Master.Endpoints.GrpcServices
 
             switch (request.DatabaseList.ToUpperInvariant())
             {
-                case "CURRENCYGRPC":
+                case "BUSINESSUNITGRPC":
+                await _MasterAccessService.HandleFilterCase<BusinessUnitGrpc>(
+                    filterExpressionString,
+                    parsingConfig,
+                    filterList =>
+                    {
+                        ListBusinessUnitGrpc returnList = new ListBusinessUnitGrpc();
+                        returnList.BusinessUnitGrpc.AddRange(filterList);
+
+                        returnResponse.BusinessUnitGrpcList = returnList;
+                        returnResponse.Success = true;
+                    },
+                    context.CancellationToken);
+                break;
+                 case "CURRENCYGRPC":
                 await _MasterAccessService.HandleFilterCase<CurrencyGrpc>(filterExpressionString, parsingConfig,
                 filterList =>
                 {

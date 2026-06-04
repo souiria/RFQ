@@ -27,6 +27,8 @@
             if (_MasterAccessService != null)
             {
                 bool check;
+                check = await _MasterAccessService.PopulateBusinessUnitsAsync(stoppingToken);
+                await LogDataPopulationSuccess("BusinessUnit", check);
                 check = await _MasterAccessService.PopulateUnitOfMeasuresAsync(stoppingToken);
                 await LogDataPopulationSuccess("UnitOfMeasures", check);
                 check = await _MasterAccessService.PopulateCurrenciesAsync(stoppingToken);

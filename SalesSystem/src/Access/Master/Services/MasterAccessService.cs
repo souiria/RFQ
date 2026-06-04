@@ -7,6 +7,13 @@
     public sealed class MasterAccessService : IMasterAccessService
     {
         #region In Memory Datasets
+        #region BusinessUnit
+
+        ListBusinessUnitGrpc _BusinessUnits;
+        ListBusinessUnitGrpc _FilteredBusinessUnits;
+
+        #endregion
+
         #region UnitOfMeasure
 
         ListUnitOfMeasureGrpc _UnitOfMeasures;
@@ -70,8 +77,12 @@
         #endregion
 
         #endregion
-
         #region Fields and Properties
+        #region BusinessUnit
+        bool _BusinessUnitRefreshInProgress;
+        IQueryHandler<GetBusinessUnitsQuery, List<BusinessUnitGrpc>>? _BusinessUnitHandler;
+
+        #endregion
 
         #region UnitOfMeasure
 
@@ -159,6 +170,12 @@
             _CurrencyRefreshInProgress = false;
 
             #endregion
+            #region BusinessUnit
+            _BusinessUnits = new ListBusinessUnitGrpc();
+            _FilteredBusinessUnits = new ListBusinessUnitGrpc();
+            _BusinessUnitRefreshInProgress = false;
+
+            #endregion
 
             #region Customer
 
@@ -232,6 +249,43 @@
         #endregion
 
         #region Handlers
+        #region BusinessUnit
+
+        public async Task<ListBusinessUnitGrpc> GetAllBusinessUnits(
+            CancellationToken cancellationToken,
+            int position = 0,
+            int takeAmount = 0)
+        {
+            await Task.Delay(1, cancellationToken);
+
+            if (_BusinessUnits.BusinessUnitGrpc.Any())
+            {
+                if (takeAmount <= 0)
+                {
+                    return _BusinessUnits;
+                }
+
+                ListBusinessUnitGrpc returnList = new ListBusinessUnitGrpc();
+
+                IQueryable<BusinessUnitGrpc> query = _BusinessUnits.BusinessUnitGrpc
+                    .AsQueryable()
+                    .Skip(position)
+                    .Take(takeAmount);
+
+                returnList.BusinessUnitGrpc.AddRange(query);
+
+                return returnList;
+            }
+            else
+            {
+                await PopulateBusinessUnitsAsync(cancellationToken);
+
+                return _BusinessUnits;
+            }
+        }
+
+#endregion
+
         #region UnitOfMeasure
 
         public async Task<ListUnitOfMeasureGrpc> GetAllUnitOfMeasures(
@@ -268,6 +322,7 @@
         }
 
         #endregion
+
         #region Currency
 
         public async Task<ListCurrencyGrpc> GetAllCurrencies(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
@@ -640,7 +695,46 @@
         #endregion
 
         #region Data Imports
+        #region BusinessUnit
 
+        public async Task<bool> PopulateBusinessUnitsAsync(CancellationToken cancellationToken)
+        {
+            if (!_BusinessUnitRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _BusinessUnitHandler = scope.ServiceProvider
+                        .GetRequiredService<IQueryHandler<GetBusinessUnitsQuery, List<BusinessUnitGrpc>>>();
+
+                    _BusinessUnitRefreshInProgress = true;
+
+                    GetBusinessUnitsQuery query = new GetBusinessUnitsQuery();
+
+                    await Task.Delay(1, cancellationToken);
+
+                    Result<List<BusinessUnitGrpc>> results =
+                        await _BusinessUnitHandler.Handle(query, cancellationToken);
+
+                    if (results.Value.Count <= 0)
+                    {
+                        // No business units found
+                    }
+                    else
+                    {
+                        _BusinessUnits.BusinessUnitGrpc.Clear();
+                        _BusinessUnits.BusinessUnitGrpc.AddRange(results.Value);
+                    }
+
+                    _BusinessUnitRefreshInProgress = false;
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
         #region UnitOfMeasure
         public async Task<bool> PopulateUnitOfMeasuresAsync(CancellationToken cancellationToken)
         {
@@ -1098,6 +1192,7 @@
                     "SUPPLIERGROUPGRPC" => _SupplierGroups.SupplierGroupGrpc.Cast<T>().Where(func).ToList(),
                     "SUPPLIERGRPC" => _Suppliers.SupplierGrpc.Cast<T>().Where(func).ToList(),
                     "UNITOFMEASUREGRPC" => _UnitOfMeasures.UnitOfMeasureGrpc.Cast<T>().Where(func).ToList(),
+                    "BUSINESSUNITGRPC" => _BusinessUnits.BusinessUnitGrpc.Cast<T>().Where(func).ToList(),
                     _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
                 };
             }, cancellationToken);
@@ -1118,6 +1213,7 @@
             _Vehicles = SampleMasterDataService.PopulateVehicleGrpc();
             _SupplierGroups = SampleMasterDataService.PopulateSupplierGroupGrpc();
             _Suppliers = SampleMasterDataService.PopulateSupplierGrpc();
+            _BusinessUnits = SampleMasterDataService.PopulateBusinessUnitGrpc();
         }
     }
 }

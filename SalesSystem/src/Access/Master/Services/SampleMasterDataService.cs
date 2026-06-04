@@ -33,6 +33,7 @@
         }
 
         #endregion
+
         #region Currency
         public static ListCurrencyGrpc PopulateCurrencyGrpc()
         {
@@ -349,6 +350,7 @@
             return suppplierGroupList;
         }
         #endregion
+
         #region Supplier
         public static ListSupplierGrpc PopulateSupplierGrpc()
         {
@@ -417,5 +419,55 @@
             return suppplierGroupList;
         }
         #endregion
+
+        #region BusinessUnit
+
+        public static ListBusinessUnitGrpc PopulateBusinessUnitGrpc()
+        {
+            ListBusinessUnitGrpc listBusinessUnitGrpc = new ListBusinessUnitGrpc();
+
+            for (int i = 0; i < 5; i++)
+            {
+                BusinessUnitGrpc businessUnitGrpc = new BusinessUnitGrpc();
+
+                businessUnitGrpc.BusinessUnitCode = $"BU{i}".ToUpperInvariant();
+                businessUnitGrpc.BusinessUnitName = $"TEST BUSINESS UNIT {i}".ToUpperInvariant();
+                businessUnitGrpc.Id = Guid.NewGuid().ToString().ToUpperInvariant();
+                businessUnitGrpc.IsActive = true;
+
+                businessUnitGrpc.City = $"CITY{i}".ToUpperInvariant();
+                businessUnitGrpc.Region = $"REGION{i}".ToUpperInvariant();
+                businessUnitGrpc.Company = "SEWS-E";
+                businessUnitGrpc.DisplayName = $"BU{i}";
+                businessUnitGrpc.LegacyBusinessUnitCode = $"BU{i}";
+                businessUnitGrpc.LegacyBusinessUnitName = $"TEST BUSINESS UNIT {i}".ToUpperInvariant();
+
+                businessUnitGrpc.BusinessUnitDescription = "CUSTOMER SUPPORT OFFICE";
+                businessUnitGrpc.BusinessUnitContactName = $"CONTACT{i}";
+                businessUnitGrpc.BusinessUnitContactNumber = $"+123456789{i}";
+                businessUnitGrpc.BusinessUnitManagerEmail = $"user{i}@test.com";
+
+                listBusinessUnitGrpc.BusinessUnitGrpc.Add(businessUnitGrpc);
+            }
+
+            BusinessUnitGrpc fixedBusinessUnitGrpc = new BusinessUnitGrpc();
+
+            fixedBusinessUnitGrpc.BusinessUnitCode = "UKYS";
+            fixedBusinessUnitGrpc.BusinessUnitName = "YSTRADGYNLAIS";
+            fixedBusinessUnitGrpc.Id = "9D21CDEE-D83F-4478-91ED-1F1A559EAF1E";
+            fixedBusinessUnitGrpc.IsActive = true;
+
+            fixedBusinessUnitGrpc.City = "Kenitra";
+            fixedBusinessUnitGrpc.Company = "SEWS-E";
+            fixedBusinessUnitGrpc.DisplayName = "YST";
+            fixedBusinessUnitGrpc.BusinessUnitDescription = "CUSTOMER SUPPORT OFFICE";
+
+            listBusinessUnitGrpc.BusinessUnitGrpc.Add(fixedBusinessUnitGrpc);
+
+            return listBusinessUnitGrpc;
+        }
+
+        #endregion
+
     }
 }

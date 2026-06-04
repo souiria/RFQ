@@ -947,58 +947,56 @@ namespace SalesSystem.Rfq.Services
 
                 foreach (RfqNprRequestUxModel model in requests)
                 {
+                    model.OriginatorName = userAccount;
+
+                    if (string.IsNullOrWhiteSpace(model.MaterialTypeDescription))
+                    {
+                        model.MaterialTypeDescription = "Component";
+                    }
+
+                    //  Log values BEFORE save
+                    _Logger?.GenericLogInformation(
+                        "---------------------------------SaveNprRequestsToDatabaseAsync\n" +
+                        $"Id: {model.Id}\n" +
+                        $"CustomerRfqNo: {model.CustomerRfqNo}\n" +
+                        $"CustomerCode: {model.CustomerCode}\n" +
+                        $"RequestID: {model.RequestID}\n" +
+                        $"OriginatorName: {model.OriginatorName}\n" +
+                        $"DeadlineDate: {model.DeadlineDate}\n" +
+                        $"ReasonDescription: {model.ReasonDescription}\n" +
+                        $"MaterialNumber: {model.MaterialNumber}\n" +
+                        $"MaterialDescription: {model.MaterialDescription}\n" +
+                        $"MaterialTypeDescription: {model.MaterialTypeDescription}\n" +
+                        $"CustomerPartNumber: {model.CustomerPartNumber}\n" +
+                        $"SupplierPartNumber: {model.SupplierPartNumber}\n" +
+                        $"BOMUnitOfMeasurement: {model.BOMUnitOfMeasurement}\n" +
+                        $"SupplierGroup: {model.SupplierGroup}\n" +
+                        $"SupplierDetailComments: {model.SupplierDetailComments}\n" +
+                        $"ProjectCode: {model.ProjectCode}\n" +
+                        $"QtyPerVehicle: {model.QtyPerVehicle}\n" +
+                        $"IsSampleDataRequired: {model.IsSampleDataRequired}\n" +
+                        $"SampleSiteDetails Count: {model.SampleSiteDetails.Count}\n" +
+                        $"NPRRaisedRemarks: {model.NPRRaisedRemarks}\n" +
+                        $"ManufacturingSite: {model.ManufacturingSite}\n" +
+                        $"IsCustomerNominatedSupplier: {model.IsCustomerNominatedSupplier}\n" +
+                        $"IsCustomerNominatedMaterial: {model.IsCustomerNominatedMaterial}\n" +
+                        $"SuggestedManufacturerGroup: {model.SuggestedManufacturerGroup}\n" +
+                        $"AssociatedParts: {model.AssociatedParts}\n" +
+                        $"NPRUploadSeqNo: {model.NPRUploadSeqNo}\n" +
+                        $"Created: {model.Created}\n" +
+                        $"Updated: {model.Updated}\n" +
+                        $"Status: {model.Status}\n" +
+                        $"UxStatus: {model.UxStatus}\n" +
+                        $"IsActive: {model.IsActive}\n" +
+                        $"IsValid: {model.IsValid}\n" +
+                        $"ErrorCount: {model.ErrorCount}\n" +
+                        $"Closed: {model.Closed}\n" +
+                        $"Reason: {model.Reason}\n" +
+                        "---------------------------------");
                     // Defensive: any malformed Id is an in-memory cache bug — skip & log
                     if (model.Id == Guid.Empty && model.UxStatus != UxObjectStatus.Created)
                     {
-
-                        //model.OriginatorName = userAccount;
-
-                        if (string.IsNullOrWhiteSpace(model.MaterialTypeDescription))
-                        {
-                            model.MaterialTypeDescription = "Component";
-                        }
-
-                        //  Log values BEFORE save
-                        _Logger?.GenericLogInformation(
-        "---------------------------------SaveNprRequestsToDatabaseAsync\n" +
-        $"Id: {model.Id}\n" +
-        $"CustomerRfqNo: {model.CustomerRfqNo}\n" +
-        $"CustomerCode: {model.CustomerCode}\n" +
-        $"RequestID: {model.RequestID}\n" +
-        $"OriginatorName: {model.OriginatorName}\n" +
-        $"DeadlineDate: {model.DeadlineDate}\n" +
-        $"ReasonDescription: {model.ReasonDescription}\n" +
-        $"MaterialNumber: {model.MaterialNumber}\n" +
-        $"MaterialDescription: {model.MaterialDescription}\n" +
-        $"MaterialTypeDescription: {model.MaterialTypeDescription}\n" +
-        $"CustomerPartNumber: {model.CustomerPartNumber}\n" +
-        $"SupplierPartNumber: {model.SupplierPartNumber}\n" +
-        $"BOMUnitOfMeasurement: {model.BOMUnitOfMeasurement}\n" +
-        $"SupplierGroup: {model.SupplierGroup}\n" +
-        $"SupplierDetailComments: {model.SupplierDetailComments}\n" +
-        $"ProjectCode: {model.ProjectCode}\n" +
-        $"QtyPerVehicle: {model.QtyPerVehicle}\n" +
-        $"IsSampleDataRequired: {model.IsSampleDataRequired}\n" +
-        $"SampleSiteDetails Count: {model.SampleSiteDetails.Count}\n" +
-        $"NPRRaisedRemarks: {model.NPRRaisedRemarks}\n" +
-        $"ManufacturingSite: {model.ManufacturingSite}\n" +
-        $"IsCustomerNominatedSupplier: {model.IsCustomerNominatedSupplier}\n" +
-        $"IsCustomerNominatedMaterial: {model.IsCustomerNominatedMaterial}\n" +
-        $"SuggestedManufacturerGroup: {model.SuggestedManufacturerGroup}\n" +
-        $"AssociatedParts: {model.AssociatedParts}\n" +
-        $"NPRUploadSeqNo: {model.NPRUploadSeqNo}\n" +
-        $"Created: {model.Created}\n" +
-        $"Updated: {model.Updated}\n" +
-        $"Status: {model.Status}\n" +
-        $"UxStatus: {model.UxStatus}\n" +
-        $"IsActive: {model.IsActive}\n" +
-        $"IsValid: {model.IsValid}\n" +
-        $"ErrorCount: {model.ErrorCount}\n" +
-        $"Closed: {model.Closed}\n" +
-        $"Reason: {model.Reason}\n" +
-        "---------------------------------");
-
-                        _Logger?.GenericLogInformation(
+                                               _Logger?.GenericLogInformation(
                             $"SaveNprRequestsToDatabaseAsync - Skipping item with empty Id: " +
                             $"RequestID='{model.RequestID}', CustomerRfqNo='{model.CustomerRfqNo}', " +
                             $"UxStatus={model.UxStatus}");
@@ -1008,10 +1006,10 @@ namespace SalesSystem.Rfq.Services
                     switch (model.UxStatus)
                     {
                         case UxObjectStatus.Created:
-                            //createList.Add(model);
+                            createList.Add(model);
                             break;
                         case UxObjectStatus.Updated:
-                            //updateList.Add(model);
+                            updateList.Add(model);
                             break;
                         case UxObjectStatus.Deleted:
                             deleteList.Add(model);
