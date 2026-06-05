@@ -282,42 +282,7 @@ namespace Master.Endpoints.GrpcServices
 
         #endregion
 
-        #region ProjectEngineeringAssociation
-
-        public override async Task<ListProjectEngineeringAssociationGrpc> GetProjectEngineeringAssociationGrpc(
-            ProjectEngineeringAssociationGrpcRequest request,
-            ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("GetProjectEngineeringAssociationGrpc starting");
-
-            return await _MasterAccessService.GetAllProjectEngineeringAssociations(
-                context.CancellationToken,
-                request.Position,
-                request.Takeamount);
-        }
-
-        public override async Task GetProjectEngineeringAssociationGrpcStream(
-            ProjectEngineeringAssociationGrpcRequest request,
-            IServerStreamWriter<ProjectEngineeringAssociationGrpc> responseStream,
-            ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("GetProjectEngineeringAssociationGrpcStream starting");
-
-            ListProjectEngineeringAssociationGrpc results =
-                await _MasterAccessService.GetAllProjectEngineeringAssociations(
-                    context.CancellationToken,
-                    request.Position,
-                    request.Takeamount);
-
-            foreach (ProjectEngineeringAssociationGrpc result in results.ProjectEngineeringAssociationGrpc)
-            {
-                await responseStream.WriteAsync(result);
-            }
-        }
-
-#endregion
-
-        public override async Task<MastersFilterResponseGrpc> FilterMasterDataGrpc(MastersFilterRequestGrpc request, ServerCallContext context)
+            public override async Task<MastersFilterResponseGrpc> FilterMasterDataGrpc(MastersFilterRequestGrpc request, ServerCallContext context)
         {
             ParsingConfig parsingConfig = new ParsingConfig();
             string filterExpressionString = request.FilterExpression;

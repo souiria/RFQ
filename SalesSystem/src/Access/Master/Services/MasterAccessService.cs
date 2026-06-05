@@ -165,12 +165,6 @@ namespace Master.Services
 
         #endregion
 
-        #region ProjectEngineerAssociation
-
-        IQueryHandler<GetAllProjectEngineeringAssociationQuery, List<ProjectEngineeringAssociationGrpc>>? _ProjectEngineeringAssociationHandler;
-        bool _ProjectEngineeringAssociationRefreshInProgress;
-        #endregion
-
         readonly IServiceProvider _ServiceProvider;
 
         #endregion
@@ -759,43 +753,7 @@ namespace Master.Services
         #endregion
 
         #region Data Imports
-        #region ProjectEngineeringAssociation
-
-        public async Task<ListProjectEngineeringAssociationGrpc> GetAllProjectEngineeringAssociations(
-            CancellationToken cancellationToken,
-            int position = 0,
-            int takeAmount = 0)
-        {
-            await Task.Delay(1, cancellationToken);
-
-            if (_ProjectEngineeringAssociations.ProjectEngineeringAssociationGrpc.Any())
-            {
-                if (takeAmount <= 0)
-                {
-                    return _ProjectEngineeringAssociations;
-                }
-
-                ListProjectEngineeringAssociationGrpc returnList = new ListProjectEngineeringAssociationGrpc();
-
-                IQueryable<ProjectEngineeringAssociationGrpc> query =
-                    _ProjectEngineeringAssociations.ProjectEngineeringAssociationGrpc
-                        .AsQueryable()
-                        .Skip(position)
-                        .Take(takeAmount);
-
-                returnList.ProjectEngineeringAssociationGrpc.AddRange(query);
-
-                return returnList;
-            }
-            else
-            {
-                await PopulateProjectEngineeringAssociationsAsync(cancellationToken);
-                return _ProjectEngineeringAssociations;
-            }
-        }
-
-        #endregion
-
+     
         #region BusinessUnit
 
         public async Task<bool> PopulateBusinessUnitsAsync(CancellationToken cancellationToken)

@@ -949,11 +949,7 @@ namespace SalesSystem.Rfq.Services
                 {
                     model.OriginatorName = userAccount;
 
-                    if (string.IsNullOrWhiteSpace(model.MaterialTypeDescription))
-                    {
-                        model.MaterialTypeDescription = "Component";
-                    }
-
+             
                     //  Log values BEFORE save
                     _Logger?.GenericLogInformation(
                         "---------------------------------SaveNprRequestsToDatabaseAsync\n" +
@@ -966,7 +962,6 @@ namespace SalesSystem.Rfq.Services
                         $"ReasonDescription: {model.ReasonDescription}\n" +
                         $"MaterialNumber: {model.MaterialNumber}\n" +
                         $"MaterialDescription: {model.MaterialDescription}\n" +
-                        $"MaterialTypeDescription: {model.MaterialTypeDescription}\n" +
                         $"CustomerPartNumber: {model.CustomerPartNumber}\n" +
                         $"SupplierPartNumber: {model.SupplierPartNumber}\n" +
                         $"BOMUnitOfMeasurement: {model.BOMUnitOfMeasurement}\n" +

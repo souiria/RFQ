@@ -314,61 +314,58 @@
     private void ValidateAllNprRequests()
     {
        
-        foreach (var npr in RfqProject.NprRequests)
-        {
-            npr.OriginatorName = GlobalValue?.UserAccount ?? "unknown";
+        // foreach (var npr in RfqProject.NprRequests)
+        // {
+        //     npr.OriginatorName = GlobalValue?.UserAccount ?? "unknown";
 
-            if (string.IsNullOrWhiteSpace(npr.CustomerCode))
-                npr.CustomerCode = "FORD";
+        //     if (string.IsNullOrWhiteSpace(npr.CustomerCode))
+        //         npr.CustomerCode = "FORD";
 
-            if (string.IsNullOrWhiteSpace(npr.MaterialNumber))
-                npr.MaterialNumber = "DEFAULT_MAT";
+        //     if (string.IsNullOrWhiteSpace(npr.MaterialNumber))
+        //         npr.MaterialNumber = "DEFAULT_MAT";
 
-            if (string.IsNullOrWhiteSpace(npr.MaterialDescription))
-                npr.MaterialDescription = "DEFAULT_DESC";
+        //     if (string.IsNullOrWhiteSpace(npr.MaterialDescription))
+        //         npr.MaterialDescription = "DEFAULT_DESC";
 
-            if (string.IsNullOrWhiteSpace(npr.MaterialTypeDescription))
-                npr.MaterialTypeDescription = "Component";
+        //     if (string.IsNullOrWhiteSpace(npr.ReasonDescription))
+        //         npr.ReasonDescription = "Default Reason";
 
-            if (string.IsNullOrWhiteSpace(npr.ReasonDescription))
-                npr.ReasonDescription = "Default Reason";
+        //     if (string.IsNullOrWhiteSpace(npr.SupplierGroup))
+        //         npr.SupplierGroup = "DEFAULT_GROUP";
 
-            if (string.IsNullOrWhiteSpace(npr.SupplierGroup))
-                npr.SupplierGroup = "DEFAULT_GROUP";
+        //     if (string.IsNullOrWhiteSpace(npr.SupplierDetailComments))
+        //         npr.SupplierDetailComments = "Auto-generated comment";
 
-            if (string.IsNullOrWhiteSpace(npr.SupplierDetailComments))
-                npr.SupplierDetailComments = "Auto-generated comment";
+        //     if (string.IsNullOrWhiteSpace(npr.SupplierPartNumber))
+        //         npr.SupplierPartNumber = "DEFAULT_SUPPLIER_PART";
 
-            if (string.IsNullOrWhiteSpace(npr.SupplierPartNumber))
-                npr.SupplierPartNumber = "DEFAULT_SUPPLIER_PART";
+        //     if (string.IsNullOrWhiteSpace(npr.ProjectCode))
+        //         npr.ProjectCode = "DEFAULT_PROJECT";
 
-            if (string.IsNullOrWhiteSpace(npr.ProjectCode))
-                npr.ProjectCode = "DEFAULT_PROJECT";
+        //     if (string.IsNullOrWhiteSpace(npr.ManufacturingSite))
+        //         npr.ManufacturingSite = "DEFAULT_SITE";
 
-            if (string.IsNullOrWhiteSpace(npr.ManufacturingSite))
-                npr.ManufacturingSite = "DEFAULT_SITE";
+        //     if (string.IsNullOrWhiteSpace(npr.SuggestedManufacturerGroup))
+        //         npr.SuggestedManufacturerGroup = "DEFAULT_MFR";
 
-            if (string.IsNullOrWhiteSpace(npr.SuggestedManufacturerGroup))
-                npr.SuggestedManufacturerGroup = "DEFAULT_MFR";
+        //     //  IMPORTANT FIX
+        //     if (string.IsNullOrWhiteSpace(npr.AssociatedParts)
+        //         || !IsValidAssociatedParts(npr.AssociatedParts))
+        //     {
+        //         npr.AssociatedParts = "UNKNOWN";
+        //     }
 
-            //  IMPORTANT FIX
-            if (string.IsNullOrWhiteSpace(npr.AssociatedParts)
-                || !IsValidAssociatedParts(npr.AssociatedParts))
-            {
-                npr.AssociatedParts = "UNKNOWN";
-            }
+        //     // Temporary deadline rule
+        //     npr.DeadlineDate = DateTime.UtcNow.AddMonths(1);
 
-            // Temporary deadline rule
-            npr.DeadlineDate = DateTime.UtcNow.AddMonths(1);
-
-            if (string.IsNullOrWhiteSpace(npr.BOMUnitOfMeasurement))
-                npr.BOMUnitOfMeasurement = "EU";
-        }
-        if (RfqProject?.NprRequests == null || RfqProject.NprRequests.Count == 0)
-        {
-            Snackbar.Add("No NPR requests to validate", Severity.Info);
-            return;
-        }
+        //     if (string.IsNullOrWhiteSpace(npr.BOMUnitOfMeasurement))
+        //         npr.BOMUnitOfMeasurement = "EU";
+        // }
+        // if (RfqProject?.NprRequests == null || RfqProject.NprRequests.Count == 0)
+        // {
+        //     Snackbar.Add("No NPR requests to validate", Severity.Info);
+        //     return;
+        // }
 
         //  //  //  //  //  //  //  //  //  //  DEBUG: log full JSON BEFORE validation
         string json = System.Text.Json.JsonSerializer.Serialize(

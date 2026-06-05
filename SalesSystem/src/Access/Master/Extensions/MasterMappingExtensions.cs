@@ -376,40 +376,7 @@
             return data;
         }
         #endregion
-        #region ProjectEngineeringAssociation
-
-        public static ProjectEngineeringAssociationGrpc MapToProjectEngineeringAssociationGrpc(
-            this DbProjectEngineeringAssociation entity)
-        {
-            ProjectEngineeringAssociationGrpc data = new ProjectEngineeringAssociationGrpc();
-
-            data.Id = entity.Id.ToString();
-            data.ProjectGuid = entity.ProjectGuid.ToString();
-            data.CustomerGuid = entity.CustomerGuid.ToString();
-
-            data.EngineeringADName = entity.EngineeringADName;
-            data.EngineeringFullName = entity.EngineeringFullName;
-            data.EmailAddress = entity.EmailAddress;
-             data.IsActive = entity.IsActive;
-              if (entity.CreatedDate.HasValue)
-            {
-                DateTime createdUtc = entity.CreatedDate.Value.ToUniversalTime();
-                data.CreatedDate = Timestamp.FromDateTime(createdUtc);
-            }
-
-            if (entity.ModifiedDate.HasValue)
-            {
-                DateTime modifiedUtc = entity.ModifiedDate.Value.ToUniversalTime();
-                data.ModifiedDate = Timestamp.FromDateTime(modifiedUtc);
-            }
-
-            data.CreatedBy = entity.CreatedBy.ToString();
-            data.ModifiedBy = entity.ModifiedBy.ToString();
-
-            return data;
-        }
-
-        #endregion
+    
 
     }
 }

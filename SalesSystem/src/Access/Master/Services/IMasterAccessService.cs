@@ -66,13 +66,8 @@
         Task<bool> PopulateSuppliersAsync(CancellationToken cancellationToken);
 
         #endregion
-        #region BusinessUnit
-        Task<ListProjectEngineeringAssociationGrpc> GetAllProjectEngineeringAssociations(
-            CancellationToken cancellationToken,
-            int position = 0,
-            int takeAmount = 0);
-        Task<bool> PopulateProjectEngineeringAssociationsAsync(CancellationToken cancellationToken);
 
+        #region BusinessUnit
         Task<ListBusinessUnitGrpc> GetAllBusinessUnits(CancellationToken cancellationToken,int position = 0,int takeAmount = 0);
         Task<bool> PopulateBusinessUnitsAsync(CancellationToken cancellationToken);
 
