@@ -2,6 +2,14 @@
 {
     public interface IMasterAccessService
     {
+        #region UnitOfMeasure
+
+        Task<ListUnitOfMeasureGrpc> GetAllUnitOfMeasures(CancellationToken cancellationToken,int position = 0,int takeAmount = 0);
+
+        Task<bool> PopulateUnitOfMeasuresAsync(CancellationToken cancellationToken);
+
+        #endregion
+
         #region Currency
         Task<ListCurrencyGrpc> GetAllCurrencies(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<bool> PopulateCurrenciesAsync(CancellationToken cancellationToken);
@@ -51,12 +59,24 @@
         Task<bool> PopulateSupplierGroupsAsync(CancellationToken cancellationToken);
 
         #endregion
+
         #region Supplier
 
         Task<ListSupplierGrpc> GetAllSuppliers(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<bool> PopulateSuppliersAsync(CancellationToken cancellationToken);
 
         #endregion
+        #region BusinessUnit
+        Task<ListProjectEngineeringAssociationGrpc> GetAllProjectEngineeringAssociations(
+            CancellationToken cancellationToken,
+            int position = 0,
+            int takeAmount = 0);
+        Task<bool> PopulateProjectEngineeringAssociationsAsync(CancellationToken cancellationToken);
+
+        Task<ListBusinessUnitGrpc> GetAllBusinessUnits(CancellationToken cancellationToken,int position = 0,int takeAmount = 0);
+        Task<bool> PopulateBusinessUnitsAsync(CancellationToken cancellationToken);
+
+         #endregion
 
         Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig,
             Action<IEnumerable<T>> setResponseCollection, CancellationToken cancellationToken);

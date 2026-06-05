@@ -1,4 +1,6 @@
-﻿namespace Master.Services
+﻿using Google.Protobuf;
+
+namespace Master.Services
 {
     /// <summary>
     /// This class is used to make calls to the database queries and to hold the data dictionaries.
@@ -7,6 +9,19 @@
     public sealed class MasterAccessService : IMasterAccessService
     {
         #region In Memory Datasets
+        #region BusinessUnit
+
+        ListBusinessUnitGrpc _BusinessUnits;
+        ListBusinessUnitGrpc _FilteredBusinessUnits;
+
+        #endregion
+
+        #region UnitOfMeasure
+
+        ListUnitOfMeasureGrpc _UnitOfMeasures;
+        ListUnitOfMeasureGrpc _FilteredUnitOfMeasures;
+
+        #endregion
 
         #region Currency
 
@@ -64,14 +79,35 @@
 
         #endregion
 
-        #region ProjectEngineerAssociation
+        #region ProjectEngineeringAssociation
 
         ListProjectEngineeringAssociationGrpc _ProjectEngineeringAssociations;
-        #endregion
+        ListProjectEngineeringAssociationGrpc _FilteredProjectEngineeringAssociations;
 
         #endregion
 
+        #endregion
         #region Fields and Properties
+
+        #region ProjectEngineeringAssociation
+
+        bool _ProjectEngineeringAssociationRefreshInProgress;
+        IQueryHandler<GetProjectEngineeringAssociationsQuery, List<ProjectEngineeringAssociationGrpc>>? _ProjectEngineeringAssociationHandler;
+
+        #endregion
+
+        #region BusinessUnit
+        bool _BusinessUnitRefreshInProgress;
+        IQueryHandler<GetBusinessUnitsQuery, List<BusinessUnitGrpc>>? _BusinessUnitHandler;
+
+        #endregion
+
+        #region UnitOfMeasure
+
+        IQueryHandler<GetUnitOfMeasuresQuery, List<UnitOfMeasureGrpc>>? _UnitOfMeasureHandler;
+        bool _UnitOfMeasureRefreshInProgress;
+
+        #endregion
 
         #region Currency
 
@@ -142,12 +178,34 @@
         #region Constructor
         public MasterAccessService(IServiceProvider serviceProvider, bool testing = false)
         {
+            #region ProjectEngineeringAssociation
+
+            _ProjectEngineeringAssociations = new ListProjectEngineeringAssociationGrpc();
+            _FilteredProjectEngineeringAssociations = new ListProjectEngineeringAssociationGrpc();
+            _ProjectEngineeringAssociationRefreshInProgress = false;
+
+            #endregion
+
+            #region UnitOfMeasure
+
+            _UnitOfMeasures = new ListUnitOfMeasureGrpc();
+            _FilteredUnitOfMeasures = new ListUnitOfMeasureGrpc();
+            _UnitOfMeasureRefreshInProgress = false;
+
+            #endregion
 
             #region Currency
 
             _Currencies = new ListCurrencyGrpc();
             _FilteredCurrencies = new ListCurrencyGrpc();
             _CurrencyRefreshInProgress = false;
+
+            #endregion
+
+            #region BusinessUnit
+            _BusinessUnits = new ListBusinessUnitGrpc();
+            _FilteredBusinessUnits = new ListBusinessUnitGrpc();
+            _BusinessUnitRefreshInProgress = false;
 
             #endregion
 
@@ -230,6 +288,79 @@
         #endregion
 
         #region Handlers
+        #region BusinessUnit
+
+        public async Task<ListBusinessUnitGrpc> GetAllBusinessUnits(
+            CancellationToken cancellationToken,
+            int position = 0,
+            int takeAmount = 0)
+        {
+            await Task.Delay(1, cancellationToken);
+
+            if (_BusinessUnits.BusinessUnitGrpc.Any())
+            {
+                if (takeAmount <= 0)
+                {
+                    return _BusinessUnits;
+                }
+
+                ListBusinessUnitGrpc returnList = new ListBusinessUnitGrpc();
+
+                IQueryable<BusinessUnitGrpc> query = _BusinessUnits.BusinessUnitGrpc
+                    .AsQueryable()
+                    .Skip(position)
+                    .Take(takeAmount);
+
+                returnList.BusinessUnitGrpc.AddRange(query);
+
+                return returnList;
+            }
+            else
+            {
+                await PopulateBusinessUnitsAsync(cancellationToken);
+
+                return _BusinessUnits;
+            }
+        }
+
+#endregion
+
+        #region UnitOfMeasure
+
+        public async Task<ListUnitOfMeasureGrpc> GetAllUnitOfMeasures(
+            CancellationToken cancellationToken,
+            int position = 0,
+            int takeAmount = 0)
+        {
+            await Task.Delay(1, cancellationToken);
+
+            if (_UnitOfMeasures.UnitOfMeasureGrpc.Any())
+            {
+                if (takeAmount <= 0)
+                {
+                    return _UnitOfMeasures;
+                }
+
+                ListUnitOfMeasureGrpc returnList = new ListUnitOfMeasureGrpc();
+
+                IQueryable<UnitOfMeasureGrpc> query = _UnitOfMeasures.UnitOfMeasureGrpc
+                    .AsQueryable()
+                    .Skip(position)
+                    .Take(takeAmount);
+
+                returnList.UnitOfMeasureGrpc.AddRange(query);
+
+                return returnList;
+            }
+            else
+            {
+                await PopulateUnitOfMeasuresAsync(cancellationToken);
+
+                return _UnitOfMeasures;
+            }
+        }
+
+        #endregion
 
         #region Currency
 
@@ -628,6 +759,122 @@
         #endregion
 
         #region Data Imports
+        #region ProjectEngineeringAssociation
+
+        public async Task<ListProjectEngineeringAssociationGrpc> GetAllProjectEngineeringAssociations(
+            CancellationToken cancellationToken,
+            int position = 0,
+            int takeAmount = 0)
+        {
+            await Task.Delay(1, cancellationToken);
+
+            if (_ProjectEngineeringAssociations.ProjectEngineeringAssociationGrpc.Any())
+            {
+                if (takeAmount <= 0)
+                {
+                    return _ProjectEngineeringAssociations;
+                }
+
+                ListProjectEngineeringAssociationGrpc returnList = new ListProjectEngineeringAssociationGrpc();
+
+                IQueryable<ProjectEngineeringAssociationGrpc> query =
+                    _ProjectEngineeringAssociations.ProjectEngineeringAssociationGrpc
+                        .AsQueryable()
+                        .Skip(position)
+                        .Take(takeAmount);
+
+                returnList.ProjectEngineeringAssociationGrpc.AddRange(query);
+
+                return returnList;
+            }
+            else
+            {
+                await PopulateProjectEngineeringAssociationsAsync(cancellationToken);
+                return _ProjectEngineeringAssociations;
+            }
+        }
+
+        #endregion
+
+        #region BusinessUnit
+
+        public async Task<bool> PopulateBusinessUnitsAsync(CancellationToken cancellationToken)
+        {
+            if (!_BusinessUnitRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _BusinessUnitHandler = scope.ServiceProvider
+                        .GetRequiredService<IQueryHandler<GetBusinessUnitsQuery, List<BusinessUnitGrpc>>>();
+
+                    _BusinessUnitRefreshInProgress = true;
+
+                    GetBusinessUnitsQuery query = new GetBusinessUnitsQuery();
+
+                    await Task.Delay(1, cancellationToken);
+
+                    Result<List<BusinessUnitGrpc>> results =
+                        await _BusinessUnitHandler.Handle(query, cancellationToken);
+
+                    if (results.Value.Count <= 0)
+                    {
+                        // No business units found
+                    }
+                    else
+                    {
+                        _BusinessUnits.BusinessUnitGrpc.Clear();
+                        _BusinessUnits.BusinessUnitGrpc.AddRange(results.Value);
+                    }
+
+                    _BusinessUnitRefreshInProgress = false;
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
+
+        #region UnitOfMeasure
+        public async Task<bool> PopulateUnitOfMeasuresAsync(CancellationToken cancellationToken)
+        {
+            if (!_UnitOfMeasureRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _UnitOfMeasureHandler = scope.ServiceProvider
+                        .GetRequiredService<IQueryHandler<GetUnitOfMeasuresQuery, List<UnitOfMeasureGrpc>>>();
+
+                    _UnitOfMeasureRefreshInProgress = true;
+
+                    GetUnitOfMeasuresQuery query = new GetUnitOfMeasuresQuery();
+
+                    await Task.Delay(1, cancellationToken);
+
+                    Result<List<UnitOfMeasureGrpc>> results =
+                        await _UnitOfMeasureHandler.Handle(query, cancellationToken);
+
+                    if (results.Value.Count <= 0)
+                    {
+                        // No unit of measures found
+                    }
+                    else
+                    {
+                        _UnitOfMeasures.UnitOfMeasureGrpc.Clear();
+                        _UnitOfMeasures.UnitOfMeasureGrpc.AddRange(results.Value);
+                    }
+
+                    _UnitOfMeasureRefreshInProgress = false;
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
 
         #region Currency
         public async Task<bool> PopulateCurrenciesAsync(CancellationToken cancellationToken)
@@ -1015,7 +1262,7 @@
 
         #endregion
 
-        #region ProjectEngineerAssociation
+        #region ProjectEngineeringAssociation
 
         public async Task<bool> PopulateProjectEngineeringAssociationsAsync(CancellationToken cancellationToken)
         {
@@ -1023,12 +1270,18 @@
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _ProjectEngineeringAssociationHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllProjectEngineeringAssociationQuery, List<ProjectEngineeringAssociationGrpc>>>();
+                    _ProjectEngineeringAssociationHandler = scope.ServiceProvider
+                        .GetRequiredService<IQueryHandler<GetProjectEngineeringAssociationsQuery, List<ProjectEngineeringAssociationGrpc>>>();
+
                     _ProjectEngineeringAssociationRefreshInProgress = true;
-                    GetAllProjectEngineeringAssociationQuery query = new GetAllProjectEngineeringAssociationQuery();
+
+                    GetProjectEngineeringAssociationsQuery query = new GetProjectEngineeringAssociationsQuery();
+
                     await Task.Delay(1, cancellationToken);
-                    Result<List<ProjectEngineeringAssociationGrpc>> results = await _ProjectEngineeringAssociationHandler.Handle(query, cancellationToken);
-                    if (results.Value.Count <= 0)
+
+                    Result<List<ProjectEngineeringAssociationGrpc>> results =
+                        await _ProjectEngineeringAssociationHandler.Handle(query, cancellationToken);
+                  if (results.Value.Count <= 0)
                     {
                     }
                     else
@@ -1038,6 +1291,7 @@
                     }
 
                     _ProjectEngineeringAssociationRefreshInProgress = false;
+
                     return true;
                 }
             }
@@ -1078,14 +1332,21 @@
                     "VEHICLEGRPC" => _Vehicles.VehicleGrpc.Cast<T>().Where(func).ToList(),
                     "SUPPLIERGROUPGRPC" => _SupplierGroups.SupplierGroupGrpc.Cast<T>().Where(func).ToList(),
                     "SUPPLIERGRPC" => _Suppliers.SupplierGrpc.Cast<T>().Where(func).ToList(),
-                    "PROJECTENGINEERINGASSOCIATIONGRPC" => _ProjectEngineeringAssociations.ProjectEngineeringAssociationGrpc.Cast<T>().Where(func).ToList(),
-                    _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
+                    "UNITOFMEASUREGRPC" => _UnitOfMeasures.UnitOfMeasureGrpc.Cast<T>().Where(func).ToList(),
+                    "BUSINESSUNITGRPC" => _BusinessUnits.BusinessUnitGrpc.Cast<T>().Where(func).ToList(),
+                    "PROJECTENGINEERINGASSOCIATIONGRPC" =>  _ProjectEngineeringAssociations.ProjectEngineeringAssociationGrpc
+                            .Cast<T>()
+                            .Where(func)
+                            .ToList(),
+                              _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
                 };
             }, cancellationToken);
         }
 
         void PopulateSampleData()
         {
+
+            _ProjectEngineeringAssociations =SampleMasterDataService.PopulateProjectEngineeringAssociationGrpc();
             _Currencies = SampleMasterDataService.PopulateCurrencyGrpc();
             _Customers = SampleMasterDataService.PopulateCustomerGrpc();
             _CustomerLocations = SampleMasterDataService.PopulateCustomerLocationsData();
@@ -1099,6 +1360,7 @@
             _Vehicles = SampleMasterDataService.PopulateVehicleGrpc();
             _SupplierGroups = SampleMasterDataService.PopulateSupplierGroupGrpc();
             _Suppliers = SampleMasterDataService.PopulateSupplierGrpc();
+            _BusinessUnits = SampleMasterDataService.PopulateBusinessUnitGrpc();
         }
     }
 }

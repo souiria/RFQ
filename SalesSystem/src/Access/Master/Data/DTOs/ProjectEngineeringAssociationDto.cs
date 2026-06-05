@@ -2,31 +2,37 @@
 {
     public class ProjectEngineeringAssociationDto
     {
-        public string? ProjectCode
+        public Guid? ProjectGuid
         { get; set; }
-        public string? ProjectName
+
+        public string? EngineeringADName
         { get; set; }
-        public string? CustomerProjectCode
+
+        public string? EngineeringFullName
         { get; set; }
-        public string? ProjectDescription
+
+        public string? EmailAddress
         { get; set; }
-        public int? ProjectAnnualVolume
+
+        public Guid? Id
         { get; set; }
-        public Guid? ProgramHierarchyGuid
+
+        public DateTime? CreatedDate
         { get; set; }
-        public Guid Id
-        { get; set; }
-        public DateTime CreatedDate
-        { get; set; }
+
         public DateTime? ModifiedDate
         { get; set; }
+
         public Guid? CreatedBy
         { get; set; }
+
         public Guid? ModifiedBy
         { get; set; }
+
         public bool? IsActive
         { get; set; }
-        public short? SyncToCPD
+
+        public Guid? CustomerGuid
         { get; set; }
     }
 }

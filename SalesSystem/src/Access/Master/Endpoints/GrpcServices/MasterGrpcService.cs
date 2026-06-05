@@ -18,7 +18,73 @@ namespace Master.Endpoints.GrpcServices
             Task<HelloReply> result = Task.FromResult(reply);
             return result;
         }
+        #region BusinessUnit
 
+        public override async Task<ListBusinessUnitGrpc> GetBusinessUnitGrpc(
+            BusinessUnitGrpcRequest request,
+            ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetBusinessUnitGrpc starting");
+
+            return await _MasterAccessService.GetAllBusinessUnits(
+                context.CancellationToken,
+                request.Position,
+                request.Takeamount);
+        }
+
+        public override async Task GetBusinessUnitGrpcStream(
+            BusinessUnitGrpcRequest request,
+            IServerStreamWriter<BusinessUnitGrpc> responseStream,
+            ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetBusinessUnitGrpcStream starting");
+
+            ListBusinessUnitGrpc results = await _MasterAccessService.GetAllBusinessUnits(
+                context.CancellationToken,
+                request.Position,
+                request.Takeamount);
+
+            foreach (BusinessUnitGrpc result in results.BusinessUnitGrpc)
+            {
+                await responseStream.WriteAsync(result);
+            }
+        }
+
+        #endregion
+
+        #region UnitOfMeasure
+
+        public override async Task<ListUnitOfMeasureGrpc> GetUnitOfMeasureGrpc(
+            UnitOfMeasureGrpcRequest request,
+            ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetUnitOfMeasureGrpc starting");
+
+            return await _MasterAccessService.GetAllUnitOfMeasures(
+                context.CancellationToken,
+                request.Position,
+                request.Takeamount);
+        }
+
+        public override async Task GetUnitOfMeasureGrpcStream(
+            UnitOfMeasureGrpcRequest request,
+            IServerStreamWriter<UnitOfMeasureGrpc> responseStream,
+            ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetUnitOfMeasureGrpcStream starting");
+
+            ListUnitOfMeasureGrpc results = await _MasterAccessService.GetAllUnitOfMeasures(
+                context.CancellationToken,
+                request.Position,
+                request.Takeamount);
+
+            foreach (UnitOfMeasureGrpc result in results.UnitOfMeasureGrpc)
+            {
+                await responseStream.WriteAsync(result);
+            }
+        }
+
+        #endregion
         #region Currency
         public override async Task<ListCurrencyGrpc> GetCurrencyGrpc(CurrencyGrpcRequest request, ServerCallContext context)
         {
@@ -199,6 +265,7 @@ namespace Master.Endpoints.GrpcServices
         }
 
         #endregion
+
         #region Supplier
 
         public override async Task<ListSupplierGrpc> GetSupplierGrpc(SupplierGrpcRequest request, ServerCallContext context)
@@ -215,6 +282,41 @@ namespace Master.Endpoints.GrpcServices
 
         #endregion
 
+        #region ProjectEngineeringAssociation
+
+        public override async Task<ListProjectEngineeringAssociationGrpc> GetProjectEngineeringAssociationGrpc(
+            ProjectEngineeringAssociationGrpcRequest request,
+            ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetProjectEngineeringAssociationGrpc starting");
+
+            return await _MasterAccessService.GetAllProjectEngineeringAssociations(
+                context.CancellationToken,
+                request.Position,
+                request.Takeamount);
+        }
+
+        public override async Task GetProjectEngineeringAssociationGrpcStream(
+            ProjectEngineeringAssociationGrpcRequest request,
+            IServerStreamWriter<ProjectEngineeringAssociationGrpc> responseStream,
+            ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetProjectEngineeringAssociationGrpcStream starting");
+
+            ListProjectEngineeringAssociationGrpc results =
+                await _MasterAccessService.GetAllProjectEngineeringAssociations(
+                    context.CancellationToken,
+                    request.Position,
+                    request.Takeamount);
+
+            foreach (ProjectEngineeringAssociationGrpc result in results.ProjectEngineeringAssociationGrpc)
+            {
+                await responseStream.WriteAsync(result);
+            }
+        }
+
+#endregion
+
         public override async Task<MastersFilterResponseGrpc> FilterMasterDataGrpc(MastersFilterRequestGrpc request, ServerCallContext context)
         {
             ParsingConfig parsingConfig = new ParsingConfig();
@@ -224,7 +326,40 @@ namespace Master.Endpoints.GrpcServices
 
             switch (request.DatabaseList.ToUpperInvariant())
             {
-                case "CURRENCYGRPC":
+                case "v     ":
+
+                await _MasterAccessService.PopulateProjectEngineeringAssociationsAsync(context.CancellationToken);
+
+                await _MasterAccessService.HandleFilterCase<ProjectEngineeringAssociationGrpc>(
+                    filterExpressionString,
+                    parsingConfig,
+                    filterList =>
+                    {
+                        ListProjectEngineeringAssociationGrpc returnList = new ListProjectEngineeringAssociationGrpc();
+
+                        returnList.ProjectEngineeringAssociationGrpc.AddRange(filterList);
+
+                        returnResponse.ProjectEngineeringAssociationGrpcList = returnList;
+                        returnResponse.Success = true;
+                    },
+                    context.CancellationToken);
+
+                break;
+                case "BUSINESSUNITGRPC":
+                await _MasterAccessService.HandleFilterCase<BusinessUnitGrpc>(
+                    filterExpressionString,
+                    parsingConfig,
+                    filterList =>
+                    {
+                        ListBusinessUnitGrpc returnList = new ListBusinessUnitGrpc();
+                        returnList.BusinessUnitGrpc.AddRange(filterList);
+
+                        returnResponse.BusinessUnitGrpcList = returnList;
+                        returnResponse.Success = true;
+                    },
+                    context.CancellationToken);
+                break;
+                 case "CURRENCYGRPC":
                 await _MasterAccessService.HandleFilterCase<CurrencyGrpc>(filterExpressionString, parsingConfig,
                 filterList =>
                 {
@@ -244,6 +379,22 @@ namespace Master.Endpoints.GrpcServices
                     returnResponse.Success = true;
                 }, context.CancellationToken);
                 break;
+                case "UNITOFMEASUREGRPC":
+                await _MasterAccessService.HandleFilterCase<UnitOfMeasureGrpc>(
+                    filterExpressionString,
+                    parsingConfig,
+                    filterList =>
+                    {
+                        ListUnitOfMeasureGrpc returnList = new ListUnitOfMeasureGrpc();
+                        returnList.UnitOfMeasureGrpc.AddRange(filterList);
+
+                        returnResponse.UnitOfMeasureGrpcList = returnList;
+                        returnResponse.Success = true;
+                    },
+                    context.CancellationToken);
+
+                break;
+                ///////////////////////////////
                 case "CUSTOMERLOCATIONGRPC":
                 try
                 {
