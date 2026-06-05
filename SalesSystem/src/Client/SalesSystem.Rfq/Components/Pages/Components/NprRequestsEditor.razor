@@ -158,7 +158,6 @@
             <PropertyColumn Property="x => x.ReasonDescription" Title="Reason" />
             <PropertyColumn Property="x => x.MaterialNumber" Title="Material Number" />
             <PropertyColumn Property="x => x.MaterialDescription" Title="Material Description" />
-            <PropertyColumn Property="x => x.MaterialTypeDescription" Title="Material Type" />
             <PropertyColumn Property="x => x.CustomerPartNumber" Title="Customer P/N" />
             <PropertyColumn Property="x => x.SupplierPartNumber" Title="Supplier P/N" />
             <PropertyColumn Property="x => x.BOMUnitOfMeasurement" Title="UoM" />
@@ -372,11 +371,11 @@
             var validNprs = RfqProject.NprRequests.Where(npr => npr.Validate()).ToList();
 
             List<RfqNprRequestUxModel> nprs = new List<RfqNprRequestUxModel>();
-            // foreach (RfqNprRequestUxModel npr in validNprs)
-            // {
-            //     npr.ProjectCode = RfqProject.Project;
-            //     nprs.Add(npr);
-            // }
+            foreach (RfqNprRequestUxModel npr in validNprs)
+            {
+                npr.ProjectCode = RfqProject.Project;
+                nprs.Add(npr);
+            }
 
             CreateNprGrpcResponse response = await RfqUxClientService.CreateNprGrpcAsync(validNprs);
 
@@ -497,7 +496,6 @@
                 ReasonDescription = nprRequest.ReasonDescription,
                 MaterialNumber = nprRequest.MaterialNumber,
                 MaterialDescription = nprRequest.MaterialDescription,
-                MaterialTypeDescription = nprRequest.MaterialTypeDescription,
                 CustomerPartNumber = nprRequest.CustomerPartNumber,
                 SupplierPartNumber = nprRequest.SupplierPartNumber,
                 BOMUnitOfMeasurement = nprRequest.BOMUnitOfMeasurement,
@@ -567,7 +565,6 @@
                     nprRequest.ReasonDescription = updatedItem.ReasonDescription;
                     nprRequest.MaterialNumber = updatedItem.MaterialNumber;
                     nprRequest.MaterialDescription = updatedItem.MaterialDescription;
-                    nprRequest.MaterialTypeDescription = updatedItem.MaterialTypeDescription;
                     nprRequest.CustomerPartNumber = updatedItem.CustomerPartNumber;
                     nprRequest.SupplierPartNumber = updatedItem.SupplierPartNumber;
                     nprRequest.BOMUnitOfMeasurement = updatedItem.BOMUnitOfMeasurement;
@@ -724,7 +721,6 @@
                 if (item.ReasonDescription?.Contains(filter, comparisonType) == true) return true;
                 if (item.MaterialNumber?.Contains(filter, comparisonType) == true) return true;
                 if (item.MaterialDescription?.Contains(filter, comparisonType) == true) return true;
-                if (item.MaterialTypeDescription?.Contains(filter, comparisonType) == true) return true;
                 if (item.CustomerPartNumber?.Contains(filter, comparisonType) == true) return true;
                 if (item.SupplierPartNumber?.Contains(filter, comparisonType) == true) return true;
                 if (item.BOMUnitOfMeasurement?.Contains(filter, comparisonType) == true) return true;

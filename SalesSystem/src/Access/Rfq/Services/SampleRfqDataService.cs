@@ -1688,7 +1688,6 @@
                     item.PlatformName = $"PlatformName{i}";
                     item.ProgramName = $"ProgramName{i}";
                     item.ProjectCode = $"ProjectCode{i}";
-                    item.MaterialTypeDescription = $"MaterialTypeDescription{i}";
                     item.ManufacturingSite = $"ManufacturingSite{i}";
                     item.CustomerPartNumber = $"CustomerPartNumber{i}";
                     item.SupplierPartNumber = $"SupplierPartNumber{i}";

@@ -87,11 +87,6 @@ namespace SalesSystem.Rfq.Models
         public string? MaterialDescription
         { get; set; }
 
-        /// <summary>Material Type (Component) (Master)</summary>
-        [MaxLength(50)]
-        public string? MaterialTypeDescription
-        { get; set; }
-
         /// <summary>CPN (Free Text)</summary>
         [MaxLength(26)]
         public string? CustomerPartNumber
@@ -387,11 +382,6 @@ namespace SalesSystem.Rfq.Models
                     Err(nameof(MaterialDescription), MaterialDescription,
                         "Material Description Can not be less than 1 and greater than 15 characters.");
                 }
-            }
-
-            if (string.IsNullOrWhiteSpace(MaterialTypeDescription))
-            {
-                Err(nameof(MaterialTypeDescription), MaterialTypeDescription ?? "", "Material type description is required.");
             }
 
             if (string.IsNullOrWhiteSpace(CustomerPartNumber))

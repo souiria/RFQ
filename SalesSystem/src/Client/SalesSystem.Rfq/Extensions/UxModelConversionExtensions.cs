@@ -311,7 +311,6 @@
             nprRequest.CustomerCode = rfqProject.CustomerCode;
             nprRequest.CustomerPartNumber = partNumber.CustomerPartNumber;
             nprRequest.MaterialDescription = "";
-            nprRequest.MaterialTypeDescription = "Component";
             nprRequest.MaterialNumber = "";
             //nprRequest.PlatformName = "";
             //nprRequest.ProgramName = "";
@@ -337,7 +336,7 @@
         public static RfqNprRequestUxModel Update(this RfqNprRequestUxModel nprRequest, RqfProjectUxModel rfqProject, GlobalValue globalValue)
         {
             nprRequest.CustomerCode = rfqProject.CustomerCode;
-            nprRequest.OriginatorName = globalValue.UserAccount;
+            nprRequest.OriginatorName = globalValue.DisplayName;
             nprRequest.CustomerRfqNo = rfqProject.RfqNumber;
             nprRequest.DeadlineDate = rfqProject.RfqResponseDeadline;
             //nprRequest.BOMUnitOfMeasurement = "";
@@ -392,7 +391,6 @@
             // nprGrpc.PlatformName = model.PlatformName;
             // nprGrpc.ProgramName = model.ProgramName;
             nprGrpc.ProjectCode = model.ProjectCode;
-            nprGrpc.MaterialTypeDescription = model.MaterialTypeDescription;
             nprGrpc.ManufacturingSite = model.ManufacturingSite;
             nprGrpc.CustomerPartNumber = model.CustomerPartNumber;
             nprGrpc.SupplierPartNumber = model.SupplierPartNumber;
@@ -447,7 +445,6 @@
             //model.PlatformName = grpc.PlatformName;
             //model.ProgramName = grpc.ProgramName;
             model.ProjectCode = grpc.ProjectCode;
-            model.MaterialTypeDescription = grpc.MaterialTypeDescription;
             model.ManufacturingSite = grpc.ManufacturingSite;
             model.CustomerPartNumber = grpc.CustomerPartNumber;
             model.SupplierPartNumber = grpc.SupplierPartNumber;

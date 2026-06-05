@@ -98,7 +98,6 @@
             grpc.ReasonDescription = data.ReasonDescription;
             grpc.MaterialNumber = data.MaterialNumber;
             grpc.MaterialDescription = data.MaterialDescription;
-            grpc.MaterialTypeDescription = data.MaterialTypeDescription;
             grpc.CustomerPartNumber = data.CustomerPartNumber;
             grpc.SupplierPartNumber = data.SupplierPartNumber;
             grpc.BOMUnitOfMeasurement = data.SEWSEUnitOfMeasurement;
@@ -145,7 +144,6 @@
             data.MaterialNumber = grpc.MaterialNumber;
             data.MaterialDescription = grpc.MaterialDescription;
             data.CustomerPartNumber = grpc.CustomerPartNumber;
-            data.MaterialTypeDescription = grpc.MaterialTypeDescription;
             data.SupplierPartNumber = grpc.SupplierPartNumber;
             data.BOMUnitOfMeasurement = grpc.BOMUnitOfMeasurement;
             data.SupplierGroup = grpc.SupplierGroup;

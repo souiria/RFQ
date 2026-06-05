@@ -125,6 +125,23 @@
             return data;
         }
 
+        public static ProjectEngineeringAssociationGrpc MapToProjectEngineeringAssociationGrpc(this DbProjectEngineeringAssociation entity)
+        {
+            ProjectEngineeringAssociationGrpc data = new ProjectEngineeringAssociationGrpc();
+            data.ProjectGuid = entity.ProjectGuid.ToString();
+            data.EngineeringADName = entity.EngineeringADName;
+            data.EngineeringFullName = entity.EngineeringFullName;
+            data.EmailAddress = entity.EmailAddress;
+            data.Id = entity.Id.ToString();
+            data.CreatedDate = entity.CreatedDate?.ToUniversalTime().ToTimestamp();
+            data.ModifiedDate = entity.ModifiedDate?.ToUniversalTime().ToTimestamp();
+            data.ModifiedBy = entity.ModifiedBy.ToString();
+            data.CreatedBy = entity.CreatedBy.ToString();
+            data.IsActive = entity.IsActive;
+            data.CustomerGuid = entity.CustomerGuid.ToString();
+            return data;
+        }   
+
         #endregion
 
         #region Vehicle

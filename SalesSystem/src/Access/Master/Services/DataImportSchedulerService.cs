@@ -51,6 +51,8 @@
                 await LogDataPopulationSuccess("Vehicles", check);
                 check = await _MasterAccessService.PopulateSupplierGroupsAsync(stoppingToken);
                 await LogDataPopulationSuccess("SupplierGroups", check);
+                check = await _MasterAccessService.PopulateProjectEngineeringAssociationsAsync(stoppingToken);
+                await LogDataPopulationSuccess("ProjectEngineeringAssociations", check);
             }
 
             return true;

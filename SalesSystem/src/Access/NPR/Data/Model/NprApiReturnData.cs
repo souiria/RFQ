@@ -46,10 +46,6 @@
         public string? MaterialDescription 
         { get; set; }
 
-        [JsonProperty("materialTypeDescription")]
-        public string? MaterialTypeDescription 
-        { get; set; }
-
         [JsonProperty("manufacturingSite")]
         public string? ManufacturingSite 
         { get; set; }

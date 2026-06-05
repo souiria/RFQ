@@ -15,7 +15,7 @@
             string? managerUrl = builder.Configuration["GrpcService:Url"]
             ?? throw new InvalidOperationException("GrpcService:Url is missing in configuration.");
 
-            int timeoutSeconds = int.TryParse(builder.Configuration["GrpcService:TimeoutSeconds"], out var t)
+            int timeoutSeconds = int.TryParse(builder.Configuration["GrpcService:TimeoutSeconds"], out int t)
                 ? t
                 : 120;
 

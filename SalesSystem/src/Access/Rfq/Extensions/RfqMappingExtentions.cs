@@ -1898,7 +1898,6 @@
             data.ReasonDescription = entity.ReasonDescription;
             data.MaterialNumber = entity.MaterialNumber;
             data.MaterialDescription = entity.MaterialDescription;
-            data.MaterialTypeDescription = entity.MaterialTypeDescription;
             data.CustomerPartNumber = entity.CustomerPartNumber;
             data.SupplierPartNumber = entity.SupplierPartNumber;
             data.SEWSEUnitOfMeasurement = entity.SEWSEUnitOfMeasurement;
@@ -1957,7 +1956,6 @@
             data.ReasonDescription = grpc.ReasonDescription;
             data.MaterialNumber = grpc.MaterialNumber;
             data.MaterialDescription = grpc.MaterialDescription;
-            data.MaterialTypeDescription = grpc.MaterialTypeDescription;
             data.CustomerPartNumber = grpc.CustomerPartNumber;
             data.SupplierPartNumber = grpc.SupplierPartNumber;
             data.SEWSEUnitOfMeasurement = grpc.SEWSEUnitOfMeasurement;

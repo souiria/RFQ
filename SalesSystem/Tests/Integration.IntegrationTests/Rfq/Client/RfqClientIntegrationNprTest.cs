@@ -561,7 +561,6 @@ namespace Integration.Tests.Rfq.Client
             request.ReasonDescription = "Serialization Test";
             request.MaterialNumber = "MAT-777";
             request.MaterialDescription = "High-grade steel connector";
-            request.MaterialTypeDescription = "Steel";
             request.CustomerPartNumber = "CPN-999";
             request.SupplierPartNumber = "SPN-888";
             request.BOMUnitOfMeasurement = "EA";
@@ -605,7 +604,6 @@ namespace Integration.Tests.Rfq.Client
             Assert.That(loaded.ReasonDescription, Is.EqualTo("Serialization Test"));
             Assert.That(loaded.MaterialNumber, Is.EqualTo("MAT-777"));
             Assert.That(loaded.MaterialDescription, Is.EqualTo("High-grade steel connector"));
-            Assert.That(loaded.MaterialTypeDescription, Is.EqualTo("Steel"));
             Assert.That(loaded.CustomerPartNumber, Is.EqualTo("CPN-999"));
             Assert.That(loaded.SupplierPartNumber, Is.EqualTo("SPN-888"));
             Assert.That(loaded.BOMUnitOfMeasurement, Is.EqualTo("EA"));
