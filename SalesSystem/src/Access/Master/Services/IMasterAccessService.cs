@@ -33,6 +33,8 @@
         Task<bool> PopulateProjectsAsync(CancellationToken cancellationToken);
         Task<ListMilestoneGrpc> GetAllMilestones(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<bool> PopulateMilestonesAsync(CancellationToken cancellationToken);
+        Task<ListProjectEngineeringAssociationGrpc> GetAllProjectEngineeringAssociations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
+        Task<bool> PopulateProjectEngineeringAssociationsAsync(CancellationToken cancellationToken);
 
         #endregion
 

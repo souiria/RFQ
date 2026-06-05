@@ -59,7 +59,7 @@
                                      Label="Project"
                                      Placeholder="Search project..."
                                      SearchFunc="@SearchProjects"
-                                     ToStringFunc="@(p => p != null ? $"{p.ProjectName} - {p.CustomerName}" : "")"
+                                     ToStringFunc="@(p => p != null ? $"{p.ProjectCode} - {p.CustomerName}" : "")"
                                      ResetValueOnEmptyText="true"
                                      CoerceText="true"
                                      CoerceValue="false"
@@ -74,10 +74,10 @@
                         <ItemTemplate Context="project">
                             <MudStack Spacing="0">
                                 <MudText Typo="Typo.body2">
-                                    <strong>@project.ProjectName</strong>
+                                    <strong>@project.ProjectCode</strong>
                                 </MudText>
                                 <MudText Typo="Typo.caption" Color="Color.Secondary">
-                                    @project.ProjectName - @project.CustomerName
+                                    @project.ProjectCode - @project.CustomerName
                                 </MudText>
                             </MudStack>
                         </ItemTemplate>

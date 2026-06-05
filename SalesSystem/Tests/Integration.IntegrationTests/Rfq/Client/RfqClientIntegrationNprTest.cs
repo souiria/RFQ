@@ -86,15 +86,14 @@ namespace Integration.Tests.Rfq.Client
             string rfqNumber = "SEWS-25-025-DEADBEEF",
             string? reasonDescription = "Test Reason",
             string? customerCode = "Test Customer",
-            string? materialNumber = "MAT-001",
-            int? vehicleTotalQuantity = 100)
+            string? materialNumber = "MAT-001")
         {
             RfqNprRequestUxModel request = new RfqNprRequestUxModel();
             request.CustomerRfqNo = rfqNumber;
             request.ReasonDescription = reasonDescription;
             request.CustomerCode = customerCode;
             request.MaterialNumber = materialNumber;
-            request.VehicleTotalQuantity = vehicleTotalQuantity;
+            //request.VehicleTotalQuantity = vehicleTotalQuantity;
             request.CustomerPartNumber = "CPN-001";
             request.MaterialDescription = "Test Material";
             request.BOMUnitOfMeasurement = "EA";
@@ -562,7 +561,6 @@ namespace Integration.Tests.Rfq.Client
             request.ReasonDescription = "Serialization Test";
             request.MaterialNumber = "MAT-777";
             request.MaterialDescription = "High-grade steel connector";
-            request.MaterialTypeDescription = "Steel";
             request.CustomerPartNumber = "CPN-999";
             request.SupplierPartNumber = "SPN-888";
             request.BOMUnitOfMeasurement = "EA";
@@ -570,14 +568,14 @@ namespace Integration.Tests.Rfq.Client
             request.SupplierDetailComments = "New supplier details";
             request.ProjectCode = "Project Z";
             request.QtyPerVehicle = 4.5m;
-            request.VehicleTotalQuantity = 500;
+            //request.VehicleTotalQuantity = 500;
             request.IsSampleDataRequired = true;
             request.NPRRaisedRemarks = "Urgent requirement";
             request.ManufacturingSite = "Site A";
             request.IsCustomerNominatedSupplier = true;
             request.IsCustomerNominatedMaterial = false;
-            request.PlatformName = "Platform X";
-            request.ProgramName = "Program Y";
+            //request.PlatformName = "Platform X";
+            //request.ProgramName = "Program Y";
             request.SuggestedManufacturerGroup = "MegaCorp";
             request.AssociatedParts = "AP-001, AP-002";
             request.NPRUploadSeqNo = 1;
@@ -606,7 +604,6 @@ namespace Integration.Tests.Rfq.Client
             Assert.That(loaded.ReasonDescription, Is.EqualTo("Serialization Test"));
             Assert.That(loaded.MaterialNumber, Is.EqualTo("MAT-777"));
             Assert.That(loaded.MaterialDescription, Is.EqualTo("High-grade steel connector"));
-            Assert.That(loaded.MaterialTypeDescription, Is.EqualTo("Steel"));
             Assert.That(loaded.CustomerPartNumber, Is.EqualTo("CPN-999"));
             Assert.That(loaded.SupplierPartNumber, Is.EqualTo("SPN-888"));
             Assert.That(loaded.BOMUnitOfMeasurement, Is.EqualTo("EA"));
@@ -614,14 +611,14 @@ namespace Integration.Tests.Rfq.Client
             Assert.That(loaded.SupplierDetailComments, Is.EqualTo("New supplier details"));
             Assert.That(loaded.ProjectCode, Is.EqualTo("Project Z"));
             Assert.That(loaded.QtyPerVehicle, Is.EqualTo(4.5m));
-            Assert.That(loaded.VehicleTotalQuantity, Is.EqualTo(500));
+            //Assert.That(loaded.VehicleTotalQuantity, Is.EqualTo(500));
             Assert.That(loaded.IsSampleDataRequired, Is.True);
             Assert.That(loaded.NPRRaisedRemarks, Is.EqualTo("Urgent requirement"));
             Assert.That(loaded.ManufacturingSite, Is.EqualTo("Site A"));
             Assert.That(loaded.IsCustomerNominatedSupplier, Is.True);
             Assert.That(loaded.IsCustomerNominatedMaterial, Is.False);
-            Assert.That(loaded.PlatformName, Is.EqualTo("Platform X"));
-            Assert.That(loaded.ProgramName, Is.EqualTo("Program Y"));
+            //Assert.That(loaded.PlatformName, Is.EqualTo("Platform X"));
+            //Assert.That(loaded.ProgramName, Is.EqualTo("Program Y"));
             Assert.That(loaded.SuggestedManufacturerGroup, Is.EqualTo("MegaCorp"));
             Assert.That(loaded.AssociatedParts, Is.EqualTo("AP-001, AP-002"));
             Assert.That(loaded.NPRUploadSeqNo, Is.EqualTo(1));

@@ -168,11 +168,7 @@ namespace SalesSystem.Rfq.Components.Pages.Dialogs
             if (SelectedSupplierGroup != null)
             {
                 NprRequest.SupplierGroup = SelectedSupplierGroup.SupplierGroupName;
-            }
-
-            if (SelectedSupplier != null)
-            {
-                NprRequest.SuggestedManufacturerGroup = SelectedSupplier.SupplierName;
+                NprRequest.SuggestedManufacturerGroup = SelectedSupplierGroup.SupplierGroupName;
             }
 
             DialogResult result = DialogResult.Ok(NprRequest);

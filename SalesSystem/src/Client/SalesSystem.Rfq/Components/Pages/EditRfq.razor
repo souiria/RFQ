@@ -82,7 +82,7 @@ else
                                          Label="Project"
                                          Placeholder="Search project..."
                                          SearchFunc="@SearchProjects"
-                                         ToStringFunc="@(p => p != null ? $"{p.ProjectName} - {p.CustomerName}" : "")"
+                                         ToStringFunc="@(p => p != null ? $"{p.ProjectCode} - {p.CustomerName}" : "")"
                                          Strict="false"
                                          ResetValueOnEmptyText="false"
                                          CoerceText="true"
@@ -99,7 +99,7 @@ else
                             <ItemTemplate Context="project">
                                 <MudStack Spacing="0">
                                     <MudText Typo="Typo.body2">
-                                        <strong>@project.ProjectName</strong>
+                                        <strong>@project.ProjectCode</strong>
                                     </MudText>
                                     <MudText Typo="Typo.caption" Color="Color.Secondary">
                                         @project.CustomerName

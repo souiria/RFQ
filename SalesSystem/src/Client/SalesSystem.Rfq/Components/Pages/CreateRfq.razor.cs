@@ -147,9 +147,9 @@ namespace SalesSystem.Rfq.Components.Pages
             // Search across project name, customer name, and location name
             return RfqUxClientService.CustomerProjectAssociations
                 .Where(p =>
-                    (p.ProjectName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (p.ProjectCode?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
                     (p.CustomerName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false))
-                .OrderBy(p => p.ProjectName)
+                .OrderBy(p => p.ProjectCode)
                 .ThenBy(p => p.CustomerName);
         }
 

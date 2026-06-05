@@ -154,6 +154,18 @@ namespace Master.Endpoints.GrpcServices
             ListMilestoneGrpc results = await _MasterAccessService.GetAllMilestones(context.CancellationToken);
         }
 
+        public override async Task<ListProjectEngineeringAssociationGrpc> GetProjectEngineeringAssociationGrpc(ProjectEngineeringAssociationGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetMilestoneGrpcStream starting");
+            return await _MasterAccessService.GetAllProjectEngineeringAssociations(context.CancellationToken);
+        }
+
+        public override async Task GetProjectEngineeringAssociationGrpcStream(ProjectEngineeringAssociationGrpcRequest request, IServerStreamWriter<ProjectEngineeringAssociationGrpc> responseStream, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetMilestoneGrpcStream starting");
+            ListProjectEngineeringAssociationGrpc results = await _MasterAccessService.GetAllProjectEngineeringAssociations(context.CancellationToken);
+        }
+
         #endregion
 
         #region Vehicle

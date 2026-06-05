@@ -144,7 +144,6 @@
             <PropertyColumn Property="x => x.ReasonDescription" Title="Reason" />
             <PropertyColumn Property="x => x.MaterialNumber" Title="Material Number" />
             <PropertyColumn Property="x => x.MaterialDescription" Title="Material Description" />
-            <PropertyColumn Property="x => x.MaterialTypeDescription" Title="Material Type" />
             <PropertyColumn Property="x => x.CustomerPartNumber" Title="Customer P/N" />
             <PropertyColumn Property="x => x.SupplierPartNumber" Title="Supplier P/N" />
             <PropertyColumn Property="x => x.BOMUnitOfMeasurement" Title="UoM" />
@@ -195,9 +194,8 @@
             OriginatorName = "Singh, Vishwadeep(MTSL)",
             DeadlineDate = DateTime.UtcNow.AddDays(7),
             ReasonDescription = "TEST2",
-            MaterialNumber = "M15052026_9",
+            MaterialNumber = "1",
             MaterialDescription = "Test Mat desc",
-            MaterialTypeDescription = "Type A",
             CustomerPartNumber = "19062024AC",
             SupplierPartNumber = "15OCT2024003",
             BOMUnitOfMeasurement = "BG",
@@ -238,7 +236,6 @@
             ReasonDescription = "TEST2",
             MaterialNumber = "BADMATERIAL_5",
             MaterialDescription = "Test Mat desc",
-            MaterialTypeDescription = "Type A",
             CustomerPartNumber = "19062024AC",
             SupplierPartNumber = "15OCT2024003",
             BOMUnitOfMeasurement = "BG",
@@ -390,7 +387,6 @@
                 ReasonDescription = nprRequest.ReasonDescription,
                 MaterialNumber = nprRequest.MaterialNumber,
                 MaterialDescription = nprRequest.MaterialDescription,
-                MaterialTypeDescription = nprRequest.MaterialTypeDescription,
                 CustomerPartNumber = nprRequest.CustomerPartNumber,
                 SupplierPartNumber = nprRequest.SupplierPartNumber,
                 BOMUnitOfMeasurement = nprRequest.BOMUnitOfMeasurement,
@@ -460,7 +456,6 @@
                     nprRequest.ReasonDescription = updatedItem.ReasonDescription;
                     nprRequest.MaterialNumber = updatedItem.MaterialNumber;
                     nprRequest.MaterialDescription = updatedItem.MaterialDescription;
-                    nprRequest.MaterialTypeDescription = updatedItem.MaterialTypeDescription;
                     nprRequest.CustomerPartNumber = updatedItem.CustomerPartNumber;
                     nprRequest.SupplierPartNumber = updatedItem.SupplierPartNumber;
                     nprRequest.BOMUnitOfMeasurement = updatedItem.BOMUnitOfMeasurement;
@@ -582,7 +577,6 @@
                 if (item.ReasonDescription?.Contains(filter, comparisonType) == true) return true;
                 if (item.MaterialNumber?.Contains(filter, comparisonType) == true) return true;
                 if (item.MaterialDescription?.Contains(filter, comparisonType) == true) return true;
-                if (item.MaterialTypeDescription?.Contains(filter, comparisonType) == true) return true;
                 if (item.CustomerPartNumber?.Contains(filter, comparisonType) == true) return true;
                 if (item.SupplierPartNumber?.Contains(filter, comparisonType) == true) return true;
                 if (item.BOMUnitOfMeasurement?.Contains(filter, comparisonType) == true) return true;

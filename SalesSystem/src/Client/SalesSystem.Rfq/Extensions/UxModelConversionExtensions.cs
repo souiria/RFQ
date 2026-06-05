@@ -16,6 +16,8 @@
             projectAssociation.ProjectName = association.CustomerProjectName;
             projectAssociation.CustomerId = association.CustomerLocationGuid.ToUpperInvariant();
             projectAssociation.CustomerName = association.CustomerLocationName;
+            projectAssociation.CustomerCode = association.CustomerCode;
+            projectAssociation.ProjectCode = association.CustomerProjectCode;
             projectAssociation.Id = association.Id.ToUpperInvariant();
             return projectAssociation;
         }
@@ -306,14 +308,13 @@
             nprRequest.QtyPerVehicle = 1;
             //nprRequest.VehicleTotalQuantity = 1;
             nprRequest.AssociatedParts = "";
-            nprRequest.CustomerCode = rfqProject.CustomerBusinessUnit;
+            nprRequest.CustomerCode = rfqProject.CustomerCode;
             nprRequest.CustomerPartNumber = partNumber.CustomerPartNumber;
             nprRequest.MaterialDescription = "";
-            nprRequest.MaterialTypeDescription = "";
             nprRequest.MaterialNumber = "";
             //nprRequest.PlatformName = "";
             //nprRequest.ProgramName = "";
-            nprRequest.ProjectCode = rfqProject.Project;
+            nprRequest.ProjectCode = rfqProject.ProjectCode;
             nprRequest.NPRRaisedRemarks = "";
             nprRequest.ReasonDescription = rfqProject.RfqReason;
             nprRequest.SuggestedManufacturerGroup = "";
@@ -334,14 +335,14 @@
 
         public static RfqNprRequestUxModel Update(this RfqNprRequestUxModel nprRequest, RqfProjectUxModel rfqProject, GlobalValue globalValue)
         {
-            nprRequest.CustomerCode = rfqProject.CustomerBusinessUnit;
+            nprRequest.CustomerCode = rfqProject.CustomerCode;
             nprRequest.OriginatorName = globalValue.DisplayName;
             nprRequest.CustomerRfqNo = rfqProject.RfqNumber;
             nprRequest.DeadlineDate = rfqProject.RfqResponseDeadline;
-            nprRequest.BOMUnitOfMeasurement = "EU";
-            nprRequest.ProjectCode = rfqProject.Project;
+            //nprRequest.BOMUnitOfMeasurement = "";
+            nprRequest.ProjectCode = rfqProject.ProjectCode;
             //nprRequest.VehicleTotalQuantity = rfqProject.VehicleVolume;
-            nprRequest.ManufacturingSite = rfqProject.CustomerLocation;
+            nprRequest.ManufacturingSite = rfqProject.CustomerLocation ?? nprRequest.ManufacturingSite;
             
             return nprRequest;
         }
@@ -384,12 +385,12 @@
                 nprGrpc.Id = Guid.Empty.ToString();
                 Console.WriteLine($"Error converting Id to string: {ex.Message}");
             }   
+
             nprGrpc.ReasonDescription = model.ReasonDescription;
             nprGrpc.CustomerCode = model.CustomerCode;
             // nprGrpc.PlatformName = model.PlatformName;
             // nprGrpc.ProgramName = model.ProgramName;
             nprGrpc.ProjectCode = model.ProjectCode;
-            nprGrpc.MaterialTypeDescription = model.MaterialTypeDescription;
             nprGrpc.ManufacturingSite = model.ManufacturingSite;
             nprGrpc.CustomerPartNumber = model.CustomerPartNumber;
             nprGrpc.SupplierPartNumber = model.SupplierPartNumber;
@@ -444,7 +445,6 @@
             //model.PlatformName = grpc.PlatformName;
             //model.ProgramName = grpc.ProgramName;
             model.ProjectCode = grpc.ProjectCode;
-            model.MaterialTypeDescription = grpc.MaterialTypeDescription;
             model.ManufacturingSite = grpc.ManufacturingSite;
             model.CustomerPartNumber = grpc.CustomerPartNumber;
             model.SupplierPartNumber = grpc.SupplierPartNumber;

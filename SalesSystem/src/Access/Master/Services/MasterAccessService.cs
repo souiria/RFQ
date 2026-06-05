@@ -64,6 +64,11 @@
 
         #endregion
 
+        #region ProjectEngineerAssociation
+
+        ListProjectEngineeringAssociationGrpc _ProjectEngineeringAssociations;
+        #endregion
+
         #endregion
 
         #region Fields and Properties
@@ -122,6 +127,12 @@
         IQueryHandler<GetAllSuppliersQuery, List<SupplierGrpc>>? _SupplierHandler;
         bool _SupplierRefreshInProgress;
 
+        #endregion
+
+        #region ProjectEngineerAssociation
+
+        IQueryHandler<GetAllProjectEngineeringAssociationQuery, List<ProjectEngineeringAssociationGrpc>>? _ProjectEngineeringAssociationHandler;
+        bool _ProjectEngineeringAssociationRefreshInProgress;
         #endregion
 
         readonly IServiceProvider _ServiceProvider;
@@ -199,6 +210,13 @@
             _Suppliers = new ListSupplierGrpc();
             _FilteredSuppliers = new ListSupplierGrpc();
             _SupplierRefreshInProgress = false;
+
+            #endregion
+
+            #region ProjectEngineerAssociation
+
+            _ProjectEngineeringAssociations = new ListProjectEngineeringAssociationGrpc();
+            _ProjectEngineeringAssociationRefreshInProgress = false;
 
             #endregion
 
@@ -574,6 +592,31 @@
             }
         }
 
+        #endregion
+
+        #region ProjectEngineerAssociation
+
+        public async Task<ListProjectEngineeringAssociationGrpc> GetAllProjectEngineeringAssociations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ProjectEngineeringAssociations.ProjectEngineeringAssociationGrpc.Any())
+            {
+                if (takeAmount <= 0)
+                {
+                    return _ProjectEngineeringAssociations;
+                }
+
+                ListProjectEngineeringAssociationGrpc returnList = new ListProjectEngineeringAssociationGrpc();
+                IQueryable<ProjectEngineeringAssociationGrpc> query = _ProjectEngineeringAssociations.ProjectEngineeringAssociationGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.ProjectEngineeringAssociationGrpc.AddRange(query);
+                return returnList;
+            }
+            else
+            {
+                await PopulateProjectEngineeringAssociationsAsync(cancellationToken);
+                return _ProjectEngineeringAssociations;
+            }
+        }
         #endregion
 
         async Task<Result<bool>> PopulateMasterData(CancellationToken cancellationToken)
@@ -972,6 +1015,38 @@
 
         #endregion
 
+        #region ProjectEngineerAssociation
+
+        public async Task<bool> PopulateProjectEngineeringAssociationsAsync(CancellationToken cancellationToken)
+        {
+            if (!_ProjectEngineeringAssociationRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _ProjectEngineeringAssociationHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllProjectEngineeringAssociationQuery, List<ProjectEngineeringAssociationGrpc>>>();
+                    _ProjectEngineeringAssociationRefreshInProgress = true;
+                    GetAllProjectEngineeringAssociationQuery query = new GetAllProjectEngineeringAssociationQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<ProjectEngineeringAssociationGrpc>> results = await _ProjectEngineeringAssociationHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _ProjectEngineeringAssociations.ProjectEngineeringAssociationGrpc.Clear();
+                        _ProjectEngineeringAssociations.ProjectEngineeringAssociationGrpc.AddRange(results.Value);
+                    }
+
+                    _ProjectEngineeringAssociationRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
+
         #endregion
 
         public async Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig, Action<IEnumerable<T>> setResponseCollection,
@@ -1003,6 +1078,7 @@
                     "VEHICLEGRPC" => _Vehicles.VehicleGrpc.Cast<T>().Where(func).ToList(),
                     "SUPPLIERGROUPGRPC" => _SupplierGroups.SupplierGroupGrpc.Cast<T>().Where(func).ToList(),
                     "SUPPLIERGRPC" => _Suppliers.SupplierGrpc.Cast<T>().Where(func).ToList(),
+                    "PROJECTENGINEERINGASSOCIATIONGRPC" => _ProjectEngineeringAssociations.ProjectEngineeringAssociationGrpc.Cast<T>().Where(func).ToList(),
                     _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
                 };
             }, cancellationToken);

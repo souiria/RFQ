@@ -38,6 +38,8 @@ service Master {
   rpc GetProgramGrpcStream (ProgramGrpcRequest) returns (stream ProgramGrpc);
   rpc GetProjectGrpc (ProjectGrpcRequest) returns (ListProjectGrpc);
   rpc GetProjectGrpcStream (ProjectGrpcRequest) returns (stream ProjectGrpc);
+  rpc GetProjectEngineeringAssociationGrpc (ProjectEngineeringAssociationGrpcRequest) returns (ListProjectEngineeringAssociationGrpc);
+  rpc GetProjectEngineeringAssociationGrpcStream (ProjectEngineeringAssociationGrpcRequest) returns (stream ProjectEngineeringAssociationGrpc);
 
   rpc GetVehicleGrpc (VehicleGrpcRequest) returns (ListVehicleGrpc);
   rpc GetVehicleGrpcStream (VehicleGrpcRequest) returns (stream VehicleGrpc);
@@ -251,6 +253,29 @@ message ListProjectGrpc {
     repeated ProjectGrpc ProjectGrpc = 1;
 }
 
+message ProjectEngineeringAssociationGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message ProjectEngineeringAssociationGrpc {
+    google.protobuf.StringValue ProjectGuid = 1;
+    google.protobuf.StringValue EngineeringADName = 2;
+    google.protobuf.StringValue EngineeringFullName = 3;
+    google.protobuf.StringValue EmailAddress = 4;
+    google.protobuf.StringValue Id = 5;
+    google.protobuf.Timestamp CreatedDate = 6;
+    google.protobuf.Timestamp ModifiedDate = 7;
+    google.protobuf.StringValue CreatedBy = 8;
+    google.protobuf.StringValue ModifiedBy = 9;
+    google.protobuf.BoolValue IsActive = 10;
+    google.protobuf.StringValue CustomerGuid = 11;
+}
+
+message ListProjectEngineeringAssociationGrpc {
+    repeated ProjectEngineeringAssociationGrpc ProjectEngineeringAssociationGrpc = 1;
+}
+
 message VehicleGrpcRequest {
   int32 position = 1;
   int32 takeamount = 2;
@@ -353,4 +378,5 @@ message MastersFilterResponseGrpc {
     ListVehicleGrpc VehicleGrpcList = 12;
     ListSupplierGroupGrpc SupplierGroupGrpcList = 13;
     ListSupplierGrpc SupplierList = 14;
+    ListProjectEngineeringAssociationGrpc ProjectEngineeringAssociationGrpcList = 15;
 }

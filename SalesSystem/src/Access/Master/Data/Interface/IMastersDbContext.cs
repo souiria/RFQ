@@ -28,6 +28,8 @@
         { get; }
         DbSet<DbSupplier> Supplier
         { get; }
+        DbSet<DbProjectEngineeringAssociation> ProjectEngineeringAssociation
+        { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
