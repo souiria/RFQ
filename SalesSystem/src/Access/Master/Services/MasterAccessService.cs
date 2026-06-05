@@ -1,4 +1,6 @@
-﻿namespace Master.Services
+﻿using Google.Protobuf;
+
+namespace Master.Services
 {
     /// <summary>
     /// This class is used to make calls to the database queries and to hold the data dictionaries.
@@ -20,6 +22,7 @@
         ListUnitOfMeasureGrpc _FilteredUnitOfMeasures;
 
         #endregion
+
         #region Currency
 
         ListCurrencyGrpc _Currencies;
@@ -76,8 +79,23 @@
 
         #endregion
 
+        #region ProjectEngineeringAssociation
+
+        ListProjectEngineeringAssociationGrpc _ProjectEngineeringAssociations;
+        ListProjectEngineeringAssociationGrpc _FilteredProjectEngineeringAssociations;
+
+        #endregion
+
         #endregion
         #region Fields and Properties
+
+        #region ProjectEngineeringAssociation
+
+        bool _ProjectEngineeringAssociationRefreshInProgress;
+        IQueryHandler<GetProjectEngineeringAssociationsQuery, List<ProjectEngineeringAssociationGrpc>>? _ProjectEngineeringAssociationHandler;
+
+        #endregion
+
         #region BusinessUnit
         bool _BusinessUnitRefreshInProgress;
         IQueryHandler<GetBusinessUnitsQuery, List<BusinessUnitGrpc>>? _BusinessUnitHandler;
@@ -154,6 +172,13 @@
         #region Constructor
         public MasterAccessService(IServiceProvider serviceProvider, bool testing = false)
         {
+            #region ProjectEngineeringAssociation
+
+            _ProjectEngineeringAssociations = new ListProjectEngineeringAssociationGrpc();
+            _FilteredProjectEngineeringAssociations = new ListProjectEngineeringAssociationGrpc();
+            _ProjectEngineeringAssociationRefreshInProgress = false;
+
+            #endregion
 
             #region UnitOfMeasure
 
@@ -170,6 +195,7 @@
             _CurrencyRefreshInProgress = false;
 
             #endregion
+
             #region BusinessUnit
             _BusinessUnits = new ListBusinessUnitGrpc();
             _FilteredBusinessUnits = new ListBusinessUnitGrpc();
@@ -695,6 +721,43 @@
         #endregion
 
         #region Data Imports
+        #region ProjectEngineeringAssociation
+
+        public async Task<ListProjectEngineeringAssociationGrpc> GetAllProjectEngineeringAssociations(
+            CancellationToken cancellationToken,
+            int position = 0,
+            int takeAmount = 0)
+        {
+            await Task.Delay(1, cancellationToken);
+
+            if (_ProjectEngineeringAssociations.ProjectEngineeringAssociationGrpc.Any())
+            {
+                if (takeAmount <= 0)
+                {
+                    return _ProjectEngineeringAssociations;
+                }
+
+                ListProjectEngineeringAssociationGrpc returnList = new ListProjectEngineeringAssociationGrpc();
+
+                IQueryable<ProjectEngineeringAssociationGrpc> query =
+                    _ProjectEngineeringAssociations.ProjectEngineeringAssociationGrpc
+                        .AsQueryable()
+                        .Skip(position)
+                        .Take(takeAmount);
+
+                returnList.ProjectEngineeringAssociationGrpc.AddRange(query);
+
+                return returnList;
+            }
+            else
+            {
+                await PopulateProjectEngineeringAssociationsAsync(cancellationToken);
+                return _ProjectEngineeringAssociations;
+            }
+        }
+
+        #endregion
+
         #region BusinessUnit
 
         public async Task<bool> PopulateBusinessUnitsAsync(CancellationToken cancellationToken)
@@ -735,6 +798,7 @@
         }
 
         #endregion
+
         #region UnitOfMeasure
         public async Task<bool> PopulateUnitOfMeasuresAsync(CancellationToken cancellationToken)
         {
@@ -1160,6 +1224,45 @@
 
         #endregion
 
+        #region ProjectEngineeringAssociation
+
+        public async Task<bool> PopulateProjectEngineeringAssociationsAsync(CancellationToken cancellationToken)
+        {
+            if (!_ProjectEngineeringAssociationRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _ProjectEngineeringAssociationHandler = scope.ServiceProvider
+                        .GetRequiredService<IQueryHandler<GetProjectEngineeringAssociationsQuery, List<ProjectEngineeringAssociationGrpc>>>();
+
+                    _ProjectEngineeringAssociationRefreshInProgress = true;
+
+                    GetProjectEngineeringAssociationsQuery query = new GetProjectEngineeringAssociationsQuery();
+
+                    await Task.Delay(1, cancellationToken);
+
+                    Result<List<ProjectEngineeringAssociationGrpc>> results =
+                        await _ProjectEngineeringAssociationHandler.Handle(query, cancellationToken);
+                  if (results.Value.Count <= 0)
+                    {
+                    }
+                    else
+                    {
+                        _ProjectEngineeringAssociations.ProjectEngineeringAssociationGrpc.Clear();
+                        _ProjectEngineeringAssociations.ProjectEngineeringAssociationGrpc.AddRange(results.Value);
+                    }
+
+                    _ProjectEngineeringAssociationRefreshInProgress = false;
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
+
         #endregion
 
         public async Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig, Action<IEnumerable<T>> setResponseCollection,
@@ -1193,13 +1296,19 @@
                     "SUPPLIERGRPC" => _Suppliers.SupplierGrpc.Cast<T>().Where(func).ToList(),
                     "UNITOFMEASUREGRPC" => _UnitOfMeasures.UnitOfMeasureGrpc.Cast<T>().Where(func).ToList(),
                     "BUSINESSUNITGRPC" => _BusinessUnits.BusinessUnitGrpc.Cast<T>().Where(func).ToList(),
-                    _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
+                    "PROJECTENGINEERINGASSOCIATIONGRPC" =>  _ProjectEngineeringAssociations.ProjectEngineeringAssociationGrpc
+                            .Cast<T>()
+                            .Where(func)
+                            .ToList(),
+                              _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
                 };
             }, cancellationToken);
         }
 
         void PopulateSampleData()
         {
+
+            _ProjectEngineeringAssociations =SampleMasterDataService.PopulateProjectEngineeringAssociationGrpc();
             _Currencies = SampleMasterDataService.PopulateCurrencyGrpc();
             _Customers = SampleMasterDataService.PopulateCustomerGrpc();
             _CustomerLocations = SampleMasterDataService.PopulateCustomerLocationsData();

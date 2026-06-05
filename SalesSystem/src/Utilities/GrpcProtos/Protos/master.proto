@@ -55,7 +55,11 @@ service Master {
   
   rpc GetBusinessUnitGrpc (BusinessUnitGrpcRequest) returns (ListBusinessUnitGrpc);
   rpc GetBusinessUnitGrpcStream (BusinessUnitGrpcRequest) returns (stream BusinessUnitGrpc);
+  rpc GetProjectEngineeringAssociationGrpc (ProjectEngineeringAssociationGrpcRequest)
+    returns (ListProjectEngineeringAssociationGrpc);
 
+rpc GetProjectEngineeringAssociationGrpcStream (ProjectEngineeringAssociationGrpcRequest)
+    returns (stream ProjectEngineeringAssociationGrpc);
 
 }
 
@@ -363,6 +367,8 @@ message MastersFilterResponseGrpc {
     ListSupplierGrpc SupplierList = 14;
      ListUnitOfMeasureGrpc UnitOfMeasureGrpcList = 15;
      ListBusinessUnitGrpc BusinessUnitGrpcList = 16;
+     ListProjectEngineeringAssociationGrpc ProjectEngineeringAssociationGrpcList = 17;
+
 }
 message UnitOfMeasureGrpcRequest {
   int32 position = 1;
@@ -468,4 +474,26 @@ message BusinessUnitGrpc {
 
 message ListBusinessUnitGrpc {
     repeated BusinessUnitGrpc BusinessUnitGrpc = 1;
+}
+
+message ProjectEngineeringAssociationGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue ProjectGuid = 2;
+    google.protobuf.StringValue EngineeringADName = 3;
+    google.protobuf.StringValue EngineeringFullName = 4;
+    google.protobuf.StringValue EmailAddress = 5;
+    google.protobuf.Timestamp CreatedDate = 6;
+    google.protobuf.Timestamp ModifiedDate = 7;
+    google.protobuf.StringValue CreatedBy = 8;
+    google.protobuf.StringValue ModifiedBy = 9;
+    google.protobuf.BoolValue IsActive = 10;
+    google.protobuf.StringValue CustomerGuid = 11;
+}
+
+message ListProjectEngineeringAssociationGrpc {
+    repeated ProjectEngineeringAssociationGrpc ProjectEngineeringAssociationGrpc = 1;
+}
+message ProjectEngineeringAssociationGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
 }

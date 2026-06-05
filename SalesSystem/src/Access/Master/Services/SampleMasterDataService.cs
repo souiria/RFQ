@@ -469,5 +469,46 @@
 
         #endregion
 
+        #region ProjectEngineeringAssociation
+
+        public static ListProjectEngineeringAssociationGrpc PopulateProjectEngineeringAssociationGrpc()
+        {
+            ListProjectEngineeringAssociationGrpc list = new ListProjectEngineeringAssociationGrpc();
+
+            for (int i = 0; i < 5; i++)
+            {
+                ProjectEngineeringAssociationGrpc item = new ProjectEngineeringAssociationGrpc();
+
+                item.Id = Guid.NewGuid().ToString().ToUpperInvariant();
+                item.ProjectGuid = Guid.NewGuid().ToString().ToUpperInvariant();
+                item.CustomerGuid = Guid.NewGuid().ToString().ToUpperInvariant();
+
+                item.EngineeringADName = $"ENG{i}".ToUpperInvariant();
+                item.EngineeringFullName = $"ENGINEER {i}".ToUpperInvariant();
+                item.EmailAddress = $"engineer{i}@test.com";
+
+                item.IsActive = true;
+
+                list.ProjectEngineeringAssociationGrpc.Add(item);
+            }
+
+            ProjectEngineeringAssociationGrpc fixedItem = new ProjectEngineeringAssociationGrpc();
+
+            fixedItem.Id = "AA11BB22-CC33-DD44-EE55-FF6677889900";
+            fixedItem.ProjectGuid = "11111111-2222-3333-4444-555555555555";
+            fixedItem.CustomerGuid = "99999999-8888-7777-6666-555555555555";
+
+            fixedItem.EngineeringADName = "ENGFIXED";
+            fixedItem.EngineeringFullName = "FIXED ENGINEER";
+            fixedItem.EmailAddress = "fixed.engineer@test.com";
+
+            fixedItem.IsActive = true;
+
+            list.ProjectEngineeringAssociationGrpc.Add(fixedItem);
+
+            return list;
+        }
+
+        #endregion
     }
 }

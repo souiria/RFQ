@@ -31,6 +31,10 @@
                 await LogDataPopulationSuccess("BusinessUnit", check);
                 check = await _MasterAccessService.PopulateUnitOfMeasuresAsync(stoppingToken);
                 await LogDataPopulationSuccess("UnitOfMeasures", check);
+                check = await _MasterAccessService.PopulateBusinessUnitsAsync(stoppingToken);
+                await LogDataPopulationSuccess("BusinessUnit", check);
+                check = await _MasterAccessService.PopulateUnitOfMeasuresAsync(stoppingToken);
+                await LogDataPopulationSuccess("UnitOfMeasures", check);
                 check = await _MasterAccessService.PopulateCurrenciesAsync(stoppingToken);
                 await LogDataPopulationSuccess("Currency", check);
                 check = await _MasterAccessService.PopulateCustomersAsync(stoppingToken);

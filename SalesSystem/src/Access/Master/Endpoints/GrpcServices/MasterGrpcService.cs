@@ -270,6 +270,41 @@ namespace Master.Endpoints.GrpcServices
 
         #endregion
 
+        #region ProjectEngineeringAssociation
+
+        public override async Task<ListProjectEngineeringAssociationGrpc> GetProjectEngineeringAssociationGrpc(
+            ProjectEngineeringAssociationGrpcRequest request,
+            ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetProjectEngineeringAssociationGrpc starting");
+
+            return await _MasterAccessService.GetAllProjectEngineeringAssociations(
+                context.CancellationToken,
+                request.Position,
+                request.Takeamount);
+        }
+
+        public override async Task GetProjectEngineeringAssociationGrpcStream(
+            ProjectEngineeringAssociationGrpcRequest request,
+            IServerStreamWriter<ProjectEngineeringAssociationGrpc> responseStream,
+            ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetProjectEngineeringAssociationGrpcStream starting");
+
+            ListProjectEngineeringAssociationGrpc results =
+                await _MasterAccessService.GetAllProjectEngineeringAssociations(
+                    context.CancellationToken,
+                    request.Position,
+                    request.Takeamount);
+
+            foreach (ProjectEngineeringAssociationGrpc result in results.ProjectEngineeringAssociationGrpc)
+            {
+                await responseStream.WriteAsync(result);
+            }
+        }
+
+#endregion
+
         public override async Task<MastersFilterResponseGrpc> FilterMasterDataGrpc(MastersFilterRequestGrpc request, ServerCallContext context)
         {
             ParsingConfig parsingConfig = new ParsingConfig();
@@ -279,6 +314,25 @@ namespace Master.Endpoints.GrpcServices
 
             switch (request.DatabaseList.ToUpperInvariant())
             {
+                case "v     ":
+
+                await _MasterAccessService.PopulateProjectEngineeringAssociationsAsync(context.CancellationToken);
+
+                await _MasterAccessService.HandleFilterCase<ProjectEngineeringAssociationGrpc>(
+                    filterExpressionString,
+                    parsingConfig,
+                    filterList =>
+                    {
+                        ListProjectEngineeringAssociationGrpc returnList = new ListProjectEngineeringAssociationGrpc();
+
+                        returnList.ProjectEngineeringAssociationGrpc.AddRange(filterList);
+
+                        returnResponse.ProjectEngineeringAssociationGrpcList = returnList;
+                        returnResponse.Success = true;
+                    },
+                    context.CancellationToken);
+
+                break;
                 case "BUSINESSUNITGRPC":
                 await _MasterAccessService.HandleFilterCase<BusinessUnitGrpc>(
                     filterExpressionString,
