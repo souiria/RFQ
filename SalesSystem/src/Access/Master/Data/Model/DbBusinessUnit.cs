@@ -236,7 +236,7 @@
         public string? TrafficSummary
         { get; set; }
 
-        public int? HEAT_SITE_ID
-        { get; set; }
+        //public int? HEAT_SITE_ID
+        //{ get; set; }
     }
 }

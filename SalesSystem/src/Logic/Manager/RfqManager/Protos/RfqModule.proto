@@ -46,6 +46,8 @@ rpc ValidateNprRequestGrpc (MgrValidateNprRequestRequest) returns (MgrValidateNp
   rpc GetAllSuppliersGrpc (GetAllSuppliersGrpcRequest) returns (GetAllSuppliersGrpcResponse);
   rpc GetAllSupplierGroupsGrpc (GetAllSupplierGroupsGrpcRequest) returns (GetAllSupplierGroupsGrpcResponse);
   rpc SearchPartPricesGrpc (SearchPartPricesGrpcRequest) returns (SearchPartPricesGrpcResponse);
+  rpc GetAllUnitOfMeasuresGrpc (GetAllUnitOfMeasuresRequest) returns (GetAllUnitOfMeasuresResponse);
+  rpc GetAllBuisnessUnitsGrpc (GetAllBusinessUnitsGrpcRequest) returns (GetAllBusinessUnitsGrpcResponse);
  rpc WhoAmI (google.protobuf.Empty) returns (WhoAmIResponse);
  rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
 }
@@ -723,7 +725,112 @@ message PriceInformation {
 	google.protobuf.StringValue PriceSource = 3;
 }
 
+message GetAllUnitOfMeasuresRequest {
+	int32 Position = 1;
+	int32 Take = 2;
+}
 
+message GetAllUnitOfMeasuresResponse {
+	repeated UnitOfMeasureGrpc UnitOfMeasureGrpc = 1;
+}
+
+message UnitOfMeasureGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue Code = 2;
+    google.protobuf.StringValue UnitOfMeasureDescription = 3;
+    google.protobuf.BoolValue IsActive = 4;
+}
+
+message GetAllBusinessUnitsGrpcRequest {
+	int32 Position = 1;
+	int32 Take = 2;
+}
+
+message GetAllBusinessUnitsGrpcResponse {
+     repeated BusinessUnitGrpc BusinessUnitGrpc = 1;
+}
+
+message BusinessUnitGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue BusinessUnitCode = 2;
+    google.protobuf.StringValue BusinessUnitName = 3;
+    google.protobuf.StringValue BusinessUnitTypeGuid = 4;
+    google.protobuf.StringValue StreetNumber = 5;
+    google.protobuf.StringValue StreetName = 6;
+    google.protobuf.StringValue City = 7;
+    google.protobuf.StringValue Region = 8;
+    google.protobuf.StringValue ZipCode = 9;
+    google.protobuf.StringValue CountryGuid = 10;
+    google.protobuf.BoolValue IsActive = 11;
+    google.protobuf.Timestamp CreatedDate = 12;
+    google.protobuf.Timestamp ModifiedDate = 13;
+    google.protobuf.StringValue CreatedBy = 14;
+    google.protobuf.StringValue ModifiedBy = 15;
+    google.protobuf.Int32Value SyncToCPD = 16;
+    google.protobuf.BoolValue IsExternalWarehouse = 17;
+    google.protobuf.StringValue EWMSWarehouseCode = 18;
+    google.protobuf.StringValue DisplayName = 19;
+    google.protobuf.StringValue LegacyBusinessUnitCode = 20;
+    google.protobuf.StringValue LegacyBusinessUnitName = 21;
+    google.protobuf.StringValue Company = 22;
+    google.protobuf.StringValue BusinessUnitDescription = 23;
+    google.protobuf.StringValue BusinessUnitContactName = 24;
+    google.protobuf.StringValue BusinessUnitContactNumber = 25;
+    google.protobuf.StringValue BusinessUnitAltContactNumber = 26;
+    google.protobuf.StringValue BusinessUnitMainPhoneNumber = 27;
+    google.protobuf.StringValue BusinessUnitManagerEmail = 28;
+    google.protobuf.StringValue Router = 29;
+    google.protobuf.StringValue Subnet = 30;
+    google.protobuf.StringValue HostFrom = 31;
+    google.protobuf.StringValue HostTo = 32;
+    google.protobuf.StringValue ITEngineer = 33;
+    google.protobuf.StringValue BackupOperator = 34;
+    google.protobuf.StringValue InterSeptor = 35;
+    google.protobuf.StringValue InterSeptorFirmware = 36;
+    google.protobuf.StringValue InterSeptorAlerts = 37;
+    google.protobuf.BoolValue UseLocalSupport = 38;
+    google.protobuf.StringValue VideoConference = 39;
+    google.protobuf.StringValue VideoConferenceIP = 40;
+    google.protobuf.DoubleValue AccessCircuit = 41;
+    google.protobuf.StringValue PERouter1 = 42;
+    google.protobuf.StringValue PERouter2 = 43;
+    google.protobuf.StringValue MRTG = 44;
+    google.protobuf.BoolValue WiFi = 45;
+    google.protobuf.BoolValue Printer = 46;
+    google.protobuf.BoolValue Copier = 47;
+    google.protobuf.BoolValue LocalIT = 48;
+    google.protobuf.BoolValue Wan = 49;
+    google.protobuf.StringValue WanType = 50;
+    google.protobuf.StringValue WanStatus = 51;
+    google.protobuf.Int32Value WanDownCount = 52;
+    google.protobuf.StringValue WanHighRTT = 53;
+    google.protobuf.BoolValue LocalBackups = 54;
+    google.protobuf.StringValue MitelController = 55;
+    google.protobuf.StringValue MitelControllerBackup = 56;
+    google.protobuf.StringValue Riverbed = 57;
+    google.protobuf.StringValue VCenter = 58;
+    google.protobuf.StringValue CCTV = 59;
+    google.protobuf.StringValue DefaultFileServer = 60;
+    google.protobuf.StringValue DefaultMailServer = 61;
+    google.protobuf.StringValue DefaultCopier = 62;
+    google.protobuf.StringValue DefaultWDSServer = 63;
+    google.protobuf.StringValue DefaultDeployRoot = 64;
+    google.protobuf.StringValue DefaultHRManager = 65;
+    google.protobuf.BoolValue PDR = 66;
+    google.protobuf.StringValue MapUrl = 67;
+    google.protobuf.StringValue Longtitude = 68;
+    google.protobuf.StringValue Latitude = 69;
+    google.protobuf.StringValue What3Words = 70;
+    google.protobuf.StringValue NearestWeatherCity = 71;
+    google.protobuf.StringValue WeatherTemperatureHigh = 72;
+    google.protobuf.StringValue WeatherTemperatureLow = 73;
+    google.protobuf.StringValue WeatherUrl = 74;
+    google.protobuf.StringValue WeatherMaxWindSpeed = 75;
+    google.protobuf.Int32Value WeatherTemperatureThreshold = 76;
+    google.protobuf.Timestamp WeatherReportDate = 77;
+    google.protobuf.StringValue TrafficSummary = 78;
+    //google.protobuf.Int32Value HEATSITEID = 79;
+}
 
 message WhoAmIResponse {
   string user = 1;

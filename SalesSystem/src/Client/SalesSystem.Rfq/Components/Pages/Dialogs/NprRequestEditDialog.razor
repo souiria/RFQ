@@ -60,7 +60,8 @@
                                   Label="Supplier P/N"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
-                                  MaxLength="26" />
+                                  MaxLength="26"
+                                  Required="true" />
                 </MudItem>
 
                 @* Row 3: Material *@
@@ -81,21 +82,85 @@
                                   Required="true" />
                 </MudItem>
                 <MudItem xs="3">
-                    <MudTextField @bind-Value="NprRequest.ManufacturingSite"
+@*                     <MudTextField @bind-Value="NprRequest.ManufacturingSite"
                                   Label="Manufacturing Site"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
-                                  Required="true" />
+                                  Required="true" /> *@
+                    <MudAutocomplete T="BusinessUnitUxModel"
+                                     @ref="_BusinessUnitAutocomplete"
+                                     @bind-Value="SelectedBusinessUnit"
+                                     Label="ManufacturingSite"
+                                     Placeholder="Search manufacturing site..."
+                                     SearchFunc="@SearchBusinessUnit"
+                                     ToStringFunc="@(r => r?.LegacyBusinessUnitCode ?? "")"
+                                     Strict="false"
+                                     ResetValueOnEmptyText="false"
+                                     CoerceText="true"
+                                     CoerceValue="true"
+                                     SelectValueOnTab="true"
+                                     AdornmentIcon="@Icons.Material.Filled.Business"
+                                     AdornmentColor="Color.Primary"
+                                     Variant="Variant.Outlined"
+                                     Margin="Margin.Dense"
+                                     Clearable="true"
+                                     DebounceInterval="250"
+                                     MinCharacters="0"
+                                     ShowProgressIndicator="true"
+                                     MaxItems="50">
+                        <ItemTemplate Context="businessUnit">
+                            <MudText Typo="Typo.body2">
+                                <strong>@businessUnit.LegacyBusinessUnitCode</strong>
+                            </MudText>
+                        </ItemTemplate>
+                        <NoItemsTemplate>
+                            <MudText Typo="Typo.body2" Align="Align.Center" Class="pa-2">
+                                No manufacturing site found.
+                            </MudText>
+                        </NoItemsTemplate>
+                    </MudAutocomplete>
                 </MudItem>
 
                 @* Row 4: Reason, Deadline, Project *@
                 <MudItem xs="4">
-                    <MudTextField @bind-Value="NprRequest.ReasonDescription"
+@*                     <MudTextField @bind-Value="NprRequest.ReasonDescription"
                                   Label="Reason Description"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
                                   MaxLength="50"
-                                  Required="true" />
+                                  Required="true" /> *@
+                    <MudAutocomplete T="RfqReasonGrpc"
+                                     @ref="_ReasonAutocomplete"
+                                     @bind-Value="SelectedReason"
+                                     Label="Reason"
+                                     Placeholder="Search reasons..."
+                                     SearchFunc="@SearchReasons"
+                                     ToStringFunc="@(r => r?.RfqReasonTitle ?? "")"
+                                     Strict="false"
+                                     ResetValueOnEmptyText="false"
+                                     CoerceText="true"
+                                     CoerceValue="true"
+                                     SelectValueOnTab="true"
+                                     AdornmentIcon="@Icons.Material.Filled.Business"
+                                     AdornmentColor="Color.Primary"
+                                     Variant="Variant.Outlined"
+                                     Margin="Margin.Dense"
+                                     Clearable="true"
+                                     DebounceInterval="250"
+                                     MinCharacters="0"
+                                     ShowProgressIndicator="true"
+                                     MaxItems="50">
+                        <ItemTemplate Context="reason">
+                            <MudText Typo="Typo.body2">
+                                <strong>@reason.RfqReasonTitle</strong>
+                            </MudText>
+                        </ItemTemplate>
+                        <NoItemsTemplate>
+                            <MudText Typo="Typo.body2" Align="Align.Center" Class="pa-2">
+                                No reasons found.
+                            </MudText>
+                        </NoItemsTemplate>
+                    </MudAutocomplete>
                 </MudItem>
                 <MudItem xs="4">
                     <MudDatePicker @bind-Date="NprRequest.DeadlineDate"
@@ -183,12 +248,44 @@
                     </MudAutocomplete>
                 </MudItem>
                 <MudItem xs="3">
-                    <MudTextField @bind-Value="NprRequest.BOMUnitOfMeasurement"
+@*                     <MudTextField @bind-Value="NprRequest.BOMUnitOfMeasurement"
                                   Label="BOM Unit of Measure"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
                                   MaxLength="10"
-                                  Required="true" />
+                                  Required="true" /> *@
+                    <MudAutocomplete T="UnitOfMeasureUxModel"
+                                     @ref="_UnitOfMeasureAutocomplete"
+                                     @bind-Value="SelectedUnitOfMeasure"
+                                     Label="Unit Of Measure"
+                                     Placeholder="Search unit of measure..."
+                                     SearchFunc="@SearchUnitOfMeasure"
+                                     ToStringFunc="@(uom => uom?.Code ?? "")"
+                                     Strict="false"
+                                     ResetValueOnEmptyText="false"
+                                     CoerceText="true"
+                                     CoerceValue="true"
+                                     SelectValueOnTab="true"
+                                     AdornmentIcon="@Icons.Material.Filled.Business"
+                                     AdornmentColor="Color.Primary"
+                                     Variant="Variant.Outlined"
+                                     Margin="Margin.Dense"
+                                     Clearable="true"
+                                     DebounceInterval="250"
+                                     MinCharacters="0"
+                                     ShowProgressIndicator="true"
+                                     MaxItems="50">
+                        <ItemTemplate Context="unitOfMeasure">
+                            <MudText Typo="Typo.body2">
+                                <strong>@unitOfMeasure.Code</strong>
+                            </MudText>
+                        </ItemTemplate>
+                        <NoItemsTemplate>
+                            <MudText Typo="Typo.body2" Align="Align.Center" Class="pa-2">
+                                No unit of measures found.
+                            </MudText>
+                        </NoItemsTemplate>
+                    </MudAutocomplete>
                 </MudItem>
                 <MudItem xs="3">
                     <MudNumericField @bind-Value="NprRequest.QtyPerVehicle"

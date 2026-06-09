@@ -247,6 +247,18 @@
             DeleteRfqNprRequestByIdGrpcResponse response = await _RfqManagerService.DeleteRfqNprRequestByIdGrpc(request);
             return response;
         }
+        public override async Task<GetAllUnitOfMeasuresResponse> GetAllUnitOfMeasuresGrpc(GetAllUnitOfMeasuresRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation($"GetAllUnitOfMeasuresGrpc starting");
+            GetAllUnitOfMeasuresResponse response = await _RfqManagerService.GetAllUnitOfMeasuresGrpc(request);
+            return response;
+        }
+        public override async Task<GetAllBusinessUnitsGrpcResponse> GetAllBuisnessUnitsGrpc(GetAllBusinessUnitsGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation($"GetAllBuisnessUnitsGrpc starting");
+            GetAllBusinessUnitsGrpcResponse response = await _RfqManagerService.GetAllBusinessUnitsGrpc(request);
+            return response;
+        }
         public override Task<WhoAmIResponse> WhoAmI(Empty request, ServerCallContext context)
         {
             string user = Environment.UserName;

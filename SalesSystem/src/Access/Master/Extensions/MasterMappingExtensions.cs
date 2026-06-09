@@ -368,10 +368,10 @@
 
             data.TrafficSummary = entity.TrafficSummary;
 
-            if (entity.HEAT_SITE_ID.HasValue)
-            {
-                data.HEATSITEID = entity.HEAT_SITE_ID.Value;
-            }
+            //if (entity.HEAT_SITE_ID.HasValue)
+            //{
+            //    data.HEATSITEID = entity.HEAT_SITE_ID.Value;
+            //}
 
             return data;
         }

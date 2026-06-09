@@ -1,4 +1,6 @@
-﻿namespace RfqModule.Extentions
+﻿using Master.Data.Model;
+
+namespace RfqModule.Extentions
 {
     public static class RfqModuleMapping
     {
@@ -74,15 +76,15 @@
             project.CustomerBusinessUnitGuid = rfqProjectGrpc.CustomerBusinessUnitGuid;
             project.CustomerLocationGuid = rfqProjectGrpc.CustomerLocationGuid;
             project.ProjectGuid = rfqProjectGrpc.ProjectGuid;
-            project.RfqReasonId = rfqProjectGrpc.RfqReasonId ??0;
+            project.RfqReasonId = rfqProjectGrpc.RfqReasonId ?? 0;
             project.RfqResponseDeadline = rfqProjectGrpc.RfqResponseDeadline;
             project.CarModelGuid = rfqProjectGrpc.CarModelGuid;
-            project.VehicleVolume = rfqProjectGrpc.VehicleVolume ??0;
+            project.VehicleVolume = rfqProjectGrpc.VehicleVolume ?? 0;
             project.CreatedDate = rfqProjectGrpc.CreatedDate;
             project.RfqReasonName = rfqProjectGrpc.RfqReasonName;
-            project.IsActive = rfqProjectGrpc.IsActive; 
+            project.IsActive = rfqProjectGrpc.IsActive;
             project.ProjectName = rfqProjectGrpc.ProjectName;
-            project.CustomerBusinessGroupCode= rfqProjectGrpc.CustomerBusinessGroupCode;
+            project.CustomerBusinessGroupCode = rfqProjectGrpc.CustomerBusinessGroupCode;
             project.CustomerLocationName = rfqProjectGrpc.CustomerLocationName;
             project.CarModelName = rfqProjectGrpc.CarModelName;
             return project;
@@ -93,9 +95,9 @@
             part.RowId = rfqPartGrpc.RowId;
             part.RfqId = rfqPartGrpc.RfqId;
             part.OriginalPartNumber = rfqPartGrpc.OriginalPartNumber;
-            part.OriginalPartNumberPrice = rfqPartGrpc.OriginalPartNumberPrice ??0;
+            part.OriginalPartNumberPrice = rfqPartGrpc.OriginalPartNumberPrice ?? 0;
             part.SwappedPartNumber = rfqPartGrpc.SwappedPartNumber;
-            part.SwappedPartNumberPrice = rfqPartGrpc.SwappedPartNumberPrice??0;
+            part.SwappedPartNumberPrice = rfqPartGrpc.SwappedPartNumberPrice ?? 0;
             part.PriceSource = rfqPartGrpc.PriceSource;
             part.IsExactMatch = rfqPartGrpc.IsExactMatch ?? false;
             part.IsSwapped = rfqPartGrpc.IsSwapped ?? false;
@@ -341,7 +343,7 @@
             return rfqNprRequest;
         }
 
-        public static NPR.NprApiDataGrpc ToNprApiAccessData(this NprApiDataGrpc nprApiData, string currentUser)
+        public static NPR.NprApiDataGrpc ToNprApiAccessData(this NprApiDataGrpc nprApiData)
         {
             NPR.NprApiDataGrpc apiData = new NPR.NprApiDataGrpc();
             apiData.Id = nprApiData.RfqNprRequest.Id;
@@ -349,7 +351,7 @@
             apiData.CustomerRfqNo = nprApiData.RfqNprRequest.CustomerRfqNo;
             apiData.CustomerCode = nprApiData.RfqNprRequest.CustomerCode;
             apiData.RequestID = nprApiData.RfqNprRequest.RequestID;
-            apiData.OriginatorName = currentUser;
+            apiData.OriginatorName = nprApiData.RfqNprRequest.OriginatorName;
             apiData.DeadlineDate = nprApiData.RfqNprRequest.DeadlineDate;
             apiData.ReasonDescription = nprApiData.RfqNprRequest.ReasonDescription;
             apiData.MaterialNumber = nprApiData.RfqNprRequest.MaterialNumber;
@@ -502,6 +504,130 @@
             supplierGroupGrpc.SyncToCPD = supplierGroup.SyncToCPD;
             supplierGroupGrpc.IsEOLRequired = supplierGroup.IsEOLRequired;
             return supplierGroupGrpc;
+        }
+
+        public static UnitOfMeasureGrpc ToUnitOfMeasureGrpc(this Master.UnitOfMeasureGrpc unitOfMeasure)
+        {
+            UnitOfMeasureGrpc unitOfMeasureGrpc = new UnitOfMeasureGrpc();
+            unitOfMeasureGrpc.Code = unitOfMeasure.Code;
+            unitOfMeasureGrpc.UnitOfMeasureDescription = unitOfMeasure.UnitOfMeasureDescription;
+            unitOfMeasureGrpc.IsActive = unitOfMeasure.IsActive;
+            unitOfMeasureGrpc.Id = unitOfMeasure.Id;
+            return unitOfMeasureGrpc;
+        }
+
+        public static BusinessUnitGrpc ToBusinessUnitGrpc(this Master.BusinessUnitGrpc entity)
+        {
+            BusinessUnitGrpc data = new BusinessUnitGrpc();
+
+            data.Id = entity.Id.ToString();
+            data.BusinessUnitCode = entity.BusinessUnitCode;
+            data.BusinessUnitName = entity.BusinessUnitName;
+            data.BusinessUnitTypeGuid = entity.BusinessUnitTypeGuid.ToString();
+            data.StreetNumber = entity.StreetNumber;
+            data.StreetName = entity.StreetName;
+            data.City = entity.City;
+            data.Region = entity.Region;
+            data.ZipCode = entity.ZipCode;
+            data.CountryGuid = entity.CountryGuid.ToString();
+            data.IsActive = entity.IsActive;
+            data.CreatedDate = entity.CreatedDate;
+            data.ModifiedDate = entity.ModifiedDate;
+            data.CreatedBy = entity.CreatedBy.ToString();
+            data.ModifiedBy = entity.ModifiedBy.ToString();
+            data.SyncToCPD = entity.SyncToCPD;
+            data.IsExternalWarehouse = entity.IsExternalWarehouse;
+            data.EWMSWarehouseCode = entity.EWMSWarehouseCode;
+            data.DisplayName = entity.DisplayName;
+            data.LegacyBusinessUnitCode = entity.LegacyBusinessUnitCode;
+            data.LegacyBusinessUnitName = entity.LegacyBusinessUnitName;
+            data.Company = entity.Company;
+            data.BusinessUnitDescription = entity.BusinessUnitDescription;
+            data.BusinessUnitContactName = entity.BusinessUnitContactName;
+            data.BusinessUnitContactNumber = entity.BusinessUnitContactNumber;
+            data.BusinessUnitAltContactNumber = entity.BusinessUnitAltContactNumber;
+            data.BusinessUnitMainPhoneNumber = entity.BusinessUnitMainPhoneNumber;
+            data.BusinessUnitManagerEmail = entity.BusinessUnitManagerEmail;
+
+            data.Router = entity.Router;
+            data.Subnet = entity.Subnet;
+
+            data.HostFrom = entity.HostFrom;
+
+            data.HostTo = entity.HostTo;
+            data.ITEngineer = entity.ITEngineer;
+            data.BackupOperator = entity.BackupOperator;
+            data.InterSeptor = entity.InterSeptor;
+            data.InterSeptorFirmware = entity.InterSeptorFirmware;
+            data.InterSeptorAlerts = entity.InterSeptorAlerts;
+
+            data.UseLocalSupport = entity.UseLocalSupport;
+            data.VideoConference = entity.VideoConference;
+            data.VideoConferenceIP = entity.VideoConferenceIP;
+            data.AccessCircuit = entity.AccessCircuit;
+
+            data.PERouter1 = entity.PERouter1;
+            data.PERouter2 = entity.PERouter2;
+            data.MRTG = entity.MRTG;
+
+            data.WiFi = entity.WiFi;
+            data.Printer = entity.Printer;
+            data.Copier = entity.Copier;
+            data.LocalIT = entity.LocalIT;
+            data.Wan = entity.Wan;
+
+            data.WanType = entity.WanType;
+            data.WanStatus = entity.WanStatus;
+            if (entity.WanDownCount.HasValue)
+            {
+                data.WanDownCount = entity.WanDownCount.Value;
+            }
+
+            data.WanHighRTT = entity.WanHighRTT;
+            data.LocalBackups = entity.LocalBackups;
+            data.MitelController = entity.MitelController;
+            data.MitelControllerBackup = entity.MitelControllerBackup;
+            data.Riverbed = entity.Riverbed;
+            data.VCenter = entity.VCenter;
+            data.CCTV = entity.CCTV;
+
+            data.DefaultFileServer = entity.DefaultFileServer;
+            data.DefaultMailServer = entity.DefaultMailServer;
+            data.DefaultCopier = entity.DefaultCopier;
+            data.DefaultWDSServer = entity.DefaultWDSServer;
+            data.DefaultDeployRoot = entity.DefaultDeployRoot;
+            data.DefaultHRManager = entity.DefaultHRManager;
+
+            data.PDR = entity.PDR;
+            data.MapUrl = entity.MapUrl; // 
+
+            data.Longtitude = entity.Longtitude;
+
+            data.Latitude = entity.Latitude;
+
+            data.What3Words = entity.What3Words;
+            data.NearestWeatherCity = entity.NearestWeatherCity;
+
+            data.WeatherTemperatureHigh = entity.WeatherTemperatureHigh;
+
+            data.WeatherTemperatureLow = entity.WeatherTemperatureLow;
+
+            data.WeatherUrl = entity.WeatherUrl; // 
+
+            data.WeatherMaxWindSpeed = entity.WeatherMaxWindSpeed;
+
+            if (entity.WeatherTemperatureThreshold.HasValue)
+            {
+                data.WeatherTemperatureThreshold = entity.WeatherTemperatureThreshold.Value;
+            }
+
+            entity.WeatherReportDate = entity.WeatherReportDate;
+
+            data.TrafficSummary = entity.TrafficSummary;
+
+            //entity.HEATSITEID = entity.HEATSITEID;
+
+            return data;
         }
     }
 }

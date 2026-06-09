@@ -476,7 +476,7 @@ message BusinessUnitGrpc {
     google.protobuf.Int32Value WeatherTemperatureThreshold = 76;
     google.protobuf.Timestamp WeatherReportDate = 77;
     google.protobuf.StringValue TrafficSummary = 78;
-    google.protobuf.Int32Value HEATSITEID = 79;
+    //google.protobuf.Int32Value HEATSITEID = 79;
 }
 
 message ListBusinessUnitGrpc {

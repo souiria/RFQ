@@ -556,5 +556,111 @@
             return uxModel;
         }
         #endregion
+
+        #region UnitOfMeasure
+        public static UnitOfMeasureUxModel? ToUx(this UnitOfMeasureGrpc? unitOfMeasure)
+        {
+            if (unitOfMeasure == null)
+            {
+                return null;
+            }
+
+            UnitOfMeasureUxModel uxModel = new UnitOfMeasureUxModel();
+            uxModel.UnitOfMeasureDescription = unitOfMeasure.UnitOfMeasureDescription;
+            uxModel.Code = unitOfMeasure.Code;
+            uxModel.IsActive = unitOfMeasure.IsActive;
+            uxModel.Id = Guid.TryParse(unitOfMeasure.Id, out Guid id) ? id : Guid.Empty;
+            return uxModel;
+        }
+        public static BusinessUnitUxModel? ToUx(this BusinessUnitGrpc businessUnit)
+        {
+            if (businessUnit == null)
+            {
+                return null;
+            }
+
+            BusinessUnitUxModel uxModel = new BusinessUnitUxModel();
+            uxModel.BusinessUnitCode = businessUnit.BusinessUnitCode;
+            uxModel.BusinessUnitName = businessUnit.BusinessUnitName;
+            uxModel.BusinessUnitTypeGuid = Guid.TryParse(businessUnit.BusinessUnitTypeGuid, out Guid businessUnitTypeGuid) ? businessUnitTypeGuid : (Guid?)null;
+            uxModel.StreetNumber = businessUnit.StreetNumber;
+            uxModel.StreetName = businessUnit.StreetName;
+            uxModel.City = businessUnit.City;
+            uxModel.Region = businessUnit.Region;
+            uxModel.ZipCode = businessUnit.ZipCode;
+            uxModel.CountryGuid = Guid.TryParse(businessUnit.CountryGuid, out Guid countryGuid) ? countryGuid : (Guid?)null;
+            uxModel.IsActive = businessUnit.IsActive;
+            uxModel.Id = Guid.TryParse(businessUnit.Id, out Guid id) ? id : (Guid?)null;
+            uxModel.CreatedDate = businessUnit.CreatedDate is null ? null : businessUnit.CreatedDate.ToDateTime();
+            uxModel.ModifiedDate = businessUnit.ModifiedDate is null ? null : businessUnit.ModifiedDate.ToDateTime();
+            uxModel.CreatedBy = Guid.TryParse(businessUnit.CreatedBy, out Guid createdBy) ? createdBy : (Guid?)null;
+            uxModel.ModifiedBy = Guid.TryParse(businessUnit.ModifiedBy, out Guid modifiedBy) ? modifiedBy : (Guid?)null;
+            uxModel.SyncToCPD = businessUnit.SyncToCPD.HasValue ? (short?)businessUnit.SyncToCPD.Value : null;
+            uxModel.IsExternalWarehouse = businessUnit.IsExternalWarehouse;
+            uxModel.EWMSWarehouseCode = businessUnit.EWMSWarehouseCode;
+            uxModel.DisplayName = businessUnit.DisplayName;
+            uxModel.LegacyBusinessUnitCode = businessUnit.LegacyBusinessUnitCode;
+            uxModel.LegacyBusinessUnitName = businessUnit.LegacyBusinessUnitName;
+            uxModel.Company = businessUnit.Company;
+            uxModel.BusinessUnitDescription = businessUnit.BusinessUnitDescription;
+            uxModel.BusinessUnitContactName = businessUnit.BusinessUnitContactName;
+            uxModel.BusinessUnitContactNumber = businessUnit.BusinessUnitContactNumber;
+            uxModel.BusinessUnitAltContactNumber = businessUnit.BusinessUnitAltContactNumber;
+            uxModel.BusinessUnitMainPhoneNumber = businessUnit.BusinessUnitMainPhoneNumber;
+            uxModel.BusinessUnitManagerEmail = businessUnit.BusinessUnitManagerEmail;
+            uxModel.Router = businessUnit.Router;
+            uxModel.Subnet = businessUnit.Subnet;
+            uxModel.HostFrom = businessUnit.HostFrom;
+            uxModel.HostTo = businessUnit.HostTo;
+            uxModel.ITEngineer = businessUnit.ITEngineer;
+            uxModel.BackupOperator = businessUnit.BackupOperator;
+            uxModel.InterSeptor = businessUnit.InterSeptor;
+            uxModel.InterSeptorFirmware = businessUnit.InterSeptorFirmware;
+            uxModel.InterSeptorAlerts = businessUnit.InterSeptorAlerts;
+            uxModel.UseLocalSupport = businessUnit.UseLocalSupport;
+            uxModel.VideoConference = businessUnit.VideoConference;
+            uxModel.VideoConferenceIP = businessUnit.VideoConferenceIP;
+            uxModel.AccessCircuit = businessUnit.AccessCircuit.HasValue ? (decimal?)businessUnit.AccessCircuit.Value : null;
+            uxModel.PERouter1 = businessUnit.PERouter1;
+            uxModel.PERouter2 = businessUnit.PERouter2;
+            uxModel.MRTG = businessUnit.MRTG;
+            uxModel.WiFi = businessUnit.WiFi;
+            uxModel.Printer = businessUnit.Printer;
+            uxModel.Copier = businessUnit.Copier;
+            uxModel.LocalIT = businessUnit.LocalIT;
+            uxModel.Wan = businessUnit.Wan;
+            uxModel.WanType = businessUnit.WanType;
+            uxModel.WanStatus = businessUnit.WanStatus;
+            uxModel.WanDownCount = businessUnit.WanDownCount;
+            uxModel.WanHighRTT = businessUnit.WanHighRTT;
+            uxModel.LocalBackups = businessUnit.LocalBackups;
+            uxModel.MitelController = businessUnit.MitelController;
+            uxModel.MitelControllerBackup = businessUnit.MitelControllerBackup;
+            uxModel.Riverbed = businessUnit.Riverbed;
+            uxModel.VCenter = businessUnit.VCenter;
+            uxModel.CCTV = businessUnit.CCTV;
+            uxModel.DefaultFileServer = businessUnit.DefaultFileServer;
+            uxModel.DefaultMailServer = businessUnit.DefaultMailServer;
+            uxModel.DefaultCopier = businessUnit.DefaultCopier;
+            uxModel.DefaultWDSServer = businessUnit.DefaultWDSServer;
+            uxModel.DefaultDeployRoot = businessUnit.DefaultDeployRoot;
+            uxModel.DefaultHRManager = businessUnit.DefaultHRManager;
+            uxModel.PDR = businessUnit.PDR;
+            uxModel.Mapurl = businessUnit.MapUrl;
+            uxModel.Longtitude = businessUnit.Longtitude;
+            uxModel.Latitude = businessUnit.Latitude;
+            uxModel.What3Words = businessUnit.What3Words;
+            uxModel.NearestWeatherCity = businessUnit.NearestWeatherCity;
+            uxModel.WeatherTemperatureHigh = businessUnit.WeatherTemperatureHigh;
+            uxModel.WeatherTemperatureLow = businessUnit.WeatherTemperatureLow;
+            uxModel.Weatherurl = businessUnit.WeatherUrl;
+            uxModel.WeatherMaxWindSpeed = businessUnit.WeatherMaxWindSpeed;
+            uxModel.WeatherTemperatureThreshold = businessUnit.WeatherTemperatureThreshold;
+            uxModel.WeatherReportDate = businessUnit.WeatherReportDate is null ? null : businessUnit.WeatherReportDate.ToDateTime();
+            uxModel.TrafficSummary = businessUnit.TrafficSummary;
+
+            return uxModel;
+        }
+        #endregion
     }
 }

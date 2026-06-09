@@ -231,6 +231,7 @@
             }
         }
         #endregion
+
         public async Task<GetRfqReasonsGrpcResponse> GetRfqReasonsGrpc(GetRfqReasonsGrpcRequest request)
         {
             try
@@ -262,6 +263,58 @@
             catch (Exception ex)
             {
                 _Logger.GenericLogError("Error fetching RFQ reasons from Master service", ex);
+                throw;
+            }
+        }
+
+        public async Task<GetAllUnitOfMeasuresResponse> GetAllUnitOfMeasuresGrpc(GetAllUnitOfMeasuresRequest request)
+        {
+            try
+            {
+                await Task.Delay(1);
+                GetAllUnitOfMeasuresResponse response = new GetAllUnitOfMeasuresResponse();
+                UnitOfMeasureGrpcRequest unitOfMeasureRequest = new UnitOfMeasureGrpcRequest();
+                unitOfMeasureRequest.Position = request.Position;
+                unitOfMeasureRequest.Takeamount = request.Take;
+                ListUnitOfMeasureGrpc allUnitOfMeasures =  await _MasterClient.GetUnitOfMeasureGrpcAsync(unitOfMeasureRequest);
+                
+                foreach(Master.UnitOfMeasureGrpc unitOfMeasure in allUnitOfMeasures.UnitOfMeasureGrpc)
+                {
+                    UnitOfMeasureGrpc uom = unitOfMeasure.ToUnitOfMeasureGrpc();
+                    response.UnitOfMeasureGrpc.Add(uom);
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError("Error fetching Unit of Measures from Master service", ex);
+                throw;
+            }
+        }
+
+        public async Task<GetAllBusinessUnitsGrpcResponse> GetAllBusinessUnitsGrpc(GetAllBusinessUnitsGrpcRequest request)
+        {
+            try
+            {
+                await Task.Delay(1);
+                GetAllBusinessUnitsGrpcResponse response = new GetAllBusinessUnitsGrpcResponse();
+                BusinessUnitGrpcRequest businessUnitsGrpcRequest = new BusinessUnitGrpcRequest();
+                businessUnitsGrpcRequest.Position = request.Position;
+                businessUnitsGrpcRequest.Takeamount = request.Take;
+                ListBusinessUnitGrpc allBusinessUnits = await _MasterClient.GetBusinessUnitGrpcAsync(businessUnitsGrpcRequest);
+
+                foreach (Master.BusinessUnitGrpc unitOfMeasure in allBusinessUnits.BusinessUnitGrpc)
+                {
+                    BusinessUnitGrpc businessUnit = unitOfMeasure.ToBusinessUnitGrpc();
+                    response.BusinessUnitGrpc.Add(businessUnit);
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError("Error fetching Unit of Measures from Master service", ex);
                 throw;
             }
         }
@@ -1483,26 +1536,25 @@
 
             return response;
         }
-        string GetCurrentUser()
-        {
+        //string GetCurrentUser()
+        //{
 
-            ClaimsPrincipal? user = _HttpContextAccessor.HttpContext?.User;
+        //    ClaimsPrincipal? user = _HttpContextAccessor.HttpContext?.User;
 
-            if (user == null || !user.Identity?.IsAuthenticated == true)
-            {
-                return "UNKNOWN";
-            }
+        //    if (user == null || !user.Identity?.IsAuthenticated == true)
+        //    {
+        //        return "UNKNOWN";
+        //    }
 
-            return user.FindFirst(ClaimTypes.Name)?.Value
-                ?? user.FindFirst("preferred_username")?.Value
-                ?? user.FindFirst("email")?.Value
-                ?? "UNKNOWN";
+        //    return user.FindFirst(ClaimTypes.Name)?.Value
+        //        ?? user.FindFirst("preferred_username")?.Value
+        //        ?? user.FindFirst("email")?.Value
+        //        ?? "UNKNOWN";
 
-        }
+        //}
         public async Task<CreateNprGrpcResponse> CreateNprGrpc (CreateNprGrpcRequest request)
         {
             await Task.Delay(0);
-            string currentUser = GetCurrentUser();
             CreateNprGrpcResponse response = new CreateNprGrpcResponse();
             // ValidateNprRequestRequest validateRequest = new ValidateNprRequestRequest();
             List<NPR.NprApiDataGrpc> accessDataList = new List<NPR.NprApiDataGrpc>();
@@ -1524,7 +1576,7 @@
             foreach (Rfq.RfqNprRequestGrpc validRequest in rfqNprRequestList) //validRequests)
             {
                 nprApiDataGrpc.RfqNprRequest = validRequest.ToRfqNprRequest();
-                NPR.NprApiDataGrpc nprAccessData = nprApiDataGrpc.ToNprApiAccessData(currentUser);
+                NPR.NprApiDataGrpc nprAccessData = nprApiDataGrpc.ToNprApiAccessData();
                 accessDataList.Add(nprAccessData);
             }
 
