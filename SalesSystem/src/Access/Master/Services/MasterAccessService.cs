@@ -1,6 +1,4 @@
-﻿using Google.Protobuf;
-
-namespace Master.Services
+﻿namespace Master.Services
 {
     /// <summary>
     /// This class is used to make calls to the database queries and to hold the data dictionaries.

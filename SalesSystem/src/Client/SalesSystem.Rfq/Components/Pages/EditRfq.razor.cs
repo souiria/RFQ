@@ -1,6 +1,4 @@
-﻿using Azure.Core;
-
-namespace SalesSystem.Rfq.Components.Pages
+﻿namespace SalesSystem.Rfq.Components.Pages
 {
     public partial class EditRfq : IDisposable
     {

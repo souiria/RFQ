@@ -1,6 +1,4 @@
-﻿using Master.Data.Model;
-
-namespace RfqModule.Extentions
+﻿namespace RfqModule.Extentions
 {
     public static class RfqModuleMapping
     {

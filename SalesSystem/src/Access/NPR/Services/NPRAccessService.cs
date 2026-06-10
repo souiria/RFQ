@@ -1,6 +1,4 @@
-﻿using Azure;
-
-namespace NPR.Services
+﻿namespace NPR.Services
 {
     public sealed class NPRAccessService : INPRAccessService
     {

@@ -102,7 +102,15 @@
                                Placeholder="Please Select"
                                Disabled="_UploadedSuccessfully"
                                AdornmentIcon="@Icons.Material.Filled.RequestQuote"
-                               AdornmentColor="Color.Primary">
+                               AdornmentColor="Color.Primary"
+                               OnOpen="@(() => _IsQuotationOpen = true)"
+                               OnClose="@(() => _IsQuotationOpen = false)">
+                        @if (_IsQuotationOpen)
+                        {
+                            <MudDivider Class="my-2" />
+                            <MudText Typo="Typo.caption" Class="px-4 pt-2 mt-2 mud-text-secondary">Temp Values</MudText>
+                            <MudDivider Class="my-2" />
+                        }
                         @foreach (string quotationNumber in RfqUxClientService.QuotationNumbers)
                         {
                             <MudSelectItem Value="@quotationNumber">@quotationNumber</MudSelectItem>
