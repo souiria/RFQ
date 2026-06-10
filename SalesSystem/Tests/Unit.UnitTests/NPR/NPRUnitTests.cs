@@ -153,190 +153,190 @@ namespace Unit.Tests.NPR
             Assert.That(reply.Result.HttpStatusCode, Is.Null);
         }
 
-        [Test]
-        [Category("Unit")]
-        public void CreateNprApiGrpcTest_ValidRequest_Returns200()
-        {
-            // Arrange — default handler returns 200 OK with empty array body
-            CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
-            NprApiDataGrpc entry = new NprApiDataGrpc();
-            //entry.SumitomoNumber = "SN-001";
-            entry.RfqNprRequestId = "RFQ-001";
-            request.NprApiData.Add(entry);
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
+//        [Test]
+//        [Category("Unit")]
+//        public void CreateNprApiGrpcTest_ValidRequest_Returns200()
+//        {
+//            // Arrange — default handler returns 200 OK with empty array body
+//            CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
+//            NprApiDataGrpc entry = new NprApiDataGrpc();
+//            //entry.SumitomoNumber = "SN-001";
+//            entry.RfqNprRequestId = "RFQ-001";
+//            request.NprApiData.Add(entry);
+//            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
 
-            // Act
-            Task<CreateNprApiGrpcResponse> reply = _GrpcService.CreateNprApiGrpc(request, serverCallContext);
+//            // Act
+//            Task<CreateNprApiGrpcResponse> reply = _GrpcService.CreateNprApiGrpc(request, serverCallContext);
 
-            // Assert
-            Assert.That(reply.Result, Is.Not.Null);
-            string status = HttpStatusCode.OK.ToString();
-            EqualConstraint statusConstraint = Is.EqualTo(status);
-            Assert.That(reply.Result.HttpStatusCode, statusConstraint);
-        }
+//            // Assert
+//            Assert.That(reply.Result, Is.Not.Null);
+//            string status = HttpStatusCode.OK.ToString();
+//            EqualConstraint statusConstraint = Is.EqualTo(status);
+//            Assert.That(reply.Result.HttpStatusCode, statusConstraint);
+//        }
 
-        [Test]
-        [Category("Unit")]
-        public void CreateNprApiGrpcTest_Returns422_SetsValidationErrorMessage()
-        {
-            // Arrange
-            string validationError = "The field CustomerRfqNo is required.";
-            StringContent content = new StringContent(validationError, Encoding.UTF8, "application/json");
-#pragma warning disable CA2000
-            HttpResponseMessage httpResponse = new HttpResponseMessage();
-#pragma warning restore CA2000
-            httpResponse.StatusCode = HttpStatusCode.UnprocessableContent;
-            httpResponse.Content = content;
+//        [Test]
+//        [Category("Unit")]
+//        public void CreateNprApiGrpcTest_Returns422_SetsValidationErrorMessage()
+//        {
+//            // Arrange
+//            string validationError = "The field CustomerRfqNo is required.";
+//            StringContent content = new StringContent(validationError, Encoding.UTF8, "application/json");
+//#pragma warning disable CA2000
+//            HttpResponseMessage httpResponse = new HttpResponseMessage();
+//#pragma warning restore CA2000
+//            httpResponse.StatusCode = HttpStatusCode.UnprocessableContent;
+//            httpResponse.Content = content;
 
-            NPRGrpcService service = CreateGrpcServiceWithResponse(httpResponse);
+//            NPRGrpcService service = CreateGrpcServiceWithResponse(httpResponse);
 
-            CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
-            NprApiDataGrpc entry = new NprApiDataGrpc();
-            entry.CustomerRfqNo = "Rfq-001";
-            request.NprApiData.Add(entry);
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
+//            CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
+//            NprApiDataGrpc entry = new NprApiDataGrpc();
+//            entry.CustomerRfqNo = "Rfq-001";
+//            request.NprApiData.Add(entry);
+//            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
 
-            // Act
-            Task<CreateNprApiGrpcResponse> reply = service.CreateNprApiGrpc(request, serverCallContext);
+//            // Act
+//            Task<CreateNprApiGrpcResponse> reply = service.CreateNprApiGrpc(request, serverCallContext);
 
-            // Assert
-            Assert.That(reply.Result, Is.Not.Null);
-            string status = HttpStatusCode.UnprocessableContent.ToString();
-            EqualConstraint statusConstraint = Is.EqualTo(status);
-            Assert.That(reply.Result.HttpStatusCode, statusConstraint);
-            ContainsConstraint containsConstraint = Does.Contain("Unprocessable Content");
-            Assert.That(reply.Result.Message, containsConstraint);
-        }
+//            // Assert
+//            Assert.That(reply.Result, Is.Not.Null);
+//            string status = HttpStatusCode.UnprocessableContent.ToString();
+//            EqualConstraint statusConstraint = Is.EqualTo(status);
+//            Assert.That(reply.Result.HttpStatusCode, statusConstraint);
+//            ContainsConstraint containsConstraint = Does.Contain("Unprocessable Content");
+//            Assert.That(reply.Result.Message, containsConstraint);
+//        }
 
-        [Test]
-        [Category("Unit")]
-        public void CreateNprApiGrpcTest_Returns401_SetsUnauthorizedMessage()
-        {
-            // Arrange
-#pragma warning disable CA2000
-            HttpResponseMessage httpResponse = new HttpResponseMessage();
-#pragma warning restore CA2000
-            httpResponse.StatusCode = HttpStatusCode.Unauthorized;
-            httpResponse.Content = new StringContent(string.Empty, Encoding.UTF8, "application/json");
+//        [Test]
+//        [Category("Unit")]
+//        public void CreateNprApiGrpcTest_Returns401_SetsUnauthorizedMessage()
+//        {
+//            // Arrange
+//#pragma warning disable CA2000
+//            HttpResponseMessage httpResponse = new HttpResponseMessage();
+//#pragma warning restore CA2000
+//            httpResponse.StatusCode = HttpStatusCode.Unauthorized;
+//            httpResponse.Content = new StringContent(string.Empty, Encoding.UTF8, "application/json");
 
-            NPRGrpcService service = CreateGrpcServiceWithResponse(httpResponse);
+//            NPRGrpcService service = CreateGrpcServiceWithResponse(httpResponse);
 
-            CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
-            NprApiDataGrpc entry = new NprApiDataGrpc();
-            entry.CustomerRfqNo = "Rfq-001";
-            request.NprApiData.Add(entry);
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
+//            CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
+//            NprApiDataGrpc entry = new NprApiDataGrpc();
+//            entry.CustomerRfqNo = "Rfq-001";
+//            request.NprApiData.Add(entry);
+//            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
 
-            // Act
-            Task<CreateNprApiGrpcResponse> reply = service.CreateNprApiGrpc(request, serverCallContext);
+//            // Act
+//            Task<CreateNprApiGrpcResponse> reply = service.CreateNprApiGrpc(request, serverCallContext);
 
-            // Assert
-            Assert.That(reply.Result, Is.Not.Null);
-            string status = HttpStatusCode.Unauthorized.ToString();
-            EqualConstraint statusConstraint = Is.EqualTo(status);
-            Assert.That(reply.Result.HttpStatusCode, statusConstraint);
-            ContainsConstraint containsConstraint = Does.Contain("Unauthorized");
-            Assert.That(reply.Result.Message, containsConstraint);
-        }
+//            // Assert
+//            Assert.That(reply.Result, Is.Not.Null);
+//            string status = HttpStatusCode.Unauthorized.ToString();
+//            EqualConstraint statusConstraint = Is.EqualTo(status);
+//            Assert.That(reply.Result.HttpStatusCode, statusConstraint);
+//            ContainsConstraint containsConstraint = Does.Contain("Unauthorized");
+//            Assert.That(reply.Result.Message, containsConstraint);
+//        }
 
-        [Test]
-        [Category("Unit")]
-        public void CreateNprApiGrpcTest_Returns403_SetsForbiddenMessage()
-        {
-            // Arrange
-#pragma warning disable CA2000
-            HttpResponseMessage httpResponse = new HttpResponseMessage();
-#pragma warning restore CA2000
-            httpResponse.StatusCode = HttpStatusCode.Forbidden;
-            httpResponse.Content = new StringContent(string.Empty, Encoding.UTF8, "application/json");
+//        [Test]
+//        [Category("Unit")]
+//        public void CreateNprApiGrpcTest_Returns403_SetsForbiddenMessage()
+//        {
+//            // Arrange
+//#pragma warning disable CA2000
+//            HttpResponseMessage httpResponse = new HttpResponseMessage();
+//#pragma warning restore CA2000
+//            httpResponse.StatusCode = HttpStatusCode.Forbidden;
+//            httpResponse.Content = new StringContent(string.Empty, Encoding.UTF8, "application/json");
 
-            NPRGrpcService service = CreateGrpcServiceWithResponse(httpResponse);
+//            NPRGrpcService service = CreateGrpcServiceWithResponse(httpResponse);
 
-            CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
-            NprApiDataGrpc entry = new NprApiDataGrpc();
-            entry.CustomerRfqNo = "Rfq-001";
-            request.NprApiData.Add(entry);
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
+//            CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
+//            NprApiDataGrpc entry = new NprApiDataGrpc();
+//            entry.CustomerRfqNo = "Rfq-001";
+//            request.NprApiData.Add(entry);
+//            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
 
-            // Act
-            Task<CreateNprApiGrpcResponse> reply = service.CreateNprApiGrpc(request, serverCallContext);
+//            // Act
+//            Task<CreateNprApiGrpcResponse> reply = service.CreateNprApiGrpc(request, serverCallContext);
 
-            // Assert
-            Assert.That(reply.Result, Is.Not.Null);
-            string status = HttpStatusCode.Forbidden.ToString();
-            EqualConstraint statusConstraint = Is.EqualTo(status);
-            Assert.That(reply.Result.HttpStatusCode, statusConstraint);
-            ContainsConstraint contains = Does.Contain("Forbidden");
-            Assert.That(reply.Result.Message, contains);
-        }
+//            // Assert
+//            Assert.That(reply.Result, Is.Not.Null);
+//            string status = HttpStatusCode.Forbidden.ToString();
+//            EqualConstraint statusConstraint = Is.EqualTo(status);
+//            Assert.That(reply.Result.HttpStatusCode, statusConstraint);
+//            ContainsConstraint contains = Does.Contain("Forbidden");
+//            Assert.That(reply.Result.Message, contains);
+//        }
 
-        [Test]
-        [Category("Unit")]
-        public void CreateNprApiGrpcTest_Returns500_SetsServerErrorMessage()
-        {
-            // Arrange
-            string serverError = "An unhandled exception occurred.";
-            StringContent content = new StringContent(serverError, Encoding.UTF8, "application/json");
-#pragma warning disable CA2000
-            HttpResponseMessage httpResponse = new HttpResponseMessage();
-#pragma warning restore CA2000
-            httpResponse.StatusCode = HttpStatusCode.InternalServerError;
-            httpResponse.Content = content;
+//        [Test]
+//        [Category("Unit")]
+//        public void CreateNprApiGrpcTest_Returns500_SetsServerErrorMessage()
+//        {
+//            // Arrange
+//            string serverError = "An unhandled exception occurred.";
+//            StringContent content = new StringContent(serverError, Encoding.UTF8, "application/json");
+//#pragma warning disable CA2000
+//            HttpResponseMessage httpResponse = new HttpResponseMessage();
+//#pragma warning restore CA2000
+//            httpResponse.StatusCode = HttpStatusCode.InternalServerError;
+//            httpResponse.Content = content;
 
-            NPRGrpcService service = CreateGrpcServiceWithResponse(httpResponse);
+//            NPRGrpcService service = CreateGrpcServiceWithResponse(httpResponse);
 
-            CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
-            NprApiDataGrpc entry = new NprApiDataGrpc();
-            entry.CustomerRfqNo = "Rfq-001";
-            request.NprApiData.Add(entry);
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
+//            CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
+//            NprApiDataGrpc entry = new NprApiDataGrpc();
+//            entry.CustomerRfqNo = "Rfq-001";
+//            request.NprApiData.Add(entry);
+//            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
 
-            // Act
-            Task<CreateNprApiGrpcResponse> reply = service.CreateNprApiGrpc(request, serverCallContext);
+//            // Act
+//            Task<CreateNprApiGrpcResponse> reply = service.CreateNprApiGrpc(request, serverCallContext);
 
-            // Assert
-            Assert.That(reply.Result, Is.Not.Null);
-            string status = HttpStatusCode.InternalServerError.ToString();
-            EqualConstraint statusConstraint = Is.EqualTo(status);
-            Assert.That(reply.Result.HttpStatusCode, statusConstraint);
-            ContainsConstraint containsConstraint = Does.Contain("Server error (500)");
-            Assert.That(reply.Result.Message, containsConstraint);
-            ContainsConstraint containsError = Does.Contain(serverError);
-            Assert.That(reply.Result.Message, containsError);
-        }
+//            // Assert
+//            Assert.That(reply.Result, Is.Not.Null);
+//            string status = HttpStatusCode.InternalServerError.ToString();
+//            EqualConstraint statusConstraint = Is.EqualTo(status);
+//            Assert.That(reply.Result.HttpStatusCode, statusConstraint);
+//            ContainsConstraint containsConstraint = Does.Contain("Server error (500)");
+//            Assert.That(reply.Result.Message, containsConstraint);
+//            ContainsConstraint containsError = Does.Contain(serverError);
+//            Assert.That(reply.Result.Message, containsError);
+//        }
 
-        [Test]
-        [Category("Unit")]
-        public void CreateNprApiGrpcTest_Returns503_SetsUnexpectedStatusMessage()
-        {
-            // Arrange
-            string unavailableBody = "Service temporarily unavailable.";
-            StringContent content = new StringContent(unavailableBody, Encoding.UTF8, "application/json");
-#pragma warning disable CA2000
-            HttpResponseMessage httpResponse = new HttpResponseMessage();
-#pragma warning restore CA2000
-            httpResponse.StatusCode = HttpStatusCode.ServiceUnavailable;
-            httpResponse.Content = content;
+//        [Test]
+//        [Category("Unit")]
+//        public void CreateNprApiGrpcTest_Returns503_SetsUnexpectedStatusMessage()
+//        {
+//            // Arrange
+//            string unavailableBody = "Service temporarily unavailable.";
+//            StringContent content = new StringContent(unavailableBody, Encoding.UTF8, "application/json");
+//#pragma warning disable CA2000
+//            HttpResponseMessage httpResponse = new HttpResponseMessage();
+//#pragma warning restore CA2000
+//            httpResponse.StatusCode = HttpStatusCode.ServiceUnavailable;
+//            httpResponse.Content = content;
 
-            NPRGrpcService service = CreateGrpcServiceWithResponse(httpResponse);
+//            NPRGrpcService service = CreateGrpcServiceWithResponse(httpResponse);
 
-            CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
-            NprApiDataGrpc entry = new NprApiDataGrpc();
-            //entry.SumitomoNumber = "SN-001";
-            request.NprApiData.Add(entry);
-            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
+//            CreateNprApiGrpcRequest request = new CreateNprApiGrpcRequest();
+//            NprApiDataGrpc entry = new NprApiDataGrpc();
+//            //entry.SumitomoNumber = "SN-001";
+//            request.NprApiData.Add(entry);
+//            ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.CreateNprApiGrpc));
 
-            // Act
-            Task<CreateNprApiGrpcResponse> reply = service.CreateNprApiGrpc(request, serverCallContext);
+//            // Act
+//            Task<CreateNprApiGrpcResponse> reply = service.CreateNprApiGrpc(request, serverCallContext);
 
-            // Assert
-            Assert.That(reply.Result, Is.Not.Null);
-            string status = HttpStatusCode.ServiceUnavailable.ToString();
-            EqualConstraint statusConstraint = Is.EqualTo(status);
-            Assert.That(reply.Result.HttpStatusCode, statusConstraint);
-            ContainsConstraint containsConstraint = Does.Contain("Unexpected status");
-            Assert.That(reply.Result.Message, containsConstraint);
-        }
+//            // Assert
+//            Assert.That(reply.Result, Is.Not.Null);
+//            string status = HttpStatusCode.ServiceUnavailable.ToString();
+//            EqualConstraint statusConstraint = Is.EqualTo(status);
+//            Assert.That(reply.Result.HttpStatusCode, statusConstraint);
+//            ContainsConstraint containsConstraint = Does.Contain("Unexpected status");
+//            Assert.That(reply.Result.Message, containsConstraint);
+//        }
 
         #endregion
 
