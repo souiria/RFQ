@@ -9,10 +9,16 @@ namespace SalesSystem.Rfq.Components.Pages.Dialogs
         // Reference to autocomplete for reset
         MudAutocomplete<SupplierGroupUxModel>? _SupplierGroupAutocomplete;
         MudAutocomplete<SupplierUxModel>? _SupplierAutocomplete;
+        MudAutocomplete<RfqReasonGrpc>? _ReasonAutocomplete;
+        MudAutocomplete<UnitOfMeasureUxModel>? _UnitOfMeasureAutocomplete;
+        MudAutocomplete<BusinessUnitUxModel>? _BusinessUnitAutocomplete;
 
         // Simplified supplier group selection
         SupplierGroupUxModel? _SelectedSupplierGroup;
         SupplierUxModel? _SelectedSupplier;
+        RfqReasonGrpc? _SelectedReason;
+        UnitOfMeasureUxModel? _SelectedUnitOfMeasure;
+        BusinessUnitUxModel? _SelectedBusinessUnit;
 
         SupplierGroupUxModel? SelectedSupplierGroup 
         { 
@@ -41,6 +47,45 @@ namespace SalesSystem.Rfq.Components.Pages.Dialogs
             }
         }
 
+        RfqReasonGrpc? SelectedReason 
+        { 
+            get => _SelectedReason;
+            set
+            {
+                if (_SelectedReason != value)
+                {
+                    _SelectedReason = value;
+                    NprRequest.ReasonDescription = value?.RfqReasonTitle;
+                }
+            }
+        }
+
+        UnitOfMeasureUxModel? SelectedUnitOfMeasure 
+        { 
+            get => _SelectedUnitOfMeasure;
+            set
+            {
+                if (_SelectedUnitOfMeasure != value)
+                {
+                    _SelectedUnitOfMeasure = value;
+                    NprRequest.BOMUnitOfMeasurement = value?.Code;
+                }
+            }
+        }
+
+        BusinessUnitUxModel? SelectedBusinessUnit
+        {
+            get => _SelectedBusinessUnit;
+            set
+            {
+                if (_SelectedBusinessUnit != value)
+                {
+                    _SelectedBusinessUnit = value;
+                    NprRequest.ManufacturingSite = value?.LegacyBusinessUnitCode;
+                }
+            }
+        }
+
         [CascadingParameter]
         public IMudDialogInstance MudDialog
         { get; set; } = null!;
@@ -56,11 +101,17 @@ namespace SalesSystem.Rfq.Components.Pages.Dialogs
         // List to cache supplier groups
         List<SupplierGroupUxModel> _SupplierGroups;
         List<SupplierUxModel> _Suppliers;
+        List<RfqReasonGrpc> _Reasons;
+        List<UnitOfMeasureUxModel> _UnitOfMeasures;
+        List<BusinessUnitUxModel> _BusinessUnits;
 
         public NprRequestEditDialog()
         {
             _SupplierGroups = new List<SupplierGroupUxModel>();
             _Suppliers = new List<SupplierUxModel>();
+            _Reasons = new List<RfqReasonGrpc>();
+            _UnitOfMeasures = new List<UnitOfMeasureUxModel>();
+            _BusinessUnits = new List<BusinessUnitUxModel>();
         }
 
         protected override async Task OnInitializedAsync()
@@ -70,6 +121,9 @@ namespace SalesSystem.Rfq.Components.Pages.Dialogs
             // Load supplier groups
             await LoadSupplierGroups();
             await LoadSuppliers();
+            GetReasons();
+            await LoadUnitOfMeasures();
+            await LoadBusinessUnits();
 
             // If NprRequest already has a SupplierGroup, set the selected value
             if (!string.IsNullOrEmpty(NprRequest.SupplierGroup))
@@ -82,6 +136,24 @@ namespace SalesSystem.Rfq.Components.Pages.Dialogs
             {
                 SelectedSupplier = _Suppliers
                     .FirstOrDefault(sg => sg.SupplierName == NprRequest.SuggestedManufacturerGroup);
+            }
+
+            if(!string.IsNullOrEmpty(NprRequest.ReasonDescription))
+            {
+                SelectedReason = _Reasons
+                    .FirstOrDefault(r => r.RfqReasonTitle == NprRequest.ReasonDescription);
+            }
+
+            if(!string.IsNullOrEmpty(NprRequest.BOMUnitOfMeasurement))
+            {
+                SelectedUnitOfMeasure = _UnitOfMeasures
+                    .FirstOrDefault(u => u.Code == NprRequest.BOMUnitOfMeasurement);
+            }
+
+            if (!string.IsNullOrEmpty(NprRequest.ManufacturingSite))
+            {
+                SelectedBusinessUnit = _BusinessUnits
+                    .FirstOrDefault(b => b.LegacyBusinessUnitCode == NprRequest.ManufacturingSite);
             }
         }
 
@@ -158,6 +230,102 @@ namespace SalesSystem.Rfq.Components.Pages.Dialogs
             return filteredGroups;
         }
 
+        void GetReasons()
+        {
+            _Reasons = RfqClientService.Reasons.ToList();
+        }
+
+        async Task<IEnumerable<RfqReasonGrpc>> SearchReasons(string searchText, CancellationToken token)
+        {
+            await Task.Delay(0, token);
+            // If search text is empty, return all
+            if (string.IsNullOrWhiteSpace(searchText))
+            {
+                List<RfqReasonGrpc> reasons = _Reasons.Take(50).ToList();
+                return reasons;
+            }
+
+            List<RfqReasonGrpc> filteredReasons = _Reasons
+                .Where(r => r.RfqReasonTitle?.Contains(searchText, StringComparison.OrdinalIgnoreCase) == true)
+                .Take(50)
+                .ToList();
+            return filteredReasons;
+        }
+
+        async Task LoadUnitOfMeasures()
+        {
+            try
+            {
+                // Assuming you have a method in RfqClientService to get unit of measures
+                _UnitOfMeasures = await RfqClientService.GetAllUnitOfMeasuresAsync();
+            }
+            catch (HttpRequestException ex)
+            {
+                // Handle HTTP request errors
+                Console.WriteLine($"HTTP error loading units of measure: {ex.Message}");
+                _UnitOfMeasures = new List<UnitOfMeasureUxModel>();
+            }
+            catch (OperationCanceledException ex)
+            {
+                // Handle cancellation
+                Console.WriteLine($"Operation canceled loading units of measure: {ex.Message}");
+                _UnitOfMeasures = new List<UnitOfMeasureUxModel>();
+            }
+        }
+
+        async Task<IEnumerable<UnitOfMeasureUxModel>> SearchUnitOfMeasure(string searchText, CancellationToken token)
+        {
+            await Task.Delay(0, token);
+            if (string.IsNullOrWhiteSpace(searchText))
+            {
+                List<UnitOfMeasureUxModel> unitOfMeasures = _UnitOfMeasures.Take(50).ToList();
+                return unitOfMeasures;
+            }
+
+            List<UnitOfMeasureUxModel> filteredUnitOfMeasures = _UnitOfMeasures
+                .Where(uom => uom.Code?.Contains(searchText, StringComparison.OrdinalIgnoreCase) == true)
+                .Take(50)
+                .ToList();
+            return filteredUnitOfMeasures;
+        }
+
+        async Task LoadBusinessUnits()
+        {
+            try
+            {
+                // Assuming you have a method in RfqClientService to get unit of measures
+                _BusinessUnits = await RfqClientService.GetAllBusinessunitsAsync();
+            }
+            catch (HttpRequestException ex)
+            {
+                // Handle HTTP request errors
+                Console.WriteLine($"HTTP error loading units of measure: {ex.Message}");
+                _BusinessUnits = new List<BusinessUnitUxModel>();
+            }
+            catch (OperationCanceledException ex)
+            {
+                // Handle cancellation
+                Console.WriteLine($"Operation canceled loading units of measure: {ex.Message}");
+                _BusinessUnits = new List<BusinessUnitUxModel>();
+            }
+        }
+
+        async Task<IEnumerable<BusinessUnitUxModel>> SearchBusinessUnit(string searchText, CancellationToken token)
+        {
+            await Task.Delay(0, token);
+            if (string.IsNullOrWhiteSpace(searchText))
+            {
+                List<BusinessUnitUxModel> businessUnits = _BusinessUnits.Take(50).ToList();
+                return businessUnits;
+            }
+
+            List<BusinessUnitUxModel> filteredBusinessUnit = _BusinessUnits
+                .Where(b => b.LegacyBusinessUnitCode?.Contains(searchText, StringComparison.OrdinalIgnoreCase) == true)
+                .Take(50)
+                .ToList();
+            return filteredBusinessUnit;
+        }
+
         void Cancel()
         {
             MudDialog.Cancel();
@@ -168,12 +336,23 @@ namespace SalesSystem.Rfq.Components.Pages.Dialogs
             if (SelectedSupplierGroup != null)
             {
                 NprRequest.SupplierGroup = SelectedSupplierGroup.SupplierGroupName;
+                NprRequest.SuggestedManufacturerGroup = SelectedSupplierGroup.SupplierGroupName;
+            }
+            
+            if(SelectedReason != null)
+            {
+                NprRequest.ReasonDescription = SelectedReason.RfqReasonTitle;
             }
 
-            if (SelectedSupplier != null)
+            if (SelectedBusinessUnit != null)
             {
-                NprRequest.SuggestedManufacturerGroup = SelectedSupplier.SupplierName;
+                NprRequest.ManufacturingSite = SelectedBusinessUnit.LegacyBusinessUnitCode;
             }
+
+            if (SelectedUnitOfMeasure != null)
+            {
+                NprRequest.BOMUnitOfMeasurement = SelectedUnitOfMeasure.Code;
+            } 
 
             DialogResult result = DialogResult.Ok(NprRequest);
             MudDialog.Close(result);

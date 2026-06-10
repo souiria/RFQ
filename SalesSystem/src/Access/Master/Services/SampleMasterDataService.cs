@@ -2,6 +2,37 @@
 {
     public static class SampleMasterDataService
     {
+        #region UnitOfMeasure
+
+        public static ListUnitOfMeasureGrpc PopulateUnitOfMeasureGrpc()
+        {
+            ListUnitOfMeasureGrpc listUnitOfMeasureGrpc = new ListUnitOfMeasureGrpc();
+
+            for (int i = 0; i < 5; i++)
+            {
+                UnitOfMeasureGrpc unitOfMeasureGrpc = new UnitOfMeasureGrpc();
+
+                unitOfMeasureGrpc.Code = $"TestCode{i}".ToUpperInvariant();
+                unitOfMeasureGrpc.UnitOfMeasureDescription = $"TestDescription{i}".ToUpperInvariant();
+                unitOfMeasureGrpc.Id = Guid.NewGuid().ToString().ToUpperInvariant();
+                unitOfMeasureGrpc.IsActive = true;
+
+                listUnitOfMeasureGrpc.UnitOfMeasureGrpc.Add(unitOfMeasureGrpc);
+            }
+
+            UnitOfMeasureGrpc fixedUnitOfMeasureGrpc = new UnitOfMeasureGrpc();
+
+            fixedUnitOfMeasureGrpc.Code = "TestCode".ToUpperInvariant();
+            fixedUnitOfMeasureGrpc.UnitOfMeasureDescription = "TestDescription".ToUpperInvariant();
+            fixedUnitOfMeasureGrpc.Id = "ec44e5cd-5832-48dd-b5a3-440b5cb49451".ToUpperInvariant();
+            fixedUnitOfMeasureGrpc.IsActive = true;
+
+            listUnitOfMeasureGrpc.UnitOfMeasureGrpc.Add(fixedUnitOfMeasureGrpc);
+
+            return listUnitOfMeasureGrpc;
+        }
+
+        #endregion
 
         #region Currency
         public static ListCurrencyGrpc PopulateCurrencyGrpc()
@@ -319,6 +350,7 @@
             return suppplierGroupList;
         }
         #endregion
+
         #region Supplier
         public static ListSupplierGrpc PopulateSupplierGrpc()
         {
@@ -386,6 +418,97 @@
             suppplierGroupList.SupplierGrpc.Add(fixedSupplier);
             return suppplierGroupList;
         }
+        #endregion
+
+        #region BusinessUnit
+
+        public static ListBusinessUnitGrpc PopulateBusinessUnitGrpc()
+        {
+            ListBusinessUnitGrpc listBusinessUnitGrpc = new ListBusinessUnitGrpc();
+
+            for (int i = 0; i < 5; i++)
+            {
+                BusinessUnitGrpc businessUnitGrpc = new BusinessUnitGrpc();
+
+                businessUnitGrpc.BusinessUnitCode = $"BU{i}".ToUpperInvariant();
+                businessUnitGrpc.BusinessUnitName = $"TEST BUSINESS UNIT {i}".ToUpperInvariant();
+                businessUnitGrpc.Id = Guid.NewGuid().ToString().ToUpperInvariant();
+                businessUnitGrpc.IsActive = true;
+
+                businessUnitGrpc.City = $"CITY{i}".ToUpperInvariant();
+                businessUnitGrpc.Region = $"REGION{i}".ToUpperInvariant();
+                businessUnitGrpc.Company = "SEWS-E";
+                businessUnitGrpc.DisplayName = $"BU{i}";
+                businessUnitGrpc.LegacyBusinessUnitCode = $"BU{i}";
+                businessUnitGrpc.LegacyBusinessUnitName = $"TEST BUSINESS UNIT {i}".ToUpperInvariant();
+
+                businessUnitGrpc.BusinessUnitDescription = "CUSTOMER SUPPORT OFFICE";
+                businessUnitGrpc.BusinessUnitContactName = $"CONTACT{i}";
+                businessUnitGrpc.BusinessUnitContactNumber = $"+123456789{i}";
+                businessUnitGrpc.BusinessUnitManagerEmail = $"user{i}@test.com";
+
+                listBusinessUnitGrpc.BusinessUnitGrpc.Add(businessUnitGrpc);
+            }
+
+            BusinessUnitGrpc fixedBusinessUnitGrpc = new BusinessUnitGrpc();
+
+            fixedBusinessUnitGrpc.BusinessUnitCode = "UKYS";
+            fixedBusinessUnitGrpc.BusinessUnitName = "YSTRADGYNLAIS";
+            fixedBusinessUnitGrpc.Id = "9D21CDEE-D83F-4478-91ED-1F1A559EAF1E";
+            fixedBusinessUnitGrpc.IsActive = true;
+
+            fixedBusinessUnitGrpc.City = "Kenitra";
+            fixedBusinessUnitGrpc.Company = "SEWS-E";
+            fixedBusinessUnitGrpc.DisplayName = "YST";
+            fixedBusinessUnitGrpc.BusinessUnitDescription = "CUSTOMER SUPPORT OFFICE";
+
+            listBusinessUnitGrpc.BusinessUnitGrpc.Add(fixedBusinessUnitGrpc);
+
+            return listBusinessUnitGrpc;
+        }
+
+        #endregion
+
+        #region ProjectEngineeringAssociation
+
+        public static ListProjectEngineeringAssociationGrpc PopulateProjectEngineeringAssociationGrpc()
+        {
+            ListProjectEngineeringAssociationGrpc list = new ListProjectEngineeringAssociationGrpc();
+
+            for (int i = 0; i < 5; i++)
+            {
+                ProjectEngineeringAssociationGrpc item = new ProjectEngineeringAssociationGrpc();
+
+                item.Id = Guid.NewGuid().ToString().ToUpperInvariant();
+                item.ProjectGuid = Guid.NewGuid().ToString().ToUpperInvariant();
+                item.CustomerGuid = Guid.NewGuid().ToString().ToUpperInvariant();
+
+                item.EngineeringADName = $"ENG{i}".ToUpperInvariant();
+                item.EngineeringFullName = $"ENGINEER {i}".ToUpperInvariant();
+                item.EmailAddress = $"engineer{i}@test.com";
+
+                item.IsActive = true;
+
+                list.ProjectEngineeringAssociationGrpc.Add(item);
+            }
+
+            ProjectEngineeringAssociationGrpc fixedItem = new ProjectEngineeringAssociationGrpc();
+
+            fixedItem.Id = "AA11BB22-CC33-DD44-EE55-FF6677889900";
+            fixedItem.ProjectGuid = "11111111-2222-3333-4444-555555555555";
+            fixedItem.CustomerGuid = "99999999-8888-7777-6666-555555555555";
+
+            fixedItem.EngineeringADName = "ENGFIXED";
+            fixedItem.EngineeringFullName = "FIXED ENGINEER";
+            fixedItem.EmailAddress = "fixed.engineer@test.com";
+
+            fixedItem.IsActive = true;
+
+            list.ProjectEngineeringAssociationGrpc.Add(fixedItem);
+
+            return list;
+        }
+
         #endregion
     }
 }

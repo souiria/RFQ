@@ -21,6 +21,8 @@ namespace SalesSystem.Rfq.Services
         List<string> _QuotationNumbers;
         List<SupplierUxModel> _Suppliers;
         List<SupplierGroupUxModel> _SupplierGroups;
+        List<UnitOfMeasureUxModel> _UnitOfMeasures;
+        List<BusinessUnitUxModel> _BusinessUnits;
         // AlternativeParts
         List<AlternativePartUxModel> _AlternativeParts;
         int _AlternativePartsTake;
@@ -94,6 +96,8 @@ namespace SalesSystem.Rfq.Services
             _Suppliers = new();
             _SupplierGroups = new();
             _NprRequestsHasChanges = false;
+            _UnitOfMeasures = new();
+            _BusinessUnits = new();
 
             _Logger.GenericLogInformation($">>> RfqUxClientService was created with storage via GRPC endpoints");
         }
@@ -942,16 +946,56 @@ namespace SalesSystem.Rfq.Services
                 List<RfqNprRequestUxModel> updateList = new List<RfqNprRequestUxModel>();
                 List<RfqNprRequestUxModel> deleteList = new List<RfqNprRequestUxModel>();
 
+
                 foreach (RfqNprRequestUxModel model in requests)
                 {
+             
+                    ////  Log values BEFORE save
+                    //_Logger?.GenericLogInformation(
+                    //    "---------------------------------SaveNprRequestsToDatabaseAsync\n" +
+                    //    $"Id: {model.Id}\n" +
+                    //    $"CustomerRfqNo: {model.CustomerRfqNo}\n" +
+                    //    $"CustomerCode: {model.CustomerCode}\n" +
+                    //    $"RequestID: {model.RequestID}\n" +
+                    //    $"OriginatorName: {model.OriginatorName}\n" +
+                    //    $"DeadlineDate: {model.DeadlineDate}\n" +
+                    //    $"ReasonDescription: {model.ReasonDescription}\n" +
+                    //    $"MaterialNumber: {model.MaterialNumber}\n" +
+                    //    $"MaterialDescription: {model.MaterialDescription}\n" +
+                    //    $"CustomerPartNumber: {model.CustomerPartNumber}\n" +
+                    //    $"SupplierPartNumber: {model.SupplierPartNumber}\n" +
+                    //    $"BOMUnitOfMeasurement: {model.BOMUnitOfMeasurement}\n" +
+                    //    $"SupplierGroup: {model.SupplierGroup}\n" +
+                    //    $"SupplierDetailComments: {model.SupplierDetailComments}\n" +
+                    //    $"ProjectCode: {model.ProjectCode}\n" +
+                    //    $"QtyPerVehicle: {model.QtyPerVehicle}\n" +
+                    //    $"IsSampleDataRequired: {model.IsSampleDataRequired}\n" +
+                    //    $"SampleSiteDetails Count: {model.SampleSiteDetails.Count}\n" +
+                    //    $"NPRRaisedRemarks: {model.NPRRaisedRemarks}\n" +
+                    //    $"ManufacturingSite: {model.ManufacturingSite}\n" +
+                    //    $"IsCustomerNominatedSupplier: {model.IsCustomerNominatedSupplier}\n" +
+                    //    $"IsCustomerNominatedMaterial: {model.IsCustomerNominatedMaterial}\n" +
+                    //    $"SuggestedManufacturerGroup: {model.SuggestedManufacturerGroup}\n" +
+                    //    $"AssociatedParts: {model.AssociatedParts}\n" +
+                    //    $"NPRUploadSeqNo: {model.NPRUploadSeqNo}\n" +
+                    //    $"Created: {model.Created}\n" +
+                    //    $"Updated: {model.Updated}\n" +
+                    //    $"Status: {model.Status}\n" +
+                    //    $"UxStatus: {model.UxStatus}\n" +
+                    //    $"IsActive: {model.IsActive}\n" +
+                    //    $"IsValid: {model.IsValid}\n" +
+                    //    $"ErrorCount: {model.ErrorCount}\n" +
+                    //    $"Closed: {model.Closed}\n" +
+                    //    $"Reason: {model.Reason}\n" +
+                    //    "---------------------------------");
                     // Defensive: any malformed Id is an in-memory cache bug — skip & log
                     if (model.Id == Guid.Empty && model.UxStatus != UxObjectStatus.Created)
                     {
-                        _Logger?.GenericLogInformation(
+                                               _Logger?.GenericLogInformation(
                             $"SaveNprRequestsToDatabaseAsync - Skipping item with empty Id: " +
                             $"RequestID='{model.RequestID}', CustomerRfqNo='{model.CustomerRfqNo}', " +
                             $"UxStatus={model.UxStatus}");
-                        continue;
+                       continue;
                     }
 
                     switch (model.UxStatus)
@@ -1580,6 +1624,91 @@ namespace SalesSystem.Rfq.Services
             }
         }
         #endregion
+
+        #region UnitOfMeasures
+        public async Task<List<UnitOfMeasureUxModel>> GetAllUnitOfMeasuresAsync(int position = 0, int take = 100)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+
+            try
+            {
+                GetAllUnitOfMeasuresRequest request = new GetAllUnitOfMeasuresRequest();
+                request.Position = position;
+                request.Take = take;
+
+                GetAllUnitOfMeasuresResponse response = await _Client.GetAllUnitOfMeasuresGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                _UnitOfMeasures.Clear();
+                IOrderedEnumerable<UnitOfMeasureGrpc> rpcUnits = response.UnitOfMeasureGrpc.OrderByDescending(x => x.Code);
+                foreach (UnitOfMeasureGrpc? unit in rpcUnits)
+                {
+                    if (unit.IsActive.HasValue && !unit.IsActive.Value)
+                    {
+                        continue; // skip inactive projects
+                    }
+
+                    UnitOfMeasureUxModel? uxModel = unit.ToUx();
+                    if (null != uxModel)
+                    {
+                        _UnitOfMeasures.Add(uxModel);
+                    }
+                }
+
+                return _UnitOfMeasures;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in GetAllUnitOfMeasuresAsync with position {position} and take {take}", ex);
+                throw;
+            }
+        }
+
+        #endregion
+
+        #region BusinessUnits
+
+        public async Task<List<BusinessUnitUxModel>> GetAllBusinessunitsAsync(int position = 0, int take = 100)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+
+            try
+            {
+                GetAllBusinessUnitsGrpcRequest request = new GetAllBusinessUnitsGrpcRequest();
+                request.Position = position;
+                request.Take = take;
+
+                GetAllBusinessUnitsGrpcResponse response = await _Client.GetAllBuisnessUnitsGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                _BusinessUnits.Clear();
+                IOrderedEnumerable<BusinessUnitGrpc> rpcUnits = response.BusinessUnitGrpc.OrderByDescending(x => x.LegacyBusinessUnitCode);
+                foreach (BusinessUnitGrpc? unit in rpcUnits)
+                {
+                    if (unit.IsActive.HasValue && !unit.IsActive.Value)
+                    {
+                        continue; // skip inactive projects
+                    }
+
+                    BusinessUnitUxModel? uxModel = unit.ToUx();
+                    if (null != uxModel)
+                    {
+                        _BusinessUnits.Add(uxModel);
+                    }
+                }
+
+                return _BusinessUnits;
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in GetAllUnitOfMeasuresAsync with position {position} and take {take}", ex);
+                throw;
+            }
+        }
+
+        #endregion
+
+        //#region BusinessUnits
+        //public async Task<List<Bus>>
+        //#endregion
 
         #region Cleanup
         protected virtual void Dispose(bool disposing)

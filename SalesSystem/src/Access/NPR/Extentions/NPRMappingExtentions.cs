@@ -98,15 +98,14 @@
             grpc.ReasonDescription = data.ReasonDescription;
             grpc.MaterialNumber = data.MaterialNumber;
             grpc.MaterialDescription = data.MaterialDescription;
-            grpc.MaterialTypeDescription = data.MaterialTypeDescription;
             grpc.CustomerPartNumber = data.CustomerPartNumber;
             grpc.SupplierPartNumber = data.SupplierPartNumber;
-            grpc.SEWSEUnitOfMeasurement = data.SewseUnitOfMeasurement;
+            grpc.BOMUnitOfMeasurement = data.SEWSEUnitOfMeasurement;
             grpc.SupplierGroup = data.SupplierGroup;
             grpc.SupplierDetailComments = data.SupplierDetailComments;
+            grpc.QtyPerVehicle = double.TryParse(data.QtyPerVehicle, out double qty) ? qty : (double?)null;
             grpc.ProjectCode = data.ProjectCode;
-            grpc.VehicleTotalQuantity = data.VehicleTotalQuantity;
-            grpc.IsSampleDataRequired = data.IsSampleDataRequired;
+            grpc.IsSampleDataRequired = bool.TryParse(data.IsSampleDataRequired, out bool isSample) ? isSample : (bool?)null;
 
             // Map SampleSiteDetails
             if (data.SampleSiteDetails != null)
@@ -125,10 +124,9 @@
 
             grpc.NPRRaisedRemarks = data.NprRaisedRemarks;
             grpc.ManufacturingSite = data.ManufacturingSite;
-            grpc.IsCustomerNominatedSupplier = data.IsCustomerNominatedSupplier;
-            grpc.IsCustomerNominatedMaterial = data.IsCustomerNominatedMaterial;
-            grpc.PlatformName = data.PlatformName;
-            grpc.ProgramName = data.ProgramName;
+            // Replace these lines in ToNprApiDataGrpc method:
+            grpc.IsCustomerNominatedSupplier = bool.TryParse(data.IsCustomerNominatedSupplier, out bool nominatedSupplier) ? nominatedSupplier : (bool?)null;
+            grpc.IsCustomerNominatedMaterial = bool.TryParse(data.IsCustomerNominatedMaterial, out bool nominatedMaterial) ? nominatedMaterial : (bool?)null;
             grpc.SuggestedManufacturerGroup = data.SuggestedManufacturerGroup;
             grpc.AssociatedParts = data.AssociatedParts;
             return grpc;
@@ -139,7 +137,6 @@
             NprApiRequestData data = new NprApiRequestData();
             data.CustomerRfqNo = grpc.CustomerRfqNo;
             data.CustomerCode = grpc.CustomerCode;
-            data.RequestID = grpc.RequestID;
             data.OriginatorName = grpc.OriginatorName;
             DateTime? deadlineDateTime = grpc.DeadlineDate?.ToDateTime();
             data.DeadlineDate = deadlineDateTime.HasValue ? DateOnly.FromDateTime(deadlineDateTime.Value) : (DateOnly?)null;
@@ -148,11 +145,11 @@
             data.MaterialDescription = grpc.MaterialDescription;
             data.CustomerPartNumber = grpc.CustomerPartNumber;
             data.SupplierPartNumber = grpc.SupplierPartNumber;
-            data.SEWSEUnitOfMeasurement = grpc.SEWSEUnitOfMeasurement;
+            data.BOMUnitOfMeasurement = grpc.BOMUnitOfMeasurement;
             data.SupplierGroup = grpc.SupplierGroup;
             data.SupplierDetailComments = grpc.SupplierDetailComments;
+            data.QtyPerVehicle = grpc.QtyPerVehicle;
             data.ProjectCode = grpc.ProjectCode;
-            data.VehicleTotalQuantity = grpc.VehicleTotalQuantity;
             data.IsSampleDataRequired = grpc.IsSampleDataRequired;
 
             // Map SampleSiteDetails
@@ -177,8 +174,6 @@
             data.ManufacturingSite = grpc.ManufacturingSite;
             data.IsCustomerNominatedSupplier = grpc.IsCustomerNominatedSupplier;
             data.IsCustomerNominatedMaterial = grpc.IsCustomerNominatedMaterial;
-            data.PlatformName = grpc.PlatformName;
-            data.ProgramName = grpc.ProgramName;
             data.SuggestedManufacturerGroup = grpc.SuggestedManufacturerGroup;
             data.AssociatedParts = grpc.AssociatedParts;
             data.NPRUploadSeqNo = grpc.NPRUploadSeqNo;

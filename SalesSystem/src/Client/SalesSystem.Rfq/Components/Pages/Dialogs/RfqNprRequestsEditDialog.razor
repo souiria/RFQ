@@ -106,22 +106,21 @@
                             <PropertyColumn Property="x => x.ReasonDescription" Title="Reason" Editable="true" />
                             <PropertyColumn Property="x => x.MaterialNumber" Title="Material Number" Editable="true" />
                             <PropertyColumn Property="x => x.MaterialDescription" Title="Material Description" Editable="true" />
-                            <PropertyColumn Property="x => x.MaterialTypeDescription" Title="Material Type" Editable="true" />
                             <PropertyColumn Property="x => x.CustomerPartNumber" Title="Customer P/N" Editable="true" />
                             <PropertyColumn Property="x => x.SupplierPartNumber" Title="Supplier P/N" Editable="true" />
-                            <PropertyColumn Property="x => x.SEWSEUnitOfMeasurement" Title="UoM" Editable="true" />
+                            <PropertyColumn Property="x => x.BOMUnitOfMeasurement" Title="UoM" Editable="true" />
                             <PropertyColumn Property="x => x.SupplierGroup" Title="Supplier Group" Editable="true" />
                             <PropertyColumn Property="x => x.SupplierDetailComments" Title="Supplier Comments" Editable="true" />
                             <PropertyColumn Property="x => x.ProjectCode" Title="Project" Editable="true" />
                             <PropertyColumn Property="x => x.QtyPerVehicle" Title="Qty/Vehicle" Editable="true" />
-                            <PropertyColumn Property="x => x.VehicleTotalQuantity" Title="Total Qty" Editable="true" />
+                            @* <PropertyColumn Property="x => x.VehicleTotalQuantity" Title="Total Qty" Editable="true" /> *@
                             <PropertyColumn Property="x => x.IsSampleDataRequired" Title="Samples Req." Editable="true" />
                             <PropertyColumn Property="x => x.NPRRaisedRemarks" Title="Remarks" Editable="true" />
                             <PropertyColumn Property="x => x.ManufacturingSite" Title="Mfg. Site" Editable="true" />
                             <PropertyColumn Property="x => x.IsCustomerNominatedSupplier" Title="Cust. Nom. Supplier" Editable="true" />
                             <PropertyColumn Property="x => x.IsCustomerNominatedMaterial" Title="Cust. Nom. Material" Editable="true" />
-                            <PropertyColumn Property="x => x.PlatformName" Title="Platform" Editable="true" />
-                            <PropertyColumn Property="x => x.ProgramName" Title="Program" Editable="true" />
+                            @* <PropertyColumn Property="x => x.PlatformName" Title="Platform" Editable="true" /> *@
+                            @* <PropertyColumn Property="x => x.ProgramName" Title="Program" Editable="true" /> *@
                             <PropertyColumn Property="x => x.SuggestedManufacturerGroup" Title="Suggested Mfr. Group" Editable="true" />
                             <PropertyColumn Property="x => x.AssociatedParts" Title="Associated Parts" Editable="true" />
                             <PropertyColumn Property="x => x.NPRUploadSeqNo" Title="Upload Seq. No." Editable="false" />
@@ -308,24 +307,23 @@
                 if (item.ReasonDescription?.Contains(filter, comparisonType) == true) return true;
                 if (item.MaterialNumber?.Contains(filter, comparisonType) == true) return true;
                 if (item.MaterialDescription?.Contains(filter, comparisonType) == true) return true;
-                if (item.MaterialTypeDescription?.Contains(filter, comparisonType) == true) return true;
                 if (item.CustomerPartNumber?.Contains(filter, comparisonType) == true) return true;
                 if (item.SupplierPartNumber?.Contains(filter, comparisonType) == true) return true;
-                if (item.SEWSEUnitOfMeasurement?.Contains(filter, comparisonType) == true) return true;
+                if (item.BOMUnitOfMeasurement?.Contains(filter, comparisonType) == true) return true;
                 if (item.SupplierGroup?.Contains(filter, comparisonType) == true) return true;
                 if (item.SupplierDetailComments?.Contains(filter, comparisonType) == true) return true;
                 if (item.ProjectCode?.Contains(filter, comparisonType) == true) return true;
                 if (item.NPRRaisedRemarks?.Contains(filter, comparisonType) == true) return true;
                 if (item.ManufacturingSite?.Contains(filter, comparisonType) == true) return true;
-                if (item.PlatformName?.Contains(filter, comparisonType) == true) return true;
-                if (item.ProgramName?.Contains(filter, comparisonType) == true) return true;
+                // if (item.PlatformName?.Contains(filter, comparisonType) == true) return true;
+                // if (item.ProgramName?.Contains(filter, comparisonType) == true) return true;
                 if (item.SuggestedManufacturerGroup?.Contains(filter, comparisonType) == true) return true;
                 if (item.AssociatedParts?.Contains(filter, comparisonType) == true) return true;
 
                 if (isNumeric)
                 {
                     if (item.QtyPerVehicle?.ToString().Contains(filter, comparisonType) == true) return true;
-                    if (item.VehicleTotalQuantity?.ToString().Contains(filter, comparisonType) == true) return true;
+                    // if (item.VehicleTotalQuantity?.ToString().Contains(filter, comparisonType) == true) return true;
                     if (item.NPRUploadSeqNo?.ToString().Contains(filter, comparisonType) == true) return true;
                 }
 

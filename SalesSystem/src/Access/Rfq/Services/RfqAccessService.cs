@@ -3986,7 +3986,7 @@
 
         #endregion
         #region Validation (RfqNprRequest)
-        NprValidationLineDto ValidateNprItem(RfqNprRequestGrpc item)
+        public NprValidationLineDto ValidateNprItem(RfqNprRequestGrpc item)
         {
             NprValidationLineDto status = new NprValidationLineDto();
             status.Id = item.Id ?? string.Empty;
@@ -4011,7 +4011,6 @@
             string reasonDescription = item.ReasonDescription ?? "";
             string materialNumber = item.MaterialNumber ?? "";
             string materialDescription = item.MaterialDescription ?? "";
-            string materialTypeDescription = item.MaterialTypeDescription ?? "";
             string customerPartNumber = item.CustomerPartNumber ?? "";
             string supplierPartNumber = item.SupplierPartNumber ?? "";
             string sEWSEUnitOfMeasurement = item.SEWSEUnitOfMeasurement ?? "";
@@ -4156,11 +4155,6 @@
                     Err(nameof(item.MaterialDescription),
                         "Material Description Can not be less than 1 and greater than 15 characters.");
                 }
-            }
-
-            if (string.IsNullOrWhiteSpace(materialTypeDescription))
-            {
-                Err(nameof(item.MaterialTypeDescription), "Material type description is required.");
             }
 
             //if (string.IsNullOrWhiteSpace(customerPartNumber))

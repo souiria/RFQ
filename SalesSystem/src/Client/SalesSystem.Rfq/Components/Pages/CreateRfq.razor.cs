@@ -11,7 +11,7 @@ namespace SalesSystem.Rfq.Components.Pages
         DateTime? _Date;
         const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
         string _DragClass;
-
+        bool _IsQuotationOpen;
         public CreateRfq()
         {
             _UploadedSuccessfully = false;
@@ -19,7 +19,6 @@ namespace SalesSystem.Rfq.Components.Pages
             _DragClass = DefaultDragClass;
             FileObjects = new List<FileObjectUxModel>();
         }
-
         // Form values
         string? CustomerValue
         { get; set; }
@@ -147,9 +146,9 @@ namespace SalesSystem.Rfq.Components.Pages
             // Search across project name, customer name, and location name
             return RfqUxClientService.CustomerProjectAssociations
                 .Where(p =>
-                    (p.ProjectName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (p.ProjectCode?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
                     (p.CustomerName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false))
-                .OrderBy(p => p.ProjectName)
+                .OrderBy(p => p.ProjectCode)
                 .ThenBy(p => p.CustomerName);
         }
 

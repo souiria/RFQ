@@ -16,6 +16,8 @@
             projectAssociation.ProjectName = association.CustomerProjectName;
             projectAssociation.CustomerId = association.CustomerLocationGuid.ToUpperInvariant();
             projectAssociation.CustomerName = association.CustomerLocationName;
+            projectAssociation.CustomerCode = association.CustomerCode;
+            projectAssociation.ProjectCode = association.CustomerProjectCode;
             projectAssociation.Id = association.Id.ToUpperInvariant();
             return projectAssociation;
         }
@@ -304,16 +306,15 @@
             nprRequest.IsCustomerNominatedMaterial = false;
             nprRequest.IsCustomerNominatedSupplier = false;
             nprRequest.QtyPerVehicle = 1;
-            nprRequest.VehicleTotalQuantity = 1;
+            //nprRequest.VehicleTotalQuantity = 1;
             nprRequest.AssociatedParts = "";
-            nprRequest.CustomerCode = rfqProject.CustomerBusinessUnit;
+            nprRequest.CustomerCode = rfqProject.CustomerCode;
             nprRequest.CustomerPartNumber = partNumber.CustomerPartNumber;
             nprRequest.MaterialDescription = "";
-            nprRequest.MaterialTypeDescription = "";
             nprRequest.MaterialNumber = "";
-            nprRequest.PlatformName = "";
-            nprRequest.ProgramName = "";
-            nprRequest.ProjectCode = rfqProject.Project;
+            //nprRequest.PlatformName = "";
+            //nprRequest.ProgramName = "";
+            nprRequest.ProjectCode = rfqProject.ProjectCode;
             nprRequest.NPRRaisedRemarks = "";
             nprRequest.ReasonDescription = rfqProject.RfqReason;
             nprRequest.SuggestedManufacturerGroup = "";
@@ -321,7 +322,7 @@
             nprRequest.SupplierGroup = "";
             nprRequest.SupplierDetailComments = "";
             nprRequest.SupplierPartNumber = "";
-            nprRequest.SEWSEUnitOfMeasurement = "";
+            nprRequest.BOMUnitOfMeasurement = "";
             nprRequest.CustomerRfqNo = "";
             nprRequest.OriginatorName = "";
             // samples
@@ -334,14 +335,14 @@
 
         public static RfqNprRequestUxModel Update(this RfqNprRequestUxModel nprRequest, RqfProjectUxModel rfqProject, GlobalValue globalValue)
         {
-            nprRequest.CustomerCode = rfqProject.CustomerBusinessUnit;
+            nprRequest.CustomerCode = rfqProject.CustomerCode;
             nprRequest.OriginatorName = globalValue.DisplayName;
             nprRequest.CustomerRfqNo = rfqProject.RfqNumber;
             nprRequest.DeadlineDate = rfqProject.RfqResponseDeadline;
-            nprRequest.SEWSEUnitOfMeasurement = "EU";
-            nprRequest.ProjectCode = rfqProject.Project;
-            nprRequest.VehicleTotalQuantity = rfqProject.VehicleVolume;
-            nprRequest.ManufacturingSite = rfqProject.CustomerLocation;
+            //nprRequest.BOMUnitOfMeasurement = "";
+            nprRequest.ProjectCode = rfqProject.ProjectCode;
+            //nprRequest.VehicleTotalQuantity = rfqProject.VehicleVolume;
+            nprRequest.ManufacturingSite = rfqProject.CustomerLocation ?? nprRequest.ManufacturingSite;
             
             return nprRequest;
         }
@@ -384,22 +385,22 @@
                 nprGrpc.Id = Guid.Empty.ToString();
                 Console.WriteLine($"Error converting Id to string: {ex.Message}");
             }   
+
             nprGrpc.ReasonDescription = model.ReasonDescription;
             nprGrpc.CustomerCode = model.CustomerCode;
-            nprGrpc.PlatformName = model.PlatformName;
-            nprGrpc.ProgramName = model.ProgramName;
+            // nprGrpc.PlatformName = model.PlatformName;
+            // nprGrpc.ProgramName = model.ProgramName;
             nprGrpc.ProjectCode = model.ProjectCode;
-            nprGrpc.MaterialTypeDescription = model.MaterialTypeDescription;
             nprGrpc.ManufacturingSite = model.ManufacturingSite;
             nprGrpc.CustomerPartNumber = model.CustomerPartNumber;
             nprGrpc.SupplierPartNumber = model.SupplierPartNumber;
             nprGrpc.MaterialNumber = model.MaterialNumber;
             nprGrpc.MaterialDescription = model.MaterialDescription;
-            nprGrpc.SEWSEUnitOfMeasurement = model.SEWSEUnitOfMeasurement;
+            nprGrpc.SEWSEUnitOfMeasurement = model.BOMUnitOfMeasurement;
             nprGrpc.SupplierGroup = model.SupplierGroup;
             nprGrpc.SupplierDetailComments = model.SupplierDetailComments;
             nprGrpc.QtyPerVehicle = (double?)model.QtyPerVehicle;
-            nprGrpc.VehicleTotalQuantity = model.VehicleTotalQuantity;
+            //nprGrpc.VehicleTotalQuantity = model.VehicleTotalQuantity;
             nprGrpc.DeadlineDate = model.DeadlineDate?.ToUniversalTime().ToTimestamp();
             nprGrpc.NPRRaisedRemarks = model.NPRRaisedRemarks;
             nprGrpc.IsCustomerNominatedSupplier = model.IsCustomerNominatedSupplier;
@@ -441,20 +442,19 @@
             model.Id = Guid.Parse(grpc.Id);
             model.ReasonDescription = grpc.ReasonDescription;
             model.CustomerCode = grpc.CustomerCode;
-            model.PlatformName = grpc.PlatformName;
-            model.ProgramName = grpc.ProgramName;
+            //model.PlatformName = grpc.PlatformName;
+            //model.ProgramName = grpc.ProgramName;
             model.ProjectCode = grpc.ProjectCode;
-            model.MaterialTypeDescription = grpc.MaterialTypeDescription;
             model.ManufacturingSite = grpc.ManufacturingSite;
             model.CustomerPartNumber = grpc.CustomerPartNumber;
             model.SupplierPartNumber = grpc.SupplierPartNumber;
             model.MaterialNumber = grpc.MaterialNumber;
             model.MaterialDescription = grpc.MaterialDescription;
-            model.SEWSEUnitOfMeasurement = grpc.SEWSEUnitOfMeasurement;
+            model.BOMUnitOfMeasurement = grpc.SEWSEUnitOfMeasurement;
             model.SupplierGroup = grpc.SupplierGroup;
             model.SupplierDetailComments = grpc.SupplierDetailComments;
             model.QtyPerVehicle = grpc.QtyPerVehicle.HasValue ? (decimal)grpc.QtyPerVehicle.Value : null;
-            model.VehicleTotalQuantity = grpc.VehicleTotalQuantity;
+            //model.VehicleTotalQuantity = grpc.VehicleTotalQuantity;
             model.DeadlineDate = grpc.DeadlineDate?.ToDateTime();
             model.NPRRaisedRemarks = grpc.NPRRaisedRemarks;
             model.IsCustomerNominatedSupplier = grpc.IsCustomerNominatedSupplier ?? false;
@@ -553,6 +553,112 @@
             uxModel.ModifiedBy = Guid.TryParse(supplierGroup.ModifiedBy, out Guid modifiedBy) ? modifiedBy : Guid.Empty;
             uxModel.SyncToCPD = (short?)supplierGroup.SyncToCPD;
             uxModel.IsEOLRequired = supplierGroup.IsEOLRequired;
+            return uxModel;
+        }
+        #endregion
+
+        #region UnitOfMeasure
+        public static UnitOfMeasureUxModel? ToUx(this UnitOfMeasureGrpc? unitOfMeasure)
+        {
+            if (unitOfMeasure == null)
+            {
+                return null;
+            }
+
+            UnitOfMeasureUxModel uxModel = new UnitOfMeasureUxModel();
+            uxModel.UnitOfMeasureDescription = unitOfMeasure.UnitOfMeasureDescription;
+            uxModel.Code = unitOfMeasure.Code;
+            uxModel.IsActive = unitOfMeasure.IsActive;
+            uxModel.Id = Guid.TryParse(unitOfMeasure.Id, out Guid id) ? id : Guid.Empty;
+            return uxModel;
+        }
+        public static BusinessUnitUxModel? ToUx(this BusinessUnitGrpc businessUnit)
+        {
+            if (businessUnit == null)
+            {
+                return null;
+            }
+
+            BusinessUnitUxModel uxModel = new BusinessUnitUxModel();
+            uxModel.BusinessUnitCode = businessUnit.BusinessUnitCode;
+            uxModel.BusinessUnitName = businessUnit.BusinessUnitName;
+            uxModel.BusinessUnitTypeGuid = Guid.TryParse(businessUnit.BusinessUnitTypeGuid, out Guid businessUnitTypeGuid) ? businessUnitTypeGuid : (Guid?)null;
+            uxModel.StreetNumber = businessUnit.StreetNumber;
+            uxModel.StreetName = businessUnit.StreetName;
+            uxModel.City = businessUnit.City;
+            uxModel.Region = businessUnit.Region;
+            uxModel.ZipCode = businessUnit.ZipCode;
+            uxModel.CountryGuid = Guid.TryParse(businessUnit.CountryGuid, out Guid countryGuid) ? countryGuid : (Guid?)null;
+            uxModel.IsActive = businessUnit.IsActive;
+            uxModel.Id = Guid.TryParse(businessUnit.Id, out Guid id) ? id : (Guid?)null;
+            uxModel.CreatedDate = businessUnit.CreatedDate is null ? null : businessUnit.CreatedDate.ToDateTime();
+            uxModel.ModifiedDate = businessUnit.ModifiedDate is null ? null : businessUnit.ModifiedDate.ToDateTime();
+            uxModel.CreatedBy = Guid.TryParse(businessUnit.CreatedBy, out Guid createdBy) ? createdBy : (Guid?)null;
+            uxModel.ModifiedBy = Guid.TryParse(businessUnit.ModifiedBy, out Guid modifiedBy) ? modifiedBy : (Guid?)null;
+            uxModel.SyncToCPD = businessUnit.SyncToCPD.HasValue ? (short?)businessUnit.SyncToCPD.Value : null;
+            uxModel.IsExternalWarehouse = businessUnit.IsExternalWarehouse;
+            uxModel.EWMSWarehouseCode = businessUnit.EWMSWarehouseCode;
+            uxModel.DisplayName = businessUnit.DisplayName;
+            uxModel.LegacyBusinessUnitCode = businessUnit.LegacyBusinessUnitCode;
+            uxModel.LegacyBusinessUnitName = businessUnit.LegacyBusinessUnitName;
+            uxModel.Company = businessUnit.Company;
+            uxModel.BusinessUnitDescription = businessUnit.BusinessUnitDescription;
+            uxModel.BusinessUnitContactName = businessUnit.BusinessUnitContactName;
+            uxModel.BusinessUnitContactNumber = businessUnit.BusinessUnitContactNumber;
+            uxModel.BusinessUnitAltContactNumber = businessUnit.BusinessUnitAltContactNumber;
+            uxModel.BusinessUnitMainPhoneNumber = businessUnit.BusinessUnitMainPhoneNumber;
+            uxModel.BusinessUnitManagerEmail = businessUnit.BusinessUnitManagerEmail;
+            uxModel.Router = businessUnit.Router;
+            uxModel.Subnet = businessUnit.Subnet;
+            uxModel.HostFrom = businessUnit.HostFrom;
+            uxModel.HostTo = businessUnit.HostTo;
+            uxModel.ITEngineer = businessUnit.ITEngineer;
+            uxModel.BackupOperator = businessUnit.BackupOperator;
+            uxModel.InterSeptor = businessUnit.InterSeptor;
+            uxModel.InterSeptorFirmware = businessUnit.InterSeptorFirmware;
+            uxModel.InterSeptorAlerts = businessUnit.InterSeptorAlerts;
+            uxModel.UseLocalSupport = businessUnit.UseLocalSupport;
+            uxModel.VideoConference = businessUnit.VideoConference;
+            uxModel.VideoConferenceIP = businessUnit.VideoConferenceIP;
+            uxModel.AccessCircuit = businessUnit.AccessCircuit.HasValue ? (decimal?)businessUnit.AccessCircuit.Value : null;
+            uxModel.PERouter1 = businessUnit.PERouter1;
+            uxModel.PERouter2 = businessUnit.PERouter2;
+            uxModel.MRTG = businessUnit.MRTG;
+            uxModel.WiFi = businessUnit.WiFi;
+            uxModel.Printer = businessUnit.Printer;
+            uxModel.Copier = businessUnit.Copier;
+            uxModel.LocalIT = businessUnit.LocalIT;
+            uxModel.Wan = businessUnit.Wan;
+            uxModel.WanType = businessUnit.WanType;
+            uxModel.WanStatus = businessUnit.WanStatus;
+            uxModel.WanDownCount = businessUnit.WanDownCount;
+            uxModel.WanHighRTT = businessUnit.WanHighRTT;
+            uxModel.LocalBackups = businessUnit.LocalBackups;
+            uxModel.MitelController = businessUnit.MitelController;
+            uxModel.MitelControllerBackup = businessUnit.MitelControllerBackup;
+            uxModel.Riverbed = businessUnit.Riverbed;
+            uxModel.VCenter = businessUnit.VCenter;
+            uxModel.CCTV = businessUnit.CCTV;
+            uxModel.DefaultFileServer = businessUnit.DefaultFileServer;
+            uxModel.DefaultMailServer = businessUnit.DefaultMailServer;
+            uxModel.DefaultCopier = businessUnit.DefaultCopier;
+            uxModel.DefaultWDSServer = businessUnit.DefaultWDSServer;
+            uxModel.DefaultDeployRoot = businessUnit.DefaultDeployRoot;
+            uxModel.DefaultHRManager = businessUnit.DefaultHRManager;
+            uxModel.PDR = businessUnit.PDR;
+            uxModel.Mapurl = businessUnit.MapUrl;
+            uxModel.Longtitude = businessUnit.Longtitude;
+            uxModel.Latitude = businessUnit.Latitude;
+            uxModel.What3Words = businessUnit.What3Words;
+            uxModel.NearestWeatherCity = businessUnit.NearestWeatherCity;
+            uxModel.WeatherTemperatureHigh = businessUnit.WeatherTemperatureHigh;
+            uxModel.WeatherTemperatureLow = businessUnit.WeatherTemperatureLow;
+            uxModel.Weatherurl = businessUnit.WeatherUrl;
+            uxModel.WeatherMaxWindSpeed = businessUnit.WeatherMaxWindSpeed;
+            uxModel.WeatherTemperatureThreshold = businessUnit.WeatherTemperatureThreshold;
+            uxModel.WeatherReportDate = businessUnit.WeatherReportDate is null ? null : businessUnit.WeatherReportDate.ToDateTime();
+            uxModel.TrafficSummary = businessUnit.TrafficSummary;
+
             return uxModel;
         }
         #endregion

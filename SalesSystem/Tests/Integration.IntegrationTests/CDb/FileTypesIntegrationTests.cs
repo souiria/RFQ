@@ -84,7 +84,7 @@ namespace Integration.Tests.CDb
             Task<HelloReply> helloReply = _GrpcService.SayHello(request, serverCallContext);
 
             string replyString = "Hello FileTypesIntegrationTests";
-            NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(replyString);
+            EqualConstraint equalConstraint = Is.EqualTo(replyString);
             Assert.That(helloReply, Is.Not.Null);
             Assert.That(helloReply.Result.Message, equalConstraint);
         }
@@ -106,7 +106,7 @@ namespace Integration.Tests.CDb
             // Assert
             // The HasData in the DbFileType adds 7 records to the database
             Assert.That(response.Result.FileTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.GreaterThanOrEqualConstraint countConstraint = Is.GreaterThanOrEqualTo(4);
+            GreaterThanOrEqualConstraint countConstraint = Is.GreaterThanOrEqualTo(4);
             Assert.That(response.Result.FileTypeGrpcs.Count, countConstraint);
         }
         [Test]
@@ -125,19 +125,19 @@ namespace Integration.Tests.CDb
             // Assert
             // The HasData in the DbFileType adds Generic file TYPE
             Assert.That(response.Result.ListFileTypes.FileTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(response.Result.ListFileTypes.FileTypeGrpcs.Count, countConstraint);
 
             // Check if the FileTypeGrpc has the expected ID
-            NUnit.Framework.Constraints.EqualConstraint idConstraint = Is.EqualTo("B481C105-2C10-49F6-912F-5EDF771BAD1C");
+            EqualConstraint idConstraint = Is.EqualTo("B481C105-2C10-49F6-912F-5EDF771BAD1C");
             CultureInfo cultureInfo = CultureInfo.InvariantCulture;
             string fileTypeId = response.Result.ListFileTypes.FileTypeGrpcs[0].Id.ToUpper(cultureInfo);
             Assert.That(fileTypeId, idConstraint);
             // Check if the FileTypeGrpc has the expected Name
-            NUnit.Framework.Constraints.EqualConstraint codeConstraint = Is.EqualTo("Unknown");
+            EqualConstraint codeConstraint = Is.EqualTo("Unknown");
             Assert.That(response.Result.ListFileTypes.FileTypeGrpcs[0].Name, codeConstraint);
             // Check if the FileTypeGrpc has the expected Description
-            NUnit.Framework.Constraints.EqualConstraint descriptionConstraint = Is.EqualTo("Unknown");
+            EqualConstraint descriptionConstraint = Is.EqualTo("Unknown");
             Assert.That(response.Result.ListFileTypes.FileTypeGrpcs[0].Description, descriptionConstraint);
 
         }
@@ -157,11 +157,11 @@ namespace Integration.Tests.CDb
             // Assert
             // The HasData in the DbFileType adds Generic file TYPE
             Assert.That(response.Result.ListFileTypes.FileTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(response.Result.ListFileTypes.FileTypeGrpcs.Count, countConstraint);
 
             // Check if the FileTypeGrpc has the expected ID
-            NUnit.Framework.Constraints.EqualConstraint nameConstraint = Is.EqualTo("TUBULAR");
+            EqualConstraint nameConstraint = Is.EqualTo("TUBULAR");
             CultureInfo cultureInfo = CultureInfo.InvariantCulture;
             string fileTypeId = response.Result.ListFileTypes.FileTypeGrpcs[0].Name.ToUpper(cultureInfo);
             Assert.That(fileTypeId, nameConstraint);

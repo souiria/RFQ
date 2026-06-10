@@ -145,21 +145,20 @@
                 requestDataList.Add(apiData);
             }
 
-            string jsonList = JsonConvert.SerializeObject(requestDataList);
             HttpClient httpClient = _HttpClientFactory.CreateClient("MyClient");
             string? uri = _Configuration["NprApi:Url"];
-            HttpResponseMessage httpResponse = await httpClient.PostAsJsonAsync(uri, jsonList, cancellationToken);
+            HttpResponseMessage httpResponse = await httpClient.PostAsJsonAsync(uri, requestDataList, cancellationToken);
 
             response.HttpStatusCode = httpResponse.StatusCode.ToString();
 
             switch (httpResponse.StatusCode)
             {
                 case HttpStatusCode.OK:
+                await PopulateH1NPRViewAsync(cancellationToken);
                 return await HandleSuccess(httpResponse, request, response, cancellationToken);
 
                 case HttpStatusCode.UnprocessableContent:
-                response = HandleAuthFailure(response, "Unprocessable Content: " + response.Message);
-                return response;
+                return await HandleAuthFailure(httpResponse, response, cancellationToken); ;
 
                 case HttpStatusCode.InternalServerError:
                 return await HandleServerError(httpResponse, response, cancellationToken);
@@ -182,21 +181,18 @@
             {
                 string httpJsonString = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
                 List<NprApiReturnData>? nprApiDatas = JsonConvert.DeserializeObject<List<NprApiReturnData>>(httpJsonString);
-
-                if (nprApiDatas == null)
+                NprApiResponseData? nprApiData = JsonConvert.DeserializeObject<NprApiResponseData>(httpJsonString);
+                if (nprApiData != null && nprApiData.Data != null)
                 {
-                    response.Message = "Response body was empty or could not be deserialized.";
-                    return response;
-                }
-
-                foreach (NprApiReturnData data in nprApiDatas)
-                {
-                    NprApiDataGrpc grpc = data.ToNprApiDataGrpc();
-                    NprApiDataGrpc requestData = request.NprApiData
-                        .Where(x => x.CustomerPartNumber == data.CustomerPartNumber)
-                        .First();
-                    grpc.RfqNprRequestId = requestData.RfqNprRequestId;
-                    response.NprApiData.Add(grpc);
+                    foreach (NprApiReturnData data in nprApiData.Data)
+                    {
+                        NprApiDataGrpc grpc = data.ToNprApiDataGrpc();
+                        NprApiDataGrpc requestData = request.NprApiData
+                            .Where(x => x.CustomerPartNumber == data.CustomerPartNumber)
+                            .First();
+                        grpc.RfqNprRequestId = requestData.RfqNprRequestId;
+                        response.NprApiData.Add(grpc);
+                    }
                 }
             }
             catch (JsonException e)
@@ -215,6 +211,13 @@
             try
             {
                 string errorBody = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
+                NprApiResponseData? nprApiData = JsonConvert.DeserializeObject<NprApiResponseData>(errorBody);
+                if (nprApiData != null && nprApiData.Data != null)
+                {
+                    NprApiReturnData data = nprApiData.Data.First();
+                    response.Message = $"Validation error: {data.Error}";
+                }
+
                 response.Message = $"Validation error: {errorBody}";
             }
             catch (InvalidOperationException e)
@@ -230,11 +233,26 @@
             return response;
         }
 
-        static CreateNprApiGrpcResponse HandleAuthFailure(
+        async Task<CreateNprApiGrpcResponse> HandleAuthFailure(
+            HttpResponseMessage httpResponse,
             CreateNprApiGrpcResponse response,
-            string message)
+            CancellationToken cancellationToken)
         {
-            response.Message = message;
+            try
+            {
+                string httpJsonString = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
+                NprApiResponseData? nprApiData = JsonConvert.DeserializeObject<NprApiResponseData>(httpJsonString);
+                if (nprApiData != null && nprApiData.Data != null)
+                {
+                    //List<NprApiReturnData>? returnDatas =  JsonConvert.DeserializeObject<List<NprApiReturnData>>(nprApiData.Data);
+                    NprApiReturnData data = nprApiData.Data.First();
+                    response.Message = $"UnprocessableContent: Error Message: {data.Error}";
+                }
+            }catch (JsonException e)
+            {
+                response.Message = $"Failed to deserialize auth failure response: {e.Message}";
+            }
+
             return response;
         }
 
@@ -269,7 +287,12 @@
             try
             {
                 string errorBody = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
-                response.Message = $"Unexpected status ({httpResponse.StatusCode}): {errorBody}";
+                NprApiResponseData? nprApiData = JsonConvert.DeserializeObject<NprApiResponseData>(errorBody);
+                if (nprApiData != null && nprApiData.Data != null)
+                {
+                    NprApiReturnData data = nprApiData.Data.First();
+                    response.Message = $"Unexpected status ({httpResponse.StatusCode}): {data.Error}";
+                }
             }
             catch (InvalidOperationException e)
             {

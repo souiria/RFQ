@@ -38,7 +38,8 @@
         Task<GetAllSuppliersGrpcResponse> GetAllSuppliersGrpc(GetAllSuppliersGrpcRequest request);
         Task<GetAllSupplierGroupsGrpcResponse> GetAllSupplierGroupsGrpc(GetAllSupplierGroupsGrpcRequest request);
         Task<SearchPartPricesGrpcResponse> SearchPartPricesGrpc(SearchPartPricesGrpcRequest request);
-
+        Task<GetAllUnitOfMeasuresResponse> GetAllUnitOfMeasuresGrpc(GetAllUnitOfMeasuresRequest request);
+        Task<GetAllBusinessUnitsGrpcResponse> GetAllBusinessUnitsGrpc(GetAllBusinessUnitsGrpcRequest request);
         Task<CreateNprGrpcResponse> CreateNprGrpc(CreateNprGrpcRequest request);
     }
 }
