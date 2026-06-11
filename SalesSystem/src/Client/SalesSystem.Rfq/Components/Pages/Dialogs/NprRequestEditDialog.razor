@@ -21,101 +21,164 @@
     <DialogContent>
         <MudForm @ref="_Form">
             <MudGrid>
-                @* Row 1: Identifiers *@
-                <MudItem xs="6">
-                    @* <MudTextField @bind-Value="NprRequest.SumitomoNumber"
-                                  Label="Sumitomo Number"
+                @* Row 1: RFQ identifiers *@
+                <MudItem xs="4">
+                    <MudTextField @bind-Value="NprRequest.CustomerRfqNo"
+                                  Label="Customer RFQ No."
                                   Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" /> *@
+                                  Margin="Margin.Dense"
+                                  MaxLength="18"
+                                  Required="true" />
                 </MudItem>
+                <MudItem xs="4">
+                    <MudTextField @bind-Value="NprRequest.CustomerCode"
+                                  Label="Customer Code"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  MaxLength="18"
+                                  Required="true" />
+                </MudItem>
+                <MudItem xs="4">
+                    <MudTextField @bind-Value="NprRequest.OriginatorName"
+                                  Label="Originator Name"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  MaxLength="100"
+                                  Required="true" />
+                </MudItem>
+
+                @* Row 2: Part numbers *@
                 <MudItem xs="6">
                     <MudTextField @bind-Value="NprRequest.CustomerPartNumber"
                                   Label="Customer P/N"
                                   Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" />
+                                  Margin="Margin.Dense"
+                                  MaxLength="26" />
                 </MudItem>
-
-                @* Row 2: Supplier info *@
                 <MudItem xs="6">
                     <MudTextField @bind-Value="NprRequest.SupplierPartNumber"
                                   Label="Supplier P/N"
                                   Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" />
-                </MudItem>
-                <MudItem xs="6">
-                    <MudTextField @bind-Value="NprRequest.MaterialDescription"
-                                  Label="Material Description"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" />
+                                  Margin="Margin.Dense"
+                                  MaxLength="26"
+                                  Required="true" />
                 </MudItem>
 
-                @* Row 3: Reason & Customer *@
-                <MudItem xs="6">
-                    <MudTextField @bind-Value="NprRequest.Reason"
-                                  Label="Reason"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" />
-                </MudItem>
-                <MudItem xs="6">
-                    <MudTextField @bind-Value="NprRequest.CustomerCode"
-                                  Label="Customer Code"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" />
-                </MudItem>
-
-                @* Row 4: Platform & Program *@
-                <MudItem xs="6">
-                    <MudTextField @bind-Value="NprRequest.PlatformName"
-                                  Label="Platform"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" />
-                </MudItem>
-                <MudItem xs="6">
-                    <MudTextField @bind-Value="NprRequest.ProgramName"
-                                  Label="Program"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" />
-                </MudItem>
-
-                @* Row 5: Project & Material *@
-                <MudItem xs="6">
-                    <MudTextField @bind-Value="NprRequest.ProjectCode"
-                                  Label="Project Code"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" />
-                </MudItem>
-                <MudItem xs="2">
+                @* Row 3: Material *@
+                <MudItem xs="3">
                     <MudTextField @bind-Value="NprRequest.MaterialNumber"
                                   Label="Material Number"
                                   Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" />
-                </MudItem>
-                <MudItem xs="2">
-                    <MudTextField @bind-Value="NprRequest.ManufacturingSite "
-                                  Label="Manufacturing Site"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" />
-                </MudItem>
-                <MudItem xs="2">
-                    <MudTextField @bind-Value="NprRequest.MaterialTypeDescription"
-                                  Label="Material Type"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" />
-                </MudItem>
-
-                @* Row 6: Manufacturing & Units *@
-                <MudItem xs="6">
-                    <MudTextField @bind-Value="NprRequest.SuggestedManufacturerGroup"
-                                  Label="Suggested Mfg. Group"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" />
+                                  Margin="Margin.Dense"
+                                  MaxLength="26"
+                                  Required="true" />
                 </MudItem>
                 <MudItem xs="3">
-                    <MudTextField @bind-Value="NprRequest.SEWSEUnitOfMeasurement"
-                                  Label="UoM"
+                    <MudTextField @bind-Value="NprRequest.MaterialDescription"
+                                  Label="Material Description"
                                   Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" />
+                                  Margin="Margin.Dense"
+                                  MaxLength="15"
+                                  Required="true" />
                 </MudItem>
+                <MudItem xs="3">
+@*                     <MudTextField @bind-Value="NprRequest.ManufacturingSite"
+                                  Label="Manufacturing Site"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  Required="true" /> *@
+                    <MudAutocomplete T="BusinessUnitUxModel"
+                                     @ref="_BusinessUnitAutocomplete"
+                                     @bind-Value="SelectedBusinessUnit"
+                                     Label="ManufacturingSite"
+                                     Placeholder="Search manufacturing site..."
+                                     SearchFunc="@SearchBusinessUnit"
+                                     ToStringFunc="@(r => r?.LegacyBusinessUnitCode ?? "")"
+                                     Strict="false"
+                                     ResetValueOnEmptyText="false"
+                                     CoerceText="true"
+                                     CoerceValue="true"
+                                     SelectValueOnTab="true"
+                                     AdornmentIcon="@Icons.Material.Filled.Business"
+                                     AdornmentColor="Color.Primary"
+                                     Variant="Variant.Outlined"
+                                     Margin="Margin.Dense"
+                                     Clearable="true"
+                                     DebounceInterval="250"
+                                     MinCharacters="0"
+                                     ShowProgressIndicator="true"
+                                     MaxItems="50">
+                        <ItemTemplate Context="businessUnit">
+                            <MudText Typo="Typo.body2">
+                                <strong>@businessUnit.LegacyBusinessUnitCode</strong>
+                            </MudText>
+                        </ItemTemplate>
+                        <NoItemsTemplate>
+                            <MudText Typo="Typo.body2" Align="Align.Center" Class="pa-2">
+                                No manufacturing site found.
+                            </MudText>
+                        </NoItemsTemplate>
+                    </MudAutocomplete>
+                </MudItem>
+
+                @* Row 4: Reason, Deadline, Project *@
+                <MudItem xs="4">
+@*                     <MudTextField @bind-Value="NprRequest.ReasonDescription"
+                                  Label="Reason Description"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  MaxLength="50"
+                                  Required="true" /> *@
+                    <MudAutocomplete T="RfqReasonGrpc"
+                                     @ref="_ReasonAutocomplete"
+                                     @bind-Value="SelectedReason"
+                                     Label="Reason"
+                                     Placeholder="Search reasons..."
+                                     SearchFunc="@SearchReasons"
+                                     ToStringFunc="@(r => r?.RfqReasonTitle ?? "")"
+                                     Strict="false"
+                                     ResetValueOnEmptyText="false"
+                                     CoerceText="true"
+                                     CoerceValue="true"
+                                     SelectValueOnTab="true"
+                                     AdornmentIcon="@Icons.Material.Filled.Business"
+                                     AdornmentColor="Color.Primary"
+                                     Variant="Variant.Outlined"
+                                     Margin="Margin.Dense"
+                                     Clearable="true"
+                                     DebounceInterval="250"
+                                     MinCharacters="0"
+                                     ShowProgressIndicator="true"
+                                     MaxItems="50">
+                        <ItemTemplate Context="reason">
+                            <MudText Typo="Typo.body2">
+                                <strong>@reason.RfqReasonTitle</strong>
+                            </MudText>
+                        </ItemTemplate>
+                        <NoItemsTemplate>
+                            <MudText Typo="Typo.body2" Align="Align.Center" Class="pa-2">
+                                No reasons found.
+                            </MudText>
+                        </NoItemsTemplate>
+                    </MudAutocomplete>
+                </MudItem>
+                <MudItem xs="4">
+                    <MudDatePicker @bind-Date="NprRequest.DeadlineDate"
+                                   Label="Deadline Date"
+                                   DateFormat="dd.MM.yyyy"
+                                   Variant="Variant.Outlined"
+                                   Margin="Margin.Dense" />
+                </MudItem>
+                <MudItem xs="4">
+                    <MudTextField @bind-Value="NprRequest.ProjectCode"
+                                  Label="Project Code"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  MaxLength="18"
+                                  Required="true" />
+                </MudItem>
+
+                @* Row 5: Supplier Group, Suggested Manufacturer, UoM, Qty *@
                 <MudItem xs="3">
                     <MudAutocomplete T="SupplierGroupUxModel"
                                      @ref="_SupplierGroupAutocomplete"
@@ -149,84 +212,12 @@
                             </MudText>
                         </NoItemsTemplate>
                     </MudAutocomplete>
-@*                     <MudTextField @bind-Value="NprRequest.SupplierGroup"
-                                  Label="Supplier Group"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" /> *@
-                </MudItem>
-
-                @* Row 7: Quantities *@
-                <MudItem xs="3">
-                    <MudNumericField @bind-Value="NprRequest.QtyPerVehicle"
-                                     Label="Qty/Vehicle"
-                                     Variant="Variant.Outlined"
-                                     Margin="Margin.Dense" />
                 </MudItem>
                 <MudItem xs="3">
-                    <MudNumericField @bind-Value="NprRequest.VehicleTotalQuantity"
-                                     Label="Vehicle Total Quantity"
-                                     Variant="Variant.Outlined"
-                                     Margin="Margin.Dense" />
-                </MudItem>
-                <MudItem xs="6">
-                    <MudDatePicker @bind-Date="NprRequest.DeadlineDate"
-                                   Label="Deadline Date"
-                                   DateFormat="dd.MM.yyyy"
-                                   Variant="Variant.Outlined"
-                                   Margin="Margin.Dense" />
-                </MudItem>
-
-                @* Row 8: Remarks *@
-                <MudItem xs="12">
-                    <MudTextField @bind-Value="NprRequest.NPRRaisedRemarks"
-                                  Label="NPR Raised Remarks"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense"
-                                  Lines="2" />
-                </MudItem>
-
-                @* Row 9: Nomination flags & Samples *@
-                <MudItem xs="3">
-                    <MudCheckBox @bind-Value="NprRequest.IsCustomerNominatedSupplier"
-                                 Label="Cust. Nom. Supplier"
-                                 Dense="true" />
-                </MudItem>
-                <MudItem xs="3">
-                    <MudCheckBox @bind-Value="NprRequest.IsCustomerNominatedMaterial"
-                                 Label="Cust. Nom. Material"
-                                 Dense="true" />
-                </MudItem>
-                <MudItem xs="3">
-                    <MudCheckBox @bind-Value="NprRequest.IsSampleDataRequired"
-                                 Label="Samples Required"
-                                 Dense="true" />
-                </MudItem>
-                <MudItem xs="3" />
-
-                @* Row 10: Sample details (disabled when not required) *@
-                @if(NprRequest.IsSampleDataRequired)
-                {
-                    <NprRequestSamples Samples="NprRequest.SampleSiteDetails" />
-                }
-
-                @* Row 11: Remaining fields *@
-                <MudItem xs="4">
-                    @* <MudTextField @bind-Value="NprRequest.FreightAccount"
-                                  Label="Freight Account"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" /> *@
-                </MudItem>
-                <MudItem xs="4">
-                    <MudTextField @bind-Value="NprRequest.AssociatedParts"
-                                  Label="Associated Parts"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" />
-                </MudItem>
-                <MudItem xs="4">
                     <MudAutocomplete T="SupplierUxModel"
                                      @ref="_SupplierAutocomplete"
                                      @bind-Value="SelectedSupplier"
-                                     Label="Supplier"
+                                     Label="Suggested Manufacturer"
                                      Placeholder="Search supplier..."
                                      SearchFunc="@SearchSuppliers"
                                      ToStringFunc="@(sg => sg?.SupplierName ?? "")"
@@ -255,11 +246,105 @@
                             </MudText>
                         </NoItemsTemplate>
                     </MudAutocomplete>
-                    @* <MudTextField @bind-Value="NprRequest.SuggestedManufacturer"
-                                  Label="Suggested Manufacturer"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" /> *@
                 </MudItem>
+                <MudItem xs="3">
+@*                     <MudTextField @bind-Value="NprRequest.BOMUnitOfMeasurement"
+                                  Label="BOM Unit of Measure"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  MaxLength="10"
+                                  Required="true" /> *@
+                    <MudAutocomplete T="UnitOfMeasureUxModel"
+                                     @ref="_UnitOfMeasureAutocomplete"
+                                     @bind-Value="SelectedUnitOfMeasure"
+                                     Label="Unit Of Measure"
+                                     Placeholder="Search unit of measure..."
+                                     SearchFunc="@SearchUnitOfMeasure"
+                                     ToStringFunc="@(uom => uom?.Code ?? "")"
+                                     Strict="false"
+                                     ResetValueOnEmptyText="false"
+                                     CoerceText="true"
+                                     CoerceValue="true"
+                                     SelectValueOnTab="true"
+                                     AdornmentIcon="@Icons.Material.Filled.Business"
+                                     AdornmentColor="Color.Primary"
+                                     Variant="Variant.Outlined"
+                                     Margin="Margin.Dense"
+                                     Clearable="true"
+                                     DebounceInterval="250"
+                                     MinCharacters="0"
+                                     ShowProgressIndicator="true"
+                                     MaxItems="50">
+                        <ItemTemplate Context="unitOfMeasure">
+                            <MudText Typo="Typo.body2">
+                                <strong>@unitOfMeasure.Code</strong>
+                            </MudText>
+                        </ItemTemplate>
+                        <NoItemsTemplate>
+                            <MudText Typo="Typo.body2" Align="Align.Center" Class="pa-2">
+                                No unit of measures found.
+                            </MudText>
+                        </NoItemsTemplate>
+                    </MudAutocomplete>
+                </MudItem>
+                <MudItem xs="3">
+                    <MudNumericField @bind-Value="NprRequest.QtyPerVehicle"
+                                     Label="Qty / Vehicle"
+                                     Variant="Variant.Outlined"
+                                     Margin="Margin.Dense"
+                                     Required="true" />
+                </MudItem>
+
+                @* Row 6: Supplier detail comments *@
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="NprRequest.SupplierDetailComments"
+                                  Label="Supplier Detail Comments"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  MaxLength="500"
+                                  Lines="3"
+                                  Required="true" />
+                </MudItem>
+
+                @* Row 7: NPR Raised Remarks *@
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="NprRequest.NPRRaisedRemarks"
+                                  Label="NPR Raised Remarks"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  MaxLength="500"
+                                  Lines="2" />
+                </MudItem>
+
+                @* Row 8: Flags *@
+                <MudItem xs="3">
+                    <MudCheckBox @bind-Value="NprRequest.IsCustomerNominatedSupplier"
+                                 Label="Cust. Nom. Supplier"
+                                 Dense="true" />
+                </MudItem>
+                <MudItem xs="3">
+                    <MudCheckBox @bind-Value="NprRequest.IsCustomerNominatedMaterial"
+                                 Label="Cust. Nom. Material"
+                                 Dense="true" />
+                </MudItem>
+                <MudItem xs="3">
+                    <MudCheckBox @bind-Value="NprRequest.IsSampleDataRequired"
+                                 Label="Samples Required"
+                                 Dense="true" />
+                </MudItem>
+                <MudItem xs="3">
+                    <MudTextField @bind-Value="NprRequest.AssociatedParts"
+                                  Label="Associated Parts (YES/NO/UNKNOWN)"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  MaxLength="50" />
+                </MudItem>
+
+                @* Row 9: Sample details (only when required) *@
+                @if (NprRequest.IsSampleDataRequired)
+                {
+                    <NprRequestSamples Samples="NprRequest.SampleSiteDetails" />
+                }
             </MudGrid>
         </MudForm>
     </DialogContent>

@@ -1,4 +1,4 @@
-﻿global using System.Reflection;global using Google.Protobuf;
+﻿global using Google.Protobuf;
 global using Google.Protobuf.Collections;
 global using Google.Protobuf.WellKnownTypes;global using Grpc.Core;
 global using Grpc.Core.Testing;

@@ -24,6 +24,9 @@
         public DbSet<DbVehicle> VehicleItems => Set<DbVehicle>();
         public DbSet<DbSupplierGroup> SupplierGroup => Set<DbSupplierGroup>();
         public DbSet<DbSupplier> Supplier => Set<DbSupplier>();
+        public DbSet<DbUnitOfMeasure> UnitOfMeasures => Set<DbUnitOfMeasure>();
+        public DbSet<DbBusinessUnit> BusinessUnits => Set<DbBusinessUnit>();
+        public DbSet<DbProjectEngineeringAssociation> ProjectEngineeringAssociations => Set<DbProjectEngineeringAssociation>();
 
         #endregion
 

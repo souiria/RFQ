@@ -91,7 +91,7 @@ namespace Integration.Tests.CDb
             // Assert
             // The HasData in the DbCoverType adds 7 records to the database
             Assert.That(response.Result.CoverTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.GreaterThanOrEqualConstraint countConstraint = Is.GreaterThanOrEqualTo(4);
+            GreaterThanOrEqualConstraint countConstraint = Is.GreaterThanOrEqualTo(4);
             Assert.That(response.Result.CoverTypeGrpcs.Count, countConstraint);
         }
         [Test]
@@ -110,19 +110,19 @@ namespace Integration.Tests.CDb
             // Assert
             // The HasData in the DbCoverType adds Unknown cover type
             Assert.That(response.Result.ListCoverTypes.CoverTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(response.Result.ListCoverTypes.CoverTypeGrpcs.Count, countConstraint);
 
             // Check if the CoverTypeGrpc has the expected ID
-            NUnit.Framework.Constraints.EqualConstraint idConstraint = Is.EqualTo("3A15C6AE-3B7F-4F55-B566-01CD29630901");
+            EqualConstraint idConstraint = Is.EqualTo("3A15C6AE-3B7F-4F55-B566-01CD29630901");
             CultureInfo cultureInfo = CultureInfo.InvariantCulture;
             string coverTypeId = response.Result.ListCoverTypes.CoverTypeGrpcs[0].Id.ToUpper(cultureInfo);
             Assert.That(coverTypeId, idConstraint);
             // Check if the CoverTypeGrpc has the expected Name
-            NUnit.Framework.Constraints.EqualConstraint codeConstraint = Is.EqualTo("Unknown");
+            EqualConstraint codeConstraint = Is.EqualTo("Unknown");
             Assert.That(response.Result.ListCoverTypes.CoverTypeGrpcs[0].Code, codeConstraint);
             // Check if the CoverTypeGrpc has the expected Description
-            NUnit.Framework.Constraints.EqualConstraint descriptionConstraint = Is.EqualTo("Unknown");
+            EqualConstraint descriptionConstraint = Is.EqualTo("Unknown");
             Assert.That(response.Result.ListCoverTypes.CoverTypeGrpcs[0].Description, descriptionConstraint);
 
         }
@@ -142,11 +142,11 @@ namespace Integration.Tests.CDb
             // Assert
             // The HasData in the DbCoverType adds Unknown cover type
             Assert.That(response.Result.ListCoverTypes.CoverTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(response.Result.ListCoverTypes.CoverTypeGrpcs.Count, countConstraint);
 
             // Check if the CoverTypeGrpc has the expected ID
-            NUnit.Framework.Constraints.EqualConstraint codeConstraint = Is.EqualTo("Unknown");
+            EqualConstraint codeConstraint = Is.EqualTo("Unknown");
             string coverTypeId = response.Result.ListCoverTypes.CoverTypeGrpcs[0].Code;
             Assert.That(coverTypeId, codeConstraint);
 
@@ -167,7 +167,7 @@ namespace Integration.Tests.CDb
             // Assert
             // Once run, if deadbeef is in the database, this will fail
             Assert.That(response.Result.ListCoverTypes.CoverTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(response.Result.ListCoverTypes.CoverTypeGrpcs.Count, countConstraint);
 
             // Arrange
@@ -190,7 +190,7 @@ namespace Integration.Tests.CDb
 
             // Assert
             Assert.That(crudResponse, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint statusConstraint = Is.EqualTo(true);
+            EqualConstraint statusConstraint = Is.EqualTo(true);
             Assert.That(crudResponse.SaveSuccess, statusConstraint);
         }
         // TODO: Fix integration tests for Cdb
@@ -258,7 +258,7 @@ namespace Integration.Tests.CDb
 
             // Assert
             Assert.That(response.Result.ListCoverTypes.CoverTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(response.Result.ListCoverTypes.CoverTypeGrpcs.Count, countConstraint);
         }
 

@@ -7,6 +7,12 @@
 //       Data model metadata tweaks:
 //           OriginatorName description changed from "ADCommonName" to "Master"
 //           ManufacturingSite marked as "Master"
+// v 2.0 - Remove fields and properties - NPR_RFQ_API_Documentation_v2.0.pdf - 20240610
+//          Replace SEWSEUnitOfMeasurement with BOMUnitOfMeasurement
+//          Remove RequestID from request payload
+//          Remove VehicleTotalQuantity
+//          Remove PlatformName
+//          Remove ProgramName
 
 namespace SalesSystem.Rfq.Models
 {
@@ -81,11 +87,6 @@ namespace SalesSystem.Rfq.Models
         public string? MaterialDescription
         { get; set; }
 
-        /// <summary>Material Type (Component) (Master)</summary>
-        [MaxLength(50)]
-        public string? MaterialTypeDescription
-        { get; set; }
-
         /// <summary>CPN (Free Text)</summary>
         [MaxLength(26)]
         public string? CustomerPartNumber
@@ -98,7 +99,7 @@ namespace SalesSystem.Rfq.Models
 
         /// <summary>Unit Of Measure (Master)</summary>
         [MaxLength(10)]
-        public string? SEWSEUnitOfMeasurement
+        public string? BOMUnitOfMeasurement
         { get; set; }
 
         /// <summary>Supplier Group (Master)</summary>
@@ -121,8 +122,8 @@ namespace SalesSystem.Rfq.Models
         { get; set; }
 
         /// <summary>Total Qty</summary>
-        public int? VehicleTotalQuantity
-        { get; set; }
+        //public int? VehicleTotalQuantity
+        //{ get; set; }
 
         /// <summary>Flag</summary>
         public bool IsSampleDataRequired
@@ -150,14 +151,14 @@ namespace SalesSystem.Rfq.Models
         { get; set; }
 
         /// <summary>Platform (Master)</summary>
-        [MaxLength(50)]
-        public string? PlatformName
-        { get; set; }
+        //[MaxLength(50)]
+        //public string? PlatformName
+        //{ get; set; }
 
         /// <summary>Program (Master)</summary>
-        [MaxLength(50)]
-        public string? ProgramName
-        { get; set; }
+        //[MaxLength(50)]
+        //public string? ProgramName
+        //{ get; set; }
 
         /// <summary>Supplier Group (Master)</summary>
         [MaxLength(50)]
@@ -383,11 +384,6 @@ namespace SalesSystem.Rfq.Models
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(MaterialTypeDescription))
-            {
-                Err(nameof(MaterialTypeDescription), MaterialTypeDescription ?? "", "Material type description is required.");
-            }
-
             if (string.IsNullOrWhiteSpace(CustomerPartNumber))
             {
                 Err(nameof(CustomerPartNumber), CustomerPartNumber ?? "", "Customer part number is required.");
@@ -411,18 +407,18 @@ namespace SalesSystem.Rfq.Models
                     "Supplier Part number cannot be blank");
             }
 
-            string sEWSEUnitOfMeasurement = SEWSEUnitOfMeasurement ?? string.Empty;
+            string sEWSEUnitOfMeasurement = BOMUnitOfMeasurement ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(sEWSEUnitOfMeasurement))
             {
-                Err(nameof(SEWSEUnitOfMeasurement), SEWSEUnitOfMeasurement ?? "",   
+                Err(nameof(BOMUnitOfMeasurement), BOMUnitOfMeasurement ?? "",   
                     "SEWSE unit of measurement is required.");
             }
             else
             {
                 if (10 < sEWSEUnitOfMeasurement.Length)
                 {
-                    Err(nameof(SEWSEUnitOfMeasurement), SEWSEUnitOfMeasurement ?? "",
+                    Err(nameof(BOMUnitOfMeasurement), BOMUnitOfMeasurement ?? "",
                         "SEWSE unit of measurement can not be greater than 10 characters.");
                 }
             }
@@ -458,10 +454,10 @@ namespace SalesSystem.Rfq.Models
                 Err(nameof(QtyPerVehicle), QtyPerVehicle?.ToString(CultureInfo.InvariantCulture) ?? "0.0", "QtyPerVehicle cannot be Less than 1.");
             }
 
-            if (VehicleTotalQuantity <= 0)
-            {
-                Err(nameof(VehicleTotalQuantity), VehicleTotalQuantity?.ToString(CultureInfo.InvariantCulture) ?? "0.0", "Vehicle Total Quantity cannot be Less than 1.");
-            }
+            //if (VehicleTotalQuantity <= 0)
+            //{
+            //    Err(nameof(VehicleTotalQuantity), VehicleTotalQuantity?.ToString(CultureInfo.InvariantCulture) ?? "0.0", "Vehicle Total Quantity cannot be Less than 1.");
+            //}
 
             //if (string.IsNullOrWhiteSpace(nPRRaisedRemarks))
             //{
@@ -473,32 +469,32 @@ namespace SalesSystem.Rfq.Models
                 Err(nameof(ManufacturingSite), "", "ManufacturingSite is required.");
             }
 
-            if (string.IsNullOrWhiteSpace(PlatformName))
-            {
-                Err(nameof(PlatformName), "", "Platform name is required.");
-            }
-            else
-            {
+            //if (string.IsNullOrWhiteSpace(PlatformName))
+            //{
+            //    Err(nameof(PlatformName), "", "Platform name is required.");
+            //}
+            //else
+            //{
 
-                if (50 < PlatformName.Length)
-                {
-                    Err(nameof(PlatformName), PlatformName,
-                        "Platform name can not be greater than 50 characters.");
-                }
-            }
+            //    if (50 < PlatformName.Length)
+            //    {
+            //        Err(nameof(PlatformName), PlatformName,
+            //            "Platform name can not be greater than 50 characters.");
+            //    }
+            //}
 
-            if (string.IsNullOrWhiteSpace(ProgramName))
-            {
-                Err(nameof(ProgramName), "", "Program name is required.");
-            }
-            else
-            {
-                if (50 < ProgramName.Length)
-                {
-                    Err(nameof(ProgramName), ProgramName,
-                        "Program name can not be greater than 50 characters.");
-                }
-            }
+            //if (string.IsNullOrWhiteSpace(ProgramName))
+            //{
+            //    Err(nameof(ProgramName), "", "Program name is required.");
+            //}
+            //else
+            //{
+            //    if (50 < ProgramName.Length)
+            //    {
+            //        Err(nameof(ProgramName), ProgramName,
+            //            "Program name can not be greater than 50 characters.");
+            //    }
+            //}
 
             if (string.IsNullOrWhiteSpace(SuggestedManufacturerGroup))
             {

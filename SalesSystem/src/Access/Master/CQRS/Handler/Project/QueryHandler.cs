@@ -3,28 +3,33 @@
     sealed class QueryHandler : IQueryHandler<GetAllMilestoneHierarchiesQuery, List<MilestoneGrpc>>,
         IQueryHandler<GetAllPlatformHierarchiesQuery, List<PlatformGrpc>>,
         IQueryHandler<GetAllProgramHierarchiesQuery, List<ProgramGrpc>>,
-        IQueryHandler<GetAllProjectHierarchiesQuery, List<ProjectGrpc>>
+        IQueryHandler<GetAllProjectHierarchiesQuery, List<ProjectGrpc>>,
+        IQueryHandler<GetAllProjectEngineeringAssociationQuery, List<ProjectEngineeringAssociationGrpc>>
     {
         readonly IMastersReadRepository<DbMilestoneHierarchy> _MilestoneHierarchyRepository;
         readonly IMastersReadRepository<DbPlatformHierarchy> _PlatformHierarchyRepository;
         readonly IMastersReadRepository<DbProgramHierarchy> _ProgramHierarchyRepository;
         readonly IMastersReadRepository<DbProjectHierarchy> _ProjectHierarchyRepository;
+        readonly IMastersReadRepository<DbProjectEngineeringAssociation> _ProjectEngineeringAssociationRepository;
 
         List<MilestoneGrpc> _Milestones;
         List<PlatformGrpc> _Platforms;
         List<ProgramGrpc> _Programs;
         List<ProjectGrpc> _Projects;
+        List<ProjectEngineeringAssociationGrpc> _ProjectEngineeringAssociations;
 
-        public QueryHandler(IMastersReadRepository<DbMilestoneHierarchy> milestoneHierarchyRepository, IMastersReadRepository<DbPlatformHierarchy> platformHierarchyRepository, IMastersReadRepository<DbProgramHierarchy> programHierarchyRepository, IMastersReadRepository<DbProjectHierarchy> projectHierarchyRepository)
+        public QueryHandler(IMastersReadRepository<DbMilestoneHierarchy> milestoneHierarchyRepository, IMastersReadRepository<DbPlatformHierarchy> platformHierarchyRepository, IMastersReadRepository<DbProgramHierarchy> programHierarchyRepository, IMastersReadRepository<DbProjectHierarchy> projectHierarchyRepository, IMastersReadRepository<DbProjectEngineeringAssociation> projectEngineeringAssociationHierarchyRepository)
         {
             _MilestoneHierarchyRepository = milestoneHierarchyRepository;
             _PlatformHierarchyRepository = platformHierarchyRepository;
             _ProgramHierarchyRepository = programHierarchyRepository;
             _ProjectHierarchyRepository = projectHierarchyRepository;
+            _ProjectEngineeringAssociationRepository = projectEngineeringAssociationHierarchyRepository;
             _Milestones = [];
             _Platforms = [];
             _Programs = [];
             _Projects = [];
+            _ProjectEngineeringAssociations = [];
         }
 
         async Task<Result<List<MilestoneGrpc>>> IQueryHandler<GetAllMilestoneHierarchiesQuery, List<MilestoneGrpc>>.Handle(GetAllMilestoneHierarchiesQuery query, CancellationToken cancellationToken)
@@ -81,6 +86,20 @@
             }
 
             return _Projects;
+        }
+
+        async Task<Result<List<ProjectEngineeringAssociationGrpc>>> IQueryHandler<GetAllProjectEngineeringAssociationQuery, List<ProjectEngineeringAssociationGrpc>>.Handle(GetAllProjectEngineeringAssociationQuery query, CancellationToken cancellationToken)
+        {
+            _ProjectEngineeringAssociations.Clear();
+            GetProjectEngineeringAssociationReadOnlySpec spec = new GetProjectEngineeringAssociationReadOnlySpec(query.Position, query.TakeAmount);
+            List<DbProjectEngineeringAssociation> results = await _ProjectEngineeringAssociationRepository.ListAsync(spec, cancellationToken);
+            foreach (DbProjectEngineeringAssociation result in results)
+            {
+                ProjectEngineeringAssociationGrpc mapping = result.MapToProjectEngineeringAssociationGrpc();
+                _ProjectEngineeringAssociations.Add(mapping);
+            }
+
+            return _ProjectEngineeringAssociations;
         }
     }
 }

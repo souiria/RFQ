@@ -2,6 +2,7 @@
 global using System.Globalization;
 global using System.Linq.Dynamic.Core;
 global using System.Net;
+global using System.Security.Claims;
 global using System.Security.Cryptography.X509Certificates;
 global using System.Text.RegularExpressions;
 global using CPD;
@@ -11,6 +12,7 @@ global using Grpc.Core;
 global using Logging;
 global using Master;
 global using static Master.Master;
+global using Microsoft.AspNetCore.Http;
 global using Microsoft.Extensions.Http.Resilience;
 global using Microsoft.Extensions.Logging;  
 global using Newtonsoft.Json;

@@ -28,6 +28,12 @@
         { get; }
         DbSet<DbSupplier> Supplier
         { get; }
+         DbSet<DbUnitOfMeasure> UnitOfMeasures
+         { get; }
+        DbSet<DbBusinessUnit> BusinessUnits
+        { get; }
+        DbSet<DbProjectEngineeringAssociation> ProjectEngineeringAssociations
+        { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

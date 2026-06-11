@@ -16,7 +16,7 @@ namespace RfqModule.Services
         readonly NPR.NPR.NPRClient _NPRGrpcClient;
         readonly CPD.CPD.CPDClient _CPDClient;
         readonly ILogger<RfqManagerService> _Logger;
-
+        readonly IHttpContextAccessor _HttpContextAccessor;
         List<ProjectGrpc> _Projects;
 
         public RfqManagerService(ILogger<RfqManagerService> logger,
@@ -25,7 +25,8 @@ namespace RfqModule.Services
             Emacs.Emacs.EmacsClient emacsClient,
             Adss.AdssGrpc.AdssGrpcClient adssGrpcClient,
             NPR.NPR.NPRClient nprClient,
-            CPD.CPD.CPDClient cPDClient
+            CPD.CPD.CPDClient cPDClient,
+            IHttpContextAccessor httpContextAccessor
             )
         {
             _Logger = logger;
@@ -36,6 +37,7 @@ namespace RfqModule.Services
             _AdssGrpcClient = adssGrpcClient;
             _NPRGrpcClient = nprClient;
             _CPDClient = cPDClient;
+            _HttpContextAccessor = httpContextAccessor;
         }
         #region Master Requests
         public async Task<GetAllCustomersGrpcResponse> GetAllCustomersGrpc (GetAllCustomersGrpcRequest request)
@@ -63,7 +65,8 @@ namespace RfqModule.Services
                 throw;
             }
         }
-         public async Task<GetProjectAssociationsByCustomerIdResponse> GetProjectAssociationsByCustomerId(GetProjectAssociationsByCustomerIdRequest request)
+        // add adlogin to request 
+        public async Task<GetProjectAssociationsByCustomerIdResponse> GetProjectAssociationsByCustomerId(GetProjectAssociationsByCustomerIdRequest request)
         {
             try
             {
@@ -106,6 +109,15 @@ namespace RfqModule.Services
                     .Select(assoc => assoc.ToCustomerProjectAssociation())
                     .Where(assoc => assoc.CustomerLocationGuid != null)
                     .ToList();
+                // get all projectbusiness associations and filter if ADLogon matches allProjectAssociations project guid, if yes add to list, then filter projects based on login, then add to response
+                //filterRequest.DatabaseList = "PROJECTBUSINESSASSOCIATIONGRPC";
+                //filterRequest.FilterExpression = $"IsActive == true && AdLogin != null && AdLogin.ToUpperInvariant() == \"{request.ADlogin.ToUpperInvariant()}\"";
+                //MastersFilterResponseGrpc projectEngineeringAssociations = _MasterClient.FilterMasterDataGrpc(filterRequest);
+
+                //// this needs to be filtered by customerlocation id == ProjectEngineeringAssociationGrpc.CustomerId
+                ////List<ProjectEngineeringAssociationGrpc> extractedAssociations = projectEngineeringAssociations.ProjectEngineeringAssociationGrpcList.ProjectEngineeringAssociationGrpc
+                ////                    .Where(x => x.Id != null && x.Id.Equals(, StringComparison.OrdinalIgnoreCase))
+                ////                    .ToList();
 
                 foreach (CustomerLocationGrpc? location in extractedLocations)
                 {
@@ -118,6 +130,18 @@ namespace RfqModule.Services
                     List<CustomerProjectAssociationGrpc> extractedProjectAssociations = allProjectAssociations
                         .Where(assoc => assoc.CustomerLocationGuid != null && assoc.CustomerLocationGuid.Equals(location.Id, StringComparison.OrdinalIgnoreCase))
                         .ToList();
+
+                    //List<ProjectEngineeringAssociationGrpc> extractedProjectEngineeringAssociations = projectEngineeringAssociations.ProjectEngineeringAssociationGrpcList.ProjectEngineeringAssociationGrpc
+                    //    .Where(x => x.CustomerGuid != null && x.Id.Equals(location.Id, StringComparison.OrdinalIgnoreCase))
+                    //    .ToList();
+
+                    //List<CustomerProjectAssociationGrpc> customerAndEngineerProjects = new List<CustomerProjectAssociationGrpc>();
+
+                    //foreach (ProjectEngineeringAssociationGrpc? projectEngineeringAssociation in extractedProjectEngineeringAssociations)
+                    //{
+                    //    IEnumerable<CustomerProjectAssociationGrpc> associatedProjects = extractedProjectAssociations.Where(p => p.ProjectGuid == projectEngineeringAssociation.ProjectGuid);
+                    //    customerAndEngineerProjects.AddRange(associatedProjects);
+                    //}
 
                     foreach (CustomerProjectAssociationGrpc? customerProjectAssociation in extractedProjectAssociations)
                     {
@@ -145,8 +169,10 @@ namespace RfqModule.Services
                             ProjectAssociation projectAssociation = new ProjectAssociation();
                             projectAssociation.CustomerLocationGuid = location.Id.ToUpperInvariant();
                             projectAssociation.CustomerLocationName = location.CustomerName;
+                            projectAssociation.CustomerCode = location.CustomerCode;
                             projectAssociation.CustomerProjectGuid = project.Id.ToUpperInvariant();
-                            projectAssociation.CustomerProjectName = project.CustomerProjectCode;
+                            projectAssociation.CustomerProjectName = project.ProjectName;
+                            projectAssociation.CustomerProjectCode = project.CustomerProjectCode;
                             projectAssociation.Id = customerProjectAssociation.Id;
                             response.ProjectAssociation.Add(projectAssociation);
                         }
@@ -211,6 +237,7 @@ namespace RfqModule.Services
             }
         }
         #endregion
+
         public async Task<GetRfqReasonsGrpcResponse> GetRfqReasonsGrpc(GetRfqReasonsGrpcRequest request)
         {
             try
@@ -242,6 +269,58 @@ namespace RfqModule.Services
             catch (Exception ex)
             {
                 _Logger.GenericLogError("Error fetching RFQ reasons from Master service", ex);
+                throw;
+            }
+        }
+
+        public async Task<GetAllUnitOfMeasuresResponse> GetAllUnitOfMeasuresGrpc(GetAllUnitOfMeasuresRequest request)
+        {
+            try
+            {
+                await Task.Delay(1);
+                GetAllUnitOfMeasuresResponse response = new GetAllUnitOfMeasuresResponse();
+                UnitOfMeasureGrpcRequest unitOfMeasureRequest = new UnitOfMeasureGrpcRequest();
+                unitOfMeasureRequest.Position = request.Position;
+                unitOfMeasureRequest.Takeamount = request.Take;
+                ListUnitOfMeasureGrpc allUnitOfMeasures =  await _MasterClient.GetUnitOfMeasureGrpcAsync(unitOfMeasureRequest);
+                
+                foreach(Master.UnitOfMeasureGrpc unitOfMeasure in allUnitOfMeasures.UnitOfMeasureGrpc)
+                {
+                    UnitOfMeasureGrpc uom = unitOfMeasure.ToUnitOfMeasureGrpc();
+                    response.UnitOfMeasureGrpc.Add(uom);
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError("Error fetching Unit of Measures from Master service", ex);
+                throw;
+            }
+        }
+
+        public async Task<GetAllBusinessUnitsGrpcResponse> GetAllBusinessUnitsGrpc(GetAllBusinessUnitsGrpcRequest request)
+        {
+            try
+            {
+                await Task.Delay(1);
+                GetAllBusinessUnitsGrpcResponse response = new GetAllBusinessUnitsGrpcResponse();
+                BusinessUnitGrpcRequest businessUnitsGrpcRequest = new BusinessUnitGrpcRequest();
+                businessUnitsGrpcRequest.Position = request.Position;
+                businessUnitsGrpcRequest.Takeamount = request.Take;
+                ListBusinessUnitGrpc allBusinessUnits = await _MasterClient.GetBusinessUnitGrpcAsync(businessUnitsGrpcRequest);
+
+                foreach (Master.BusinessUnitGrpc unitOfMeasure in allBusinessUnits.BusinessUnitGrpc)
+                {
+                    BusinessUnitGrpc businessUnit = unitOfMeasure.ToBusinessUnitGrpc();
+                    response.BusinessUnitGrpc.Add(businessUnit);
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError("Error fetching Unit of Measures from Master service", ex);
                 throw;
             }
         }
@@ -2154,29 +2233,44 @@ namespace RfqModule.Services
 
             return response;
         }
+        //string GetCurrentUser()
+        //{
 
+        //    ClaimsPrincipal? user = _HttpContextAccessor.HttpContext?.User;
+
+        //    if (user == null || !user.Identity?.IsAuthenticated == true)
+        //    {
+        //        return "UNKNOWN";
+        //    }
+
+        //    return user.FindFirst(ClaimTypes.Name)?.Value
+        //        ?? user.FindFirst("preferred_username")?.Value
+        //        ?? user.FindFirst("email")?.Value
+        //        ?? "UNKNOWN";
+
+        //}
         public async Task<CreateNprGrpcResponse> CreateNprGrpc (CreateNprGrpcRequest request)
         {
             await Task.Delay(0);
             CreateNprGrpcResponse response = new CreateNprGrpcResponse();
-            ValidateNprRequestRequest validateRequest = new ValidateNprRequestRequest();
+            // ValidateNprRequestRequest validateRequest = new ValidateNprRequestRequest();
             List<NPR.NprApiDataGrpc> accessDataList = new List<NPR.NprApiDataGrpc>();
             List<Rfq.RfqNprRequestGrpc> rfqNprRequestList = new List<Rfq.RfqNprRequestGrpc>();
 
             //Validate the incoming request first
-            foreach (NprApiDataGrpc? npr in request.NprApiData)
+            for(int i = 0; i < request.NprApiData.Count; i++)
             {
-                Rfq.RfqNprRequestGrpc rfqNprRequest = npr.RfqNprRequest.ToRfqNprRequestGrpcAccess();
+                Rfq.RfqNprRequestGrpc rfqNprRequest = request.NprApiData[i].RfqNprRequest.ToRfqNprRequestGrpcAccess(i);
                 rfqNprRequestList.Add(rfqNprRequest);
-                validateRequest.Items.Add(rfqNprRequest);
+                // validateRequest.Items.Add(rfqNprRequest);
             }
 
-            ValidateNprRequestResponse validateResponse = await _RfqClient.ValidateNprRequestGrpcAsync(validateRequest);
-            List<Rfq.RfqNprRequestGrpc> validRequests = validateRequest.Items.Where(item => item.Id != null && validateResponse.LineStatuses.Any(line => line.Id == item.Id && line.IsValid)).ToList();
-
+            // ValidateNprRequestResponse validateResponse = await _RfqClient.ValidateNprRequestGrpcAsync(validateRequest);
+            // List<Rfq.RfqNprRequestGrpc> validRequests = validateRequest.Items.Where(item => item.Id != null && validateResponse.LineStatuses.Any(line => line.Id == item.Id && line.IsValid)).ToList();  
             // send all requests to create RfqNprRequests replacing with the ones from NPR API for the valid requests to capture any additional data from NPR API and to update the status of the RfqNprRequest
             NprApiDataGrpc nprApiDataGrpc = new NprApiDataGrpc();
-            foreach (Rfq.RfqNprRequestGrpc validRequest in validRequests)
+        
+            foreach (Rfq.RfqNprRequestGrpc validRequest in rfqNprRequestList) //validRequests)
             {
                 nprApiDataGrpc.RfqNprRequest = validRequest.ToRfqNprRequest();
                 NPR.NprApiDataGrpc nprAccessData = nprApiDataGrpc.ToNprApiAccessData();

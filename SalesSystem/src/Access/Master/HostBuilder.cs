@@ -5,13 +5,17 @@
         public static WebApplication CreateApp(WebApplicationBuilder? builder = null, params string[] args)
         {
 
-            builder ??= WebApplication.CreateBuilder(args);
             string dir = Directory.GetCurrentDirectory();
+
+            builder ??= WebApplication.CreateBuilder(args);
+            IConfigurationSection conf = builder.Configuration.GetSection("Logging");
             builder.Configuration
                 .SetBasePath(dir)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConfiguration(conf);
 
             #region Builder
 

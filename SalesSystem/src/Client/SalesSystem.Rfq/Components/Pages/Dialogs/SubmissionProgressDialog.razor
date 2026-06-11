@@ -141,6 +141,14 @@
                 Please wait...
             </MudButton>
         }
+        else if (ProgressState.HasError)
+        {
+            <MudButton OnClick="Close" 
+                       Color="Color.Error" 
+                       Variant="Variant.Filled">
+                Close
+            </MudButton>
+        }
     </DialogActions>
 </MudDialog>
 

@@ -19,6 +19,7 @@
 
             await PopulateGlobalDataAsync(stoppingToken);
             await DailyWorker(23, 30, 00, async () => await PopulateGlobalDataAsync(stoppingToken), stoppingToken);
+            await DailyWorker(01, 00, 00, async () => await PopulateH1NPRViewDataAsync(stoppingToken), stoppingToken);
 
             //using (PeriodicTimer timer = new PeriodicTimer(TimeSpan.FromSeconds(30)))
             //{
@@ -36,10 +37,21 @@
             if (_NPRAccessService != null)
             {
                 bool check;
-                check = await _NPRAccessService.PopulateH1NPRViewAsync(stoppingToken);
-                await LogDataPopulationSuccess("AllH1NPRView", check);
                 check = await _NPRAccessService.PopulateRFQStatusAsync(stoppingToken);
                 await LogDataPopulationSuccess("AllRfqStatus", check);
+            }
+
+            return true;
+
+        }
+        public async Task<bool> PopulateH1NPRViewDataAsync(CancellationToken stoppingToken)
+        {
+
+            if (_NPRAccessService != null)
+            {
+                bool check;
+                check = await _NPRAccessService.PopulateH1NPRViewAsync(stoppingToken);
+                await LogDataPopulationSuccess("AllH1NPRView", check);
             }
 
             return true;

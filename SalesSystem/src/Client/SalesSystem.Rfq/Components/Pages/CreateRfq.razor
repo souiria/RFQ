@@ -11,7 +11,7 @@
 @using SalesSystem.Rfq.Extensions
 @using SalesSystem.Rfq.Models
 
-<MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Create RFI/RFQ [@GlobalValue?.DisplayName]</MudText>
+<MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Create RFI/RFQ</MudText>
 <MudGrid Class="position-fixed">
     @* Attributes *@
     <MudItem xs="12">
@@ -59,7 +59,7 @@
                                      Label="Project"
                                      Placeholder="Search project..."
                                      SearchFunc="@SearchProjects"
-                                     ToStringFunc="@(p => p != null ? $"{p.ProjectName} - {p.CustomerName}" : "")"
+                                     ToStringFunc="@(p => p != null ? $"{p.ProjectCode} - {p.CustomerName}" : "")"
                                      ResetValueOnEmptyText="true"
                                      CoerceText="true"
                                      CoerceValue="false"
@@ -74,10 +74,10 @@
                         <ItemTemplate Context="project">
                             <MudStack Spacing="0">
                                 <MudText Typo="Typo.body2">
-                                    <strong>@project.ProjectName</strong>
+                                    <strong>@project.ProjectCode</strong>
                                 </MudText>
                                 <MudText Typo="Typo.caption" Color="Color.Secondary">
-                                    @project.ProjectName - @project.CustomerName
+                                    @project.ProjectCode - @project.CustomerName
                                 </MudText>
                             </MudStack>
                         </ItemTemplate>
@@ -102,7 +102,15 @@
                                Placeholder="Please Select"
                                Disabled="_UploadedSuccessfully"
                                AdornmentIcon="@Icons.Material.Filled.RequestQuote"
-                               AdornmentColor="Color.Primary">
+                               AdornmentColor="Color.Primary"
+                               OnOpen="@(() => _IsQuotationOpen = true)"
+                               OnClose="@(() => _IsQuotationOpen = false)">
+                        @if (_IsQuotationOpen)
+                        {
+                            <MudDivider Class="my-2" />
+                            <MudText Typo="Typo.caption" Class="px-4 pt-2 mt-2 mud-text-secondary">Temp Values</MudText>
+                            <MudDivider Class="my-2" />
+                        }
                         @foreach (string quotationNumber in RfqUxClientService.QuotationNumbers)
                         {
                             <MudSelectItem Value="@quotationNumber">@quotationNumber</MudSelectItem>

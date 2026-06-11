@@ -84,7 +84,7 @@ namespace Integration.Tests.CDb
             Task<HelloReply> helloReply = _GrpcService.SayHello(request, serverCallContext);
 
             string replyString = "Hello ClipTypesIntegrationTests";
-            NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(replyString);
+            EqualConstraint equalConstraint = Is.EqualTo(replyString);
             Assert.That(helloReply, Is.Not.Null);
             Assert.That(helloReply.Result.Message, equalConstraint);
         }
@@ -106,7 +106,7 @@ namespace Integration.Tests.CDb
             // Assert
             // The HasData in the DbClipType adds 7 records to the database
             Assert.That(response.Result.ClipTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.GreaterThanOrEqualConstraint countConstraint = Is.GreaterThanOrEqualTo(5);
+            GreaterThanOrEqualConstraint countConstraint = Is.GreaterThanOrEqualTo(5);
             Assert.That(response.Result.ClipTypeGrpcs.Count, countConstraint);
         }
 
@@ -163,19 +163,19 @@ namespace Integration.Tests.CDb
             // Assert
             // The HasData in the DbClipType adds UNKNOWN CLIP TYPE
             Assert.That(response.Result.ListClipTypes.ClipTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(response.Result.ListClipTypes.ClipTypeGrpcs.Count, countConstraint);
 
             // Check if the ClipTypeGrpc has the expected ID
-            NUnit.Framework.Constraints.EqualConstraint idConstraint = Is.EqualTo("CDD0D832-7ED0-4141-953C-2A1909DD5181");
+            EqualConstraint idConstraint = Is.EqualTo("CDD0D832-7ED0-4141-953C-2A1909DD5181");
             CultureInfo cultureInfo = CultureInfo.InvariantCulture;
             string clipTypeId = response.Result.ListClipTypes.ClipTypeGrpcs[0].Id.ToUpper(cultureInfo);
             Assert.That(clipTypeId, idConstraint);
             // Check if the ClipTypeGrpc has the expected Name
-            NUnit.Framework.Constraints.EqualConstraint codeConstraint = Is.EqualTo("DOUBLE");
+            EqualConstraint codeConstraint = Is.EqualTo("DOUBLE");
             Assert.That(response.Result.ListClipTypes.ClipTypeGrpcs[0].Code, codeConstraint);
             // Check if the ClipTypeGrpc has the expected Description
-            NUnit.Framework.Constraints.EqualConstraint descriptionConstraint = Is.EqualTo("Double");
+            EqualConstraint descriptionConstraint = Is.EqualTo("Double");
             Assert.That(response.Result.ListClipTypes.ClipTypeGrpcs[0].Description, descriptionConstraint);
 
         }
@@ -196,11 +196,11 @@ namespace Integration.Tests.CDb
             // Assert
             // The HasData in the DbClipType adds OVALSHAPED CLIP TYPE
             Assert.That(response.Result.ListClipTypes.ClipTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(1);
+            EqualConstraint countConstraint = Is.EqualTo(1);
             Assert.That(response.Result.ListClipTypes.ClipTypeGrpcs.Count, countConstraint);
 
             // Check if the ClipTypeGrpc has the expected ID
-            NUnit.Framework.Constraints.EqualConstraint codeConstraint = Is.EqualTo("OVALSHAPED");
+            EqualConstraint codeConstraint = Is.EqualTo("OVALSHAPED");
             CultureInfo cultureInfo = CultureInfo.InvariantCulture;
             string clipTypeId = response.Result.ListClipTypes.ClipTypeGrpcs[0].Code.ToUpper(cultureInfo);
             Assert.That(clipTypeId, codeConstraint);
@@ -223,7 +223,7 @@ namespace Integration.Tests.CDb
             // Assert
             // Once run, if deadbeef is in the database, this will fail
             Assert.That(response.Result.ListClipTypes.ClipTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(response.Result.ListClipTypes.ClipTypeGrpcs.Count, countConstraint);
 
             // Arrange
@@ -246,7 +246,7 @@ namespace Integration.Tests.CDb
 
             // Assert
             Assert.That(crudResponse, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint statusConstraint = Is.EqualTo(true);
+            EqualConstraint statusConstraint = Is.EqualTo(true);
             Assert.That(crudResponse.SaveSuccess, statusConstraint);
         }
 
@@ -319,7 +319,7 @@ namespace Integration.Tests.CDb
 
             // Assert
             Assert.That(response.Result.ListClipTypes.ClipTypeGrpcs, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(0);
+            EqualConstraint countConstraint = Is.EqualTo(0);
             Assert.That(response.Result.ListClipTypes.ClipTypeGrpcs.Count, countConstraint);
 
         }

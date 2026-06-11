@@ -476,14 +476,14 @@
     //         return true;
 
     //     // Compile filter only when it changes
-    //     if (_lastCompiledFilter != AlternativePartFilter)
+    //     if (_LastCompiledFilter != AlternativePartFilter)
     //     {
-    //         _lastCompiledFilter = AlternativePartFilter;
+    //         _LastCompiledFilter = AlternativePartFilter;
     //         var filter = AlternativePartFilter.Trim();
     //         var comparisonType = StringComparison.OrdinalIgnoreCase;
     //         var isNumeric = double.TryParse(filter, out double numericFilter);
 
-    //         _compiledQuickFilter = item =>
+    //         _CompiledQuickFilter = item =>
     //         {
     //             // String property checks
     //             if (item.SumitomoNumber?.Contains(filter, comparisonType) == true) return true;
@@ -543,7 +543,7 @@
     //         };
     //     }
 
-    //     return _compiledQuickFilter?.Invoke(x) ?? true;
+    //     return _CompiledQuickFilter?.Invoke(x) ?? true;
     // };
     private bool _quickFilterFunc(AlternativePartUxModel x)
     {

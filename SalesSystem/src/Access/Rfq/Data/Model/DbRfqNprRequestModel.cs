@@ -45,11 +45,6 @@
         public string? MaterialDescription
         { get; set; }
 
-        /// <summary>Material Type (Component) (Master)</summary>
-        [MaxLength(50)]
-        public string? MaterialTypeDescription
-        { get; set; }
-
         /// <summary>CPN (Free Text)</summary>
         [MaxLength(26)]
         public string? CustomerPartNumber
