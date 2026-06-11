@@ -1,10 +1,4 @@
-﻿using Azure;
-using Google.Protobuf.WellKnownTypes;
-using Rfq;
-using System.Globalization;
-using Transformation.TypeConversion.DSI;
-
-namespace RfqModule.Services
+﻿namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {

@@ -1002,6 +1002,7 @@ namespace RfqModule.Extentions
             dsiMulticoreSpecificationGrpc.PartNumber1 = multicoreSpecification.PartNumber1 ?? string.Empty;
             dsiMulticoreSpecificationGrpc.PartNumber2 = multicoreSpecification.PartNumber2 ?? string.Empty;
             dsiMulticoreSpecificationGrpc.PartNumber3 = multicoreSpecification.PartNumber3 ?? string.Empty;
+            dsiMulticoreSpecificationGrpc.HarnessID = multicoreSpecification.HarnessID?.ToString();
 
             return dsiMulticoreSpecificationGrpc;
         }
@@ -1017,7 +1018,6 @@ namespace RfqModule.Extentions
             dsiPinMappingGrpc.HarnessIssue2 = pinMapping.HarnessIssue2;
             dsiPinMappingGrpc.Separator = pinMapping.Separator;
             dsiPinMappingGrpc.HarnessID = pinMapping.HarnessID?.ToString();
-            dsiPinMappingGrpc.CreatedDate = Timestamp.FromDateTime(DateTime.UtcNow);
             return dsiPinMappingGrpc;
         }
         public static DsiWireMulticoreMarkerGrpc ToWireMulticoreMarker(this WireMulticoreMarkerDto wireMulticoreMarker)
@@ -1069,6 +1069,7 @@ namespace RfqModule.Extentions
             dsiWireSpecificationGrpc.PartNumber2 = wireSpecification.PartNumber2 ?? string.Empty;
             dsiWireSpecificationGrpc.PartNumber3 = wireSpecification.PartNumber3 ?? string.Empty;
             dsiWireSpecificationGrpc.Signal = wireSpecification.Signal ?? string.Empty;
+            dsiWireSpecificationGrpc.HarnessID = wireSpecification.HarnessID?.ToString();
             dsiWireSpecificationGrpc.CreatedDate = Timestamp.FromDateTime(DateTime.UtcNow);
             return dsiWireSpecificationGrpc;
         }
@@ -1081,6 +1082,7 @@ namespace RfqModule.Extentions
             wireThroughNodeGrpc.ThroughNode = wireThroughNode.ThroughNode ?? string.Empty;
             wireThroughNodeGrpc.ThroughRoute = wireThroughNode.ThroughRoute ?? string.Empty;
             wireThroughNodeGrpc.IsThroughFlag = wireThroughNode.IsThroughFlag ?? false;
+            wireThroughNodeGrpc.HarnessID = wireThroughNode.HarnessID?.ToString();
             wireThroughNodeGrpc.CreatedDate = Timestamp.FromDateTime(DateTime.UtcNow);
             return wireThroughNodeGrpc;
         }
