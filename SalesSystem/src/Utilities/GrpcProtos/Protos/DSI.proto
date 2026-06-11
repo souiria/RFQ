@@ -1,0 +1,342 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "DSI";
+
+package DSI;
+
+// The greeting service definition.
+service DSI {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply);
+  
+
+    rpc GetAllHarness(GetAllRequest) returns (ListHarnessGrpc);
+    rpc GetHarnessByCustomer(GetHarnessByCustomerRequest) returns (ListHarnessGrpc);
+
+    rpc GetAllCompositeDetail(GetAllRequest) returns (ListCompositeDetailGrpc);
+    rpc GetCompositeByHarnessId(GetByIdRequest) returns (ListCompositeDetailGrpc);
+
+    rpc GetAllComponent(GetAllRequest) returns (ListComponentGrpc);
+    rpc GetComponentByHarnessId(GetByIdRequest) returns (ListComponentGrpc);
+
+    rpc GetAllBranchInsulation(GetAllRequest) returns (ListBranchInsulationGrpc);
+    rpc GetBranchByHarnessId(GetByIdRequest) returns (ListBranchInsulationGrpc);
+
+    rpc GetAllWireSpecification(GetAllRequest) returns (ListWireSpecificationGrpc);
+    rpc GetWireByHarnessId(GetByIdRequest) returns (ListWireSpecificationGrpc);
+    
+    rpc FilterDSIGrpc (DSIFilterRequest) returns (DSIFilterResponse);
+
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings.
+message HelloReply {
+  string message = 1;
+}
+
+
+
+//////////////////////////////////////////////////////
+// HARNESS
+//////////////////////////////////////////////////////
+
+message HarnessGrpc {
+    google.protobuf.StringValue Id = 1;
+
+    google.protobuf.StringValue HarnessName1 = 2;
+    google.protobuf.StringValue SimilarHarnessName1 = 3;
+    google.protobuf.StringValue HarnessIssue1 = 4;
+    google.protobuf.StringValue SimilarHarnessIssue1 = 5;
+    google.protobuf.Timestamp HarnessDate1 = 6;
+
+    google.protobuf.StringValue HarnessName2 = 7;
+    google.protobuf.StringValue SimilarHarnessName2 = 8;
+    google.protobuf.StringValue HarnessIssue2 = 9;
+    google.protobuf.StringValue SimilarHarnessIssue2 = 10;
+    google.protobuf.Timestamp HarnessDate2 = 11;
+
+    google.protobuf.DoubleValue FileVersion = 12;
+
+    google.protobuf.StringValue Customer = 13;
+    google.protobuf.StringValue Site = 14;
+    google.protobuf.StringValue Range = 15;
+
+    google.protobuf.DoubleValue BoardLength = 16;
+    google.protobuf.DoubleValue BoardWidth = 17;
+
+    google.protobuf.StringValue Datum = 18;
+
+    google.protobuf.StringValue UserField1 = 19;
+    google.protobuf.StringValue UserField2 = 20;
+    google.protobuf.StringValue UserField3 = 21;
+    google.protobuf.StringValue UserField4 = 22;
+    google.protobuf.StringValue UserField5 = 23;
+
+    google.protobuf.StringValue Checker = 24;
+    google.protobuf.StringValue Inputter = 25;
+    google.protobuf.StringValue DraftedBy = 26;
+    google.protobuf.StringValue PreparedBy = 27;
+
+    google.protobuf.StringValue Type = 28;
+    google.protobuf.StringValue Title = 29;
+    google.protobuf.StringValue EngineSize = 30;
+    google.protobuf.StringValue ManufacturingCell = 31;
+    google.protobuf.StringValue Trim = 32;
+    google.protobuf.StringValue HandDrive = 33;
+
+    google.protobuf.StringValue TubeAddOnType = 34;
+    google.protobuf.DoubleValue TubeAddOnFactor = 35;
+
+    google.protobuf.BoolValue IsManualTerminal = 36;
+    google.protobuf.BoolValue IsAllConnectorsSealed = 37;
+    google.protobuf.BoolValue IsModule = 38;
+    google.protobuf.BoolValue IsPitchTableUsed = 39;
+
+    google.protobuf.StringValue AlphaCode = 40;
+    google.protobuf.StringValue AdditionalComments = 41;
+
+    google.protobuf.Timestamp CreatedDate = 42;
+    google.protobuf.Timestamp ModifiedDate = 43;
+
+    google.protobuf.StringValue CreatedBy = 44;
+    google.protobuf.StringValue ModifiedBy = 45;
+}
+
+
+//////////////////////////////////////////////////////
+// COMPOSITE DETAIL
+//////////////////////////////////////////////////////
+
+message CompositeDetailGrpc {
+    google.protobuf.StringValue Id = 1;
+
+    google.protobuf.StringValue HarnessName1 = 2;
+    google.protobuf.StringValue SimilarHarnessName1 = 3;
+    google.protobuf.StringValue HarnessIssue1 = 4;
+    google.protobuf.StringValue SimilarHarnessIssue1 = 5;
+    google.protobuf.Timestamp HarnessDate1 = 6;
+
+    google.protobuf.StringValue HarnessName2 = 7;
+    google.protobuf.StringValue SimilarHarnessName2 = 8;
+    google.protobuf.StringValue HarnessIssue2 = 9;
+    google.protobuf.StringValue SimilarHarnessIssue2 = 10;
+    google.protobuf.Timestamp HarnessDate2 = 11;
+
+    google.protobuf.StringValue Customer = 12;
+    google.protobuf.StringValue Site = 13;
+    google.protobuf.StringValue Range = 14;
+
+    google.protobuf.DoubleValue BoardLength = 15;
+    google.protobuf.DoubleValue BoardWidth = 16;
+
+    google.protobuf.StringValue Datum = 17;
+
+    google.protobuf.StringValue UserField1 = 18;
+    google.protobuf.StringValue UserField2 = 19;
+    google.protobuf.StringValue UserField3 = 20;
+    google.protobuf.StringValue UserField4 = 21;
+    google.protobuf.StringValue UserField5 = 22;
+
+    google.protobuf.StringValue Checker = 23;
+    google.protobuf.StringValue Inputter = 24;
+    google.protobuf.StringValue DraftedBy = 25;
+    google.protobuf.StringValue PreparedBy = 26;
+
+    google.protobuf.StringValue Type = 27;
+    google.protobuf.StringValue Title = 28;
+    google.protobuf.StringValue EngineSize = 29;
+    google.protobuf.StringValue ManufacturingCell = 30;
+    google.protobuf.StringValue Trim = 31;
+    google.protobuf.StringValue HandDrive = 32;
+
+    google.protobuf.StringValue TubeAddOnType = 33;
+    google.protobuf.DoubleValue TubeAddOnFactor = 34;
+
+    google.protobuf.BoolValue IsManualTerminal = 35;
+    google.protobuf.BoolValue IsAllConnectorsSealed = 36;
+
+    google.protobuf.StringValue AlphaCode = 37;
+
+    google.protobuf.StringValue HarnessID = 38;
+    google.protobuf.StringValue CircuitOption = 39;
+
+    google.protobuf.Timestamp CreatedDate = 40;
+    google.protobuf.Timestamp ModifiedDate = 41;
+
+    google.protobuf.StringValue CreatedBy = 42;
+    google.protobuf.StringValue ModifiedBy = 43;
+}
+
+
+//////////////////////////////////////////////////////
+// COMPONENT
+//////////////////////////////////////////////////////
+
+message ComponentGrpc {
+    google.protobuf.StringValue Id = 1;
+
+    google.protobuf.StringValue NodeName = 2;
+    google.protobuf.StringValue CavityName = 3;
+    google.protobuf.StringValue WireName = 4;
+    google.protobuf.StringValue SequenceNumber = 5;
+
+    google.protobuf.StringValue ComponentTypeCode1 = 6;
+    google.protobuf.StringValue ComponentOption = 7;
+    google.protobuf.StringValue ServiceFunction = 8;
+
+    google.protobuf.StringValue Route = 9;
+
+    google.protobuf.StringValue PartNumber1 = 10;
+    google.protobuf.StringValue PartNumber2 = 11;
+    google.protobuf.StringValue PartNumber3 = 12;
+
+    google.protobuf.DoubleValue Quantity = 13;
+    google.protobuf.DoubleValue CrossSectionalArea = 14;
+
+    google.protobuf.BoolValue IsSelectTerminal = 15;
+    google.protobuf.BoolValue IsSeal = 16;
+    google.protobuf.BoolValue IsPlugged = 17;
+
+    google.protobuf.StringValue BlockNumber = 18;
+    google.protobuf.StringValue TerminationMethod = 19;
+    google.protobuf.StringValue MaterialCode = 20;
+
+    google.protobuf.StringValue ComponentTypeCode2 = 21;
+    google.protobuf.StringValue InsulationType = 22;
+
+    google.protobuf.StringValue UserModule = 23;
+
+    google.protobuf.StringValue HarnessID = 24;
+
+    google.protobuf.Timestamp CreatedDate = 25;
+    google.protobuf.Timestamp ModifiedDate = 26;
+}
+
+
+//////////////////////////////////////////////////////
+// BRANCH INSULATION
+//////////////////////////////////////////////////////
+
+message BranchInsulationGrpc {
+    google.protobuf.StringValue Id = 1;
+
+    google.protobuf.StringValue StartNode = 2;
+    google.protobuf.StringValue StartRoute = 3;
+
+    google.protobuf.StringValue EndNode = 4;
+    google.protobuf.StringValue EndRoute = 5;
+
+    google.protobuf.StringValue PieceCode = 6;
+    google.protobuf.StringValue InsulationCode = 7;
+
+    google.protobuf.DoubleValue Diameter = 8;
+
+    google.protobuf.StringValue CircuitOptionID = 9;
+
+    google.protobuf.DoubleValue ManualAmount = 10;
+
+    google.protobuf.DoubleValue AssemblyItemNumber = 11;
+
+    google.protobuf.StringValue PartNumber1 = 12;
+    google.protobuf.StringValue PartNumber2 = 13;
+    google.protobuf.StringValue PartNumber3 = 14;
+
+    google.protobuf.BoolValue IsConvoluted = 15;
+    google.protobuf.BoolValue IsSlit = 16;
+
+    google.protobuf.StringValue HarnessID = 17;
+
+    google.protobuf.Timestamp CreatedDate = 18;
+    google.protobuf.Timestamp ModifiedDate = 19;
+}
+
+
+//////////////////////////////////////////////////////
+// WIRE SPECIFICATION
+//////////////////////////////////////////////////////
+
+message WireSpecificationGrpc {
+    google.protobuf.StringValue Id = 1;
+
+    google.protobuf.StringValue WireName = 2;
+    google.protobuf.StringValue WireType = 3;
+    google.protobuf.StringValue Colour = 4;
+
+    google.protobuf.DoubleValue CrossSectionalArea = 5;
+
+    google.protobuf.StringValue Material = 6;
+
+    google.protobuf.BoolValue IsIncludedOnBom = 7;
+    google.protobuf.BoolValue IsIncludedOnChart = 8;
+
+    google.protobuf.StringValue WireTag = 9;
+    google.protobuf.StringValue WireNote = 10;
+
+    google.protobuf.DoubleValue UnmodifiedWireLength = 11;
+    google.protobuf.DoubleValue ModifiedWireLength = 12;
+
+    google.protobuf.StringValue PartNumber1 = 13;
+    google.protobuf.StringValue PartNumber2 = 14;
+    google.protobuf.StringValue PartNumber3 = 15;
+
+    google.protobuf.StringValue Signal = 16;
+
+    google.protobuf.StringValue HarnessID = 17;
+
+    google.protobuf.Timestamp CreatedDate = 18;
+    google.protobuf.Timestamp ModifiedDate = 19;
+}
+message GetAllRequest {
+    int32 position = 1;
+    int32 take = 2;
+}
+
+message GetByIdRequest {
+    string id = 1;
+}
+
+message GetHarnessByCustomerRequest {
+    string customer = 1;
+}
+message ListHarnessGrpc {
+    repeated HarnessGrpc HarnessList = 1;
+}
+message ListCompositeDetailGrpc {
+    repeated CompositeDetailGrpc CompositeDetailList = 1;
+}
+message ListComponentGrpc {
+    repeated ComponentGrpc ComponentList = 1;
+}
+message ListBranchInsulationGrpc {
+    repeated BranchInsulationGrpc BranchInsulationList = 1;
+}
+message ListWireSpecificationGrpc {
+    repeated WireSpecificationGrpc WireSpecificationList = 1;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////// RESPONSE
+//////////////////////////////////////////////////////
+
+message DSIFilterRequest {
+    string databaseList = 1;
+    string filterExpression = 2;
+}
+
+message DSIFilterResponse {
+    bool success = 1;
+
+    ListComponentGrpc componentList = 2;
+    ListBranchInsulationGrpc branchInsulationList = 3;
+    ListWireSpecificationGrpc wireSpecificationList = 4;
+    ListCompositeDetailGrpc compositeDetailList = 5;
+    ListHarnessGrpc harnessList = 6;
+}
