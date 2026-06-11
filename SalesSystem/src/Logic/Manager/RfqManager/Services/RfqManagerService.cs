@@ -1079,6 +1079,8 @@ namespace RfqModule.Services
                             dsiBranchConfigurationBendAssociation.BranchConfigurationId = branchGrpc.BranchConfigurationId;
                             dsiBranchConfigurationBendAssociation.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
                             dsiBranchConfigurationBendAssociation.CreatedBy = userId;
+                            dsiBranchConfigurationBendAssociation.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                            dsiBranchConfigurationBendAssociation.ModifiedBy = userId;
                             bendAssociations.Add(dsiBranchConfigurationBendAssociation);
                         }
                     }
@@ -1109,6 +1111,8 @@ namespace RfqModule.Services
                     DsiBranchInsulationGrpc branchInsulationGrpc = branchInsulation.ToBranchInsulation();
                     branchInsulationGrpc.CreatedBy = userId;
                     branchInsulationGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    branchInsulationGrpc.ModifiedBy = userId;
+                    branchInsulationGrpc.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
                     branchInsulationGrpc.HarnessId = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
                     branchInsulationRequest.DsiBranchInsulationGrpcsToCreate.Add(branchInsulationGrpc);
                 }
@@ -1137,6 +1141,8 @@ namespace RfqModule.Services
 
                     branchInsulationThroughNodeGrpc.CreatedBy = userId;
                     branchInsulationThroughNodeGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    branchInsulationThroughNodeGrpc.ModifiedBy = userId;
+                    branchInsulationThroughNodeGrpc.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
                     branchInsulationThroughNodeRequest.DsiBranchInsulationThroughNodeGrpcsToCreate.Add(branchInsulationThroughNodeGrpc);
                 }
             }
@@ -1159,6 +1165,8 @@ namespace RfqModule.Services
                     component.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId : null;
                     component.CreatedBy = Guid.Parse(userId);
                     component.CreatedDate = DateTime.UtcNow;
+                    component.ModifiedDate = DateTime.UtcNow;
+                    component.ModifiedBy = Guid.Parse(userId);
                     DsiComponentGrpc componentGrpc = component.ToComponent();
                     componentRequest.DsiComponentGrpcsToCreate.Add(componentGrpc);
                 }
@@ -1214,6 +1222,8 @@ namespace RfqModule.Services
                             newCircuitOption.OptionName = trimmedOption;
                             newCircuitOption.CreatedBy = userId;
                             newCircuitOption.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                            newCircuitOption.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                            newCircuitOption.ModifiedBy = userId;
                             circuitOptionGrpcRequest.DsiCircuitOptionGrpcsToCreate.Add(newCircuitOption);
 
                             existingOptionNames.Add(trimmedOption);
@@ -1243,6 +1253,8 @@ namespace RfqModule.Services
                     DsiCompositeOptionGrpc compositeOptionGrpc = compositeOption.ToCompositeOption();
                     compositeOptionGrpc.CreatedBy = userId;
                     compositeOptionGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    compositeOptionGrpc.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    compositeOptionGrpc.ModifiedBy = userId;
                     compositeOptionRequest.DsiCompositeOptionGrpcsToCreate.Add(compositeOptionGrpc);
                 }
             }
@@ -1279,6 +1291,8 @@ namespace RfqModule.Services
                     compositeDetailGrpc.CompositeDetailId = Guid.NewGuid().ToString();
                     compositeDetailGrpc.CreatedBy = userId;
                     compositeDetailGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    compositeDetailGrpc.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    compositeDetailGrpc.ModifiedBy = userId;
                     if (compositeDetail.CircuitOption != null)
                     {
                         DsiCompositeDetailCircuitOptionAssociationGrpc dsiCompositeDetailCircuitOptionAssociationGrpc = new DsiCompositeDetailCircuitOptionAssociationGrpc();
@@ -1334,6 +1348,8 @@ namespace RfqModule.Services
                 DsiHarnessGrpc harnessGrpc = dsiAggregate.Harness.ToHarness();
                 harnessGrpc.CreatedBy = userId;
                 harnessGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                harnessGrpc.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                harnessGrpc.ModifiedBy = userId;
                 harnessRequest.DsiHarnessGrpcsToCreate.Add(harnessGrpc);
             }
 
@@ -1386,6 +1402,8 @@ namespace RfqModule.Services
                             newScope.Scope = trimmedOption;
                             newScope.CreatedBy = userId;
                             newScope.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                            newScope.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                            newScope.ModifiedBy = userId;
                             scopeGrpcRequest.DsiScopeGrpcsToCreate.Add(newScope);
 
                             // Track it so we don't add duplicates within this same batch
@@ -1476,6 +1494,8 @@ namespace RfqModule.Services
                     DsiManualBomQuantityGrpc manualBomQuantityGrpc = bomQuantityDto.ToManualBomQuantity();
                     manualBomQuantityGrpc.CreatedBy = userId;
                     manualBomQuantityGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    manualBomQuantityGrpc.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    manualBomQuantityGrpc.ModifiedBy = userId;
                     manualBomQuantityGrpcRequest.DsiManualBomQuantityGrpcsToCreate.Add(manualBomQuantityGrpc);
                 }
             }
@@ -1522,6 +1542,8 @@ namespace RfqModule.Services
                     DsiModuleChildDetailGrpc moduleChildDetailGrpc = moduleChildDetail.ToModuleChildDetail();
                     moduleChildDetailGrpc.CreatedBy = userId;
                     moduleChildDetailGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    moduleChildDetailGrpc.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    moduleChildDetailGrpc.ModifiedBy = userId;
                     moduleChildDetailRequest.DsiModuleChildDetailGrpcsToCreate.Add(moduleChildDetailGrpc);
                 }
             }
@@ -1545,6 +1567,8 @@ namespace RfqModule.Services
                     DsiModuleCompatibilityGrpc moduleCompatibilityGrpc = moduleCompatibility.ToModuleCompatibility();
                     moduleCompatibilityGrpc.CreatedBy = userId;
                     moduleCompatibilityGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    moduleCompatibilityGrpc.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    moduleCompatibilityGrpc.ModifiedBy = userId;
                     moduleCompatibilityRequest.DsiModuleCompatibilityGrpcsToCreate.Add(moduleCompatibilityGrpc);
                 }
             }
@@ -1568,6 +1592,8 @@ namespace RfqModule.Services
                     DsiMulticoreSpecificationGrpc multicoreSpecificationGrpc = multicoreSpecification.ToMulticoreSpecification();
                     multicoreSpecificationGrpc.CreatedBy = userId;
                     multicoreSpecificationGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    multicoreSpecificationGrpc.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    multicoreSpecificationGrpc.ModifiedBy = userId;
                     multicoreSpecificationRequest.DsiMulticoreSpecificationGrpcsToCreate.Add(multicoreSpecificationGrpc);
                 }
             }
@@ -1591,6 +1617,8 @@ namespace RfqModule.Services
                     DsiPinMappingGrpc pinMappingGrpc = pinMapping.ToPinMapping();
                     pinMappingGrpc.CreatedBy = userId;
                     pinMappingGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    pinMappingGrpc.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    pinMappingGrpc.ModifiedBy = userId;
                     pinMappingRequest.DsiPinMappingGrpcsToCreate.Add(pinMappingGrpc);
                 }
             }
@@ -1614,6 +1642,8 @@ namespace RfqModule.Services
                     DsiWireMulticoreMarkerGrpc wireMulticoreMarkerGrpc = wireMulticoreMarker.ToWireMulticoreMarker();
                     wireMulticoreMarkerGrpc.CreatedBy = userId;
                     wireMulticoreMarkerGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    wireMulticoreMarkerGrpc.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    wireMulticoreMarkerGrpc.ModifiedBy = userId;
                     wireMulticoreMarkerRequest.DsiWireMulticoreMarkerGrpcsToCreate.Add(wireMulticoreMarkerGrpc);
                 }
             }
@@ -1637,6 +1667,8 @@ namespace RfqModule.Services
                     DsiWireSpecificationGrpc wireSpecificationGrpc = wireSpecification.ToWireSpecification();
                     wireSpecificationGrpc.CreatedBy = userId;
                     wireSpecificationGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    wireSpecificationGrpc.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    wireSpecificationGrpc.ModifiedBy = userId;
                     wireSpecificationRequest.DsiWireSpecificationGrpcsToCreate.Add(wireSpecificationGrpc);
                 }
             }
@@ -1660,6 +1692,8 @@ namespace RfqModule.Services
                     DsiWireThroughNodeGrpc wireThroughNodeGrpc = wireThroughNode.ToWireThroughNode();
                     wireThroughNodeGrpc.CreatedBy = userId;
                     wireThroughNodeGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    wireThroughNodeGrpc.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+                    wireThroughNodeGrpc.ModifiedBy = userId;
                     dsiWireThroughNodeRequest.DsiWireThroughNodeGrpcsToCreate.Add(wireThroughNodeGrpc);
                 }
             }
