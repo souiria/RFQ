@@ -1,0 +1,31 @@
+﻿@inject NavigationManager NavigationManager
+
+@* <MudNavMenu @ref="navMenu"
+            Rounded="true"
+            Dense="true"
+            Color="Color.Primary"
+            Class="m-2">
+    <MudNavGroup Title="Settings" @bind-Expanded="expanded">
+        <MudNavLink OnClick="@(() => GoTo($"/createRfq/{globalValue?.UserId}"))">Create RFQ</MudNavLink>
+        <MudNavLink OnClick="@(() => GoTo("/"))">Dashboard</MudNavLink>
+    </MudNavGroup>
+</MudNavMenu> *@
+<MudMenu Icon="@Icons.Material.Filled.Menu"
+         AriaLabel="Open user menu">
+    <MudMenuItem Label="Dashboard" OnClick="@(() => GoTo("/"))" />
+    @* <MudMenuItem Label="Create RFQ" OnClick="@(() => GoTo($"/createRfq"))" /> *@
+</MudMenu>
+@code{
+    [Parameter] public GlobalValue? globalValue { get; set; }
+    string userId = string.Empty;
+
+    protected override Task OnInitializedAsync()
+    {
+        userId = globalValue?.UserId.ToString() ?? string.Empty;
+        return Task.CompletedTask;
+    }
+    void GoTo(string page)
+    {
+        NavigationManager.NavigateTo(page);
+    }
+}
