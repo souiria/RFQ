@@ -1,6 +1,4 @@
-﻿using SharedModels.Global;
-
-namespace RfqModule.Extentions
+﻿namespace RfqModule.Extentions
 {
     public static class RfqModuleMapping
     {
