@@ -357,11 +357,13 @@ namespace Integration.Tests.Rfq.Client
 
             // Act - Step 2: Upload Parts File
             // Note: Adjust the max file size as needed (16MB = 16_777_216 bytes)
+            Guid testUserId = Guid.Parse("86380EFD-5651-4552-8145-E59E785F099A");
             UploadPartsRequestGrpcResponse uploadResponse = await _RfqUxClientService.UploadPartsAsync(
                 //createResponse.CreatedProjectId,
                 testProjectId,
                 fileBytes,
-                fileName
+                fileName,
+                testUserId
             );
 
             // Assert - Upload Parts
