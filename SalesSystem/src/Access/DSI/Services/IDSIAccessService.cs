@@ -9,6 +9,8 @@
             CancellationToken cancellationToken,
             int position = 0,
             int takeAmount = 0);
+        Task<ListCompositeDetailGrpc> GetCompositeDetailByHarnessName(string harnessName,CancellationToken cancellationToken);
+        Task<ListComponentGrpc> GetComponentsByHarnessAndOptions(string harnessName, IEnumerable<string> compositeOptions, CancellationToken cancellationToken);
         Task<ListComponentGrpc> GetAllComponent(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<bool> PopulateComponent(CancellationToken cancellationToken);
         Task<bool> PopulateBranchInsulation(CancellationToken cancellationToken);

@@ -30,7 +30,10 @@ service DSI {
     rpc GetWireByHarnessId(GetByIdRequest) returns (ListWireSpecificationGrpc);
     
     rpc FilterDSIGrpc (DSIFilterRequest) returns (DSIFilterResponse);
-
+    rpc GetCompositeDetailByHarnessName(GetHarnessByNameRequest)
+    returns (ListCompositeDetailGrpc);
+    rpc GetComponentsByHarnessAndOptions (GetComponentByHarnessRequest)
+    returns (ListComponentGrpc);
 }
 
 // The request message containing the user's name.
@@ -289,11 +292,13 @@ message WireSpecificationGrpc {
     google.protobuf.StringValue PartNumber3 = 15;
 
     google.protobuf.StringValue Signal = 16;
-
-    google.protobuf.StringValue HarnessID = 17;
-
-    google.protobuf.Timestamp CreatedDate = 18;
+     google.protobuf.StringValue HarnessID = 17;
+     google.protobuf.Timestamp CreatedDate = 18;
     google.protobuf.Timestamp ModifiedDate = 19;
+     google.protobuf.StringValue Compositeoptionstring = 20;
+     google.protobuf.StringValue End1NodeName = 21;
+     google.protobuf.StringValue End2NodeName = 22;
+     
 }
 message GetAllRequest {
     int32 position = 1;
@@ -339,4 +344,13 @@ message DSIFilterResponse {
     ListWireSpecificationGrpc wireSpecificationList = 4;
     ListCompositeDetailGrpc compositeDetailList = 5;
     ListHarnessGrpc harnessList = 6;
+}
+
+message GetHarnessByNameRequest {
+    string harnessName = 1;
+}
+
+message GetComponentByHarnessRequest {
+    string harnessName = 1;
+    repeated string compositeOptions = 2;
 }

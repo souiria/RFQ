@@ -68,7 +68,20 @@
                 request.Position,
                 request.Take);
         }
-         public override async Task<DSIFilterResponse> FilterDSIGrpc(DSIFilterRequest request,ServerCallContext context)
+        public override async Task<ListCompositeDetailGrpc>GetCompositeDetailByHarnessName( GetHarnessByNameRequest request,  ServerCallContext context)        {
+            return await _DSIAccessService
+                .GetCompositeDetailByHarnessName(
+                    request.HarnessName,
+                    context.CancellationToken);
+        }
+        public override async Task<ListComponentGrpc>GetComponentsByHarnessAndOptions(GetComponentByHarnessRequest request,ServerCallContext context)     
+        {
+            return await _DSIAccessService.GetComponentsByHarnessAndOptions(
+                request.HarnessName,
+                [.. request.CompositeOptions],
+                context.CancellationToken);
+        }
+        public override async Task<DSIFilterResponse> FilterDSIGrpc(DSIFilterRequest request,ServerCallContext context)
         {
             _Logger.GenericLogInformation("FilterDSIGrpc starting");
 

@@ -390,7 +390,221 @@
         }
         //////////////////////////////////////////////////////////////////////////////////////////////
         #endregion
+        #region CompositeDetailByHarnessName
+        public async Task<ListCompositeDetailGrpc> GetCompositeDetailByHarnessName(
+    string harnessName,
+    CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
 
+            ListCompositeDetailGrpc response = new ListCompositeDetailGrpc();
+
+            //////////////////////////////////////////////////////
+            // ✅ STEP 1: Ensure Harness cache is loaded
+            //////////////////////////////////////////////////////
+            if (!_ListHarnessGrpc.HarnessList.Any())
+            {
+                await PopulateHarness(cancellationToken);
+            }
+
+            //////////////////////////////////////////////////////
+            // ✅ STEP 2: Find Harness by name
+            //////////////////////////////////////////////////////
+            HarnessGrpc? harness = _ListHarnessGrpc.HarnessList
+                .FirstOrDefault(h => h.HarnessName1 == harnessName);
+
+            if (harness == null)
+            {
+                _Logger.GenericLogInformation(
+                    $"No Harness found with name {harnessName}");
+
+                return response; // empty
+            }
+
+            //////////////////////////////////////////////////////
+            // ✅ STEP 3: Get Harness ID
+            //////////////////////////////////////////////////////
+            string? harnessId = harness.Id;
+
+            if (string.IsNullOrEmpty(harnessId))
+            {
+                return response;
+            }
+
+            //////////////////////////////////////////////////////
+            // ✅ STEP 4: Ensure CompositeDetail cache is loaded
+            //////////////////////////////////////////////////////
+            if (!_ListCompositeDetailGrpc.CompositeDetailList.Any())
+            {
+                await PopulateCompositeDetail(cancellationToken);
+            }
+
+            //////////////////////////////////////////////////////
+            // ✅ STEP 5: Filter CompositeDetail by HarnessID
+            //////////////////////////////////////////////////////
+            IEnumerable<CompositeDetailGrpc> filtered =
+                _ListCompositeDetailGrpc.CompositeDetailList
+                .Where(x => x.HarnessID == harnessId);
+
+            response.CompositeDetailList.AddRange(filtered);
+
+            return response;
+        }
+
+        #endregion
+        #region ComponentsByHarnessNameAndOptions
+        public async Task<ListComponentGrpc> GetComponentsByHarnessAndOptions(
+            string harnessName,
+            IEnumerable<string> compositeOptions,
+            CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+
+            ListComponentGrpc response = new ListComponentGrpc();
+
+            //////////////////////////////////////////////////////
+            //  STEP 1: Harness → Id
+            //////////////////////////////////////////////////////
+            if (!_ListHarnessGrpc.HarnessList.Any())
+            {
+                await PopulateHarness(cancellationToken);
+            }
+
+            HarnessGrpc? harness = _ListHarnessGrpc.HarnessList
+                .FirstOrDefault(h => h.HarnessName1 == harnessName);
+
+            if (harness == null || string.IsNullOrEmpty(harness.Id))
+            {
+                return response;
+            }
+
+            string harnessId = harness.Id;
+
+            //////////////////////////////////////////////////////
+            //  STEP 2: CompositeDetail (by HarnessID)
+            //////////////////////////////////////////////////////
+            if (!_ListCompositeDetailGrpc.CompositeDetailList.Any())
+            {
+                await PopulateCompositeDetail(cancellationToken);
+            }
+
+            List<CompositeDetailGrpc> compositeList = _ListCompositeDetailGrpc.CompositeDetailList
+                .Where(c => c.HarnessID == harnessId)
+                .ToList();
+
+            if (!compositeList.Any())
+            {
+                return response;
+            }
+
+            //////////////////////////////////////////////////////
+            //  STEP 3: Extract CompositeOption(s)
+            //////////////////////////////////////////////////////
+            List<string> options;
+
+            if (compositeOptions != null && compositeOptions.Any())
+            {
+                options = compositeOptions.ToList();
+            }
+            else
+            {
+                options = compositeList
+                    .Select(c => c.CircuitOption)
+                    .Where(c => !string.IsNullOrEmpty(c))
+                    .Select(c => c!) // remove nullable warning if needed
+                    .Distinct()
+                    .ToList();
+            }
+            //////////////////////////////////////////////////////
+            //  STEP 4: WireSpecification
+            //////////////////////////////////////////////////////
+            if (!_ListWireSpecificationGrpc.WireSpecificationList.Any())
+            {
+                await PopulateWireSpecification(cancellationToken);
+            }
+
+            List<WireSpecificationGrpc> wires = _ListWireSpecificationGrpc.WireSpecificationList
+                .Where(w => options.Contains(w.Compositeoptionstring))
+                .ToList();
+
+            if (!wires.Any())
+            {
+                return response;
+            }
+
+            //////////////////////////////////////////////////////
+            //  STEP 5: Collect NodeNames
+            //////////////////////////////////////////////////////
+            HashSet<string?> nodeNames = new HashSet<string?>();
+
+            foreach (WireSpecificationGrpc? w in wires)
+            {
+                if (!string.IsNullOrEmpty(w.End1NodeName))
+                {
+                    nodeNames.Add(w.End1NodeName);
+                }
+
+                if (!string.IsNullOrEmpty(w.End2NodeName))
+                {
+                    nodeNames.Add(w.End2NodeName);
+                }
+            }
+
+            //////////////////////////////////////////////////////
+            //  STEP 6: Component filter
+            //////////////////////////////////////////////////////
+            List<ComponentGrpc> groupedComponents = _ListComponentGrpc.ComponentList
+                 .Where(c => nodeNames.Contains(c.NodeName))
+                 .GroupBy(c => new
+                 {
+                     c.PartNumber1,
+                     c.PartNumber2,
+                     c.PartNumber3
+                 })
+                 .Select(group =>
+                 {
+         ComponentGrpc item = new ComponentGrpc();
+
+         //////////////////////////////////////////////////////
+         //  PartNumber1
+         //////////////////////////////////////////////////////
+         if (!string.IsNullOrEmpty(group.Key.PartNumber1))
+         {
+             item.PartNumber1 = group.Key.PartNumber1;
+         }
+
+         //////////////////////////////////////////////////////
+         //  PartNumber2
+         //////////////////////////////////////////////////////
+         if (!string.IsNullOrEmpty(group.Key.PartNumber2))
+         {
+             item.PartNumber2 = group.Key.PartNumber2;
+         }
+
+         //////////////////////////////////////////////////////
+         //  PartNumber3
+         //////////////////////////////////////////////////////
+         if (!string.IsNullOrEmpty(group.Key.PartNumber3))
+         {
+             item.PartNumber3 = group.Key.PartNumber3;
+         }
+
+         //////////////////////////////////////////////////////
+         //  Quantity
+         //////////////////////////////////////////////////////
+         double total = group.Sum(x => x.Quantity ?? 0);
+         item.Quantity = total;
+
+         return item;
+     })
+     .ToList();
+
+            response.ComponentList.AddRange(groupedComponents);
+
+            return response;
+        }
+
+        #endregion
         public async Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig, Action<IEnumerable<T>> setResponseCollection,
         CancellationToken cancellationToken)
         {
@@ -428,9 +642,6 @@
             _ListWireSpecificationGrpc = SampleDSIDataService.PopulateWireSpecificationGrpc();
             _ListCompositeDetailGrpc = SampleDSIDataService.PopulateCompositeDetailGrpc();
             _ListHarnessGrpc = SampleDSIDataService.PopulateHarnessGrpc();
-
-
-
         }
     }
 }

@@ -13,6 +13,12 @@
 
         public string? Colour
         { get; set; }
+        public string? CompositeOptionString
+        { get; set; }
+        public string? End1NodeName
+        { get; set; }
+        public string? End2NodeName
+        { get; set; }
 
         public double? CrossSectionalArea
         { get; set; }

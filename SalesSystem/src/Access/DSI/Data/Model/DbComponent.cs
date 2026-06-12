@@ -25,6 +25,10 @@
 
         public string? PartNumber1
         { get; set; }
+        public string? PartNumber2
+        { get; set; }
+        public string? PartNumber3
+        { get; set; }
 
         public double? Quantity
         { get; set; }

@@ -1,4 +1,6 @@
-﻿namespace DSI.Extensions
+﻿using SharedKernel;
+
+namespace DSI.Extensions
 {
     public static class DSIMappingExtentions
     {
@@ -16,6 +18,8 @@
             data.ComponentOption = entity.ComponentOption;
             data.Route = entity.Route;
             data.PartNumber1 = entity.PartNumber1;
+            data.PartNumber2 = entity.PartNumber2;
+            data.PartNumber3 = entity.PartNumber3;
             data.Quantity = (double?)entity.Quantity;
             data.CrossSectionalArea = (double?)entity.CrossSectionalArea;
             data.IsPlugged = entity.IsPlugged;
@@ -38,6 +42,8 @@
             data.ComponentOption = grpc.ComponentOption;
             data.Route = grpc.Route;
             data.PartNumber1 = grpc.PartNumber1;
+            data.PartNumber2 = grpc.PartNumber2;
+            data.PartNumber3 = grpc.PartNumber3;
             data.Quantity = (double?)grpc.Quantity;
             data.CrossSectionalArea = (double?)grpc.CrossSectionalArea;
             data.IsPlugged = grpc.IsPlugged;
@@ -113,6 +119,9 @@
             data.PartNumber1 = entity.PartNumber1;
             data.Signal = entity.Signal;
             data.HarnessID = entity.HarnessID?.ToString();
+           data.Compositeoptionstring=entity.CompositeOptionString;
+            data.End1NodeName = entity.End1NodeName;
+            data.End2NodeName = entity.End2NodeName;
 
             return data;
         }
@@ -136,7 +145,9 @@
             data.PartNumber1 = grpc.PartNumber1;
             data.Signal = grpc.Signal;
             data.HarnessID = string.IsNullOrEmpty(grpc.HarnessID) ? null : Guid.Parse(grpc.HarnessID);
-
+            data.CompositeOptionString = grpc.Compositeoptionstring;
+            data.End1NodeName = grpc.End1NodeName;
+            data.End2NodeName = grpc.End2NodeName;
             return data;
         }
 
