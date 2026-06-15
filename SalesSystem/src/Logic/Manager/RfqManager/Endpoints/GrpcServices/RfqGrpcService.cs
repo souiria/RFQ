@@ -1,4 +1,7 @@
-﻿namespace RfqModule.Endpoints.GrpcServices
+﻿using Azure.Core;
+using DSI;
+
+namespace RfqModule.Endpoints.GrpcServices
 {
     public class RfqGrpcService : RfqModule.RfqModuleBase
     {
@@ -271,5 +274,56 @@
 
             return result;
         }
-    }
+        public override async Task<GetAllHarnessModuleResponse> GetAllHarnessGrpc(GetAllHarnessModuleRequest request,  ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetAllHarnessGrpc starting");
+              GetAllHarnessModuleResponse response =
+                await _RfqManagerService.GetAllHarnessGrpc(request);
+
+            return response;
+        }
+        public override async Task<GetCompositeDetailByHarnessResponse> GetCompositeDetailByHarnessGrpc(GetCompositeDetailByHarnessRequest request,
+    ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetCompositeDetailByHarnessGrpc starting");
+
+            GetCompositeDetailByHarnessResponse response =
+                await _RfqManagerService.GetCompositeDetailByHarnessGrpc(request);
+
+            return response;
+        }
+        public override async Task<GetCompositeDetailByHarnessNameResponse> GetCompositeDetailByHarnessNameGrpc(
+    GetCompositeDetailByHarnessNameRequest request,
+    ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetCompositeDetailByHarnessNameGrpc starting");
+
+            GetCompositeDetailByHarnessNameResponse response =
+              await _RfqManagerService.GetCompositeDetailByHarnessNameGrpc(request);
+
+            return response;
+        }
+        public override async Task<GetWireSpecificationByCompositeOptionResponse> GetWireSpecificationByCompositeOptionGrpc(
+            GetWireSpecificationByCompositeOptionRequest request,
+            ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetWireSpecificationByCompositeOptionGrpc starting");
+
+            GetWireSpecificationByCompositeOptionResponse response =
+                await _RfqManagerService.GetWireSpecificationByCompositeOptionGrpc(request);
+
+            return response;
+        }
+        public override async Task<ListComponentGrpc> GetComponentsByHarnessAndOptionsGrpc(
+       GetComponentsByHarnessAndOptionsRequest request,
+       ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetComponentsByHarnessAndOptionsGrpc starting");
+
+            ListComponentGrpc response =
+                await _RfqManagerService.GetComponentsByHarnessAndOptionsGrpc(request);
+
+            return response;
+        }
+     }
 }

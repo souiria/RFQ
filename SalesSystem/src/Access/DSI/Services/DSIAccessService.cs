@@ -453,6 +453,8 @@
 
         #endregion
         #region ComponentsByHarnessNameAndOptions
+        #region ComponentsByHarnessNameAndOptions
+
         public async Task<ListComponentGrpc> GetComponentsByHarnessAndOptions(
             string harnessName,
             IEnumerable<string> compositeOptions,
@@ -462,9 +464,6 @@
 
             ListComponentGrpc response = new ListComponentGrpc();
 
-            //////////////////////////////////////////////////////
-            //  STEP 1: Harness → Id
-            //////////////////////////////////////////////////////
             if (!_ListHarnessGrpc.HarnessList.Any())
             {
                 await PopulateHarness(cancellationToken);
@@ -480,9 +479,6 @@
 
             string harnessId = harness.Id;
 
-            //////////////////////////////////////////////////////
-            //  STEP 2: CompositeDetail (by HarnessID)
-            //////////////////////////////////////////////////////
             if (!_ListCompositeDetailGrpc.CompositeDetailList.Any())
             {
                 await PopulateCompositeDetail(cancellationToken);
@@ -496,10 +492,6 @@
             {
                 return response;
             }
-
-            //////////////////////////////////////////////////////
-            //  STEP 3: Extract CompositeOption(s)
-            //////////////////////////////////////////////////////
             List<string> options;
 
             if (compositeOptions != null && compositeOptions.Any())
@@ -511,13 +503,10 @@
                 options = compositeList
                     .Select(c => c.CircuitOption)
                     .Where(c => !string.IsNullOrEmpty(c))
-                    .Select(c => c!) // remove nullable warning if needed
+                    .Select(c => c!)
                     .Distinct()
                     .ToList();
             }
-            //////////////////////////////////////////////////////
-            //  STEP 4: WireSpecification
-            //////////////////////////////////////////////////////
             if (!_ListWireSpecificationGrpc.WireSpecificationList.Any())
             {
                 await PopulateWireSpecification(cancellationToken);
@@ -531,10 +520,6 @@
             {
                 return response;
             }
-
-            //////////////////////////////////////////////////////
-            //  STEP 5: Collect NodeNames
-            //////////////////////////////////////////////////////
             HashSet<string?> nodeNames = new HashSet<string?>();
 
             foreach (WireSpecificationGrpc? w in wires)
@@ -550,59 +535,56 @@
                 }
             }
 
-            //////////////////////////////////////////////////////
-            //  STEP 6: Component filter
-            //////////////////////////////////////////////////////
+            if (!nodeNames.Any())
+            {
+                return response;
+            }
+
+            if (!_ListComponentGrpc.ComponentList.Any())
+            {
+                await PopulateComponent(cancellationToken);
+            }
+
             List<ComponentGrpc> groupedComponents = _ListComponentGrpc.ComponentList
-                 .Where(c => nodeNames.Contains(c.NodeName))
-                 .GroupBy(c => new
-                 {
-                     c.PartNumber1,
-                     c.PartNumber2,
-                     c.PartNumber3
-                 })
-                 .Select(group =>
-                 {
-         ComponentGrpc item = new ComponentGrpc();
+                .Where(c => nodeNames.Contains(c.NodeName))
+                .GroupBy(c => new
+                {
+                    c.PartNumber1,
+                    c.PartNumber2,
+                    c.PartNumber3
+                })
+                .Select(group =>
+                {
+                    ComponentGrpc item = new ComponentGrpc();
 
-         //////////////////////////////////////////////////////
-         //  PartNumber1
-         //////////////////////////////////////////////////////
-         if (!string.IsNullOrEmpty(group.Key.PartNumber1))
-         {
-             item.PartNumber1 = group.Key.PartNumber1;
-         }
+                    if (!string.IsNullOrEmpty(group.Key.PartNumber1))
+                    {
+                        item.PartNumber1 = group.Key.PartNumber1;
+                    }
 
-         //////////////////////////////////////////////////////
-         //  PartNumber2
-         //////////////////////////////////////////////////////
-         if (!string.IsNullOrEmpty(group.Key.PartNumber2))
-         {
-             item.PartNumber2 = group.Key.PartNumber2;
-         }
+                    if (!string.IsNullOrEmpty(group.Key.PartNumber2))
+                    {
+                        item.PartNumber2 = group.Key.PartNumber2;
+                    }
 
-         //////////////////////////////////////////////////////
-         //  PartNumber3
-         //////////////////////////////////////////////////////
-         if (!string.IsNullOrEmpty(group.Key.PartNumber3))
-         {
-             item.PartNumber3 = group.Key.PartNumber3;
-         }
+                    if (!string.IsNullOrEmpty(group.Key.PartNumber3))
+                    {
+                        item.PartNumber3 = group.Key.PartNumber3;
+                    }
 
-         //////////////////////////////////////////////////////
-         //  Quantity
-         //////////////////////////////////////////////////////
-         double total = group.Sum(x => x.Quantity ?? 0);
-         item.Quantity = total;
+                    double total = group.Sum(x => x.Quantity ?? 0);
+                    item.Quantity = total;
 
-         return item;
-     })
-     .ToList();
+                    return item;
+                })
+                .ToList();
 
             response.ComponentList.AddRange(groupedComponents);
 
             return response;
         }
+
+        #endregion
 
         #endregion
         public async Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig, Action<IEnumerable<T>> setResponseCollection,

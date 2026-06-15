@@ -178,6 +178,8 @@ namespace DSI.Extensions
             data.AlphaCode = entity.AlphaCode;
             data.HarnessID = entity.HarnessID?.ToString();
             data.CircuitOption = entity.CircuitOption;
+            data.HarnessName1= entity.HarnessName1;
+            data.HarnessName2= entity.HarnessName2;
 
             return data;
         }
@@ -206,7 +208,7 @@ namespace DSI.Extensions
             data.AlphaCode = grpc.AlphaCode;
             data.HarnessID = string.IsNullOrEmpty(grpc.HarnessID) ? null : Guid.Parse(grpc.HarnessID);
             data.CircuitOption = grpc.CircuitOption;
-
+            data.HarnessName1 = grpc.HarnessName1;
             return data;
         }
 

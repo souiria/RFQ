@@ -35,7 +35,8 @@
                    ?? throw new InvalidOperationException("GrpcService:Npr-Url is missing in configuration.");
             string? purchasingUrl = builder.Configuration["GrpcService:Purchasings-Url"]
                    ?? throw new InvalidOperationException("GrpcService:Purchasings-Url is missing in configuration.");
-
+            string? dsiUrl = builder.Configuration["GrpcService:Dsi-Url"]
+              ?? throw new InvalidOperationException("GrpcService:dsi-Url is missing in configuration.");
             #region Kestrel
             builder.WebHost.ConfigureKestrel(options =>
             {
@@ -224,6 +225,15 @@
                 options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
             })
             .ConfigurePrimaryHttpMessageHandler(CreateHandlerWithClientCert);
+            builder.Services.AddGrpcClient<DSI.DSI.DSIClient>(o =>
+            {
+                o.Address = new Uri(dsiUrl);
+            }).ConfigureChannel(options =>
+            {
+                options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
+                options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
+            })
+      .ConfigurePrimaryHttpMessageHandler(CreateHandlerWithClientCert);
 
             builder.AddServiceDefaults();
             builder.Services.AddInfrastructure();

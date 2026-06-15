@@ -9,6 +9,7 @@
         readonly Adss.AdssGrpc.AdssGrpcClient _AdssGrpcClient;
         readonly NPR.NPR.NPRClient _NPRGrpcClient;
         readonly CPD.CPD.CPDClient _CPDClient;
+        readonly DSI.DSI.DSIClient _DSIClient;
         readonly ILogger<RfqManagerService> _Logger;
         readonly IHttpContextAccessor _HttpContextAccessor;
         List<ProjectGrpc> _Projects;
@@ -20,6 +21,7 @@
             Adss.AdssGrpc.AdssGrpcClient adssGrpcClient,
             NPR.NPR.NPRClient nprClient,
             CPD.CPD.CPDClient cPDClient,
+            DSI.DSI.DSIClient dSIClient,
             IHttpContextAccessor httpContextAccessor
             )
         {
@@ -31,6 +33,7 @@
             _AdssGrpcClient = adssGrpcClient;
             _NPRGrpcClient = nprClient;
             _CPDClient = cPDClient;
+            _DSIClient = dSIClient;
             _HttpContextAccessor = httpContextAccessor;
         }
         #region Master Requests
@@ -1954,6 +1957,422 @@
                 throw new ArgumentException("Invalid type parameter");
             }
           }
+        #endregion
+
+        #region DSI
+        public async Task<GetAllHarnessModuleResponse> GetAllHarnessGrpc(GetAllHarnessModuleRequest request)
+        {
+            _ = request; 
+
+            try
+            {
+                await Task.Delay(1);
+
+                DSIFilterRequest filterRequest = new DSIFilterRequest();
+                filterRequest.DatabaseList = "HARNESSGRPC";
+                filterRequest.FilterExpression = "1 == 1";
+
+                DSIFilterResponse filterResponse =
+                    await _DSIClient.FilterDSIGrpcAsync(filterRequest);
+
+                ListHarnessGrpc harnessList =
+                    filterResponse.HarnessList ?? new ListHarnessGrpc();
+
+                GetAllHarnessModuleResponse response =
+                    new GetAllHarnessModuleResponse();
+
+                foreach (HarnessGrpc? item in harnessList.HarnessList)
+                {
+                    if (item == null)
+                    {
+                        continue;
+                    }
+
+                    DSIHarnessGrpc harness = new DSIHarnessGrpc();
+
+                    harness.Id = item.Id;
+                    harness.HarnessName1 = item.HarnessName1;
+                    harness.Customer = item.Customer;
+                    harness.Site = item.Site;
+
+                    response.HarnessList.Add(harness);
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError("Error fetching Harness list from DSI", ex);
+                throw;
+            }
+        }
+        //get All derivatibe by composite
+        public async Task<GetCompositeDetailByHarnessResponse> GetCompositeDetailByHarnessGrpc(GetCompositeDetailByHarnessRequest request)
+        {
+            _ = request;
+            try
+            {
+                await Task.Delay(1);
+                DSIFilterRequest filterRequest = new DSIFilterRequest();
+                filterRequest.DatabaseList = "COMPOSITEDETAILGRPC";
+                filterRequest.FilterExpression =
+                    $"HarnessID == \"{request.HarnessId}\"";
+
+                DSIFilterResponse filterResponse =
+                    await _DSIClient.FilterDSIGrpcAsync(filterRequest);
+
+                ListCompositeDetailGrpc compositeDetailList =
+                    filterResponse.CompositeDetailList ?? new ListCompositeDetailGrpc();
+
+                GetCompositeDetailByHarnessResponse response =
+                    new GetCompositeDetailByHarnessResponse();
+
+                foreach (CompositeDetailGrpc? item in compositeDetailList.CompositeDetailList)
+                {
+                    if (item == null)
+                    {
+                        continue;
+                    }
+
+                    DSICompositeDetailGrpc compositeDetail =
+                        new DSICompositeDetailGrpc();
+
+                    compositeDetail.Id = item.Id;
+
+                    compositeDetail.HarnessName1 = item.HarnessName1;
+                    compositeDetail.SimilarHarnessName1 = item.SimilarHarnessName1;
+                    compositeDetail.HarnessIssue1 = item.HarnessIssue1;
+                    compositeDetail.SimilarHarnessIssue1 = item.SimilarHarnessIssue1;
+                    compositeDetail.HarnessDate1 = item.HarnessDate1;
+
+                    compositeDetail.HarnessName2 = item.HarnessName2;
+                    compositeDetail.SimilarHarnessName2 = item.SimilarHarnessName2;
+                    compositeDetail.HarnessIssue2 = item.HarnessIssue2;
+                    compositeDetail.SimilarHarnessIssue2 = item.SimilarHarnessIssue2;
+                    compositeDetail.HarnessDate2 = item.HarnessDate2;
+
+                    compositeDetail.Customer = item.Customer;
+                    compositeDetail.Site = item.Site;
+                    compositeDetail.Range = item.Range;
+
+                    compositeDetail.BoardLength = item.BoardLength;
+                    compositeDetail.BoardWidth = item.BoardWidth;
+
+                    compositeDetail.Datum = item.Datum;
+
+                    compositeDetail.UserField1 = item.UserField1;
+                    compositeDetail.UserField2 = item.UserField2;
+                    compositeDetail.UserField3 = item.UserField3;
+                    compositeDetail.UserField4 = item.UserField4;
+                    compositeDetail.UserField5 = item.UserField5;
+
+                    compositeDetail.Checker = item.Checker;
+                    compositeDetail.Inputter = item.Inputter;
+                    compositeDetail.DraftedBy = item.DraftedBy;
+                    compositeDetail.PreparedBy = item.PreparedBy;
+
+                    compositeDetail.Type = item.Type;
+                    compositeDetail.Title = item.Title;
+                    compositeDetail.EngineSize = item.EngineSize;
+                    compositeDetail.ManufacturingCell = item.ManufacturingCell;
+                    compositeDetail.Trim = item.Trim;
+                    compositeDetail.HandDrive = item.HandDrive;
+
+                    compositeDetail.TubeAddOnType = item.TubeAddOnType;
+                    compositeDetail.TubeAddOnFactor = item.TubeAddOnFactor;
+
+                    compositeDetail.IsManualTerminal = item.IsManualTerminal;
+                    compositeDetail.IsAllConnectorsSealed = item.IsAllConnectorsSealed;
+
+                    compositeDetail.AlphaCode = item.AlphaCode;
+
+                    compositeDetail.HarnessID = item.HarnessID;
+                    compositeDetail.CircuitOption = item.CircuitOption;
+
+                    compositeDetail.CreatedDate = item.CreatedDate;
+                    compositeDetail.ModifiedDate = item.ModifiedDate;
+
+                    compositeDetail.CreatedBy = item.CreatedBy;
+                    compositeDetail.ModifiedBy = item.ModifiedBy;
+
+                    response.CompositeDetails.Add(compositeDetail);
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError(
+                    "Error fetching CompositeDetail list from DSI by HarnessId",
+                    ex);
+
+                throw;
+            }
+          }
+        public async Task<GetCompositeDetailByHarnessNameResponse> GetCompositeDetailByHarnessNameGrpc(GetCompositeDetailByHarnessNameRequest request)
+        {
+            _ = request;
+            try
+            {
+                await Task.Delay(1);
+
+                DSIFilterRequest filterRequest = new DSIFilterRequest();
+
+                filterRequest.DatabaseList = "COMPOSITEDETAILGRPC";
+                filterRequest.FilterExpression =
+                    $"HarnessID == \"{request.HarnessId}\" && HarnessName1 == \"{request.HarnessName1}\"";
+                DSIFilterResponse filterResponse =
+                    await _DSIClient.FilterDSIGrpcAsync(filterRequest);
+                ListCompositeDetailGrpc compositeDetailList =
+                    filterResponse.CompositeDetailList ?? new ListCompositeDetailGrpc();
+                GetCompositeDetailByHarnessNameResponse response =
+                    new GetCompositeDetailByHarnessNameResponse();
+
+                foreach (CompositeDetailGrpc? item in compositeDetailList.CompositeDetailList)
+                {
+                    if (item == null)
+                    {
+                        continue;
+                    }
+
+                    DSICompositeDetailGrpc compositeDetail =
+                        new DSICompositeDetailGrpc();
+
+                    compositeDetail.Id = item.Id;
+
+                    compositeDetail.HarnessName1 = item.HarnessName1;
+                    compositeDetail.SimilarHarnessName1 = item.SimilarHarnessName1;
+                    compositeDetail.HarnessIssue1 = item.HarnessIssue1;
+                    compositeDetail.SimilarHarnessIssue1 = item.SimilarHarnessIssue1;
+                    compositeDetail.HarnessDate1 = item.HarnessDate1;
+
+                    compositeDetail.HarnessName2 = item.HarnessName2;
+                    compositeDetail.SimilarHarnessName2 = item.SimilarHarnessName2;
+                    compositeDetail.HarnessIssue2 = item.HarnessIssue2;
+                    compositeDetail.SimilarHarnessIssue2 = item.SimilarHarnessIssue2;
+                    compositeDetail.HarnessDate2 = item.HarnessDate2;
+
+                    compositeDetail.Customer = item.Customer;
+                    compositeDetail.Site = item.Site;
+                    compositeDetail.Range = item.Range;
+
+                    compositeDetail.BoardLength = item.BoardLength;
+                    compositeDetail.BoardWidth = item.BoardWidth;
+
+                    compositeDetail.Datum = item.Datum;
+
+                    compositeDetail.UserField1 = item.UserField1;
+                    compositeDetail.UserField2 = item.UserField2;
+                    compositeDetail.UserField3 = item.UserField3;
+                    compositeDetail.UserField4 = item.UserField4;
+                    compositeDetail.UserField5 = item.UserField5;
+
+                    compositeDetail.Checker = item.Checker;
+                    compositeDetail.Inputter = item.Inputter;
+                    compositeDetail.DraftedBy = item.DraftedBy;
+                    compositeDetail.PreparedBy = item.PreparedBy;
+
+                    compositeDetail.Type = item.Type;
+                    compositeDetail.Title = item.Title;
+                    compositeDetail.EngineSize = item.EngineSize;
+                    compositeDetail.ManufacturingCell = item.ManufacturingCell;
+                    compositeDetail.Trim = item.Trim;
+                    compositeDetail.HandDrive = item.HandDrive;
+
+                    compositeDetail.TubeAddOnType = item.TubeAddOnType;
+                    compositeDetail.TubeAddOnFactor = item.TubeAddOnFactor;
+
+                    compositeDetail.IsManualTerminal = item.IsManualTerminal;
+                    compositeDetail.IsAllConnectorsSealed = item.IsAllConnectorsSealed;
+
+                    compositeDetail.AlphaCode = item.AlphaCode;
+
+                    compositeDetail.HarnessID = item.HarnessID;
+                    compositeDetail.CircuitOption = item.CircuitOption;
+
+                    compositeDetail.CreatedDate = item.CreatedDate;
+                    compositeDetail.ModifiedDate = item.ModifiedDate;
+
+                    compositeDetail.CreatedBy = item.CreatedBy;
+                    compositeDetail.ModifiedBy = item.ModifiedBy;
+
+                    response.CompositeDetails.Add(compositeDetail);
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError(
+                    "Error fetching CompositeDetail list from DSI by HarnessId",
+                    ex);
+
+                throw;
+            }
+        }
+        public async Task<GetWireSpecificationByCompositeOptionResponse> GetWireSpecificationByCompositeOptionGrpc( GetWireSpecificationByCompositeOptionRequest request)
+        {
+            try
+            {
+                await Task.Delay(1);
+                 DSIFilterRequest filterRequest = new DSIFilterRequest();
+
+                filterRequest.DatabaseList = "WIRESPECIFICATIONGRPC";
+                filterRequest.FilterExpression =
+                    $"Compositeoptionstring == \"{request.CompositeOptionString}\"";
+
+                DSIFilterResponse filterResponse =
+                    await _DSIClient.FilterDSIGrpcAsync(filterRequest);
+
+                ListWireSpecificationGrpc wireSpecificationList =
+                    filterResponse.WireSpecificationList ?? new ListWireSpecificationGrpc();
+
+                GetWireSpecificationByCompositeOptionResponse response =
+                    new GetWireSpecificationByCompositeOptionResponse();
+
+                foreach (WireSpecificationGrpc? item in wireSpecificationList.WireSpecificationList)
+                {
+                    if (item == null)
+                    {
+                        continue;
+                    }
+
+                    DSIWireSpecificationGrpc wire =
+                        new DSIWireSpecificationGrpc();
+
+                    wire.Id = item.Id;
+                    wire.WireName = item.WireName;
+                    wire.Compositeoptionstring = item.Compositeoptionstring;
+                    wire.WireType = item.WireType;
+                    wire.Colour = item.Colour;
+                    wire.CrossSectionalArea = item.CrossSectionalArea;
+                    wire.Material = item.Material;
+
+                    wire.End1NodeName = item.End1NodeName;
+                    wire.End2NodeName = item.End2NodeName;
+
+                    wire.IsIncludedOnBom = item.IsIncludedOnBom;
+                    wire.IsIncludedOnChart = item.IsIncludedOnChart;
+
+                    wire.WireTag = item.WireTag;
+                    wire.WireNote = item.WireNote;
+
+                    wire.UnmodifiedWireLength = item.UnmodifiedWireLength;
+                    wire.ModifiedWireLength = item.ModifiedWireLength;
+
+                    wire.PartNumber1 = item.PartNumber1;
+                    wire.PartNumber2 = item.PartNumber2;
+                    wire.PartNumber3 = item.PartNumber3;
+
+                    wire.Signal = item.Signal;
+                    wire.HarnessID = item.HarnessID;
+
+                    wire.CreatedDate = item.CreatedDate;
+                    wire.ModifiedDate = item.ModifiedDate;
+
+                    response.WireSpecifications.Add(wire);
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError(
+                    "Error fetching WireSpecification list from DSI by CompositeOptionString",
+                    ex);
+
+                throw;
+            }
+        }
+        public async Task<ListComponentGrpc> GetComponentsByHarnessAndOptionsGrpc(
+     GetComponentsByHarnessAndOptionsRequest request)
+        {
+            try
+            {
+                await Task.Delay(1);
+
+                //////////////////////////////////////////////////////
+                //  BUILD DSI REQUEST
+                //////////////////////////////////////////////////////
+                GetComponentByHarnessRequest dsiRequest = new GetComponentByHarnessRequest();
+
+                dsiRequest.HarnessName = request.HarnessName;
+                dsiRequest.CompositeOptions.AddRange(request.CompositeOptions);
+
+                //////////////////////////////////////////////////////
+                //  CALL DSI DIRECT METHOD
+                //////////////////////////////////////////////////////
+                DSI.ListComponentGrpc dsiResponse =
+                    await _DSIClient.GetComponentsByHarnessAndOptionsAsync(dsiRequest);
+
+                //////////////////////////////////////////////////////
+                //  BUILD MANAGER RESPONSE
+                //////////////////////////////////////////////////////
+                ListComponentGrpc response = new ListComponentGrpc();
+
+                //////////////////////////////////////////////////////
+                //  MAPPING
+                //////////////////////////////////////////////////////
+                foreach (ComponentGrpc? item in dsiResponse.ComponentList)
+                {
+                    if (item == null)
+                    {
+                        continue;
+                    }
+
+                    DSIComponentGrpc component = new DSIComponentGrpc();
+
+                    component.Id = item.Id;
+
+                    component.NodeName = item.NodeName;
+                    component.CavityName = item.CavityName;
+                    component.WireName = item.WireName;
+                    component.SequenceNumber = item.SequenceNumber;
+
+                    component.ComponentTypeCode1 = item.ComponentTypeCode1;
+                    component.ComponentOption = item.ComponentOption;
+                    component.ServiceFunction = item.ServiceFunction;
+
+                    component.Route = item.Route;
+
+                    component.PartNumber1 = item.PartNumber1;
+                    component.PartNumber2 = item.PartNumber2;
+                    component.PartNumber3 = item.PartNumber3;
+
+                    component.Quantity = item.Quantity;
+                    component.CrossSectionalArea = item.CrossSectionalArea;
+
+                    component.IsSelectTerminal = item.IsSelectTerminal;
+                    component.IsSeal = item.IsSeal;
+                    component.IsPlugged = item.IsPlugged;
+
+                    component.BlockNumber = item.BlockNumber;
+                    component.TerminationMethod = item.TerminationMethod;
+                    component.MaterialCode = item.MaterialCode;
+
+                    component.ComponentTypeCode2 = item.ComponentTypeCode2;
+                    component.InsulationType = item.InsulationType;
+
+                    component.UserModule = item.UserModule;
+                    component.HarnessID = item.HarnessID;
+
+                    component.CreatedDate = item.CreatedDate;
+                    component.ModifiedDate = item.ModifiedDate;
+
+                    response.ComponentList.Add(component);
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError(
+                    "Error fetching Components by HarnessName and CompositeOptions from DSI",
+                    ex);
+
+                throw;
+            }
+        }
         #endregion
     }
 }

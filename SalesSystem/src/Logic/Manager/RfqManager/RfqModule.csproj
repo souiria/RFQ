@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Access\DSI\DSI.csproj" />
     <ProjectReference Include="..\..\..\Access\Master\Master.csproj" />
     <ProjectReference Include="..\..\..\Access\NPR\NPR.csproj" />
     <ProjectReference Include="..\..\..\Access\Rfq\Rfq.csproj" />
