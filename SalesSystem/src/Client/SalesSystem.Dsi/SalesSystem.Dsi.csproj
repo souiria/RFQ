@@ -52,4 +52,11 @@
     <Folder Include="wwwroot\assets\fontawesome\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Protobuf Include="..\..\Logic\Manager\RfqManager\Protos\RfqModule.proto"
+              GrpcServices="Client"
+              Link="Protos\RfqModule.proto" />
+  </ItemGroup>
+
+
 </Project>

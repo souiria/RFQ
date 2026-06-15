@@ -1,4 +1,6 @@
-﻿namespace SalesSystem.Dsi
+﻿using SalesSystem.Dsi.Services;
+
+namespace SalesSystem.Dsi
 {
     public static class HostBuilder
     {
@@ -43,17 +45,17 @@
             #region Additional Services
 
             //StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
-            builder.Services.AddDsiUxServices();
-          //builder.Services.AddGrpcClient<DsiModule.DsiModule.DsiModuleClient>(o => proto file
-          //  {
-          //      o.Address = new Uri(managerUrl);
+            builder.Services.AddScoped<DsiUxClientService>();
+            builder.Services.AddGrpcClient<RfqModule.RfqModule.RfqModuleClient>(o =>
+            {
+                o.Address = new Uri(managerUrl);
 
-          //  })
-          //  .ConfigureChannel(options =>
-          //  {
-          //      options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 256 MB
-          //      options.MaxSendMessageSize = 64 * 1024 * 1024;    // 256 MB
-          //  });
+            })
+              .ConfigureChannel(options =>
+              {
+                  options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 256 MB
+                  options.MaxSendMessageSize = 64 * 1024 * 1024;    // 256 MB
+              });
 
             #endregion
 
