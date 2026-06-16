@@ -120,7 +120,7 @@ message HarnessGrpc {
 //////////////////////////////////////////////////////
 
 message CompositeDetailGrpc {
-    google.protobuf.StringValue Id = 1;
+   int64 Id = 1;
 
     google.protobuf.StringValue HarnessName1 = 2;
     google.protobuf.StringValue SimilarHarnessName1 = 3;
@@ -185,7 +185,7 @@ message CompositeDetailGrpc {
 //////////////////////////////////////////////////////
 
 message ComponentGrpc {
-    google.protobuf.StringValue Id = 1;
+    int64 Id = 1;
 
     google.protobuf.StringValue NodeName = 2;
     google.protobuf.StringValue CavityName = 3;
@@ -230,7 +230,7 @@ message ComponentGrpc {
 //////////////////////////////////////////////////////
 
 message BranchInsulationGrpc {
-    google.protobuf.StringValue Id = 1;
+    int64 Id = 1;
 
     google.protobuf.StringValue StartNode = 2;
     google.protobuf.StringValue StartRoute = 3;
@@ -268,7 +268,7 @@ message BranchInsulationGrpc {
 //////////////////////////////////////////////////////
 
 message WireSpecificationGrpc {
-    google.protobuf.StringValue Id = 1;
+    int64 Id = 1;
 
     google.protobuf.StringValue WireName = 2;
     google.protobuf.StringValue WireType = 3;
@@ -320,6 +320,7 @@ message ListCompositeDetailGrpc {
 }
 message ListComponentGrpc {
     repeated ComponentGrpc ComponentList = 1;
+     string harnessName = 2;
 }
 message ListBranchInsulationGrpc {
     repeated BranchInsulationGrpc BranchInsulationList = 1;
@@ -351,6 +352,6 @@ message GetHarnessByNameRequest {
 }
 
 message GetComponentByHarnessRequest {
-    string harnessName = 1;
+   repeated  string harnessName = 1;
     repeated string compositeOptions = 2;
 }

@@ -12,9 +12,7 @@
 
 <MudPaper Class="pa-4">
 
-    <!-- ====================================================== -->
-    <!-- HARNESS TABLE -->
-    <!-- ====================================================== -->
+    <!-- ================= HARNESS TABLE ================= -->
     <MudText Typo="Typo.h6" Class="mb-2">Harnesses</MudText>
 
     <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center" Class="mb-4">
@@ -27,9 +25,7 @@
 
         @if (_loadingHarnesses)
         {
-            <MudProgressCircular Indeterminate="true"
-                                 Color="Color.Primary"
-                                 Size="Size.Medium" />
+            <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
         }
     </MudStack>
 
@@ -52,110 +48,35 @@
         </HeaderContent>
 
         <RowTemplate>
-            <MudTd DataLabel="Harness Name">@context.HarnessName1</MudTd>
-            <MudTd DataLabel="Customer">@context.Customer</MudTd>
-            <MudTd DataLabel="Site">@context.Site</MudTd>
-            <MudTd DataLabel="Type">@context.Type</MudTd>
-            <MudTd DataLabel="Title">@context.Title</MudTd>
+            <MudTd>@context.HarnessName1</MudTd>
+            <MudTd>@context.Customer</MudTd>
+            <MudTd>@context.Site</MudTd>
+            <MudTd>@context.Type</MudTd>
+            <MudTd>@context.Title</MudTd>
         </RowTemplate>
 
-        <NoRecordsContent>
-            <MudText>No harness data found.</MudText>
-        </NoRecordsContent>
-
-        <LoadingContent>
-            <MudText>Loading harnesses...</MudText>
-        </LoadingContent>
     </MudTable>
 
     <MudDivider Class="my-6" />
 
-    <!-- ====================================================== -->
-    <!-- COMPOSITE DETAILS BY HARNESS ID -->
-    <!-- ====================================================== -->
+    <!-- ================= COMPOSITE DETAILS ================= -->
     <MudText Typo="Typo.h6" Class="mb-2">
-        Composite Details by HarnessId
+        Composite Details
         @if (_selectedHarness != null)
         {
             <span> for: <b>@_selectedHarness.HarnessName1</b></span>
         }
     </MudText>
 
-    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center" Class="mb-3">
-        @if (_loadingCompositeDetails)
-        {
-            <MudProgressCircular Indeterminate="true"
-                                 Color="Color.Secondary"
-                                 Size="Size.Medium" />
-            <MudText>Loading composite details...</MudText>
-        }
-        else if (_selectedHarness == null)
-        {
-            <MudText Color="Color.Info">Select a harness row above.</MudText>
-        }
-    </MudStack>
+    @if (_loadingCompositeDetails)
+    {
+        <MudProgressCircular Indeterminate="true" Color="Color.Secondary" />
+    }
 
     <MudDataGrid T="DSICompositeDetailGrpc"
                  Items="_compositeDetails"
-                 Dense="true"
-                 Hover="true"
-                 Striped="true"
-                 Bordered="true"
-                 ReadOnly="true"
-                 RowClick="OnCompositeDetailRowClick">
-
-        <Columns>
-            <PropertyColumn Property="x => x.HarnessName1" Title="Harness Name" />
-            <PropertyColumn Property="x => x.CircuitOption" Title="Circuit Option" />
-            <PropertyColumn Property="x => x.Customer" Title="Customer" />
-            <PropertyColumn Property="x => x.Site" Title="Site" />
-            <PropertyColumn Property="x => x.Range" Title="Range" />
-            <PropertyColumn Property="x => x.Type" Title="Type" />
-            <PropertyColumn Property="x => x.Title" Title="Title" />
-            <PropertyColumn Property="x => x.AlphaCode" Title="Alpha Code" />
-        </Columns>
-
-        <NoRecordsContent>
-            <MudText>No composite details found.</MudText>
-        </NoRecordsContent>
-    </MudDataGrid>
-
-    <MudDivider Class="my-6" />
-
-    <!-- ====================================================== -->
-    <!-- COMPONENTS BY HARNESS NAME + CIRCUIT OPTION -->
-    <!-- ====================================================== -->
-    <MudText Typo="Typo.h6" Class="mb-2">
-        Components by HarnessName + CircuitOption
-        @if (_selectedHarness != null && _selectedCompositeDetail != null)
-        {
-            <span>
-                for:
-                <b>@_selectedHarness.HarnessName1</b>
-                /
-                <b>@_selectedCompositeDetail.CircuitOption</b>
-            </span>
-        }
-    </MudText>
-
-    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center" Class="mb-3">
-        @if (_loadingComponents)
-        {
-            <MudProgressCircular Indeterminate="true"
-                                 Color="Color.Success"
-                                 Size="Size.Medium" />
-            <MudText>Loading components...</MudText>
-        }
-        else if (_selectedCompositeDetail == null)
-        {
-            <MudText Color="Color.Info">
-                Select a row in the Composite Details datagrid above to load components.
-            </MudText>
-        }
-    </MudStack>
-
-    <MudDataGrid T="DSIComponentGrpc"
-                 Items="_components"
+                 MultiSelection="true"
+                 @bind-SelectedItems="_selectedCompositeDetails"
                  Dense="true"
                  Hover="true"
                  Striped="true"
@@ -163,15 +84,62 @@
                  ReadOnly="true">
 
         <Columns>
-            <PropertyColumn Property="x => x.PartNumber1" Title="Part Number 1" />
-            <PropertyColumn Property="x => x.PartNumber2" Title="Part Number 2" />
-            <PropertyColumn Property="x => x.PartNumber3" Title="Part Number 3" />
-            <PropertyColumn Property="x => x.Quantity" Title="Quantity" />
+
+            <!-- ✅ CHECKBOX COLUMN -->
+            <SelectColumn T="DSICompositeDetailGrpc" />
+
+            <PropertyColumn Property="x => x.HarnessName1" Title="Harness" />
+            <PropertyColumn Property="x => x.CircuitOption" Title="Option" />
+            <PropertyColumn Property="x => x.Customer" Title="Customer" />
+
         </Columns>
 
-        <NoRecordsContent>
-            <MudText>No components found.</MudText>
-        </NoRecordsContent>
+    </MudDataGrid>
+
+    <!-- ✅ Selected count -->
+    <MudText Class="mt-2">
+        Selected: @_selectedCompositeDetails.Count
+    </MudText>
+
+    <!-- LOAD BUTTON -->
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Success"
+               Class="mt-3"
+               Disabled="_selectedCompositeDetails.Count == 0"
+               OnClick="LoadComponentsByHarnessAndCircuitOption">
+        Load Components
+    </MudButton>
+
+    <MudDivider Class="my-6" />
+
+    <!-- ================= COMPONENTS ================= -->
+    <MudText Typo="Typo.h6" Class="mb-2">
+        Components
+        @if (_selectedHarness != null && _selectedCompositeDetails.Any())
+        {
+            <span> for <b>@_selectedHarness.HarnessName1</b></span>
+        }
+    </MudText>
+
+    @if (_loadingComponents)
+    {
+        <MudProgressCircular Indeterminate="true" Color="Color.Success" />
+    }
+
+    <MudDataGrid T="DSIComponentGrpc"
+                 Items="_components"
+                 Dense="true"
+                 Hover="true"
+                 Striped="true"
+                 Bordered="true">
+
+        <Columns>
+            <PropertyColumn Property="x => x.PartNumber1" Title="Part1" />
+            <PropertyColumn Property="x => x.PartNumber2" Title="Part2" />
+            <PropertyColumn Property="x => x.PartNumber3" Title="Part3" />
+            <PropertyColumn Property="x => x.Quantity" Title="Qty" />
+        </Columns>
+
     </MudDataGrid>
 
 </MudPaper>
@@ -186,7 +154,9 @@
     private List<DSIComponentGrpc> _components = new();
 
     private DSIHarnessGrpc? _selectedHarness;
-    private DSICompositeDetailGrpc? _selectedCompositeDetail;
+
+    // ✅ Multi-select container
+    private HashSet<DSICompositeDetailGrpc> _selectedCompositeDetails = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -198,42 +168,31 @@
         try
         {
             _loadingHarnesses = true;
-            StateHasChanged();
 
             await DsiUxClientService.GetAllHarnessAsync();
-
             _harnesses = DsiUxClientService.Harnesses.ToList();
 
             _selectedHarness = null;
-            _selectedCompositeDetail = null;
             _compositeDetails.Clear();
             _components.Clear();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading harnesses: {ex.Message}");
+            _selectedCompositeDetails.Clear();
         }
         finally
         {
             _loadingHarnesses = false;
-            StateHasChanged();
         }
     }
 
     private async Task OnHarnessRowClick(TableRowClickEventArgs<DSIHarnessGrpc> args)
     {
-        DSIHarnessGrpc? clickedHarness = args.Item;
+        var clicked = args.Item;
+        if (clicked == null) return;
 
-        if (clickedHarness == null || string.IsNullOrWhiteSpace(clickedHarness.Id))
-        {
-            return;
-        }
-
-        _selectedHarness = clickedHarness;
-        _selectedCompositeDetail = null;
+        _selectedHarness = clicked;
         _components.Clear();
+        _selectedCompositeDetails.Clear();
 
-        await LoadCompositeDetailsByHarnessId(clickedHarness.Id);
+        await LoadCompositeDetailsByHarnessId(clicked.Id);
     }
 
     private async Task LoadCompositeDetailsByHarnessId(string harnessId)
@@ -241,88 +200,54 @@
         try
         {
             _loadingCompositeDetails = true;
-            _compositeDetails.Clear();
-            StateHasChanged();
 
             await DsiUxClientService.GetCompositeDetailByHarnessIdAsync(harnessId);
-
             _compositeDetails = DsiUxClientService.CompositeDetails.ToList();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading composite details by HarnessId: {ex.Message}");
         }
         finally
         {
             _loadingCompositeDetails = false;
-            StateHasChanged();
         }
-    }
-
-    private async Task OnCompositeDetailRowClick(DataGridRowClickEventArgs<DSICompositeDetailGrpc> args)
-    {
-        DSICompositeDetailGrpc? clickedCompositeDetail = args.Item;
-
-        if (clickedCompositeDetail == null)
-        {
-            return;
-        }
-
-        _selectedCompositeDetail = clickedCompositeDetail;
-
-        await LoadComponentsByHarnessAndCircuitOption();
     }
 
     private async Task LoadComponentsByHarnessAndCircuitOption()
     {
-        if (_selectedHarness == null || _selectedCompositeDetail == null)
-        {
+        if (_selectedHarness == null || !_selectedCompositeDetails.Any())
             return;
-        }
-
-        string harnessName = _selectedHarness.HarnessName1 ?? string.Empty;
-        string circuitOption = _selectedCompositeDetail.CircuitOption ?? string.Empty;
-
-        if (string.IsNullOrWhiteSpace(harnessName) || string.IsNullOrWhiteSpace(circuitOption))
-        {
-            return;
-        }
 
         try
         {
             _loadingComponents = true;
             _components.Clear();
-            StateHasChanged();
 
-            List<string> compositeOptions = new List<string>
+            var harnessNames = new List<string>
             {
-                circuitOption
+                _selectedHarness.HarnessName1!
             };
 
+            var compositeOptions = _selectedCompositeDetails
+                .Where(x => !string.IsNullOrWhiteSpace(x.CircuitOption))
+                .SelectMany(x => x.CircuitOption!
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries))
+                .Select(x => x.Trim())
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
             await DsiUxClientService.GetComponentsByHarnessAndOptionsAsync(
-                harnessName,
+                harnessNames,
                 compositeOptions);
 
             _components = DsiUxClientService.Components.ToList();
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading components by HarnessName + CircuitOption: {ex.Message}");
-        }
         finally
         {
             _loadingComponents = false;
-            StateHasChanged();
         }
     }
 
-    private string GetHarnessRowClass(DSIHarnessGrpc item, int rowNumber)
+    private string GetHarnessRowClass(DSIHarnessGrpc item, int row)
     {
-        if (_selectedHarness != null && item.Id == _selectedHarness.Id)
-        {
-            return "selected-row";
-        }
-
-        return string.Empty;
+        return _selectedHarness?.Id == item.Id ? "selected-row" : "";
     }
 }

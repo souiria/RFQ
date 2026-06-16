@@ -4,8 +4,8 @@
     {
         public void Configure(EntityTypeBuilder<DbWireSpecification> builder)
         {
-            builder.ToTable("WireSpecification");
-            builder.HasKey(x => x.Id);
+            builder.ToTable("DsiWireSpecification");
+            builder.HasKey(x => x.RowId);
         }
     }
 }

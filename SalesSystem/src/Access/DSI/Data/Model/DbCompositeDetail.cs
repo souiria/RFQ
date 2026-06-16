@@ -2,7 +2,7 @@
 {
     public class DbCompositeDetail : IAggregateRoot
     {
-        public Guid Id
+        public long RowId
         { get; set; }
 
         public string? HarnessName1

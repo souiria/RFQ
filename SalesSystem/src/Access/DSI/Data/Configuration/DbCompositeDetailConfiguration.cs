@@ -4,10 +4,8 @@
     {
         public void Configure(EntityTypeBuilder<DbCompositeDetail> builder)
         {
-            builder.ToTable("CompositeDetail");
-            builder.HasKey(x => x.Id);
+            builder.ToTable("DsiCompositeDetail");
+            builder.HasKey(x => x.RowId);
         }
     }
-
-
 }

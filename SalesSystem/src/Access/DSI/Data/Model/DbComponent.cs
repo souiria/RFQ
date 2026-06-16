@@ -2,7 +2,7 @@
 {
     public class DbComponent : IAggregateRoot
     {
-        public Guid Id
+        public long RowId
         { get; set; }
 
         public string? NodeName

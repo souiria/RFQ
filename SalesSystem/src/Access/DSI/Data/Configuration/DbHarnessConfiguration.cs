@@ -5,8 +5,8 @@
     {
         public void Configure(EntityTypeBuilder<DbHarness> builder)
         {
-            builder.ToTable("Harness");
-            builder.HasKey(x => x.Id);
+            builder.ToTable("DsiHarness");
+            builder.HasKey(x => x.HarnessId);
         }
     }
  }

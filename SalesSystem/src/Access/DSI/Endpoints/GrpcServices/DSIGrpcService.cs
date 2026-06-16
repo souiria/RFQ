@@ -74,13 +74,21 @@
                     request.HarnessName,
                     context.CancellationToken);
         }
-        public override async Task<ListComponentGrpc>GetComponentsByHarnessAndOptions(GetComponentByHarnessRequest request,ServerCallContext context)     
+        public override async Task<ListComponentGrpc> GetComponentsByHarnessAndOptions(
+            GetComponentByHarnessRequest request,
+            ServerCallContext context)
         {
-            return await _DSIAccessService.GetComponentsByHarnessAndOptions(
-                request.HarnessName,
-                [.. request.CompositeOptions],
-                context.CancellationToken);
+            _Logger.GenericLogInformation("GetComponentsByHarnessAndOptions starting");
+
+            ListComponentGrpc response =
+                await _DSIAccessService.GetComponentsByHarnessAndOptions(
+                    request.HarnessName,
+                    request.CompositeOptions,
+                    context.CancellationToken);
+
+            return response;
         }
+
         public override async Task<DSIFilterResponse> FilterDSIGrpc(DSIFilterRequest request,ServerCallContext context)
         {
             _Logger.GenericLogInformation("FilterDSIGrpc starting");

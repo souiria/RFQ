@@ -2,7 +2,7 @@
 {
     public class DbHarness : IAggregateRoot
     {
-        public Guid Id
+        public Guid HarnessId
         { get; set; }
 
         public string? HarnessName1

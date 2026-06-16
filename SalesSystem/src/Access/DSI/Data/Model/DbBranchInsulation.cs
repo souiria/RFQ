@@ -2,7 +2,7 @@
 {
     public class DbBranchInsulation : IAggregateRoot
     {
-        public Guid Id
+        public long RowId
         { get; set; }
 
         public string? StartNode

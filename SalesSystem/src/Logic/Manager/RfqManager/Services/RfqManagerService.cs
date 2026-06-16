@@ -1,4 +1,6 @@
-﻿namespace RfqModule.Services
+﻿using System.ComponentModel;
+
+namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {
@@ -2284,83 +2286,91 @@
                 throw;
             }
         }
-        public async Task<ListComponentGrpc> GetComponentsByHarnessAndOptionsGrpc(
-     GetComponentsByHarnessAndOptionsRequest request)
+        public async Task<ListComponentGrpc> GetComponentsByHarnessAndOptionsGrpc(GetComponentsByHarnessAndOptionsRequest request)
         {
             try
             {
                 await Task.Delay(1);
 
-                //////////////////////////////////////////////////////
-                //  BUILD DSI REQUEST
-                //////////////////////////////////////////////////////
                 GetComponentByHarnessRequest dsiRequest = new GetComponentByHarnessRequest();
 
-                dsiRequest.HarnessName = request.HarnessName;
-                dsiRequest.CompositeOptions.AddRange(request.CompositeOptions);
+                List<string> validHarnessNames = request.HarnessName
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Select(x => x.Trim())
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList();
 
-                //////////////////////////////////////////////////////
-                //  CALL DSI DIRECT METHOD
-                //////////////////////////////////////////////////////
-                DSI.ListComponentGrpc dsiResponse =
+                List<string> validCompositeOptions = request.CompositeOptions
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Select(x => x.Trim())
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+
+                _Logger.GenericLogInformation(
+                    $"GetComponentsByHarnessAndOptionsGrpc - HarnessName count: {validHarnessNames.Count}");
+                _Logger.GenericLogInformation(
+                    $"GetComponentsByHarnessAndOptionsGrpc - HarnessName values: [{string.Join(", ", validHarnessNames)}]");
+
+                _Logger.GenericLogInformation(
+                    $"GetComponentsByHarnessAndOptionsGrpc - CompositeOptions count: {validCompositeOptions.Count}");
+                _Logger.GenericLogInformation(
+                    $"GetComponentsByHarnessAndOptionsGrpc - CompositeOptions values: [{string.Join(", ", validCompositeOptions)}]");
+
+                dsiRequest.HarnessName.AddRange(validHarnessNames);
+                dsiRequest.CompositeOptions.AddRange(validCompositeOptions);
+
+                DSI.ListComponentGrpc? dsiResponse =
                     await _DSIClient.GetComponentsByHarnessAndOptionsAsync(dsiRequest);
 
-                //////////////////////////////////////////////////////
-                //  BUILD MANAGER RESPONSE
-                //////////////////////////////////////////////////////
+                _Logger.GenericLogInformation(
+                    $"GetComponentsByHarnessAndOptionsGrpc - DSI returned {dsiResponse?.ComponentList?.Count ?? 0} component(s)");
+
                 ListComponentGrpc response = new ListComponentGrpc();
 
-                //////////////////////////////////////////////////////
-                //  MAPPING
-                //////////////////////////////////////////////////////
-                foreach (ComponentGrpc? item in dsiResponse.ComponentList)
+                if (dsiResponse?.ComponentList != null)
                 {
-                    if (item == null)
+                    foreach (ComponentGrpc? item in dsiResponse.ComponentList)
                     {
-                        continue;
+                        if (item == null)
+                        {
+                            continue;
+                        }
+
+                        DSIComponentGrpc component = new DSIComponentGrpc();
+
+                        component.Id = item.Id;
+                        component.NodeName = item.NodeName;
+                        component.CavityName = item.CavityName;
+                        component.WireName = item.WireName;
+                        component.SequenceNumber = item.SequenceNumber;
+                        component.ComponentTypeCode1 = item.ComponentTypeCode1;
+                        component.ComponentOption = item.ComponentOption;
+                        component.ServiceFunction = item.ServiceFunction;
+                        component.Route = item.Route;
+                        component.PartNumber1 = item.PartNumber1;
+                        component.PartNumber2 = item.PartNumber2;
+                        component.PartNumber3 = item.PartNumber3;
+                        component.Quantity = item.Quantity;
+                        component.CrossSectionalArea = item.CrossSectionalArea;
+                        component.IsSelectTerminal = item.IsSelectTerminal;
+                        component.IsSeal = item.IsSeal;
+                        component.IsPlugged = item.IsPlugged;
+                        component.BlockNumber = item.BlockNumber;
+                        component.TerminationMethod = item.TerminationMethod;
+                        component.MaterialCode = item.MaterialCode;
+                        component.ComponentTypeCode2 = item.ComponentTypeCode2;
+                        component.InsulationType = item.InsulationType;
+                        component.UserModule = item.UserModule;
+                        component.HarnessID = item.HarnessID;
+                        component.CreatedDate = item.CreatedDate;
+                        component.ModifiedDate = item.ModifiedDate;
+
+                        response.ComponentList.Add(component);
                     }
-
-                    DSIComponentGrpc component = new DSIComponentGrpc();
-
-                    component.Id = item.Id;
-
-                    component.NodeName = item.NodeName;
-                    component.CavityName = item.CavityName;
-                    component.WireName = item.WireName;
-                    component.SequenceNumber = item.SequenceNumber;
-
-                    component.ComponentTypeCode1 = item.ComponentTypeCode1;
-                    component.ComponentOption = item.ComponentOption;
-                    component.ServiceFunction = item.ServiceFunction;
-
-                    component.Route = item.Route;
-
-                    component.PartNumber1 = item.PartNumber1;
-                    component.PartNumber2 = item.PartNumber2;
-                    component.PartNumber3 = item.PartNumber3;
-
-                    component.Quantity = item.Quantity;
-                    component.CrossSectionalArea = item.CrossSectionalArea;
-
-                    component.IsSelectTerminal = item.IsSelectTerminal;
-                    component.IsSeal = item.IsSeal;
-                    component.IsPlugged = item.IsPlugged;
-
-                    component.BlockNumber = item.BlockNumber;
-                    component.TerminationMethod = item.TerminationMethod;
-                    component.MaterialCode = item.MaterialCode;
-
-                    component.ComponentTypeCode2 = item.ComponentTypeCode2;
-                    component.InsulationType = item.InsulationType;
-
-                    component.UserModule = item.UserModule;
-                    component.HarnessID = item.HarnessID;
-
-                    component.CreatedDate = item.CreatedDate;
-                    component.ModifiedDate = item.ModifiedDate;
-
-                    response.ComponentList.Add(component);
                 }
+
+                _Logger.GenericLogInformation(
+                    $"GetComponentsByHarnessAndOptionsGrpc - Manager mapped {response.ComponentList.Count} component(s)");
 
                 return response;
             }

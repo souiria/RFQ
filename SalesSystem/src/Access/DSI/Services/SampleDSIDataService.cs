@@ -11,7 +11,7 @@
             for (int i = 0; i < 5; i++)
             {
                 ComponentGrpc item = new ComponentGrpc();
-                item.Id = Guid.NewGuid().ToString();
+                item.Id = i;
                 item.NodeName = $"Node{i}";
                 item.CavityName = $"Cavity{i}";
                 item.WireName = $"Wire{i}";
@@ -30,7 +30,7 @@
             }
 
             ComponentGrpc fixedItem = new ComponentGrpc();
-            fixedItem.Id = Guid.NewGuid().ToString();
+            fixedItem.Id = 11;
             fixedItem.NodeName = "FixedNode";
             fixedItem.WireName = "FixedWire";
             fixedItem.PartNumber1 = "PN-TEST";
@@ -52,7 +52,7 @@
             for (int i = 0; i < 5; i++)
             {
                 BranchInsulationGrpc item = new BranchInsulationGrpc();
-                item.Id = Guid.NewGuid().ToString();
+                item.Id = i;
                 item.StartNode = $"Start{i}";
                 item.EndNode = $"End{i}";
                 item.PieceCode = $"PC{i}";
@@ -81,7 +81,7 @@
             for (int i = 0; i < 5; i++)
             {
                 WireSpecificationGrpc item = new WireSpecificationGrpc();
-                item.Id = Guid.NewGuid().ToString();
+                item.Id = i;
                 item.WireName = $"Wire{i}";
                 item.WireType = "TypeA";
                 item.Colour = "Red";
@@ -111,7 +111,7 @@
             for (int i = 0; i < 5; i++)
             {
                 CompositeDetailGrpc item = new CompositeDetailGrpc();
-                item.Id = Guid.NewGuid().ToString();
+                item.Id = i;
                 item.Customer = $"Customer{i}";
                 item.Site = "SiteA";
                 item.Range = "RangeX";

@@ -52,6 +52,7 @@ rpc ValidateNprRequestGrpc (MgrValidateNprRequestRequest) returns (MgrValidateNp
  rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
  rpc GetAllHarnessGrpc (GetAllHarnessModuleRequest) returns (GetAllHarnessModuleResponse);
  rpc GetCompositeDetailByHarnessGrpc (GetCompositeDetailByHarnessRequest)
+
     returns (GetCompositeDetailByHarnessResponse);
     rpc GetCompositeDetailByHarnessNameGrpc (GetCompositeDetailByHarnessNameRequest)
     returns (GetCompositeDetailByHarnessNameResponse);
@@ -910,7 +911,7 @@ message DSIHarnessGrpc {
 }
 
 message DSICompositeDetailGrpc {
-    google.protobuf.StringValue Id = 1;
+   int64 Id = 1;
 
     google.protobuf.StringValue HarnessName1 = 2;
     google.protobuf.StringValue SimilarHarnessName1 = 3;
@@ -993,7 +994,7 @@ message GetCompositeDetailByHarnessNameResponse {
 }
 
 message DSIWireSpecificationGrpc {
-    google.protobuf.StringValue Id = 1;
+    int64 Id = 1;
     google.protobuf.StringValue WireName = 2;
     google.protobuf.StringValue Compositeoptionstring = 3;
     google.protobuf.StringValue WireType = 4;
@@ -1053,14 +1054,14 @@ message GetWireSpecificationByCompositeOptionResponse {
 }
 
 message GetComponentsByHarnessAndOptionsRequest {
-    string HarnessName = 1;
+    repeated string HarnessName = 1;
     repeated string CompositeOptions = 2;
 }
 message ListComponentGrpc {
     repeated DSIComponentGrpc ComponentList = 1;
 }
 message DSIComponentGrpc {
-    google.protobuf.StringValue Id = 1;
+    int64 Id = 1;
 
     google.protobuf.StringValue NodeName = 2;
     google.protobuf.StringValue CavityName = 3;

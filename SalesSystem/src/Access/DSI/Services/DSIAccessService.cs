@@ -455,8 +455,10 @@
         #region ComponentsByHarnessNameAndOptions
         #region ComponentsByHarnessNameAndOptions
 
+        #region ComponentsByHarnessNameAndOptions
+
         public async Task<ListComponentGrpc> GetComponentsByHarnessAndOptions(
-            string harnessName,
+            IEnumerable<string> harnessNames,
             IEnumerable<string> compositeOptions,
             CancellationToken cancellationToken)
         {
@@ -464,72 +466,130 @@
 
             ListComponentGrpc response = new ListComponentGrpc();
 
+            //////////////////////////////////////////////////////
+            // STEP 1: Load Harness cache
+            //////////////////////////////////////////////////////
             if (!_ListHarnessGrpc.HarnessList.Any())
             {
                 await PopulateHarness(cancellationToken);
             }
 
-            HarnessGrpc? harness = _ListHarnessGrpc.HarnessList
-                .FirstOrDefault(h => h.HarnessName1 == harnessName);
+            //////////////////////////////////////////////////////
+            // STEP 2: Normalize Harness Names
+            //////////////////////////////////////////////////////
+            List<string> harnessNameList = new List<string>();
 
-            if (harness == null || string.IsNullOrEmpty(harness.Id))
+            if (harnessNames != null)
+            {
+                harnessNameList = harnessNames
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Select(x => x.Trim())
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+            }
+
+            if (!harnessNameList.Any())
             {
                 return response;
             }
 
-            string harnessId = harness.Id;
+            //////////////////////////////////////////////////////
+            // STEP 3: Resolve Harness IDs
+            //////////////////////////////////////////////////////
+            HashSet<string> harnessIds = _ListHarnessGrpc.HarnessList
+                .Where(h => !string.IsNullOrWhiteSpace(h.HarnessName1)
+                            && !string.IsNullOrWhiteSpace(h.Id)
+                            && harnessNameList.Contains(h.HarnessName1, StringComparer.OrdinalIgnoreCase))
+                .Select(h => h.Id!)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
+            if (!harnessIds.Any())
+            {
+                return response;
+            }
+
+            //////////////////////////////////////////////////////
+            // STEP 4: Load CompositeDetail cache
+            //////////////////////////////////////////////////////
             if (!_ListCompositeDetailGrpc.CompositeDetailList.Any())
             {
                 await PopulateCompositeDetail(cancellationToken);
             }
 
             List<CompositeDetailGrpc> compositeList = _ListCompositeDetailGrpc.CompositeDetailList
-                .Where(c => c.HarnessID == harnessId)
+                .Where(c => !string.IsNullOrWhiteSpace(c.HarnessID)
+                            && harnessIds.Contains(c.HarnessID))
                 .ToList();
 
             if (!compositeList.Any())
             {
                 return response;
             }
-            List<string> options;
+
+            //////////////////////////////////////////////////////
+            // STEP 5: Normalize CompositeOptions
+            //////////////////////////////////////////////////////
+            List<string> options = new List<string>();
 
             if (compositeOptions != null && compositeOptions.Any())
             {
-                options = compositeOptions.ToList();
+                options = compositeOptions
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .SelectMany(x => x.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                    .Select(x => x.Trim())
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList();
             }
             else
             {
                 options = compositeList
-                    .Select(c => c.CircuitOption)
-                    .Where(c => !string.IsNullOrEmpty(c))
-                    .Select(c => c!)
-                    .Distinct()
+                    .Where(c => !string.IsNullOrWhiteSpace(c.CircuitOption))
+                    .SelectMany(c => c.CircuitOption!.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                    .Select(x => x.Trim())
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
                     .ToList();
             }
+
+            if (!options.Any())
+            {
+                return response;
+            }
+
+            //////////////////////////////////////////////////////
+            // STEP 6: Load WireSpecification cache
+            //////////////////////////////////////////////////////
             if (!_ListWireSpecificationGrpc.WireSpecificationList.Any())
             {
                 await PopulateWireSpecification(cancellationToken);
             }
 
             List<WireSpecificationGrpc> wires = _ListWireSpecificationGrpc.WireSpecificationList
-                .Where(w => options.Contains(w.Compositeoptionstring))
+                .Where(w => !string.IsNullOrWhiteSpace(w.Compositeoptionstring)
+                            && !string.IsNullOrWhiteSpace(w.HarnessID)
+                            && harnessIds.Contains(w.HarnessID)
+                            && options.Contains(w.Compositeoptionstring, StringComparer.OrdinalIgnoreCase))
                 .ToList();
 
             if (!wires.Any())
             {
                 return response;
             }
-            HashSet<string?> nodeNames = new HashSet<string?>();
+
+            //////////////////////////////////////////////////////
+            // STEP 7: Collect NodeNames
+            //////////////////////////////////////////////////////
+            HashSet<string> nodeNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             foreach (WireSpecificationGrpc? w in wires)
             {
-                if (!string.IsNullOrEmpty(w.End1NodeName))
+                if (!string.IsNullOrWhiteSpace(w.End1NodeName))
                 {
                     nodeNames.Add(w.End1NodeName);
                 }
 
-                if (!string.IsNullOrEmpty(w.End2NodeName))
+                if (!string.IsNullOrWhiteSpace(w.End2NodeName))
                 {
                     nodeNames.Add(w.End2NodeName);
                 }
@@ -540,13 +600,22 @@
                 return response;
             }
 
+            //////////////////////////////////////////////////////
+            // STEP 8: Load Component cache
+            //////////////////////////////////////////////////////
             if (!_ListComponentGrpc.ComponentList.Any())
             {
                 await PopulateComponent(cancellationToken);
             }
 
+            //////////////////////////////////////////////////////
+            // STEP 9: Filter Components + Group
+            //////////////////////////////////////////////////////
             List<ComponentGrpc> groupedComponents = _ListComponentGrpc.ComponentList
-                .Where(c => nodeNames.Contains(c.NodeName))
+                .Where(c => !string.IsNullOrWhiteSpace(c.NodeName)
+                            && !string.IsNullOrWhiteSpace(c.HarnessID)
+                            && harnessIds.Contains(c.HarnessID)
+                            && nodeNames.Contains(c.NodeName))
                 .GroupBy(c => new
                 {
                     c.PartNumber1,
@@ -557,17 +626,17 @@
                 {
                     ComponentGrpc item = new ComponentGrpc();
 
-                    if (!string.IsNullOrEmpty(group.Key.PartNumber1))
+                    if (!string.IsNullOrWhiteSpace(group.Key.PartNumber1))
                     {
                         item.PartNumber1 = group.Key.PartNumber1;
                     }
 
-                    if (!string.IsNullOrEmpty(group.Key.PartNumber2))
+                    if (!string.IsNullOrWhiteSpace(group.Key.PartNumber2))
                     {
                         item.PartNumber2 = group.Key.PartNumber2;
                     }
 
-                    if (!string.IsNullOrEmpty(group.Key.PartNumber3))
+                    if (!string.IsNullOrWhiteSpace(group.Key.PartNumber3))
                     {
                         item.PartNumber3 = group.Key.PartNumber3;
                     }
@@ -581,8 +650,15 @@
 
             response.ComponentList.AddRange(groupedComponents);
 
+            //////////////////////////////////////////////////////
+            // OPTIONAL: include joined harness names in response
+            //////////////////////////////////////////////////////
+            response.HarnessName = string.Join(",", harnessNameList);
+
             return response;
         }
+
+        #endregion
 
         #endregion
 

@@ -1,4 +1,4 @@
-using RfqModule;
+﻿using RfqModule;
 
 namespace SalesSystem.Dsi.Services
 {
@@ -285,11 +285,10 @@ namespace SalesSystem.Dsi.Services
         #endregion
 
         #region Components
-
         public async Task<int> GetComponentsByHarnessAndOptionsAsync(
-            string harnessName,
-            IEnumerable<string> compositeOptions,
-            CancellationToken cancellationToken = default)
+      IEnumerable<string> harnessNames,
+      IEnumerable<string> compositeOptions,
+      CancellationToken cancellationToken = default)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
             using CancellationTokenSource combinedCts =
@@ -302,8 +301,20 @@ namespace SalesSystem.Dsi.Services
                 GetComponentsByHarnessAndOptionsRequest request =
                     new GetComponentsByHarnessAndOptionsRequest();
 
-                request.HarnessName = harnessName;
+                //////////////////////////////////////////////////////
+                // ✅ USE FIRST HARNESS NAME ONLY
+                //////////////////////////////////////////////////////
+                string selectedHarnessName = harnessNames
+                    .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x)) ?? string.Empty;
 
+                if (!string.IsNullOrWhiteSpace(selectedHarnessName))
+                {
+                    request.HarnessName.Add(selectedHarnessName);
+                }
+
+                //////////////////////////////////////////////////////
+                // ✅ COMPOSITE OPTIONS
+                //////////////////////////////////////////////////////
                 if (compositeOptions != null)
                 {
                     request.CompositeOptions.AddRange(
@@ -330,7 +341,7 @@ namespace SalesSystem.Dsi.Services
             catch (Exception ex)
             {
                 _Logger?.GenericLogError(
-                    $"Error in GetComponentsByHarnessAndOptionsAsync for HarnessName: {harnessName}",
+                    "Error in GetComponentsByHarnessAndOptionsAsync",
                     ex);
 
                 throw;

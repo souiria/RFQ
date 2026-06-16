@@ -10,7 +10,7 @@ namespace DSI.Extensions
         {
             ComponentGrpc data = new ComponentGrpc();
 
-            data.Id = entity.Id.ToString();
+            data.Id = entity.RowId;
             data.NodeName = entity.NodeName;
             data.CavityName = entity.CavityName;
             data.WireName = entity.WireName;
@@ -34,7 +34,7 @@ namespace DSI.Extensions
         {
             DbComponent data = new DbComponent();
 
-            data.Id = string.IsNullOrEmpty(grpc.Id) ? Guid.NewGuid() : Guid.Parse(grpc.Id);
+            data.RowId = grpc.Id;
             data.NodeName = grpc.NodeName;
             data.CavityName = grpc.CavityName;
             data.WireName = grpc.WireName;
@@ -61,7 +61,7 @@ namespace DSI.Extensions
         {
             BranchInsulationGrpc data = new BranchInsulationGrpc();
 
-            data.Id = entity.Id.ToString();
+            data.Id = entity.RowId;
             data.StartNode = entity.StartNode;
             data.EndNode = entity.EndNode;
             data.PieceCode = entity.PieceCode;
@@ -81,7 +81,7 @@ namespace DSI.Extensions
         {
             DbBranchInsulation data = new DbBranchInsulation();
 
-            data.Id = string.IsNullOrEmpty(grpc.Id) ? Guid.NewGuid() : Guid.Parse(grpc.Id);
+            data.RowId = grpc.Id;
             data.StartNode = grpc.StartNode;
             data.EndNode = grpc.EndNode;
             data.PieceCode = grpc.PieceCode;
@@ -104,7 +104,7 @@ namespace DSI.Extensions
         {
             WireSpecificationGrpc data = new WireSpecificationGrpc();
 
-            data.Id = entity.Id.ToString();
+            data.Id = entity.RowId;  
             data.WireName = entity.WireName;
             data.WireType = entity.WireType;
             data.Colour = entity.Colour;
@@ -130,7 +130,7 @@ namespace DSI.Extensions
         {
             DbWireSpecification data = new DbWireSpecification();
 
-            data.Id = string.IsNullOrEmpty(grpc.Id) ? Guid.NewGuid() : Guid.Parse(grpc.Id);
+            data.RowId = grpc.Id;
             data.WireName = grpc.WireName;
             data.WireType = grpc.WireType;
             data.Colour = grpc.Colour;
@@ -158,7 +158,7 @@ namespace DSI.Extensions
         {
             CompositeDetailGrpc data = new CompositeDetailGrpc();
 
-            data.Id = entity.Id.ToString();
+            data.Id = entity.RowId;
             data.Customer = entity.Customer;
             data.Site = entity.Site;
             data.Range = entity.Range;
@@ -188,7 +188,7 @@ namespace DSI.Extensions
         {
             DbCompositeDetail data = new DbCompositeDetail();
 
-            data.Id = string.IsNullOrEmpty(grpc.Id) ? Guid.NewGuid() : Guid.Parse(grpc.Id);
+            data.RowId = grpc.Id;
             data.Customer = grpc.Customer;
             data.Site = grpc.Site;
             data.Range = grpc.Range;
@@ -219,7 +219,7 @@ namespace DSI.Extensions
         {
             HarnessGrpc data = new HarnessGrpc();
 
-            data.Id = entity.Id.ToString();
+            data.Id = entity.HarnessId.ToString();
 
             data.HarnessName1 = entity.HarnessName1;
             data.SimilarHarnessName1 = entity.SimilarHarnessName1;
@@ -320,7 +320,7 @@ namespace DSI.Extensions
         {
             DbHarness data = new DbHarness();
 
-            data.Id = string.IsNullOrEmpty(grpc.Id) ? Guid.NewGuid() : Guid.Parse(grpc.Id);
+            data.HarnessId = string.IsNullOrEmpty(grpc.Id) ? Guid.NewGuid() : Guid.Parse(grpc.Id);
 
             data.HarnessName1 = grpc.HarnessName1;
             data.SimilarHarnessName1 = grpc.SimilarHarnessName1;

@@ -4,8 +4,8 @@
     {
         public void Configure(EntityTypeBuilder<DbComponent> builder)
         {
-            builder.ToTable("Component");
-            builder.HasKey(x => x.Id);
+            builder.ToTable("DsiComponent");
+            builder.HasKey(x => x.RowId);
         }
     }
 }
