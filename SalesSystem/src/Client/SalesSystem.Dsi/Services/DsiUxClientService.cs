@@ -302,7 +302,7 @@ namespace SalesSystem.Dsi.Services
                     new GetComponentsByHarnessAndOptionsRequest();
 
                 //////////////////////////////////////////////////////
-                // ✅ USE FIRST HARNESS NAME ONLY
+                //  USE FIRST HARNESS NAME ONLY
                 //////////////////////////////////////////////////////
                 string selectedHarnessName = harnessNames
                     .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x)) ?? string.Empty;
@@ -313,7 +313,7 @@ namespace SalesSystem.Dsi.Services
                 }
 
                 //////////////////////////////////////////////////////
-                // ✅ COMPOSITE OPTIONS
+                //  COMPOSITE OPTIONS
                 //////////////////////////////////////////////////////
                 if (compositeOptions != null)
                 {

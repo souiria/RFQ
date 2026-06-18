@@ -6,143 +6,356 @@
 @using MudBlazor
 @inject DsiUxClientService DsiUxClientService
 
-<MudText Typo="Typo.h4" Align="Align.Center" Class="mb-4">
-    DSI Project
-</MudText>
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="py-6">
 
-<MudPaper Class="pa-4">
+    <!-- ================= PAGE HEADER ================= -->
+    <MudPaper Elevation="0" Class="pa-6 mb-6 page-header">
+        <MudGrid Class="align-center">
+            <MudItem xs="12" md="8">
+                <MudText Typo="Typo.h4" Class="font-weight-bold">
+                    DSI Project Dashboard
+                </MudText>
 
-    <!-- ================= HARNESS TABLE ================= -->
-    <MudText Typo="Typo.h6" Class="mb-2">Harnesses</MudText>
+                <MudText Typo="Typo.body1" Color="Color.Secondary" Class="mt-1">
+                    Manage harnesses, composite options, and related components in one centralized view.
+                </MudText>
+            </MudItem>
 
-    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center" Class="mb-4">
-        <MudButton Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   OnClick="LoadHarnesses"
-                   Disabled="_loadingHarnesses">
-            Load Harnesses
-        </MudButton>
+            <MudItem xs="12" md="4" Class="d-flex justify-end">
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.Refresh"
+                           OnClick="LoadHarnesses"
+                           Disabled="_loadingHarnesses">
+                    Refresh Harnesses
+                </MudButton>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
 
-        @if (_loadingHarnesses)
-        {
-            <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
-        }
-    </MudStack>
+    <!-- ================= SUMMARY CARDS ================= -->
+    <MudGrid Class="mb-6">
+        <MudItem xs="12" sm="6" md="3">
+            <MudCard Elevation="2" Class="summary-card">
+                <MudCardContent>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">Harnesses</MudText>
+                    <MudText Typo="Typo.h5" Class="font-weight-bold">@_harnesses.Count</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
 
-    <MudTable T="DSIHarnessGrpc"
-              Items="_harnesses"
-              Hover="true"
-              Dense="true"
-              Striped="true"
-              Bordered="true"
-              Loading="_loadingHarnesses"
-              OnRowClick="OnHarnessRowClick"
-              RowClassFunc="GetHarnessRowClass">
+        <MudItem xs="12" sm="6" md="3">
+            <MudCard Elevation="2" Class="summary-card">
+                <MudCardContent>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">Selected Harness</MudText>
+                    <MudText Typo="Typo.subtitle1" Class="font-weight-bold text-truncate">
+                        @(_selectedHarness?.HarnessName1 ?? "None")
+                    </MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
 
-        <HeaderContent>
-            <MudTh>Harness Name</MudTh>
-            <MudTh>Customer</MudTh>
-            <MudTh>Site</MudTh>
-            <MudTh>Type</MudTh>
-            <MudTh>Title</MudTh>
-        </HeaderContent>
+        <MudItem xs="12" sm="6" md="3">
+            <MudCard Elevation="2" Class="summary-card">
+                <MudCardContent>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">Selected Options</MudText>
+                    <MudText Typo="Typo.h5" Class="font-weight-bold">@_selectedCompositeDetails.Count</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
 
-        <RowTemplate>
-            <MudTd>@context.HarnessName1</MudTd>
-            <MudTd>@context.Customer</MudTd>
-            <MudTd>@context.Site</MudTd>
-            <MudTd>@context.Type</MudTd>
-            <MudTd>@context.Title</MudTd>
-        </RowTemplate>
+        <MudItem xs="12" sm="6" md="3">
+            <MudCard Elevation="2" Class="summary-card">
+                <MudCardContent>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">Components</MudText>
+                    <MudText Typo="Typo.h5" Class="font-weight-bold">@_components.Count</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
 
-    </MudTable>
+    <!-- ================= MAIN CONTENT ================= -->
+    <MudGrid>
 
-    <MudDivider Class="my-6" />
+        <!-- ================= HARNESS TABLE ================= -->
+        <MudItem xs="12" lg="5">
+            <MudCard Elevation="3" Class="h-100">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6" Class="font-weight-bold">
+                            Harnesses
+                        </MudText>
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">
+                            Select a harness to load its composite details.
+                        </MudText>
+                    </CardHeaderContent>
 
-    <!-- ================= COMPOSITE DETAILS ================= -->
-    <MudText Typo="Typo.h6" Class="mb-2">
-        Composite Details
-        @if (_selectedHarness != null)
-        {
-            <span> for: <b>@_selectedHarness.HarnessName1</b></span>
-        }
-    </MudText>
+                    <CardHeaderActions>
+                        @if (_loadingHarnesses)
+                        {
+                            <MudProgressCircular Size="Size.Small"
+                                                 Indeterminate="true"
+                                                 Color="Color.Primary" />
+                        }
+                    </CardHeaderActions>
+                </MudCardHeader>
 
-    @if (_loadingCompositeDetails)
-    {
-        <MudProgressCircular Indeterminate="true" Color="Color.Secondary" />
-    }
+                <MudDivider />
 
-    <MudDataGrid T="DSICompositeDetailGrpc"
-                 Items="_compositeDetails"
-                 MultiSelection="true"
-                 @bind-SelectedItems="_selectedCompositeDetails"
-                 Dense="true"
-                 Hover="true"
-                 Striped="true"
-                 Bordered="true"
-                 ReadOnly="true">
+                <MudCardContent Class="pa-0">
+                    @if (!_loadingHarnesses && !_harnesses.Any())
+                    {
+                        <MudAlert Severity="Severity.Info" Class="ma-4">
+                            No harnesses available. Click refresh to load data.
+                        </MudAlert>
+                    }
+                    else
+                    {
+                        <MudTable T="DSIHarnessGrpc"
+                                  Items="_harnesses"
+                                  Hover="true"
+                                  Dense="true"
+                                  Striped="true"
+                                  Bordered="false"
+                                  Elevation="0"
+                                  Loading="_loadingHarnesses"
+                                  OnRowClick="OnHarnessRowClick"
+                                  RowClassFunc="GetHarnessRowClass"
+                                  Class="rounded-table">
 
-        <Columns>
+                            <HeaderContent>
+                                <MudTh>Harness</MudTh>
+                                <MudTh>Customer</MudTh>
+                                <MudTh>Site</MudTh>
+                                <MudTh>Type</MudTh>
+                            </HeaderContent>
 
-            <!-- ✅ CHECKBOX COLUMN -->
-            <SelectColumn T="DSICompositeDetailGrpc" />
+                            <RowTemplate>
+                                <MudTd DataLabel="Harness">
+                                    <MudText Typo="Typo.body2" Class="font-weight-medium">
+                                        @context.HarnessName1
+                                    </MudText>
+                                    <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                        @context.Title
+                                    </MudText>
+                                </MudTd>
 
-            <PropertyColumn Property="x => x.HarnessName1" Title="Harness" />
-            <PropertyColumn Property="x => x.CircuitOption" Title="Option" />
-            <PropertyColumn Property="x => x.Customer" Title="Customer" />
+                                <MudTd DataLabel="Customer">@context.Customer</MudTd>
+                                <MudTd DataLabel="Site">@context.Site</MudTd>
 
-        </Columns>
+                                <MudTd DataLabel="Type">
+                                    <MudChip T="string"
+                                             Size="Size.Small"
+                                             Color="Color.Info"
+                                             Variant="Variant.Outlined">
+                                        @context.Type
+                                    </MudChip>
+                                </MudTd>
+                            </RowTemplate>
 
-    </MudDataGrid>
+                            <PagerContent>
+                                <MudTablePager PageSizeOptions="new int[] { 5, 10, 20, 50 }" />
+                            </PagerContent>
 
-    <!--  Selected count -->
-    <MudText Class="mt-2">
-        Selected: @_selectedCompositeDetails.Count
-    </MudText>
+                        </MudTable>
+                    }
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
 
-    <!-- LOAD BUTTON -->
-    <MudButton Variant="Variant.Filled"
-               Color="Color.Success"
-               Class="mt-3"
-               Disabled="_selectedCompositeDetails.Count == 0"
-               OnClick="LoadComponentsByHarnessAndCircuitOption">
-        Load Components
-    </MudButton>
+        <!-- ================= RIGHT SIDE ================= -->
+        <MudItem xs="12" lg="7">
 
-    <MudDivider Class="my-6" />
+            <!-- ================= COMPOSITE DETAILS ================= -->
+            <MudCard Elevation="3" Class="mb-6">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6" Class="font-weight-bold">
+                            Composite Details
+                        </MudText>
 
-    <!-- ================= COMPONENTS ================= -->
-    <MudText Typo="Typo.h6" Class="mb-2">
-        Components
-        @if (_selectedHarness != null && _selectedCompositeDetails.Any())
-        {
-            <span> for <b>@_selectedHarness.HarnessName1</b></span>
-        }
-    </MudText>
+                        @if (_selectedHarness != null)
+                        {
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">
+                                Showing options for
+                                <b>@_selectedHarness.HarnessName1</b>
+                            </MudText>
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">
+                                Select a harness to view composite options.
+                            </MudText>
+                        }
+                    </CardHeaderContent>
 
-    @if (_loadingComponents)
-    {
-        <MudProgressCircular Indeterminate="true" Color="Color.Success" />
-    }
+                    <CardHeaderActions>
+                        @if (_loadingCompositeDetails)
+                        {
+                            <MudProgressCircular Size="Size.Small"
+                                                 Indeterminate="true"
+                                                 Color="Color.Secondary" />
+                        }
+                    </CardHeaderActions>
+                </MudCardHeader>
 
-    <MudDataGrid T="DSIComponentGrpc"
-                 Items="_components"
-                 Dense="true"
-                 Hover="true"
-                 Striped="true"
-                 Bordered="true">
+                <MudDivider />
 
-        <Columns>
-            <PropertyColumn Property="x => x.PartNumber1" Title="Part1" />
-            <PropertyColumn Property="x => x.PartNumber2" Title="Part2" />
-            <PropertyColumn Property="x => x.PartNumber3" Title="Part3" />
-            <PropertyColumn Property="x => x.Quantity" Title="Qty" />
-        </Columns>
+                <MudCardContent Class="pa-0">
 
-    </MudDataGrid>
+                    @if (_selectedHarness == null)
+                    {
+                        <MudAlert Severity="Severity.Normal" Class="ma-4">
+                            No harness selected yet.
+                        </MudAlert>
+                    }
+                    else if (!_loadingCompositeDetails && !_compositeDetails.Any())
+                    {
+                        <MudAlert Severity="Severity.Warning" Class="ma-4">
+                            No composite details found for this harness.
+                        </MudAlert>
+                    }
+                    else
+                    {
+                        <MudDataGrid T="DSICompositeDetailGrpc"
+                                     Items="_compositeDetails"
+                                     MultiSelection="true"
+                                     @bind-SelectedItems="_selectedCompositeDetails"
+                                     Dense="true"
+                                     Hover="true"
+                                     Striped="true"
+                                     Bordered="false"
+                                     ReadOnly="true"
+                                     Elevation="0"
+                                     Class="rounded-table">
 
-</MudPaper>
+                            <Columns>
+                                <SelectColumn T="DSICompositeDetailGrpc" />
+
+                                <PropertyColumn Property="x => x.HarnessName1"
+                                                Title="Harness" />
+
+                                <PropertyColumn Property="x => x.CircuitOption"
+                                                Title="Circuit Option" />
+
+                                <PropertyColumn Property="x => x.Customer"
+                                                Title="Customer" />
+                            </Columns>
+
+                            <PagerContent>
+                                <MudDataGridPager T="DSICompositeDetailGrpc" />
+                            </PagerContent>
+
+                        </MudDataGrid>
+                    }
+
+                </MudCardContent>
+
+                <MudDivider />
+
+                <MudCardActions Class="pa-4 d-flex justify-space-between align-center flex-wrap gap-2">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudChip T="string"
+                                 Color="Color.Primary"
+                                 Variant="Variant.Filled"
+                                 Size="Size.Small">
+                            Selected: @_selectedCompositeDetails.Count
+                        </MudChip>
+
+                        @if (_selectedHarness != null)
+                        {
+                            <MudChip T="string"
+                                     Color="Color.Default"
+                                     Variant="Variant.Outlined"
+                                     Size="Size.Small">
+                                @_selectedHarness.HarnessName1
+                            </MudChip>
+                        }
+                    </MudStack>
+
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Success"
+                               StartIcon="@Icons.Material.Filled.Inventory2"
+                               Disabled="_selectedCompositeDetails.Count == 0 || _loadingComponents"
+                               OnClick="LoadComponentsByHarnessAndCircuitOption">
+                        Load Components
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+
+            <!-- ================= COMPONENTS ================= -->
+            <MudCard Elevation="3">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6" Class="font-weight-bold">
+                            Components
+                        </MudText>
+
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">
+                            Components returned based on selected circuit options.
+                        </MudText>
+                    </CardHeaderContent>
+
+                    <CardHeaderActions>
+                        @if (_loadingComponents)
+                        {
+                            <MudProgressCircular Size="Size.Small"
+                                                 Indeterminate="true"
+                                                 Color="Color.Success" />
+                        }
+                    </CardHeaderActions>
+                </MudCardHeader>
+
+                <MudDivider />
+
+                <MudCardContent Class="pa-0">
+
+                    @if (!_loadingComponents && !_components.Any())
+                    {
+                        <MudAlert Severity="Severity.Info" Class="ma-4">
+                            No components loaded yet. Select composite options and click
+                            <b>Load Components</b>.
+                        </MudAlert>
+                    }
+                    else
+                    {
+                        <MudDataGrid T="DSIComponentGrpc"
+                                     Items="_components"
+                                     Dense="true"
+                                     Hover="true"
+                                     Striped="true"
+                                     Bordered="false"
+                                     Elevation="0"
+                                     Class="rounded-table">
+
+                            <Columns>
+                                <PropertyColumn Property="x => x.PartNumber1"
+                                                Title="Part Number 1" />
+
+                                <PropertyColumn Property="x => x.PartNumber2"
+                                                Title="Part Number 2" />
+
+                                <PropertyColumn Property="x => x.PartNumber3"
+                                                Title="Part Number 3" />
+
+                                <PropertyColumn Property="x => x.Quantity"
+                                                Title="Quantity" />
+                            </Columns>
+
+                            <PagerContent>
+                                <MudDataGridPager T="DSIComponentGrpc" />
+                            </PagerContent>
+
+                        </MudDataGrid>
+                    }
+
+                </MudCardContent>
+            </MudCard>
+
+        </MudItem>
+    </MudGrid>
+
+</MudContainer>
 
 @code {
     private bool _loadingHarnesses;
@@ -155,7 +368,6 @@
 
     private DSIHarnessGrpc? _selectedHarness;
 
-    // ✅ Multi-select container
     private HashSet<DSICompositeDetailGrpc> _selectedCompositeDetails = new();
 
     protected override async Task OnInitializedAsync()
@@ -186,9 +398,11 @@
     private async Task OnHarnessRowClick(TableRowClickEventArgs<DSIHarnessGrpc> args)
     {
         var clicked = args.Item;
-        if (clicked == null) return;
+        if (clicked == null)
+            return;
 
         _selectedHarness = clicked;
+
         _components.Clear();
         _selectedCompositeDetails.Clear();
 
@@ -248,6 +462,6 @@
 
     private string GetHarnessRowClass(DSIHarnessGrpc item, int row)
     {
-        return _selectedHarness?.Id == item.Id ? "selected-row" : "";
+        return _selectedHarness?.Id == item.Id ? "selected-row" : string.Empty;
     }
 }
