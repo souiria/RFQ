@@ -37,10 +37,10 @@
             .WithReference(apiService)
             .WaitFor(apiService);
 
-        builder.AddProject<Projects.SalesSystem_Dsi>("DsiFrontEnd")
-    .WithExternalHttpEndpoints()
-    .WithReference(apiService)
-    .WaitFor(apiService);
+    //    builder.AddProject<Projects.SalesSystem_Dsi>("DsiFrontEnd")
+    //.WithExternalHttpEndpoints()
+    //.WithReference(apiService)
+    //.WaitFor(apiService);
 
         builder.Build().Run();
     }
