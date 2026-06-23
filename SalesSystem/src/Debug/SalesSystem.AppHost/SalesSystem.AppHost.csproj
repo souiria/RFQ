@@ -27,7 +27,6 @@
     <ProjectReference Include="..\..\Access\SFS\SFS.csproj" />
     <ProjectReference Include="..\..\Access\Unit4\Unit4.csproj" />
     <ProjectReference Include="..\..\Client\SalesSystem.ApiService\SalesSystem.ApiService.csproj" />
-    <ProjectReference Include="..\..\Client\SalesSystem.Dsi\SalesSystem.Dsi.csproj" />
     <ProjectReference Include="..\..\Client\SalesSystem.Rfq\SalesSystem.Rfq.csproj" />
     <ProjectReference Include="..\..\Logic\Manager\EdiModule\EdiModule.csproj" />
     <ProjectReference Include="..\..\Logic\Manager\RfqManager\RfqModule.csproj" />

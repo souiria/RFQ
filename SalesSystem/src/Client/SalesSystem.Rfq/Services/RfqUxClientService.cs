@@ -947,7 +947,6 @@ namespace SalesSystem.Rfq.Services
                 List<RfqNprRequestUxModel> updateList = new List<RfqNprRequestUxModel>();
                 List<RfqNprRequestUxModel> deleteList = new List<RfqNprRequestUxModel>();
 
-
                 foreach (RfqNprRequestUxModel model in requests)
                 {
              
