@@ -1,6 +1,4 @@
-﻿using DSI.CQRS.command;
-
-namespace DSI.CQRS.Handler.Harness
+﻿namespace DSI.CQRS.Handler.Harness
 {
     public class HarnessCommandHandler : ICommandHandler<HarnessCommand, List<DbHarness>>
     {

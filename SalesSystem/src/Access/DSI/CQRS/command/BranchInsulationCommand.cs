@@ -1,4 +1,4 @@
-﻿namespace DSI.CQRS.command
+﻿namespace DSI.CQRS.Command
 {
     public record BranchInsulationCommand(
         CommandType CommandType,

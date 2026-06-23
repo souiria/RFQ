@@ -1,6 +1,4 @@
-﻿using DSI.CQRS.command;
-
-namespace DSI.CQRS.Handler.CompositeDetail
+﻿namespace DSI.CQRS.Handler.CompositeDetail
 {
     public class CompositeDetailCommandHandler : ICommandHandler<CompositeDetailCommand, List<DbCompositeDetail>>
     {

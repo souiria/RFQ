@@ -1,6 +1,4 @@
-﻿using SharedKernel;
-
-namespace DSI.Extensions
+﻿namespace DSI.Extensions
 {
     public static class DSIMappingExtentions
     {

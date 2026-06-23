@@ -1,6 +1,4 @@
-﻿using DSI.CQRS.command;
-
-namespace DSI.CQRS.Handler.Component
+﻿namespace DSI.CQRS.Handler.Component
 {
     public class ComponentCommandHandler : ICommandHandler<ComponentCommand, List<DbComponent>>
     {

@@ -1,7 +1,4 @@
-﻿using DSI.CQRS.Query;
-using DSI.CQRS.Specification;
-
-namespace DSI.CQRS.Handler.CompositeDetail
+﻿namespace DSI.CQRS.Handler.CompositeDetail
 {
     public class CompositeDetailQueryHandler : IQueryHandler<GetCompositeDetailQuery, List<CompositeDetailGrpc>>
     {

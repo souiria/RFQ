@@ -1,6 +1,4 @@
-﻿using DSI.CQRS.command;
-
-namespace DSI.CQRS.Handler.WireSpecification
+﻿namespace DSI.CQRS.Handler.WireSpecification
 {
     public class WireSpecificationCommandHandler : ICommandHandler<WireSpecificationCommand, List<DbWireSpecification>>
     {

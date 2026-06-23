@@ -1,7 +1,4 @@
-﻿using Azure.Core;
-using DSI;
-
-namespace RfqModule.Endpoints.GrpcServices
+﻿namespace RfqModule.Endpoints.GrpcServices
 {
     public class RfqGrpcService : RfqModule.RfqModuleBase
     {

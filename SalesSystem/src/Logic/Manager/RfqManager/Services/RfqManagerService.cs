@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace RfqModule.Services
+﻿namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {

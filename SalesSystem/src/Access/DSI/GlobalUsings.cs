@@ -10,7 +10,7 @@ global using System.Reflection;
 global using Ardalis.Specification;
 global using Ardalis.Specification.EntityFrameworkCore;
 global using DSI;
-global using DSI.CQRS.command;
+global using DSI.CQRS.Command;
 global using DSI.CQRS.Query;
 global using DSI.CQRS.Specification;
 global using DSI.Data.Context;
