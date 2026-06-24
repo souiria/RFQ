@@ -1,0 +1,16 @@
+﻿global using System.Linq.Dynamic.Core;
+global using System.Linq.Expressions;
+global using System.Reflection;
+global using Ardalis.Specification.EntityFrameworkCore;
+global using EngSol.CQRS.Query.DerivativeWires;
+global using EngSol.Data.Context;
+global using EngSol.Data.Interface;
+global using EngSol.Data.Model;
+global using EngSol.Data.Time;
+global using EngSol.Extentions;
+global using EngSol.Services;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Hosting;
+global using SharedKernel;
