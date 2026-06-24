@@ -41,7 +41,7 @@ namespace Integration.Tests.Emacs
         public void SayHelloTest()
         {
             // Arrange
-            HelloRequest request = new HelloRequest();
+             HelloRequest request = new HelloRequest();
             request.Name = "TestName" ;
             ServerCallContext context = CreateServerContext(nameof(_GrpcService.SayHello));
 

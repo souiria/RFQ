@@ -6,7 +6,7 @@ global using System.Security.Claims;
 global using System.Security.Cryptography.X509Certificates;
 global using System.Text.RegularExpressions;
 global using CPD;
-global using Emacs;
+global using DSI;global using Emacs;
 global using Google.Protobuf.WellKnownTypes;
 global using Grpc.Core;
 global using Logging;

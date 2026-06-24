@@ -389,6 +389,7 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
+        // !!!Check this!!!
         public async Task<bool> UpdateRfqDrawingPartNumber(RfqDrawingPartNumberUxModel partNumberUx)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
@@ -945,7 +946,6 @@ namespace SalesSystem.Rfq.Services
                 List<RfqNprRequestUxModel> createList = new List<RfqNprRequestUxModel>();
                 List<RfqNprRequestUxModel> updateList = new List<RfqNprRequestUxModel>();
                 List<RfqNprRequestUxModel> deleteList = new List<RfqNprRequestUxModel>();
-
 
                 foreach (RfqNprRequestUxModel model in requests)
                 {
