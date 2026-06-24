@@ -833,7 +833,7 @@
                         fileCount++;
                         progressState.UpdateProgress($"Uploading file {fileCount} of {totalFiles}: {fileObject.File.Name}", 1);
 
-                        UploadPartsRequestGrpcResponse uploadFileResponse = await RfqUxClientService.UploadPartsAsync(RfqProjectId.ToString(CultureInfo.InvariantCulture), fileObject.File, 16_000_000);
+                        UploadPartsRequestGrpcResponse uploadFileResponse = await RfqUxClientService.UploadPartsAsync(RfqProjectId.ToString(CultureInfo.InvariantCulture), fileObject.File, GlobalValue?.UserId, 16_000_000);
                         fileObject.UploadStatus = new FileObjectUploadStatus(uploadFileResponse);
                         allOk = allOk && uploadFileResponse.Success;
 

@@ -286,7 +286,8 @@ namespace SalesSystem.Rfq.Components.Pages
                 progressState.SetCheckpointCompleted(1, $"Project created: {response.CreatedProjectId}");
                 Logger.GenericLogInformation($"CreateRfq.SubmitDataAsync - Checkpoint: RFQ created with ID {response.CreatedProjectId}");
 
-                // Checkpoint 3: Upload Files
+                // Checkpoint 3:
+                // Files
                 progressState.UpdateProgress("Uploading files...", 2);
                 progressState.SetCheckpointActive(2);
 
@@ -310,7 +311,7 @@ namespace SalesSystem.Rfq.Components.Pages
                         fileCount++;
                         progressState.UpdateProgress($"CreateRfq.SubmitDataAsync - Uploading file {fileCount} of {totalFiles}: {fileObject.File.Name}", 2);
 
-                        UploadPartsRequestGrpcResponse uploadFileResponse = await RfqUxClientService.UploadPartsAsync(response.CreatedProjectId, fileObject.File, 16_000_000);
+                        UploadPartsRequestGrpcResponse uploadFileResponse = await RfqUxClientService.UploadPartsAsync(response.CreatedProjectId, fileObject.File, GlobalValue?.UserId, 16_000_000);
                         fileObject.UploadStatus = new FileObjectUploadStatus(uploadFileResponse);
                         allOk = allOk && uploadFileResponse.Success == true;
 
