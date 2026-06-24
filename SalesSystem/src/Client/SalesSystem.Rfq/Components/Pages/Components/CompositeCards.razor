@@ -1,0 +1,119 @@
+@using System.IO
+@using SalesSystem.Rfq.Enums
+
+@inject DsiUxClientService DsiUxClientService
+@inject IDialogService DialogService
+
+<style>
+    .composite-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 12px;
+        margin: 8px;
+        background: #fff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: box-shadow 0.2s ease;
+        min-width: 250px;
+        max-width: 300px;
+        position: relative;
+    }
+
+    .cards-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 16px;
+        overflow-y: auto;
+    }
+
+</style>
+
+@* <MudPaper Outlined="true" Class="d-flex flex-wrap overflow-y-auto gap-4 pa-2" Style="height: calc(100vh - 364px);"> *@
+<MudPaper Style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; height: calc(100vh - 364px); overflow-y: auto;" Class="pa-4" Outlined="true">
+        @if (Composites.Count > 0)
+    {
+        @foreach (var compositeObject in Composites)
+        {
+            @* <MudCard Class="flex-grow-1" Style="flex-basis: 300px" Elevation="2"> *@
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">@compositeObject.HarnessName1</MudText>
+                        @if (!(string.IsNullOrEmpty(compositeObject.HarnessName2)))
+                        {
+                            <MudText Typo="Typo.caption">@compositeObject.HarnessName2</MudText>
+                        }
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudTooltip Text="Clear all composites">
+                            <MudIconButton Class="remove-button"
+                                           Size="Size.Small"
+                                           Variant="Variant.Filled"
+                                           Icon="@Icons.Material.Filled.Info"
+                                           Color="Color.Primary"
+                                           OnClick="async () => await ShowCompositeInfo(compositeObject)" />
+                        </MudTooltip>
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText Typo="Typo.body2">Date: @(compositeObject.HarnessDate1)</MudText>
+                    <MudText Typo="Typo.body2">Customer: @compositeObject.Customer</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary">To component list</MudButton>
+                </MudCardActions>
+            </MudCard>
+        }
+    }
+</MudPaper>
+
+@code {
+    [Parameter]
+    public List<DSIHarnessGrpc> Composites { get; set; } = new();
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    async Task ShowCompositeInfo(DSIHarnessGrpc compositeObject)
+    {
+        var derivatives = await LoadCompositeDetailsByHarnessId(compositeObject.Id);
+
+        if(derivatives?.Count>0)
+        {
+            string derivativeList = string.Join(@"\n ", derivatives.Select(d => $"{d.Id}: {d.HarnessName1}"));
+            await DialogService.ShowMessageBox(
+                "Composite Info",
+                $"Id: {compositeObject.Id}\nName: {compositeObject.HarnessName1} ({compositeObject.HarnessName2})\nCode: {compositeObject.AlphaCode}\nSite: {compositeObject.Site}\nHaving {derivatives.Count} derivative(s): {derivativeList}",
+                yesText: "OK");
+        }
+        else
+        {
+            await DialogService.ShowMessageBox(
+                "Composite Info",
+                $"Id: {compositeObject.Id}\nName: {compositeObject.HarnessName1} ({compositeObject.HarnessName2})\nCode: {compositeObject.AlphaCode}\nSitee: {compositeObject.Site}\nHaving no derivatives",
+                yesText: "OK");
+        }
+
+    }
+
+    async Task<List<DSICompositeDetailGrpc>?> LoadCompositeDetailsByHarnessId(string harnessId)
+    {
+        await DsiUxClientService.GetCompositeDetailByHarnessIdAsync(harnessId);
+        return DsiUxClientService.CompositeDetails.ToList();
+    }
+
+    string GetCardCssClass(DSIHarnessGrpc compositeObject)
+    {
+        var baseClass = "composite-card";
+
+        // if (compositeObject.Status == UxObjectStatus.Deleted)
+        //     return $"{baseClass} deleted";
+
+        // if (compositeObject.IsUploaded || compositeObject.UploadStatus.Status == FileUploadStatus.Success)
+        //     return $"{baseClass} uploaded";
+
+        return baseClass;
+    }
+}

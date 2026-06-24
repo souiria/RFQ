@@ -1,4 +1,6 @@
-﻿namespace SalesSystem.Rfq.Extensions
+﻿using RfqModule;
+
+namespace SalesSystem.Rfq.Extensions
 {
     public static class UxModelConversionExtensions
 
@@ -660,6 +662,331 @@
             uxModel.TrafficSummary = businessUnit.TrafficSummary;
 
             return uxModel;
+        }
+        #endregion
+
+        #region DSIHarnessGrpc
+        public static DsiHarnessUxModel? ToUxModel(this DSIHarnessGrpc dto)
+        {
+            if(dto is null)
+            {
+                return null;
+            }
+
+            DsiHarnessUxModel uxModel = new DsiHarnessUxModel();
+            uxModel.Id = Guid.Parse(dto.Id);
+            uxModel.HarnessName1 = dto.HarnessName1;
+            uxModel.SimilarHarnessName1 = dto.SimilarHarnessName1;
+            uxModel.HarnessIssue1 = dto.HarnessIssue1;
+            uxModel.SimilarHarnessIssue1 = dto.SimilarHarnessIssue1;
+            uxModel.HarnessDate1 = dto.HarnessDate1?.ToDateTime();
+
+            uxModel.HarnessName2 = dto.HarnessName2;
+            uxModel.SimilarHarnessName2 = dto.SimilarHarnessName2;
+            uxModel.HarnessIssue2 = dto.HarnessIssue2;
+            uxModel.SimilarHarnessIssue2 = dto.SimilarHarnessIssue2;
+            uxModel.HarnessDate2 = dto.HarnessDate2?.ToDateTime();
+
+            uxModel.FileVersion = dto.FileVersion;
+
+            uxModel.Customer = dto.Customer;
+            uxModel.Site = dto.Site;
+            uxModel.Range = dto.Range;
+
+            uxModel.BoardLength = dto.BoardLength;
+            uxModel.BoardWidth = dto.BoardWidth;
+
+            uxModel.Datum = dto.Datum;
+
+            uxModel.UserField1 = dto.UserField1;
+            uxModel.UserField2 = dto.UserField2;
+            uxModel.UserField3 = dto.UserField3;
+            uxModel.UserField4 = dto.UserField4;
+            uxModel.UserField5 = dto.UserField5;
+
+            uxModel.Checker = dto.Checker;
+            uxModel.Inputter = dto.Inputter;
+            uxModel.DraftedBy = dto.DraftedBy;
+            uxModel.PreparedBy = dto.PreparedBy;
+
+            uxModel.Type = dto.Type;
+            uxModel.Title = dto.Title;
+            uxModel.EngineSize = dto.EngineSize;
+            uxModel.ManufacturingCell = dto.ManufacturingCell;
+            uxModel.Trim = dto.Trim;
+            uxModel.HandDrive = dto.HandDrive;
+
+            uxModel.TubeAddOnType = dto.TubeAddOnType;
+            uxModel.TubeAddOnFactor = dto.TubeAddOnFactor;
+
+            uxModel.IsManualTerminal = dto.IsManualTerminal;
+            uxModel.IsAllConnectorsSealed = dto.IsAllConnectorsSealed;
+            uxModel.IsModule = dto.IsModule;
+            uxModel.IsPitchTableUsed = dto.IsPitchTableUsed;
+
+            uxModel.AlphaCode = dto.AlphaCode;
+            uxModel.AdditionalComments = dto.AdditionalComments;
+
+            uxModel.CreatedDate = dto.CreatedDate?.ToDateTime();
+            uxModel.ModifiedDate = dto.ModifiedDate?.ToDateTime();
+
+            uxModel.CreatedBy = dto.CreatedBy;
+            uxModel.ModifiedBy = dto.ModifiedBy;
+
+            return uxModel;
+        }
+        public static DSIHarnessGrpc? ToGrpcDto(this DsiHarnessUxModel uxModel)
+        {
+            if (uxModel is null)
+            {
+                return null;
+            }
+
+            DSIHarnessGrpc dto = new DSIHarnessGrpc
+            {
+                Id = uxModel.Id.ToString(),
+
+                HarnessName1 = uxModel.HarnessName1 ?? string.Empty,
+                SimilarHarnessName1 = uxModel.SimilarHarnessName1 ?? string.Empty,
+                HarnessIssue1 = uxModel.HarnessIssue1 ?? string.Empty,
+                SimilarHarnessIssue1 = uxModel.SimilarHarnessIssue1 ?? string.Empty,
+
+                HarnessName2 = uxModel.HarnessName2 ?? string.Empty,
+                SimilarHarnessName2 = uxModel.SimilarHarnessName2 ?? string.Empty,
+                HarnessIssue2 = uxModel.HarnessIssue2 ?? string.Empty,
+                SimilarHarnessIssue2 = uxModel.SimilarHarnessIssue2 ?? string.Empty,
+
+                FileVersion = uxModel.FileVersion ?? 0d,
+
+                Customer = uxModel.Customer ?? string.Empty,
+                Site = uxModel.Site ?? string.Empty,
+                Range = uxModel.Range ?? string.Empty,
+
+                BoardLength = uxModel.BoardLength ?? 0d,
+                BoardWidth = uxModel.BoardWidth ?? 0d,
+
+                Datum = uxModel.Datum ?? string.Empty,
+
+                UserField1 = uxModel.UserField1 ?? string.Empty,
+                UserField2 = uxModel.UserField2 ?? string.Empty,
+                UserField3 = uxModel.UserField3 ?? string.Empty,
+                UserField4 = uxModel.UserField4 ?? string.Empty,
+                UserField5 = uxModel.UserField5 ?? string.Empty,
+
+                Checker = uxModel.Checker ?? string.Empty,
+                Inputter = uxModel.Inputter ?? string.Empty,
+                DraftedBy = uxModel.DraftedBy ?? string.Empty,
+                PreparedBy = uxModel.PreparedBy ?? string.Empty,
+
+                Type = uxModel.Type ?? string.Empty,
+                Title = uxModel.Title ?? string.Empty,
+                EngineSize = uxModel.EngineSize ?? string.Empty,
+                ManufacturingCell = uxModel.ManufacturingCell ?? string.Empty,
+                Trim = uxModel.Trim ?? string.Empty,
+                HandDrive = uxModel.HandDrive ?? string.Empty,
+
+                TubeAddOnType = uxModel.TubeAddOnType ?? string.Empty,
+                TubeAddOnFactor = uxModel.TubeAddOnFactor ?? 0d,
+
+                IsManualTerminal = uxModel.IsManualTerminal ?? false,
+                IsAllConnectorsSealed = uxModel.IsAllConnectorsSealed ?? false,
+                IsModule = uxModel.IsModule ?? false,
+                IsPitchTableUsed = uxModel.IsPitchTableUsed ?? false,
+
+                AlphaCode = uxModel.AlphaCode ?? string.Empty,
+                AdditionalComments = uxModel.AdditionalComments ?? string.Empty,
+
+                CreatedBy = uxModel.CreatedBy ?? string.Empty,
+                ModifiedBy = uxModel.ModifiedBy ?? string.Empty
+            };
+
+            // Timestamp fields (if present in your proto as google.protobuf.Timestamp)
+            if (uxModel.HarnessDate1.HasValue)
+            {
+                dto.HarnessDate1 = Timestamp.FromDateTime(
+                    DateTime.SpecifyKind(uxModel.HarnessDate1.Value, DateTimeKind.Utc));
+            }
+
+            if (uxModel.HarnessDate2.HasValue)
+            {
+                dto.HarnessDate2 = Timestamp.FromDateTime(
+                    DateTime.SpecifyKind(uxModel.HarnessDate2.Value, DateTimeKind.Utc));
+            }
+
+            if (uxModel.CreatedDate.HasValue)
+            {
+                dto.CreatedDate = Timestamp.FromDateTime(
+                    DateTime.SpecifyKind(uxModel.CreatedDate.Value, DateTimeKind.Utc));
+            }
+
+            if (uxModel.ModifiedDate.HasValue)
+            {
+                dto.ModifiedDate = Timestamp.FromDateTime(
+                    DateTime.SpecifyKind(uxModel.ModifiedDate.Value, DateTimeKind.Utc));
+            }
+
+            return dto;
+        }
+        #endregion
+
+        #region DSI CompositeDetailGrpc
+        public static DsiCompositeDetailUxModel? ToUxModel(this DSICompositeDetailGrpc dto)
+        {
+            if (dto is null)
+            {
+                return null;
+            }
+
+            DsiCompositeDetailUxModel uxModel = new DsiCompositeDetailUxModel
+            {
+                Id = dto.Id,
+
+                HarnessName1 = dto.HarnessName1,
+                SimilarHarnessName1 = dto.SimilarHarnessName1,
+                HarnessIssue1 = dto.HarnessIssue1,
+                SimilarHarnessIssue1 = dto.SimilarHarnessIssue1,
+                HarnessDate1 = dto.HarnessDate1?.ToDateTime(),
+
+                HarnessName2 = dto.HarnessName2,
+                SimilarHarnessName2 = dto.SimilarHarnessName2,
+                HarnessIssue2 = dto.HarnessIssue2,
+                SimilarHarnessIssue2 = dto.SimilarHarnessIssue2,
+                HarnessDate2 = dto.HarnessDate2?.ToDateTime(),
+
+                Customer = dto.Customer,
+                Site = dto.Site,
+                Range = dto.Range,
+
+                BoardLength = dto.BoardLength,
+                BoardWidth = dto.BoardWidth,
+
+                Datum = dto.Datum,
+
+                UserField1 = dto.UserField1,
+                UserField2 = dto.UserField2,
+                UserField3 = dto.UserField3,
+                UserField4 = dto.UserField4,
+                UserField5 = dto.UserField5,
+
+                Checker = dto.Checker,
+                Inputter = dto.Inputter,
+                DraftedBy = dto.DraftedBy,
+                PreparedBy = dto.PreparedBy,
+
+                Type = dto.Type,
+                Title = dto.Title,
+                EngineSize = dto.EngineSize,
+                ManufacturingCell = dto.ManufacturingCell,
+                Trim = dto.Trim,
+                HandDrive = dto.HandDrive,
+
+                TubeAddOnType = dto.TubeAddOnType,
+                TubeAddOnFactor = dto.TubeAddOnFactor,
+
+                IsManualTerminal = dto.IsManualTerminal,
+                IsAllConnectorsSealed = dto.IsAllConnectorsSealed,
+
+                AlphaCode = dto.AlphaCode,
+                //HarnessId = dto.HarnessId,
+                CircuitOption = dto.CircuitOption,
+
+                CreatedDate = dto.CreatedDate?.ToDateTime(),
+                ModifiedDate = dto.ModifiedDate?.ToDateTime(),
+
+                CreatedBy = dto.CreatedBy,
+                ModifiedBy = dto.ModifiedBy
+            };
+
+            return uxModel;
+        }
+
+        public static DSICompositeDetailGrpc? ToGrpcDto(this DsiCompositeDetailUxModel uxModel)
+        {
+            if (uxModel is null)
+            {
+                return null;
+            }
+
+            DSICompositeDetailGrpc dto = new DSICompositeDetailGrpc
+            {
+                Id = uxModel.Id,
+
+                HarnessName1 = uxModel.HarnessName1 ?? string.Empty,
+                SimilarHarnessName1 = uxModel.SimilarHarnessName1 ?? string.Empty,
+                HarnessIssue1 = uxModel.HarnessIssue1 ?? string.Empty,
+                SimilarHarnessIssue1 = uxModel.SimilarHarnessIssue1 ?? string.Empty,
+
+                HarnessName2 = uxModel.HarnessName2 ?? string.Empty,
+                SimilarHarnessName2 = uxModel.SimilarHarnessName2 ?? string.Empty,
+                HarnessIssue2 = uxModel.HarnessIssue2 ?? string.Empty,
+                SimilarHarnessIssue2 = uxModel.SimilarHarnessIssue2 ?? string.Empty,
+
+                Customer = uxModel.Customer ?? string.Empty,
+                Site = uxModel.Site ?? string.Empty,
+                Range = uxModel.Range ?? string.Empty,
+
+                BoardLength = uxModel.BoardLength ?? 0d,
+                BoardWidth = uxModel.BoardWidth ?? 0d,
+
+                Datum = uxModel.Datum ?? string.Empty,
+
+                UserField1 = uxModel.UserField1 ?? string.Empty,
+                UserField2 = uxModel.UserField2 ?? string.Empty,
+                UserField3 = uxModel.UserField3 ?? string.Empty,
+                UserField4 = uxModel.UserField4 ?? string.Empty,
+                UserField5 = uxModel.UserField5 ?? string.Empty,
+
+                Checker = uxModel.Checker ?? string.Empty,
+                Inputter = uxModel.Inputter ?? string.Empty,
+                DraftedBy = uxModel.DraftedBy ?? string.Empty,
+                PreparedBy = uxModel.PreparedBy ?? string.Empty,
+
+                Type = uxModel.Type ?? string.Empty,
+                Title = uxModel.Title ?? string.Empty,
+                EngineSize = uxModel.EngineSize ?? string.Empty,
+                ManufacturingCell = uxModel.ManufacturingCell ?? string.Empty,
+                Trim = uxModel.Trim ?? string.Empty,
+                HandDrive = uxModel.HandDrive ?? string.Empty,
+
+                TubeAddOnType = uxModel.TubeAddOnType ?? string.Empty,
+                TubeAddOnFactor = uxModel.TubeAddOnFactor ?? 0d,
+
+                IsManualTerminal = uxModel.IsManualTerminal ?? false,
+                IsAllConnectorsSealed = uxModel.IsAllConnectorsSealed ?? false,
+
+                AlphaCode = uxModel.AlphaCode ?? string.Empty,
+                //HarnessId = uxModel.HarnessId ?? string.Empty,
+                CircuitOption = uxModel.CircuitOption ?? string.Empty,
+
+                CreatedBy = uxModel.CreatedBy ?? string.Empty,
+                ModifiedBy = uxModel.ModifiedBy ?? string.Empty
+            };
+
+            if (uxModel.HarnessDate1.HasValue)
+            {
+                dto.HarnessDate1 = Timestamp.FromDateTime(
+                    DateTime.SpecifyKind(uxModel.HarnessDate1.Value, DateTimeKind.Utc));
+            }
+
+            if (uxModel.HarnessDate2.HasValue)
+            {
+                dto.HarnessDate2 = Timestamp.FromDateTime(
+                    DateTime.SpecifyKind(uxModel.HarnessDate2.Value, DateTimeKind.Utc));
+            }
+
+            if (uxModel.CreatedDate.HasValue)
+            {
+                dto.CreatedDate = Timestamp.FromDateTime(
+                    DateTime.SpecifyKind(uxModel.CreatedDate.Value, DateTimeKind.Utc));
+            }
+
+            if (uxModel.ModifiedDate.HasValue)
+            {
+                dto.ModifiedDate = Timestamp.FromDateTime(
+                    DateTime.SpecifyKind(uxModel.ModifiedDate.Value, DateTimeKind.Utc));
+            }
+
+            return dto;
         }
         #endregion
     }
