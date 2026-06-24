@@ -10,6 +10,7 @@
         public static IServiceCollection AddRfqUxServices(this IServiceCollection services)
         {
             services.AddScoped<RfqUxClientService>();
+            services.AddScoped<DsiUxClientService>();
             services.AddScoped<CsvExportService>();
             return services;
         }

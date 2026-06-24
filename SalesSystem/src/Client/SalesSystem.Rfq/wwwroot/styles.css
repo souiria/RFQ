@@ -501,6 +501,9 @@
   .mb-5 {
     margin-bottom: calc(var(--spacing) * 5);
   }
+  .mb-6 {
+    margin-bottom: calc(var(--spacing) * 6);
+  }
   .mb-auto {
     margin-bottom: auto;
   }
@@ -834,6 +837,9 @@
   }
   .py-5 {
     padding-block: calc(var(--spacing) * 5);
+  }
+  .py-6 {
+    padding-block: calc(var(--spacing) * 6);
   }
   .ps-0 {
     padding-inline-start: calc(var(--spacing) * 0);

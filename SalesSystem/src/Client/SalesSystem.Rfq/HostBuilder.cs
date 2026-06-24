@@ -44,7 +44,7 @@
 
             //StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
             builder.Services.AddRfqUxServices();
-          builder.Services.AddGrpcClient<RfqModule.RfqModule.RfqModuleClient>(o =>
+            builder.Services.AddGrpcClient<RfqModule.RfqModule.RfqModuleClient>(o =>
             {
                 o.Address = new Uri(managerUrl);
 
