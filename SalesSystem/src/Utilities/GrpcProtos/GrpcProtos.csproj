@@ -38,6 +38,9 @@
     <Protobuf Update="Protos\CompositeComponent.proto" GrpcServices="Both" />
     <Protobuf Update="Protos\EngSol.proto" GrpcServices="Server" />
     <Protobuf Update="Protos\FileName.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\DSI.proto" GrpcServices="Both">
+      <ProtoRoot>Protos</ProtoRoot>
+    </Protobuf>
     <Protobuf Update="Protos\Masters\ClipType.proto" GrpcServices="Both" />
     <Protobuf Update="Protos\Masters\CoverType.proto" GrpcServices="Both" />
     <Protobuf Update="Protos\Masters\CrimpingProcessType.proto" GrpcServices="Both" />

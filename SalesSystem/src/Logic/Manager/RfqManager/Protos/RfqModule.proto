@@ -8,48 +8,65 @@ option csharp_namespace = "RfqModule";
 
 package RfqModule;
 
-// The greeting service definition.
+// The RfqModule by feature
 service RfqModule {
-  // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply);
+    // Sends a greeting
+    rpc SayHello (HelloRequest) returns (HelloReply);
 
-  // Uploads a file
-  rpc UploadFile (FileUploadRequest) returns (FileUploadResponse);
-  rpc GetAllCustomersGrpc (GetAllCustomersGrpcRequest) returns (GetAllCustomersGrpcResponse);
-  //rpc GetCustomersByUserIdGrpc (GetCustomersByUserIdGrpcRequest) returns (GetCustomersByUserIdGrpcResponse);
-  rpc GetProjectAssociationsByCustomerId (GetProjectAssociationsByCustomerIdRequest) returns (GetProjectAssociationsByCustomerIdResponse);
-  rpc GetRfqReasonsGrpc (GetRfqReasonsGrpcRequest) returns (GetRfqReasonsGrpcResponse);
-  rpc GetVehicleByProjectCodeGrpc (GetVehicleByProjectCodeGrpcRequest) returns (GetVehicleByProjectCodeGrpcResponse);
-  rpc UploadPartsGrpc (UploadPartsRequestGrpcRequest) returns (UploadPartsRequestGrpcResponse);
-  rpc CreateRfqProjectGrpc (CreateRfqProjectGrpcRequest) returns (CreateRfqProjectGrpcResponse);
-  rpc GetAllRfqProjectGrpc (GetAllRfqProjectGrpcRequest) returns (GetAllRfqProjectGrpcResponse);
-  rpc GetRfqProjectByIdGrpc (GetRfqProjectByIdGrpcRequest) returns (GetRfqProjectByIdGrpcResponse);
-  rpc UpdateRfqProjectGrpc (UpdateRfqProjectGrpcRequest) returns (UpdateRfqProjectGrpcResponse);
-  rpc GetRfqDrawingPartNumbersByRfqIdGrpc (GetRfqDrawingPartNumbersByRfqIdGrpcRequest) returns (GetRfqDrawingPartNumbersByRfqIdGrpcResponse);
-//  rpc UpdateRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequestt) returns (UpdateRfqDrawingPartNumbersGrpcResponse);
-  rpc UpdateRfqDrawingPartNumbersGrpc (UpdateRfqDrawingPartNumbersGrpcRequest) returns (UpdateRfqDrawingPartNumbersGrpcResponse);
- rpc DeleteRfqProjectByRowIdGrpc (RfqProjectRequest) returns (RfqCrudResponse);
- rpc GetCustomerLocationsByUserIdGrpc (GetCustomerLocationsByUserIdRequest) returns (GetCustomerLocationsByUserIdResponse);
- rpc GetCustomerBusinessUnitsByUserIdGrpc (GetCustomerBusinessUnitsByUserIdRequest) returns (GetCustomerBusinessUnitsByUserIdResponse);
- rpc GetAlternativePartInfoBySumitomoNumberGrpc (GetAlternativePartInfoBySumitomoNumberRequest) returns (GetAlternativePartInfoBySumitomoNumberResponse);    
-  rpc GetAllAlternativePartsGrpc (GetAllAlternativePartsGrpcRequest) returns (GetAllAlternativePartsGrpcResponse);
-  rpc GetRfqNprRequestByRfqNumberGrpc (GetRfqNprRequestByRfqNumberGrpcRequest) returns (GetRfqNprRequestByRfqNumberGrpcResponse);
-  rpc GetRfqNprRequestByRfqProjectIdGrpc (GetRfqNprRequestByRfqProjectIdGrpcRequest) returns (GetRfqNprRequestByRfqProjectIdGrpcResponse);
-  rpc GetRfqNprRequestByIdGrpc (GetRfqNprRequestByIdGrpcRequest) returns (GetRfqNprRequestByIdGrpcResponse);
-  rpc GetAllRfqNprRequestGrpc (GetAllRfqNprRequestGrpcRequest) returns (GetAllRfqNprRequestGrpcResponse);
-  rpc CreateRfqNprRequestGrpc (CreateRfqNprRequestGrpcRequest) returns (CreateRfqNprRequestGrpcResponse);
-  rpc UpdateRfqNprRequestGrpc (UpdateRfqNprRequestGrpcRequest) returns (UpdateRfqNprRequestGrpcResponse);
-  rpc UpdateRfqNprRequestStatusGrpc (UpdateRfqNprRequestStatusGrpcRequest) returns (UpdateRfqNprRequestStatusGrpcResponse);
-  rpc DeleteRfqNprRequestByIdGrpc (DeleteRfqNprRequestByIdGrpcRequest) returns (DeleteRfqNprRequestByIdGrpcResponse);
-rpc ValidateNprRequestGrpc (MgrValidateNprRequestRequest) returns (MgrValidateNprRequestResponse);
-  rpc CreateNprGrpc (CreateNprGrpcRequest) returns (CreateNprGrpcResponse);
-  rpc GetAllSuppliersGrpc (GetAllSuppliersGrpcRequest) returns (GetAllSuppliersGrpcResponse);
-  rpc GetAllSupplierGroupsGrpc (GetAllSupplierGroupsGrpcRequest) returns (GetAllSupplierGroupsGrpcResponse);
-  rpc SearchPartPricesGrpc (SearchPartPricesGrpcRequest) returns (SearchPartPricesGrpcResponse);
-  rpc GetAllUnitOfMeasuresGrpc (GetAllUnitOfMeasuresRequest) returns (GetAllUnitOfMeasuresResponse);
-  rpc GetAllBuisnessUnitsGrpc (GetAllBusinessUnitsGrpcRequest) returns (GetAllBusinessUnitsGrpcResponse);
- rpc WhoAmI (google.protobuf.Empty) returns (WhoAmIResponse);
- rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
+    // Uploads a file
+    rpc UploadFile (FileUploadRequest) returns (FileUploadResponse);
+
+    // RfqProject handling - customer, project association, vehicle by project, project CRUD
+    // Create/Edit Rfq related data
+    rpc GetAllCustomersGrpc (GetAllCustomersGrpcRequest) returns (GetAllCustomersGrpcResponse);
+    //rpc GetCustomersByUserIdGrpc (GetCustomersByUserIdGrpcRequest) returns (GetCustomersByUserIdGrpcResponse);
+    rpc GetProjectAssociationsByCustomerId (GetProjectAssociationsByCustomerIdRequest) returns (GetProjectAssociationsByCustomerIdResponse);
+    rpc GetRfqReasonsGrpc (GetRfqReasonsGrpcRequest) returns (GetRfqReasonsGrpcResponse);
+    rpc GetVehicleByProjectCodeGrpc (GetVehicleByProjectCodeGrpcRequest) returns (GetVehicleByProjectCodeGrpcResponse);
+    // part upload
+    rpc UploadPartsGrpc (UploadPartsRequestGrpcRequest) returns (UploadPartsRequestGrpcResponse);
+    // RfqProject handling - Dashboard grid (the project list), Edit/Create screens for CRUD
+    rpc CreateRfqProjectGrpc (CreateRfqProjectGrpcRequest) returns (CreateRfqProjectGrpcResponse);
+    rpc GetAllRfqProjectGrpc (GetAllRfqProjectGrpcRequest) returns (GetAllRfqProjectGrpcResponse);
+    rpc GetRfqProjectByIdGrpc (GetRfqProjectByIdGrpcRequest) returns (GetRfqProjectByIdGrpcResponse);
+    rpc UpdateRfqProjectGrpc (UpdateRfqProjectGrpcRequest) returns (UpdateRfqProjectGrpcResponse);
+    rpc GetCustomerLocationsByUserIdGrpc (GetCustomerLocationsByUserIdRequest) returns (GetCustomerLocationsByUserIdResponse);
+    rpc GetCustomerBusinessUnitsByUserIdGrpc (GetCustomerBusinessUnitsByUserIdRequest) returns (GetCustomerBusinessUnitsByUserIdResponse);
+    // RfqProject Parts handling
+    rpc GetRfqDrawingPartNumbersByRfqIdGrpc (GetRfqDrawingPartNumbersByRfqIdGrpcRequest) returns (GetRfqDrawingPartNumbersByRfqIdGrpcResponse);
+    //  rpc UpdateRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequestt) returns (UpdateRfqDrawingPartNumbersGrpcResponse);
+    rpc UpdateRfqDrawingPartNumbersGrpc (UpdateRfqDrawingPartNumbersGrpcRequest) returns (UpdateRfqDrawingPartNumbersGrpcResponse);
+    rpc DeleteRfqProjectByRowIdGrpc (RfqProjectRequest) returns (RfqCrudResponse);
+    rpc GetAlternativePartInfoBySumitomoNumberGrpc (GetAlternativePartInfoBySumitomoNumberRequest) returns (GetAlternativePartInfoBySumitomoNumberResponse);    
+    rpc GetAllAlternativePartsGrpc (GetAllAlternativePartsGrpcRequest) returns (GetAllAlternativePartsGrpcResponse);
+    // NprRequest local handling
+    rpc GetRfqNprRequestByRfqNumberGrpc (GetRfqNprRequestByRfqNumberGrpcRequest) returns (GetRfqNprRequestByRfqNumberGrpcResponse);
+    rpc GetRfqNprRequestByRfqProjectIdGrpc (GetRfqNprRequestByRfqProjectIdGrpcRequest) returns (GetRfqNprRequestByRfqProjectIdGrpcResponse);
+    rpc GetRfqNprRequestByIdGrpc (GetRfqNprRequestByIdGrpcRequest) returns (GetRfqNprRequestByIdGrpcResponse);
+    rpc GetAllRfqNprRequestGrpc (GetAllRfqNprRequestGrpcRequest) returns (GetAllRfqNprRequestGrpcResponse);
+    rpc CreateRfqNprRequestGrpc (CreateRfqNprRequestGrpcRequest) returns (CreateRfqNprRequestGrpcResponse);
+    rpc UpdateRfqNprRequestGrpc (UpdateRfqNprRequestGrpcRequest) returns (UpdateRfqNprRequestGrpcResponse);
+    rpc UpdateRfqNprRequestStatusGrpc (UpdateRfqNprRequestStatusGrpcRequest) returns (UpdateRfqNprRequestStatusGrpcResponse);
+    rpc DeleteRfqNprRequestByIdGrpc (DeleteRfqNprRequestByIdGrpcRequest) returns (DeleteRfqNprRequestByIdGrpcResponse);
+    rpc ValidateNprRequestGrpc (MgrValidateNprRequestRequest) returns (MgrValidateNprRequestResponse);
+    // NprRequest remote engineering API handling
+    rpc CreateNprGrpc (CreateNprGrpcRequest) returns (CreateNprGrpcResponse);
+    // Misc??? to be clarified
+    rpc GetAllSuppliersGrpc (GetAllSuppliersGrpcRequest) returns (GetAllSuppliersGrpcResponse);
+    rpc GetAllSupplierGroupsGrpc (GetAllSupplierGroupsGrpcRequest) returns (GetAllSupplierGroupsGrpcResponse);
+    rpc SearchPartPricesGrpc (SearchPartPricesGrpcRequest) returns (SearchPartPricesGrpcResponse);
+    rpc GetAllUnitOfMeasuresGrpc (GetAllUnitOfMeasuresRequest) returns (GetAllUnitOfMeasuresResponse);
+    rpc GetAllBuisnessUnitsGrpc (GetAllBusinessUnitsGrpcRequest) returns (GetAllBusinessUnitsGrpcResponse);
+    rpc WhoAmI (google.protobuf.Empty) returns (WhoAmIResponse);
+    // Fintering handling
+    rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
+    // DSI handling
+    rpc GetAllHarnessGrpc (GetAllHarnessModuleRequest) returns (GetAllHarnessModuleResponse);
+    rpc GetCompositeDetailByHarnessGrpc (GetCompositeDetailByHarnessRequest) returns (GetCompositeDetailByHarnessResponse);
+    rpc GetCompositeDetailByHarnessNameGrpc (GetCompositeDetailByHarnessNameRequest) returns (GetCompositeDetailByHarnessNameResponse);
+    rpc GetWireSpecificationByCompositeOptionGrpc (GetWireSpecificationByCompositeOptionRequest) returns (GetWireSpecificationByCompositeOptionResponse);
+    rpc GetComponentsByHarnessAndOptionsGrpc (GetComponentsByHarnessAndOptionsRequest) returns (ListComponentGrpc);
+
 }
 
 // The request message containing the user's name.
@@ -834,4 +851,257 @@ message BusinessUnitGrpc {
 
 message WhoAmIResponse {
   string user = 1;
+}
+
+
+message DSIHarnessGrpc {
+    google.protobuf.StringValue Id = 1;
+
+    google.protobuf.StringValue HarnessName1 = 2;
+    google.protobuf.StringValue SimilarHarnessName1 = 3;
+    google.protobuf.StringValue HarnessIssue1 = 4;
+    google.protobuf.StringValue SimilarHarnessIssue1 = 5;
+    google.protobuf.Timestamp HarnessDate1 = 6;
+
+    google.protobuf.StringValue HarnessName2 = 7;
+    google.protobuf.StringValue SimilarHarnessName2 = 8;
+    google.protobuf.StringValue HarnessIssue2 = 9;
+    google.protobuf.StringValue SimilarHarnessIssue2 = 10;
+    google.protobuf.Timestamp HarnessDate2 = 11;
+
+    google.protobuf.DoubleValue FileVersion = 12;
+
+    google.protobuf.StringValue Customer = 13;
+    google.protobuf.StringValue Site = 14;
+    google.protobuf.StringValue Range = 15;
+
+    google.protobuf.DoubleValue BoardLength = 16;
+    google.protobuf.DoubleValue BoardWidth = 17;
+
+    google.protobuf.StringValue Datum = 18;
+
+    google.protobuf.StringValue UserField1 = 19;
+    google.protobuf.StringValue UserField2 = 20;
+    google.protobuf.StringValue UserField3 = 21;
+    google.protobuf.StringValue UserField4 = 22;
+    google.protobuf.StringValue UserField5 = 23;
+
+    google.protobuf.StringValue Checker = 24;
+    google.protobuf.StringValue Inputter = 25;
+    google.protobuf.StringValue DraftedBy = 26;
+    google.protobuf.StringValue PreparedBy = 27;
+
+    google.protobuf.StringValue Type = 28;
+    google.protobuf.StringValue Title = 29;
+    google.protobuf.StringValue EngineSize = 30;
+    google.protobuf.StringValue ManufacturingCell = 31;
+    google.protobuf.StringValue Trim = 32;
+    google.protobuf.StringValue HandDrive = 33;
+
+    google.protobuf.StringValue TubeAddOnType = 34;
+    google.protobuf.DoubleValue TubeAddOnFactor = 35;
+
+    google.protobuf.BoolValue IsManualTerminal = 36;
+    google.protobuf.BoolValue IsAllConnectorsSealed = 37;
+    google.protobuf.BoolValue IsModule = 38;
+    google.protobuf.BoolValue IsPitchTableUsed = 39;
+
+    google.protobuf.StringValue AlphaCode = 40;
+    google.protobuf.StringValue AdditionalComments = 41;
+
+    google.protobuf.Timestamp CreatedDate = 42;
+    google.protobuf.Timestamp ModifiedDate = 43;
+
+    google.protobuf.StringValue CreatedBy = 44;
+    google.protobuf.StringValue ModifiedBy = 45;
+}
+
+message DSICompositeDetailGrpc {
+   int64 Id = 1;
+
+    google.protobuf.StringValue HarnessName1 = 2;
+    google.protobuf.StringValue SimilarHarnessName1 = 3;
+    google.protobuf.StringValue HarnessIssue1 = 4;
+    google.protobuf.StringValue SimilarHarnessIssue1 = 5;
+    google.protobuf.Timestamp HarnessDate1 = 6;
+
+    google.protobuf.StringValue HarnessName2 = 7;
+    google.protobuf.StringValue SimilarHarnessName2 = 8;
+    google.protobuf.StringValue HarnessIssue2 = 9;
+    google.protobuf.StringValue SimilarHarnessIssue2 = 10;
+    google.protobuf.Timestamp HarnessDate2 = 11;
+
+    google.protobuf.StringValue Customer = 12;
+    google.protobuf.StringValue Site = 13;
+    google.protobuf.StringValue Range = 14;
+
+    google.protobuf.DoubleValue BoardLength = 15;
+    google.protobuf.DoubleValue BoardWidth = 16;
+
+    google.protobuf.StringValue Datum = 17;
+
+    google.protobuf.StringValue UserField1 = 18;
+    google.protobuf.StringValue UserField2 = 19;
+    google.protobuf.StringValue UserField3 = 20;
+    google.protobuf.StringValue UserField4 = 21;
+    google.protobuf.StringValue UserField5 = 22;
+
+    google.protobuf.StringValue Checker = 23;
+    google.protobuf.StringValue Inputter = 24;
+    google.protobuf.StringValue DraftedBy = 25;
+    google.protobuf.StringValue PreparedBy = 26;
+
+    google.protobuf.StringValue Type = 27;
+    google.protobuf.StringValue Title = 28;
+    google.protobuf.StringValue EngineSize = 29;
+    google.protobuf.StringValue ManufacturingCell = 30;
+    google.protobuf.StringValue Trim = 31;
+    google.protobuf.StringValue HandDrive = 32;
+
+    google.protobuf.StringValue TubeAddOnType = 33;
+    google.protobuf.DoubleValue TubeAddOnFactor = 34;
+
+    google.protobuf.BoolValue IsManualTerminal = 35;
+    google.protobuf.BoolValue IsAllConnectorsSealed = 36;
+
+    google.protobuf.StringValue AlphaCode = 37;
+
+    google.protobuf.StringValue HarnessID = 38;
+    google.protobuf.StringValue CircuitOption = 39;
+
+    google.protobuf.Timestamp CreatedDate = 40;
+    google.protobuf.Timestamp ModifiedDate = 41;
+
+    google.protobuf.StringValue CreatedBy = 42;
+    google.protobuf.StringValue ModifiedBy = 43;
+}
+
+message GetAllHarnessModuleRequest {
+}
+
+message GetAllHarnessModuleResponse {
+    repeated DSIHarnessGrpc HarnessList = 1;
+}
+
+message GetCompositeDetailByHarnessRequest {
+    string HarnessId = 1;
+}
+message GetCompositeDetailByHarnessResponse {
+    repeated DSICompositeDetailGrpc CompositeDetails = 1;
+}
+
+message GetCompositeDetailByHarnessNameRequest {
+    string HarnessName1 = 1;
+        string HarnessId = 2;
+}
+
+message GetCompositeDetailByHarnessNameResponse {
+    repeated DSICompositeDetailGrpc CompositeDetails = 1;
+}
+
+message DSIWireSpecificationGrpc {
+    int64 Id = 1;
+    google.protobuf.StringValue WireName = 2;
+    google.protobuf.StringValue Compositeoptionstring = 3;
+    google.protobuf.StringValue WireType = 4;
+    google.protobuf.StringValue Colour = 5;
+    google.protobuf.DoubleValue CrossSectionalArea = 6;
+    google.protobuf.StringValue Material = 7;
+    google.protobuf.StringValue UserModule = 8;
+    google.protobuf.StringValue MulticoreName = 9;
+
+    google.protobuf.StringValue End1NodeName = 10;
+    google.protobuf.StringValue End1Route = 11;
+    google.protobuf.StringValue End1Cavity = 12;
+    google.protobuf.StringValue End1MaterialCode = 13;
+
+    google.protobuf.StringValue End2NodeName = 14;
+    google.protobuf.StringValue End2Route = 15;
+    google.protobuf.StringValue End2Cavity = 16;
+    google.protobuf.StringValue End2MaterialCode = 17;
+
+    google.protobuf.BoolValue IsIncludedOnBom = 18;
+    google.protobuf.BoolValue IsIncludedOnChart = 19;
+
+    google.protobuf.StringValue WireTag = 20;
+    google.protobuf.StringValue WireNote = 21;
+
+    google.protobuf.StringValue WireLengthChangeType = 22;
+    google.protobuf.DoubleValue WireLengthChangeValue = 23;
+    google.protobuf.DoubleValue AssemblyItemNumber = 24;
+
+    google.protobuf.StringValue MulticoreOption = 25;
+
+    google.protobuf.DoubleValue UnmodifiedWireLength = 26;
+    google.protobuf.DoubleValue ModifiedWireLength = 27;
+    google.protobuf.DoubleValue CutbackAtEnd1 = 28;
+    google.protobuf.DoubleValue CutbackAtEnd2 = 29;
+
+    google.protobuf.StringValue PartNumber1 = 30;
+    google.protobuf.StringValue PartNumber2 = 31;
+    google.protobuf.StringValue PartNumber3 = 32;
+
+    google.protobuf.StringValue Signal = 33;
+    google.protobuf.StringValue HarnessID = 34;
+
+    google.protobuf.Timestamp CreatedDate = 35;
+    google.protobuf.Timestamp ModifiedDate = 36;
+
+    google.protobuf.StringValue CreatedBy = 37;
+    google.protobuf.StringValue ModifiedBy = 38;
+}
+
+message GetWireSpecificationByCompositeOptionRequest {
+    string CompositeOptionString = 1;
+}
+
+message GetWireSpecificationByCompositeOptionResponse {
+    repeated DSIWireSpecificationGrpc WireSpecifications = 1;
+}
+
+message GetComponentsByHarnessAndOptionsRequest {
+    repeated string HarnessName = 1;
+    repeated string CompositeOptions = 2;
+}
+message ListComponentGrpc {
+    repeated DSIComponentGrpc ComponentList = 1;
+}
+message DSIComponentGrpc {
+    int64 Id = 1;
+
+    google.protobuf.StringValue NodeName = 2;
+    google.protobuf.StringValue CavityName = 3;
+    google.protobuf.StringValue WireName = 4;
+    google.protobuf.StringValue SequenceNumber = 5;
+
+    google.protobuf.StringValue ComponentTypeCode1 = 6;
+    google.protobuf.StringValue ComponentOption = 7;
+    google.protobuf.StringValue ServiceFunction = 8;
+
+    google.protobuf.StringValue Route = 9;
+
+    google.protobuf.StringValue PartNumber1 = 10;
+    google.protobuf.StringValue PartNumber2 = 11;
+    google.protobuf.StringValue PartNumber3 = 12;
+
+    google.protobuf.DoubleValue Quantity = 13;
+    google.protobuf.DoubleValue CrossSectionalArea = 14;
+
+    google.protobuf.BoolValue IsSelectTerminal = 15;
+    google.protobuf.BoolValue IsSeal = 16;
+    google.protobuf.BoolValue IsPlugged = 17;
+
+    google.protobuf.StringValue BlockNumber = 18;
+    google.protobuf.StringValue TerminationMethod = 19;
+    google.protobuf.StringValue MaterialCode = 20;
+
+    google.protobuf.StringValue ComponentTypeCode2 = 21;
+    google.protobuf.StringValue InsulationType = 22;
+
+    google.protobuf.StringValue UserModule = 23;
+
+    google.protobuf.StringValue HarnessID = 24;
+
+    google.protobuf.Timestamp CreatedDate = 25;
+    google.protobuf.Timestamp ModifiedDate = 26;
 }

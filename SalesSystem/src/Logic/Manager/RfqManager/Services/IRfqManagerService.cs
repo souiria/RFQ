@@ -41,5 +41,11 @@
         Task<GetAllUnitOfMeasuresResponse> GetAllUnitOfMeasuresGrpc(GetAllUnitOfMeasuresRequest request);
         Task<GetAllBusinessUnitsGrpcResponse> GetAllBusinessUnitsGrpc(GetAllBusinessUnitsGrpcRequest request);
         Task<CreateNprGrpcResponse> CreateNprGrpc(CreateNprGrpcRequest request);
-    }
+        Task<GetAllHarnessModuleResponse> GetAllHarnessGrpc(GetAllHarnessModuleRequest request);
+        Task<GetCompositeDetailByHarnessResponse> GetCompositeDetailByHarnessGrpc(GetCompositeDetailByHarnessRequest request);
+        Task<GetCompositeDetailByHarnessNameResponse> GetCompositeDetailByHarnessNameGrpc(GetCompositeDetailByHarnessNameRequest request);
+        Task<GetWireSpecificationByCompositeOptionResponse> GetWireSpecificationByCompositeOptionGrpc(GetWireSpecificationByCompositeOptionRequest request);
+        Task<ListComponentGrpc> GetComponentsByHarnessAndOptionsGrpc(GetComponentsByHarnessAndOptionsRequest request);
+     }
 }
+
