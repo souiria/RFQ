@@ -4,7 +4,7 @@
     {
         #region Attribs
         // Reference to the Harnesses
-        readonly List<DSIHarnessGrpc> _Harnesses;
+        readonly List<DsiHarnessUxModel> _Harnesses;
 
         NprRequestsEditor? _ComponentNprEditor;
 
@@ -154,9 +154,10 @@
 
         async Task LoadHarnessesAsync()
         {
+            Guid id = Guid.Parse("237ad12c-3e00-46a4-baeb-ba12fff53fa6");
             await DsiUxClientService.GetAllHarnessAsync();
             _Harnesses.Clear();
-            _Harnesses.AddRange(DsiUxClientService.Harnesses);
+            _Harnesses.AddRange(DsiUxClientService.Harnesses.Where(h => h.Id == id));
         }
 
         async Task<bool> LoadRfqAndPartNumbersAsync()

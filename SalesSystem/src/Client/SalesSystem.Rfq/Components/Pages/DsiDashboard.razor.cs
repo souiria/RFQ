@@ -7,14 +7,13 @@ namespace SalesSystem.Rfq.Components.Pages
         bool _LoadingCompositeDetails;
         bool _LoadingComponents;
 
-        List<DSIHarnessGrpc> _Harnesses = new();
-        List<DSICompositeDetailGrpc> _CompositeDetails = new();
-        List<DSIComponentGrpc> _Components = new();
+        List<DsiHarnessUxModel> _Harnesses = new();
+        List<DsiCompositeDetailUxModel> _CompositeDetails = new();
+        List<DsiComponentUxModel> _Components = new();
 
-        DSIHarnessGrpc? _SelectedHarness;
+        DsiHarnessUxModel? _SelectedHarness;
 
-        HashSet<DSICompositeDetailGrpc> _SelectedCompositeDetails = new();
-
+        HashSet<DsiCompositeDetailUxModel> _SelectedCompositeDetails = new();
         protected override async Task OnInitializedAsync()
         {
             await LoadHarnesses();
@@ -40,9 +39,9 @@ namespace SalesSystem.Rfq.Components.Pages
             }
         }
 
-        async Task OnHarnessRowClick(TableRowClickEventArgs<DSIHarnessGrpc> args)
+        async Task OnHarnessRowClick(TableRowClickEventArgs<DsiHarnessUxModel> args)
         {
-            DSIHarnessGrpc? clicked = args.Item;
+            DsiHarnessUxModel? clicked = args.Item;
             if (clicked == null)
             {
                 return;
@@ -56,13 +55,13 @@ namespace SalesSystem.Rfq.Components.Pages
             await LoadCompositeDetailsByHarnessId(clicked.Id);
         }
 
-        async Task LoadCompositeDetailsByHarnessId(string harnessId)
+        async Task LoadCompositeDetailsByHarnessId(Guid harnessId)
         {
             try
             {
                 _LoadingCompositeDetails = true;
 
-                await DsiUxClientService.GetCompositeDetailByHarnessIdAsync(harnessId);
+                await DsiUxClientService.GetCompositeDetailByHarnessIdAsync(harnessId.ToString());
                 _CompositeDetails = DsiUxClientService.CompositeDetails.ToList();
             }
             finally
@@ -109,7 +108,7 @@ namespace SalesSystem.Rfq.Components.Pages
             }
         }
 
-        string GetHarnessRowClass(DSIHarnessGrpc item, int row)
+        string GetHarnessRowClass(DsiHarnessUxModel item, int row)
         {
             return _SelectedHarness?.Id == item.Id ? "selected-row" : string.Empty;
         }

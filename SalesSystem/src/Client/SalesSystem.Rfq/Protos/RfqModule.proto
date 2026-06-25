@@ -907,10 +907,6 @@ message DSIHarnessGrpc {
     google.protobuf.BoolValue IsModule = 38;
     google.protobuf.BoolValue IsPitchTableUsed = 39;
 
-    google.protobuf.StringValue AlphaCode = 40;
-    google.protobuf.StringValue AdditionalComments = 41;
-
-    google.protobuf.Timestamp CreatedDate = 42;
     google.protobuf.Timestamp ModifiedDate = 43;
 
     google.protobuf.StringValue CreatedBy = 44;

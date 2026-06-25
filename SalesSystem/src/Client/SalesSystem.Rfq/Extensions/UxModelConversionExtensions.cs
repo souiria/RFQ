@@ -724,10 +724,10 @@ namespace SalesSystem.Rfq.Extensions
             uxModel.IsModule = dto.IsModule;
             uxModel.IsPitchTableUsed = dto.IsPitchTableUsed;
 
-            uxModel.AlphaCode = dto.AlphaCode;
-            uxModel.AdditionalComments = dto.AdditionalComments;
+            //uxModel.AlphaCode = dto.AlphaCode;
+            //uxModel.AdditionalComments = dto.AdditionalComments;
 
-            uxModel.CreatedDate = dto.CreatedDate?.ToDateTime();
+            //uxModel.CreatedDate = dto.CreatedDate?.ToDateTime();
             uxModel.ModifiedDate = dto.ModifiedDate?.ToDateTime();
 
             uxModel.CreatedBy = dto.CreatedBy;
@@ -793,8 +793,8 @@ namespace SalesSystem.Rfq.Extensions
                 IsModule = uxModel.IsModule ?? false,
                 IsPitchTableUsed = uxModel.IsPitchTableUsed ?? false,
 
-                AlphaCode = uxModel.AlphaCode ?? string.Empty,
-                AdditionalComments = uxModel.AdditionalComments ?? string.Empty,
+                //AlphaCode = uxModel.AlphaCode ?? string.Empty,
+                //AdditionalComments = uxModel.AdditionalComments ?? string.Empty,
 
                 CreatedBy = uxModel.CreatedBy ?? string.Empty,
                 ModifiedBy = uxModel.ModifiedBy ?? string.Empty
@@ -813,11 +813,11 @@ namespace SalesSystem.Rfq.Extensions
                     DateTime.SpecifyKind(uxModel.HarnessDate2.Value, DateTimeKind.Utc));
             }
 
-            if (uxModel.CreatedDate.HasValue)
-            {
-                dto.CreatedDate = Timestamp.FromDateTime(
-                    DateTime.SpecifyKind(uxModel.CreatedDate.Value, DateTimeKind.Utc));
-            }
+            //if (uxModel.CreatedDate.HasValue)
+            //{
+            //    dto.CreatedDate = Timestamp.FromDateTime(
+            //        DateTime.SpecifyKind(uxModel.CreatedDate.Value, DateTimeKind.Utc));
+            //}
 
             if (uxModel.ModifiedDate.HasValue)
             {
@@ -830,11 +830,11 @@ namespace SalesSystem.Rfq.Extensions
         #endregion
 
         #region DSI CompositeDetailGrpc
-        public static DsiCompositeDetailUxModel? ToUxModel(this DSICompositeDetailGrpc dto)
+        public static DsiCompositeDetailUxModel ToUxModel(this DSICompositeDetailGrpc dto)
         {
             if (dto is null)
             {
-                return null;
+                throw new ArgumentNullException(nameof(dto));
             }
 
             DsiCompositeDetailUxModel uxModel = new DsiCompositeDetailUxModel
@@ -900,11 +900,11 @@ namespace SalesSystem.Rfq.Extensions
             return uxModel;
         }
 
-        public static DSICompositeDetailGrpc? ToGrpcDto(this DsiCompositeDetailUxModel uxModel)
+        public static DSICompositeDetailGrpc ToGrpcDto(this DsiCompositeDetailUxModel uxModel)
         {
             if (uxModel is null)
             {
-                return null;
+                throw new ArgumentNullException(nameof(uxModel));
             }
 
             DSICompositeDetailGrpc dto = new DSICompositeDetailGrpc
@@ -985,6 +985,215 @@ namespace SalesSystem.Rfq.Extensions
                 dto.ModifiedDate = Timestamp.FromDateTime(
                     DateTime.SpecifyKind(uxModel.ModifiedDate.Value, DateTimeKind.Utc));
             }
+
+            return dto;
+        }
+        #endregion
+
+        #region DSIComponentGrpc
+        public static DsiComponentUxModel ToUxModel(this DSIComponentGrpc dto)
+        {
+            if (dto == null)
+            {
+                throw new ArgumentNullException(nameof(dto));
+            }
+
+            DsiComponentUxModel uxModel = new DsiComponentUxModel();
+            
+            uxModel.Id = dto.Id;
+            uxModel.NodeName = dto.NodeName ?? string.Empty;
+            uxModel.CavityName = dto.CavityName ?? string.Empty;
+            uxModel.WireName = dto.WireName ?? string.Empty;
+            uxModel.SequenceNumber = dto.SequenceNumber ?? string.Empty;
+            uxModel.ComponentTypeCode1 = dto.ComponentTypeCode1 ?? string.Empty;
+            uxModel.ComponentOption = dto.ComponentOption ?? string.Empty;
+            uxModel.ServiceFunction = dto.ServiceFunction ?? string.Empty;
+            uxModel.Route = dto.Route ?? string.Empty;
+            uxModel.PartNumber1 = dto.PartNumber1 ?? string.Empty;
+            uxModel.PartNumber2 = dto.PartNumber2 ?? string.Empty;
+            uxModel.PartNumber3 = dto.PartNumber3 ?? string.Empty;
+            uxModel.Quantity = dto.Quantity ?? 0d;
+            uxModel.CrossSectionalArea = dto.CrossSectionalArea ?? 0d;
+            uxModel.IsSelectTerminal = dto.IsSelectTerminal ?? false;
+            uxModel.IsSeal = dto.IsSeal ?? false;
+            uxModel.IsPlugged = dto.IsPlugged ?? false;
+            uxModel.BlockNumber = dto.BlockNumber ?? string.Empty;
+            uxModel.TerminationMethod = dto.TerminationMethod ?? string.Empty;
+            uxModel.MaterialCode = dto.MaterialCode ?? string.Empty;
+            uxModel.ComponentTypeCode2 = dto.ComponentTypeCode2 ?? string.Empty;
+            uxModel.InsulationType = dto.InsulationType ?? string.Empty;
+            uxModel.UserModule = dto.UserModule ?? string.Empty;
+            uxModel.HarnessId = dto.HarnessID ?? string.Empty;
+            uxModel.CreatedDate = dto.CreatedDate is null 
+                ? DateTime.UtcNow
+                : dto.CreatedDate.ToDateTime();
+            uxModel.ModifiedDate = dto.ModifiedDate is null 
+                ? DateTime.UtcNow
+                : dto.ModifiedDate.ToDateTime();  
+            
+            return uxModel;
+        }
+        public static DSIComponentGrpc ToGrpcDto(this DsiComponentUxModel uxModel)
+        {
+            if (uxModel == null)
+            {
+                throw new ArgumentNullException(nameof(uxModel));
+            }
+
+            DSIComponentGrpc grpcDto = new();
+                
+            grpcDto.Id = uxModel.Id;
+            grpcDto.NodeName = uxModel.NodeName;
+            grpcDto.CavityName = uxModel.CavityName;
+            grpcDto.WireName = uxModel.WireName;
+            grpcDto.SequenceNumber = uxModel.SequenceNumber;
+            grpcDto.ComponentTypeCode1 = uxModel.ComponentTypeCode1;
+            grpcDto.ComponentOption = uxModel.ComponentOption;
+            grpcDto.ServiceFunction = uxModel.ServiceFunction;
+            grpcDto.Route = uxModel.Route;
+            grpcDto.PartNumber1 = uxModel.PartNumber1;
+            grpcDto.PartNumber2 = uxModel.PartNumber2;
+            grpcDto.PartNumber3 = uxModel.PartNumber3;
+            grpcDto.Quantity = uxModel.Quantity;
+            grpcDto.CrossSectionalArea = uxModel.CrossSectionalArea;
+            grpcDto.IsSelectTerminal = uxModel.IsSelectTerminal;
+            grpcDto.IsSeal = uxModel.IsSeal;
+            grpcDto.IsPlugged = uxModel.IsPlugged;
+            grpcDto.BlockNumber = uxModel.BlockNumber;
+            grpcDto.TerminationMethod = uxModel.TerminationMethod;
+            grpcDto.MaterialCode = uxModel.MaterialCode;
+            grpcDto.ComponentTypeCode2 = uxModel.ComponentTypeCode2;
+            grpcDto.InsulationType = uxModel.InsulationType;
+            grpcDto.UserModule = uxModel.UserModule;
+            grpcDto.HarnessID = uxModel.HarnessId;
+            grpcDto.CreatedDate = Timestamp.FromDateTime(DateTime.SpecifyKind(uxModel.CreatedDate, DateTimeKind.Utc));
+            grpcDto.ModifiedDate = Timestamp.FromDateTime(DateTime.SpecifyKind(uxModel.ModifiedDate, DateTimeKind.Utc));
+
+            return grpcDto;
+        }
+        #endregion
+
+        #region DSIWireSpecificationGrpc
+        public static DsiWireSpecificationUxModel ToUxModel(this DSIWireSpecificationGrpc dto)
+        {
+            if (dto == null)
+            {
+                throw new ArgumentNullException(nameof(dto));
+            }
+
+            DsiWireSpecificationUxModel uxModel = new DsiWireSpecificationUxModel();
+            
+            uxModel.Id = dto.Id;
+            uxModel.WireName = dto.WireName ?? string.Empty;
+            uxModel.Compositeoptionstring = dto.Compositeoptionstring ?? string.Empty;
+            uxModel.WireType = dto.WireType ?? string.Empty;
+            uxModel.Colour = dto.Colour ?? string.Empty;
+            uxModel.CrossSectionalArea = dto.CrossSectionalArea ?? 0d;
+            uxModel.Material = dto.Material ?? string.Empty;
+            uxModel.UserModule = dto.UserModule ?? string.Empty;
+            uxModel.MulticoreName = dto.MulticoreName ?? string.Empty;
+
+            uxModel.End1NodeName = dto.End1NodeName ?? string.Empty;
+            uxModel.End1Route = dto.End1Route ?? string.Empty;
+            uxModel.End1Cavity = dto.End1Cavity ?? string.Empty;
+            uxModel.End1MaterialCode = dto.End1MaterialCode ?? string.Empty;    
+
+            uxModel.End2NodeName = dto.End2NodeName ?? string.Empty;
+            uxModel.End2Route = dto.End2Route ?? string.Empty;
+            uxModel.End2Cavity = dto.End2Cavity ?? string.Empty;
+            uxModel.End2MaterialCode = dto.End2MaterialCode ?? string.Empty;
+
+            uxModel.IsIncludedOnBom = dto.IsIncludedOnBom ?? false;
+            uxModel.IsIncludedOnChart = dto.IsIncludedOnChart ?? false;
+
+            uxModel.WireTag = dto.WireTag ?? string.Empty;
+            uxModel.WireNote = dto.WireNote ?? string.Empty;
+
+            uxModel.WireLengthChangeType = dto.WireLengthChangeType ?? string.Empty;
+            uxModel.WireLengthChangeValue = dto.WireLengthChangeValue ?? 0d;
+            uxModel.AssemblyItemNumber = dto.AssemblyItemNumber ?? 0d;
+
+            uxModel.MulticoreOption = dto.MulticoreOption ?? string.Empty;
+
+            uxModel.UnmodifiedWireLength = dto.UnmodifiedWireLength ?? 0d;
+            uxModel.ModifiedWireLength = dto.ModifiedWireLength ?? 0d;
+            uxModel.CutbackAtEnd1 = dto.CutbackAtEnd1 ?? 0d;
+            uxModel.CutbackAtEnd2 = dto.CutbackAtEnd2 ?? 0d;
+
+            uxModel.PartNumber1 = dto.PartNumber1 ?? string.Empty;
+            uxModel.PartNumber2 = dto.PartNumber2 ?? string.Empty;
+            uxModel.PartNumber3 = dto.PartNumber3 ?? string.Empty;
+
+            uxModel.Signal = dto.Signal ?? string.Empty;
+            uxModel.HarnessID = dto.HarnessID ?? string.Empty;
+
+            uxModel.CreatedDate = dto.CreatedDate.ToDateTime();
+            uxModel.ModifiedDate = dto.ModifiedDate.ToDateTime();
+
+            uxModel.CreatedBy = dto.CreatedBy ?? string.Empty;
+            uxModel.ModifiedBy = dto.ModifiedBy ?? string.Empty;
+
+            return uxModel;
+        }
+        public static DSIWireSpecificationGrpc ToGrpcDto(this DsiWireSpecificationUxModel uxModel)
+        {
+            if (uxModel == null)
+            {
+                throw new ArgumentNullException(nameof(uxModel));
+            }
+
+            DSIWireSpecificationGrpc dto = new DSIWireSpecificationGrpc();
+
+            dto.Id = uxModel.Id;
+            dto.WireName = uxModel.WireName; // Implicitly converts string to StringValue
+            dto.Compositeoptionstring = uxModel.Compositeoptionstring;
+            dto.WireType = uxModel.WireType;
+            dto.Colour = uxModel.Colour;
+            dto.CrossSectionalArea = uxModel.CrossSectionalArea; // Implicitly converts double to DoubleValue
+            dto.Material = uxModel.Material;
+            dto.UserModule = uxModel.UserModule;
+            dto.MulticoreName = uxModel.MulticoreName;
+
+            dto.End1NodeName = uxModel.End1NodeName;
+            dto.End1Route = uxModel.End1Route;
+            dto.End1Cavity = uxModel.End1Cavity;
+            dto.End1MaterialCode = uxModel.End1MaterialCode;
+
+            dto.End2NodeName = uxModel.End2NodeName;
+            dto.End2Route = uxModel.End2Route;
+            dto.End2Cavity = uxModel.End2Cavity;
+            dto.End2MaterialCode = uxModel.End2MaterialCode;
+
+            dto.IsIncludedOnBom = uxModel.IsIncludedOnBom; // Implicitly converts bool to BoolValue
+            dto.IsIncludedOnChart = uxModel.IsIncludedOnChart;
+
+            dto.WireTag = uxModel.WireTag;
+            dto.WireNote = uxModel.WireNote;
+
+            dto.WireLengthChangeType = uxModel.WireLengthChangeType;
+            dto.WireLengthChangeValue = uxModel.WireLengthChangeValue;
+            dto.AssemblyItemNumber = uxModel.AssemblyItemNumber;
+
+            dto.MulticoreOption = uxModel.MulticoreOption;
+
+            dto.UnmodifiedWireLength = uxModel.UnmodifiedWireLength;
+            dto.ModifiedWireLength = uxModel.ModifiedWireLength;
+            dto.CutbackAtEnd1 = uxModel.CutbackAtEnd1;
+            dto.CutbackAtEnd2 = uxModel.CutbackAtEnd2;
+
+            dto.PartNumber1 = uxModel.PartNumber1;
+            dto.PartNumber2 = uxModel.PartNumber2;
+            dto.PartNumber3 = uxModel.PartNumber3;
+
+            dto.Signal = uxModel.Signal;
+            dto.HarnessID = uxModel.HarnessID;
+
+            // Handles systemic conversions to Google.Protobuf.WellKnownTypes.Timestamp
+            dto.CreatedDate = Timestamp.FromDateTime(DateTime.SpecifyKind(uxModel.CreatedDate ?? DateTime.UtcNow, DateTimeKind.Utc));
+            dto.ModifiedDate = Timestamp.FromDateTime(DateTime.SpecifyKind(uxModel.ModifiedDate ?? DateTime.UtcNow, DateTimeKind.Utc));
+
+            dto.CreatedBy = uxModel.CreatedBy;
+            dto.ModifiedBy = uxModel.ModifiedBy;
 
             return dto;
         }
