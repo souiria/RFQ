@@ -66,8 +66,27 @@
             }
             else
             {
-                await PopulateDerivativeWiresAsync(cancellationToken);
+                await PopulateInitialDerivativeWiresAsync(cancellationToken);
                 return _ListDerivativeWires;
+            }
+        }
+
+        public async Task<DerivativeWiresGrpc?> GetDerivativeWiresById(int derivativeId, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListDerivativeWires.DerivativeWiresGrpc.Any())
+            {
+                DerivativeWiresGrpc? wire = _ListDerivativeWires.DerivativeWiresGrpc.FirstOrDefault(x => x.DerivativeID == derivativeId);
+                if (wire != null)
+                {
+                    // create new spec with searching all derrivative wires and then filter by derivativeId instead of using the in memory list.
+                }
+                return wire;
+            }
+            else
+            {
+                await PopulateInitialDerivativeWiresAsync(cancellationToken);
+                return _ListDerivativeWires.DerivativeWiresGrpc.FirstOrDefault(x => x.DerivativeId == derivativeId);
             }
         }
 
@@ -78,7 +97,7 @@
         #region Data Imports
 
         #region DerivativeWires
-        public async Task<bool> PopulateDerivativeWiresAsync(CancellationToken cancellationToken)
+        public async Task<bool> PopulateIDerivativeWiresAsync(CancellationToken cancellationToken)
         {
             if (!_DerivativeWiresRefreshInProgress)
             {
@@ -87,6 +106,8 @@
                     _DerivativeWiresHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDerivativeWiresQuery, List<DerivativeWiresGrpc>>>();
                     _DerivativeWiresRefreshInProgress = true;
                     GetDerivativeWiresQuery query = new GetDerivativeWiresQuery();
+                    query.Position = 0;
+                    query.TakeAmount = 1000;
                     await Task.Delay(1, cancellationToken);
                     Result<List<DerivativeWiresGrpc>> results = await _DerivativeWiresHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)

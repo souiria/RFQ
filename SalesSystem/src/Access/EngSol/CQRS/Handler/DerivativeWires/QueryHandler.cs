@@ -1,7 +1,4 @@
-﻿using Emacs;
-using EngSol.CQRS.Specification;
-
-namespace EngSol.CQRS.Handler.DerivativeWires
+﻿namespace EngSol.CQRS.Handler.DerivativeWires
 {
     public class QueryHandler : IQueryHandler<GetDerivativeWiresQuery, List<DerivativeWiresGrpc>>
     {

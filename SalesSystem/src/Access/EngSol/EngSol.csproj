@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Debug\SalesSystem.ServiceDefaults\SalesSystem.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\Utilities\GrpcProtos\GrpcProtos.csproj" />
     <ProjectReference Include="..\..\Utilities\SharedKernal\SharedKernel.csproj" />
   </ItemGroup>

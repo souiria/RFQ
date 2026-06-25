@@ -1,6 +1,4 @@
-﻿using Ardalis.Specification;
-
-namespace EngSol.CQRS.Specification
+﻿namespace EngSol.CQRS.Specification
 {
     public class GetDerivativeWiresReadOnlySpec : Specification<DbDerivativeWires>
     {
@@ -8,7 +6,7 @@ namespace EngSol.CQRS.Specification
         {
             if (position != null && take != null)
             {
-                Query.Skip(position.Value).Take(take.Value).AsNoTracking();
+                Query.Skip(position.Value).Take(take.Value).OrderByDescending(x => x.DerivativeId).AsNoTracking();
             }
             else
             {
