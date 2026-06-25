@@ -96,9 +96,15 @@
                 }
             }
             else
-            {
+            {   
                 responseMessage.Message = "No/not all RfqDrawingPartNumbers types created.";
                 responseMessage.SaveSuccess = false;
+            }
+
+            if (response.RfqDrawingPartNumbers.Count == 0)
+            {
+                responseMessage.Message = "No new items to create";
+                responseMessage.SaveSuccess = true;
             }
 
             _Logger.GenericLogInformation($"III Access Layer RfqGrpcService.CreateRfqDrawingPartNumbers returning  {response.RfqDrawingPartNumbers.Count} parts, success {responseMessage.SaveSuccess}, message {responseMessage.Message}");

@@ -2,6 +2,10 @@
 {
     public class HarnessDto
     {
+        public long RowId
+        { get; set; }
+        public Guid HarnessId
+        { get; set; }
         public string? HarnessName1
         { get; set; }
         public string? SimilarHarnessName1
