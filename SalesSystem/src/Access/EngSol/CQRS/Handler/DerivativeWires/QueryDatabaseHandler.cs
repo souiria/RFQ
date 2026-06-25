@@ -5,7 +5,7 @@
         readonly IEngSolReadRepository<DbDerivativeWires> _Repository;
         List<DerivativeWiresGrpc> _DerivativeWires;
 
-        public QueryHandler(IEngSolReadRepository<DbDerivativeWires> repository)
+        public QueryDatabaseHandler(IEngSolReadRepository<DbDerivativeWires> repository)
         {
             _Repository = repository;
             _DerivativeWires = [];
