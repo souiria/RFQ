@@ -1098,10 +1098,12 @@
                 return responseList;
             }
 
+            List<DsiBendGrpc> itemsToCreate = request.DsiBendGrpcsToCreate.Where(p => !_ListDsiBendsGrpc.DsiBends.Any(x => x.Bend == p.Bend)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiBendCommand, List<DbDsiBend>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiBendCommand, List<DbDsiBend>>>();
-                DsiBendCommand command = new DsiBendCommand(CommandType.Create, request.DsiBendGrpcsToCreate);
+                DsiBendCommand command = new DsiBendCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiBend>> result = await handler.Handle(command, cancellationToken);
                 if (result.IsSuccess)
                 {
@@ -1193,10 +1195,12 @@
                 return responseList;
             }
 
+            List<DsiBranchConfigurationGrpc> itemsToCreate = request.DsiBranchConfigurationGrpcsToCreate.Where(p => !_ListDsiBranchConfigurationsGrpc.DsiBranchConfigurations.Any(x => x.StartNode == p.StartNode && x.EndNode == p.EndNode && x.HarnessId == p.HarnessId)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiBranchConfigurationCommand, List<DbDsiBranchConfiguration>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiBranchConfigurationCommand, List<DbDsiBranchConfiguration>>>();
-                DsiBranchConfigurationCommand command = new DsiBranchConfigurationCommand(CommandType.Create, request.DsiBranchConfigurationGrpcsToCreate);
+                DsiBranchConfigurationCommand command = new DsiBranchConfigurationCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiBranchConfiguration>> result = await handler.Handle(command, cancellationToken);
                 if (result.IsSuccess)
                 {
@@ -1288,10 +1292,12 @@
                 return responseList;
             }
 
+            List<DsiBranchConfigurationBendAssociationGrpc> itemsToCreate = request.DsiBranchConfigurationBendAssociationGrpcsToCreate.Where(p => !_ListDsiBranchConfigurationBendAssociationsGrpc.DsiBranchConfigurationBendAssociations.Any(x => x.BranchConfigurationId == p.BranchConfigurationId && x.BendId == p.BendId)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiBranchConfigurationBendAssociationCommand, List<DbDsiBranchConfigurationBendAssociation>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiBranchConfigurationBendAssociationCommand, List<DbDsiBranchConfigurationBendAssociation>>>();
-                DsiBranchConfigurationBendAssociationCommand command = new DsiBranchConfigurationBendAssociationCommand(CommandType.Create, request.DsiBranchConfigurationBendAssociationGrpcsToCreate);
+                DsiBranchConfigurationBendAssociationCommand command = new DsiBranchConfigurationBendAssociationCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiBranchConfigurationBendAssociation>> result = await handler.Handle(command, cancellationToken);
                 if (result.IsSuccess)
                 {
@@ -1383,10 +1389,12 @@
                 return responseList;
             }
 
+            List<DsiBranchInsulationGrpc> itemsToCreate = request.DsiBranchInsulationGrpcsToCreate.Where(p => !_ListDsiBranchInsulationsGrpc.DsiBranchInsulations.Any(x => x.StartNode == p.StartNode && x.EndNode == p.EndNode && x.HarnessId == p.HarnessId)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiBranchInsulationCommand, List<DbDsiBranchInsulation>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiBranchInsulationCommand, List<DbDsiBranchInsulation>>>();
-                DsiBranchInsulationCommand command = new DsiBranchInsulationCommand(CommandType.Create, request.DsiBranchInsulationGrpcsToCreate);
+                DsiBranchInsulationCommand command = new DsiBranchInsulationCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiBranchInsulation>> result = await handler.Handle(command, cancellationToken);
                 if (result.IsSuccess)
                 {
@@ -1478,10 +1486,12 @@
                 return responseList;
             }
 
+            List<DsiBranchInsulationThroughNodeGrpc> itemsToCreate = request.DsiBranchInsulationThroughNodeGrpcsToCreate.Where(p => !_ListDsiBranchInsulationThroughNodesGrpc.DsiBranchInsulationThroughNodes.Any(x => x.PieceCode == p.PieceCode && x.HarnessId == p.HarnessId)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiBranchInsulationThroughNodeCommand, List<DbDsiBranchInsulationThroughNode>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiBranchInsulationThroughNodeCommand, List<DbDsiBranchInsulationThroughNode>>>();
-                DsiBranchInsulationThroughNodeCommand command = new DsiBranchInsulationThroughNodeCommand(CommandType.Create, request.DsiBranchInsulationThroughNodeGrpcsToCreate);
+                DsiBranchInsulationThroughNodeCommand command = new DsiBranchInsulationThroughNodeCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiBranchInsulationThroughNode>> result = await handler.Handle(command, cancellationToken);
                 if (result.IsSuccess)
                 {
@@ -1573,10 +1583,12 @@
                 return responseList;
             }
 
+            List<DsiCavityMappingGrpc> itemsToCreate = request.DsiCavityMappingGrpcsToCreate.Where(p => !_ListDsiCavityMappings.DsiCavityMappingGrpcs.Any(x => x.CavityMapping == p.CavityMapping)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiCavityMappingCommand, List<DbDsiCavityMapping>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiCavityMappingCommand, List<DbDsiCavityMapping>>>();
-                DsiCavityMappingCommand command = new DsiCavityMappingCommand(CommandType.Create, request.DsiCavityMappingGrpcsToCreate);
+                DsiCavityMappingCommand command = new DsiCavityMappingCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiCavityMapping>> result = await handler.Handle(command, cancellationToken);
                 if (result.IsSuccess)
                 {
@@ -1668,12 +1680,14 @@
                 return responseList;
             }
 
+            List<DsiCentreStripGrpc> itemsToCreate = request.DsiCentreStripGrpcsToCreate.Where(p => !_ListDsiCentreStripGrpc.DsiCentreStripGrpcs.Any(x => x.NodeName == p.NodeName && x.HarnessID == p.HarnessID)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiCentreStripCommand, List<DbDsiCentreStrip>> handler =
                     scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiCentreStripCommand, List<DbDsiCentreStrip>>>();
 
-                DsiCentreStripCommand command = new DsiCentreStripCommand(CommandType.Create, request.DsiCentreStripGrpcsToCreate);
+                DsiCentreStripCommand command = new DsiCentreStripCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiCentreStrip>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -1758,10 +1772,12 @@
                 return responseList;
             }
 
+            List<DsiCircuitOptionGrpc> itemsToCreate = request.DsiCircuitOptionGrpcsToCreate.Where(p => !_ListDsiCircuitOptionGrpc.DsiCircuitOptionGrpcs.Any(x => x.OptionName == p.OptionName)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiCircuitOptionCommand, List<DbDsiCircuitOption>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiCircuitOptionCommand, List<DbDsiCircuitOption>>>();
-                DsiCircuitOptionCommand command = new DsiCircuitOptionCommand(CommandType.Create, request.DsiCircuitOptionGrpcsToCreate);
+                DsiCircuitOptionCommand command = new DsiCircuitOptionCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiCircuitOption>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -1844,10 +1860,12 @@
                 return responseList;
             }
 
+            List<DsiComponentGrpc> itemsToCreate = request.DsiComponentGrpcsToCreate.Where(p => !_ListDsiComponentGrpc.DsiComponentGrpcs.Any(x => x.NodeName == p.NodeName && x.HarnessID == p.HarnessID)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiComponentCommand, List<DbDsiComponent>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiComponentCommand, List<DbDsiComponent>>>();
-                DsiComponentCommand command = new DsiComponentCommand(CommandType.Create, request.DsiComponentGrpcsToCreate);
+                DsiComponentCommand command = new DsiComponentCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiComponent>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -1930,10 +1948,12 @@
                 return responseList;
             }
 
+            List<DsiCompositeDetailGrpc> itemsToCreate = request.DsiCompositeDetailGrpcsToCreate.Where(p => !_ListDsiCompositeDetailGrpc.DsiCompositeDetailGrpcs.Any(x => x.HarnessName1 == p.HarnessName1 && x.HarnessID == p.HarnessID)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiCompositeDetailCommand, List<DbDsiCompositeDetail>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiCompositeDetailCommand, List<DbDsiCompositeDetail>>>();
-                DsiCompositeDetailCommand command = new DsiCompositeDetailCommand(CommandType.Create, request.DsiCompositeDetailGrpcsToCreate);
+                DsiCompositeDetailCommand command = new DsiCompositeDetailCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiCompositeDetail>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -2016,10 +2036,12 @@
                 return responseList;
             }
 
+            List<DsiCompositeDetailCircuitOptionAssociationGrpc> itemsToCreate = request.DsiCompositeDetailCircuitOptionAssociationGrpcsToCreate.Where(p => !_ListDsiCompositeDetailCircuitOptionAssociationGrpc.DsiCompositeDetailCircuitOptionAssociationGrpcs.Any(x => x.CompositeDetailId == p.CompositeDetailId && x.CircuitOptionId == p.CircuitOptionId)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiCompositeDetailCircuitOptionAssociationCommand, List<DbDsiCompositeDetailCircuitOptionAssociation>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiCompositeDetailCircuitOptionAssociationCommand, List<DbDsiCompositeDetailCircuitOptionAssociation>>>();
-                DsiCompositeDetailCircuitOptionAssociationCommand command = new DsiCompositeDetailCircuitOptionAssociationCommand(CommandType.Create, request.DsiCompositeDetailCircuitOptionAssociationGrpcsToCreate);
+                DsiCompositeDetailCircuitOptionAssociationCommand command = new DsiCompositeDetailCircuitOptionAssociationCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiCompositeDetailCircuitOptionAssociation>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -2102,10 +2124,12 @@
                 return responseList;
             }
 
+            List<DsiCompositeOptionGrpc> itemsToCreate = request.DsiCompositeOptionGrpcsToCreate.Where(p => !_ListDsiCompositeOptionGrpc.DsiCompositeOptionGrpcs.Any(x => x.OptionName == p.OptionName && x.HarnessID == p.HarnessID)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiCompositeOptionCommand, List<DbDsiCompositeOption>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiCompositeOptionCommand, List<DbDsiCompositeOption>>>();
-                DsiCompositeOptionCommand command = new DsiCompositeOptionCommand(CommandType.Create, request.DsiCompositeOptionGrpcsToCreate);
+                DsiCompositeOptionCommand command = new DsiCompositeOptionCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiCompositeOption>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -2188,10 +2212,12 @@
                 return responseList;
             }
 
+            List<DsiHarnessGrpc> itemsToCreate = request.DsiHarnessGrpcsToCreate.Where(p => !_ListDsiHarnessGrpc.DsiHarnessGrpcs.Any(x => x.HarnessName1 == p.HarnessName1 && x.Customer == p.Customer)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiHarnessCommand, List<DbDsiHarness>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiHarnessCommand, List<DbDsiHarness>>>();
-                DsiHarnessCommand command = new DsiHarnessCommand(CommandType.Create, request.DsiHarnessGrpcsToCreate);
+                DsiHarnessCommand command = new DsiHarnessCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiHarness>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -2274,10 +2300,12 @@
                 return responseList;
             }
 
+            List<DsiHarnessScopeGrpc> itemsToCreate = request.DsiHarnessScopeGrpcsToCreate.Where(p => !_ListDsiHarnessScopeGrpc.DsiHarnessScopeGrpcs.Any(x => x.HarnessName1 == p.HarnessName1 && x.HarnessID == p.HarnessID)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiHarnessScopeCommand, List<DbDsiHarnessScope>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiHarnessScopeCommand, List<DbDsiHarnessScope>>>();
-                DsiHarnessScopeCommand command = new DsiHarnessScopeCommand(CommandType.Create, request.DsiHarnessScopeGrpcsToCreate);
+                DsiHarnessScopeCommand command = new DsiHarnessScopeCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiHarnessScope>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -2360,12 +2388,14 @@
                 return responseList;
             }
 
+            List<DsiHarnessScopeScopeAssociationGrpc> itemsToCreate = request.DsiHarnessScopeScopeAssociationGrpcsToCreate.Where(p => !_ListDsiHarnessScopeScopeAssociationGrpc.DsiHarnessScopeScopeAssociationGrpcs.Any(x => x.HarnessScopeID == p.HarnessScopeID && x.ScopeID == p.ScopeID)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiHarnessScopeScopeAssociationCommand, List<DbDsiHarnessScopeScopeAssociation>> handler =
                     scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiHarnessScopeScopeAssociationCommand, List<DbDsiHarnessScopeScopeAssociation>>>();
                 DsiHarnessScopeScopeAssociationCommand command =
-                    new DsiHarnessScopeScopeAssociationCommand(CommandType.Create, request.DsiHarnessScopeScopeAssociationGrpcsToCreate);
+                    new DsiHarnessScopeScopeAssociationCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiHarnessScopeScopeAssociation>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -2451,10 +2481,12 @@
                 return responseList;
             }
 
+            List<DsiManualBomQuantityGrpc> itemsToCreate = request.DsiManualBomQuantityGrpcsToCreate.Where(p => !_ListDsiManualBomQuantityGrpc.DsiManualBomQuantityGrpcs.Any(x => x.SplitValue == p.SplitValue && x.HarnessID == p.HarnessID)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiManualBomQuantityCommand, List<DbDsiManualBomQuantity>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiManualBomQuantityCommand, List<DbDsiManualBomQuantity>>>();
-                DsiManualBomQuantityCommand command = new DsiManualBomQuantityCommand(CommandType.Create, request.DsiManualBomQuantityGrpcsToCreate);
+                DsiManualBomQuantityCommand command = new DsiManualBomQuantityCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiManualBomQuantity>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -2537,10 +2569,12 @@
                 return responseList;
             }
 
+            List<DsiMidWireComponentGrpc> itemsToCreate = request.DsiMidWireComponentGrpcsToCreate.Where(p => !_ListDsiMidWireComponentGrpc.DsiMidWireComponentGrpcs.Any(x => x.NodeName == p.NodeName && x.HarnessID == p.HarnessID)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiMidWireComponentCommand, List<DbDsiMidWireComponent>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiMidWireComponentCommand, List<DbDsiMidWireComponent>>>();
-                DsiMidWireComponentCommand command = new DsiMidWireComponentCommand(CommandType.Create, request.DsiMidWireComponentGrpcsToCreate);
+                DsiMidWireComponentCommand command = new DsiMidWireComponentCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiMidWireComponent>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -2623,10 +2657,12 @@
                 return responseList;
             }
 
+            List<DsiModuleChildDetailGrpc> itemsToCreate = request.DsiModuleChildDetailGrpcsToCreate.Where(p => !_ListDsiModuleChildDetailGrpc.DsiModuleChildDetailGrpcs.Any(x => x.ModuleCode == p.ModuleCode && x.HarnessID == p.HarnessID)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiModuleChildDetailCommand, List<DbDsiModuleChildDetail>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiModuleChildDetailCommand, List<DbDsiModuleChildDetail>>>();
-                DsiModuleChildDetailCommand command = new DsiModuleChildDetailCommand(CommandType.Create, request.DsiModuleChildDetailGrpcsToCreate);
+                DsiModuleChildDetailCommand command = new DsiModuleChildDetailCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiModuleChildDetail>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -2709,10 +2745,12 @@
                 return responseList;
             }
 
+            List<DsiModuleCompatibilityGrpc> itemsToCreate = request.DsiModuleCompatibilityGrpcsToCreate.Where(p => !_ListDsiModuleCompatibilityGrpc.DsiModuleCompatibilityGrpcs.Any(x => x.ModuleCode1 == p.ModuleCode1 && x.HarnessID == p.HarnessID)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiModuleCompatibilityCommand, List<DbDsiModuleCompatibility>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiModuleCompatibilityCommand, List<DbDsiModuleCompatibility>>>();
-                DsiModuleCompatibilityCommand command = new DsiModuleCompatibilityCommand(CommandType.Create, request.DsiModuleCompatibilityGrpcsToCreate);
+                DsiModuleCompatibilityCommand command = new DsiModuleCompatibilityCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiModuleCompatibility>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -2795,10 +2833,12 @@
                 return responseList;
             }
 
+            List<DsiMulticoreSpecificationGrpc> itemsToCreate = request.DsiMulticoreSpecificationGrpcsToCreate.Where(p => !_ListDsiMulticoreSpecificationGrpc.DsiMulticoreSpecificationGrpcs.Any(x => x.MulticoreName == p.MulticoreName && x.HarnessID == p.HarnessID)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiMulticoreSpecificationCommand, List<DbDsiMulticoreSpecification>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiMulticoreSpecificationCommand, List<DbDsiMulticoreSpecification>>>();
-                DsiMulticoreSpecificationCommand command = new DsiMulticoreSpecificationCommand(CommandType.Create, request.DsiMulticoreSpecificationGrpcsToCreate);
+                DsiMulticoreSpecificationCommand command = new DsiMulticoreSpecificationCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiMulticoreSpecification>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -2881,10 +2921,12 @@
                 return responseList;
             }
 
+            List<DsiPinMappingGrpc> itemsToCreate = request.DsiPinMappingGrpcsToCreate.Where(p => !_ListDsiPinMappingGrpc.DsiPinMappingGrpcs.Any(x => x.Node1 == p.Node1 && x.Node2 == p.Node2 && x.HarnessID == p.HarnessID)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiPinMappingCommand, List<DbDsiPinMapping>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiPinMappingCommand, List<DbDsiPinMapping>>>();
-                DsiPinMappingCommand command = new DsiPinMappingCommand(CommandType.Create, request.DsiPinMappingGrpcsToCreate);
+                DsiPinMappingCommand command = new DsiPinMappingCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiPinMapping>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -2966,10 +3008,12 @@
                 return responseList;
             }
 
+            List<DsiPinMappingCavityMappingAssociationGrpc> itemsToCreate = request.DsiPinMappingCavityMappingAssociationGrpcsToCreate.Where(p => !_ListDsiPinMappingCavityMappingAssociationGrpc.DsiPinMappingCavityMappingAssociationGrpcs.Any(x => x.PinMappingID == p.PinMappingID && x.CavityMappingID == p.CavityMappingID)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiPinMappingCavityMappingAssociationCommand, List<DbDsiPinMappingCavityMappingAssociation>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiPinMappingCavityMappingAssociationCommand, List<DbDsiPinMappingCavityMappingAssociation>>>();
-                DsiPinMappingCavityMappingAssociationCommand command = new DsiPinMappingCavityMappingAssociationCommand(CommandType.Create, request.DsiPinMappingCavityMappingAssociationGrpcsToCreate);
+                DsiPinMappingCavityMappingAssociationCommand command = new DsiPinMappingCavityMappingAssociationCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiPinMappingCavityMappingAssociation>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -3052,10 +3096,12 @@
                 return responseList;
             }
 
+            List<DsiScopeGrpc> itemsToCreate = request.DsiScopeGrpcsToCreate.Where(p => !_ListDsiScopeGrpc.DsiScopeGrpcs.Any(x => x.Scope == p.Scope)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiScopeCommand, List<DbDsiScope>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiScopeCommand, List<DbDsiScope>>>();
-                DsiScopeCommand command = new DsiScopeCommand(CommandType.Create, request.DsiScopeGrpcsToCreate);
+                DsiScopeCommand command = new DsiScopeCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiScope>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -3138,10 +3184,12 @@
                 return responseList;
             }
 
+            List<DsiSupplierGrpc> itemsToCreate = request.DsiSupplierGrpcsToCreate.Where(p => !_ListDsiSupplierGrpc.DsiSupplierGrpcs.Any(x => x.Code == p.Code && x.BuyerId == p.BuyerId)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiSupplierCommand, List<DbDsiSupplier>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiSupplierCommand, List<DbDsiSupplier>>>();
-                DsiSupplierCommand command = new DsiSupplierCommand(CommandType.Create, request.DsiSupplierGrpcsToCreate);
+                DsiSupplierCommand command = new DsiSupplierCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiSupplier>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -3224,10 +3272,12 @@
                 return responseList;
             }
 
+            List<DsiTransformedCompositeDetailGrpc> itemsToCreate = request.DsiTransformedCompositeDetailGrpcsToCreate.Where(p => !_ListDsiTransformedCompositeDetailGrpc.DsiTransformedCompositeDetailGrpcs.Any(x => x.HarnessName1 == p.HarnessName1 && x.HarnessName2 == p.HarnessName2 && x.HarnessID == p.HarnessID)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiTransformedCompositeDetailCommand, List<DbDsiTransformedCompositeDetail>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiTransformedCompositeDetailCommand, List<DbDsiTransformedCompositeDetail>>>();
-                DsiTransformedCompositeDetailCommand command = new DsiTransformedCompositeDetailCommand(CommandType.Create, request.DsiTransformedCompositeDetailGrpcsToCreate);
+                DsiTransformedCompositeDetailCommand command = new DsiTransformedCompositeDetailCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiTransformedCompositeDetail>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -3482,10 +3532,12 @@
                 return responseList;
             }
 
+            List<DsiUnitOfMeasureGrpc> itemsToCreate = request.DsiUnitOfMeasureGrpcsToCreate.Where(p => !_ListDsiUnitOfMeasureGrpc.DsiUnitOfMeasureGrpcs.Any(x => x.Abbreviation == p.Abbreviation && x.SubsidiaryId == p.SubsidiaryId)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiUnitOfMeasureCommand, List<DbDsiUnitOfMeasure>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiUnitOfMeasureCommand, List<DbDsiUnitOfMeasure>>>();
-                DsiUnitOfMeasureCommand command = new DsiUnitOfMeasureCommand(CommandType.Create, request.DsiUnitOfMeasureGrpcsToCreate);
+                DsiUnitOfMeasureCommand command = new DsiUnitOfMeasureCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiUnitOfMeasure>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -3568,10 +3620,12 @@
                 return responseList;
             }
 
+            List<DsiWireMulticoreMarkerGrpc> itemsToCreate = request.DsiWireMulticoreMarkerGrpcsToCreate.Where(p => !_ListDsiWireMulticoreMarkerGrpc.DsiWireMulticoreMarkerGrpcs.Any(x => x.ItemName == p.ItemName && x.HarnessID == p.HarnessID)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiWireMulticoreMarkerCommand, List<DbDsiWireMulticoreMarker>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiWireMulticoreMarkerCommand, List<DbDsiWireMulticoreMarker>>>();
-                DsiWireMulticoreMarkerCommand command = new DsiWireMulticoreMarkerCommand(CommandType.Create, request.DsiWireMulticoreMarkerGrpcsToCreate);
+                DsiWireMulticoreMarkerCommand command = new DsiWireMulticoreMarkerCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiWireMulticoreMarker>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -3654,10 +3708,12 @@
                 return responseList;
             }
 
+            List<DsiWireSpecificationGrpc> itemsToCreate = request.DsiWireSpecificationGrpcsToCreate.Where(p => !_ListDsiWireSpecificationGrpc.DsiWireSpecificationGrpcs.Any(x => x.WireName == p.WireName && x.HarnessID == p.HarnessID)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiWireSpecificationCommand, List<DbDsiWireSpecification>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiWireSpecificationCommand, List<DbDsiWireSpecification>>>();
-                DsiWireSpecificationCommand command = new DsiWireSpecificationCommand(CommandType.Create, request.DsiWireSpecificationGrpcsToCreate);
+                DsiWireSpecificationCommand command = new DsiWireSpecificationCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiWireSpecification>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
@@ -3739,10 +3795,12 @@
                 return responseList;
             }
 
+            List<DsiWireThroughNodeGrpc> itemsToCreate = request.DsiWireThroughNodeGrpcsToCreate.Where(p => !_ListDsiWireThroughNodeGrpc.DsiWireThroughNodeGrpcs.Any(x => x.WireName == p.WireName && x.ThroughNode == p.ThroughNode && x.HarnessID == p.HarnessID)).ToList();
+
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
                 ICommandHandler<DsiWireThroughNodeCommand, List<DbDsiWireThroughNode>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<DsiWireThroughNodeCommand, List<DbDsiWireThroughNode>>>();
-                DsiWireThroughNodeCommand command = new DsiWireThroughNodeCommand(CommandType.Create, request.DsiWireThroughNodeGrpcsToCreate);
+                DsiWireThroughNodeCommand command = new DsiWireThroughNodeCommand(CommandType.Create, itemsToCreate);
                 Result<List<DbDsiWireThroughNode>> result = await handler.Handle(command, cancellationToken);
 
                 if (result.IsSuccess)
