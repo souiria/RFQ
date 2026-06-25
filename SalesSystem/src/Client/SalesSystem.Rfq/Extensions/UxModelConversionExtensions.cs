@@ -173,6 +173,37 @@ namespace SalesSystem.Rfq.Extensions
 
             return dto;
         }
+        public static RfqDrawingPartNumberUxModel ToRfqDrawingPartNumberUxModel(this DsiComponentUxModel component)
+        {
+            if (component == null)
+            {
+                throw new ArgumentNullException(nameof(component));
+            }
+
+            RfqDrawingPartNumberUxModel rfqItem = new RfqDrawingPartNumberUxModel
+            {
+                // Maps the database primary key to row reference tracker
+                RowId = component.Id,
+
+                // Map the primary active part number from the component data profile
+                CustomerPartNumber = component.PartNumber1 ?? string.Empty,
+                DrawingPartNumber = component.PartNumber1 ?? string.Empty,
+
+                // Convert double? quantity to decimal safely, defaulting to 0 if null
+                DrawingPartNumberPrice = 0m,
+                SwappedPartNumber = string.Empty,
+                SwappedPartNumberPrice = 0m,
+                PriceSource = string.Empty,
+                Comments = string.Empty,
+
+                IsExactMatch = false,
+                IsSwapped = false,
+                MultiMatch = false,
+                Status = RfqDrawingPartNumberStatus.New
+            };
+
+            return rfqItem;
+        }
         #endregion
 
         #region SearchResultUxModel

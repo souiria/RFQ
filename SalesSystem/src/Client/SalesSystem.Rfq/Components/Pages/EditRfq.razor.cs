@@ -36,6 +36,9 @@
 
         // Submit NPRs state tracking
         bool _IsSubmittingNprs;
+
+        // Active tab index for programmatic tab switching
+        int _ActiveTabIndex;
         #endregion
 
         public EditRfq()
@@ -1242,5 +1245,24 @@
         }
         #endregion
 
+        async Task HandleComponentsSelectedAsync(IEnumerable<DsiComponentUxModel> components)
+        {
+            _CompletedParts.Clear();
+            _InProgressParts.Clear();
+
+            foreach (DsiComponentUxModel component in components)
+            {
+                if (string.IsNullOrWhiteSpace(component.PartNumber1))
+                {
+                    continue;
+                }
+
+                _InProgressParts.Add(component.ToRfqDrawingPartNumberUxModel());
+            }
+
+            _ActiveTabIndex = 1; // Switch to "Parts Lists" tab
+            StateHasChanged();
+            await Task.CompletedTask;
+        }
     }
 }

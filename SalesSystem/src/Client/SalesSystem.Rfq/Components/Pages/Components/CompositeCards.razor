@@ -29,9 +29,9 @@
 </style>
 
 <MudPaper Style="display: grid; grid-template-columns: repeat(auto-fill, minmax(500px, 1fr)); align-items: start; gap: 16px; height: calc(100vh - 364px); overflow-y: auto;" Class="pa-4" Outlined="true">
-    @if (Composites.Count > 0)
+    @if (DsiComposites.Count > 0)
     {
-        @foreach (var compositeObject in Composites)
+        @foreach (var compositeObject in DsiComposites)
         {
             <MudCard Elevation="2">
                 <MudCardHeader>
@@ -49,7 +49,7 @@
                                            Icon="@Icons.Material.Filled.ImportExport"
                                            Color="Color.Primary"
                                            OnClick="async () => await ShowCompositeInfo(compositeObject)"
-                                           Disabled="@(_loadingComponents && _components.Count == 0)" />
+                                           Disabled="@(_selectedCompositeDetails.Count == 0)" />
                         </MudTooltip>
                     </CardHeaderActions>
                 </MudCardHeader>
@@ -95,15 +95,17 @@
     Dictionary<Guid, List<DsiCompositeDetailUxModel>> _compositeDetails = new();
     HashSet<DsiCompositeDetailUxModel> _selectedCompositeDetails = new();
     List<DsiComponentUxModel> _components = new();
-    bool _loadingComponents = false;
 
     [Parameter]
-    public List<DsiHarnessUxModel> Composites { get; set; } = new();
+    public List<DsiHarnessUxModel> DsiComposites { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<IEnumerable<DsiComponentUxModel>> OnComponentsSelected { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         _compositeDetails.Clear();
-        foreach(var composite in Composites)
+        foreach(var composite in DsiComposites)
         {
             List<DsiCompositeDetailUxModel>? derivatives = await LoadCompositeDetailsByHarnessId(composite.Id);
             if(derivatives?.Count>0)
@@ -117,7 +119,6 @@
     {
         try
         {
-            _loadingComponents = true;
             _components.Clear();
 
             List<string> harnessNames = new List<string>
@@ -150,9 +151,9 @@
                 await DialogService.ShowMessageBox("No Components Found", "No components were found for the selected composite.");
             }
         }
-        finally
+        catch (Exception ex)
         {
-            _loadingComponents = false;
+            Console.WriteLine($"Error fetching components: {ex.Message}");
         }
     }
 
@@ -180,8 +181,8 @@
 
         if (result != null && !result.Canceled)
         {
-            // The user clicked Export!
-            // Implement your Excel/CSV export trigger logic here
+            // callback to process the selected components if needed
+            await OnComponentsSelected.InvokeAsync(componentsToDisplay);
         }
     }
 
