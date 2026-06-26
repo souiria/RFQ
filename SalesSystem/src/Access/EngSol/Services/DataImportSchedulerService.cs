@@ -27,8 +27,8 @@
             if (_EngSolAccessService != null)
             {
                 bool check;
-                check = await _EngSolAccessService.PopulateBusinessUnitsAsync(stoppingToken);
-                await LogDataPopulationSuccess("BusinessUnit", check);
+                check = await _EngSolAccessService.PopulateDerivativeWiresAsync(stoppingToken);
+                await LogDataPopulationSuccess("DerivativeWires", check);
             }
 
             return true;

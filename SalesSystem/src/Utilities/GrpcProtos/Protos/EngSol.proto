@@ -13,6 +13,7 @@ service EngSol {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply);
   rpc GetDerivativeWiresGrpc (GetDerivativeWiresGrpcRequest) returns (ListDerivativeWiresGrpc);
+  rpc GetDerivativeWireByIdGrpc (GetDerivativeWireByIdGrpcRequest) returns (DerivativeWiresGrpc);
 }
 
 // The request message containing the user's name.
@@ -74,4 +75,8 @@ message DerivativeWiresGrpc {
     google.protobuf.Int32Value WireLengthMinus = 37;
     google.protobuf.StringValue wICFlag = 38;
     google.protobuf.DoubleValue uTurnLen = 39;
+}
+
+message GetDerivativeWireByIdGrpcRequest {
+    int32 derivativeId = 1;
 }

@@ -1,6 +1,6 @@
 ﻿namespace EngSol.Extentions
 {
-    public static class ServiceCollectionExtentions
+    public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
