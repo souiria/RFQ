@@ -145,7 +145,42 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
+        public async Task<DsiHarnessUxModel?> GetHarnessByIdAsync(
+    string id,
+    CancellationToken cancellationToken = default)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+            using CancellationTokenSource combinedCts =
+                CancellationTokenSource.CreateLinkedTokenSource(
+                    cancellationToken,
+                    timeoutCts.Token);
 
+            try
+            {
+                GetHarnessByIdGrpcRequest request = new GetHarnessByIdGrpcRequest();
+                request.Id = id;
+
+                GetHarnessByIdGrpcResponse response =
+                    await _Client.GetHarnessByIdGrpcAsync(
+                        request,
+                        cancellationToken: combinedCts.Token);
+
+                if (response?.Harness == null)
+                {
+                    return null;
+                }
+
+                return response.Harness.ToUxModel();
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError(
+                    $"Error in GetHarnessByIdAsync for Id: {id}",
+                    ex);
+
+                throw;
+            }
+        }
         #endregion
 
         #region CompositeDetail

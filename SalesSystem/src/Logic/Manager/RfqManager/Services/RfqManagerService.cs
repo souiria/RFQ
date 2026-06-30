@@ -2732,6 +2732,47 @@
             }
         }
         //get All derivatibe by composite
+        public async Task<GetHarnessByIdGrpcResponse> GetHarnessByIdGrpc(GetHarnessByIdGrpcRequest request)
+        {
+            try
+            {
+                await Task.Delay(1);
+
+                DSIFilterRequest filterRequest = new DSIFilterRequest();
+                filterRequest.DatabaseList = "HARNESSGRPC";
+                filterRequest.FilterExpression = $"Id == \"{request.Id}\"";
+
+                DSIFilterResponse filterResponse =
+                    await _DSIClient.FilterDSIGrpcAsync(filterRequest);
+
+                ListHarnessGrpc harnessList =
+                    filterResponse.HarnessList ?? new ListHarnessGrpc();
+
+                GetHarnessByIdGrpcResponse response =
+                    new GetHarnessByIdGrpcResponse();
+
+                HarnessGrpc? item = harnessList.HarnessList.FirstOrDefault();
+
+                if (item != null)
+                {
+                    DSIHarnessGrpc harness = new DSIHarnessGrpc();
+
+                    harness.Id = item.Id;
+                    harness.HarnessName1 = item.HarnessName1;
+                    harness.Customer = item.Customer;
+                    harness.Site = item.Site;
+
+                    response.Harness = harness;
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError("Error fetching Harness by ID from DSI", ex);
+                throw;
+            }
+        }
         public async Task<GetCompositeDetailByHarnessResponse> GetCompositeDetailByHarnessGrpc(GetCompositeDetailByHarnessRequest request)
         {
             _ = request;

@@ -44,6 +44,7 @@ namespace SalesSystem.Rfq.Extensions
             uxModel.CarModelId = rfqProject.CarModelGuid.Trim().ToUpperInvariant();
             uxModel.VehicleVolume = rfqProject.VehicleVolume;
             uxModel.IsActive = rfqProject.IsActive ?? false;
+            uxModel.JsonData = rfqProject.JsonData;
 
             return uxModel;
         }
@@ -71,7 +72,7 @@ namespace SalesSystem.Rfq.Extensions
             dto.CarModelGuid = uxModel.CarModelId.Trim().ToUpperInvariant();
             dto.VehicleVolume = uxModel.VehicleVolume;
             dto.IsActive = uxModel.IsActive;
-
+            dto.JsonData = uxModel.JsonData;
             return dto;
         }
         #endregion
