@@ -81,7 +81,7 @@ public void Filter_CombinedParts_Success_And_Fail()
       ListCombinedPartsGrpc successListContainer = successResp.ListCombinedPartsGrpc;
     Assert.That(successListContainer, Is.Not.Null);
 
-     Google.Protobuf.Collections.RepeatedField<CombinedPartsGrpc> successItems = successListContainer.CombinedPartsGrpc;
+     RepeatedField<CombinedPartsGrpc> successItems = successListContainer.CombinedPartsGrpc;
     int successCount = successItems.Count;
     Assert.That(successCount, Is.Positive);
 
@@ -109,7 +109,7 @@ public void Filter_CombinedParts_Success_And_Fail()
             ListCombinedPartsGrpc failListContainer = failResp.ListCombinedPartsGrpc;
     Assert.That(failListContainer, Is.Not.Null);
 
-      Google.Protobuf.Collections.RepeatedField<CombinedPartsGrpc> failItems = failListContainer.CombinedPartsGrpc;
+      RepeatedField<CombinedPartsGrpc> failItems = failListContainer.CombinedPartsGrpc;
     int failCount = failItems.Count;
     Assert.That(failCount, Is.Zero);
 }
@@ -141,7 +141,7 @@ public void Filter_CombinedParts_Success_And_Fail()
             ListPartCategoryDetailGrpc successListContainer = successResp.ListPartCategoryDetailGrpc;
             Assert.That(successListContainer, Is.Not.Null);
 
-            Google.Protobuf.Collections.RepeatedField<PartCategoryDetailGrpc> successItems = successListContainer.PartCategoryDetailGrpc;
+            RepeatedField<PartCategoryDetailGrpc> successItems = successListContainer.PartCategoryDetailGrpc;
             int successCount = successItems.Count;
             Assert.That(successCount, Is.Positive);
 
@@ -169,7 +169,7 @@ public void Filter_CombinedParts_Success_And_Fail()
             ListPartCategoryDetailGrpc failListContainer = failResp.ListPartCategoryDetailGrpc;
             Assert.That(failListContainer, Is.Not.Null);
 
-            Google.Protobuf.Collections.RepeatedField<PartCategoryDetailGrpc> failItems = failListContainer.PartCategoryDetailGrpc;
+            RepeatedField<PartCategoryDetailGrpc> failItems = failListContainer.PartCategoryDetailGrpc;
             int failCount = failItems.Count;
             Assert.That(failCount, Is.Zero);
         }
@@ -201,7 +201,7 @@ public void Filter_CombinedParts_Success_And_Fail()
             ListPartGroupsGrpc successListContainer = successResp.ListPartGroupsGrpc;
             Assert.That(successListContainer, Is.Not.Null);
 
-            Google.Protobuf.Collections.RepeatedField<PartGroupsGrpc> successItems = successListContainer.PartGroupsGrpc;
+            RepeatedField<PartGroupsGrpc> successItems = successListContainer.PartGroupsGrpc;
             int successCount = successItems.Count;
             Assert.That(successCount, Is.Positive);
 
@@ -229,7 +229,7 @@ public void Filter_CombinedParts_Success_And_Fail()
             ListPartGroupsGrpc failListContainer = failResp.ListPartGroupsGrpc;
             Assert.That(failListContainer, Is.Not.Null);
 
-            Google.Protobuf.Collections.RepeatedField<PartGroupsGrpc> failItems = failListContainer.PartGroupsGrpc;
+            RepeatedField<PartGroupsGrpc> failItems = failListContainer.PartGroupsGrpc;
             int failCount = failItems.Count;
             Assert.That(failCount, Is.Zero);
         }
@@ -260,7 +260,7 @@ public void Filter_CombinedParts_Success_And_Fail()
             ListMaterialGroupsGrpc successListContainer = successResp.ListMaterialGroupsGrpc;
             Assert.That(successListContainer, Is.Not.Null);
 
-            Google.Protobuf.Collections.RepeatedField<MaterialGroupsGrpc> successItems = successListContainer.MaterialGroupsGrpc;
+            RepeatedField<MaterialGroupsGrpc> successItems = successListContainer.MaterialGroupsGrpc;
             int successCount = successItems.Count;
             Assert.That(successCount, Is.Positive);
 
@@ -288,7 +288,7 @@ public void Filter_CombinedParts_Success_And_Fail()
             ListMaterialGroupsGrpc failListContainer = failResp.ListMaterialGroupsGrpc;
             Assert.That(failListContainer, Is.Not.Null);
 
-            Google.Protobuf.Collections.RepeatedField<MaterialGroupsGrpc> failItems = failListContainer.MaterialGroupsGrpc;
+            RepeatedField<MaterialGroupsGrpc> failItems = failListContainer.MaterialGroupsGrpc;
             int failCount = failItems.Count;
             Assert.That(failCount, Is.Zero);
         }
@@ -319,7 +319,7 @@ public void Filter_CombinedParts_Success_And_Fail()
             ListPARTMSGrpc successListContainer = successResp.ListPARTMSGrpc;
             Assert.That(successListContainer, Is.Not.Null);
 
-            Google.Protobuf.Collections.RepeatedField<PARTMSGrpc> successItems = successListContainer.PARTMSGrpc;
+            RepeatedField<PARTMSGrpc> successItems = successListContainer.PARTMSGrpc;
             int successCount = successItems.Count;
             Assert.That(successCount, Is.Positive);
 
@@ -347,7 +347,7 @@ public void Filter_CombinedParts_Success_And_Fail()
             ListPARTMSGrpc failListContainer = failResp.ListPARTMSGrpc;
             Assert.That(failListContainer, Is.Not.Null);
 
-            Google.Protobuf.Collections.RepeatedField<PARTMSGrpc> failItems = failListContainer.PARTMSGrpc;
+            RepeatedField<PARTMSGrpc> failItems = failListContainer.PARTMSGrpc;
             int failCount = failItems.Count;
             Assert.That(failCount, Is.Zero);
         }
@@ -379,7 +379,7 @@ public void Filter_CombinedParts_Success_And_Fail()
             ListSuppliersGrpc successListContainer = successResp.ListSuppliersGrpc;
             Assert.That(successListContainer, Is.Not.Null);
 
-            Google.Protobuf.Collections.RepeatedField<SuppliersGrpc> successItems = successListContainer.SuppliersGrpc;
+            RepeatedField<SuppliersGrpc> successItems = successListContainer.SuppliersGrpc;
             int successCount = successItems.Count;
             Assert.That(successCount, Is.Positive);
 
@@ -407,7 +407,7 @@ public void Filter_CombinedParts_Success_And_Fail()
             ListSuppliersGrpc failListContainer = failResp.ListSuppliersGrpc;
             Assert.That(failListContainer, Is.Not.Null);
 
-            Google.Protobuf.Collections.RepeatedField<SuppliersGrpc> failItems = failListContainer.SuppliersGrpc;
+            RepeatedField<SuppliersGrpc> failItems = failListContainer.SuppliersGrpc;
             int failCount = failItems.Count;
             Assert.That(failCount, Is.Zero);
         }

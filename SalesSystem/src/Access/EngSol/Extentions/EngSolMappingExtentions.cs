@@ -1,4 +1,6 @@
-﻿namespace EngSol.Extentions
+﻿using Google.Protobuf.WellKnownTypes;
+
+namespace EngSol.Extentions
 {
     public static class EngSolMappingExtentions
     {
@@ -40,9 +42,41 @@
             data.SolderB = entity.SolderB;
             data.WeldA = entity.WeldA;
             data.WeldB = entity.WeldB;
-            data.WireLengthPlus = entity.WireLengthPlus;
-            data.WireLengthMinus = entity.WireLengthMinus;
-            data.UTurnLen = entity.UTurnLen;
+            data.WireLengthPlus = (int?)entity.WireLengthPlus;
+            data.WireLengthMinus = (int?)entity.WireLengthMinus;
+            data.WICFlag = entity.WICFlag;
+            data.UTurnLen = entity.UTurnLen.HasValue ? (double)entity.UTurnLen.Value : 0;
+            return data;
+        }
+
+        public static DerivativePartsGrpc MapToDerivativePartsGrpc(this DbDerivativeParts entity)
+        {
+            DerivativePartsGrpc data = new DerivativePartsGrpc();
+            data.DerivativeID = entity.DerivativeId;
+            data.PartNumber = entity.PartNumber;
+            data.PartDescription = entity.PartDescription;
+            data.PartQuantity = entity.PartQuantity;
+            data.PartLength = (int?)entity.PartLength;
+            data.PartSlit = entity.PartSlit;
+            data.PartClass = entity.PartClass;
+            return data;
+        }
+
+        public static DerivativeGrpc MapToDerivativeGrpc(this DbDerivatives entity)
+        {
+            DerivativeGrpc data = new DerivativeGrpc();
+            data.CompositeId = entity.CompositeId;
+            data.DerivativeID = entity.DerivativeId;
+            data.IHSDerivativePartNumber = entity.IHSDerivativePartNumber;
+            data.DerivativeName = entity.DerivativeName;
+            data.DrawingChangeControlStatus = entity.DrawingChangeControlStatus;
+            data.HarnessType = entity.HarnessType;
+            data.ExpiryDate = entity.ExpiryDate!.Value.ToUniversalTime().ToTimestamp();
+            data.WireCount = entity.WireCount;
+            data.MultiCoreLeadGroupCount = entity.MultiCoreLeadGroupCount;
+            data.TwistedLeadGroupCount = entity.TwistedLeadGroupCount;
+            data.MultiCoreInnerCoreLeadsCount = entity.MultiCoreInnerCoreLeadsCount;
+            data.DerivativeUploadStatusFlag = entity.DerivativeUploadStatusFlag;
             return data;
         }
     }

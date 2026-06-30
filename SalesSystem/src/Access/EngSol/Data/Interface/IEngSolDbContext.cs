@@ -4,5 +4,9 @@
     {
         DbSet<DbDerivativeWires> DerivativeWires
         { get; }
+        DbSet<DbDerivativeParts> DerivativeParts
+        { get; }
+        DbSet<DbDerivatives> Derivatives
+        { get; }
     }
 }

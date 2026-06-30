@@ -27,7 +27,7 @@
             if (_EngSolAccessService != null)
             {
                 bool check;
-                check = await _EngSolAccessService.PopulateDerivativeWiresAsync(stoppingToken);
+                check = await _EngSolAccessService.PopulateDerivativesAsync(stoppingToken);
                 await LogDataPopulationSuccess("DerivativeWires", check);
             }
 

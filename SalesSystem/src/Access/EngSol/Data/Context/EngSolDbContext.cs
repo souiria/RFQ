@@ -10,6 +10,8 @@
 
         #region DbSet
         public DbSet<DbDerivativeWires> DerivativeWires => Set<DbDerivativeWires>();
+        public DbSet<DbDerivativeParts> DerivativeParts => Set<DbDerivativeParts>();
+        public DbSet<DbDerivatives> Derivatives => Set<DbDerivatives>();
         #endregion
 
         #region OnModelCreating

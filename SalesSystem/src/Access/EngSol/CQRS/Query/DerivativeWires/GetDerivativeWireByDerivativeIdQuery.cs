@@ -1,6 +1,6 @@
 ﻿namespace EngSol.CQRS.Query.DerivativeWires
 {
-    public class GetDerivativeWireByIdQuery : IQuery<List<DerivativeWiresGrpc>>
+    public class GetDerivativeWireByDerivativeIdQuery : IQuery<List<DerivativeWiresGrpc>>
     {
         public int? Id
         { get; set; }

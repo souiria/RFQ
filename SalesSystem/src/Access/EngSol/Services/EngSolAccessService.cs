@@ -3,11 +3,9 @@
     public class EngSolAccessService : IEngSolAccessService
     {
         #region In Memory Datasets
+        #region Derivatives
 
-        #region DerivativeWires
-
-        ListDerivativeWiresGrpc _ListDerivativeWires;
-
+        ListDerivatives _ListDerivatives;
         #endregion
         #endregion
 
@@ -15,9 +13,22 @@
 
         #region DerivativeWires
 
-        IQueryHandler<GetDerivativeWiresQuery, List<DerivativeWiresGrpc>>? _DerivativeWiresHandler;
-        IQueryHandler<GetDerivativeWireByIdQuery, List<DerivativeWiresGrpc>>? _DerivativeWireByIdHandler;
-        bool _DerivativeWiresRefreshInProgress;
+        IQueryHandler<GetDerivativeWireByDerivativeIdQuery, List<DerivativeWiresGrpc>>? _DerivativeWireByIdHandler;
+
+        #endregion
+
+        #region DerivativeParts
+
+        IQueryHandler<GetDerivativePartsByDerivativeIdQuery, List<DerivativePartsGrpc>>? _DerivativePartByIdHandler;
+
+        #endregion
+
+        #region Derivatives
+
+        IQueryHandler<GetDerivativesQuery, List<DerivativeGrpc>>? _DerivativeHandler;
+        IQueryHandler<GetDerivativeByDerivativeIdQuery, DerivativeGrpc>? _DerivativeByDerivativeIdHandler;
+
+        bool _DerivativesRefreshInProgress;
 
         #endregion
 
@@ -29,10 +40,10 @@
 
         public EngSolAccessService(IServiceProvider serviceProvider, ILogger<EngSolAccessService> logger, bool testing = false)
         {
-            #region DerivativeWires
+            #region Derivatives
 
-            _ListDerivativeWires = new ListDerivativeWiresGrpc();
-            _DerivativeWiresRefreshInProgress = false;
+            _ListDerivatives = new ListDerivatives();
+            _DerivativesRefreshInProgress = false;
 
             #endregion
 
@@ -50,60 +61,100 @@
 
         #region DerivativeWires
 
-        public async Task<ListDerivativeWiresGrpc> GetAllDerivativeWires(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
+        public async Task<List<DerivativeWiresGrpc>> GetDerivativeWiresByDerivativeId(int derivativeId, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            if (_ListDerivativeWires.DerivativeWiresGrpc.Any())
+            List<DerivativeWiresGrpc> reuturnWireList = new List<DerivativeWiresGrpc>();
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                _DerivativeWireByIdHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDerivativeWireByDerivativeIdQuery, List<DerivativeWiresGrpc>>>();
+                GetDerivativeWireByDerivativeIdQuery query = new GetDerivativeWireByDerivativeIdQuery();
+                query.Id = derivativeId;
+                Result<List<DerivativeWiresGrpc>> results = await _DerivativeWireByIdHandler.Handle(query, cancellationToken);
+                if (0 < results.Value.Count)
+                {
+                    reuturnWireList = results.Value.Where(x => x.DerivativeID == derivativeId).ToList() ?? new List<DerivativeWiresGrpc>();
+                }
+
+                return reuturnWireList;
+            }
+        }
+
+        #endregion
+
+        #region DerivativeParts
+        public async Task<List<DerivativePartsGrpc>> GetDerivativePartsByDerivativeId(int derivativeId, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            List<DerivativePartsGrpc> reuturnPartList = new List<DerivativePartsGrpc>();
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                _DerivativePartByIdHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDerivativePartsByDerivativeIdQuery, List<DerivativePartsGrpc>>>();
+                GetDerivativePartsByDerivativeIdQuery query = new GetDerivativePartsByDerivativeIdQuery();
+                query.Id = derivativeId;
+                Result<List<DerivativePartsGrpc>> results = await _DerivativePartByIdHandler.Handle(query, cancellationToken);
+                if (0 < results.Value.Count)
+                {
+                    reuturnPartList = results.Value.Where(x => x.DerivativeID == derivativeId).ToList() ?? new List<DerivativePartsGrpc>();
+                }
+
+                return reuturnPartList;
+            }
+        }
+
+        #endregion
+
+        #region Derivatives
+
+        public async Task<ListDerivatives> GetAllDerivatives(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_ListDerivatives.DerivativeGrpc.Any())
             {
                 if (takeAmount <= 0)
                 {
-                    return _ListDerivativeWires;
+                    return _ListDerivatives;
                 }
 
-                ListDerivativeWiresGrpc returnList = new ListDerivativeWiresGrpc();
-                IQueryable<DerivativeWiresGrpc> query = _ListDerivativeWires.DerivativeWiresGrpc.AsQueryable().Skip(position).Take(takeAmount);
-                returnList.DerivativeWiresGrpc.AddRange(query);
+                ListDerivatives returnList = new ListDerivatives();
+                IQueryable<DerivativeGrpc> query = _ListDerivatives.DerivativeGrpc.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.DerivativeGrpc.AddRange(query);
                 return returnList;
             }
             else
             {
-                await PopulateDerivativeWiresAsync(cancellationToken);
-                return _ListDerivativeWires;
+                await PopulateDerivativesAsync(cancellationToken);
+                return _ListDerivatives;
             }
         }
 
-        public async Task<DerivativeWiresGrpc> GetDerivativeWireById(int derivativeId, CancellationToken cancellationToken)
+        public async Task<DerivativeGrpc> GetDerivativeByDerivativeId(int derivativeId, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            DerivativeWiresGrpc reuturnWire = new DerivativeWiresGrpc();
-            if (_ListDerivativeWires.DerivativeWiresGrpc.Any())
+            DerivativeGrpc returnDerivative = new DerivativeGrpc();
+            returnDerivative = _ListDerivatives.DerivativeGrpc.FirstOrDefault(x => x.DerivativeID == derivativeId) ?? new DerivativeGrpc();
+            if (returnDerivative.DerivativeID != null)
             {
-                DerivativeWiresGrpc? wire = _ListDerivativeWires.DerivativeWiresGrpc.FirstOrDefault(x => x.DerivativeID == derivativeId);
-                if (wire != null)
-                {
-                    using (IServiceScope scope = _ServiceProvider.CreateScope())
-                    {
-                        _DerivativeWireByIdHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDerivativeWireByIdQuery, List<DerivativeWiresGrpc>>>();
-                        GetDerivativeWireByIdQuery query = new GetDerivativeWireByIdQuery();
-                        query.Id = derivativeId;
-                        Result<List<DerivativeWiresGrpc>> results = await _DerivativeWireByIdHandler.Handle(query, cancellationToken);
-                        if (0 < results.Value.Count)
-                        {
-                            reuturnWire = results.Value.FirstOrDefault(x => x.DerivativeID == derivativeId) ?? new DerivativeWiresGrpc();
-                        }
-                    }
-                }
-
-                return reuturnWire;
+                return returnDerivative;
             }
             else
             {
-                await PopulateDerivativeWiresAsync(cancellationToken);
-                return reuturnWire;
+                
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _DerivativeByDerivativeIdHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDerivativeByDerivativeIdQuery, DerivativeGrpc>>();
+                    GetDerivativeByDerivativeIdQuery query = new GetDerivativeByDerivativeIdQuery();
+                    query.Id = derivativeId;
+                    Result<DerivativeGrpc> results = await _DerivativeByDerivativeIdHandler.Handle(query, cancellationToken);
+                    if (results.Value != null)
+                    {
+                        returnDerivative = results.Value ?? new DerivativeGrpc();
+                    }
+
+                    return returnDerivative;
+                }
             }
         }
-
-        
 
         #endregion
 
@@ -111,30 +162,28 @@
 
         #region Data Imports
 
-        #region DerivativeWires
-        public async Task<bool> PopulateDerivativeWiresAsync(CancellationToken cancellationToken)
+        #region Derivatives
+        public async Task<bool> PopulateDerivativesAsync(CancellationToken cancellationToken)
         {
-            if (!_DerivativeWiresRefreshInProgress)
+            if (!_DerivativesRefreshInProgress)
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _DerivativeWiresHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDerivativeWiresQuery, List<DerivativeWiresGrpc>>>();
-                    _DerivativeWiresRefreshInProgress = true;
-                    GetDerivativeWiresQuery query = new GetDerivativeWiresQuery();
-                    query.Position = 0;
-                    query.TakeAmount = 1000;
+                    _DerivativeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDerivativesQuery, List<DerivativeGrpc>>>();
+                    _DerivativesRefreshInProgress = true;
+                    GetDerivativesQuery query = new GetDerivativesQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<DerivativeWiresGrpc>> results = await _DerivativeWiresHandler.Handle(query, cancellationToken);
+                    Result<List<DerivativeGrpc>> results = await _DerivativeHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
                     else
                     {
-                        _ListDerivativeWires.DerivativeWiresGrpc.Clear();
-                        _ListDerivativeWires.DerivativeWiresGrpc.AddRange(results.Value);
+                        _ListDerivatives.DerivativeGrpc.Clear();
+                        _ListDerivatives.DerivativeGrpc.AddRange(results.Value);
                     }
 
-                    _DerivativeWiresRefreshInProgress = false;
+                    _DerivativesRefreshInProgress = false;
                     return true;
                 }
             }
@@ -161,7 +210,7 @@
             {
                 return typeof(T).Name.ToUpperInvariant() switch
                 {
-                    "DERIVATIVEWIRESGRPC" => _ListDerivativeWires.DerivativeWiresGrpc.Cast<T>().Where(func).ToList(),
+                    "DERIVATIVEGRPC" => _ListDerivatives.DerivativeGrpc.Cast<T>().Where(func).ToList(),
                     _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
                 };
             }, cancellationToken);
@@ -169,6 +218,7 @@
 
         void PopulateSampleData()
         {
+            _ListDerivatives = SampleEngSolDataService.PopulateDerivatives();
         }
     }
 }

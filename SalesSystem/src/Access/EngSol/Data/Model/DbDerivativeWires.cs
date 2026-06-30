@@ -16,11 +16,11 @@
         { get; set; }
         public string? WireColour
         { get; set; }
-        public float? WireLength
+        public double? WireLength
         { get; set; }
-        public float? WDrgLength
+        public double? WDrgLength
         { get; set; }
-        public float? WChgLength
+        public double? WChgLength
         { get; set; }
         public string? WireGroupType
         { get; set; }
@@ -36,7 +36,7 @@
         { get; set; }
         public string? AttPartNumber2A
         { get; set; }
-        public float? StripLengthA
+        public double? StripLengthA
         { get; set; }
         public string? ConnectorNumberA
         { get; set; }
@@ -54,7 +54,7 @@
         { get; set; }
         public string? AttPartNumber2B
         { get; set; }
-        public float? StripLengthB
+        public double? StripLengthB
         { get; set; }
         public string? ConnectorNumberB
         { get; set; }
@@ -72,13 +72,13 @@
         { get; set; }
         public string? WeldB
         { get; set; }
-        public short? WireLengthPlus
+        public double? WireLengthPlus
         { get; set; }
-        public short? WireLengthMinus
+        public double? WireLengthMinus
         { get; set; }
         public string? WICFlag
         { get; set; }
-        public float? UTurnLen
+        public decimal? UTurnLen
         { get; set; }
     }
 }

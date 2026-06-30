@@ -19,19 +19,77 @@
             return result;
         }
 
-        public override async Task<ListDerivativeWiresGrpc> GetDerivativeWiresGrpc(GetDerivativeWiresGrpcRequest request, ServerCallContext context)
+        #region Derivative Wires
+
+        public override async Task<ListDerivativeWiresGrpc> GetDerivativeWireByIdGrpc(GetDerivativeWireByIdGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("GetDerivativeWiresGrpc starting");
-            ListDerivativeWiresGrpc result = await _EngSolAccessService.GetAllDerivativeWires(context.CancellationToken, request.Position, request.TakeAmount);
+            _Logger.GenericLogInformation("GetDerivativeWireByIdGrpc starting");
+            List<DerivativeWiresGrpc> result = await _EngSolAccessService.GetDerivativeWiresByDerivativeId(request.DerivativeId, context.CancellationToken);
+            ListDerivativeWiresGrpc response = new ListDerivativeWiresGrpc();
+            response.DerivativeWiresGrpc.AddRange(result);
+
+            return response;
+        }
+
+        #endregion
+
+        #region Derivative Parts
+
+        public override async Task<ListDerivativePartsGrpc> GetDerivativePartByIdGrpc(GetDerivativePartByIdGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetDerivativePartByIdGrpc starting");
+            List<DerivativePartsGrpc> result = await _EngSolAccessService.GetDerivativePartsByDerivativeId(request.DerivativeId, context.CancellationToken);
+            ListDerivativePartsGrpc response = new ListDerivativePartsGrpc();
+            response.DerivativePartsGrpc.Add(result);
+            return response;
+        }
+
+        //take derivative last 12 months dont save any parts/wires in mem just do the filter
+        #endregion
+
+        #region Derivatives
+
+        public override async Task<ListDerivatives> GetDerivativesGrpc(GetDerivativesGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetDerivativesGrpc starting");
+            ListDerivatives result = await _EngSolAccessService.GetAllDerivatives(context.CancellationToken, request.Position, request.TakeAmount);
             return result;
         }
 
-        public override async Task<DerivativeWiresGrpc> GetDerivativeWireByIdGrpc(GetDerivativeWireByIdGrpcRequest request, ServerCallContext context)
+        public override Task<DerivativeGrpc> GetDerivativeByDerivativeId(GetDerivativeByIdGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("GetDerivativeWireByIdGrpc starting");
-            DerivativeWiresGrpc result = await _EngSolAccessService.GetDerivativeWireById(request.DerivativeId, context.CancellationToken);
-
+            _Logger.GenericLogInformation("GetDerivativeByDerivativeId starting");
+            Task<DerivativeGrpc> result = _EngSolAccessService.GetDerivativeByDerivativeId(request.DerivativeId, context.CancellationToken);
             return result;
+        }
+
+        #endregion
+
+        public override async Task<EngSolFilterDataGrpcResponse> EngSolFilterDataGrpc(EngSolFilterDataGrpcRequest request, ServerCallContext context)
+        {
+            ParsingConfig parsingConfig = new ParsingConfig();
+            string filterExpressionString = request.FilterExpression;
+
+            EngSolFilterDataGrpcResponse returnResponse = new EngSolFilterDataGrpcResponse();
+
+            switch (request.DatabaseList.ToUpperInvariant())
+            {
+                case "DERIVATIVESGRPC":
+                await _EngSolAccessService.HandleFilterCase<DerivativeGrpc>(filterExpressionString, parsingConfig,
+                filterList =>
+                {
+                    ListDerivatives returnList = new ListDerivatives();
+                    returnList.DerivativeGrpc.AddRange(filterList);
+                    returnResponse.DerivativeGrpc = returnList;
+                    returnResponse.Success = true;
+                }, context.CancellationToken);
+                break;
+                default:
+                _Logger.GenericLogInformation($"EngSolFilterDataGrpc: Unknown DatabaseList '{request.DatabaseList}'");
+                break;
+            }
+
+            return returnResponse;
         }
     }
 }

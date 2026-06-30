@@ -1,8 +1,8 @@
 ﻿namespace EngSol.CQRS.Specification
 {
-    public class GetDerivativeWireByIdReadOnlySpec : Specification<DbDerivativeWires>
+    public class GetDerivativePartByDerivativeIdReadOnlySpec : Specification<DbDerivativeParts>
     {
-        public GetDerivativeWireByIdReadOnlySpec(int? id)
+        public GetDerivativePartByDerivativeIdReadOnlySpec(int? id)
         {
             if (0 < id)
             {
