@@ -155,12 +155,71 @@
             return await LoadRfqAndPartNumbersAsync();
         }
 
+        //async Task LoadHarnessesAsync()
+        //{
+        //    Guid id = Guid.Parse("237ad12c-3e00-46a4-baeb-ba12fff53fa6");
+        //    await DsiUxClientService.GetAllHarnessAsync();
+        //    _Harnesses.Clear();
+        //    _Harnesses.AddRange(DsiUxClientService.Harnesses.Where(h => h.Id == id));
+        //}
         async Task LoadHarnessesAsync()
         {
-            Guid id = Guid.Parse("237ad12c-3e00-46a4-baeb-ba12fff53fa6");
-            await DsiUxClientService.GetAllHarnessAsync();
+            // 1. Get RFQ project
+            RfqProject? rfqProject = await RfqUxClientService.GetRfqProjectByIdAsync(RfqProjectId);
+
+            if (rfqProject == null || string.IsNullOrWhiteSpace(rfqProject.JsonData))
+            {
+                _Harnesses.Clear();
+                return;
+            }
+
+            string? idString = null;
+            Guid harnessId = Guid.Empty;
+
+            try
+            {
+                using JsonDocument doc = JsonDocument.Parse(rfqProject.JsonData);
+
+                if (doc.RootElement.TryGetProperty("HarnessId", out JsonElement harnessIdElement))
+                {
+                    idString = harnessIdElement.GetString();
+
+                    if (!string.IsNullOrWhiteSpace(idString))
+                    {
+                        if (!Guid.TryParse(idString, out harnessId))
+                        {
+                            Logger.GenericLogInformation($"Invalid HarnessId format: {idString}");
+                            return; //  stop here if invalid
+                        }
+                    }
+                    else
+                    {
+                        Logger.GenericLogInformation("HarnessId is null or empty");
+                        return; //  stop here if missing
+                    }
+                }
+                else
+                {
+                    Logger.GenericLogInformation("HarnessId not found in JsonData");
+                    return; //  stop if not present
+                }
+            }
+            catch (JsonException ex)
+            {
+                Logger.GenericLogError("Error parsing JsonData for HarnessId", ex);
+                return;
+            }
+
+            //  SAFE: idString is guaranteed NOT NULL here
+            DsiHarnessUxModel? harness =
+                await DsiUxClientService.GetHarnessByIdAsync(idString);
+
             _Harnesses.Clear();
-            _Harnesses.AddRange(DsiUxClientService.Harnesses.Where(h => h.Id == id));
+
+            if (harness != null)
+            {
+                _Harnesses.Add(harness);
+            }
         }
 
         async Task<bool> LoadRfqAndPartNumbersAsync()
