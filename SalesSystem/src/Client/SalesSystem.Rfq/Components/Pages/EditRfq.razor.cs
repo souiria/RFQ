@@ -1339,8 +1339,10 @@
                 return;
             }
 
+            string? harnessId = _Harnesses.FirstOrDefault()?.Id.ToString();
             SelectionLogData selectionLog = new SelectionLogData
             {
+                HarnessId = harnessId,
                 RfqId = RfqProjectId,
                 Selections = currentSelections
             };
@@ -1353,6 +1355,35 @@
 
             Console.WriteLine(jsonOutput);
 
+            RfqProject!.JsonData = jsonOutput;
+
+            try
+            {
+                UpdateRfqProjectGrpcResponse result =
+                    await RfqUxClientService.UpdateRfqProjectAsync(RfqProject);
+
+                if (result.Success)
+                {
+                    Snackbar.Add("✅ JSON data saved to RFQ successfully", Severity.Success);
+                }
+                else
+                {
+                    Snackbar.Add("Failed to save JSON data", Severity.Error);
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                Snackbar.Add($"Invalid operation: {ex.Message}", Severity.Error);
+            }
+            catch (ArgumentNullException ex)
+            {
+                Snackbar.Add($"Missing data: {ex.Message}", Severity.Error);
+            }
+            catch (HttpRequestException ex)
+            {
+                Snackbar.Add($"Network error: {ex.Message}", Severity.Error);
+            }
+
             Snackbar.Add($"{currentSelections.Count} components selected", Severity.Success);
 
             await Task.CompletedTask;
@@ -1360,6 +1391,7 @@
     }
      public class SelectionLogData
     {
+        public string? HarnessId { get; set; }
         public long RfqId { get; set; }
         public IEnumerable<DsiCompositeDetailUxModel>? Selections { get; set; }
     }
