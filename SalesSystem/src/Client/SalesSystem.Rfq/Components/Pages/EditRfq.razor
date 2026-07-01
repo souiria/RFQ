@@ -234,7 +234,17 @@ else
                                    OnRemoveFile="HandleFileRemoval" /> *@
                         @if(_Harnesses.Count > 0)
                         {
-                            <CompositeCards DsiComposites="@_Harnesses" OnComponentsSelected="@HandleComponentsSelectedAsync" />
+                            <CompositeCards @ref="_CompositeCardsRef"
+                                            DsiComposites="@_Harnesses"
+                                            OnComponentsSelected="@HandleComponentsSelectedAsync" />
+
+                            <MudButton Class="mt-4"
+                                       Color="Color.Primary"
+                                       Variant="Variant.Filled"
+                                       StartIcon="@Icons.Material.Filled.Save"
+                                       OnClick="@UpdateSelectionAsync">
+                                Update Selection
+                            </MudButton>
                         }
                     </div>
                 </MudTabPanel>

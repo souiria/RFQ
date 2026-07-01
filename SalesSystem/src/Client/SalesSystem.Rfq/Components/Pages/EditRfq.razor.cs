@@ -3,6 +3,9 @@
     public partial class EditRfq : IDisposable
     {
         #region Attribs
+        CompositeCards? _CompositeCardsRef;
+        // Store the current selection from the CompositeCards checkboxes
+        IEnumerable<DsiComponentUxModel> _SelectedComponents = new List<DsiComponentUxModel>();
         // Reference to the Harnesses
         readonly List<DsiHarnessUxModel> _Harnesses;
 
@@ -1306,6 +1309,8 @@
 
         async Task HandleComponentsSelectedAsync(IEnumerable<DsiComponentUxModel> components)
         {
+            // Save the selection from the composite cards
+            _SelectedComponents = components;
             _CompletedParts.Clear();
             _InProgressParts.Clear();
 
@@ -1323,5 +1328,39 @@
             StateHasChanged();
             await Task.CompletedTask;
         }
+             
+         async Task UpdateSelectionAsync()
+        {
+          HashSet<DsiCompositeDetailUxModel>? currentSelections = _CompositeCardsRef?.SelectedItems;
+
+            if (currentSelections == null || !currentSelections.Any())
+            {
+                Snackbar.Add("No components selected to update.", Severity.Warning);
+                return;
+            }
+
+            SelectionLogData selectionLog = new SelectionLogData
+            {
+                RfqId = RfqProjectId,
+                Selections = currentSelections
+            };
+
+            // Explicit string declaration
+            string jsonOutput = JsonSerializer.Serialize(selectionLog, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+
+            Console.WriteLine(jsonOutput);
+
+            Snackbar.Add($"{currentSelections.Count} components selected", Severity.Success);
+
+            await Task.CompletedTask;
+       }
+    }
+     public class SelectionLogData
+    {
+        public long RfqId { get; set; }
+        public IEnumerable<DsiCompositeDetailUxModel>? Selections { get; set; }
     }
 }
