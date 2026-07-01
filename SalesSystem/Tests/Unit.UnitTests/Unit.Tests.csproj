@@ -33,6 +33,7 @@
     <ProjectReference Include="..\..\src\Access\CPD\CPD.csproj" />
     <ProjectReference Include="..\..\src\Access\EDI\EDI.csproj" />
     <ProjectReference Include="..\..\src\Access\Emacs\Emacs.csproj" />
+    <ProjectReference Include="..\..\src\Access\EngSol\EngSol.csproj" />
     <ProjectReference Include="..\..\src\Access\Master\Master.csproj" />
     <ProjectReference Include="..\..\src\Access\NPR\NPR.csproj" />
     <ProjectReference Include="..\..\src\Access\Purchasing\Purchasing.csproj" />
