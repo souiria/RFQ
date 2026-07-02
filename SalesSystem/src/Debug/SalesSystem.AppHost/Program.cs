@@ -34,6 +34,8 @@
 
         IResourceBuilder<ProjectResource> engSolAccessService = builder.AddProject <Projects.EngSol>("engSol-access-service");
 
+        IResourceBuilder<ProjectResource> commercialAccessService = builder.AddProject <Projects.Commercial>("commercial-access-service");
+
         builder.AddProject<Projects.SalesSystem_Rfq>("RfqFrontEnd")
             .WithExternalHttpEndpoints()
             .WithReference(apiService)

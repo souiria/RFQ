@@ -1,6 +1,4 @@
-﻿using Google.Protobuf.WellKnownTypes;
-
-namespace EngSol.Extentions
+﻿namespace EngSol.Extentions
 {
     public static class EngSolMappingExtentions
     {

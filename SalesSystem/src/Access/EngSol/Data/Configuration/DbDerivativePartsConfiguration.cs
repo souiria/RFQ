@@ -5,7 +5,6 @@
         public void Configure(EntityTypeBuilder<DbDerivativeParts> builder)
         {
             builder.ToTable("Interface_WH_EngSol_Derivative_Part");
-            builder.Property(x => x.PartNumber).HasConversion<string>();
             builder.HasNoKey();
         }
     }
