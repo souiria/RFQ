@@ -1,0 +1,146 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "EngSol";
+
+package engsol;
+
+// The greeting service definition.
+service EngSol {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply);
+  rpc GetDerivativeWireByIdGrpc (GetDerivativeWireByIdGrpcRequest) returns (ListDerivativeWiresGrpc);
+  rpc GetDerivativePartByIdGrpc (GetDerivativePartByIdGrpcRequest) returns (ListDerivativePartsGrpc);
+  rpc GetDerivativesGrpc (GetDerivativesGrpcRequest) returns (ListDerivatives);
+  rpc GetDerivativeByDerivativeId (GetDerivativeByIdGrpcRequest) returns (DerivativeGrpc);
+  rpc EngSolFilterDataGrpc (EngSolFilterDataGrpcRequest) returns (EngSolFilterDataGrpcResponse);
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings.
+message HelloReply {
+  string message = 1;
+}
+
+message GetDerivativeWiresGrpcRequest {
+    int32 position = 1;
+    int32 takeAmount = 2;
+}
+
+message ListDerivativeWiresGrpc {
+    repeated DerivativeWiresGrpc DerivativeWiresGrpc = 1;
+}
+
+message DerivativeWiresGrpc {
+    google.protobuf.Int32Value DerivativeID = 1;
+    google.protobuf.StringValue EndA = 2;
+    google.protobuf.StringValue EndB = 3;
+    google.protobuf.StringValue WireType = 4;
+    google.protobuf.StringValue WireSize = 5;
+    google.protobuf.StringValue WireFlex = 6;
+    google.protobuf.StringValue WireColour = 7;
+    google.protobuf.DoubleValue WireLength = 8;
+    google.protobuf.DoubleValue wDrgLength = 9;
+    google.protobuf.DoubleValue wChgLength = 10;
+    google.protobuf.StringValue WireGroupType = 11;
+    google.protobuf.StringValue WireGroupSize = 12;
+    google.protobuf.Int32Value WireGroupNumber = 13;
+    google.protobuf.StringValue TerminalNumberA = 14;
+    google.protobuf.StringValue SealNumberA = 15;
+    google.protobuf.StringValue AttPartNumber1A = 16;
+    google.protobuf.StringValue AttPartNumber2A = 17;
+    google.protobuf.DoubleValue StripLengthA = 18;
+    google.protobuf.StringValue ConnectorNumberA = 19;
+    google.protobuf.StringValue ConnectorNameA = 20;
+    google.protobuf.Int32Value CavityNumberA = 21;
+    google.protobuf.StringValue DoubleCrimpA = 22;
+    google.protobuf.StringValue TerminalNumberB = 23;
+    google.protobuf.StringValue SealNumberB = 24;
+    google.protobuf.StringValue AttPartNumber1B = 25;
+    google.protobuf.StringValue AttPartNumber2B = 26;
+    google.protobuf.DoubleValue StripLengthB = 27;
+    google.protobuf.StringValue ConnectorNumberB = 28;
+    google.protobuf.StringValue ConnectorNameB = 29;
+    google.protobuf.Int32Value CavityNumberB = 30;
+    google.protobuf.StringValue DoubleCrimpB = 31;
+    google.protobuf.StringValue SolderA = 32;
+    google.protobuf.StringValue SolderB = 33;
+    google.protobuf.StringValue WeldA = 34;
+    google.protobuf.StringValue WeldB = 35;
+    google.protobuf.Int32Value WireLengthPlus = 36;
+    google.protobuf.Int32Value WireLengthMinus = 37;
+    google.protobuf.StringValue wICFlag = 38;
+    google.protobuf.DoubleValue uTurnLen = 39;
+}
+
+message GetDerivativeWireByIdGrpcRequest {
+    int32 derivativeId = 1;
+}
+
+message GetDerivativePartsGrpcRequest {
+    int32 position = 1;
+    int32 takeAmount = 2;
+}
+
+message ListDerivativePartsGrpc {
+    repeated DerivativePartsGrpc DerivativePartsGrpc = 1;
+}
+
+message DerivativePartsGrpc {
+    google.protobuf.Int32Value DerivativeID = 1;
+    google.protobuf.StringValue PartNumber = 2;
+    google.protobuf.StringValue PartDescription = 3;
+    google.protobuf.Int32Value PartQuantity = 4;
+    google.protobuf.DoubleValue PartLength = 5;
+    google.protobuf.StringValue PartSlit = 6;
+    google.protobuf.StringValue PartClass = 7;
+}
+
+message GetDerivativePartByIdGrpcRequest {
+    int32 derivativeId = 1;
+}
+
+message GetDerivativesGrpcRequest {
+    int32 position = 1;
+    int32 takeAmount = 2;
+}
+
+message ListDerivatives {
+    repeated DerivativeGrpc DerivativeGrpc = 1;
+}
+
+message DerivativeGrpc {
+    google.protobuf.Int32Value CompositeId = 1;
+    google.protobuf.Int32Value DerivativeID = 2;
+    google.protobuf.StringValue IHSDerivativePartNumber = 3;
+    google.protobuf.StringValue DerivativeName = 4;
+    google.protobuf.Int32Value DrawingChangeControlStatus = 5;
+    google.protobuf.StringValue HarnessType = 6;
+    google.protobuf.Timestamp ExpiryDate = 7;
+    google.protobuf.Int32Value WireCount = 8;
+    google.protobuf.Int32Value MultiCoreLeadGroupCount = 9;
+    google.protobuf.Int32Value TwistedLeadGroupCount = 10;
+    google.protobuf.Int32Value MultiCoreInnerCoreLeadsCount = 11;
+    google.protobuf.BoolValue DerivativeUploadStatusFlag = 12;
+}
+
+message EngSolFilterDataGrpcRequest {
+    string DatabaseList = 1;
+    string FilterExpression = 2;
+}
+
+message EngSolFilterDataGrpcResponse {
+    bool Success = 1;
+    ListDerivatives DerivativeGrpc = 2;
+}
+
+message GetDerivativeByIdGrpcRequest {
+    int32 derivativeId = 1;
+}
