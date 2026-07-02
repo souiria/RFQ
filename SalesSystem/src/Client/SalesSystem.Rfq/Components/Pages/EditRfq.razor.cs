@@ -1344,7 +1344,13 @@
             {
                 HarnessId = harnessId,
                 RfqId = RfqProjectId,
-                Selections = currentSelections
+                Selections = currentSelections.Select(x => new SelectedCompositeData
+                {
+                    Id = Convert.ToInt32(x.Id),
+                    HarnessName1 = x.HarnessName1,
+                    HarnessName2 = x.HarnessName2,
+                    Customer = x.Customer
+                })
             };
 
             // Explicit string declaration
@@ -1364,7 +1370,7 @@
 
                 if (result.Success)
                 {
-                    Snackbar.Add("✅ JSON data saved to RFQ successfully", Severity.Success);
+                    Snackbar.Add(" JSON data saved to RFQ successfully", Severity.Success);
                 }
                 else
                 {
@@ -1393,6 +1399,13 @@
     {
         public string? HarnessId { get; set; }
         public long RfqId { get; set; }
-        public IEnumerable<DsiCompositeDetailUxModel>? Selections { get; set; }
+        public IEnumerable<SelectedCompositeData>? Selections { get; set; }
+    }
+    public class SelectedCompositeData
+    {
+        public int Id { get; set; }
+        public string? HarnessName1 { get; set; }
+        public string? HarnessName2 { get; set; }
+        public string? Customer { get; set; }
     }
 }

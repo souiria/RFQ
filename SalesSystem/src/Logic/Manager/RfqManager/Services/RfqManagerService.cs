@@ -678,6 +678,7 @@
                 rfqProject.CarModelGuid = request.Project.CarModelGuid.ToUpperInvariant();
                 rfqProject.VehicleVolume = request.Project.VehicleVolume;
                 rfqProject.IsActive = request.Project.IsActive ?? false;
+                rfqProject.JsonData = request.Project.JsonData;
 
                 RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
                 rfqProjectRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
