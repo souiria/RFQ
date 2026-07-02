@@ -11,7 +11,7 @@
         }
         public async Task<Result<DerivativeGrpc>> Handle(GetDerivativeByDerivativeIdQuery query, CancellationToken cancellationToken)
         {
-            TimeSpan ts = TimeSpan.FromSeconds(120);
+            //TimeSpan ts = TimeSpan.FromSeconds(120);
             using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
             {
                 GetDerivativeByDerivativeIdReadOnlySpec spec = new GetDerivativeByDerivativeIdReadOnlySpec(query.Id);

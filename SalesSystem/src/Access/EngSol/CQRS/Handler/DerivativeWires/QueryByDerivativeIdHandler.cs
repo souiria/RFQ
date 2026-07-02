@@ -14,7 +14,7 @@
         public async Task<Result<List<DerivativeWiresGrpc>>> Handle(GetDerivativeWireByDerivativeIdQuery query, CancellationToken cancellationToken)
         {
             _DerivativeWires.Clear();
-            TimeSpan ts = TimeSpan.FromSeconds(120);
+            //TimeSpan ts = TimeSpan.FromSeconds(120);
             using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
             {
                 GetDerivativeWireByDerivativeIdReadOnlySpec spec = new GetDerivativeWireByDerivativeIdReadOnlySpec(query.Id);
