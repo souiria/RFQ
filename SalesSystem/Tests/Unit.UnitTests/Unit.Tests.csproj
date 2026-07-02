@@ -30,6 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Access\Adss\Adss.csproj" />
     <ProjectReference Include="..\..\src\Access\CDb\CDb.csproj" />
+    <ProjectReference Include="..\..\src\Access\Commercial\Commercial.csproj" />
     <ProjectReference Include="..\..\src\Access\CPD\CPD.csproj" />
     <ProjectReference Include="..\..\src\Access\EDI\EDI.csproj" />
     <ProjectReference Include="..\..\src\Access\Emacs\Emacs.csproj" />

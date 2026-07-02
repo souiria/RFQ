@@ -129,7 +129,7 @@
         #endregion
         public void PopulateSampleData()
         {
-
+            _ListPurchaseOrders = SampleCommercialDataService.PopulatePurchaseOrderData();
         }
     }
 }
