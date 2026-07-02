@@ -100,6 +100,9 @@
     public List<DsiHarnessUxModel> DsiComposites { get; set; } = new();
 
     [Parameter]
+    public HashSet<long> PreselectedIds { get; set; } = new();
+
+    [Parameter]
     public EventCallback<IEnumerable<DsiComponentUxModel>> OnComponentsSelected { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -111,6 +114,14 @@
             if(derivatives?.Count>0)
             {
                 _compositeDetails[composite.Id] = derivatives;
+                if (PreselectedIds != null && PreselectedIds.Any())
+                {
+                    var previouslySelected = derivatives.Where(d => PreselectedIds.Contains(d.Id));
+                    foreach (var item in previouslySelected)
+                    {
+                        _selectedCompositeDetails.Add(item);
+                    }
+                }
             }
         }
     }

@@ -3,12 +3,14 @@
     public partial class EditRfq : IDisposable
     {
         #region Attribs
+        [Parameter]
+        public IReadOnlySet<long> PreselectedDerivativeIds { get; set; } = new HashSet<long>();
         CompositeCards? _CompositeCardsRef;
         // Store the current selection from the CompositeCards checkboxes
         IEnumerable<DsiComponentUxModel> _SelectedComponents = new List<DsiComponentUxModel>();
         // Reference to the Harnesses
         readonly List<DsiHarnessUxModel> _Harnesses;
-
+        HashSet<long> _PreselectedDerivativeIds = new HashSet<long>();
         NprRequestsEditor? _ComponentNprEditor;
 
         // Search All state tracking
@@ -157,14 +159,6 @@
 
             return await LoadRfqAndPartNumbersAsync();
         }
-
-        //async Task LoadHarnessesAsync()
-        //{
-        //    Guid id = Guid.Parse("237ad12c-3e00-46a4-baeb-ba12fff53fa6");
-        //    await DsiUxClientService.GetAllHarnessAsync();
-        //    _Harnesses.Clear();
-        //    _Harnesses.AddRange(DsiUxClientService.Harnesses.Where(h => h.Id == id));
-        //}
         async Task LoadHarnessesAsync()
         {
             // 1. Get RFQ project
@@ -176,51 +170,56 @@
                 return;
             }
 
-            string? idString = null;
-            Guid harnessId = Guid.Empty;
+            SelectionLogData? selectionLog = null;
 
             try
             {
-                using JsonDocument doc = JsonDocument.Parse(rfqProject.JsonData);
-
-                if (doc.RootElement.TryGetProperty("HarnessId", out JsonElement harnessIdElement))
+     
+                selectionLog = JsonSerializer.Deserialize<SelectionLogData>(rfqProject.JsonData, new JsonSerializerOptions
                 {
-                    idString = harnessIdElement.GetString();
-
-                    if (!string.IsNullOrWhiteSpace(idString))
-                    {
-                        if (!Guid.TryParse(idString, out harnessId))
-                        {
-                            Logger.GenericLogInformation($"Invalid HarnessId format: {idString}");
-                            return; //  stop here if invalid
-                        }
-                    }
-                    else
-                    {
-                        Logger.GenericLogInformation("HarnessId is null or empty");
-                        return; //  stop here if missing
-                    }
-                }
-                else
-                {
-                    Logger.GenericLogInformation("HarnessId not found in JsonData");
-                    return; //  stop if not present
-                }
+                    PropertyNameCaseInsensitive = true
+                });
             }
             catch (JsonException ex)
             {
-                Logger.GenericLogError("Error parsing JsonData for HarnessId", ex);
+                Logger.GenericLogError("Error parsing JsonData for SelectionLogData", ex);
                 return;
             }
 
-            //  SAFE: idString is guaranteed NOT NULL here
-            DsiHarnessUxModel? harness =
-                await DsiUxClientService.GetHarnessByIdAsync(idString);
+            if (selectionLog == null || string.IsNullOrWhiteSpace(selectionLog.HarnessId))
+            {
+                Logger.GenericLogInformation("HarnessId is null or empty in JsonData");
+                return; 
+            }
+
+            if (!Guid.TryParse(selectionLog.HarnessId, out Guid harnessId))
+            {
+                Logger.GenericLogInformation($"Invalid HarnessId format: {selectionLog.HarnessId}");
+                return; 
+            }
+
+            // SAFE: HarnessId is guaranteed valid here
+            DsiHarnessUxModel? harness = await DsiUxClientService.GetHarnessByIdAsync(selectionLog.HarnessId);
 
             _Harnesses.Clear();
 
             if (harness != null)
             {
+                // 3. Restore automatically selected state
+                //if (selectionLog.Selections != null && selectionLog.Selections.Any())
+                //{
+                //    HashSet<int> savedSelectionIds = selectionLog.Selections.Select(s => s.Id).ToHashSet();
+                //}
+                _PreselectedDerivativeIds.Clear();
+
+                if (selectionLog.Selections != null && selectionLog.Selections.Any())
+                {
+                    foreach (SelectedCompositeData selection in selectionLog.Selections)
+                    {
+                        _PreselectedDerivativeIds.Add(selection.Id);
+                    }
+                }
+
                 _Harnesses.Add(harness);
             }
         }
@@ -1346,7 +1345,7 @@
                 RfqId = RfqProjectId,
                 Selections = currentSelections.Select(x => new SelectedCompositeData
                 {
-                    Id = Convert.ToInt32(x.Id),
+                    Id = x.Id,
                     HarnessName1 = x.HarnessName1,
                     HarnessName2 = x.HarnessName2,
                     Customer = x.Customer
@@ -1403,7 +1402,7 @@
     }
     public class SelectedCompositeData
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string? HarnessName1 { get; set; }
         public string? HarnessName2 { get; set; }
         public string? Customer { get; set; }
