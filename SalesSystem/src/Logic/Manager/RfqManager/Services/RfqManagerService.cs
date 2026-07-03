@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-
-namespace RfqModule.Services
+﻿namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {
