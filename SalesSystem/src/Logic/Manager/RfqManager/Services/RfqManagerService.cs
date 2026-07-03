@@ -1,4 +1,6 @@
-﻿namespace RfqModule.Services
+﻿using Newtonsoft.Json.Linq;
+
+namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {
@@ -998,6 +1000,34 @@
                     dsiAggregate.Harness.HarnessId = Guid.Parse(harness.HarnessId);
                 }
 
+                GetAllRfqProjectGrpcRequest rfqRequest = new GetAllRfqProjectGrpcRequest();
+                rfqRequest.Position = 0;
+                rfqRequest.Take = 1000;
+
+                GetAllRfqProjectGrpcResponse rfqResponse = await GetAllRfqProjectGrpc(rfqRequest);
+
+                RfqProject? lastRfqProject = rfqResponse.RfqProjects
+                    .OrderByDescending(x => x.RowId)
+                    .FirstOrDefault();
+
+                if (lastRfqProject != null && dsiAggregate.Harness != null)
+                {
+                    JObject jsonObject = new JObject();
+                    jsonObject["HarnessId"] = dsiAggregate.Harness.HarnessId.ToString();
+
+                    string jsonData = jsonObject.ToString(Formatting.None);
+
+                    lastRfqProject.JsonData = jsonData;
+
+                    UpdateRfqProjectGrpcRequest updateRequest = new UpdateRfqProjectGrpcRequest();
+                    updateRequest.Project = lastRfqProject;
+                         UpdateRfqProjectGrpcResponse updateResponse =
+                        await UpdateRfqProject(updateRequest);
+
+                    _Logger.GenericLogInformation(
+                        $"RFQ Project {lastRfqProject.RfqNumber} updated. JsonData={jsonData}");
+                }
+
                 await SaveHarness(dsiAggregate, userId);
                 await SaveBranchConfigurationAsync(dsiAggregate, userId);
                 await SaveBranchInsulationAsync(dsiAggregate, userId);
@@ -1018,7 +1048,8 @@
                 await SaveWireSpecification(dsiAggregate, userId);
                 await SaveWireThroughNode(dsiAggregate, userId);
 
-            }
+             
+           }
             catch (IOException ex)
             {
                 _Logger.GenericLogError("Error saving DSI aggregate", ex);
