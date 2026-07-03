@@ -14,7 +14,7 @@
         public async Task<Result<List<DerivativePartsGrpc>>> Handle(GetDerivativePartsByDerivativeIdQuery query, CancellationToken cancellationToken)
         {
             _DerivativeParts.Clear();
-            TimeSpan ts = TimeSpan.FromSeconds(120);
+            //TimeSpan ts = TimeSpan.FromSeconds(120);
             using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
             {
                 GetDerivativePartByDerivativeIdReadOnlySpec spec = new GetDerivativePartByDerivativeIdReadOnlySpec(query.Id);

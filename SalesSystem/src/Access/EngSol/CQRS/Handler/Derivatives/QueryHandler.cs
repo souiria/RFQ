@@ -14,7 +14,7 @@
         public async Task<Result<List<DerivativeGrpc>>> Handle(GetDerivativesQuery query, CancellationToken cancellationToken)
         {
             _Derivatives.Clear();
-            TimeSpan ts = TimeSpan.FromSeconds(120);
+            //TimeSpan ts = TimeSpan.FromSeconds(120);
             using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
             {
                 GetDerivativesReadOnlySpec spec = new GetDerivativesReadOnlySpec(query.Position, query.TakeAmount);
