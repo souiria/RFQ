@@ -2,7 +2,6 @@
 using Master.Endpoints.GrpcServices;
 using Master.Services;
 
-
 namespace Regression.Tests.Master
 {
     public class MasterRegressionTests

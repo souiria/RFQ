@@ -227,6 +227,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSI", "SalesSystem\src\Acce
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EngSol", "SalesSystem\src\Access\EngSol\EngSol.csproj", "{3558358C-3D54-F851-DCBE-5C82221C8E90}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commercial", "SalesSystem\src\Access\Commercial\Commercial.csproj", "{EC387940-BE0E-3643-D268-BC56F6E9F398}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -827,6 +829,18 @@ Global
 		{3558358C-3D54-F851-DCBE-5C82221C8E90}.Release|x64.Build.0 = Release|Any CPU
 		{3558358C-3D54-F851-DCBE-5C82221C8E90}.Release|x86.ActiveCfg = Release|Any CPU
 		{3558358C-3D54-F851-DCBE-5C82221C8E90}.Release|x86.Build.0 = Release|Any CPU
+		{EC387940-BE0E-3643-D268-BC56F6E9F398}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC387940-BE0E-3643-D268-BC56F6E9F398}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC387940-BE0E-3643-D268-BC56F6E9F398}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EC387940-BE0E-3643-D268-BC56F6E9F398}.Debug|x64.Build.0 = Debug|Any CPU
+		{EC387940-BE0E-3643-D268-BC56F6E9F398}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EC387940-BE0E-3643-D268-BC56F6E9F398}.Debug|x86.Build.0 = Debug|Any CPU
+		{EC387940-BE0E-3643-D268-BC56F6E9F398}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC387940-BE0E-3643-D268-BC56F6E9F398}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC387940-BE0E-3643-D268-BC56F6E9F398}.Release|x64.ActiveCfg = Release|Any CPU
+		{EC387940-BE0E-3643-D268-BC56F6E9F398}.Release|x64.Build.0 = Release|Any CPU
+		{EC387940-BE0E-3643-D268-BC56F6E9F398}.Release|x86.ActiveCfg = Release|Any CPU
+		{EC387940-BE0E-3643-D268-BC56F6E9F398}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -901,6 +915,7 @@ Global
 		{A34334FB-1E3F-45EC-8356-974118E83C6E} = {BC40E487-946F-47D0-AEBB-66312543C78E}
 		{B671D175-8DE6-451D-A098-1222B917B172} = {AB8A2F54-ED2B-4D12-AB8D-9B879F3EB725}
 		{3558358C-3D54-F851-DCBE-5C82221C8E90} = {AB8A2F54-ED2B-4D12-AB8D-9B879F3EB725}
+		{EC387940-BE0E-3643-D268-BC56F6E9F398} = {AB8A2F54-ED2B-4D12-AB8D-9B879F3EB725}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {45532623-50AD-4761-959C-8E565670BB49}
