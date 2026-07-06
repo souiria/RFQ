@@ -3,8 +3,8 @@
     public partial class EditRfq : IDisposable
     {
         #region Attribs
-        [Parameter]
-        public IReadOnlySet<long> PreselectedDerivativeIds { get; set; } = new HashSet<long>();
+        //[Parameter]
+        //public IReadOnlySet<long> PreselectedDerivativeIds { get; set; } = new HashSet<long>();
         CompositeCards? _CompositeCardsRef;
         // Store the current selection from the CompositeCards checkboxes
         IEnumerable<DsiComponentUxModel> _SelectedComponents = new List<DsiComponentUxModel>();
@@ -26,7 +26,9 @@
         // Form related
         bool IsLoading
         { get; set; }
-        RqfProjectUxModel? RfqProject { get; set; }
+        // this is set in the OnInitialAsync based on the RfqProjectId parameter
+        RqfProjectUxModel? RfqProject 
+        { get; set; }
 
         // Simplified project selection (like CreateRfq)
         RqfCustomerProjectAssociationUxModel? SelectedProject
