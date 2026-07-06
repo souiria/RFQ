@@ -62,6 +62,7 @@ service RfqModule {
     rpc FilterGrpc (FilterGrpcRequest) returns (FilterGrpcResponse);
     // DSI handling
     rpc GetAllHarnessGrpc (GetAllHarnessModuleRequest) returns (GetAllHarnessModuleResponse);
+    rpc GetHarnessByIdGrpc (GetHarnessByIdGrpcRequest) returns (GetHarnessByIdGrpcResponse);
     rpc GetCompositeDetailByHarnessGrpc (GetCompositeDetailByHarnessRequest) returns (GetCompositeDetailByHarnessResponse);
     rpc GetCompositeDetailByHarnessNameGrpc (GetCompositeDetailByHarnessNameRequest) returns (GetCompositeDetailByHarnessNameResponse);
     rpc GetWireSpecificationByCompositeOptionGrpc (GetWireSpecificationByCompositeOptionRequest) returns (GetWireSpecificationByCompositeOptionResponse);
@@ -193,6 +194,7 @@ message RfqProject {
 	string CustomerLocationName= 14;
 	string	ProjectName= 15;
 	string	CarModelName= 16;
+    string JsonData =17;
 }
 
 
@@ -1105,4 +1107,12 @@ message DSIComponentGrpc {
 
     google.protobuf.Timestamp CreatedDate = 25;
     google.protobuf.Timestamp ModifiedDate = 26;
+}
+
+message GetHarnessByIdGrpcRequest {
+    string Id = 1;
+}
+
+message GetHarnessByIdGrpcResponse {
+    DSIHarnessGrpc Harness = 1;
 }

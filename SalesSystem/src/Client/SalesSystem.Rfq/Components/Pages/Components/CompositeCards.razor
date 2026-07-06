@@ -6,24 +6,24 @@
 
 <style>
     .composite-card {
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 12px;
-        margin: 8px;
-        background: #fff;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        transition: box-shadow 0.2s ease;
-        min-width: 250px;
-        max-width: 300px;
-        position: relative;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 8px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: box-shadow 0.2s ease;
+    min-width: 250px;
+    max-width: 300px;
+    position: relative;
     }
 
     .cards-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        padding: 16px;
-        overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 16px;
+    overflow-y: auto;
     }
 
 </style>
@@ -45,11 +45,11 @@
                     <CardHeaderActions>
                         <MudTooltip Text="Generate Component List">
                             <MudIconButton Size="Size.Small"
-                                           Variant="Variant.Filled"
-                                           Icon="@Icons.Material.Filled.ImportExport"
-                                           Color="Color.Primary"
-                                           OnClick="async () => await ShowCompositeInfo(compositeObject)"
-                                           Disabled="@(_selectedCompositeDetails.Count == 0)" />
+                            Variant="Variant.Filled"
+                            Icon="@Icons.Material.Filled.ImportExport"
+                            Color="Color.Primary"
+                            OnClick="async () => await ShowCompositeInfo(compositeObject)"
+                            Disabled="@(_selectedCompositeDetails.Count == 0)" />
                         </MudTooltip>
                     </CardHeaderActions>
                 </MudCardHeader>
@@ -61,14 +61,14 @@
                         <MudText Typo="Typo.body2">Derivatives: @_compositeDetails[compositeObject.Id].Count</MudText>
                         <MudPaper Class="mt-2">
                             <MudDataGrid T="DsiCompositeDetailUxModel"
-                                         Items="_compositeDetails[compositeObject.Id]"
-                                         MultiSelection="true"
-                                         @bind-SelectedItems="_selectedCompositeDetails"
-                                         ReadOnly="true"
-                                         Bordered="false"
-                                         Dense="true"
-                                         FixedHeader="true"
-                                         Height="200px">
+                            Items="_compositeDetails[compositeObject.Id]"
+                            MultiSelection="true"
+                            @bind-SelectedItems="_selectedCompositeDetails"
+                            ReadOnly="true"
+                            Bordered="false"
+                            Dense="true"
+                            FixedHeader="true"
+                            Height="200px">
                                 @* Limits data grid height inside the wider card *@
                                 <Columns>
                                     <SelectColumn T="DsiCompositeDetailUxModel" />
@@ -100,6 +100,9 @@
     public List<DsiHarnessUxModel> DsiComposites { get; set; } = new();
 
     [Parameter]
+    public HashSet<long> PreselectedIds { get; set; } = new();
+
+    [Parameter]
     public EventCallback<IEnumerable<DsiComponentUxModel>> OnComponentsSelected { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -111,6 +114,14 @@
             if(derivatives?.Count>0)
             {
                 _compositeDetails[composite.Id] = derivatives;
+                if (PreselectedIds != null && PreselectedIds.Any())
+                {
+                    var previouslySelected = derivatives.Where(d => PreselectedIds.Contains(d.Id));
+                    foreach (var item in previouslySelected)
+                    {
+                        _selectedCompositeDetails.Add(item);
+                    }
+                }
             }
         }
     }
@@ -157,6 +168,8 @@
         }
     }
 
+    // Expose the checked items explicitly to the parent
+    public HashSet<DsiCompositeDetailUxModel> SelectedItems => _selectedCompositeDetails;
     async Task ShowDsiComponentListDialog(IEnumerable<DsiComponentUxModel> componentsToDisplay)
     {
         DialogParameters parameters = new DialogParameters
@@ -182,7 +195,28 @@
         if (result != null && !result.Canceled)
         {
             // callback to process the selected components if needed
-            await OnComponentsSelected.InvokeAsync(componentsToDisplay);
+            // await OnComponentsSelected.InvokeAsync(componentsToDisplay);
+            //  Only use selected derivatives
+            var selectedDerivatives = _selectedCompositeDetails;
+
+            if (selectedDerivatives == null || !selectedDerivatives.Any())
+            {
+                return;
+            }
+
+            //  Filter components based on selected derivatives
+            var selectedComponents = _components
+                // .Where(c =>
+                //     selectedDerivatives.Any(d =>
+                //         c.HarnessName1 == d.HarnessName1 &&
+                //         (string.IsNullOrWhiteSpace(d.CircuitOption) ||
+                //          c.CircuitOption?.Contains(d.CircuitOption) == true)
+                //     ))
+                .ToList();
+
+            //  Send ONLY filtered components
+           await OnComponentsSelected.InvokeAsync(selectedComponents);
+
         }
     }
 

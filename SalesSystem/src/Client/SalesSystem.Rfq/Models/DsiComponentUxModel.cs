@@ -80,5 +80,4 @@
         public DateTime ModifiedDate
         { get; set; } = DateTime.UtcNow;
     }
-
 }

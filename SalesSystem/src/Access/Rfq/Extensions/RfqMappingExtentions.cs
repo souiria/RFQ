@@ -63,6 +63,7 @@
             data.VehicleVolume = entity.VehicleVolume;
             data.CreatedDate = entity.CreatedDate?.ToUniversalTime().ToTimestamp();
             data.IsActive = entity.IsActive;
+          data.JsonData = entity.JsonData;
             return data;
         }
         public static DbRfqProject ToEntity(this RfqProjectGrpc grpc)
@@ -90,6 +91,7 @@
             : DateTime.UtcNow; // or DateTime.MinValue or any default
 
             data.IsActive = grpc.IsActive ?? true;
+            data.JsonData = grpc.JsonData;
             return data;
         }
         #endregion

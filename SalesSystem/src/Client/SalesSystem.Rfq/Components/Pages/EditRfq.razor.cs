@@ -3,9 +3,14 @@
     public partial class EditRfq : IDisposable
     {
         #region Attribs
+        [Parameter]
+        public IReadOnlySet<long> PreselectedDerivativeIds { get; set; } = new HashSet<long>();
+        CompositeCards? _CompositeCardsRef;
+        // Store the current selection from the CompositeCards checkboxes
+        IEnumerable<DsiComponentUxModel> _SelectedComponents = new List<DsiComponentUxModel>();
         // Reference to the Harnesses
         readonly List<DsiHarnessUxModel> _Harnesses;
-
+        HashSet<long> _PreselectedDerivativeIds = new HashSet<long>();
         NprRequestsEditor? _ComponentNprEditor;
 
         // Search All state tracking
@@ -154,13 +159,69 @@
 
             return await LoadRfqAndPartNumbersAsync();
         }
-
         async Task LoadHarnessesAsync()
         {
-            Guid id = Guid.Parse("237ad12c-3e00-46a4-baeb-ba12fff53fa6");
-            await DsiUxClientService.GetAllHarnessAsync();
+            // 1. Get RFQ project
+            RfqProject? rfqProject = await RfqUxClientService.GetRfqProjectByIdAsync(RfqProjectId);
+
+            if (rfqProject == null || string.IsNullOrWhiteSpace(rfqProject.JsonData))
+            {
+                _Harnesses.Clear();
+                return;
+            }
+
+            SelectionLogData? selectionLog = null;
+
+            try
+            {
+     
+                selectionLog = JsonSerializer.Deserialize<SelectionLogData>(rfqProject.JsonData, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+            }
+            catch (JsonException ex)
+            {
+                Logger.GenericLogError("Error parsing JsonData for SelectionLogData", ex);
+                return;
+            }
+
+            if (selectionLog == null || string.IsNullOrWhiteSpace(selectionLog.HarnessId))
+            {
+                Logger.GenericLogInformation("HarnessId is null or empty in JsonData");
+                return; 
+            }
+
+            if (!Guid.TryParse(selectionLog.HarnessId, out Guid harnessId))
+            {
+                Logger.GenericLogInformation($"Invalid HarnessId format: {selectionLog.HarnessId}");
+                return; 
+            }
+
+            // SAFE: HarnessId is guaranteed valid here
+            DsiHarnessUxModel? harness = await DsiUxClientService.GetHarnessByIdAsync(selectionLog.HarnessId);
+
             _Harnesses.Clear();
-            _Harnesses.AddRange(DsiUxClientService.Harnesses.Where(h => h.Id == id));
+
+            if (harness != null)
+            {
+                // 3. Restore automatically selected state
+                //if (selectionLog.Selections != null && selectionLog.Selections.Any())
+                //{
+                //    HashSet<int> savedSelectionIds = selectionLog.Selections.Select(s => s.Id).ToHashSet();
+                //}
+                _PreselectedDerivativeIds.Clear();
+
+                if (selectionLog.Selections != null && selectionLog.Selections.Any())
+                {
+                    foreach (SelectedCompositeData selection in selectionLog.Selections)
+                    {
+                        _PreselectedDerivativeIds.Add(selection.Id);
+                    }
+                }
+
+                _Harnesses.Add(harness);
+            }
         }
 
         async Task<bool> LoadRfqAndPartNumbersAsync()
@@ -1247,6 +1308,8 @@
 
         async Task HandleComponentsSelectedAsync(IEnumerable<DsiComponentUxModel> components)
         {
+            // Save the selection from the composite cards
+            _SelectedComponents = components;
             _CompletedParts.Clear();
             _InProgressParts.Clear();
 
@@ -1264,5 +1327,84 @@
             StateHasChanged();
             await Task.CompletedTask;
         }
+             
+         async Task UpdateSelectionAsync()
+        {
+          HashSet<DsiCompositeDetailUxModel>? currentSelections = _CompositeCardsRef?.SelectedItems;
+
+            if (currentSelections == null || !currentSelections.Any())
+            {
+                Snackbar.Add("No components selected to update.", Severity.Warning);
+                return;
+            }
+
+            string? harnessId = _Harnesses.FirstOrDefault()?.Id.ToString();
+            SelectionLogData selectionLog = new SelectionLogData
+            {
+                HarnessId = harnessId,
+                RfqId = RfqProjectId,
+                Selections = currentSelections.Select(x => new SelectedCompositeData
+                {
+                    Id = x.Id,
+                    HarnessName1 = x.HarnessName1,
+                    HarnessName2 = x.HarnessName2,
+                    Customer = x.Customer
+                })
+            };
+
+            // Explicit string declaration
+            string jsonOutput = JsonSerializer.Serialize(selectionLog, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+
+            Console.WriteLine(jsonOutput);
+
+            RfqProject!.JsonData = jsonOutput;
+
+            try
+            {
+                UpdateRfqProjectGrpcResponse result =
+                    await RfqUxClientService.UpdateRfqProjectAsync(RfqProject);
+
+                if (result.Success)
+                {
+                    Snackbar.Add(" JSON data saved to RFQ successfully", Severity.Success);
+                }
+                else
+                {
+                    Snackbar.Add("Failed to save JSON data", Severity.Error);
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                Snackbar.Add($"Invalid operation: {ex.Message}", Severity.Error);
+            }
+            catch (ArgumentNullException ex)
+            {
+                Snackbar.Add($"Missing data: {ex.Message}", Severity.Error);
+            }
+            catch (HttpRequestException ex)
+            {
+                Snackbar.Add($"Network error: {ex.Message}", Severity.Error);
+            }
+
+            Snackbar.Add($"{currentSelections.Count} components selected", Severity.Success);
+
+            await Task.CompletedTask;
+       }
+    }
+     public class SelectionLogData
+    {
+        public string? HarnessId { get; set; }
+        public long RfqId { get; set; }
+        public IEnumerable<SelectedCompositeData>? Selections { get; set; }
+    }
+    public class SelectedCompositeData
+    {
+        public long Id { get; set; }
+        public string? HarnessName1 { get; set; }
+        public string? HarnessName2 { get; set; }
+        public string? Customer { get; set; }
     }
 }

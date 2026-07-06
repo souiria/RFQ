@@ -678,6 +678,7 @@
                 rfqProject.CarModelGuid = request.Project.CarModelGuid.ToUpperInvariant();
                 rfqProject.VehicleVolume = request.Project.VehicleVolume;
                 rfqProject.IsActive = request.Project.IsActive ?? false;
+                rfqProject.JsonData = request.Project.JsonData;
 
                 RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
                 rfqProjectRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
@@ -997,6 +998,34 @@
                     dsiAggregate.Harness.HarnessId = Guid.Parse(harness.HarnessId);
                 }
 
+                GetAllRfqProjectGrpcRequest rfqRequest = new GetAllRfqProjectGrpcRequest();
+                rfqRequest.Position = 0;
+                rfqRequest.Take = 1000;
+
+                GetAllRfqProjectGrpcResponse rfqResponse = await GetAllRfqProjectGrpc(rfqRequest);
+
+                RfqProject? lastRfqProject = rfqResponse.RfqProjects
+                    .OrderByDescending(x => x.RowId)
+                    .FirstOrDefault();
+
+                if (lastRfqProject != null && dsiAggregate.Harness != null)
+                {
+                    JObject jsonObject = new JObject();
+                    jsonObject["HarnessId"] = dsiAggregate.Harness.HarnessId.ToString();
+
+                    string jsonData = jsonObject.ToString(Formatting.None);
+
+                    lastRfqProject.JsonData = jsonData;
+
+                    UpdateRfqProjectGrpcRequest updateRequest = new UpdateRfqProjectGrpcRequest();
+                    updateRequest.Project = lastRfqProject;
+                         UpdateRfqProjectGrpcResponse updateResponse =
+                        await UpdateRfqProject(updateRequest);
+
+                    _Logger.GenericLogInformation(
+                        $"RFQ Project {lastRfqProject.RfqNumber} updated. JsonData={jsonData}");
+                }
+
                 await SaveHarness(dsiAggregate, userId);
                 await SaveBranchConfigurationAsync(dsiAggregate, userId);
                 await SaveBranchInsulationAsync(dsiAggregate, userId);
@@ -1017,7 +1046,8 @@
                 await SaveWireSpecification(dsiAggregate, userId);
                 await SaveWireThroughNode(dsiAggregate, userId);
 
-            }
+             
+           }
             catch (IOException ex)
             {
                 _Logger.GenericLogError("Error saving DSI aggregate", ex);
@@ -2733,6 +2763,47 @@
             }
         }
         //get All derivatibe by composite
+        public async Task<GetHarnessByIdGrpcResponse> GetHarnessByIdGrpc(GetHarnessByIdGrpcRequest request)
+        {
+            try
+            {
+                await Task.Delay(1);
+
+                DSIFilterRequest filterRequest = new DSIFilterRequest();
+                filterRequest.DatabaseList = "HARNESSGRPC";
+                filterRequest.FilterExpression = $"Id == \"{request.Id}\"";
+
+                DSIFilterResponse filterResponse =
+                    await _DSIClient.FilterDSIGrpcAsync(filterRequest);
+
+                ListHarnessGrpc harnessList =
+                    filterResponse.HarnessList ?? new ListHarnessGrpc();
+
+                GetHarnessByIdGrpcResponse response =
+                    new GetHarnessByIdGrpcResponse();
+
+                HarnessGrpc? item = harnessList.HarnessList.FirstOrDefault();
+
+                if (item != null)
+                {
+                    DSIHarnessGrpc harness = new DSIHarnessGrpc();
+
+                    harness.Id = item.Id;
+                    harness.HarnessName1 = item.HarnessName1;
+                    harness.Customer = item.Customer;
+                    harness.Site = item.Site;
+
+                    response.Harness = harness;
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _Logger.GenericLogError("Error fetching Harness by ID from DSI", ex);
+                throw;
+            }
+        }
         public async Task<GetCompositeDetailByHarnessResponse> GetCompositeDetailByHarnessGrpc(GetCompositeDetailByHarnessRequest request)
         {
             _ = request;
