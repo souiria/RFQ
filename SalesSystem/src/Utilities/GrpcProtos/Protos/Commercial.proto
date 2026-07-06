@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "Commercial";
+
+package commercial;
+
+// The greeting service definition.
+service Commercial {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply);
+  rpc GetAllPurchaseOrderDataGrpc (GetAllPurchaseOrderDataGrpcRequest) returns (ListPurchaseOrderDataGrpc);
+  rpc CommercialFilterDataGrpc (CommercialFilterDataGrpcRequest) returns (CommercialFilterDataGrpcResponse);
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings.
+message HelloReply {
+  string message = 1;
+}
+
+message GetAllPurchaseOrderDataGrpcRequest {
+	int32 position = 1;
+	int32 takeAmount = 2;
+}
+
+message ListPurchaseOrderDataGrpc {
+	repeated PurchaseOrderDataGrpc PurchaseOrderData = 1;
+}
+
+message PurchaseOrderDataGrpc {
+	int64 Id = 1;
+	google.protobuf.StringValue MaterialNumber = 2;
+	google.protobuf.StringValue SiteCode = 3;
+	google.protobuf.StringValue SupplierCode = 4;
+	google.protobuf.Int32Value PORatio = 5;
+	google.protobuf.StringValue POUnit = 6;
+	google.protobuf.DoubleValue POPrice = 7;
+	google.protobuf.Int32Value UnitConfacPO = 8;
+	google.protobuf.DoubleValue IndexedMaterialWeight = 9;
+	google.protobuf.DoubleValue IndexedMaterialRate = 10;
+	google.protobuf.DoubleValue POPriceExCopper = 11;
+	google.protobuf.StringValue ExternalDataSource = 12;
+	google.protobuf.StringValue CurrencyCode = 13;
+	google.protobuf.Timestamp RaisedDate = 14;
+	google.protobuf.Int64Value SourceSystemTableId = 15;
+	google.protobuf.StringValue IndexedMaterial = 16;
+	google.protobuf.Timestamp ExpiryDate = 17;
+	google.protobuf.DoubleValue ExchangeRate = 18;
+	google.protobuf.StringValue CpdMaterialUom = 19;
+	google.protobuf.StringValue CountryOfOriginCode = 20;
+	google.protobuf.StringValue PriceType = 21;
+	google.protobuf.Timestamp CreateDate = 22;
+	google.protobuf.DoubleValue CurrentExchangeRate = 23;
+	google.protobuf.Timestamp ExchangeRateUpdateDate = 24;
+}
+
+message CommercialFilterDataGrpcRequest {
+	string DatabaseList = 1;
+    string FilterExpression = 2;
+}
+
+message CommercialFilterDataGrpcResponse {
+	bool Success = 1;
+	ListPurchaseOrderDataGrpc FilteredPurchaseOrderData = 2;
+}

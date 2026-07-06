@@ -29,7 +29,7 @@ namespace Integration.Tests.CPD
             Task<HelloReply> helloReply = _GrpcService.SayHello(request, serverCallContext);
 
             string replyString = "Hello TestName";
-            NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(replyString);
+            EqualConstraint equalConstraint = Is.EqualTo(replyString);
             Assert.That(helloReply, Is.Not.Null);
             Assert.That(helloReply.Result.Message, equalConstraint);
         }
@@ -44,7 +44,7 @@ namespace Integration.Tests.CPD
             Task<ListMatSuppMstGrpc> getMattSuppMstViewGrpcReply = _GrpcService.GetAllMatSuppMstView(request, serverCallContext);
 
             Assert.That(getMattSuppMstViewGrpcReply.Result.MatSuppMstViewGrpc, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getMattSuppMstViewGrpcReply.Result.MatSuppMstViewGrpc.Count, countConstraint);
         }
         #endregion
@@ -58,7 +58,7 @@ namespace Integration.Tests.CPD
             Task<ListHarnessCostingCalculationDataGrpc> getHarnessCostingCalculationDataViewGrpcReply = _GrpcService.GetAllHarnessCostingCalculationDataView(request, serverCallContext);
 
             Assert.That(getHarnessCostingCalculationDataViewGrpcReply.Result.HarnessCostingCalculationDataGrpc, Is.Not.Null);
-            NUnit.Framework.Constraints.EqualConstraint countConstraint = Is.EqualTo(6);
+            EqualConstraint countConstraint = Is.EqualTo(6);
             Assert.That(getHarnessCostingCalculationDataViewGrpcReply.Result.HarnessCostingCalculationDataGrpc.Count, countConstraint);
         }
         #endregion

@@ -1983,6 +1983,7 @@
                                 priceInfo.Price = nprResponse.DoubleList.First();
                                 priceInfo.PriceSource = "NPR";
                             }
+                            // TODO Search RFQ
                         });
 
                     await Task.WhenAll(innerTasks);
