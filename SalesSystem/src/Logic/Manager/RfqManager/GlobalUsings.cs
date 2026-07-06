@@ -16,6 +16,7 @@ global using Microsoft.AspNetCore.Http;
 global using Microsoft.Extensions.Http.Resilience;
 global using Microsoft.Extensions.Logging;  
 global using Newtonsoft.Json;
+global using Newtonsoft.Json.Linq;
 global using NPR;
 global using Rfq;
 global using RfqModels = RfqModule;global using RfqModule.Data.DTOs;

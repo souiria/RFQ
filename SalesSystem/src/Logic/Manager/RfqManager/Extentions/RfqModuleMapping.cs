@@ -85,6 +85,7 @@
             project.CustomerBusinessGroupCode = rfqProjectGrpc.CustomerBusinessGroupCode;
             project.CustomerLocationName = rfqProjectGrpc.CustomerLocationName;
             project.CarModelName = rfqProjectGrpc.CarModelName;
+            project.JsonData = rfqProjectGrpc.JsonData;
             return project;
         }
         public static RfqDrawingPartNumber ToRfqDrawingPartNumber(this RfqDrawingPartNumbersGrpc rfqPartGrpc)

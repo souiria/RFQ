@@ -41,7 +41,8 @@
         { get; set; }
         public string? ProjectCode
         { get; set; }
-
+        public string? JsonData 
+        { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "While in Dev/Test mode")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "While in Dev/Test mode")]
         public List<RfqNprRequestUxModel> NprRequests
@@ -65,7 +66,7 @@
             IsActive = false;
             CustomerCode = string.Empty;
             ProjectCode = string.Empty;
-
+            JsonData = string.Empty;
             _NprRequests = new();
 
         }

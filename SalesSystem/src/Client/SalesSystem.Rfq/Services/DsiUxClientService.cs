@@ -1,4 +1,6 @@
-﻿namespace SalesSystem.Rfq.Services
+﻿using System.Linq;
+
+namespace SalesSystem.Rfq.Services
 {
     public class DsiUxClientService : IDisposable
     {
@@ -16,16 +18,16 @@
         public static int MAX_GRPC_RESPONSE_SIZE => _MAX_GRPC_RESPONSE_SIZE;
 
         // Cached Data
-        readonly List<DSIHarnessGrpc> _Harnesses;
-        readonly List<DSICompositeDetailGrpc> _CompositeDetails;
-        readonly List<DSIWireSpecificationGrpc> _WireSpecifications;
-        readonly List<DSIComponentGrpc> _Components;
+        readonly List<DsiHarnessUxModel> _Harnesses;
+        readonly List<DsiCompositeDetailUxModel> _CompositeDetails;
+        readonly List<DsiWireSpecificationUxModel> _WireSpecifications;
+        readonly List<DsiComponentUxModel> _Components;
 
         // Cached data accessors
-        public IReadOnlyCollection<DSIHarnessGrpc> Harnesses => _Harnesses.AsReadOnly();
-        public IReadOnlyCollection<DSICompositeDetailGrpc> CompositeDetails => _CompositeDetails.AsReadOnly();
-        public IReadOnlyCollection<DSIWireSpecificationGrpc> WireSpecifications => _WireSpecifications.AsReadOnly();
-        public IReadOnlyCollection<DSIComponentGrpc> Components => _Components.AsReadOnly();
+        public IReadOnlyCollection<DsiHarnessUxModel> Harnesses => _Harnesses.AsReadOnly();
+        public IReadOnlyCollection<DsiCompositeDetailUxModel> CompositeDetails => _CompositeDetails.AsReadOnly();
+        public IReadOnlyCollection<DsiWireSpecificationUxModel> WireSpecifications => _WireSpecifications.AsReadOnly();
+        public IReadOnlyCollection<DsiComponentUxModel> Components => _Components.AsReadOnly();
 
         #endregion
 
@@ -58,10 +60,10 @@
 
             _Disposed = false;
 
-            _Harnesses = new List<DSIHarnessGrpc>();
-            _CompositeDetails = new List<DSICompositeDetailGrpc>();
-            _WireSpecifications = new List<DSIWireSpecificationGrpc>();
-            _Components = new List<DSIComponentGrpc>();
+            _Harnesses = new List<DsiHarnessUxModel>();
+            _CompositeDetails = new List<DsiCompositeDetailUxModel>();
+            _WireSpecifications = new List<DsiWireSpecificationUxModel>();
+            _Components = new List<DsiComponentUxModel>();
 
             _Logger?.GenericLogInformation(
                 $"DsiUxClientService initialized for service URL: {serviceUrl} " +
@@ -126,10 +128,13 @@
 
                 _Harnesses.Clear();
 
-                List<DSIHarnessGrpc> ordered = response.HarnessList
-                    .OrderBy(x => x.HarnessName1)
-                    .ToList();
-
+                List<DsiHarnessUxModel> ordered = new();
+                ordered.AddRange(
+                    from harness in response.HarnessList
+                    where harness != null
+                    orderby harness.HarnessName1
+                    select harness.ToUxModel()
+                );
                 _Harnesses.AddRange(ordered);
 
                 return _Harnesses.Count;
@@ -140,7 +145,42 @@
                 throw;
             }
         }
+        public async Task<DsiHarnessUxModel?> GetHarnessByIdAsync(
+    string id,
+    CancellationToken cancellationToken = default)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+            using CancellationTokenSource combinedCts =
+                CancellationTokenSource.CreateLinkedTokenSource(
+                    cancellationToken,
+                    timeoutCts.Token);
 
+            try
+            {
+                GetHarnessByIdGrpcRequest request = new GetHarnessByIdGrpcRequest();
+                request.Id = id;
+
+                GetHarnessByIdGrpcResponse response =
+                    await _Client.GetHarnessByIdGrpcAsync(
+                        request,
+                        cancellationToken: combinedCts.Token);
+
+                if (response?.Harness == null)
+                {
+                    return null;
+                }
+
+                return response.Harness.ToUxModel();
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError(
+                    $"Error in GetHarnessByIdAsync for Id: {id}",
+                    ex);
+
+                throw;
+            }
+        }
         #endregion
 
         #region CompositeDetail
@@ -169,10 +209,13 @@
 
                 _CompositeDetails.Clear();
 
-                List<DSICompositeDetailGrpc> ordered = response.CompositeDetails
-                    .OrderBy(x => x.HarnessName1)
-                    .ThenBy(x => x.CircuitOption)
-                    .ToList();
+                List<DsiCompositeDetailUxModel> ordered = new();
+
+                ordered.AddRange(from detail in response.CompositeDetails
+                    where detail != null
+                    orderby detail.HarnessName1
+                    select detail.ToUxModel()
+                );
 
                 _CompositeDetails.AddRange(ordered);
 
@@ -214,10 +257,13 @@
 
                 _CompositeDetails.Clear();
 
-                List<DSICompositeDetailGrpc> ordered = response.CompositeDetails
-                    .OrderBy(x => x.HarnessName1)
-                    .ThenBy(x => x.CircuitOption)
-                    .ToList();
+                List<DsiCompositeDetailUxModel> ordered = new();
+
+                ordered.AddRange(from detail in response.CompositeDetails
+                    where detail != null
+                    orderby detail.HarnessName1
+                    select detail.ToUxModel()
+                );
 
                 _CompositeDetails.AddRange(ordered);
 
@@ -232,11 +278,9 @@
                 throw;
             }
         }
-
         #endregion
 
         #region WireSpecification
-
         public async Task<int> GetWireSpecificationByCompositeOptionAsync(
             string compositeOptionString,
             CancellationToken cancellationToken = default)
@@ -261,10 +305,13 @@
 
                 _WireSpecifications.Clear();
 
-                List<DSIWireSpecificationGrpc> ordered = response.WireSpecifications
-                    .OrderBy(x => x.Compositeoptionstring)
-                    .ThenBy(x => x.WireName)
-                    .ToList();
+                List<DsiWireSpecificationUxModel> ordered = new();
+                ordered.AddRange(
+                    from wireSpec in response.WireSpecifications
+                        where wireSpec != null
+                        orderby wireSpec.Compositeoptionstring, wireSpec.WireName
+                        select wireSpec.ToUxModel()
+                );
 
                 _WireSpecifications.AddRange(ordered);
 
@@ -284,9 +331,9 @@
 
         #region Components
         public async Task<int> GetComponentsByHarnessAndOptionsAsync(
-      IEnumerable<string> harnessNames,
-      IEnumerable<string> compositeOptions,
-      CancellationToken cancellationToken = default)
+            IEnumerable<string> harnessNames,
+            IEnumerable<string> compositeOptions,
+            CancellationToken cancellationToken = default)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
             using CancellationTokenSource combinedCts =
@@ -326,11 +373,13 @@
 
                 _Components.Clear();
 
-                List<DSIComponentGrpc> ordered = response.ComponentList
-                    .OrderBy(x => x.PartNumber1)
-                    .ThenBy(x => x.PartNumber2)
-                    .ThenBy(x => x.PartNumber3)
-                    .ToList();
+                List<DsiComponentUxModel> ordered = new();
+                ordered.AddRange(
+                    from component in response.ComponentList
+                    where component != null
+                    orderby component.PartNumber1, component.PartNumber2, component.PartNumber3
+                    select component.ToUxModel()
+                );
 
                 _Components.AddRange(ordered);
 

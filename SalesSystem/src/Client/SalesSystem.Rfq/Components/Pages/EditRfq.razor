@@ -10,6 +10,7 @@
 
 @inject ISnackbar Snackbar
 @inject RfqUxClientService RfqUxClientService
+@inject DsiUxClientService DsiUxClientService
 @inject ILogger<EditRfq> Logger
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
@@ -133,13 +134,13 @@ else
                 </MudPaper>
 
                 @* Column 4: FileManager *@
-                <MudPaper Class="pa-2 w-100" Style="flex: 0 0 15%; max-width:15%; min-width: 192px;">
+@*                 <MudPaper Class="pa-2 w-100" Style="flex: 0 0 15%; max-width:15%; min-width: 192px;">
                     <FileManager @ref="_ComponentFileManager"
                                  FileObjects="FileObjects"
                                  OnFilesChanged="OnFilesChanged"
                                  OnUploadClicked="@UploadFilesAsync"
                                  UploadDisabled="@(FileObjects.Count == 0)" />
-                </MudPaper>
+                </MudPaper> *@
 
                 @* Controls – scrollable inner wrapper *@
                 <MudPaper Class="pa-0"
@@ -225,7 +226,29 @@ else
         </MudItem>
 
         <MudItem xs="12" Class="pt-2">
-            <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-3" MinimumTabWidth="12vw">
+            <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-3" MinimumTabWidth="12vw" @bind-ActivePanelIndex="_ActiveTabIndex">
+                <MudTabPanel Text="BOM Files" Icon="@Icons.Material.Filled.Api" BadgeData='"BOM"' BadgeColor="Color.Success">
+                    <div class="d-flex flex-column" style="height: calc(100vh - 364px); overflow: hidden;">
+@*                         <FileCards @ref="_ComponentFileCards"
+                                   FileObjects="FileObjects"
+                                   OnRemoveFile="HandleFileRemoval" /> *@
+                        @if(_Harnesses.Count > 0)
+                        {
+                            <CompositeCards @ref="_CompositeCardsRef"
+                                            DsiComposites="@_Harnesses"
+                                            PreselectedIds="@_PreselectedDerivativeIds"
+                                            OnComponentsSelected="@HandleComponentsSelectedAsync" />
+
+                            <MudButton Class="mt-4"
+                                       Color="Color.Primary"
+                                       Variant="Variant.Filled"
+                                       StartIcon="@Icons.Material.Filled.Save"
+                                       OnClick="@UpdateSelectionAsync">
+                                Update Selection
+                            </MudButton>
+                        }
+                    </div>
+                </MudTabPanel>
                 <MudTabPanel Text="Parts Lists" Icon="@Icons.Material.Filled.Api" BadgeData='"PROJ"' BadgeColor="Color.Info">
                     <div class="d-flex flex-column" style="height: calc(100vh - 364px); overflow: hidden;">
                         <PartNumberSection PartNumbers="@_InProgressParts"
@@ -233,21 +256,14 @@ else
                                            BackgroundColor="var(--mud-palette-warning)"
                                            InitiallyExpanded="true"
                                            OnPartNumberDeleted="@HandlePartNumberDeleted"
-                                           OnPartNumberUpdated="@HandlePartNumberUpdated" />
-                        <MudDivider Style="margin: 4px 0;" />
+                                           OnPartNumberUpdated="@HandlePartNumberUpdated"/>
+                        <MudDivider Style="margin: 4px 0;"/>
                         <PartNumberSection PartNumbers="@_CompletedParts"
                                            Label="Completed"
                                            BackgroundColor="var(--mud-palette-success)"
                                            InitiallyExpanded="false"
                                            OnPartNumberDeleted="@HandlePartNumberDeleted"
-                                           OnPartNumberUpdated="@HandlePartNumberUpdated" />
-                    </div>
-                </MudTabPanel>
-                <MudTabPanel Text="BOM Files" Icon="@Icons.Material.Filled.Api" BadgeData='"BOM"' BadgeColor="Color.Success">
-                    <div class="d-flex flex-column" style="height: calc(100vh - 364px); overflow: hidden;">
-                        <FileCards @ref="_ComponentFileCards"
-                                   FileObjects="FileObjects"
-                                   OnRemoveFile="HandleFileRemoval" />
+                                           OnPartNumberUpdated="@HandlePartNumberUpdated"/>
                     </div>
                 </MudTabPanel>
                 <MudTabPanel Text="@($"NPRs")"
@@ -256,7 +272,7 @@ else
                     <div class="d-flex flex-column" style="height: calc(100vh - 364px); overflow: hidden;">
                         @if (RfqProject.NprRequests != null && RfqProject.NprRequests.Count > 0)
                         {
-                            <NprRequestsEditor @ref="_ComponentNprEditor" RfqProject="@RfqProject" GlobalValue="@GlobalValue" />
+                            <NprRequestsEditor @ref="_ComponentNprEditor" RfqProject="@RfqProject" GlobalValue="@GlobalValue"/>
                         }
                         else
                         {

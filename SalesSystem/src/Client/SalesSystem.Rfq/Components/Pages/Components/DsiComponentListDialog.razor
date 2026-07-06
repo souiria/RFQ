@@ -1,0 +1,73 @@
+﻿<MudDialog Style="width: 60vw; max-height: 70vh; display: flex; flex-direction: column;">
+   <TitleContent>
+      <MudText Typo="Typo.h6">
+         <MudIcon Icon="@Icons.Material.Filled.List" Class="mr-2" />
+         Dsi Component List View
+      </MudText>
+   </TitleContent>
+   
+   <DialogContent>
+      <MudPaper Elevation="0" Class="overflow-y-auto" Style="max-height: 50vh;">
+         <MudDataGrid T="DsiComponentUxModel"
+                      Items="Components"
+                      Dense="true"
+                      Hover="true"
+                      Striped="true"
+                      Bordered="false"
+                      Elevation="0"
+                      Class="rounded-table">
+            <Columns>
+               <PropertyColumn Property="x => x.PartNumber1"
+                               Title="Part Number 1" />
+
+               <PropertyColumn Property="x => x.PartNumber2"
+                               Title="Part Number 2" />
+
+               <PropertyColumn Property="x => x.PartNumber3"
+                               Title="Part Number 3" />
+
+               <PropertyColumn Property="x => x.Quantity"
+                               Title="Quantity" />
+            </Columns>
+            <PagerContent>
+               <MudDataGridPager T="DsiComponentUxModel" />
+            </PagerContent>
+         </MudDataGrid>
+      </MudPaper>
+   </DialogContent>
+   
+   <DialogActions>
+      <MudButton Variant="Variant.Text" 
+                 Color="Color.Default" 
+                 OnClick="Cancel">
+         Cancel
+      </MudButton>
+      <MudButton Variant="Variant.Filled" 
+                 Color="Color.Primary" 
+                 StartIcon="@Icons.Material.Filled.Download"
+                 OnClick="Export">
+         Export
+      </MudButton>
+   </DialogActions>
+</MudDialog>
+
+@code {
+   [CascadingParameter]
+   public IMudDialogInstance MudDialog 
+   { get; set; } = null!;
+
+   [Parameter]
+   public IEnumerable<DsiComponentUxModel> Components 
+   { get; set; } = Array.Empty<DsiComponentUxModel>();
+
+   private void Cancel()
+   {
+      MudDialog.Cancel();
+   }
+
+   private void Export()
+   {
+      // Pass the component collection back to the calling page upon confirmation
+      MudDialog.Close(DialogResult.Ok(Components));
+   }
+}

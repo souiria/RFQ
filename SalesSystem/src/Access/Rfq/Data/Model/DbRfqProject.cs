@@ -52,5 +52,7 @@
         [NotMapped]
         public string CarModel
         { get; set; } = "Default Car Model";
+        public string? JsonData 
+        { get; set; }
     }
 }

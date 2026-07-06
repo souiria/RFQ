@@ -3,12 +3,15 @@
     public partial class EditRfq : IDisposable
     {
         #region Attribs
-        // Reference to the FileManager component
-        FileManager? _ComponentFileManager;
-        FileCards? _ComponentFileCards;
+        [Parameter]
+        public IReadOnlySet<long> PreselectedDerivativeIds { get; set; } = new HashSet<long>();
+        CompositeCards? _CompositeCardsRef;
+        // Store the current selection from the CompositeCards checkboxes
+        IEnumerable<DsiComponentUxModel> _SelectedComponents = new List<DsiComponentUxModel>();
+        // Reference to the Harnesses
+        readonly List<DsiHarnessUxModel> _Harnesses;
+        HashSet<long> _PreselectedDerivativeIds = new HashSet<long>();
         NprRequestsEditor? _ComponentNprEditor;
-        List<FileObjectUxModel> FileObjects
-        { get; set; }
 
         // Search All state tracking
         bool _IsSearchingAll;
@@ -38,13 +41,17 @@
 
         // Submit NPRs state tracking
         bool _IsSubmittingNprs;
+
+        // Active tab index for programmatic tab switching
+        int _ActiveTabIndex;
         #endregion
 
         public EditRfq()
         {
             _IsSearchingAll = false;
             IsLoading = true;
-            FileObjects = new List<FileObjectUxModel>();
+            // FileObjects = new List<FileObjectUxModel>();
+            _Harnesses = new();
         }
 
         #region Parameters
@@ -96,63 +103,7 @@
                 throw;
             }
         }
-        void OnFilesChanged()
-        {
-            StateHasChanged();
-        }
-        async Task HandleFileRemoval(FileObjectUxModel fileObject)
-        {
-            try
-            {
-                Logger.GenericLogInformation($"EditRfq.HandleFileRemoval - Starting removal for file: {fileObject.DisplayName} (ID: {fileObject.Id})");
 
-                if (fileObject.CanBeRemovedSafely)
-                {
-                    bool removed = FileObjects.Remove(fileObject);
-
-                    if (removed)
-                    {
-                        if (_ComponentFileManager != null)
-                        {
-                            await _ComponentFileManager.ResetInputFileAsync();
-                        }
-
-                        Logger.GenericLogInformation($"EditRfq.HandleFileRemoval - Completely removed file: {fileObject.DisplayName}");
-                        Snackbar.Add($"File '{fileObject.DisplayName}' removed successfully", Severity.Success);
-                    }
-                    else
-                    {
-                        Logger.GenericLogInformation($"EditRfq.HandleFileRemoval - File not found in collection: {fileObject.DisplayName}");
-                    }
-                }
-                else
-                {
-                    fileObject.Status = UxObjectStatus.Deleted;
-                    Logger.GenericLogInformation($"EditRfq.HandleFileRemoval - Marked uploaded file as deleted: {fileObject.DisplayName}");
-                    Snackbar.Add($"File '{fileObject.DisplayName}' marked as deleted", Severity.Info);
-                }
-
-                StateHasChanged();
-            }
-            catch (InvalidOperationException ex)
-            {
-                Logger.GenericLogError($"EditRfq.HandleFileRemoval - Invalid operation error removing file: {fileObject.DisplayName}", ex);
-                Snackbar.Add($"Error removing file: {ex.Message}", Severity.Error);
-                throw;
-            }
-            catch (ArgumentNullException ex)
-            {
-                Logger.GenericLogError($"EditRfq.HandleFileRemoval - Argument null error removing file: {fileObject.DisplayName}", ex);
-                Snackbar.Add($"Error removing file: {ex.Message}", Severity.Error);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                Logger.GenericLogError($"EditRfq.HandleFileRemoval - Error removing file: {fileObject.DisplayName}", ex);
-                Snackbar.Add($"Error removing file: {ex.Message}", Severity.Error);
-                throw;
-            }
-        }
         // Watch for project selection changes
         protected override void OnAfterRender(bool firstRender)
         {
@@ -203,7 +154,74 @@
                 Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded {count} reasons in {timing}ms");
             }
 
+            // load the Harenesses
+            await LoadHarnessesAsync();
+
             return await LoadRfqAndPartNumbersAsync();
+        }
+        async Task LoadHarnessesAsync()
+        {
+            // 1. Get RFQ project
+            RfqProject? rfqProject = await RfqUxClientService.GetRfqProjectByIdAsync(RfqProjectId);
+
+            if (rfqProject == null || string.IsNullOrWhiteSpace(rfqProject.JsonData))
+            {
+                _Harnesses.Clear();
+                return;
+            }
+
+            SelectionLogData? selectionLog = null;
+
+            try
+            {
+     
+                selectionLog = JsonSerializer.Deserialize<SelectionLogData>(rfqProject.JsonData, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+            }
+            catch (JsonException ex)
+            {
+                Logger.GenericLogError("Error parsing JsonData for SelectionLogData", ex);
+                return;
+            }
+
+            if (selectionLog == null || string.IsNullOrWhiteSpace(selectionLog.HarnessId))
+            {
+                Logger.GenericLogInformation("HarnessId is null or empty in JsonData");
+                return; 
+            }
+
+            if (!Guid.TryParse(selectionLog.HarnessId, out Guid harnessId))
+            {
+                Logger.GenericLogInformation($"Invalid HarnessId format: {selectionLog.HarnessId}");
+                return; 
+            }
+
+            // SAFE: HarnessId is guaranteed valid here
+            DsiHarnessUxModel? harness = await DsiUxClientService.GetHarnessByIdAsync(selectionLog.HarnessId);
+
+            _Harnesses.Clear();
+
+            if (harness != null)
+            {
+                // 3. Restore automatically selected state
+                //if (selectionLog.Selections != null && selectionLog.Selections.Any())
+                //{
+                //    HashSet<int> savedSelectionIds = selectionLog.Selections.Select(s => s.Id).ToHashSet();
+                //}
+                _PreselectedDerivativeIds.Clear();
+
+                if (selectionLog.Selections != null && selectionLog.Selections.Any())
+                {
+                    foreach (SelectedCompositeData selection in selectionLog.Selections)
+                    {
+                        _PreselectedDerivativeIds.Add(selection.Id);
+                    }
+                }
+
+                _Harnesses.Add(harness);
+            }
         }
 
         async Task<bool> LoadRfqAndPartNumbersAsync()
@@ -762,146 +780,146 @@
         #region Part Number
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
-        async Task UploadFilesAsync()
-        {
-            if (FileObjects.Count == 0)
-            {
-                Snackbar.Add("No files to upload", Severity.Info);
-                Logger.GenericLogInformation("EditRfq.UploadFilesAsync - No files available");
-                return;
-            }
+        //async Task UploadFilesAsync()
+        //{
+        //    if (FileObjects.Count == 0)
+        //    {
+        //        Snackbar.Add("No files to upload", Severity.Info);
+        //        Logger.GenericLogInformation("EditRfq.UploadFilesAsync - No files available");
+        //        return;
+        //    }
 
-            // Create a progress state object that will be shared with the dialog
-            SubmissionProgressState progressState = new SubmissionProgressState();
+        //    // Create a progress state object that will be shared with the dialog
+        //    SubmissionProgressState progressState = new SubmissionProgressState();
 
-            // Initialize progress dialog
-            DialogParameters parameters = new DialogParameters<SubmissionProgressDialog>
-            {
-                { x => x.ProgressState, progressState }
-            };
+        //    // Initialize progress dialog
+        //    DialogParameters parameters = new DialogParameters<SubmissionProgressDialog>
+        //    {
+        //        { x => x.ProgressState, progressState }
+        //    };
 
-            DialogOptions options = new DialogOptions()
-            {
-                CloseButton = false,
-                BackdropClick = false,
-                MaxWidth = MaxWidth.Medium,
-                FullWidth = true
-            };
+        //    DialogOptions options = new DialogOptions()
+        //    {
+        //        CloseButton = false,
+        //        BackdropClick = false,
+        //        MaxWidth = MaxWidth.Medium,
+        //        FullWidth = true
+        //    };
 
-            IDialogReference dialog = await DialogService.ShowAsync<SubmissionProgressDialog>("Uploading Files", parameters, options);
+        //    IDialogReference dialog = await DialogService.ShowAsync<SubmissionProgressDialog>("Uploading Files", parameters, options);
 
-            try
-            {
-                // Checkpoint 1: Validation
-                progressState.UpdateProgress("Validating files...", 0);
-                progressState.SetCheckpointActive(0);
+        //    try
+        //    {
+        //        // Checkpoint 1: Validation
+        //        progressState.UpdateProgress("Validating files...", 0);
+        //        progressState.SetCheckpointActive(0);
 
-                await Task.Delay(500); // Small delay for UX
+        //        await Task.Delay(500); // Small delay for UX
 
-                List<FileObjectUxModel> validFiles = FileObjects.Where(f => f.Status != UxObjectStatus.Deleted && f.IsFileValid).ToList();
+        //        List<FileObjectUxModel> validFiles = FileObjects.Where(f => f.Status != UxObjectStatus.Deleted && f.IsFileValid).ToList();
 
-                if (validFiles.Count == 0)
-                {
-                    progressState.SetError("Validation failed: No valid files", "Please upload at least one valid file.");
-                    Logger.GenericLogInformation("EditRfq.UploadFilesAsync - Validation failed: No valid files");
-                    return;
-                }
+        //        if (validFiles.Count == 0)
+        //        {
+        //            progressState.SetError("Validation failed: No valid files", "Please upload at least one valid file.");
+        //            Logger.GenericLogInformation("EditRfq.UploadFilesAsync - Validation failed: No valid files");
+        //            return;
+        //        }
 
-                progressState.SetCheckpointCompleted(0, $"{validFiles.Count} valid file(s) ready for upload");
-                Logger.GenericLogInformation($"EditRfq.UploadFilesAsync - Checkpoint: Validation OK - {validFiles.Count} valid files");
+        //        progressState.SetCheckpointCompleted(0, $"{validFiles.Count} valid file(s) ready for upload");
+        //        Logger.GenericLogInformation($"EditRfq.UploadFilesAsync - Checkpoint: Validation OK - {validFiles.Count} valid files");
 
-                // Checkpoint 2: Upload Files
-                progressState.UpdateProgress("Uploading files...", 1);
-                progressState.SetCheckpointActive(1);
+        //        // Checkpoint 2: Upload Files
+        //        progressState.UpdateProgress("Uploading files...", 1);
+        //        progressState.SetCheckpointActive(1);
 
-                bool allOk = true;
-                int fileCount = 0;
-                int skippedCount = 0;
-                int totalFiles = validFiles.Count;
+        //        bool allOk = true;
+        //        int fileCount = 0;
+        //        int skippedCount = 0;
+        //        int totalFiles = validFiles.Count;
 
-                foreach (FileObjectUxModel fileObject in validFiles)
-                {
-                    try
-                    {
-                        if (fileObject.File == null || !fileObject.IsFileValid)
-                        {
-                            skippedCount++;
-                            Logger.GenericLogInformation($"EditRfq.UploadFilesAsync - Skipping invalid file: {fileObject.DisplayName}");
-                            continue;
-                        }
+        //        foreach (FileObjectUxModel fileObject in validFiles)
+        //        {
+        //            try
+        //            {
+        //                if (fileObject.File == null || !fileObject.IsFileValid)
+        //                {
+        //                    skippedCount++;
+        //                    Logger.GenericLogInformation($"EditRfq.UploadFilesAsync - Skipping invalid file: {fileObject.DisplayName}");
+        //                    continue;
+        //                }
 
-                        fileCount++;
-                        progressState.UpdateProgress($"Uploading file {fileCount} of {totalFiles}: {fileObject.File.Name}", 1);
+        //                fileCount++;
+        //                progressState.UpdateProgress($"Uploading file {fileCount} of {totalFiles}: {fileObject.File.Name}", 1);
 
-                        UploadPartsRequestGrpcResponse uploadFileResponse = await RfqUxClientService.UploadPartsAsync(RfqProjectId.ToString(CultureInfo.InvariantCulture), fileObject.File, GlobalValue?.UserId, 16_000_000);
-                        fileObject.UploadStatus = new FileObjectUploadStatus(uploadFileResponse);
-                        allOk = allOk && uploadFileResponse.Success;
+                        //UploadPartsRequestGrpcResponse uploadFileResponse = await RfqUxClientService.UploadPartsAsync(RfqProjectId.ToString(CultureInfo.InvariantCulture), fileObject.File, GlobalValue?.UserId, 16_000_000);
+                        //fileObject.UploadStatus = new FileObjectUploadStatus(uploadFileResponse);
+                        //allOk = allOk && uploadFileResponse.Success;
 
-                        Logger.GenericLogInformation($"EditRfq.UploadFilesAsync - Uploaded file {fileObject.File.Name}/{fileObject.File.Size}, {fileObject.UploadStatus.Status}/{fileObject.UploadStatus.Message}");
-                    }
-                    catch (Exception fileEx)
-                    {
-                        Logger.GenericLogError($"EditRfq.UploadFilesAsync - Error uploading file {fileObject.DisplayName}", fileEx);
-                        fileObject.UploadStatus = new FileObjectUploadStatus
-                        {
-                            Status = FileUploadStatus.Failed,
-                            Message = $"Upload error: {fileEx.Message}"
-                        };
-                        allOk = false;
-                    }
-                }
+        //                Logger.GenericLogInformation($"EditRfq.UploadFilesAsync - Uploaded file {fileObject.File.Name}/{fileObject.File.Size}, {fileObject.UploadStatus.Status}/{fileObject.UploadStatus.Message}");
+        //            }
+        //            catch (Exception fileEx)
+        //            {
+        //                Logger.GenericLogError($"EditRfq.UploadFilesAsync - Error uploading file {fileObject.DisplayName}", fileEx);
+        //                fileObject.UploadStatus = new FileObjectUploadStatus
+        //                {
+        //                    Status = FileUploadStatus.Failed,
+        //                    Message = $"Upload error: {fileEx.Message}"
+        //                };
+        //                allOk = false;
+        //            }
+        //        }
 
-                string uploadSummary = skippedCount > 0
-                    ? $"Uploaded {fileCount} file(s), skipped {skippedCount} invalid file(s)"
-                    : $"Uploaded {fileCount} file(s)";
+        //        string uploadSummary = skippedCount > 0
+        //            ? $"Uploaded {fileCount} file(s), skipped {skippedCount} invalid file(s)"
+        //            : $"Uploaded {fileCount} file(s)";
 
-                progressState.SetCheckpointCompleted(1, uploadSummary);
-                Logger.GenericLogInformation($"EditRfq.UploadFilesAsync - Checkpoint: {uploadSummary}");
+        //        progressState.SetCheckpointCompleted(1, uploadSummary);
+        //        Logger.GenericLogInformation($"EditRfq.UploadFilesAsync - Checkpoint: {uploadSummary}");
 
-                // Checkpoint 3: Reload Data
-                progressState.UpdateProgress("Reloading part numbers...", 2);
-                progressState.SetCheckpointActive(2);
+        //        // Checkpoint 3: Reload Data
+        //        progressState.UpdateProgress("Reloading part numbers...", 2);
+        //        progressState.SetCheckpointActive(2);
 
-                await Task.Delay(500); // Small delay for UX
+        //        await Task.Delay(500); // Small delay for UX
 
-                // Reload the part numbers to get the newly uploaded data
-                await LoadRfqAndPartNumbersAsync();
+        //        // Reload the part numbers to get the newly uploaded data
+        //        await LoadRfqAndPartNumbersAsync();
 
-                progressState.SetCheckpointCompleted(2, "Data reloaded successfully");
-                Logger.GenericLogInformation("EditRfq.UploadFilesAsync - Checkpoint: Data reloaded");
+        //        progressState.SetCheckpointCompleted(2, "Data reloaded successfully");
+        //        Logger.GenericLogInformation("EditRfq.UploadFilesAsync - Checkpoint: Data reloaded");
 
-                // Checkpoint 4: Finalize
-                progressState.UpdateProgress("Finalizing upload...", 3);
-                progressState.SetCheckpointActive(3);
+        //        // Checkpoint 4: Finalize
+        //        progressState.UpdateProgress("Finalizing upload...", 3);
+        //        progressState.SetCheckpointActive(3);
 
-                await Task.Delay(500); // Small delay for UX
+        //        await Task.Delay(500); // Small delay for UX
 
-                progressState.SetCheckpointCompleted(3, "Upload completed");
-                Logger.GenericLogInformation($"EditRfq.UploadFilesAsync - Checkpoint: Upload finalized, success: {allOk}");
+        //        progressState.SetCheckpointCompleted(3, "Upload completed");
+        //        Logger.GenericLogInformation($"EditRfq.UploadFilesAsync - Checkpoint: Upload finalized, success: {allOk}");
 
-                // Final update
-                progressState.SetCompleted(allOk ? "File upload completed successfully!" : "File upload completed with some errors", !allOk);
+        //        // Final update
+        //        progressState.SetCompleted(allOk ? "File upload completed successfully!" : "File upload completed with some errors", !allOk);
 
-                StateHasChanged();
+        //        StateHasChanged();
 
-                if (allOk)
-                {
-                    Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-                    Snackbar.Add("Files uploaded successfully!", Severity.Success);
-                }
-                else
-                {
-                    Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-                    Snackbar.Add("Files uploaded with some errors. Please check the file status.", Severity.Warning);
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.GenericLogError("EditRfq.UploadFilesAsync - Unexpected error during file upload", ex);
-                progressState.SetError("An unexpected error occurred", $"Error: {ex.Message}", isCompleted: true);
-                Snackbar.Add($"Error uploading files: {ex.Message}", Severity.Error);
-            }
-        }
+        //        if (allOk)
+        //        {
+        //            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        //            Snackbar.Add("Files uploaded successfully!", Severity.Success);
+        //        }
+        //        else
+        //        {
+        //            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        //            Snackbar.Add("Files uploaded with some errors. Please check the file status.", Severity.Warning);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Logger.GenericLogError("EditRfq.UploadFilesAsync - Unexpected error during file upload", ex);
+        //        progressState.SetError("An unexpected error occurred", $"Error: {ex.Message}", isCompleted: true);
+        //        Snackbar.Add($"Error uploading files: {ex.Message}", Severity.Error);
+        //    }
+        //}
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         async Task ReloadDataAsync()
@@ -1288,5 +1306,105 @@
         }
         #endregion
 
+        async Task HandleComponentsSelectedAsync(IEnumerable<DsiComponentUxModel> components)
+        {
+            // Save the selection from the composite cards
+            _SelectedComponents = components;
+            _CompletedParts.Clear();
+            _InProgressParts.Clear();
+
+            foreach (DsiComponentUxModel component in components)
+            {
+                if (string.IsNullOrWhiteSpace(component.PartNumber1))
+                {
+                    continue;
+                }
+
+                _InProgressParts.Add(component.ToRfqDrawingPartNumberUxModel());
+            }
+
+            _ActiveTabIndex = 1; // Switch to "Parts Lists" tab
+            StateHasChanged();
+            await Task.CompletedTask;
+        }
+             
+         async Task UpdateSelectionAsync()
+        {
+          HashSet<DsiCompositeDetailUxModel>? currentSelections = _CompositeCardsRef?.SelectedItems;
+
+            if (currentSelections == null || !currentSelections.Any())
+            {
+                Snackbar.Add("No components selected to update.", Severity.Warning);
+                return;
+            }
+
+            string? harnessId = _Harnesses.FirstOrDefault()?.Id.ToString();
+            SelectionLogData selectionLog = new SelectionLogData
+            {
+                HarnessId = harnessId,
+                RfqId = RfqProjectId,
+                Selections = currentSelections.Select(x => new SelectedCompositeData
+                {
+                    Id = x.Id,
+                    HarnessName1 = x.HarnessName1,
+                    HarnessName2 = x.HarnessName2,
+                    Customer = x.Customer
+                })
+            };
+
+            // Explicit string declaration
+            string jsonOutput = JsonSerializer.Serialize(selectionLog, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+
+            Console.WriteLine(jsonOutput);
+
+            RfqProject!.JsonData = jsonOutput;
+
+            try
+            {
+                UpdateRfqProjectGrpcResponse result =
+                    await RfqUxClientService.UpdateRfqProjectAsync(RfqProject);
+
+                if (result.Success)
+                {
+                    Snackbar.Add(" JSON data saved to RFQ successfully", Severity.Success);
+                }
+                else
+                {
+                    Snackbar.Add("Failed to save JSON data", Severity.Error);
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                Snackbar.Add($"Invalid operation: {ex.Message}", Severity.Error);
+            }
+            catch (ArgumentNullException ex)
+            {
+                Snackbar.Add($"Missing data: {ex.Message}", Severity.Error);
+            }
+            catch (HttpRequestException ex)
+            {
+                Snackbar.Add($"Network error: {ex.Message}", Severity.Error);
+            }
+
+            Snackbar.Add($"{currentSelections.Count} components selected", Severity.Success);
+
+            await Task.CompletedTask;
+       }
+    }
+     public class SelectionLogData
+    {
+        public string? HarnessId { get; set; }
+        public long RfqId { get; set; }
+        public IEnumerable<SelectedCompositeData>? Selections { get; set; }
+    }
+    public class SelectedCompositeData
+    {
+        public long Id { get; set; }
+        public string? HarnessName1 { get; set; }
+        public string? HarnessName2 { get; set; }
+        public string? Customer { get; set; }
     }
 }

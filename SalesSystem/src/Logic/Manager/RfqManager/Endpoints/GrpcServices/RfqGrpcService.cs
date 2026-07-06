@@ -279,6 +279,16 @@
 
             return response;
         }
+        public override async Task<GetHarnessByIdGrpcResponse> GetHarnessByIdGrpc(GetHarnessByIdGrpcRequest request,ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetHarnessByIdGrpc starting");
+
+            GetHarnessByIdGrpcResponse response =
+                await _RfqManagerService.GetHarnessByIdGrpc(request);
+
+            return response;
+        }
+
         public override async Task<GetCompositeDetailByHarnessResponse> GetCompositeDetailByHarnessGrpc(GetCompositeDetailByHarnessRequest request,
     ServerCallContext context)
         {
