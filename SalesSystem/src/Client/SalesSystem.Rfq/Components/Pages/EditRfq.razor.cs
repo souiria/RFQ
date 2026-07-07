@@ -9,7 +9,7 @@
         // Store the current selection from the CompositeCards checkboxes
         IEnumerable<DsiComponentUxModel> _SelectedComponents = new List<DsiComponentUxModel>();
         // Reference to the Harnesses
-        readonly List<DsiHarnessUxModel> _Harnesses;
+        readonly List<DsiHarnessUxModel> _Composites;
         HashSet<long> _PreselectedDerivativeIds = new HashSet<long>();
         NprRequestsEditor? _ComponentNprEditor;
 
@@ -53,7 +53,7 @@
             _IsSearchingAll = false;
             IsLoading = true;
             // FileObjects = new List<FileObjectUxModel>();
-            _Harnesses = new();
+            _Composites = new();
         }
 
         #region Parameters
@@ -67,6 +67,7 @@
         #region Events
         protected override async Task OnInitializedAsync()
         {
+            IsLoading = true;
             if (GlobalValue?.UserId == null || GlobalValue.UserId == Guid.Empty)
             {
                 Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
@@ -80,6 +81,10 @@
             {
                 if (await LoadDataAsync())
                 {
+
+                    // load the composites
+                    await LoadCompositesAsync();
+                    // load Npr requests for the RFQ project
                     await LoadNprRequests();
                 }
             }
@@ -103,6 +108,11 @@
                 Snackbar.Add("Error loading RFQ project", Severity.Error);
                 NavigationManager.NavigateTo("/");
                 throw;
+            }
+            finally
+            {
+                IsLoading = false;
+                StateHasChanged();
             }
         }
 
@@ -156,74 +166,8 @@
                 Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded {count} reasons in {timing}ms");
             }
 
-            // load the Harenesses
-            await LoadHarnessesAsync();
-
+            // load the RfqProject and part numbers
             return await LoadRfqAndPartNumbersAsync();
-        }
-        async Task LoadHarnessesAsync()
-        {
-            // 1. Get RFQ project
-            RfqProject? rfqProject = await RfqUxClientService.GetRfqProjectByIdAsync(RfqProjectId);
-
-            if (rfqProject == null || string.IsNullOrWhiteSpace(rfqProject.JsonData))
-            {
-                _Harnesses.Clear();
-                return;
-            }
-
-            SelectionLogData? selectionLog = null;
-
-            try
-            {
-     
-                selectionLog = JsonSerializer.Deserialize<SelectionLogData>(rfqProject.JsonData, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
-            }
-            catch (JsonException ex)
-            {
-                Logger.GenericLogError("Error parsing JsonData for SelectionLogData", ex);
-                return;
-            }
-
-            if (selectionLog == null || string.IsNullOrWhiteSpace(selectionLog.HarnessId))
-            {
-                Logger.GenericLogInformation("HarnessId is null or empty in JsonData");
-                return; 
-            }
-
-            if (!Guid.TryParse(selectionLog.HarnessId, out Guid harnessId))
-            {
-                Logger.GenericLogInformation($"Invalid HarnessId format: {selectionLog.HarnessId}");
-                return; 
-            }
-
-            // SAFE: HarnessId is guaranteed valid here
-            DsiHarnessUxModel? harness = await DsiUxClientService.GetHarnessByIdAsync(selectionLog.HarnessId);
-
-            _Harnesses.Clear();
-
-            if (harness != null)
-            {
-                // 3. Restore automatically selected state
-                //if (selectionLog.Selections != null && selectionLog.Selections.Any())
-                //{
-                //    HashSet<int> savedSelectionIds = selectionLog.Selections.Select(s => s.Id).ToHashSet();
-                //}
-                _PreselectedDerivativeIds.Clear();
-
-                if (selectionLog.Selections != null && selectionLog.Selections.Any())
-                {
-                    foreach (SelectedCompositeData selection in selectionLog.Selections)
-                    {
-                        _PreselectedDerivativeIds.Add(selection.Id);
-                    }
-                }
-
-                _Harnesses.Add(harness);
-            }
         }
 
         async Task<bool> LoadRfqAndPartNumbersAsync()
@@ -291,6 +235,67 @@
             return success;
         }
 
+        async Task LoadNprRequests()
+        {
+            await Task.Delay(1);
+            List<RfqNprRequestUxModel>? nprRequests = await RfqUxClientService.GetNprRequestsByRfqNumberAsync(RfqProject?.RfqNumber);
+            if (nprRequests != null)
+            {
+                RfqProject!.NprRequests = nprRequests;
+            }
+        }
+
+        async Task LoadCompositesAsync()
+        {
+            _Composites.Clear();
+            if (RfqProject == null || string.IsNullOrWhiteSpace(RfqProject.JsonData))
+            {
+                return;
+            }
+
+            // comnposite data is stored in the JsonData field of the RfqProject, so we need to deserialize it
+            SelectionLogData? selectionLog = null;
+            try
+            {
+                selectionLog = JsonSerializer.Deserialize<SelectionLogData>(RfqProject.JsonData, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+            }
+            catch (JsonException ex)
+            {
+                Logger.GenericLogError("Error parsing JsonData for SelectionLogData", ex);
+                return;
+            }
+
+            if (selectionLog == null || string.IsNullOrWhiteSpace(selectionLog.HarnessId))
+            {
+                Logger.GenericLogInformation("HarnessId is null or empty in JsonData");
+                return;
+            }
+
+            if (!Guid.TryParse(selectionLog.HarnessId, out Guid id))
+            {
+                Logger.GenericLogInformation($"Invalid HarnessId format: {selectionLog.HarnessId}");
+                return;
+            }
+
+            // for testing 
+            // Guid id = Guid.Parse("237ad12c-3e00-46a4-baeb-ba12fff53fa6");
+            await DsiUxClientService.GetAllHarnessAsync();
+            _Composites.AddRange(DsiUxClientService.Harnesses.Where(h => h.Id == id));
+
+            _PreselectedDerivativeIds.Clear();
+
+            if (selectionLog.Selections != null && selectionLog.Selections.Any())
+            {
+                foreach (SelectedCompositeData selection in selectionLog.Selections)
+                {
+                    _PreselectedDerivativeIds.Add(selection.Id);
+                }
+            }
+        }
+
         public bool IsCreateNprRequestsPermitted
         {
             get
@@ -306,16 +311,6 @@
                 }
 
                 return _InProgressParts.Count <= nprRequestAlreadyExists;
-            }
-        }
-
-        async Task LoadNprRequests()
-        {
-            await Task.Delay(1);
-            List<RfqNprRequestUxModel>? nprRequests = await RfqUxClientService.GetNprRequestsByRfqNumberAsync(RfqProject?.RfqNumber);
-            if (nprRequests != null)
-            {
-                RfqProject!.NprRequests = nprRequests;
             }
         }
 
@@ -585,10 +580,28 @@
         }
         async Task ShowDatasetStatusAsync()
         {
-            await Task.Delay(1);
-            // TODO: Implement the logic to show dataset status.
-            // For now, just show a snackbar as a placeholder.
-            Snackbar.Add("Dataset status feature is not yet implemented.", Severity.Info);
+            DialogParameters parameters = new DialogParameters
+            {
+                { nameof(DatasetStatusDialog.MatchedParts), _CompletedParts },
+                { nameof(DatasetStatusDialog.UnmatchedParts), _InProgressParts },
+                { nameof(DatasetStatusDialog.RfqNumber), RfqProject?.RfqNumber ?? string.Empty }
+            };
+
+            DialogOptions options = new DialogOptions
+            {
+                MaxWidth = MaxWidth.Large,
+                FullWidth = true,
+                CloseButton = true,
+                CloseOnEscapeKey = true
+            };
+
+            IDialogReference dialog = await DialogService.ShowAsync<DatasetStatusDialog>(
+                $"Dataset Status – {RfqProject?.RfqNumber}",
+                parameters,
+                options
+            );
+
+            await dialog.Result;
         }
         async Task HandlePartNumberDeleted(RfqDrawingPartNumberUxModel deletedItem)
         {
@@ -962,6 +975,9 @@
                     await _ComponentNprEditor.SaveNprRequestsAsync();
                 }
 
+                // Update selection
+                await UpdateSelectionAsync();
+
                 UpdateRfqDrawingPartNumbersGrpcResponse partsUpdateResult = await RfqUxClientService.UpdateRfqDrawingPartNumbersAsync(allParts);
                 UpdateRfqProjectGrpcResponse rfqUpdateResult = await RfqUxClientService.UpdateRfqProjectAsync(RfqProject!);
 
@@ -1322,7 +1338,7 @@
                     continue;
                 }
 
-                _InProgressParts.Add(component.ToRfqDrawingPartNumberUxModel());
+                _InProgressParts.Add(component.ToUx());
             }
 
             _ActiveTabIndex = 1; // Switch to "Parts Lists" tab
@@ -1332,27 +1348,35 @@
              
          async Task UpdateSelectionAsync()
         {
-          HashSet<DsiCompositeDetailUxModel>? currentSelections = _CompositeCardsRef?.SelectedItems;
+            HashSet<DsiCompositeDetailUxModel>? currentSelections = _CompositeCardsRef?.SelectedItems;
 
-            if (currentSelections == null || !currentSelections.Any())
-            {
-                Snackbar.Add("No components selected to update.", Severity.Warning);
-                return;
-            }
+            //if (currentSelections == null || !currentSelections.Any())
+            //{
+            //    Snackbar.Add("No components selected to update.", Severity.Warning);
+            //    return;
+            //}
 
-            string? harnessId = _Harnesses.FirstOrDefault()?.Id.ToString();
+            string? harnessId = _Composites.FirstOrDefault()?.Id.ToString();
             SelectionLogData selectionLog = new SelectionLogData
             {
                 HarnessId = harnessId,
-                RfqId = RfqProjectId,
-                Selections = currentSelections.Select(x => new SelectedCompositeData
+                RfqId = RfqProjectId
+            };
+
+            if (currentSelections != null && currentSelections.Any())
+            {
+                selectionLog.Selections = currentSelections.Select(x => new SelectedCompositeData
                 {
                     Id = x.Id,
                     HarnessName1 = x.HarnessName1,
                     HarnessName2 = x.HarnessName2,
                     Customer = x.Customer
-                })
-            };
+                }).ToList();
+            }
+            else
+            {
+                selectionLog.Selections = new List<SelectedCompositeData>();
+            }
 
             // Explicit string declaration
             string jsonOutput = JsonSerializer.Serialize(selectionLog, new JsonSerializerOptions
@@ -1360,38 +1384,38 @@
                 WriteIndented = true
             });
 
-            Console.WriteLine(jsonOutput);
+            Logger.GenericLogInformation($">>> Serializing derivatives selection JSON data: {jsonOutput}");
 
             RfqProject!.JsonData = jsonOutput;
 
-            try
-            {
-                UpdateRfqProjectGrpcResponse result =
-                    await RfqUxClientService.UpdateRfqProjectAsync(RfqProject);
+            //try
+            //{
+            //    UpdateRfqProjectGrpcResponse result =
+            //        await RfqUxClientService.UpdateRfqProjectAsync(RfqProject);
 
-                if (result.Success)
-                {
-                    Snackbar.Add(" JSON data saved to RFQ successfully", Severity.Success);
-                }
-                else
-                {
-                    Snackbar.Add("Failed to save JSON data", Severity.Error);
-                }
-            }
-            catch (InvalidOperationException ex)
-            {
-                Snackbar.Add($"Invalid operation: {ex.Message}", Severity.Error);
-            }
-            catch (ArgumentNullException ex)
-            {
-                Snackbar.Add($"Missing data: {ex.Message}", Severity.Error);
-            }
-            catch (HttpRequestException ex)
-            {
-                Snackbar.Add($"Network error: {ex.Message}", Severity.Error);
-            }
+            //    if (result.Success)
+            //    {
+            //        Snackbar.Add(" JSON data saved to RFQ successfully", Severity.Success);
+            //    }
+            //    else
+            //    {
+            //        Snackbar.Add("Failed to save JSON data", Severity.Error);
+            //    }
+            //}
+            //catch (InvalidOperationException ex)
+            //{
+            //    Snackbar.Add($"Invalid operation: {ex.Message}", Severity.Error);
+            //}
+            //catch (ArgumentNullException ex)
+            //{
+            //    Snackbar.Add($"Missing data: {ex.Message}", Severity.Error);
+            //}
+            //catch (HttpRequestException ex)
+            //{
+            //    Snackbar.Add($"Network error: {ex.Message}", Severity.Error);
+            //}
 
-            Snackbar.Add($"{currentSelections.Count} components selected", Severity.Success);
+            //Snackbar.Add($"{currentSelections?.Count} components selected", Severity.Success);
 
             await Task.CompletedTask;
        }

@@ -1,3 +1,5 @@
+using DocumentFormat.OpenXml.Drawing.Diagrams;
+
 namespace SalesSystem.Rfq.Components.Pages
 {
     public partial class CreateRfq
@@ -154,7 +156,25 @@ namespace SalesSystem.Rfq.Components.Pages
 
         #endregion
 
-        async Task SubmitDataAsync()
+        bool ProcessDataDisabled
+        {
+            get
+            {
+                return        
+                    string.IsNullOrWhiteSpace(CustomerValue)
+                    || SelectedProject == null
+                    || string.IsNullOrWhiteSpace(ReasonValue)
+                    || string.IsNullOrWhiteSpace(QuotationValue)
+                    || VehicleVolume <= 0
+                    || !_Date.HasValue
+                    || FileObjects.Count <= 0
+                    || !FileObjects.Any(f => f.Status != UxObjectStatus.Deleted && f.IsFileValid);
+            }
+        }
+
+        public int CreatedProjectId { get; private set; }
+
+        async Task ProcessDataAsync()
         {
             // Create a progress state object that will be shared with the dialog
             SubmissionProgressState progressState = new SubmissionProgressState();
@@ -163,28 +183,37 @@ namespace SalesSystem.Rfq.Components.Pages
             progressState.OnSuccessCallback = () =>
             {
                 try
+
                 {
-                    Logger.GenericLogInformation("CreateRfq.SubmitDataAsync - Navigating to dashboard after successful RFQ submission");
-                    NavigationManager.NavigateTo("/");
+                    if(CreatedProjectId > 0)
+                    {
+                        Logger.GenericLogInformation("CreateRfq.ProcessDataAsync - Navigating to EditRfq after successful RFQ submission");
+                        NavigationManager.NavigateTo($"/editRfq/{CreatedProjectId}");
+                    }
+                    else
+                    {
+                        Logger.GenericLogInformation("CreateRfq.ProcessDataAsync - Navigating to dashboard after successful RFQ submission");
+                        NavigationManager.NavigateTo("/");
+                    }
                 }
                 catch (OperationCanceledException ex)
                 {
-                    Logger.GenericLogError("CreateRfq.SubmitDataAsync - Navigation canceled", ex);
+                    Logger.GenericLogError("CreateRfq.ProcessDataAsync - Navigation canceled", ex);
                     Snackbar.Add("Navigation was canceled. Please manually navigate to the dashboard.", Severity.Warning);
                 }
                 catch (ArgumentException ex)
                 {
-                    Logger.GenericLogError("CreateRfq.SubmitDataAsync - Invalid argument during navigation", ex);
+                    Logger.GenericLogError("CreateRfq.ProcessDataAsync - Invalid argument during navigation", ex);
                     Snackbar.Add("Navigation error occurred. Please manually navigate to the dashboard.", Severity.Warning);
                 }
                 catch (InvalidOperationException ex)
                 {
-                    Logger.GenericLogError("CreateRfq.SubmitDataAsync - Invalid operation during navigation", ex);
+                    Logger.GenericLogError("CreateRfq.ProcessDataAsync - Invalid operation during navigation", ex);
                     Snackbar.Add("Navigation error occurred. Please manually navigate to the dashboard.", Severity.Warning);
                 }
                 catch (Exception ex)
                 {  
-                    Logger.GenericLogError("CreateRfq.SubmitDataAsync - Error navigating to dashboard", ex);
+                    Logger.GenericLogError("CreateRfq.ProcessDataAsync - Error navigating to dashboard", ex);
                     Snackbar.Add("Navigation error occurred. Please manually navigate to the dashboard.", Severity.Warning);
                     throw; // Rethrow to comply with CA1031 since we're only catching Exception to log and show a message
                 }
@@ -222,7 +251,7 @@ namespace SalesSystem.Rfq.Components.Pages
                 || VehicleVolume <= 0 || !_Date.HasValue)
                 {
                     progressState.SetError("Validation failed: Missing required fields", "Please fill in all required fields.");
-                    Logger.GenericLogInformation("CreateRfq.SubmitDataAsync - Validation failed: Missing required fields");
+                    Logger.GenericLogInformation("CreateRfq.ProcessDataAsync - Validation failed: Missing required fields");
                     return;
                 }
 
@@ -230,7 +259,7 @@ namespace SalesSystem.Rfq.Components.Pages
                 if (customer is null)
                 {
                     progressState.SetError("Validation failed: Customer not found", "Selected customer not found.");
-                    Logger.GenericLogInformation("CreateRfq.SubmitDataAsync - Validation failed: Customer not found");
+                    Logger.GenericLogInformation("CreateRfq.ProcessDataAsync - Validation failed: Customer not found");
                     return;
                 }
 
@@ -241,19 +270,19 @@ namespace SalesSystem.Rfq.Components.Pages
                 if (reason is null)
                 {
                     progressState.SetError("Validation failed: Reason not found", "Selected reason not found.");
-                    Logger.GenericLogInformation("CreateRfq.SubmitDataAsync - Validation failed: Reason not found");
+                    Logger.GenericLogInformation("CreateRfq.ProcessDataAsync - Validation failed: Reason not found");
                     return;
                 }
 
                 if (FileObjects.Count <= 0 || !FileObjects.Any(f => f.Status != UxObjectStatus.Deleted && f.IsFileValid))
                 {
                     progressState.SetError("Validation failed: No valid files", "Please upload at least one valid file.");
-                    Logger.GenericLogInformation("CreateRfq.SubmitDataAsync - Validation failed: No valid files");
+                    Logger.GenericLogInformation("CreateRfq.ProcessDataAsync - Validation failed: No valid files");
                     return;
                 }
 
                 progressState.SetCheckpointCompleted(0, "All validations passed");
-                Logger.GenericLogInformation($"CreateRfq.SubmitDataAsync - Checkpoint: Validations OK");
+                Logger.GenericLogInformation($"CreateRfq.ProcessDataAsync - Checkpoint: Validations OK");
 
                 // Checkpoint 2: Create RFQ Project
                 progressState.UpdateProgress("Creating RFQ project...", 1);
@@ -273,18 +302,19 @@ namespace SalesSystem.Rfq.Components.Pages
                 if (response == null)
                 {
                     progressState.SetError("Failed to create project", "Failed to create project. Response is null.");
-                    Logger.GenericLogInformation("CreateRfq.SubmitDataAsync - Failed to create project. Response is null.");
+                    Logger.GenericLogInformation("CreateRfq.ProcessDataAsync - Failed to create project. Response is null.");
                     return;
                 }
                 else if (response.Success == false)
                 {
                     progressState.SetError("Failed to create project", $"Failed to create project. {response.Message}");
-                    Logger.GenericLogInformation($"CreateRfq.SubmitDataAsync - Failed to create project. {response.Message}");
+                    Logger.GenericLogInformation($"CreateRfq.ProcessDataAsync - Failed to create project. {response.Message}");
                     return;
                 }
 
                 progressState.SetCheckpointCompleted(1, $"Project created: {response.CreatedProjectId}");
-                Logger.GenericLogInformation($"CreateRfq.SubmitDataAsync - Checkpoint: RFQ created with ID {response.CreatedProjectId}");
+                Logger.GenericLogInformation($"CreateRfq.ProcessDataAsync - Checkpoint: RFQ created with ID {response.CreatedProjectId}");
+                CreatedProjectId = Convert.ToInt32(response.CreatedProjectId, CultureInfo.InvariantCulture);
 
                 // Checkpoint 3:
                 // Files
@@ -304,12 +334,12 @@ namespace SalesSystem.Rfq.Components.Pages
                         if (fileObject.File == null || !fileObject.IsFileValid)
                         {
                             skippedCount++;
-                            Logger.GenericLogInformation($"CreateRfq.SubmitDataAsync - Skipping invalid file: {fileObject.DisplayName}");
+                            Logger.GenericLogInformation($"CreateRfq.ProcessDataAsync - Skipping invalid file: {fileObject.DisplayName}");
                             continue;
                         }
 
                         fileCount++;
-                        progressState.UpdateProgress($"CreateRfq.SubmitDataAsync - Uploading file {fileCount} of {totalFiles}: {fileObject.File.Name}", 2);
+                        progressState.UpdateProgress($"CreateRfq.ProcessDataAsync - Uploading file {fileCount} of {totalFiles}: {fileObject.File.Name}", 2);
 
                         UploadPartsRequestGrpcResponse uploadFileResponse = await RfqUxClientService.UploadPartsAsync(response.CreatedProjectId, fileObject.File, GlobalValue?.UserId, 16_000_000);
                         fileObject.UploadStatus = new FileObjectUploadStatus(uploadFileResponse);
@@ -317,16 +347,16 @@ namespace SalesSystem.Rfq.Components.Pages
 
                         if (uploadFileResponse.Success == true)
                         {
-                            Logger.GenericLogInformation($"III CreateRfq.SubmitDataAsync - Uploaded file {fileObject.File.Name}/{fileObject.File.Size}, {fileObject.UploadStatus.Status}/{fileObject.UploadStatus.Message}");
+                            Logger.GenericLogInformation($"III CreateRfq.ProcessDataAsync - Uploaded file {fileObject.File.Name}/{fileObject.File.Size}, {fileObject.UploadStatus.Status}/{fileObject.UploadStatus.Message}");
                         }
                         else
                         {
-                            Logger.GenericLogInformation($"FFF CreateRfq.SubmitDataAsync - Uploaded file {fileObject.File.Name}/{fileObject.File.Size}, {fileObject.UploadStatus.Status}/{fileObject.UploadStatus.Message}");
+                            Logger.GenericLogInformation($"FFF CreateRfq.ProcessDataAsync - Uploaded file {fileObject.File.Name}/{fileObject.File.Size}, {fileObject.UploadStatus.Status}/{fileObject.UploadStatus.Message}");
                         }
                     }
                     catch (Exception fileEx)
                     {
-                        Logger.GenericLogError($"EEE CreateRfq.SubmitDataAsync - Error uploading file {fileObject.DisplayName}", fileEx);
+                        Logger.GenericLogError($"EEE CreateRfq.ProcessDataAsync - Error uploading file {fileObject.DisplayName}", fileEx);
                         fileObject.UploadStatus = new FileObjectUploadStatus
                         {
                             Status = FileUploadStatus.Failed,
@@ -342,7 +372,7 @@ namespace SalesSystem.Rfq.Components.Pages
                     : $"Uploaded {fileCount} files";
 
                 progressState.SetCheckpointCompleted(2, uploadSummary);
-                Logger.GenericLogInformation($"CreateRfq.SubmitDataAsync - Checkpoint: {uploadSummary}");
+                Logger.GenericLogInformation($"CreateRfq.ProcessDataAsync - Checkpoint: {uploadSummary}");
 
                 // Checkpoint 4: Finalize
                 progressState.UpdateProgress("Finalizing submission...", 3);
@@ -352,7 +382,7 @@ namespace SalesSystem.Rfq.Components.Pages
 
                 _UploadedSuccessfully = allOk;
                 progressState.SetCheckpointCompleted(3, "Submission completed");
-                Logger.GenericLogInformation($"CreateRfq.SubmitDataAsync - Checkpoint: Submission finalized, success: {allOk}");
+                Logger.GenericLogInformation($"CreateRfq.ProcessDataAsync - Checkpoint: Submission finalized, success: {allOk}");
 
                 // Final update
                 progressState.SetCompleted(allOk ? "RFQ submission completed successfully!" : "RFQ submission completed with some errors", !allOk);
@@ -372,26 +402,26 @@ namespace SalesSystem.Rfq.Components.Pages
             }
             catch (OperationCanceledException ex)
             {
-                Logger.GenericLogError("CreateRfq.SubmitDataAsync - Operation canceled during submission", ex);
+                Logger.GenericLogError("CreateRfq.ProcessDataAsync - Operation canceled during submission", ex);
                 progressState.SetError("Submission canceled", $"Operation was canceled: {ex.Message}", isCompleted: true);
                 throw;
             }
             catch (ArgumentException ex)
             {
-                Logger.GenericLogError("CreateRfq.SubmitDataAsync - Argument error during submission", ex);
+                Logger.GenericLogError("CreateRfq.ProcessDataAsync - Argument error during submission", ex);
                 progressState.SetError("Argument error occurred", $"Error: {ex.Message}", isCompleted: true);
                 throw;
             }
             catch (InvalidOperationException ex)
             {
-                Logger.GenericLogError("CreateRfq.SubmitDataAsync - Invalid operation during submission", ex);
+                Logger.GenericLogError("CreateRfq.ProcessDataAsync - Invalid operation during submission", ex);
                 progressState.SetError("Invalid operation occurred", $"Error: {ex.Message}", isCompleted: true);
                 throw;
             }
             // Only catch Exception if you rethrow, to comply with CA1031
             catch (Exception ex)
             {
-                Logger.GenericLogError("CreateRfq.SubmitDataAsync - Unexpected error during submission", ex);
+                Logger.GenericLogError("CreateRfq.ProcessDataAsync - Unexpected error during submission", ex);
                 progressState.SetError("An unexpected error occurred", $"Error: {ex.Message}", isCompleted: true);
                 throw;
             }
