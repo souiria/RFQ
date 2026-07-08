@@ -174,7 +174,7 @@ namespace SalesSystem.Rfq.Extensions
 
             return dto;
         }
-        public static RfqDrawingPartNumberUxModel ToRfqDrawingPartNumberUxModel(this DsiComponentUxModel component)
+        public static RfqDrawingPartNumberUxModel ToUx(this DsiComponentUxModel component)
         {
             if (component == null)
             {
@@ -200,7 +200,9 @@ namespace SalesSystem.Rfq.Extensions
                 IsExactMatch = false,
                 IsSwapped = false,
                 MultiMatch = false,
-                Status = RfqDrawingPartNumberStatus.New
+                Status = RfqDrawingPartNumberStatus.New,
+                // and of course, the quantity is missing
+                Quantity = component.Quantity.HasValue ? Convert.ToDecimal(component.Quantity.Value, CultureInfo.InvariantCulture) : 0m
             };
 
             return rfqItem;

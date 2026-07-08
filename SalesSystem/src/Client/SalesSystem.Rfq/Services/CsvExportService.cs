@@ -39,6 +39,7 @@ namespace SalesSystem.Rfq.Services
                     record.MultiMatch = part.MultiMatch;
                     record.PriceDifference = part.SwappedPartNumberPrice - part.DrawingPartNumberPrice;
                     record.Comments = part.Comments;
+                    record.Quantity = part.Quantity;
 
                     exportData.Add(record);
                 }
@@ -114,6 +115,8 @@ namespace SalesSystem.Rfq.Services
                 csv.WriteField("Multi Match");
                 csv.WriteField("Price Difference");
                 csv.WriteField("Comments");
+                csv.WriteField("Quantity");
+                csv.WriteField("Value");
                 csv.NextRecord();
 
                 // Write data
@@ -133,6 +136,8 @@ namespace SalesSystem.Rfq.Services
                     csv.WriteField(record.MultiMatch ? "yes" : "no" );
                     csv.WriteField(record.PriceDifference?.ToString("0.#####") ?? "");
                     csv.WriteField(record.Comments ?? "");
+                    csv.WriteField(record.Quantity?.ToString("0.#####") ?? "");
+                    csv.WriteField(record.Value?.ToString("0.#####") ?? "");
                     csv.NextRecord();
                 }
 

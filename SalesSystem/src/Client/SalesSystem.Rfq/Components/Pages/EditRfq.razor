@@ -226,26 +226,35 @@ else
         </MudItem>
 
         <MudItem xs="12" Class="pt-2">
-            <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-3" MinimumTabWidth="12vw" @bind-ActivePanelIndex="_ActiveTabIndex">
-                <MudTabPanel Text="BOM Files" Icon="@Icons.Material.Filled.Api" BadgeData='"BOM"' BadgeColor="Color.Success">
+            <MudTabs Elevation="2"
+                     Rounded="true"
+                     ApplyEffectsToContainer="true"
+                     PanelClass="pa-3"
+                     MinimumTabWidth="12vw"
+                     KeepPanelsAlive="true"
+                     @bind-ActivePanelIndex="_ActiveTabIndex">
+                <MudTabPanel Text="BOM Files"
+                             Icon="@Icons.Material.Filled.Api"
+                             BadgeData='"BOM"'
+                             BadgeColor="Color.Success">
                     <div class="d-flex flex-column" style="height: calc(100vh - 364px); overflow: hidden;">
 @*                         <FileCards @ref="_ComponentFileCards"
                                    FileObjects="FileObjects"
                                    OnRemoveFile="HandleFileRemoval" /> *@
-                        @if(_Harnesses.Count > 0)
+                        @if(_Composites.Count > 0)
                         {
                             <CompositeCards @ref="_CompositeCardsRef"
-                                            DsiComposites="@_Harnesses"
+                                            DsiComposites="@_Composites"
                                             PreselectedIds="@_PreselectedDerivativeIds"
                                             OnComponentsSelected="@HandleComponentsSelectedAsync" />
 
-                            <MudButton Class="mt-4"
+                            @* <MudButton Class="mt-4"
                                        Color="Color.Primary"
                                        Variant="Variant.Filled"
                                        StartIcon="@Icons.Material.Filled.Save"
                                        OnClick="@UpdateSelectionAsync">
                                 Update Selection
-                            </MudButton>
+                            </MudButton> *@
                         }
                     </div>
                 </MudTabPanel>

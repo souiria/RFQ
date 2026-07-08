@@ -79,6 +79,8 @@
                             Title="Drawing P/N Price"
                             Format="0.##### €">
             </PropertyColumn>
+            <PropertyColumn Property="x => x.Quantity" Title="Quantity" Format="0.####">
+            </PropertyColumn>
             <PropertyColumn Property="x => x.SwappedPartNumber" Title="Dummy/Alt. P/N" />
             <PropertyColumn Property="x => x.SwappedPartNumberPrice"
                             Title="Dummy/Alt. P/N Price"
@@ -101,9 +103,9 @@
 </div>
 
 <style>
-    .mud-grid-no-scroll-x {
+    /* .mud-grid-no-scroll-x {
         overflow-x: hidden !important;
-    }
+    } */
     .mud-table-sticky-header {
         position: sticky;
         top: 0;

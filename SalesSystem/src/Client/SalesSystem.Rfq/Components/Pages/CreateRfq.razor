@@ -126,8 +126,19 @@
                 <FileManager @ref="_ComponentFileManager"
                              FileObjects="FileObjects"
                              OnFilesChanged="OnFilesChanged"
-                             OnUploadClicked="@SubmitDataAsync"
                              UploadDisabled="@(!FileObjects.Any() || _UploadedSuccessfully)" />
+            </MudPaper>
+            <MudPaper Class="d-flex justify-center align-center pa-2">
+                <MudTooltip Text="Process Rfq Data and BOM Files">
+                    <MudButton StartIcon="@Icons.Material.Filled.Upload"
+                                Variant="Variant.Filled"
+                               Color="Color.Tertiary"
+                                Size="Size.Medium"
+                                Disabled="@ProcessDataDisabled"
+                                OnClick="@ProcessDataAsync">
+                        Process Rfq
+                    </MudButton>
+                </MudTooltip>
             </MudPaper>
         </MudPaper>
     </MudItem>
@@ -141,3 +152,4 @@
         </MudPaper>
     </MudItem>
 </MudGrid>
+

@@ -30,5 +30,8 @@ namespace SalesSystem.Rfq.Models
         { get; set; }
         public string? Comments 
         { get; set; }
+        public decimal? Quantity
+        { get; set; }
+        public decimal? Value => Quantity * OriginalPartNumberPrice;
     }
 }

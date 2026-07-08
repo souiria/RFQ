@@ -77,6 +77,9 @@
         public bool HasImage => PartImage != null && 0 <= PartImage.ImageBytes.Count;
         public RfqDrawingPartNumberStatus Status
         { get; set; }
+        [Column(TypeName = "decimal(12, 4)")]
+        public decimal? Quantity
+        { get; set; } = 0.0m;
     }
 }
 
