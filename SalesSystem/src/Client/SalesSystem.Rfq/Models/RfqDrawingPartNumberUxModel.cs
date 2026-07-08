@@ -52,13 +52,18 @@
                     return true;
                 }
 
+                if (IsSwapped == true)
+                {
+                    return true;
+                }
+
                 // Check if drawing part number is set with a price
                 bool hasDrawingPartNumberWithPrice = !string.IsNullOrWhiteSpace(DrawingPartNumber)
-                    && 0 <= DrawingPartNumberPrice; 
+                    && 0 < DrawingPartNumberPrice; 
 
                 // Check if swapped part number is set with a swapped price
                 bool hasSwappedPartNumberWithPrice = !string.IsNullOrWhiteSpace(SwappedPartNumber)
-                    && 0 <= SwappedPartNumberPrice;
+                    && 0 < SwappedPartNumberPrice;
 
                 return hasDrawingPartNumberWithPrice || hasSwappedPartNumberWithPrice;
             }

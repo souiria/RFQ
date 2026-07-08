@@ -485,7 +485,7 @@ namespace SalesSystem.Rfq.Services
         #endregion
 
         #region Parts
-        public async Task<UploadPartsRequestGrpcResponse> UploadPartsAsync(string projectId,
+        public async Task<UploadPartsRequestGrpcResponse> UploadBomFileAsync(string projectId,
                                                                            IBrowserFile file,
                                                                            Guid? userId,
                                                                            long maxAllowedSize = 10_000_000)
@@ -494,6 +494,7 @@ namespace SalesSystem.Rfq.Services
 
             try
             {
+                // TBD these should be renamed, as actually they only load BOM files, not parts.  But the GRPC service is called UploadPartsGrpcAsync, so we keep the name for now.
                 UploadPartsRequestGrpcRequest request = new UploadPartsRequestGrpcRequest();
                 request.ProjectId = projectId;
                 request.FileName = file.Name;
@@ -505,6 +506,7 @@ namespace SalesSystem.Rfq.Services
 
                 request.FileData = ByteString.CopyFrom(fileData);
 
+                // TBD the same issue as above, the GRPC service is called UploadPartsGrpcAsync, but it actually uploads a BOM file.  So we keep the name for now.
                 UploadPartsRequestGrpcResponse response = await _Client.UploadPartsGrpcAsync(request, cancellationToken: timeoutCts.Token);
 
                 return response;
@@ -515,37 +517,38 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-        public async Task<UploadPartsRequestGrpcResponse> UploadPartsAsync(string projectId,
-                                                                           byte[] fileData,
-                                                                           string fileName,
-                                                                           Guid? userId,
-                                                                           long maxAllowedSize = 16_777_216)
-        {
-            ArgumentException.ThrowIfNullOrEmpty(projectId);
-            ArgumentNullException.ThrowIfNull(fileData);
-            ArgumentException.ThrowIfNullOrEmpty(fileName);
-            ArgumentOutOfRangeException.ThrowIfGreaterThan(fileData.LongLength, maxAllowedSize);
+        // never used, but kept for reference
+        //public async Task<UploadPartsRequestGrpcResponse> UploadPartsAsync(string projectId,
+        //                                                                   byte[] fileData,
+        //                                                                   string fileName,
+        //                                                                   Guid? userId,
+        //                                                                   long maxAllowedSize = 16_777_216)
+        //{
+        //    ArgumentException.ThrowIfNullOrEmpty(projectId);
+        //    ArgumentNullException.ThrowIfNull(fileData);
+        //    ArgumentException.ThrowIfNullOrEmpty(fileName);
+        //    ArgumentOutOfRangeException.ThrowIfGreaterThan(fileData.LongLength, maxAllowedSize);
 
-            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+        //    using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
 
-            try
-            {
-                UploadPartsRequestGrpcRequest request = new UploadPartsRequestGrpcRequest();
-                request.ProjectId = projectId;
-                request.FileName = fileName;
-                request.FileData = ByteString.CopyFrom(fileData);
-                request.UserId = userId.ToString();
+        //    try
+        //    {
+        //        UploadPartsRequestGrpcRequest request = new UploadPartsRequestGrpcRequest();
+        //        request.ProjectId = projectId;
+        //        request.FileName = fileName;
+        //        request.FileData = ByteString.CopyFrom(fileData);
+        //        request.UserId = userId.ToString();
 
-                UploadPartsRequestGrpcResponse response = await _Client.UploadPartsGrpcAsync(request, cancellationToken: timeoutCts.Token);
+        //        UploadPartsRequestGrpcResponse response = await _Client.UploadPartsGrpcAsync(request, cancellationToken: timeoutCts.Token);
 
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _Logger?.GenericLogError($"Error in UploadParts for project: {projectId}, file: {fileName}", ex);
-                throw;
-            }
-        }
+        //        return response;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _Logger?.GenericLogError($"Error in UploadParts for project: {projectId}, file: {fileName}", ex);
+        //        throw;
+        //    }
+        //}
         #endregion
 
         #region Searching part numbers

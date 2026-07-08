@@ -87,6 +87,12 @@
                     // load Npr requests for the RFQ project
                     await LoadNprRequests();
                 }
+
+                if(_Composites.Count == 0)
+                {
+                    // no derivatives loaded, so switch to the parts tab
+                    _ActiveTabIndex = 1; // Switch to "Parts Lists" tab 
+                }
             }
             catch (InvalidOperationException ex)
             {
@@ -575,8 +581,9 @@
             finally
             {
                 _IsSubmittingNprs = false;
-                StateHasChanged();
             }
+
+            StateHasChanged();
         }
         async Task ShowDatasetStatusAsync()
         {
@@ -633,7 +640,6 @@
 
             await Task.CompletedTask;
         }
-
         async Task HandlePartNumberUpdated(RfqDrawingPartNumberUxModel updatedItem)
         {
             try
@@ -866,7 +872,7 @@
         //                fileCount++;
         //                progressState.UpdateProgress($"Uploading file {fileCount} of {totalFiles}: {fileObject.File.Name}", 1);
 
-                        //UploadPartsRequestGrpcResponse uploadFileResponse = await RfqUxClientService.UploadPartsAsync(RfqProjectId.ToString(CultureInfo.InvariantCulture), fileObject.File, GlobalValue?.UserId, 16_000_000);
+                        //UploadPartsRequestGrpcResponse uploadFileResponse = await RfqUxClientService.UploadBomFileAsync(RfqProjectId.ToString(CultureInfo.InvariantCulture), fileObject.File, GlobalValue?.UserId, 16_000_000);
                         //fileObject.UploadStatus = new FileObjectUploadStatus(uploadFileResponse);
                         //allOk = allOk && uploadFileResponse.Success;
 
@@ -978,8 +984,10 @@
                 // Update selection
                 await UpdateSelectionAsync();
 
-                UpdateRfqDrawingPartNumbersGrpcResponse partsUpdateResult = await RfqUxClientService.UpdateRfqDrawingPartNumbersAsync(allParts);
+                // Save the RfqProject FIRST so its RowId exists before parts reference it
                 UpdateRfqProjectGrpcResponse rfqUpdateResult = await RfqUxClientService.UpdateRfqProjectAsync(RfqProject!);
+                UpdateRfqDrawingPartNumbersGrpcResponse partsUpdateResult = await RfqUxClientService.UpdateRfqDrawingPartNumbersAsync(allParts);
+
 
                 if (partsUpdateResult.Success && rfqUpdateResult.Success)
                 {
@@ -1331,6 +1339,12 @@
             _CompletedParts.Clear();
             _InProgressParts.Clear();
 
+            if(RfqProject == null)
+            {
+                Logger.GenericLogInformation("EEE - EditRfq.HandleComponentsSelectedAsync - RfqProject is null");
+                return;
+            }
+
             foreach (DsiComponentUxModel component in components)
             {
                 if (string.IsNullOrWhiteSpace(component.PartNumber1))
@@ -1338,7 +1352,7 @@
                     continue;
                 }
 
-                _InProgressParts.Add(component.ToUx());
+                _InProgressParts.Add(component.ToUx(RfqProject.RowId));
             }
 
             _ActiveTabIndex = 1; // Switch to "Parts Lists" tab
