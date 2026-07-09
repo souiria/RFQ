@@ -203,7 +203,8 @@
             }
             SearchResultUxModel responseExact = await RfqUxClientService.SearchEmacsExactCustomerPn(item.CustomerPartNumber);
             SearchResultUxModel responseContains = await RfqUxClientService.SearchEmacsContainsCustomerPn(cleanedUpPn);
-
+            // SearchPartPricesGrpcResponse response = await RfqUxClientService.SearchPartPricesAsync(
+            //     new List<string> { item.CustomerPartNumber });
 
             if ((responseContains.IsSuccessful && 0 <= responseContains.StringList.Count)
             || (responseExact.IsSuccessful && 0 <= responseExact.StringList.Count))

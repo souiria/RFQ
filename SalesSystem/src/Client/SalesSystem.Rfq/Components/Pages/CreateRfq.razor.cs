@@ -1,5 +1,3 @@
-using DocumentFormat.OpenXml.Drawing.Diagrams;
-
 namespace SalesSystem.Rfq.Components.Pages
 {
     public partial class CreateRfq
@@ -264,6 +262,8 @@ namespace SalesSystem.Rfq.Components.Pages
                 }
 
                 // Use selectedProject directly (already validated above)
+                // TBD there is a need to check why this selection, even though is valid in the combo, it fails on backend with a
+                // message related to not haveing some vhehicle count associated or some sh%#$$@
                 RqfCustomerProjectAssociationUxModel customerProject = SelectedProject;
 
                 RfqReasonGrpc? reason = RfqUxClientService.Reasons.FirstOrDefault(r => r.RfqReasonTitle == ReasonValue);
@@ -273,6 +273,7 @@ namespace SalesSystem.Rfq.Components.Pages
                     Logger.GenericLogInformation("CreateRfq.ProcessDataAsync - Validation failed: Reason not found");
                     return;
                 }
+
 
                 if (FileObjects.Count <= 0 || !FileObjects.Any(f => f.Status != UxObjectStatus.Deleted && f.IsFileValid))
                 {
@@ -341,7 +342,7 @@ namespace SalesSystem.Rfq.Components.Pages
                         fileCount++;
                         progressState.UpdateProgress($"CreateRfq.ProcessDataAsync - Uploading file {fileCount} of {totalFiles}: {fileObject.File.Name}", 2);
 
-                        UploadPartsRequestGrpcResponse uploadFileResponse = await RfqUxClientService.UploadPartsAsync(response.CreatedProjectId, fileObject.File, GlobalValue?.UserId, 16_000_000);
+                        UploadPartsRequestGrpcResponse uploadFileResponse = await RfqUxClientService.UploadBomFileAsync(response.CreatedProjectId, fileObject.File, GlobalValue?.UserId, 16_000_000);
                         fileObject.UploadStatus = new FileObjectUploadStatus(uploadFileResponse);
                         allOk = allOk && uploadFileResponse.Success == true;
 

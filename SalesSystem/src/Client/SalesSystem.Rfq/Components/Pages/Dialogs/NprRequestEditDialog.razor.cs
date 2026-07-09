@@ -6,6 +6,10 @@ namespace SalesSystem.Rfq.Components.Pages.Dialogs
         RfqUxClientService RfqClientService
         { get; set; } = null!;
 
+        [Inject]
+        IDialogService DialogService
+        { get; set; } = null!;
+
         // Reference to autocomplete for reset
         MudAutocomplete<SupplierGroupUxModel>? _SupplierGroupAutocomplete;
         MudAutocomplete<SupplierUxModel>? _SupplierAutocomplete;
@@ -138,13 +142,13 @@ namespace SalesSystem.Rfq.Components.Pages.Dialogs
                     .FirstOrDefault(sg => sg.SupplierName == NprRequest.SuggestedManufacturerGroup);
             }
 
-            if(!string.IsNullOrEmpty(NprRequest.ReasonDescription))
+            if (!string.IsNullOrEmpty(NprRequest.ReasonDescription))
             {
                 SelectedReason = _Reasons
                     .FirstOrDefault(r => r.RfqReasonTitle == NprRequest.ReasonDescription);
             }
 
-            if(!string.IsNullOrEmpty(NprRequest.BOMUnitOfMeasurement))
+            if (!string.IsNullOrEmpty(NprRequest.BOMUnitOfMeasurement))
             {
                 SelectedUnitOfMeasure = _UnitOfMeasures
                     .FirstOrDefault(u => u.Code == NprRequest.BOMUnitOfMeasurement);
@@ -152,8 +156,8 @@ namespace SalesSystem.Rfq.Components.Pages.Dialogs
 
             if (!string.IsNullOrEmpty(NprRequest.ManufacturingSite))
             {
-                SelectedBusinessUnit = _BusinessUnits
-                    .FirstOrDefault(b => b.LegacyBusinessUnitCode == NprRequest.ManufacturingSite);
+                _SelectedBusinessUnit = _BusinessUnits
+                    .FirstOrDefault(b => string.Equals(b.LegacyBusinessUnitCode, NprRequest.ManufacturingSite, StringComparison.OrdinalIgnoreCase));
             }
         }
 
@@ -331,28 +335,49 @@ namespace SalesSystem.Rfq.Components.Pages.Dialogs
             MudDialog.Cancel();
         }
 
+        async Task ValidateAsync()
+        {
+            // Write back all autocomplete-backed fields so validation sees the current selections.
+            NprRequest.SupplierGroup = SelectedSupplierGroup?.SupplierGroupName;
+            NprRequest.SuggestedManufacturerGroup = SelectedSupplierGroup?.SupplierGroupName;
+            NprRequest.ReasonDescription = SelectedReason?.RfqReasonTitle;
+            NprRequest.ManufacturingSite = SelectedBusinessUnit?.LegacyBusinessUnitCode;
+            NprRequest.BOMUnitOfMeasurement = SelectedUnitOfMeasure?.Code;
+
+            bool isValid = NprRequest.Validate();
+
+            string partLabel = NprRequest.MaterialNumber
+                ?? NprRequest.CustomerPartNumber
+                ?? NprRequest.Id.ToString();
+
+            DialogParameters<NprValidationResultDialog> parameters = new DialogParameters<NprValidationResultDialog>
+            {
+                { x => x.IsValid, isValid },
+                { x => x.PartLabel, partLabel },
+                { x => x.ValidationErrors, NprRequest.ValidationErrors }
+            };
+
+            DialogOptions options = new DialogOptions
+            {
+                MaxWidth = MaxWidth.Large,
+                FullWidth = true,
+                CloseOnEscapeKey = true,
+                BackdropClick = false
+            };
+
+            await DialogService.ShowAsync<NprValidationResultDialog>(
+                isValid ? "Validation Passed" : "Validation Errors",
+                parameters,
+                options);
+        }
+
         void Save()
         {
-            if (SelectedSupplierGroup != null)
-            {
-                NprRequest.SupplierGroup = SelectedSupplierGroup.SupplierGroupName;
-                NprRequest.SuggestedManufacturerGroup = SelectedSupplierGroup.SupplierGroupName;
-            }
-            
-            if(SelectedReason != null)
-            {
-                NprRequest.ReasonDescription = SelectedReason.RfqReasonTitle;
-            }
-
-            if (SelectedBusinessUnit != null)
-            {
-                NprRequest.ManufacturingSite = SelectedBusinessUnit.LegacyBusinessUnitCode;
-            }
-
-            if (SelectedUnitOfMeasure != null)
-            {
-                NprRequest.BOMUnitOfMeasurement = SelectedUnitOfMeasure.Code;
-            } 
+            NprRequest.SupplierGroup = SelectedSupplierGroup?.SupplierGroupName;
+            NprRequest.SuggestedManufacturerGroup = SelectedSupplierGroup?.SupplierGroupName;
+            NprRequest.ReasonDescription = SelectedReason?.RfqReasonTitle;
+            NprRequest.ManufacturingSite = SelectedBusinessUnit?.LegacyBusinessUnitCode;
+            NprRequest.BOMUnitOfMeasurement = SelectedUnitOfMeasure?.Code;
 
             DialogResult result = DialogResult.Ok(NprRequest);
             MudDialog.Close(result);

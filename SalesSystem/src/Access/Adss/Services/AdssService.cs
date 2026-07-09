@@ -33,12 +33,24 @@
             string candidate = Path.Combine(_RootPath, partNumber + ".jpg");
             if (File.Exists(candidate))
             {
-            _Logger.GenericLogInformation(information: $"Found image for part number {partNumber} at {candidate}");
-            byte[] bytes = await File.ReadAllBytesAsync(candidate, ct);
-                return (bytes, "image/jpeg");
+                _Logger.GenericLogInformation(information: $"Found image for part number {partNumber} at {candidate}");
+                byte[] bytes = await File.ReadAllBytesAsync(candidate, ct);
+                    return (bytes, "image/jpeg");
             }
-            // 2) Nothing found
-        return (null, null);
+            // 2) Look for an image without the laset two 00 in the part name if that is the case
+            if(partNumber.EndsWith("00", StringComparison.InvariantCulture))
+            {
+                string shortName = partNumber.Substring(0, partNumber.Length - 2);
+                candidate = Path.Combine(_RootPath, shortName, ".jpg");
+                if (File.Exists(candidate))
+                {
+                    _Logger.GenericLogInformation(information: $"Found image for shortened part number {shortName} of {partNumber} at {candidate}");
+                    byte[] bytes = await File.ReadAllBytesAsync(candidate, ct);
+                    return (bytes, "image/jpeg");
+                }
+            }
+            // 3) Nothing found
+            return (null, null);
         }
     }
 }

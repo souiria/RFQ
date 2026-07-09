@@ -5,6 +5,7 @@ namespace SalesSystem.Rfq.Models
         string _Message;
         bool _IsCompleted;
         bool _IsActive;
+        bool _HasError;
         string _Details;
         DateTime? _CompletedAt;
 
@@ -13,6 +14,7 @@ namespace SalesSystem.Rfq.Models
             _Message = message;
             _IsCompleted = false;
             _IsActive = false;
+            _HasError = false;
             _Details = string.Empty;
             _CompletedAt = null;
         }
@@ -47,6 +49,16 @@ namespace SalesSystem.Rfq.Models
             }
         }
 
+        public bool HasError
+        {
+            get => _HasError;
+            private set
+            {
+                _HasError = value;
+                OnPropertyChanged(nameof(HasError));
+            }
+        }
+
         public string Details
         {
             get => _Details;
@@ -77,6 +89,18 @@ namespace SalesSystem.Rfq.Models
         {
             IsActive = false;
             IsCompleted = true;
+            CompletedAt = DateTime.Now;
+            if (!string.IsNullOrEmpty(details))
+            {
+                Details = details;
+            }
+        }
+
+        public void SetFailed(string? details = null)
+        {
+            IsActive = false;
+            IsCompleted = true;
+            HasError = true;
             CompletedAt = DateTime.Now;
             if (!string.IsNullOrEmpty(details))
             {

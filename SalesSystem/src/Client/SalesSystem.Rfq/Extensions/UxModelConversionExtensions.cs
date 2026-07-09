@@ -1,6 +1,4 @@
-﻿using RfqModule;
-
-namespace SalesSystem.Rfq.Extensions
+﻿namespace SalesSystem.Rfq.Extensions
 {
     public static class UxModelConversionExtensions
 
@@ -174,17 +172,22 @@ namespace SalesSystem.Rfq.Extensions
 
             return dto;
         }
-        public static RfqDrawingPartNumberUxModel ToUx(this DsiComponentUxModel component)
+        public static RfqDrawingPartNumberUxModel ToUx(this DsiComponentUxModel component, long rfqId)
         {
             if (component == null)
             {
-                throw new ArgumentNullException(nameof(component));
+                throw new ArgumentNullException(nameof(component), "DSI Component cannot be null.");
+            }
+
+            if (rfqId < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(rfqId), "RFQ ID must be a non-negative value.");
             }
 
             RfqDrawingPartNumberUxModel rfqItem = new RfqDrawingPartNumberUxModel
             {
                 // Maps the database primary key to row reference tracker
-                RowId = component.Id,
+                RfqId = rfqId,
 
                 // Map the primary active part number from the component data profile
                 CustomerPartNumber = component.PartNumber1 ?? string.Empty,

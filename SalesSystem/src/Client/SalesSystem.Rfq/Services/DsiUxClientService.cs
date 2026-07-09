@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace SalesSystem.Rfq.Services
+﻿namespace SalesSystem.Rfq.Services
 {
     public class DsiUxClientService : IDisposable
     {

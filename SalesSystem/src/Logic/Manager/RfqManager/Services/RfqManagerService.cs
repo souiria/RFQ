@@ -799,7 +799,7 @@
 
             try
             {
-                _Logger.GenericLogInformation($"III RfqManaerService.CreateRfqDrawingPartNumbers - start GRPC to the access layer - sending {customerParts.Count} parts");
+                _Logger.GenericLogInformation($"III RfqManagerService.CreateRfqDrawingPartNumbers - start GRPC to the access layer - sending {customerParts.Count} parts");
 
                 partRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
                 partRequest.RfqGrpcRequestParameter.RequestType = 70;
@@ -823,13 +823,13 @@
                 partResponse = _RfqClient.CreateRfqDrawingPartNumbersGrpc(partRequest);
 
                 string msg = partResponse.SaveSuccess == true ? "successfully" : "failed somehow";
-                _Logger.GenericLogInformation($"III RfqManaerService.CreateRfqDrawingPartNumbers - access layer returned over GRPC - {msg}");
+                _Logger.GenericLogInformation($"III RfqManagerService.CreateRfqDrawingPartNumbers - access layer returned over GRPC - {msg}");
                 return partResponse;
 
             }
             catch (Exception ex)
             {
-                _Logger.GenericLogError($"EEE RfqManaerService.CreateRfqDrawingPartNumbers - access layer returned over GRPC - {ex.Message}", ex);
+                _Logger.GenericLogError($"EEE RfqManagerService.CreateRfqDrawingPartNumbers - access layer returned over GRPC - {ex.Message}", ex);
             }
 
             return partResponse;
@@ -855,8 +855,18 @@
         public async Task<UploadPartsRequestGrpcResponse> UploadPartsGrpc(UploadPartsRequestGrpcRequest request)
         {
             UploadPartsRequestGrpcResponse uploadResponse = new UploadPartsRequestGrpcResponse();
-            List<CustomerParts> customerParts = await ConvertDocumentAsync(request);
+            (List<CustomerParts> customerParts, bool hasDerivatives) = await ConvertDocumentAsync(request);
 
+            // if the file hase derivatives, don't create a part list as the user needs to select which derivatives to create RFQ parts for
+            if (hasDerivatives)
+            {
+                uploadResponse.Success = true;
+                uploadResponse.Message = $"{request.FileName} processed successfully. Please select one or more derivatives to create RFQ Parts.";
+                _Logger.GenericLogInformation($"III RfqManagerService.UploadPartsGrpc Successfully uploaded - {customerParts.Count} parts incoming, but no RFQ parts created because the file was a DSI file with derivatives.");
+                return uploadResponse;
+            }
+
+            // unique list of customer parts, create this part list to send to the access layer to create the RFQ parts in the database
             RfqCrudGrpcResponse partResponse = CreateRfqDrawingPartNumbers(request.ProjectId, customerParts);
 
             if (partResponse.SaveSuccess == false)
@@ -876,18 +886,19 @@
 
         }
 
-        async Task<List<CustomerParts>> ConvertDocumentAsync(UploadPartsRequestGrpcRequest request)
+        async Task<(List<CustomerParts> partList, bool hasDerivatives)> ConvertDocumentAsync(UploadPartsRequestGrpcRequest request)
         {
             List<CrossReferenceDto> crossReferenceDtos = new List<CrossReferenceDto>();
             List<FordCsvDto> fordCsvDtos = new List<FordCsvDto>();
             DsiAggregate dsiAggregate = new DsiAggregate();
             List<CustomerParts> customerParts = new List<CustomerParts>();
+            bool hasDerivatives = false;
             try
             {
                 // Check if file data exists
                 if (request.FileData == null || request.FileData.Length == 0)
                 {
-                    return customerParts;
+                    return (customerParts, false);
                 }
 
                 crossReferenceDtos.Clear();
@@ -925,20 +936,21 @@
                     crossReferenceDtos = DocumentTransformer.ConvertRenaultCSVFile(fileData).ToList();
                     break;
                     case ".DSI":
-                    // Handle DSI file processing
-                    _Logger.GenericLogInformation("Processing DSI file: " + fileName);
-                    dsiAggregate = DocumentTransformer.ConvertDsiFile(fileData);
-                    _ = Task.Run(async () => await SaveDsiAggregateAsync(dsiAggregate, request.UserId));
-                    break;
+                        // Handle DSI file processing
+                        _Logger.GenericLogInformation("Processing DSI file: " + fileName);
+                        dsiAggregate = DocumentTransformer.ConvertDsiFile(fileData);
+                        _ = Task.Run(async () => await SaveDsiAggregateAsync(dsiAggregate, request.UserId));
+                        hasDerivatives = dsiAggregate.ComponentList != null && dsiAggregate.ComponentList.Any();    
+                        break;
                     default:
                     _Logger.GenericLogInformation("Unsupported file type:" + fileExtension);
-                    return customerParts;
+                    return (customerParts, false);
                 }
             }
             catch (FileFormatException ex)
             {
                 _Logger.GenericLogError("Error processing file upload for " + request.FileName, ex);
-                return customerParts;
+                return (customerParts, false);
             }
             // Go to the access service to save the data to the database
             await Task.Delay(1);
@@ -956,7 +968,7 @@
             List<CustomerParts> fordParts = GetCustomerParts(fordDtos, customerParts);
             customerParts.AddRange(fordParts);
 
-            if (dsiAggregate.ComponentList != null)
+            if (dsiAggregate.ComponentList != null && hasDerivatives)
             {
                 List<ComponentDto> components = new List<ComponentDto>();
                 components = dsiAggregate.ComponentList
@@ -976,9 +988,10 @@
                         customerParts.Add(part);
                     }
                 }
+                return (customerParts, true);
             }
 
-            return customerParts;
+            return (customerParts, false);
         }
 
         async Task SaveDsiAggregateAsync(DsiAggregate dsiAggregate, string userId)
