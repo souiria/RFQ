@@ -270,6 +270,7 @@ message RfqDrawingPartNumber {
   bool IsSwapped = 9;
   string Comments = 10;
   string SumitomoPartNumber = 11;
+   double Quantity = 12;
 }
 message UpdateRfqDrawingPartNumbersGrpcResponse {
   bool Success = 1;

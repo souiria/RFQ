@@ -22,6 +22,7 @@
             data.CustomerPartNumber = entity.CustomerPartNumber;
             data.NprRequest = entity.NprRequest;
             data.Status = (int?)entity.Status;
+            data.Quantity = (double?)entity.Quantity;
             return data;
         }
 
@@ -44,6 +45,7 @@
             data.CustomerPartNumber = grpc.CustomerPartNumber;
             data.NprRequest = grpc.NprRequest;
             data.Status = (RfqDrawingPartNumberStatus)(grpc.Status ?? 0);
+            data.Quantity = (decimal)(grpc.Quantity ?? 0);
             return data;
         }
         #endregion
