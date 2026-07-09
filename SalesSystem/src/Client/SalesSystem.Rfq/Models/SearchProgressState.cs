@@ -189,11 +189,27 @@ namespace SalesSystem.Rfq.Models
             ProcessedCount++;
         }
 
+        public void CompletePartAsError(int index, string details)
+        {
+            FailPart(index, details);
+            UnmatchedCount++;
+            ProcessedCount++;
+        }
+
         void CompletePart(int index, string? details)
         {
             if (0 <= index && index < Checkpoints.Count)
             {
                 Checkpoints[index].SetCompleted(details);
+                OnPropertyChanged(nameof(Checkpoints));
+            }
+        }
+
+        void FailPart(int index, string? details)
+        {
+            if (0 <= index && index < Checkpoints.Count)
+            {
+                Checkpoints[index].SetFailed(details);
                 OnPropertyChanged(nameof(Checkpoints));
             }
         }

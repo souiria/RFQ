@@ -1,5 +1,3 @@
-using DocumentFormat.OpenXml.Drawing.Diagrams;
-
 namespace SalesSystem.Rfq.Components.Pages
 {
     public partial class CreateRfq

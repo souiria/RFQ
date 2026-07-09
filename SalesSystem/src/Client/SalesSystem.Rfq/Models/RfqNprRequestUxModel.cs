@@ -248,6 +248,7 @@ namespace SalesSystem.Rfq.Models
         public RfqNprRequestUxModel()
         {
             Id = Guid.NewGuid();
+            AssociatedParts = "NO";
             Status = RfqNprRequestSet.Draft;
             UxStatus = UxObjectStatus.Created;
             SampleSiteDetails = new Collection<RfqNprRequestSampleSiteDataUxModel>();

@@ -1261,7 +1261,7 @@
                     {
                         Logger.GenericLogError(
                             $"EditRfq.SearchAllPartNumbersAsync - Error processing {item.CustomerPartNumber}", ex);
-                        progressState.CompletePartAsUnmatched(partIndex, $"error: {ex.Message}");
+                        progressState.CompletePartAsError(partIndex, "Search failed!");
                         unmatched++;
                     }
 

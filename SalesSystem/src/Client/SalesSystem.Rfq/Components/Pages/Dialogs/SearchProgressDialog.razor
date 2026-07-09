@@ -67,7 +67,14 @@
                 @foreach (CheckpointProgress checkpoint in ProgressState.Checkpoints)
                 {
                     <div class="d-flex align-center mb-1">
-                        @if (checkpoint.IsCompleted)
+                        @if (checkpoint.HasError)
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.Error"
+                                     Color="Color.Error"
+                                     Size="Size.Small"
+                                     Class="mr-2" />
+                        }
+                        else if (checkpoint.IsCompleted)
                         {
                             <MudIcon Icon="@Icons.Material.Filled.CheckCircle"
                                      Color="Color.Success"
@@ -90,14 +97,14 @@
                         }
 
                         <MudText Typo="Typo.body2"
-                                 Color="@(checkpoint.IsCompleted ? Color.Success : checkpoint.IsActive ? Color.Primary : Color.Secondary)">
+                                 Color="@(checkpoint.HasError ? Color.Error : checkpoint.IsCompleted ? Color.Success : checkpoint.IsActive ? Color.Primary : Color.Secondary)">
                             @checkpoint.Message
                         </MudText>
 
-                        @if (checkpoint.IsCompleted && !string.IsNullOrEmpty(checkpoint.Details))
+                        @if ((checkpoint.IsCompleted || checkpoint.HasError) && !string.IsNullOrEmpty(checkpoint.Details))
                         {
                             <MudText Typo="Typo.caption"
-                                     Color="Color.Secondary"
+                                     Color="@(checkpoint.HasError ? Color.Error : Color.Secondary)"
                                      Class="ml-auto">
                                 @checkpoint.Details
                             </MudText>

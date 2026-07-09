@@ -28,6 +28,7 @@
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
                                   MaxLength="18"
+                                  Disabled="true"
                                   Required="true" />
                 </MudItem>
                 <MudItem xs="4">
@@ -36,6 +37,7 @@
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
                                   MaxLength="18"
+                                  Disabled="true"
                                   Required="true" />
                 </MudItem>
                 <MudItem xs="4">
@@ -44,6 +46,7 @@
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
                                   MaxLength="100"
+                                  Disabled="true"
                                   Required="true" />
                 </MudItem>
 
@@ -53,6 +56,7 @@
                                   Label="Customer P/N"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
+                                  Disabled="true"
                                   MaxLength="26" />
                 </MudItem>
                 <MudItem xs="6">
@@ -97,7 +101,6 @@
                                      Strict="false"
                                      ResetValueOnEmptyText="false"
                                      CoerceText="true"
-                                     CoerceValue="true"
                                      SelectValueOnTab="true"
                                      AdornmentIcon="@Icons.Material.Filled.Business"
                                      AdornmentColor="Color.Primary"
@@ -217,7 +220,7 @@
                     <MudAutocomplete T="SupplierUxModel"
                                      @ref="_SupplierAutocomplete"
                                      @bind-Value="SelectedSupplier"
-                                     Label="Suggested Manufacturer"
+                                     Label="Suggested Supplier"
                                      Placeholder="Search supplier..."
                                      SearchFunc="@SearchSuppliers"
                                      ToStringFunc="@(sg => sg?.SupplierName ?? "")"
@@ -333,11 +336,15 @@
                                  Dense="true" />
                 </MudItem>
                 <MudItem xs="3">
-                    <MudTextField @bind-Value="NprRequest.AssociatedParts"
+                    @* <MudTextField @bind-Value="NprRequest.AssociatedParts"
                                   Label="Associated Parts (YES/NO/UNKNOWN)"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
-                                  MaxLength="50" />
+                                  MaxLength="50" /> *@
+                    <MudRadioGroup @bind-Value="NprRequest.AssociatedParts">
+                        <MudRadio Value="@("YES")" Color="Color.Primary" Dense="true">Yes</MudRadio>
+                        <MudRadio Value="@("NO")" Color="Color.Primary" Dense="true">No</MudRadio>
+                    </MudRadioGroup>
                 </MudItem>
 
                 @* Row 9: Sample details (only when required) *@
@@ -349,6 +356,13 @@
         </MudForm>
     </DialogContent>
     <DialogActions>
+        <MudButton OnClick="ValidateAsync"
+                   Color="Color.Secondary"
+                   Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.PlaylistAddCheck">
+            Validate
+        </MudButton>
+        <MudSpacer />
         <MudButton OnClick="Cancel"
                    Color="Color.Secondary"
                    Variant="Variant.Text">
