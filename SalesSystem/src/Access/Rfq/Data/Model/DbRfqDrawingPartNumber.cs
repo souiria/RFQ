@@ -44,5 +44,7 @@
         { get; set; }
         public DbRfqProject? RfqProject
         { get; set; }
+        public decimal Quantity 
+        { get; set; }
     }
 }

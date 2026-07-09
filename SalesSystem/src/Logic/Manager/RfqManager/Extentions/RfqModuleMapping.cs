@@ -102,6 +102,7 @@
             part.IsSwapped = rfqPartGrpc.IsSwapped ?? false;
             part.Comments = rfqPartGrpc.Comments;
             part.SumitomoPartNumber = rfqPartGrpc.SumitomoPartNumber;
+            part.Quantity = rfqPartGrpc.Quantity ?? 0;
             return part;
         }
 
