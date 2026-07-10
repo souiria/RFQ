@@ -723,6 +723,7 @@
                     grpcPart.IsExactMatch = part.IsExactMatch;
                     grpcPart.IsSwapped = part.IsSwapped;
                     grpcPart.Comments = part.Comments;
+                    grpcPart.Quantity = part.Quantity;
                     partsToUpdate.Add(grpcPart);
                 }
 
@@ -806,6 +807,7 @@
                 foreach (CustomerParts customerPart in customerParts)
                 {
                     RfqDrawingPartNumbersGrpc part = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber1);
+                    //part.Quantity = customerPart.Qua
                     partRequest.RfqDrawingPartNumbersGrpcsToCreate.Add(part);
                     if (customerPart.PartNumber2 != null)
                     {

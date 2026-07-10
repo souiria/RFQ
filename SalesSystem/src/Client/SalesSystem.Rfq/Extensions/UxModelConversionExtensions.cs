@@ -138,6 +138,7 @@
             }
 
             uxModel.Comments = dto.Comments;
+            uxModel.Quantity = Convert.ToDecimal(dto.Quantity, CultureInfo.InvariantCulture);
 
             return uxModel;
         }
@@ -169,6 +170,7 @@
             {
                 dto.Comments = uxModel.Comments;
             }
+            dto.Quantity = Convert.ToDouble(uxModel.Quantity, CultureInfo.InvariantCulture);
 
             return dto;
         }

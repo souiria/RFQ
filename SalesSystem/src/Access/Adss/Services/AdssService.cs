@@ -38,7 +38,7 @@
                     return (bytes, "image/jpeg");
             }
             // 2) Look for an image without the laset two 00 in the part name if that is the case
-            if(partNumber.EndsWith("00", StringComparison.InvariantCulture))
+            if(8 < partNumber.Length && partNumber.EndsWith("00", StringComparison.InvariantCulture))
             {
                 string shortName = partNumber.Substring(0, partNumber.Length - 2);
                 candidate = Path.Combine(_RootPath, shortName, ".jpg");
