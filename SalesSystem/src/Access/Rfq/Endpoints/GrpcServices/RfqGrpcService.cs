@@ -155,6 +155,51 @@ namespace Rfq.Endpoints.GrpcServices
 
             return responseMessage;
         }
+
+        public override async Task<RfqCrudGrpcResponse> DeleteRfqDrawingPartNumbersGrpc(RfqDrawingPartNumbersGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("DeleteRfqDrawingPartNumbersGrpc starting");
+            if (request == null || request.RfqGrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            if (requestType != RequestType.Delete)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for deleting rfq drawing part numbers.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            // switch to delete
+            bool response = await _RfqAccessService.DeleteRfqDrawingPartNumbers(request, cancellationToken);
+            if (response)
+            {
+                responseMessage.Message = $"{request.RfqDrawingPartNumbersGrpcsToDelete.Count} RfqDrawingPartNumbers types updated successfully.";
+                responseMessage.SaveSuccess = true;
+            }
+            else
+            {
+                responseMessage.Message = "No/not all RfqDrawingPartNumbers types updated.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
+
         #endregion
 
         #region RfqProjects

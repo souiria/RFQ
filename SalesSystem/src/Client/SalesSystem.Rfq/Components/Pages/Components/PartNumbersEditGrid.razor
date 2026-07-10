@@ -473,7 +473,7 @@
                 Logger.GenericLogInformation($"Deleting part number: {item.CustomerPartNumber}/{item.DrawingPartNumber} (Row ID: {item.RowId})");
 
                 // Call the service to delete the part number
-                bool success = await RfqUxClientService.DeleteRfqDrawingPartNumber(item);
+                bool success = await RfqUxClientService.DeleteRfqDrawingPartNumbers(new List<RfqDrawingPartNumberUxModel> { item });
 
                 if (success)
                 {
