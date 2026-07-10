@@ -858,7 +858,7 @@ message WhoAmIResponse {
 }
 
 
-message DSIHarnessGrpc {
+message HarnessGrpc {
     google.protobuf.StringValue Id = 1;
 
     google.protobuf.StringValue HarnessName1 = 2;
@@ -920,7 +920,7 @@ message DSIHarnessGrpc {
     google.protobuf.StringValue ModifiedBy = 45;
 }
 
-message DSICompositeDetailGrpc {
+message CompositeDetailGrpc {
    int64 Id = 1;
 
     google.protobuf.StringValue HarnessName1 = 2;
@@ -984,14 +984,14 @@ message GetAllHarnessModuleRequest {
 }
 
 message GetAllHarnessModuleResponse {
-    repeated DSIHarnessGrpc HarnessList = 1;
+    repeated HarnessGrpc HarnessList = 1;
 }
 
 message GetCompositeDetailByHarnessRequest {
     string HarnessId = 1;
 }
 message GetCompositeDetailByHarnessResponse {
-    repeated DSICompositeDetailGrpc CompositeDetails = 1;
+    repeated CompositeDetailGrpc CompositeDetails = 1;
 }
 
 message GetCompositeDetailByHarnessNameRequest {
@@ -1000,10 +1000,10 @@ message GetCompositeDetailByHarnessNameRequest {
 }
 
 message GetCompositeDetailByHarnessNameResponse {
-    repeated DSICompositeDetailGrpc CompositeDetails = 1;
+    repeated CompositeDetailGrpc CompositeDetails = 1;
 }
 
-message DSIWireSpecificationGrpc {
+message WireSpecificationGrpc {
     int64 Id = 1;
     google.protobuf.StringValue WireName = 2;
     google.protobuf.StringValue Compositeoptionstring = 3;
@@ -1060,7 +1060,7 @@ message GetWireSpecificationByCompositeOptionRequest {
 }
 
 message GetWireSpecificationByCompositeOptionResponse {
-    repeated DSIWireSpecificationGrpc WireSpecifications = 1;
+    repeated WireSpecificationGrpc WireSpecifications = 1;
 }
 
 message GetComponentsByHarnessAndOptionsRequest {
@@ -1115,5 +1115,5 @@ message GetHarnessByIdGrpcRequest {
 }
 
 message GetHarnessByIdGrpcResponse {
-    DSIHarnessGrpc Harness = 1;
+    HarnessGrpc Harness = 1;
 }

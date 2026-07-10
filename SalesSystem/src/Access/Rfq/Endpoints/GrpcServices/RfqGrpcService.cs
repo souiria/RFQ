@@ -1,4 +1,6 @@
-﻿namespace Rfq.Endpoints.GrpcServices
+﻿using DSI;
+
+namespace Rfq.Endpoints.GrpcServices
 {
     public class RfqGrpcService : Rfq.RfqBase
     {
@@ -4797,6 +4799,19 @@
             return response;
         }
         #endregion
+
+        public override async Task<ListDsiComponentGrpc> GetDSIComponentsByHarnessAndOptions(GetDSIComponentByHarnessRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetComponentsByHarnessAndOptions starting");
+
+            ListDsiComponentGrpc response =
+                await _RfqAccessService.GetComponentsByHarnessAndOptions(
+                    request.HarnessName,
+                    request.CompositeOptions,
+                    context.CancellationToken);
+
+            return response;
+        }
 
         public override async Task<RfqFilterResponse> FilterRfqGrpc(RfqFilterRequest request, ServerCallContext context)
         {

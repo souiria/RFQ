@@ -1,4 +1,6 @@
-﻿namespace Rfq.Services
+﻿using DSI;
+
+namespace Rfq.Services
 {
     public partial class RfqAccessService : IRfqAccessService
     {
@@ -5568,10 +5570,214 @@
             return false;
         }
         #endregion
+        #region ComponentsByHarnessNameAndOptions
+
+        public async Task<ListDsiComponentGrpc> GetComponentsByHarnessAndOptions(
+            IEnumerable<string> harnessNames,
+            IEnumerable<string> compositeOptions,
+            CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+
+            ListDsiComponentGrpc response = new ListDsiComponentGrpc();
+
+            //////////////////////////////////////////////////////
+            // STEP 1: Load Harness cache
+            //////////////////////////////////////////////////////
+            if (!_ListDsiHarnessGrpc.DsiHarnessGrpcs.Any())
+            {
+                await PopulateDsiHarnesses(cancellationToken);
+            }
+
+            //////////////////////////////////////////////////////
+            // STEP 2: Normalize Harness Names
+            //////////////////////////////////////////////////////
+            List<string> harnessNameList = new List<string>();
+
+            if (harnessNames != null)
+            {
+                harnessNameList = harnessNames
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Select(x => x.Trim())
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+            }
+
+            if (!harnessNameList.Any())
+            {
+                return response;
+            }
+
+            //////////////////////////////////////////////////////
+            // STEP 3: Resolve Harness IDs
+            //////////////////////////////////////////////////////
+            HashSet<string> harnessIds = _ListDsiHarnessGrpc.DsiHarnessGrpcs
+                .Where(h => !string.IsNullOrWhiteSpace(h.HarnessName1)
+                            && !string.IsNullOrWhiteSpace(h.HarnessId)
+                            && harnessNameList.Contains(h.HarnessName1, StringComparer.OrdinalIgnoreCase))
+                .Select(h => h.HarnessId!)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            if (!harnessIds.Any())
+            {
+                return response;
+            }
+
+            //////////////////////////////////////////////////////
+            // STEP 4: Load CompositeDetail cache
+            //////////////////////////////////////////////////////
+            if (!_ListDsiCompositeDetailGrpc.DsiCompositeDetailGrpcs.Any())
+            {
+                await PopulateDsiCompositeDetails(cancellationToken);
+            }
+
+            List<DsiCompositeDetailGrpc> compositeList = _ListDsiCompositeDetailGrpc.DsiCompositeDetailGrpcs
+                .Where(c => !string.IsNullOrWhiteSpace(c.HarnessID)
+                            && harnessIds.Contains(c.HarnessID))
+                .ToList();
+
+            if (!compositeList.Any())
+            {
+                return response;
+            }
+
+            //////////////////////////////////////////////////////
+            // STEP 5: Normalize CompositeOptions
+            //////////////////////////////////////////////////////
+            List<string> options = new List<string>();
+
+            if (compositeOptions != null && compositeOptions.Any())
+            {
+                options = compositeOptions
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .SelectMany(x => x.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                    .Select(x => x.Trim())
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+            }
+            else
+            {
+                options = compositeList
+                    .Where(c => !string.IsNullOrWhiteSpace(c.CircuitOption))
+                    .SelectMany(c => c.CircuitOption!.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                    .Select(x => x.Trim())
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+            }
+
+            if (!options.Any())
+            {
+                return response;
+            }
+
+            //////////////////////////////////////////////////////
+            // STEP 6: Load WireSpecification cache
+            //////////////////////////////////////////////////////
+            if (!_ListDsiWireSpecificationGrpc.DsiWireSpecificationGrpcs.Any())
+            {
+                await PopulateDsiWireSpecifications(cancellationToken);
+            }
+
+            List<DsiWireSpecificationGrpc> wires = _ListDsiWireSpecificationGrpc.DsiWireSpecificationGrpcs
+                .Where(w => !string.IsNullOrWhiteSpace(w.CompositeOptionString)
+                            && !string.IsNullOrWhiteSpace(w.HarnessID)
+                            && harnessIds.Contains(w.HarnessID)
+                            && options.Contains(w.CompositeOptionString, StringComparer.OrdinalIgnoreCase))
+                .ToList();
+
+            if (!wires.Any())
+            {
+                return response;
+            }
+
+            //////////////////////////////////////////////////////
+            // STEP 7: Collect NodeNames
+            //////////////////////////////////////////////////////
+            HashSet<string> nodeNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (DsiWireSpecificationGrpc? w in wires)
+            {
+                if (!string.IsNullOrWhiteSpace(w.End1NodeName))
+                {
+                    nodeNames.Add(w.End1NodeName);
+                }
+
+                if (!string.IsNullOrWhiteSpace(w.End2NodeName))
+                {
+                    nodeNames.Add(w.End2NodeName);
+                }
+            }
+
+            if (!nodeNames.Any())
+            {
+                return response;
+            }
+
+            //////////////////////////////////////////////////////
+            // STEP 8: Load Component cache
+            //////////////////////////////////////////////////////
+            if (!_ListDsiComponentGrpc.DsiComponentGrpcs.Any())
+            {
+                await PopulateDsiComponents(cancellationToken);
+            }
+
+            //////////////////////////////////////////////////////
+            // STEP 9: Filter Components + Group
+            //////////////////////////////////////////////////////
+            List<DsiComponentGrpc> groupedComponents = _ListDsiComponentGrpc.DsiComponentGrpcs
+                .Where(c => !string.IsNullOrWhiteSpace(c.NodeName)
+                            && !string.IsNullOrWhiteSpace(c.HarnessID)
+                            && harnessIds.Contains(c.HarnessID)
+                            && nodeNames.Contains(c.NodeName))
+                .GroupBy(c => new
+                {
+                    c.PartNumber1,
+                    c.PartNumber2,
+                    c.PartNumber3
+                })
+                .Select(group =>
+                {
+                    DsiComponentGrpc item = new DsiComponentGrpc();
+
+                    if (!string.IsNullOrWhiteSpace(group.Key.PartNumber1))
+                    {
+                        item.PartNumber1 = group.Key.PartNumber1;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(group.Key.PartNumber2))
+                    {
+                        item.PartNumber2 = group.Key.PartNumber2;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(group.Key.PartNumber3))
+                    {
+                        item.PartNumber3 = group.Key.PartNumber3;
+                    }
+
+                    double total = group.Sum(x => x.Quantity);
+                    item.Quantity = total;
+
+                    return item;
+                })
+                .ToList();
+
+            response.DsiComponentGrpcs.AddRange(groupedComponents);
+
+            //////////////////////////////////////////////////////
+            // OPTIONAL: include joined harness names in response
+            //////////////////////////////////////////////////////
+            //response.HarnessName = string.Join(",", harnessNameList);
+
+            return response;
+        }
+
+        #endregion
 
         //////////////////////////////////////////////////////////////////////////////////////////////
         #endregion
- 
+
         public async Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig, Action<IEnumerable<T>> setResponseCollection,
         CancellationToken cancellationToken)
         {

@@ -30,7 +30,7 @@
 
         IResourceBuilder<ProjectResource> adssAccessService = builder.AddProject<Projects.Adss>("adss-access-service");
 
-        IResourceBuilder<ProjectResource> dsiAccessService = builder.AddProject<Projects.DSI>("dsi-access-service");
+        //IResourceBuilder<ProjectResource> dsiAccessService = builder.AddProject<Projects.DSI>("dsi-access-service");
 
         IResourceBuilder<ProjectResource> engSolAccessService = builder.AddProject <Projects.EngSol>("engSol-access-service");
 

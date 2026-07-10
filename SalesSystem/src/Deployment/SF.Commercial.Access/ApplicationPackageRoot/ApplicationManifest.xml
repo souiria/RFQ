@@ -138,16 +138,6 @@
       <EndpointBindingPolicy EndpointRef="ServiceEndpointHttps" CertificateRef="MyCert" />
     </Policies>
   </ServiceManifestImport>
-  <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SF.Access.DSIsPkg" ServiceManifestVersion="1.3.3" />
-    <ConfigOverrides />
-    <EnvironmentOverrides CodePackageRef="code">
-      <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.DSIs_ASPNETCORE_ENVIRONMENT]" />
-    </EnvironmentOverrides>
-    <Policies>
-      <EndpointBindingPolicy EndpointRef="ServiceEndpointHttps" CertificateRef="MyCert" />
-    </Policies>
-  </ServiceManifestImport>
   <Certificates>
     <EndpointCertificate X509FindType="FindBySubjectName" X509FindValue="*.sews-e.com" Name="MyCert" />
     <EndpointCertificate X509FindType="FindBySubjectName" X509FindValue="ukhqh1uat" Name="LocalCert" />
