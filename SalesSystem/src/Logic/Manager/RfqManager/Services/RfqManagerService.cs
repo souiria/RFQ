@@ -1055,6 +1055,7 @@ namespace RfqModule.Services
                         customerParts.Add(part);
                     }
                 }
+
                 return (customerParts, true);
             }
 
