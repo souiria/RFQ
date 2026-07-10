@@ -12,6 +12,7 @@
         Task<GetRfqProjectByIdGrpcResponse> GetRfqProjectByIdGrpc(GetRfqProjectByIdGrpcRequest request);
         Task<UpdateRfqProjectGrpcResponse> UpdateRfqProject(UpdateRfqProjectGrpcRequest request);
         Task<GetRfqDrawingPartNumbersByRfqIdGrpcResponse> GetRfqDrawingPartNumbersByRfqIdGrpc(GetRfqDrawingPartNumbersByRfqIdGrpcRequest request);
+        Task<DeleteRfqDrawingPartNumbersGrpcResponse> DeleteRfqDrawingPartNumbersGrpc(DeleteRfqDrawingPartNumbersGrpcRequest request);
         Task<RfqCrudResponse> DeleteRfqProjectByRowIdGrpc(RfqProjectRequest request);
         Task<FilterGrpcResponse> FilterByCustomerId(FilterGrpcRequest request);
         Task<FilterGrpcResponse> FilterByLocationId(FilterGrpcRequest request);

@@ -15,6 +15,7 @@ service Rfq {
   rpc CreateRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequest) returns (RfqCrudGrpcResponse);
   rpc ReadRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequest) returns (ListRfqDrawingPartNumbersGrpc);
   rpc UpdateRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc DeleteRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequest) returns (RfqCrudGrpcResponse);
 
   rpc CreateRfqProjectGrpc (RfqProjectGrpcRequest) returns (RfqCrudGrpcResponse);
   rpc ReadRfqProjectGrpc (RfqProjectGrpcRequest) returns (ListRfqProjectGrpc);

@@ -1,4 +1,6 @@
-﻿namespace RfqModule.Services
+﻿using Google.Protobuf;
+
+namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {
@@ -790,7 +792,71 @@
                 throw;
             }
         }
+        public async Task<DeleteRfqDrawingPartNumbersGrpcResponse> DeleteRfqDrawingPartNumbersGrpc(DeleteRfqDrawingPartNumbersGrpcRequest request)
+        {
+            try
+            {
+                await Task.Delay(1);
 
+                RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                rfqGrpcRequestParameter.RequestType = 3;
+
+                RfqDrawingPartNumbersGrpcRequest grpcRequest = new RfqDrawingPartNumbersGrpcRequest();
+                List<RfqDrawingPartNumbersGrpc> partsToDelete = new();
+
+
+                foreach (RfqDrawingPartNumber? p in request.RfqDrawingPartNumbersGrpcsToDelete)
+                {
+                    if(p == null)
+                    {
+                        continue;
+                    }
+
+                    RfqDrawingPartNumbersGrpc rpcPart = new RfqDrawingPartNumbersGrpc();
+
+                    rpcPart.RowId = p.RowId;
+                    rpcPart.RfqId = p.RfqId;
+                    rpcPart.OriginalPartNumber = p.OriginalPartNumber;
+                    rpcPart.SumitomoPartNumber = p.SumitomoPartNumber;
+                    rpcPart.SwappedPartNumber = p.SwappedPartNumber;
+                    rpcPart.OriginalPartNumberPrice = p.OriginalPartNumberPrice;
+                    rpcPart.SwappedPartNumberPrice = p.SwappedPartNumberPrice;
+                    rpcPart.PriceSource = p.PriceSource;
+                    rpcPart.IsExactMatch = p.IsExactMatch;
+                    rpcPart.IsSwapped = p.IsSwapped;
+                    rpcPart.Comments = p.Comments;
+                    rpcPart.Quantity = p.Quantity;
+
+                    partsToDelete.Add(rpcPart);
+                }
+                
+                grpcRequest.RfqDrawingPartNumbersGrpcsToDelete.AddRange(partsToDelete);
+                RfqCrudGrpcResponse grpcResponse = await _RfqClient.DeleteRfqDrawingPartNumbersGrpcAsync(grpcRequest);
+                bool result = grpcResponse.SaveSuccess;
+
+                string message;
+                if (result)
+                {
+                    message = $"DeleteRfqDrawingPartNumbersGrpc removed {partsToDelete.Count} parts.";
+                }
+                else
+                {
+                    message = $"DeleteRfqDrawingPartNumbersGrpc failed to delete {partsToDelete.Count} parts.";
+                }
+
+                DeleteRfqDrawingPartNumbersGrpcResponse response = new DeleteRfqDrawingPartNumbersGrpcResponse();
+                response.Success = result;
+                response.Message = message;
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = $"Error deleting drawing parts for RFQ.";
+                _Logger.GenericLogError(errorMessage, ex);
+                throw;
+            }
+        }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         RfqCrudGrpcResponse CreateRfqDrawingPartNumbers(string projectId, List<CustomerParts> customerParts)
         {
@@ -837,7 +903,6 @@
             return partResponse;
 
         }
-
         RfqDrawingPartNumbersGrpc ToRfqDrawingPartNumbers(string projectId, string partNumber)
         {
             RfqDrawingPartNumbersGrpc part = new RfqDrawingPartNumbersGrpc();

@@ -729,6 +729,35 @@
                 }
             }
         }
+
+        public async Task<bool> DeleteRfqDrawingPartNumbers(RfqDrawingPartNumbersGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+            ListRfqDrawingPartNumbersGrpc responseList = new ListRfqDrawingPartNumbersGrpc();
+            if (request == null || request.RfqDrawingPartNumbersGrpcsToDelete == null || request.RfqDrawingPartNumbersGrpcsToDelete.Count == 0)
+            {
+                return false;
+            }
+
+            using (IServiceScope scope = _ServiceProvider.CreateScope())
+            {
+                ICommandHandler<RfqDrawingPartNumberCommand, List<DbRfqDrawingPartNumber>> handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<RfqDrawingPartNumberCommand, List<DbRfqDrawingPartNumber>>>();
+                RfqDrawingPartNumberCommand command = new RfqDrawingPartNumberCommand(CommandType.Delete, request.RfqDrawingPartNumbersGrpcsToDelete);
+                Result<List<DbRfqDrawingPartNumber>> result = await handler.Handle(command, cancellationToken);
+                if (result.IsSuccess)
+                {
+                    // invalidate cache and repopulate
+                    _ListRfqDrawingPartNumbersGrpc = new();
+                    await PopulateRfqDrawingPartNumbers(cancellationToken);
+                    responseList.RfqDrawingPartNumbers.AddRange(_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
         #endregion
 
         #region RfqProject

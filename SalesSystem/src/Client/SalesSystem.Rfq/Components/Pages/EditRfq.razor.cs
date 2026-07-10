@@ -988,7 +988,6 @@
                 UpdateRfqProjectGrpcResponse rfqUpdateResult = await RfqUxClientService.UpdateRfqProjectAsync(RfqProject!);
                 UpdateRfqDrawingPartNumbersGrpcResponse partsUpdateResult = await RfqUxClientService.UpdateRfqDrawingPartNumbersAsync(allParts);
 
-
                 if (partsUpdateResult.Success && rfqUpdateResult.Success)
                 {
                     Snackbar.Add("Data saved successfully", Severity.Success);
@@ -1336,6 +1335,17 @@
         {
             // Save the selection from the composite cards
             _SelectedComponents = components;
+            // Delete and clear the existing parts lists before adding new ones
+            if (_InProgressParts.Count > 0)
+            {
+                bool result = await RfqUxClientService.DeleteRfqDrawingPartNumbers(_InProgressParts!);
+            }
+
+            if(_CompletedParts.Count > 0)
+            {
+                bool result = await RfqUxClientService.DeleteRfqDrawingPartNumbers(_CompletedParts!);
+            }
+
             _CompletedParts.Clear();
             _InProgressParts.Clear();
 
