@@ -990,6 +990,7 @@
                         customerParts.Add(part);
                     }
                 }
+
                 return (customerParts, true);
             }
 

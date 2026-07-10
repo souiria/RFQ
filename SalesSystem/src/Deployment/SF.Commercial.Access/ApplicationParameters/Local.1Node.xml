@@ -13,5 +13,6 @@
     <Parameter Name="SF.Access.Cores_ASPNETCORE_ENVIRONMENT" Value="Development" />
     <Parameter Name="SF.Access.CDbs_ASPNETCORE_ENVIRONMENT" Value="Development" />
     <Parameter Name="SF.Access.CAEs_ASPNETCORE_ENVIRONMENT" Value="Development" />
+    <Parameter Name="SF.Access.DSIs_ASPNETCORE_ENVIRONMENT" Value="Development" />
   </Parameters>
 </Application>
