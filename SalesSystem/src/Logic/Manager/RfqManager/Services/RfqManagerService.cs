@@ -1,6 +1,4 @@
-﻿using Rfq;
-
-namespace RfqModule.Services
+﻿namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {
@@ -799,11 +797,12 @@ namespace RfqModule.Services
                 await Task.Delay(1);
 
                 RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
-                rfqGrpcRequestParameter.RequestType = 3;
+                rfqGrpcRequestParameter.RequestType = 90;
 
                 RfqDrawingPartNumbersGrpcRequest grpcRequest = new RfqDrawingPartNumbersGrpcRequest();
-                List<RfqDrawingPartNumbersGrpc> partsToDelete = new();
+                grpcRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
 
+                List<RfqDrawingPartNumbersGrpc> partsToDelete = new();
 
                 foreach (RfqDrawingPartNumber? p in request.RfqDrawingPartNumbersGrpcsToDelete)
                 {
@@ -2832,7 +2831,8 @@ namespace RfqModule.Services
                     harness.Customer = item.Customer;
                     harness.Site = item.Site;
 
-                    response.HarnessList.Add(harness);
+                    DSIHarnessGrpc? dsiHarness = harness.ToDSIHarness();
+                    response.HarnessList.Add(dsiHarness);
                 }
 
                 return response;
@@ -2874,7 +2874,7 @@ namespace RfqModule.Services
                     harness.Customer = item.Customer;
                     harness.Site = item.Site;
 
-                    response.Harness = harness;
+                    response.Harness = harness.ToDSIHarness();
                 }
 
                 return response;
@@ -2973,7 +2973,8 @@ namespace RfqModule.Services
                     compositeDetail.CreatedBy = item.CreatedBy;
                     compositeDetail.ModifiedBy = item.ModifiedBy;
 
-                    response.CompositeDetails.Add(compositeDetail);
+                    var dsiCompositeDetail = compositeDetail.ToDSICompositeDetail();
+                    response.CompositeDetails.Add(dsiCompositeDetail);
                 }
 
                 return response;
@@ -3076,7 +3077,8 @@ namespace RfqModule.Services
                     compositeDetail.CreatedBy = item.CreatedBy;
                     compositeDetail.ModifiedBy = item.ModifiedBy;
 
-                    response.CompositeDetails.Add(compositeDetail);
+                    var dsiCompositeDetail = compositeDetail.ToDSICompositeDetail();
+                    response.CompositeDetails.Add(dsiCompositeDetail);
                 }
 
                 return response;
@@ -3150,7 +3152,8 @@ namespace RfqModule.Services
                     wire.CreatedDate = item.CreatedDate;
                     wire.ModifiedDate = item.ModifiedDate;
 
-                    response.WireSpecifications.Add(wire);
+                    DSIWireSpecificationGrpc? dsiWireSpecification = wire.ToDSIWireSpecification();
+                    response.WireSpecifications.Add(dsiWireSpecification);
                 }
 
                 return response;

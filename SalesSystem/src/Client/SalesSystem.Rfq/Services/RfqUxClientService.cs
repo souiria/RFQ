@@ -420,10 +420,12 @@ namespace SalesSystem.Rfq.Services
                 dtos.AddRange(partNumbers.Select(x => x.ToDto()));
                 DeleteRfqDrawingPartNumbersGrpcRequest request = new DeleteRfqDrawingPartNumbersGrpcRequest();
                 request.RfqDrawingPartNumbersGrpcsToDelete.AddRange(dtos);
-                DeleteRfqDrawingPartNumbersGrpcResponse result = await _Client.DeleteRfqDrawingPartNumbersGrpcAsync(request);
+                DeleteRfqDrawingPartNumbersGrpcResponse result =
+                    await _Client.DeleteRfqDrawingPartNumbersGrpcAsync(request);
 
-                _Logger?.GenericLogInformation($"Deleted {partNumbers.Count} ({result.Message}) part numbers");
-                return false;
+                _Logger?.GenericLogInformation(
+                    $"Deleted {partNumbers.Count} ({result.Message}) part numbers");
+                return result.Success;
             }
             catch (Exception ex)
             {
