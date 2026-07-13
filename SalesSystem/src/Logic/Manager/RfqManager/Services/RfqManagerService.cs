@@ -9,7 +9,7 @@
         readonly Adss.AdssGrpc.AdssGrpcClient _AdssGrpcClient;
         readonly NPR.NPR.NPRClient _NPRGrpcClient;
         readonly CPD.CPD.CPDClient _CPDClient;
-        readonly DSI.DSI.DSIClient _DSIClient;
+        //readonly DSI.DSI.DSIClient _DSIClient;
         readonly ILogger<RfqManagerService> _Logger;
         readonly IHttpContextAccessor _HttpContextAccessor;
         List<ProjectGrpc> _Projects;
@@ -21,7 +21,7 @@
             Adss.AdssGrpc.AdssGrpcClient adssGrpcClient,
             NPR.NPR.NPRClient nprClient,
             CPD.CPD.CPDClient cPDClient,
-            DSI.DSI.DSIClient dSIClient,
+            //DSI.DSI.DSIClient dSIClient,
             IHttpContextAccessor httpContextAccessor
             )
         {
@@ -33,7 +33,7 @@
             _AdssGrpcClient = adssGrpcClient;
             _NPRGrpcClient = nprClient;
             _CPDClient = cPDClient;
-            _DSIClient = dSIClient;
+            //_DSIClient = dSIClient;
             _HttpContextAccessor = httpContextAccessor;
         }
         #region Master Requests
@@ -723,6 +723,7 @@
                     grpcPart.IsExactMatch = part.IsExactMatch;
                     grpcPart.IsSwapped = part.IsSwapped;
                     grpcPart.Comments = part.Comments;
+                    grpcPart.Quantity = part.Quantity;
                     partsToUpdate.Add(grpcPart);
                 }
 
@@ -789,7 +790,72 @@
                 throw;
             }
         }
+        public async Task<DeleteRfqDrawingPartNumbersGrpcResponse> DeleteRfqDrawingPartNumbersGrpc(DeleteRfqDrawingPartNumbersGrpcRequest request)
+        {
+            try
+            {
+                await Task.Delay(1);
 
+                RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                rfqGrpcRequestParameter.RequestType = 90;
+
+                RfqDrawingPartNumbersGrpcRequest grpcRequest = new RfqDrawingPartNumbersGrpcRequest();
+                grpcRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
+
+                List<RfqDrawingPartNumbersGrpc> partsToDelete = new();
+
+                foreach (RfqDrawingPartNumber? p in request.RfqDrawingPartNumbersGrpcsToDelete)
+                {
+                    if(p == null)
+                    {
+                        continue;
+                    }
+
+                    RfqDrawingPartNumbersGrpc rpcPart = new RfqDrawingPartNumbersGrpc();
+
+                    rpcPart.RowId = p.RowId;
+                    rpcPart.RfqId = p.RfqId;
+                    rpcPart.OriginalPartNumber = p.OriginalPartNumber;
+                    rpcPart.SumitomoPartNumber = p.SumitomoPartNumber;
+                    rpcPart.SwappedPartNumber = p.SwappedPartNumber;
+                    rpcPart.OriginalPartNumberPrice = p.OriginalPartNumberPrice;
+                    rpcPart.SwappedPartNumberPrice = p.SwappedPartNumberPrice;
+                    rpcPart.PriceSource = p.PriceSource;
+                    rpcPart.IsExactMatch = p.IsExactMatch;
+                    rpcPart.IsSwapped = p.IsSwapped;
+                    rpcPart.Comments = p.Comments;
+                    rpcPart.Quantity = p.Quantity;
+
+                    partsToDelete.Add(rpcPart);
+                }
+                
+                grpcRequest.RfqDrawingPartNumbersGrpcsToDelete.AddRange(partsToDelete);
+                RfqCrudGrpcResponse grpcResponse = await _RfqClient.DeleteRfqDrawingPartNumbersGrpcAsync(grpcRequest);
+                bool result = grpcResponse.SaveSuccess;
+
+                string message;
+                if (result)
+                {
+                    message = $"DeleteRfqDrawingPartNumbersGrpc removed {partsToDelete.Count} parts.";
+                }
+                else
+                {
+                    message = $"DeleteRfqDrawingPartNumbersGrpc failed to delete {partsToDelete.Count} parts.";
+                }
+
+                DeleteRfqDrawingPartNumbersGrpcResponse response = new DeleteRfqDrawingPartNumbersGrpcResponse();
+                response.Success = result;
+                response.Message = message;
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = $"Error deleting drawing parts for RFQ.";
+                _Logger.GenericLogError(errorMessage, ex);
+                throw;
+            }
+        }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         RfqCrudGrpcResponse CreateRfqDrawingPartNumbers(string projectId, List<CustomerParts> customerParts)
         {
@@ -806,6 +872,7 @@
                 foreach (CustomerParts customerPart in customerParts)
                 {
                     RfqDrawingPartNumbersGrpc part = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber1);
+                    //part.Quantity = customerPart.Qua
                     partRequest.RfqDrawingPartNumbersGrpcsToCreate.Add(part);
                     if (customerPart.PartNumber2 != null)
                     {
@@ -835,7 +902,6 @@
             return partResponse;
 
         }
-
         RfqDrawingPartNumbersGrpc ToRfqDrawingPartNumbers(string projectId, string partNumber)
         {
             RfqDrawingPartNumbersGrpc part = new RfqDrawingPartNumbersGrpc();
@@ -988,6 +1054,7 @@
                         customerParts.Add(part);
                     }
                 }
+
                 return (customerParts, true);
             }
 
@@ -2737,34 +2804,35 @@
             {
                 await Task.Delay(1);
 
-                DSIFilterRequest filterRequest = new DSIFilterRequest();
-                filterRequest.DatabaseList = "HARNESSGRPC";
+                RfqFilterRequest filterRequest = new RfqFilterRequest();
+                filterRequest.DatabaseList = "DSIHARNESSGRPC";
                 filterRequest.FilterExpression = "1 == 1";
 
-                DSIFilterResponse filterResponse =
-                    await _DSIClient.FilterDSIGrpcAsync(filterRequest);
+                RfqFilterResponse filterResponse =
+                    await _RfqClient.FilterRfqGrpcAsync(filterRequest);
 
-                ListHarnessGrpc harnessList =
-                    filterResponse.HarnessList ?? new ListHarnessGrpc();
+                ListDsiHarnessGrpc harnessList =
+                    filterResponse.ListDsiHarnessGrpc ?? new ListDsiHarnessGrpc();
 
                 GetAllHarnessModuleResponse response =
                     new GetAllHarnessModuleResponse();
 
-                foreach (HarnessGrpc? item in harnessList.HarnessList)
+                foreach (DsiHarnessGrpc? item in harnessList.DsiHarnessGrpcs)
                 {
                     if (item == null)
                     {
                         continue;
                     }
 
-                    DSIHarnessGrpc harness = new DSIHarnessGrpc();
+                    HarnessGrpc harness = new HarnessGrpc();
 
-                    harness.Id = item.Id;
+                    harness.Id = item.HarnessId;
                     harness.HarnessName1 = item.HarnessName1;
                     harness.Customer = item.Customer;
                     harness.Site = item.Site;
 
-                    response.HarnessList.Add(harness);
+                    DSIHarnessGrpc? dsiHarness = harness.ToDSIHarness();
+                    response.HarnessList.Add(dsiHarness);
                 }
 
                 return response;
@@ -2782,31 +2850,31 @@
             {
                 await Task.Delay(1);
 
-                DSIFilterRequest filterRequest = new DSIFilterRequest();
-                filterRequest.DatabaseList = "HARNESSGRPC";
-                filterRequest.FilterExpression = $"Id == \"{request.Id}\"";
+                RfqFilterRequest filterRequest = new RfqFilterRequest();
+                filterRequest.DatabaseList = "DSIHARNESSGRPC";
+                filterRequest.FilterExpression = $"HarnessId == \"{request.Id}\"";
 
-                DSIFilterResponse filterResponse =
-                    await _DSIClient.FilterDSIGrpcAsync(filterRequest);
+                RfqFilterResponse filterResponse =
+                           await _RfqClient.FilterRfqGrpcAsync(filterRequest);
 
-                ListHarnessGrpc harnessList =
-                    filterResponse.HarnessList ?? new ListHarnessGrpc();
+                ListDsiHarnessGrpc harnessList =
+                    filterResponse.ListDsiHarnessGrpc ?? new ListDsiHarnessGrpc();
 
                 GetHarnessByIdGrpcResponse response =
                     new GetHarnessByIdGrpcResponse();
 
-                HarnessGrpc? item = harnessList.HarnessList.FirstOrDefault();
+                DsiHarnessGrpc? item = harnessList.DsiHarnessGrpcs.FirstOrDefault();
 
                 if (item != null)
                 {
-                    DSIHarnessGrpc harness = new DSIHarnessGrpc();
+                    HarnessGrpc harness = new HarnessGrpc();
 
-                    harness.Id = item.Id;
+                    harness.Id = item.HarnessId;
                     harness.HarnessName1 = item.HarnessName1;
                     harness.Customer = item.Customer;
                     harness.Site = item.Site;
 
-                    response.Harness = harness;
+                    response.Harness = harness.ToDSIHarness();
                 }
 
                 return response;
@@ -2823,31 +2891,31 @@
             try
             {
                 await Task.Delay(1);
-                DSIFilterRequest filterRequest = new DSIFilterRequest();
-                filterRequest.DatabaseList = "COMPOSITEDETAILGRPC";
+                RfqFilterRequest filterRequest = new RfqFilterRequest();
+                filterRequest.DatabaseList = "DSICOMPOSITEDETAILGRPC";
                 filterRequest.FilterExpression =
                     $"HarnessID == \"{request.HarnessId}\"";
 
-                DSIFilterResponse filterResponse =
-                    await _DSIClient.FilterDSIGrpcAsync(filterRequest);
+                RfqFilterResponse filterResponse =
+                    await _RfqClient.FilterRfqGrpcAsync(filterRequest);
 
-                ListCompositeDetailGrpc compositeDetailList =
-                    filterResponse.CompositeDetailList ?? new ListCompositeDetailGrpc();
+                ListDsiCompositeDetailGrpc compositeDetailList =
+                    filterResponse.ListDsiCompositeDetailGrpc ?? new ListDsiCompositeDetailGrpc();
 
                 GetCompositeDetailByHarnessResponse response =
                     new GetCompositeDetailByHarnessResponse();
 
-                foreach (CompositeDetailGrpc? item in compositeDetailList.CompositeDetailList)
+                foreach (DsiCompositeDetailGrpc? item in compositeDetailList.DsiCompositeDetailGrpcs)
                 {
                     if (item == null)
                     {
                         continue;
                     }
 
-                    DSICompositeDetailGrpc compositeDetail =
-                        new DSICompositeDetailGrpc();
+                    CompositeDetailGrpc compositeDetail =
+                        new CompositeDetailGrpc();
 
-                    compositeDetail.Id = item.Id;
+                    compositeDetail.Id = item.RowId;
 
                     compositeDetail.HarnessName1 = item.HarnessName1;
                     compositeDetail.SimilarHarnessName1 = item.SimilarHarnessName1;
@@ -2905,7 +2973,8 @@
                     compositeDetail.CreatedBy = item.CreatedBy;
                     compositeDetail.ModifiedBy = item.ModifiedBy;
 
-                    response.CompositeDetails.Add(compositeDetail);
+                    var dsiCompositeDetail = compositeDetail.ToDSICompositeDetail();
+                    response.CompositeDetails.Add(dsiCompositeDetail);
                 }
 
                 return response;
@@ -2926,29 +2995,31 @@
             {
                 await Task.Delay(1);
 
-                DSIFilterRequest filterRequest = new DSIFilterRequest();
-
-                filterRequest.DatabaseList = "COMPOSITEDETAILGRPC";
+                RfqFilterRequest filterRequest = new RfqFilterRequest();
+                filterRequest.DatabaseList = "DSICOMPOSITEDETAILGRPC";
+                filterRequest.FilterExpression =
                 filterRequest.FilterExpression =
                     $"HarnessID == \"{request.HarnessId}\" && HarnessName1 == \"{request.HarnessName1}\"";
-                DSIFilterResponse filterResponse =
-                    await _DSIClient.FilterDSIGrpcAsync(filterRequest);
-                ListCompositeDetailGrpc compositeDetailList =
-                    filterResponse.CompositeDetailList ?? new ListCompositeDetailGrpc();
+                RfqFilterResponse filterResponse =
+                       await _RfqClient.FilterRfqGrpcAsync(filterRequest);
+
+                ListDsiCompositeDetailGrpc compositeDetailList =
+               filterResponse.ListDsiCompositeDetailGrpc ?? new ListDsiCompositeDetailGrpc();
+
                 GetCompositeDetailByHarnessNameResponse response =
                     new GetCompositeDetailByHarnessNameResponse();
 
-                foreach (CompositeDetailGrpc? item in compositeDetailList.CompositeDetailList)
+                foreach (DsiCompositeDetailGrpc? item in compositeDetailList.DsiCompositeDetailGrpcs)
                 {
                     if (item == null)
                     {
                         continue;
                     }
 
-                    DSICompositeDetailGrpc compositeDetail =
-                        new DSICompositeDetailGrpc();
+                    CompositeDetailGrpc compositeDetail =
+                        new CompositeDetailGrpc();
 
-                    compositeDetail.Id = item.Id;
+                    compositeDetail.Id = item.RowId;
 
                     compositeDetail.HarnessName1 = item.HarnessName1;
                     compositeDetail.SimilarHarnessName1 = item.SimilarHarnessName1;
@@ -3006,7 +3077,8 @@
                     compositeDetail.CreatedBy = item.CreatedBy;
                     compositeDetail.ModifiedBy = item.ModifiedBy;
 
-                    response.CompositeDetails.Add(compositeDetail);
+                    var dsiCompositeDetail = compositeDetail.ToDSICompositeDetail();
+                    response.CompositeDetails.Add(dsiCompositeDetail);
                 }
 
                 return response;
@@ -3025,34 +3097,34 @@
             try
             {
                 await Task.Delay(1);
-                 DSIFilterRequest filterRequest = new DSIFilterRequest();
+                RfqFilterRequest filterRequest = new RfqFilterRequest();
 
-                filterRequest.DatabaseList = "WIRESPECIFICATIONGRPC";
+                filterRequest.DatabaseList = "DSIWIRESPECIFICATIONGRPC";
                 filterRequest.FilterExpression =
                     $"Compositeoptionstring == \"{request.CompositeOptionString}\"";
 
-                DSIFilterResponse filterResponse =
-                    await _DSIClient.FilterDSIGrpcAsync(filterRequest);
+                RfqFilterResponse filterResponse =
+                     await _RfqClient.FilterRfqGrpcAsync(filterRequest);
 
-                ListWireSpecificationGrpc wireSpecificationList =
-                    filterResponse.WireSpecificationList ?? new ListWireSpecificationGrpc();
+                ListDsiWireSpecificationGrpc wireSpecificationList =
+                    filterResponse.ListDsiWireSpecificationGrpc ?? new ListDsiWireSpecificationGrpc();
 
                 GetWireSpecificationByCompositeOptionResponse response =
                     new GetWireSpecificationByCompositeOptionResponse();
 
-                foreach (WireSpecificationGrpc? item in wireSpecificationList.WireSpecificationList)
+                foreach (DsiWireSpecificationGrpc? item in wireSpecificationList.DsiWireSpecificationGrpcs)
                 {
                     if (item == null)
                     {
                         continue;
                     }
 
-                    DSIWireSpecificationGrpc wire =
-                        new DSIWireSpecificationGrpc();
+                    WireSpecificationGrpc wire =
+                        new WireSpecificationGrpc();
 
-                    wire.Id = item.Id;
+                    wire.Id = item.RowId;
                     wire.WireName = item.WireName;
-                    wire.Compositeoptionstring = item.Compositeoptionstring;
+                    wire.Compositeoptionstring = item.CompositeOptionString;
                     wire.WireType = item.WireType;
                     wire.Colour = item.Colour;
                     wire.CrossSectionalArea = item.CrossSectionalArea;
@@ -3080,7 +3152,8 @@
                     wire.CreatedDate = item.CreatedDate;
                     wire.ModifiedDate = item.ModifiedDate;
 
-                    response.WireSpecifications.Add(wire);
+                    DSIWireSpecificationGrpc? dsiWireSpecification = wire.ToDSIWireSpecification();
+                    response.WireSpecifications.Add(dsiWireSpecification);
                 }
 
                 return response;
@@ -3100,7 +3173,7 @@
             {
                 await Task.Delay(1);
 
-                GetComponentByHarnessRequest dsiRequest = new GetComponentByHarnessRequest();
+                GetDSIComponentByHarnessRequest dsiRequest = new GetDSIComponentByHarnessRequest();
 
                 List<string> validHarnessNames = request.HarnessName
                     .Where(x => !string.IsNullOrWhiteSpace(x))
@@ -3127,17 +3200,17 @@
                 dsiRequest.HarnessName.AddRange(validHarnessNames);
                 dsiRequest.CompositeOptions.AddRange(validCompositeOptions);
 
-                DSI.ListComponentGrpc? dsiResponse =
-                    await _DSIClient.GetComponentsByHarnessAndOptionsAsync(dsiRequest);
+                ListDsiComponentGrpc? dsiResponse =
+                    await _RfqClient.GetDSIComponentsByHarnessAndOptionsAsync(dsiRequest);
 
                 _Logger.GenericLogInformation(
-                    $"GetComponentsByHarnessAndOptionsGrpc - DSI returned {dsiResponse?.ComponentList?.Count ?? 0} component(s)");
+                    $"GetComponentsByHarnessAndOptionsGrpc - DSI returned {dsiResponse?.DsiComponentGrpcs?.Count ?? 0} component(s)");
 
                 ListComponentGrpc response = new ListComponentGrpc();
 
-                if (dsiResponse?.ComponentList != null)
+                if (dsiResponse?.DsiComponentGrpcs != null)
                 {
-                    foreach (ComponentGrpc? item in dsiResponse.ComponentList)
+                    foreach (DsiComponentGrpc? item in dsiResponse.DsiComponentGrpcs)
                     {
                         if (item == null)
                         {
@@ -3146,7 +3219,7 @@
 
                         DSIComponentGrpc component = new DSIComponentGrpc();
 
-                        component.Id = item.Id;
+                        component.Id = item.RowId;
                         component.NodeName = item.NodeName;
                         component.CavityName = item.CavityName;
                         component.WireName = item.WireName;

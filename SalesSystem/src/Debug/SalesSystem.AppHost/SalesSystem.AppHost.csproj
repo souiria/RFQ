@@ -18,7 +18,6 @@
     <ProjectReference Include="..\..\Access\Commercial\Commercial.csproj" />
     <ProjectReference Include="..\..\Access\Core\Core.csproj" />
     <ProjectReference Include="..\..\Access\CPD\CPD.csproj" />
-    <ProjectReference Include="..\..\Access\DSI\DSI.csproj" />
     <ProjectReference Include="..\..\Access\EDI\EDI.csproj" />
     <ProjectReference Include="..\..\Access\Emacs\Emacs.csproj" />
     <ProjectReference Include="..\..\Access\EngSol\EngSol.csproj" />

@@ -186,6 +186,17 @@
             UpdateRfqDrawingPartNumbersGrpcResponse response = await _RfqManagerService.UpdateRfqDrawingPartNumbers(request);
             return response;
         }
+
+        public override async Task<DeleteRfqDrawingPartNumbersGrpcResponse> DeleteRfqDrawingPartNumbersGrpc(
+            DeleteRfqDrawingPartNumbersGrpcRequest request,
+            ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("DeleteRfqDrawingPartNumbersGrpc starting");
+            DeleteRfqDrawingPartNumbersGrpcResponse response =
+                await _RfqManagerService.DeleteRfqDrawingPartNumbersGrpc(request);
+            return response;
+        }
+
         public override async Task<GetAllAlternativePartsGrpcResponse> GetAllAlternativePartsGrpc(GetAllAlternativePartsGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation($"GetAlternativePartsGrpc starting at position {request.Position} taking {request.Take} - 120s timeout");

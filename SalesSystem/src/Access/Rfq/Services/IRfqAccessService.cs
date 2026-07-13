@@ -7,6 +7,7 @@
         Task<ListRfqDrawingPartNumbersGrpc> GetAllRfqDrawingPartNumbers(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<ListRfqDrawingPartNumbersGrpc> CreateRfqDrawingPartNumbers(RfqDrawingPartNumbersGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateRfqDrawingPartNumbers(RfqDrawingPartNumbersGrpcRequest request, CancellationToken cancellationToken);
+        Task<bool> DeleteRfqDrawingPartNumbers(RfqDrawingPartNumbersGrpcRequest request, CancellationToken cancellationToken);
         Task<bool> PopulateRfqDrawingPartNumbers(CancellationToken cancellationToken);
 
         #endregion
@@ -329,5 +330,9 @@
         Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig,
             Action<IEnumerable<T>> setResponseCollection, CancellationToken cancellationToken);
         Task<NprValidationResultDto> ValidateNprItemsAsync(Collection<RfqNprRequestGrpc> items, CancellationToken cancellationToken);
-     }
+        Task<ListDsiComponentGrpc> GetComponentsByHarnessAndOptions(
+                    IEnumerable<string> harnessNames,
+                    IEnumerable<string> compositeOptions,
+                    CancellationToken cancellationToken);
+    }
 }

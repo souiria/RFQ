@@ -36,6 +36,7 @@ service RfqModule {
     rpc GetRfqDrawingPartNumbersByRfqIdGrpc (GetRfqDrawingPartNumbersByRfqIdGrpcRequest) returns (GetRfqDrawingPartNumbersByRfqIdGrpcResponse);
     //  rpc UpdateRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequestt) returns (UpdateRfqDrawingPartNumbersGrpcResponse);
     rpc UpdateRfqDrawingPartNumbersGrpc (UpdateRfqDrawingPartNumbersGrpcRequest) returns (UpdateRfqDrawingPartNumbersGrpcResponse);
+    rpc DeleteRfqDrawingPartNumbersGrpc (DeleteRfqDrawingPartNumbersGrpcRequest) returns (DeleteRfqDrawingPartNumbersGrpcResponse);
     rpc DeleteRfqProjectByRowIdGrpc (RfqProjectRequest) returns (RfqCrudResponse);
     rpc GetAlternativePartInfoBySumitomoNumberGrpc (GetAlternativePartInfoBySumitomoNumberRequest) returns (GetAlternativePartInfoBySumitomoNumberResponse);    
     rpc GetAllAlternativePartsGrpc (GetAllAlternativePartsGrpcRequest) returns (GetAllAlternativePartsGrpcResponse);
@@ -270,6 +271,7 @@ message RfqDrawingPartNumber {
   bool IsSwapped = 9;
   string Comments = 10;
   string SumitomoPartNumber = 11;
+  double Quantity = 12;
 }
 message UpdateRfqDrawingPartNumbersGrpcResponse {
   bool Success = 1;
@@ -278,6 +280,14 @@ message UpdateRfqDrawingPartNumbersGrpcResponse {
 message UpdateRfqDrawingPartNumbersGrpcRequest {
   RfqDrawingPartNumber GrpcRequestParameter = 1;
   repeated RfqDrawingPartNumber RfqDrawingPartNumbersGrpcsToUpdate = 2;
+}
+message DeleteRfqDrawingPartNumbersGrpcResponse {
+  bool Success = 1;
+  string Message = 2;
+}
+message DeleteRfqDrawingPartNumbersGrpcRequest {
+  RfqDrawingPartNumber GrpcRequestParameter = 1;
+  repeated RfqDrawingPartNumber RfqDrawingPartNumbersGrpcsToDelete = 2;
 }
 message GetRfqDrawingPartNumbersByRfqIdGrpcRequest {
 

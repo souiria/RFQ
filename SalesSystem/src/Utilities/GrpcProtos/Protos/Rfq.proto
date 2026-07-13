@@ -15,6 +15,7 @@ service Rfq {
   rpc CreateRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequest) returns (RfqCrudGrpcResponse);
   rpc ReadRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequest) returns (ListRfqDrawingPartNumbersGrpc);
   rpc UpdateRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc DeleteRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequest) returns (RfqCrudGrpcResponse);
 
   rpc CreateRfqProjectGrpc (RfqProjectGrpcRequest) returns (RfqCrudGrpcResponse);
   rpc ReadRfqProjectGrpc (RfqProjectGrpcRequest) returns (ListRfqProjectGrpc);
@@ -157,6 +158,9 @@ rpc CreateRfqNprRequestGrpc (RfqNprRequestGrpcRequest) returns (RfqCrudGrpcRespo
 rpc ReadRfqNprRequestGrpc (RfqNprRequestGrpcRequest) returns (ListRfqNprRequestGrpc);
 rpc UpdateRfqNprRequestGrpc (RfqNprRequestGrpcRequest) returns (RfqCrudGrpcResponse);
 rpc DeleteRfqNprRequestByIdGrpc (RfqNprRequestGrpcRequest) returns (RfqCrudGrpcResponse);
+
+    rpc GetDSIComponentsByHarnessAndOptions (GetDSIComponentByHarnessRequest)
+    returns (ListDsiComponentGrpc);
 
   rpc FilterRfqGrpc (RfqFilterRequest) returns (RfqFilterResponse);
   
@@ -1526,3 +1530,7 @@ message ValidateNprRequestResponse {
   int32 totalQuantity = 5;
 }
 
+message GetDSIComponentByHarnessRequest {
+   repeated  string harnessName = 1;
+    repeated string compositeOptions = 2;
+}
