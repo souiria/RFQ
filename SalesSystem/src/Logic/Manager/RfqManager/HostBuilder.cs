@@ -70,8 +70,9 @@
 
             builder.Services.AddGrpc(options =>
             {
-                options.MaxReceiveMessageSize = 64 * 1024 * 1024;
-                options.MaxSendMessageSize = 64 * 1024 * 1024;
+                options.EnableDetailedErrors = true;
+                options.MaxReceiveMessageSize = int.MaxValue;
+                options.MaxSendMessageSize = int.MaxValue;
             });
 
             builder.Services.AddSingleton<IRfqManagerService, RfqManagerService>();
