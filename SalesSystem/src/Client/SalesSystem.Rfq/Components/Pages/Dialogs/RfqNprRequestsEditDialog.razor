@@ -1,0 +1,336 @@
+@using SalesSystem.Rfq.Enums
+@using MudBlazor
+
+@inject RfqUxClientService RfqUxClientService
+@inject ILogger<RfqNprRequestsEditDialog> Logger
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.h6" Class="mb-4">
+            NPR Request Set — @(RfqProject.RfqNumber ?? "No RFQ Number")
+        </MudText>
+        <MudForm @ref="_form" @bind-IsValid="_isValid">
+            <MudGrid>
+                @* --- Set-level summary (derived from requests) --- *@
+                <MudItem xs="4">
+                    <MudTextField Value="@(RfqProject.RfqNumber ?? "—")"
+                                  Label="RFQ Number"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  ReadOnly="true" />
+                </MudItem>
+                <MudItem xs="2">
+                    <MudTextField Value="@RfqProject.NprRequests.Count.ToString()"
+                                  Label="Requests"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  ReadOnly="true" />
+                </MudItem>
+                <MudItem xs="3">
+                    <MudTextField Value="@(RfqProject.EarliestCreated?.ToString("dd.MM.yyyy HH:mm:ss") ?? "—")"
+                                  Label="Created"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  ReadOnly="true" />
+                </MudItem>
+                <MudItem xs="3">
+                    <MudTextField Value="@(RfqProject.LastUpdated?.ToString("dd.MM.yyyy HH:mm:ss") ?? "—")"
+                                  Label="Last Updated"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  ReadOnly="true" />
+                </MudItem>
+
+                @* --- NPR Requests Grid --- *@
+                <MudItem xs="12">
+                    <MudDataGrid T="RfqNprRequestUxModel"
+                                 @ref="_nprRequestsGrid"
+                                 Items="@RfqProject.NprRequests"
+                                 Virtualize="true"
+                                 FixedHeader="true"
+                                 ItemSize="36"
+                                 Height="calc(100vh - 640px)"
+                                 Dense="true"
+                                 DragDropColumnReordering="true"
+                                 ApplyDropClassesOnDragStarted="true"
+                                 ColumnResizeMode="ResizeMode.Column"
+                                 SortMode="SortMode.Multiple"
+                                 Hideable="true"
+                                 Filterable="true"
+                                 FilterMode="DataGridFilterMode.ColumnFilterRow"
+                                 Groupable="false"
+                                 QuickFilter="@QuickFilter"
+                                 EditMode="DataGridEditMode.Cell"
+                                 EditTrigger="DataGridEditTrigger.OnRowClick"
+                                 ReadOnly="false"
+                                 Bordered="true"
+                                 ShowMenuIcon="true"
+                                 CommittedItemChanges="@OnItemCommitted"
+                                 HorizontalScrollbar="true"
+                                 Style="overflow: auto;">
+                        <ToolBarContent>
+                            <MudText Typo="Typo.subtitle1" Class="mr-4">
+                                NPR Requests (@RfqProject.NprRequests.Count)
+                            </MudText>
+                            <MudTooltip Text="Full text search">
+                                <MudTextField @bind-Value="_searchFilter"
+                                              Placeholder="Search"
+                                              Adornment="Adornment.Start"
+                                              Immediate="true"
+                                              AdornmentIcon="@Icons.Material.Filled.Search"
+                                              IconSize="Size.Medium"
+                                              Class="mt-0" />
+                            </MudTooltip>
+                            <MudSpacer />
+                        </ToolBarContent>
+                        <Columns>
+                            <PropertyColumn Property="x => x.UxStatus"
+                                            Title="Status"
+                                            Editable="false"
+                                            StickyLeft="true">
+                                <CellTemplate>
+                                    <MudChip T="string"
+                                             Size="Size.Small"
+                                             Color="@GetStatusColor(context.Item.UxStatus)"
+                                             Variant="Variant.Outlined">
+                                        @context.Item.UxStatus
+                                    </MudChip>
+                                </CellTemplate>
+                            </PropertyColumn>
+                            <PropertyColumn Property="x => x.CustomerRfqNo" Title="RFQ Number" Editable="true" />
+                            <PropertyColumn Property="x => x.CustomerCode" Title="Customer Code" Editable="true" />
+                            <PropertyColumn Property="x => x.RequestID" Title="Request ID" Editable="false" />
+                            <PropertyColumn Property="x => x.OriginatorName" Title="Originator" Editable="true" />
+                            <PropertyColumn Property="x => x.DeadlineDate" Title="Deadline Date" Format="dd.MM.yyyy" Editable="true" />
+                            <PropertyColumn Property="x => x.ReasonDescription" Title="Reason" Editable="true" />
+                            <PropertyColumn Property="x => x.MaterialNumber" Title="Material Number" Editable="true" />
+                            <PropertyColumn Property="x => x.MaterialDescription" Title="Material Description" Editable="true" />
+                            <PropertyColumn Property="x => x.CustomerPartNumber" Title="Customer P/N" Editable="true" />
+                            <PropertyColumn Property="x => x.SupplierPartNumber" Title="Supplier P/N" Editable="true" />
+                            <PropertyColumn Property="x => x.BOMUnitOfMeasurement" Title="UoM" Editable="true" />
+                            <PropertyColumn Property="x => x.SupplierGroup" Title="Supplier Group" Editable="true" />
+                            <PropertyColumn Property="x => x.SupplierDetailComments" Title="Supplier Comments" Editable="true" />
+                            <PropertyColumn Property="x => x.ProjectCode" Title="Project" Editable="true" />
+                            <PropertyColumn Property="x => x.QtyPerVehicle" Title="Qty/Vehicle" Editable="true" />
+                            @* <PropertyColumn Property="x => x.VehicleTotalQuantity" Title="Total Qty" Editable="true" /> *@
+                            <PropertyColumn Property="x => x.IsSampleDataRequired" Title="Samples Req." Editable="true" />
+                            <PropertyColumn Property="x => x.NPRRaisedRemarks" Title="Remarks" Editable="true" />
+                            <PropertyColumn Property="x => x.ManufacturingSite" Title="Mfg. Site" Editable="true" />
+                            <PropertyColumn Property="x => x.IsCustomerNominatedSupplier" Title="Cust. Nom. Supplier" Editable="true" />
+                            <PropertyColumn Property="x => x.IsCustomerNominatedMaterial" Title="Cust. Nom. Material" Editable="true" />
+                            @* <PropertyColumn Property="x => x.PlatformName" Title="Platform" Editable="true" /> *@
+                            @* <PropertyColumn Property="x => x.ProgramName" Title="Program" Editable="true" /> *@
+                            <PropertyColumn Property="x => x.SuggestedManufacturerGroup" Title="Suggested Mfr. Group" Editable="true" />
+                            <PropertyColumn Property="x => x.AssociatedParts" Title="Associated Parts" Editable="true" />
+                            <PropertyColumn Property="x => x.NPRUploadSeqNo" Title="Upload Seq. No." Editable="false" />
+                            <PropertyColumn Property="x => x.Created" Title="Created" Format="dd.MM.yyyy HH:mm" Editable="false" />
+                            <PropertyColumn Property="x => x.Updated" Title="Updated" Format="dd.MM.yyyy HH:mm" Editable="false" />
+                            <TemplateColumn CellClass="d-flex justify-end" StickyRight="true" Editable="false">
+                                <CellTemplate>
+                                    <MudStack Row>
+                                        <MudIconButton Size="Size.Small"
+                                                       Icon="@Icons.Material.Filled.Delete"
+                                                       Color="Color.Error"
+                                                       aria-label="delete"
+                                                       OnClick="@(() => RemoveRequest(context.Item))" />
+                                    </MudStack>
+                                </CellTemplate>
+                            </TemplateColumn>
+                        </Columns>
+                        <NoRecordsContent>
+                            <MudText Typo="Typo.body2" Align="Align.Center" Class="pa-4">
+                                No NPR requests in this set.
+                            </MudText>
+                        </NoRecordsContent>
+                    </MudDataGrid>
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        @if (_isDirty)
+        {
+            <MudChip T="string" Size="Size.Small" Color="Color.Warning" Variant="Variant.Outlined"
+                     Icon="@Icons.Material.Filled.Warning">
+                Unsaved changes
+            </MudChip>
+        }
+        <MudSpacer />
+        <MudButton OnClick="Cancel" Color="Color.Default">Cancel</MudButton>
+        <MudButton OnClick="Save" Color="Color.Primary" Variant="Variant.Filled"
+                   Disabled="@(!_isDirty)">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public RqfProjectUxModel RfqProject { get; set; } = null!;
+
+    MudDataGrid<RfqNprRequestUxModel> _nprRequestsGrid { get; set; } = null!;
+    MudForm _form = null!;
+    bool _isValid;
+    string _searchFilter = "";
+    bool _isDirty;
+
+    string _lastCompiledFilter = "";
+    Func<RfqNprRequestUxModel, bool>? _compiledQuickFilter;
+
+    Func<RfqNprRequestUxModel, bool> QuickFilter => _quickFilterFunc;
+
+    Color GetStatusColor(UxObjectStatus status) => status switch
+    {
+        UxObjectStatus.Created => Color.Info,
+        UxObjectStatus.Updated => Color.Warning,
+        UxObjectStatus.Deleted => Color.Error,
+        UxObjectStatus.Read => Color.Default,
+        _ => Color.Default
+    };
+
+    void OnItemCommitted(RfqNprRequestUxModel item)
+    {
+        _isDirty = true;
+
+        if (item.UxStatus == UxObjectStatus.Read)
+        {
+            item.UxStatus = UxObjectStatus.Updated;
+        }
+
+        item.Updated = DateTime.UtcNow;
+
+        Logger.LogInformation(
+            $"RfqNprRequestsEditDialog.OnItemCommitted - " +
+            $"Updated request Id: {item.Id}, Material: {item.MaterialNumber}");
+
+        StateHasChanged();
+    }
+
+    async Task RemoveRequest(RfqNprRequestUxModel request)
+    {
+        if (request.UxStatus == UxObjectStatus.Created)
+        {
+            // Not yet persisted — remove entirely
+            RfqProject.NprRequests.Remove(request);
+        }
+        else
+        {
+            // Mark as deleted — will be removed on save
+            request.UxStatus = UxObjectStatus.Deleted;
+        }
+
+        _isDirty = true;
+
+        Logger.LogInformation(
+            $"RfqNprRequestsEditDialog.RemoveRequest - " +
+            $"Removed request Id: {request.Id}, Material: {request.MaterialNumber}, " +
+            $"set now has {RfqProject.NprRequests.Count(r => r.UxStatus != UxObjectStatus.Deleted)} active requests");
+
+        Snackbar.Add(
+            $"Removed NPR request: {request.MaterialNumber ?? request.CustomerPartNumber ?? request.Id.ToString()}",
+            Severity.Info);
+
+        await Task.CompletedTask;
+        StateHasChanged();
+    }
+
+    void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    async Task Save()
+    {
+        await _form.Validate();
+
+        if (!_isDirty)
+        {
+            Snackbar.Add("No changes to save", Severity.Info);
+            MudDialog.Close(DialogResult.Cancel());
+            return;
+        }
+
+        try
+        {
+            // Pass all requests (including deleted ones) to the service
+            // The service will handle removing deleted items during persistence
+            List<RfqNprRequestUxModel> allRequests = RfqProject.NprRequests.ToList();
+
+            List<RfqNprRequestUxModel> updatedRequests = await RfqUxClientService.UpdateNprRequestsAsync(allRequests);
+
+            Logger.LogInformation(
+                $"RfqNprRequestsEditDialog.Save - " +
+                $"Saved NPR requests for RfqNumber: {RfqProject.RfqNumber}, " +
+                $"count: {updatedRequests.Count}");
+
+            Snackbar.Add(
+                $"NPR requests saved: {RfqProject.RfqNumber} ({updatedRequests.Count} requests)",
+                Severity.Success);
+
+            MudDialog.Close(DialogResult.Ok(updatedRequests));
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "RfqNprRequestsEditDialog.Save - Error saving NPR requests");
+            Snackbar.Add($"Error saving: {ex.Message}", Severity.Error);
+        }
+    }
+
+    bool _quickFilterFunc(RfqNprRequestUxModel x)
+    {
+        // Don't show deleted items in the grid
+        if (x.UxStatus == UxObjectStatus.Deleted)
+        {
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(_searchFilter))
+        {
+            return true;
+        }
+
+        if (_lastCompiledFilter != _searchFilter)
+        {
+            _lastCompiledFilter = _searchFilter;
+            string filter = _searchFilter.Trim();
+            StringComparison comparisonType = StringComparison.OrdinalIgnoreCase;
+            bool isNumeric = int.TryParse(filter, out _);
+
+            _compiledQuickFilter = item =>
+            {
+                if (item.UxStatus == UxObjectStatus.Deleted) return false;
+                if (item.CustomerRfqNo?.Contains(filter, comparisonType) == true) return true;
+                if (item.CustomerCode?.Contains(filter, comparisonType) == true) return true;
+                if (item.RequestID?.Contains(filter, comparisonType) == true) return true;
+                if (item.OriginatorName?.Contains(filter, comparisonType) == true) return true;
+                if (item.ReasonDescription?.Contains(filter, comparisonType) == true) return true;
+                if (item.MaterialNumber?.Contains(filter, comparisonType) == true) return true;
+                if (item.MaterialDescription?.Contains(filter, comparisonType) == true) return true;
+                if (item.CustomerPartNumber?.Contains(filter, comparisonType) == true) return true;
+                if (item.SupplierPartNumber?.Contains(filter, comparisonType) == true) return true;
+                if (item.BOMUnitOfMeasurement?.Contains(filter, comparisonType) == true) return true;
+                if (item.SupplierGroup?.Contains(filter, comparisonType) == true) return true;
+                if (item.SupplierDetailComments?.Contains(filter, comparisonType) == true) return true;
+                if (item.ProjectCode?.Contains(filter, comparisonType) == true) return true;
+                if (item.NPRRaisedRemarks?.Contains(filter, comparisonType) == true) return true;
+                if (item.ManufacturingSite?.Contains(filter, comparisonType) == true) return true;
+                // if (item.PlatformName?.Contains(filter, comparisonType) == true) return true;
+                // if (item.ProgramName?.Contains(filter, comparisonType) == true) return true;
+                if (item.SuggestedManufacturerGroup?.Contains(filter, comparisonType) == true) return true;
+                if (item.AssociatedParts?.Contains(filter, comparisonType) == true) return true;
+
+                if (isNumeric)
+                {
+                    if (item.QtyPerVehicle?.ToString().Contains(filter, comparisonType) == true) return true;
+                    // if (item.VehicleTotalQuantity?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.NPRUploadSeqNo?.ToString().Contains(filter, comparisonType) == true) return true;
+                }
+
+                return false;
+            };
+        }
+
+        return _compiledQuickFilter?.Invoke(x) ?? true;
+    }
+}

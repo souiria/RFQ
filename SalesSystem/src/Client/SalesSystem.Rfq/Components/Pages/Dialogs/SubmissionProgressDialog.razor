@@ -1,0 +1,201 @@
+@using SalesSystem.Rfq.Enums
+@using SalesSystem.Rfq.Models
+@using MudBlazor
+
+
+@implements IDisposable
+
+<MudDialog>
+    <DialogContent>
+        <div class="d-flex flex-column align-center pa-4" style="min-width: 400px; min-height: 200px;">
+            <MudText Typo="Typo.h6" Class="mb-4">Processing RFQ Submission</MudText>
+            
+            @if (ProgressState.IsCompleted)
+            {
+                @* Completed image here *@
+                @if (ProgressState.HasError)
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.Error"
+                             Color="Color.Error"
+                             Size="Size.Large"
+                             Class="mb-4" />
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircle"
+                             Color="Color.Success"
+                             Size="Size.Large"
+                             Class="mb-4" />
+                }
+
+                <MudText Typo="Typo.subtitle1"
+                         Align="Align.Center"
+                         Class="mb-4"
+                         Color="@(ProgressState.HasError ? Color.Error : Color.Success)">
+                    @(ProgressState.HasError ? "Submission completed with errors" : "Submission complete")
+                </MudText>
+            }
+            else
+            {
+                <MudProgressCircular Color="Color.Primary"
+                                     Size="Size.Large"
+                                     Indeterminate="true"
+                                     Class="mb-4" />
+            }
+
+            
+            <MudText Typo="Typo.body1" 
+                     Align="Align.Center" 
+                     Class="mb-3"
+                     Style="min-height: 24px;">
+                @ProgressState.CurrentMessage
+            </MudText>
+
+            <MudDivider Class="my-3 w-100" />
+            
+            <div class="w-100">
+                <MudText Typo="Typo.subtitle2" Class="mb-2">Progress:</MudText>
+                
+                @foreach (var checkpoint in ProgressState.Checkpoints)
+                {
+                    <div class="d-flex align-center mb-2">
+                        @if (checkpoint.IsCompleted)
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" 
+                                     Color="Color.Success" 
+                                     Size="Size.Small" 
+                                     Class="mr-2" />
+                        }
+                        else if (checkpoint.IsActive)
+                        {
+                            <MudProgressCircular Color="Color.Primary" 
+                                               Size="Size.Small" 
+                                               Indeterminate="true" 
+                                               Class="mr-2" />
+                        }
+                        else
+                        {
+                            <MudIcon Icon="@Icons.Material.Outlined.RadioButtonUnchecked" 
+                                     Color="Color.Secondary" 
+                                     Size="Size.Small" 
+                                     Class="mr-2" />
+                        }
+                        
+                        <MudText Typo="Typo.body2" 
+                                 Color="@(checkpoint.IsCompleted ? Color.Success : checkpoint.IsActive ? Color.Primary : Color.Secondary)">
+                            @checkpoint.Message
+                        </MudText>
+                        
+                        @if (checkpoint.IsCompleted && !string.IsNullOrEmpty(checkpoint.Details))
+                        {
+                            <MudText Typo="Typo.caption" 
+                                     Color="Color.Secondary" 
+                                     Class="ml-auto">
+                                @checkpoint.Details
+                            </MudText>
+                        }
+                    </div>
+                }
+            </div>
+
+            @if (ProgressState.HasError)
+            {
+                <MudAlert Severity="Severity.Error" Class="mt-3 w-100">
+                    <MudText Typo="Typo.body2">@ProgressState.ErrorMessage</MudText>
+                </MudAlert>
+            }
+
+            @if (ProgressState.IsCompleted)
+            {
+                <MudAlert Severity="@(ProgressState.HasError ? Severity.Error : Severity.Success)" Class="mt-3 w-100">
+                    <MudText Typo="Typo.body2">
+                        @if (ProgressState.HasError)
+                        {
+                            <text>RFQ submission failed. Please check the details above and try again.</text>
+                        }
+                        else
+                        {
+                            <text>RFQ submission completed successfully!</text>
+                        }
+                    </MudText>
+                </MudAlert>
+            }
+        </div>
+    </DialogContent>
+    
+    <DialogActions>
+        @if (ProgressState.IsCompleted)
+        {
+            <MudButton OnClick="Close" 
+                       Color="@(ProgressState.HasError ? Color.Error : Color.Success)" 
+                       Variant="Variant.Filled">
+                @(ProgressState.HasError ? "Close" : "Done")
+            </MudButton>
+        }
+        else if (!ProgressState.HasError)
+        {
+            <MudButton OnClick="Close" 
+                       Color="Color.Secondary" 
+                       Variant="Variant.Text" 
+                       Disabled="true">
+                Please wait...
+            </MudButton>
+        }
+        else if (ProgressState.HasError)
+        {
+            <MudButton OnClick="Close" 
+                       Color="Color.Error" 
+                       Variant="Variant.Filled">
+                Close
+            </MudButton>
+        }
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] 
+    public IMudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter] 
+    public SubmissionProgressState ProgressState { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        if (ProgressState != null)
+        {
+            ProgressState.PropertyChanged += OnProgressStateChanged;
+        }
+    }
+
+    private void OnProgressStateChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void Close()
+    {
+        // If successfully completed and we have a success callback, execute it
+        if (ProgressState.IsCompleted && !ProgressState.HasError && ProgressState.OnSuccessCallback != null)
+        {
+            try
+            {
+                ProgressState.OnSuccessCallback.Invoke();
+            }
+            catch (Exception ex)
+            {
+                // Log the error but still close the dialog
+                Console.WriteLine($"Error executing success callback: {ex.Message}");
+            }
+        }
+        
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    public void Dispose()
+    {
+        if (ProgressState != null)
+        {
+            ProgressState.PropertyChanged -= OnProgressStateChanged;
+        }
+    }
+}

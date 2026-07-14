@@ -1,13 +1,21 @@
-﻿using Master.Endpoints.GrpcServices;
-using Master.Services;
-
-namespace Master
+﻿namespace Master
 {
     public static class HostBuilder
     {
         public static WebApplication CreateApp(WebApplicationBuilder? builder = null, params string[] args)
         {
+
+            string dir = Directory.GetCurrentDirectory();
+
             builder ??= WebApplication.CreateBuilder(args);
+            IConfigurationSection conf = builder.Configuration.GetSection("Logging");
+            builder.Configuration
+                .SetBasePath(dir)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables();
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConfiguration(conf);
 
             #region Builder
 
@@ -23,10 +31,16 @@ namespace Master
             // Add additional generic services here (anything ServiceFabric specific
             // should go in Api.cs CreateServiceInstanceListeners method)
             // *********************************************************************
-
+     
             #region Additional Services
+            builder.AddServiceDefaults();
             builder.Logging.AddSeq();
-            builder.Services.AddGrpc();
+            builder.Services.AddGrpc(opt =>
+            {
+                opt.EnableDetailedErrors = true;
+                opt.MaxReceiveMessageSize = int.MaxValue;
+                opt.MaxSendMessageSize = int.MaxValue;
+            });
             builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddSingleton<IMasterAccessService, MasterAccessService>();
             builder.Services.AddHostedService<DataImportSchedulerService>();

@@ -1,0 +1,298 @@
+﻿@page "/editRfq/{RfqProjectId:long}"
+@* @page "/editRfq/{UserId:guid}/{RfqProjectId:long}" *@
+
+@using Google.Protobuf.WellKnownTypes
+@using SalesSystem.Rfq.Components.Pages.Components
+@using SalesSystem.Rfq.Components.Pages.Dialogs
+@using SalesSystem.Rfq.Enums
+@using SalesSystem.Rfq.Extensions
+@using SalesSystem.Rfq.Models
+
+@inject ISnackbar Snackbar
+@inject RfqUxClientService RfqUxClientService
+@inject DsiUxClientService DsiUxClientService
+@inject ILogger<EditRfq> Logger
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+
+@rendermode InteractiveServer
+
+@if (IsLoading || RfqProject == null)
+{
+    <MudContainer Class="d-flex justify-center align-center" Style="height: calc(100vh - 128px);">
+        <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large">
+            <ChildContent>
+                <MudText Typo="Typo.subtitle2">
+                    Loading...
+                </MudText>
+            </ChildContent>
+        </MudProgressCircular>
+    </MudContainer>
+}
+else
+{
+    <MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Edit RFI/RFQ @RfqProject.RfqNumber</MudText>
+    <MudGrid Class="position-fixed">
+        <MudItem xs="12">
+            <MudPaper Class="d-flex flex-row" Style="height:150px;">
+                @* Region label *@
+                <MudPaper Style="width: 48px; background-color: var(--mud-palette-primary); position: relative; overflow: visible;">
+                    <MudText Style="transform: rotate(-90deg); transform-origin: left bottom; white-space: nowrap; position: absolute; bottom: 20px; left: 36px; font-weight: 500; color: white;"
+                             Typo="Typo.h6">
+                        Edit RFQ/RFI
+                    </MudText>
+                </MudPaper>
+
+                @* Column 1: Customer + Reason *@
+                <MudPaper Class="pa-4" Style="flex: 0 0 20%; max-width:20%; min-width: 20%;">
+                    <MudStack>
+                        <MudSelect T="string"
+                                   Value="@RfqProject.CustomerCode"
+                                   For="@(() => RfqProject.CustomerBusinessUnitId)"
+                                   ValueChanged="OnCustomerValueChanged"
+                                   Label="Customer"
+                                   Placeholder="Please Select"
+                                   AdornmentIcon="@Icons.Material.Filled.People"
+                                   AdornmentColor="Color.Primary">
+                            @foreach (var customer in RfqUxClientService.Customers)
+                            {
+                                <MudSelectItem Value="@customer?.Id">@customer?.CustomerBusinessGroupName</MudSelectItem>
+                            }
+                        </MudSelect>
+                        <MudSelect T="int?"
+                                   Value="@(RfqProject.RfqReasonId == 0 ? null : (int?)RfqProject.RfqReasonId)"
+                                   ValueChanged="OnReasonValueChanged"
+                                   Label="Reason"
+                                   Placeholder="Please Select"
+                                   AdornmentIcon="@Icons.Material.Filled.Checklist"
+                                   AdornmentColor="Color.Primary">
+                            @foreach (var reason in RfqUxClientService.Reasons)
+                            {
+                                <MudSelectItem Value="@((int?)reason.RowId)">@reason.RfqReasonTitle</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudStack>
+                </MudPaper>
+
+                @* Column 2: Project + VehicleVolume *@
+                <MudPaper Class="pa-4" Style="flex: 0 0 20%; max-width:20%; min-width: 20%;">
+                    <MudStack>
+                        <MudAutocomplete T="RqfCustomerProjectAssociationUxModel"
+                                         @ref="_ProjectAutocomplete"
+                                         @bind-Value="SelectedProject"
+                                         Label="Project"
+                                         Placeholder="Search project..."
+                                         SearchFunc="@SearchProjects"
+                                         ToStringFunc="@(p => p != null ? $"{p.ProjectCode} - {p.CustomerName}" : "")"
+                                         Strict="false"
+                                         ResetValueOnEmptyText="false"
+                                         CoerceText="true"
+                                         CoerceValue="true"
+                                         SelectValueOnTab="true"
+                                         AdornmentIcon="@Icons.Material.Filled.DesignServices"
+                                         AdornmentColor="Color.Primary"
+                                         Dense="true"
+                                         Clearable="true"
+                                         DebounceInterval="250"
+                                         MinCharacters="0"
+                                         ShowProgressIndicator="true"
+                                         MaxItems="100">
+                            <ItemTemplate Context="project">
+                                <MudStack Spacing="0">
+                                    <MudText Typo="Typo.body2">
+                                        <strong>@project.ProjectCode</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                        @project.CustomerName
+                                    </MudText>
+                                </MudStack>
+                            </ItemTemplate>
+                            <NoItemsTemplate>
+                                <MudText Typo="Typo.body2" Align="Align.Center" Class="pa-2">
+                                    No projects found matching your search.
+                                </MudText>
+                            </NoItemsTemplate>
+                        </MudAutocomplete>
+
+                        <MudNumericField @bind-Value="@RfqProject.VehicleVolume"
+                                         Label="Vehicle Volume"
+                                         Variant="Variant.Text"
+                                         Min="0" />
+                    </MudStack>
+                </MudPaper>
+
+                @* Column 3: Deadline + IsActive *@
+                <MudPaper Class="pa-4" Style="flex: 1 1 20%; max-width:20%; min-width: 192px;">
+                    <MudStack>
+                        <MudDatePicker Label="Deadline"
+                                       @bind-Date="RfqProject.RfqResponseDeadline"
+                                       DateFormat="dd.MM.yyyy" />
+                        <MudCheckBox Label="Is Active"
+                                     @bind-Value="RfqProject.IsActive"
+                                     Disabled="true"/>
+                    </MudStack>
+                </MudPaper>
+
+                @* Column 4: FileManager *@
+@*                 <MudPaper Class="pa-2 w-100" Style="flex: 0 0 15%; max-width:15%; min-width: 192px;">
+                    <FileManager @ref="_ComponentFileManager"
+                                 FileObjects="FileObjects"
+                                 OnFilesChanged="OnFilesChanged"
+                                 OnUploadClicked="@UploadFilesAsync"
+                                 UploadDisabled="@(FileObjects.Count == 0)" />
+                </MudPaper> *@
+
+                @* Controls – scrollable inner wrapper *@
+                <MudPaper Class="pa-0"
+                          Style="height: 150px; overflow: hidden; flex-shrink: 0;">
+                    <div style="height: 100%; overflow-y: auto; padding: 6px;">
+                        <MudStack Row Spacing="2">
+                            @* Column 1: Search & NPR actions *@
+                            <MudStack Spacing="1">
+                                <MudTooltip Text="Search All InProgress Parts">
+                                    <MudButton Color="Color.Info"
+                                               OnClick="@SearchAllPartNumbersAsync"
+                                               Variant="Variant.Filled"
+                                               Size="Size.Small"
+                                               StartIcon="@Icons.Material.Filled.TravelExplore"
+                                               FullWidth="true"
+                                               Disabled="@(_InProgressParts.Count == 0 || _IsSearchingAll)">
+                                        Search
+                                    </MudButton>
+                                </MudTooltip>
+                                <MudTooltip Text="Create NPR Requests for ALL InProgress Parts">
+                                    <MudButton Color="Color.Info"
+                                               OnClick="@NprAllInProgressPartsAsync"
+                                               Variant="Variant.Filled"
+                                               Size="Size.Small"
+                                               StartIcon="@Icons.Material.Filled.AddTask"
+                                               FullWidth="true"
+                                               Disabled="@(IsCreateNprRequestsPermitted)">
+                                        Add NPRs
+                                    </MudButton>
+                                </MudTooltip>
+                                <MudTooltip Text="Submit existing NPR Requests to the NPR API">
+                                    <MudButton Color="Color.Success"
+                                               OnClick="@SubmitNprRequestsAsync"
+                                               Variant="Variant.Filled"
+                                               Size="Size.Small"
+                                               StartIcon="@Icons.Material.Filled.CloudUpload"
+                                               FullWidth="true"
+                                               Disabled="@(_IsSubmittingNprs || RfqProject?.NprRequests == null || RfqProject.NprRequests.Count == 0)">
+                                        Submit NPRs
+                                    </MudButton>
+                                </MudTooltip>
+                            </MudStack>
+
+                            @* Column 2: Status, Reload, Update *@
+                            <MudStack Spacing="1">
+                                <MudTooltip Text="RFQ Project Stats and Statistics">
+                                    <MudButton Color="Color.Dark"
+                                               OnClick="@ShowDatasetStatusAsync"
+                                               Variant="Variant.Filled"
+                                               Size="Size.Small"
+                                               StartIcon="@Icons.Material.Filled.Assessment"
+                                               FullWidth="true"
+                                               Disabled="@(TotalParts == 0)">
+                                        Status
+                                    </MudButton>
+                                </MudTooltip>
+                                <MudTooltip Text="Reload from DB and Drop Changes">
+                                    <MudButton Color="Color.Warning"
+                                               OnClick="@ReloadDataAsync"
+                                               Variant="Variant.Filled"
+                                               Size="Size.Small"
+                                               StartIcon="@Icons.Material.Filled.Repeat"
+                                               FullWidth="true">
+                                        Reload
+                                    </MudButton>
+                                </MudTooltip>
+                                <MudTooltip Text="Save to DB">
+                                    <MudButton Color="Color.Primary"
+                                               OnClick="@SaveDataAsync"
+                                               Variant="Variant.Filled"
+                                               Size="Size.Small"
+                                               StartIcon="@Icons.Material.Filled.Save"
+                                               FullWidth="true">
+                                        Update
+                                    </MudButton>
+                                </MudTooltip>
+                            </MudStack>
+                        </MudStack>
+                    </div>
+                </MudPaper>
+
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" Class="pt-2">
+            <MudTabs Elevation="2"
+                     Rounded="true"
+                     ApplyEffectsToContainer="true"
+                     PanelClass="pa-3"
+                     MinimumTabWidth="12vw"
+                     KeepPanelsAlive="true"
+                     @bind-ActivePanelIndex="_ActiveTabIndex">
+                <MudTabPanel Text="BOM Files"
+                             Icon="@Icons.Material.Filled.Api"
+                             BadgeData='"BOM"'
+                             BadgeColor="Color.Success">
+                    <div class="d-flex flex-column" style="height: calc(100vh - 364px); overflow: hidden;">
+@*                         <FileCards @ref="_ComponentFileCards"
+                                   FileObjects="FileObjects"
+                                   OnRemoveFile="HandleFileRemoval" /> *@
+                        @if(_Composites.Count > 0)
+                        {
+                            <CompositeCards @ref="_CompositeCardsRef"
+                                            DsiComposites="@_Composites"
+                                            PreselectedIds="@_PreselectedDerivativeIds"
+                                            OnComponentsSelected="@HandleComponentsSelectedAsync" />
+
+                            @* <MudButton Class="mt-4"
+                                       Color="Color.Primary"
+                                       Variant="Variant.Filled"
+                                       StartIcon="@Icons.Material.Filled.Save"
+                                       OnClick="@UpdateSelectionAsync">
+                                Update Selection
+                            </MudButton> *@
+                        }
+                    </div>
+                </MudTabPanel>
+                <MudTabPanel Text="Parts Lists" Icon="@Icons.Material.Filled.Api" BadgeData='"PROJ"' BadgeColor="Color.Info">
+                    <div class="d-flex flex-column" style="height: calc(100vh - 364px); overflow: hidden;">
+                        <PartNumberSection PartNumbers="@_InProgressParts"
+                                           Label="In progress"
+                                           BackgroundColor="var(--mud-palette-warning)"
+                                           InitiallyExpanded="true"
+                                           OnPartNumberDeleted="@HandlePartNumberDeleted"
+                                           OnPartNumberUpdated="@HandlePartNumberUpdated"/>
+                        <MudDivider Style="margin: 4px 0;"/>
+                        <PartNumberSection PartNumbers="@_CompletedParts"
+                                           Label="Completed"
+                                           BackgroundColor="var(--mud-palette-success)"
+                                           InitiallyExpanded="false"
+                                           OnPartNumberDeleted="@HandlePartNumberDeleted"
+                                           OnPartNumberUpdated="@HandlePartNumberUpdated"/>
+                    </div>
+                </MudTabPanel>
+                <MudTabPanel Text="@($"NPRs")"
+                             Disabled="@(RfqProject.NprRequests == null || RfqProject.NprRequests.Count == 0)"
+                             Icon="@Icons.Material.Filled.RequestPage" BadgeData="@(RfqProject.NprRequests?.Count ?? 0)" BadgeColor="Color.Primary">
+                    <div class="d-flex flex-column" style="height: calc(100vh - 364px); overflow: hidden;">
+                        @if (RfqProject.NprRequests != null && RfqProject.NprRequests.Count > 0)
+                        {
+                            <NprRequestsEditor @ref="_ComponentNprEditor" RfqProject="@RfqProject" GlobalValue="@GlobalValue"/>
+                        }
+                        else
+                        {
+                            <MudAlert Severity="Severity.Info" Class="ma-4">
+                                No NPR requests available. Use the "Add NPRs" button to create NPR requests for in-progress parts.
+                            </MudAlert>
+                        }
+                    </div>
+                </MudTabPanel>
+            </MudTabs>
+        </MudItem>
+    </MudGrid>
+}
+

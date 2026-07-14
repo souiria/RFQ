@@ -2,35 +2,35 @@
 {
     public class CustomerHierarchyDto
     {
-        public required string? CustomerCode
+        public string? CustomerCode
         { get; set; }
-        public required string? CustomerName
+        public string? CustomerName
         { get; set; }
-        public required string? StreetNumber
+        public string? StreetNumber
         { get; set; }
-        public required string? StreetName
+        public string? StreetName
         { get; set; }
-        public required string? City
+        public string? City
         { get; set; }
-        public required string? Region
+        public string? Region
         { get; set; }
-        public required string? ZipCode
+        public string? ZipCode
         { get; set; }
-        public required string? Country
+        public string? Country
         { get; set; }
-        public required string? CustomerBusinessType
+        public string? CustomerBusinessType
         { get; set; }
-        public required string? IndexedMaterial
+        public string? IndexedMaterial
         { get; set; }
-        public required Guid? CustomerBusinessHierarchyGuid
+        public Guid? CustomerBusinessHierarchyGuid
         { get; set; }
-        public required Guid? Id
+        public Guid? Id
         { get; set; }
-        public required string? CustomerBusinessQualityManagerName
+        public string? CustomerBusinessQualityManagerName
         { get; set; }
-        public required Guid? CustomerCountryGuid
+        public Guid? CustomerCountryGuid
         { get; set; }
-        public required bool? IsActive
+        public bool? IsActive
         { get; set; }
     }
 }

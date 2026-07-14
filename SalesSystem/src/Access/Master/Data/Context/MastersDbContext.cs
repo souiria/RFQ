@@ -22,6 +22,11 @@
         public DbSet<DbProgramHierarchy> ProgramItems => Set<DbProgramHierarchy>();
         public DbSet<DbProjectHierarchy> ProjectItems => Set<DbProjectHierarchy>();
         public DbSet<DbVehicle> VehicleItems => Set<DbVehicle>();
+        public DbSet<DbSupplierGroup> SupplierGroup => Set<DbSupplierGroup>();
+        public DbSet<DbSupplier> Supplier => Set<DbSupplier>();
+        public DbSet<DbUnitOfMeasure> UnitOfMeasures => Set<DbUnitOfMeasure>();
+        public DbSet<DbBusinessUnit> BusinessUnits => Set<DbBusinessUnit>();
+        public DbSet<DbProjectEngineeringAssociation> ProjectEngineeringAssociations => Set<DbProjectEngineeringAssociation>();
 
         #endregion
 
@@ -30,7 +35,8 @@
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            modelBuilder.ApplyConfigurationsFromAssembly(assembly);
         }
 
         #endregion
@@ -45,10 +51,7 @@
             return result;
         }
 
-        public override int SaveChanges()
-        {
-            return SaveChangesAsync().GetAwaiter().GetResult();
-        }
+        public override int SaveChanges() => SaveChangesAsync().GetAwaiter().GetResult();
 
         async Task PublishDomainEventsAsync()
         {

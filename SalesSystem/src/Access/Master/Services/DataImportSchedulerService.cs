@@ -15,21 +15,10 @@
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            #pragma warning disable CA1848 // Use the LoggerMessage delegates
-            _Logger.LogInformation("Background service is running");
-            #pragma warning restore CA1848 // Use the LoggerMessage delegates
-
+            _Logger.GenericLogInformation("Background service is running");
+          
             await PopulateGlobalDataAsync(stoppingToken);
             await DailyWorker(23, 30, 00, async () => await PopulateGlobalDataAsync(stoppingToken), stoppingToken);
-
-            //using (PeriodicTimer timer = new PeriodicTimer(TimeSpan.FromSeconds(30)))
-            //{
-            //    while (await timer.WaitForNextTickAsync(stoppingToken))
-            //    {
-            //        // Your scheduled work here
-            //        await PopulateGlobalDataAsync(stoppingToken);
-            //    }
-            //}
         }
 
         async Task<bool> PopulateGlobalDataAsync(CancellationToken stoppingToken)
@@ -38,6 +27,14 @@
             if (_MasterAccessService != null)
             {
                 bool check;
+                check = await _MasterAccessService.PopulateBusinessUnitsAsync(stoppingToken);
+                await LogDataPopulationSuccess("BusinessUnit", check);
+                check = await _MasterAccessService.PopulateUnitOfMeasuresAsync(stoppingToken);
+                await LogDataPopulationSuccess("UnitOfMeasures", check);
+                check = await _MasterAccessService.PopulateBusinessUnitsAsync(stoppingToken);
+                await LogDataPopulationSuccess("BusinessUnit", check);
+                check = await _MasterAccessService.PopulateUnitOfMeasuresAsync(stoppingToken);
+                await LogDataPopulationSuccess("UnitOfMeasures", check);
                 check = await _MasterAccessService.PopulateCurrenciesAsync(stoppingToken);
                 await LogDataPopulationSuccess("Currency", check);
                 check = await _MasterAccessService.PopulateCustomersAsync(stoppingToken);
@@ -60,6 +57,10 @@
                 await LogDataPopulationSuccess("Milestones", check);
                 check = await _MasterAccessService.PopulateVehiclesAsync(stoppingToken);
                 await LogDataPopulationSuccess("Vehicles", check);
+                check = await _MasterAccessService.PopulateSupplierGroupsAsync(stoppingToken);
+                await LogDataPopulationSuccess("SupplierGroups", check);
+                check = await _MasterAccessService.PopulateProjectEngineeringAssociationsAsync(stoppingToken);
+                await LogDataPopulationSuccess("ProjectEngineeringAssociations", check);
             }
 
             return true;
@@ -79,13 +80,13 @@
                     sec); // <-- Seconds when the method should be started.
 
                 TimeSpan ts;
-                if (scanDateTime > dateTimeNow)
+                if (scanDateTime <= dateTimeNow)
                 {
+                    scanDateTime = scanDateTime.AddDays(1);
                     ts = scanDateTime - dateTimeNow;
                 }
                 else
                 {
-                    scanDateTime = scanDateTime.AddDays(1);
                     ts = scanDateTime - dateTimeNow;
                 }
 
@@ -96,32 +97,24 @@
                 }
                 catch (OperationCanceledException ex)
                 {
-#pragma warning disable CA1848 // Use the LoggerMessage delegates
-#pragma warning disable CA2254 // Template should be a static expression
-                    _Logger.LogError(ex.Message);
-#pragma warning restore CA2254 // Template should be a static expression
-#pragma warning restore CA1848 // Use the LoggerMessage delegates
+                    _Logger.GenericLogError(ex.Message, ex);
                 }
             }
         }
 
-#pragma warning disable CA1848 // Use the LoggerMessage delegates
-#pragma warning disable CA2254 // Template should be a static expression
         async Task LogDataPopulationSuccess(string data, bool check)
         {
             await Task.Delay(0);
             if (check)
             {
 
-                _Logger.LogInformation($"{data} data retrieved successfully");
+                _Logger.GenericLogInformation($"{data} data retrieved successfully");
 
             }
             else
             {
-                _Logger.LogInformation($"{data} data retrieval failed!!");
+                _Logger.GenericLogInformation($"{data} data retrieval failed!!");
             }
         }
-#pragma warning restore CA2254 // Template should be a static expression
-#pragma warning restore CA1848 // Use the LoggerMessage delegates
     }
 }

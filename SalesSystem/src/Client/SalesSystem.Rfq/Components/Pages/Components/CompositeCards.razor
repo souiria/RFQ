@@ -1,0 +1,242 @@
+@using System.IO
+@using SalesSystem.Rfq.Enums
+
+@inject DsiUxClientService DsiUxClientService
+@inject IDialogService DialogService
+
+<style>
+    .composite-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 8px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: box-shadow 0.2s ease;
+    min-width: 250px;
+    max-width: 300px;
+    position: relative;
+    }
+
+    .cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 16px;
+    overflow-y: auto;
+    }
+
+</style>
+
+<MudPaper Style="display: grid; grid-template-columns: repeat(auto-fill, minmax(500px, 1fr)); align-items: start; gap: 16px; height: calc(100vh - 364px); overflow-y: auto;" Class="pa-4" Outlined="true">
+    @if (DsiComposites.Count > 0)
+    {
+        @foreach (var compositeObject in DsiComposites)
+        {
+            <MudCard Elevation="2">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">@compositeObject.HarnessName1</MudText>
+                        @if (!(string.IsNullOrEmpty(compositeObject.HarnessName2)))
+                        {
+                            <MudText Typo="Typo.caption">@compositeObject.HarnessName2</MudText>
+                        }
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudTooltip Text="Generate Component List">
+                            <MudIconButton Size="Size.Small"
+                            Variant="Variant.Filled"
+                            Icon="@Icons.Material.Filled.ImportExport"
+                            Color="Color.Primary"
+                            OnClick="async () => await ShowCompositeInfo(compositeObject)"
+                            Disabled="@(_selectedCompositeDetails.Count == 0)" />
+                        </MudTooltip>
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText Typo="Typo.body2">Date: @(compositeObject.HarnessDate1)</MudText>
+                    <MudText Typo="Typo.body2">Customer: @compositeObject.Customer</MudText>
+                    @if (_compositeDetails.ContainsKey(compositeObject.Id) && _compositeDetails[compositeObject.Id].Count > 0)
+                    {
+                        <MudText Typo="Typo.body2">Derivatives: @_compositeDetails[compositeObject.Id].Count</MudText>
+                        <MudPaper Class="mt-2">
+                            <MudDataGrid T="DsiCompositeDetailUxModel"
+                            Items="_compositeDetails[compositeObject.Id]"
+                            MultiSelection="true"
+                            @bind-SelectedItems="_selectedCompositeDetails"
+                            ReadOnly="true"
+                            Bordered="false"
+                            Dense="true"
+                            FixedHeader="true"
+                            Height="200px">
+                                @* Limits data grid height inside the wider card *@
+                                <Columns>
+                                    <SelectColumn T="DsiCompositeDetailUxModel" />
+
+                                    <PropertyColumn Property="x => x.HarnessName1" Title="Derivative Name" />
+                                    <PropertyColumn Property="x => x.CircuitOption" Title="Circuit Option" />
+                                    <PropertyColumn Property="x => x.Site" Title="Site" />
+                                </Columns>
+                            </MudDataGrid>
+                        </MudPaper>
+                    }
+                    else
+                    {
+                        <MudText Typo="Typo.body2">No derivatives found.</MudText>
+                    }
+                </MudCardContent>
+            </MudCard>
+        }
+    }
+</MudPaper>
+
+
+@code {
+    Dictionary<Guid, List<DsiCompositeDetailUxModel>> _compositeDetails = new();
+    HashSet<DsiCompositeDetailUxModel> _selectedCompositeDetails = new();
+    List<DsiComponentUxModel> _components = new();
+
+    [Parameter]
+    public List<DsiHarnessUxModel> DsiComposites { get; set; } = new();
+
+    [Parameter]
+    public HashSet<long> PreselectedIds { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<IEnumerable<DsiComponentUxModel>> OnComponentsSelected { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _compositeDetails.Clear();
+        foreach(var composite in DsiComposites)
+        {
+            List<DsiCompositeDetailUxModel>? derivatives = await LoadCompositeDetailsByHarnessId(composite.Id);
+            if(derivatives?.Count>0)
+            {
+                _compositeDetails[composite.Id] = derivatives;
+                if (PreselectedIds != null && PreselectedIds.Any())
+                {
+                    var previouslySelected = derivatives.Where(d => PreselectedIds.Contains(d.Id));
+                    foreach (var item in previouslySelected)
+                    {
+                        _selectedCompositeDetails.Add(item);
+                    }
+                }
+            }
+        }
+    }
+
+    async Task ShowCompositeInfo(DsiHarnessUxModel compositeObject)
+    {
+        try
+        {
+            _components.Clear();
+
+            List<string> harnessNames = new List<string>
+            {
+                compositeObject.HarnessName1!
+            };
+
+            List<string> compositeOptions = _compositeDetails[compositeObject.Id]
+                .Where(x => !string.IsNullOrWhiteSpace(x.CircuitOption))
+                .SelectMany(x => x.CircuitOption!
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries))
+                .Select(x => x.Trim())
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            await DsiUxClientService.GetComponentsByHarnessAndOptionsAsync(
+                harnessNames,
+                compositeOptions);
+
+            _components = DsiUxClientService.Components.ToList();
+
+            if (_components.Count > 0)
+            {
+                await ShowDsiComponentListDialog(_components);
+            }
+            else
+            {
+                // Handle the case where no components were found
+                await DialogService.ShowMessageBox("No Components Found", "No components were found for the selected composite.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching components: {ex.Message}");
+        }
+    }
+
+    // Expose the checked items explicitly to the parent
+    public HashSet<DsiCompositeDetailUxModel> SelectedItems => _selectedCompositeDetails;
+    async Task ShowDsiComponentListDialog(IEnumerable<DsiComponentUxModel> componentsToDisplay)
+    {
+        DialogParameters parameters = new DialogParameters
+        {
+            { nameof(DsiComponentListDialog.Components), componentsToDisplay }
+        };
+
+        DialogOptions options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true,
+            CloseButton = true
+        };
+
+        IDialogReference dialog = await DialogService.ShowAsync<DsiComponentListDialog>(
+           "Components Summary",
+           parameters,
+           options
+        );
+
+        DialogResult? result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            // callback to process the selected components if needed
+            // await OnComponentsSelected.InvokeAsync(componentsToDisplay);
+            //  Only use selected derivatives
+            var selectedDerivatives = _selectedCompositeDetails;
+
+            if (selectedDerivatives == null || !selectedDerivatives.Any())
+            {
+                return;
+            }
+
+            //  Filter components based on selected derivatives
+            var selectedComponents = _components
+                // .Where(c =>
+                //     selectedDerivatives.Any(d =>
+                //         c.HarnessName1 == d.HarnessName1 &&
+                //         (string.IsNullOrWhiteSpace(d.CircuitOption) ||
+                //          c.CircuitOption?.Contains(d.CircuitOption) == true)
+                //     ))
+                .ToList();
+
+            //  Send ONLY filtered components
+           await OnComponentsSelected.InvokeAsync(selectedComponents);
+
+        }
+    }
+
+
+    async Task<List<DsiCompositeDetailUxModel>?> LoadCompositeDetailsByHarnessId(Guid harnessId)
+    {
+        await DsiUxClientService.GetCompositeDetailByHarnessIdAsync(harnessId.ToString());
+        return DsiUxClientService.CompositeDetails.ToList();
+    }
+
+    string GetCardCssClass(DsiHarnessUxModel compositeObject)
+    {
+        var baseClass = "composite-card";
+
+        // if (compositeObject.Status == UxObjectStatus.Deleted)
+        //     return $"{baseClass} deleted";
+
+        // if (compositeObject.IsUploaded || compositeObject.UploadStatus.Status == FileUploadStatus.Success)
+        //     return $"{baseClass} uploaded";
+
+        return baseClass;
+    }
+}

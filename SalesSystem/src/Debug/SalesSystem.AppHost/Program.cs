@@ -6,9 +6,35 @@
 
         IResourceBuilder<ProjectResource> mastersAccessService = builder.AddProject<Projects.Master>("master-access-service");
 
+        IResourceBuilder<ProjectResource> emacsAccessService = builder.AddProject<Projects.Emacs>("emacs-access-service");
+
+        IResourceBuilder<ProjectResource> nPRAccessService = builder.AddProject<Projects.NPR>("npr-access-service");
+
+        IResourceBuilder<ProjectResource> cPDAccessService = builder.AddProject<Projects.CPD>("cpd-access-service");
+
+        IResourceBuilder<ProjectResource> ediAccessService = builder.AddProject<Projects.EDI>("edi-access-service");
+
+        IResourceBuilder<ProjectResource> rfqAccessService = builder.AddProject<Projects.Rfq>("rfq-access-service");
+
+        //IResourceBuilder<ProjectResource> coreAccessService = builder.AddProject<Projects.Core>("core-access-service");
+
+        IResourceBuilder<ProjectResource> purchasingAccessService = builder.AddProject<Projects.Purchasing>("purchasing-access-service");
+
         IResourceBuilder<ProjectResource> apiService = builder.AddProject<Projects.SalesSystem_ApiService>("api-service");
 
-        IResourceBuilder<ProjectResource> rfqManager = builder.AddProject<Projects.RfqManager>("RfqManager");
+        IResourceBuilder<ProjectResource> rfqManager = builder.AddProject<Projects.RfqModule>("rfq-module-service");
+
+        IResourceBuilder<ProjectResource> cdbManager = builder.AddProject<Projects.CDb>("cdb-module-service");
+
+        IResourceBuilder<ProjectResource> sfsManager = builder.AddProject<Projects.SFS>("sfs-module-service");
+
+        IResourceBuilder<ProjectResource> adssAccessService = builder.AddProject<Projects.Adss>("adss-access-service");
+
+        //IResourceBuilder<ProjectResource> dsiAccessService = builder.AddProject<Projects.DSI>("dsi-access-service");
+
+        IResourceBuilder<ProjectResource> engSolAccessService = builder.AddProject <Projects.EngSol>("engSol-access-service");
+
+        IResourceBuilder<ProjectResource> commercialAccessService = builder.AddProject <Projects.Commercial>("commercial-access-service");
 
         builder.AddProject<Projects.SalesSystem_Rfq>("RfqFrontEnd")
             .WithExternalHttpEndpoints()

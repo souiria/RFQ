@@ -1,0 +1,617 @@
+﻿@using SalesSystem.Rfq.Models
+@using MudBlazor
+@using SalesSystem.Rfq.Components.Pages.Components
+
+@inject RfqUxClientService RfqUxClientService
+@inject ILogger<PickAlternativePartDialog> Logger
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+<style>
+    .mud-alt-part-grid .mud-table-head {
+        background-color: lightgrey;
+    }
+
+        .mud-alt-part-grid .mud-table-head th {
+            background-color: lightgrey;
+        }
+
+    .mud-alt-part-grid {
+        overflow-x: hidden !important;
+        border: 1px solid #bdbdbd;
+        border-radius: 4px;
+    }
+
+    .mud-table-sticky-header {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background-color: var(--mud-palette-surface);
+    }
+
+    /* First row: column headers */
+    .mud-alt-part-grid .mud-table-head tr:first-child th {
+        position: sticky;
+        top: 0;
+        z-index: 3;
+        background-color: lightgrey;
+    }
+
+    /* Second row: filter inputs */
+    .mud-alt-part-grid .mud-table-head tr:nth-child(2) th {
+        position: sticky;
+        top: 36px;
+        z-index: 3;
+        background-color: #f5f5f5;
+    }
+</style>
+
+<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.h6" Class="mb-4">
+            Enter Dummy Part Number Information
+        </MudText>
+        <MudForm @ref="_form" @bind-IsValid="_isValid">
+            <MudGrid>
+                <MudItem xs="12">
+                    @if (IsLoading)
+                    {
+                        <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+                        <MudText Typo="Typo.body2" Class="mt-2">Loading alternative parts...</MudText>
+                    }
+                    else
+                    {
+                        <MudDataGrid T="AlternativePartUxModel"
+                                     @ref="_alternativePartNumbersGrid"
+                                     Items="@RfqUxClientService.AlternativeParts"
+                                     Virtualize="true"
+                                     FixedHeader="true"
+                                     ItemSize="20f"
+                                     Height="320px"
+                                     Dense="true"
+                                     DragDropColumnReordering="true"
+                                     ApplyDropClassesOnDragStarted="true"
+                                     ColumnResizeMode="ResizeMode.Column"
+                                     SortMode="SortMode.Multiple"
+                                     Hideable="true"
+                                     Filterable="true"
+                                     FilterMode="DataGridFilterMode.ColumnFilterRow"
+                                     Groupable="true"
+                                     QuickFilter="@QuickFilter"
+                                     ReadOnly="true"
+                                     Bordered="true"
+                                     Class="mud-alt-part-grid"
+                                     ShowMenuIcon="true">
+                            <ToolBarContent>
+                                <MudTooltip Text="Full text search">
+                                    <MudTextField @bind-Value="AlternativePartFilter" 
+                                                  Placeholder="Search" 
+                                                  Adornment="Adornment.Start" 
+                                                  Immediate="true"
+                                                  AdornmentIcon="@Icons.Material.Filled.Search" 
+                                                  IconSize="Size.Medium" 
+                                                  Class="mt-0" />
+                                </MudTooltip>
+                                <span>&nbsp;</span>
+                            </ToolBarContent>
+                            <Columns>
+                                <PropertyColumn Property="x => x.SumitomoNumber" Title="Sumitomo Number" StickyLeft="true" />
+                                <PropertyColumn Property="x => x.SumitomoDescription" Title="Description" HeaderStyle="max-width:18em; min-width:18em" Filterable="true" />
+                                <PropertyColumn Property="x => x.MainSupplier" Title="Main Supplier" />
+                                @* <PropertyColumn Property="x => x.SupplierName" Title="Supplier Name" /> *@
+                                <PropertyColumn Property="x => x.SupplierName" Title="Supplier Name">
+                                    <FilterTemplate>
+                                        <MultiSelectColumnFilter T="AlternativePartUxModel"
+                                                                 TProperty="string"
+                                                                 Items="@RfqUxClientService.AlternativeParts"
+                                                                 KeySelector="@((AlternativePartUxModel x) => (string?)x.SupplierName)"
+                                                                 DisplaySelector="@((AlternativePartUxModel x) => $"{x.SupplierName}")"
+                                                                 FilterContext="@context" />
+                                    </FilterTemplate>
+                                </PropertyColumn>
+                                <PropertyColumn Property="x => x.SupplierNumber" Title="Supplier Number" />
+                                <PropertyColumn Property="x => x.Price" Title="Price" />
+                                @* <PropertyColumn Property="x => x.CurrencyCode" Title="Currency" /> *@
+                                <PropertyColumn Property="x => x.CurrencyCode" Title="Currency">
+                                    <FilterTemplate>
+                                        <MultiSelectColumnFilter T="AlternativePartUxModel"
+                                                                 TProperty="string"
+                                                                 Items="@RfqUxClientService.AlternativeParts"
+                                                                 KeySelector="@((AlternativePartUxModel x) => (string?)x.CurrencyCode)"
+                                                                 DisplaySelector="@((AlternativePartUxModel x) => $"{x.CurrencyCode}")"
+                                                                 FilterContext="@context" />
+                                    </FilterTemplate>
+                                </PropertyColumn>
+                                @* <PropertyColumn Property="x => x.UnitOfMeasure" Title="Unit" /> *@
+                                <PropertyColumn Property="x => x.UnitOfMeasure" Title="UoM">
+                                    <FilterTemplate>
+                                        <MultiSelectColumnFilter T="AlternativePartUxModel"
+                                                                 TProperty="string"
+                                                                 Items="@RfqUxClientService.AlternativeParts"
+                                                                 KeySelector="@((AlternativePartUxModel x) => (string?)x.UnitOfMeasure)"
+                                                                 DisplaySelector="@((AlternativePartUxModel x) => $"{x.UnitOfMeasure}")"
+                                                                 FilterContext="@context" />
+                                    </FilterTemplate>
+                                </PropertyColumn>
+                                @* <PropertyColumn Property="x => x.PartGroup" Title="Part Group" />
+                                <PropertyColumn Property="x => x.GroupDescription" Title="Group Description" /> *@
+                                <PropertyColumn Property="x => x.PartGroup" Title="Part Group">
+                                    <FilterTemplate>
+                                        <MultiSelectColumnFilter T="AlternativePartUxModel"
+                                                                 TProperty="string"
+                                                                 Items="@RfqUxClientService.AlternativeParts"
+                                                                 KeySelector="@((AlternativePartUxModel x) => (string?)x.PartGroup)"
+                                                                 DisplaySelector="@((AlternativePartUxModel x) => $"{x.PartGroup} - {x.GroupDescription}")"
+                                                                 FilterContext="@context" />
+                                    </FilterTemplate>
+                                </PropertyColumn>
+                                @* <PropertyColumn Property="x => x.Class1" Title="Class 1" />
+                                <PropertyColumn Property="x => x.Class1Name" Title="Class 1 Name" /> *@
+                                <PropertyColumn Property="x => x.Class1" Title="Class1">
+                                    <FilterTemplate>
+                                        <MultiSelectColumnFilter T="AlternativePartUxModel"
+                                                                 TProperty="string"
+                                                                 Items="@RfqUxClientService.AlternativeParts"
+                                                                 KeySelector="@((AlternativePartUxModel x) => (string?)x.Class1)"
+                                                                 DisplaySelector="@((AlternativePartUxModel x) => $"{x.Class1} - {x.Class1Name}")"
+                                                                 FilterContext="@context" />
+                                    </FilterTemplate>
+                                </PropertyColumn>
+                                <PropertyColumn Property="x => x.Class2" Title="Class 2" />
+                                <PropertyColumn Property="x => x.Class2Name" Title="Class 2 Name" />
+                                <PropertyColumn Property="x => x.ColorCode" Title="Color">
+                                    <FilterTemplate>
+                                        <MultiSelectColumnFilter T="AlternativePartUxModel"
+                                                                 TProperty="string"
+                                                                 Items="@RfqUxClientService.AlternativeParts"
+                                                                 KeySelector="@((AlternativePartUxModel x) => (string?)x.ColorCode)"
+                                                                 DisplaySelector="@((AlternativePartUxModel x) => $"{x.ColorCode} - {x.ColorName}")"
+                                                                 FilterContext="@context" />
+                                    </FilterTemplate>
+                                </PropertyColumn>
+
+                                @* <PropertyColumn Property="x => x.MaterialGroup" Title="Material Group" /> *@
+                                <PropertyColumn Property="x => x.MaterialGroup" Title="Material Group">
+                                    <FilterTemplate>
+                                        <MultiSelectColumnFilter T="AlternativePartUxModel"
+                                                                 TProperty="string"
+                                                                 Items="@RfqUxClientService.AlternativeParts"
+                                                                 KeySelector="@((AlternativePartUxModel x) => (string?)x.MaterialGroup)"
+                                                                 DisplaySelector="@((AlternativePartUxModel x) => $"{x.MaterialGroup}")"
+                                                                 FilterContext="@context" />
+                                    </FilterTemplate>
+                                </PropertyColumn>
+                                @* <PropertyColumn Property="x => x.MaterialType" Title="Material Type" />
+                                <PropertyColumn Property="x => x.TypeDescription" Title="Type Description" /> *@
+                                <PropertyColumn Property="x => x.MaterialType" Title="Material Type">
+                                    <FilterTemplate>
+                                        <MultiSelectColumnFilter T="AlternativePartUxModel"
+                                                                 TProperty="string"
+                                                                 Items="@RfqUxClientService.AlternativeParts"
+                                                                 KeySelector="@((AlternativePartUxModel x) => (string?)x.MaterialType)"
+                                                                 DisplaySelector="@((AlternativePartUxModel x) => $"{x.MaterialType} - {x.TypeDescription}")"
+                                                                 FilterContext="@context" />
+                                    </FilterTemplate>
+                                </PropertyColumn>
+                                @* <PropertyColumn Property="x => x.CategoryCode" Title="Category Code" />
+                                <PropertyColumn Property="x => x.CategoryName" Title="Category Name" /> *@
+                                <PropertyColumn Property="x => x.CategoryCode" Title="Category Code/Name">
+                                    <FilterTemplate>
+                                        <MultiSelectColumnFilter T="AlternativePartUxModel"
+                                                                 TProperty="string"
+                                                                 Items="@RfqUxClientService.AlternativeParts"
+                                                                 KeySelector="@((AlternativePartUxModel x) => (string?)x.CategoryCode)"
+                                                                 DisplaySelector="@((AlternativePartUxModel x) => $"{x.CategoryCode} - {x.CategoryName}")"
+                                                                 FilterContext="@context" />
+                                    </FilterTemplate>
+                                </PropertyColumn>
+                                <PropertyColumn Property="x => x.NumberOfCavity" Title="Number of Cavity" />
+                                <PropertyColumn Property="x => x.InsideDiameter" Title="Inside Diameter" />
+                                <PropertyColumn Property="x => x.WallThickness" Title="Wall Thickness" />
+                                <PropertyColumn Property="x => x.Length" Title="Length" />
+                                <PropertyColumn Property="x => x.WidthOrOutsideDiameter" Title="Width / Outside Diameter" />
+                                <PropertyColumn Property="x => x.MassOrWeight" Title="Mass / Weight" />
+                                <PropertyColumn Property="x => x.Quantity" Title="Quantity" />
+                                <PropertyColumn Property="x => x.UoM" Title="UoM" />
+                                <PropertyColumn Property="x => x.CustomerCode" Title="Customer Code" />
+                                <PropertyColumn Property="x => x.Group1" Title="Group 1" />
+                                <PropertyColumn Property="x => x.Group2" Title="Group 2" />
+                                <PropertyColumn Property="x => x.Group3" Title="Group 3" />
+                                <PropertyColumn Property="x => x.Group4" Title="Group 4" />
+                                <PropertyColumn Property="x => x.Group5" Title="Group 5" />
+                                <PropertyColumn Property="x => x.Group6" Title="Group 6" />
+                                <PropertyColumn Property="x => x.Group7" Title="Group 7" />
+                                <PropertyColumn Property="x => x.Group8" Title="Group 8" />
+                                <PropertyColumn Property="x => x.CustomerId" Title="Customer ID" />
+                                <PropertyColumn Property="x => x.CustomerCode" Title="Customer Code" />
+                                <PropertyColumn Property="x => x.MassOrWeight2" Title="Mass / Weight 2" />
+                                <PropertyColumn Property="x => x.L1" Title="L1" />
+                                <PropertyColumn Property="x => x.L2" Title="L2" />
+                                <PropertyColumn Property="x => x.L3" Title="L3" />
+                                <PropertyColumn Property="x => x.PitchWidth" Title="Pitch Width" />
+                                <PropertyColumn Property="x => x.Tilt" Title="Tilt" />
+                                <PropertyColumn Property="x => x.Grease" Title="Grease" />
+                                <PropertyColumn Property="x => x.CategoryCode2" Title="Category Code 2" />
+                                <TemplateColumn CellClass="d-flex justify-end" StickyRight="true" Title="Actions">
+                                    <CellTemplate>
+                                        <MudStack Row>
+                                            <MudTooltip Text="Show Alt.Part Info">
+                                                <MudIconButton Size="Size.Small"
+                                                               Class="p-2"
+                                                               Icon="@Icons.Material.Filled.Info"
+                                                               aria-label="info"
+                                                               OnClick="@(() => ShowInfo(context.Item))" />
+                                            </MudTooltip>
+
+                                            <MudTooltip Text="Pick Dummy Part">
+                                                <MudIconButton Size="Size.Small"
+                                                               Icon="@Icons.Material.Filled.SelectAll"
+                                                               aria-label="select"
+                                                               OnClick="@(() => PickAlternativePart(context.Item))" />
+                                            </MudTooltip>
+
+
+                                        </MudStack>
+                                    </CellTemplate>
+                                </TemplateColumn>
+                            </Columns>
+                        </MudDataGrid>
+                    }
+                </MudItem>
+                @* <MudItem xs="12">
+                    <MudStack Row Spacing="2" Class="ma-1">
+                        <MudTextField @bind-Value="AlternativePartNumber"
+                                      Label="Dummy Part Number"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      Required="true"
+                                      RequiredError="Dummy part number is required"
+                                      Disabled="true"/>
+                        <MudNumericField @bind-Value="AlternativePrice"
+                                         Label="Dummy Price"
+                                         Variant="Variant.Outlined"
+                                         Margin="Margin.Dense"
+                                         Format="0.#####"
+                                         Adornment="Adornment.End"
+                                         AdornmentText="€"
+                                         Min="0m"
+                                         Required="true"
+                                         RequiredError="Dummy price is required"
+                                         Disabled="true"/>
+                    </MudStack>
+                </MudItem> *@
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudStack Row Spacing="2" Class="ma-1">
+            <MudTextField @bind-Value="AlternativePartNumber"
+                          Label="Dummy Part Number"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Required="true"
+                          RequiredError="Dummy part number is required"
+                          Disabled="true" />
+            <MudNumericField @bind-Value="AlternativePrice"
+                             Label="Dummy Price"
+                             Variant="Variant.Outlined"
+                             Margin="Margin.Dense"
+                             Format="0.#####"
+                             Adornment="Adornment.End"
+                             AdornmentText="€"
+                             Min="0m"
+                             Required="true"
+                             RequiredError="Dummy price is required"
+                             Disabled="true" />
+            <MudButton OnClick="Cancel" Color="Color.Default">Cancel</MudButton>
+            <MudButton OnClick="Apply" Color="Color.Primary" Variant="Variant.Filled" Disabled="!_isValid">OK</MudButton>
+        </MudStack>
+
+    </DialogActions>
+</MudDialog>
+
+@code {
+    bool _isLoading;
+    bool IsLoading
+    {
+        get => _isLoading;
+        set => _isLoading = value;
+    }
+
+    string _alternativePartFilter = "";
+    string AlternativePartFilter
+    {
+        get => _alternativePartFilter;
+        set => _alternativePartFilter = value;
+    }
+
+    private string _lastCompiledFilter = "";
+    private Func<AlternativePartUxModel, bool>? _compiledQuickFilter;
+    // Replace the property-based QuickFilter with a cached field
+    private Func<AlternativePartUxModel, bool> QuickFilter => _quickFilterFunc;
+
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+
+    MudDataGrid<AlternativePartUxModel> _alternativePartNumbersGrid { get; set; } = null!;
+
+    private string? AlternativePartNumber { get; set; }
+    private decimal? AlternativePrice { get; set; }
+    private MudForm _form = null!;
+    private bool _isValid;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            AlternativePartFilter = "";
+
+            // Check if data is already cached
+            if (RfqUxClientService.AlternativeParts.Count > 0)
+            {
+                Logger.LogInformation($"PickAlternativePartDialog - Using cached {RfqUxClientService.AlternativeParts.Count} alternative parts");
+                IsLoading = false;
+                return;
+            }
+
+            // If not cached, load it now
+            IsLoading = true;
+            Logger.LogInformation("PickAlternativePartDialog - Loading alternative parts...");
+
+            int alternativePartsCount = await RfqUxClientService.GetAllAlternativePartsAsync(0, -1);
+
+            Logger.LogInformation($"PickAlternativePartDialog - Loaded {alternativePartsCount} alternative parts");
+
+            IsLoading = false;
+        }
+        catch (Exception ex)
+        {
+            IsLoading = false;
+            Logger.LogError(ex, "ERROR in PickAlternativePartDialog.OnInitializedAsync");
+            Snackbar.Add($"Error loading alternative parts: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task PickAlternativePart(AlternativePartUxModel alternativePart)
+    {
+        if (alternativePart == null)
+        {
+            Snackbar.Add("No part selected", Severity.Error);
+            return;
+        }
+
+        if (string.IsNullOrEmpty(alternativePart.SumitomoNumber))
+        {
+            Snackbar.Add("Selected part has no Sumitomo Number", Severity.Error);
+            return;
+        }
+
+        if (!alternativePart.Price.HasValue || alternativePart.Price.Value <= 0)
+        {
+            Snackbar.Add("Selected part has no price", Severity.Error);
+            return;
+        }
+
+        await InvokeAsync(async () =>
+        {
+            // Set values
+            AlternativePartNumber = alternativePart.SumitomoNumber;
+            AlternativePrice = (decimal)alternativePart.Price.Value;
+
+            // Force update
+            StateHasChanged();
+
+            // Wait for next render cycle
+            await Task.Yield();
+
+            // Validate form
+            await _form.Validate();
+
+            // Final update
+            StateHasChanged();
+
+            Logger.LogInformation($"PickAlternativePartDialog.PickAlternativePart Form valid: {_isValid}, PartNumber: {AlternativePartNumber}, Price: {AlternativePrice}");
+
+            Snackbar.Add($"PickAlternativePartDialog.PickAlternativePart  Selected: {AlternativePartNumber} - ${AlternativePrice:F2}", Severity.Success);
+        });
+    }
+
+    private async Task ShowInfo(AlternativePartUxModel alternativePart)
+    {
+        // existing component
+        Logger.LogInformation($"VVV ShowInfo {alternativePart.SumitomoNumber} {alternativePart.SumitomoDescription} {alternativePart.Class1Name}");
+
+        if (string.IsNullOrEmpty(alternativePart.SumitomoNumber))
+        {
+            Snackbar.Add("Alternative part number has no Sumitomo part number!", Severity.Error);
+            return;
+        }
+
+        // show the dialog
+        var parameters = new DialogParameters<ShowInfoAlternativePartNumberDialog> { { x => x.AlternativePartNumber, alternativePart } };
+        var dialog = await DialogService.ShowAsync<ShowInfoAlternativePartNumberDialog>("Alternative Part Information", parameters, new() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseOnEscapeKey = true });
+        var result = await dialog.Result;
+        if (result != null && !result.Canceled)
+        {
+            // picked
+            AlternativePartUxModel? selectedPart = result.Data as AlternativePartUxModel;
+            if(selectedPart != null)
+            {
+                Logger.GenericLogInformation($"Picked action");
+                RfqDrawingPartNumberUxModel pickResult = new RfqDrawingPartNumberUxModel();
+
+                pickResult.SwappedPartNumber = selectedPart.SumitomoNumber ?? "";
+                pickResult.SwappedPartNumberPrice = selectedPart.Price > 0 ? Convert.ToDecimal(selectedPart.Price) : 0.0m;
+
+                MudDialog.Close(DialogResult.Ok(result));
+            }
+        }
+        //not picked
+        return;
+    }
+
+
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task Apply()
+    {
+        await _form.Validate();
+        if (_isValid)
+        {
+            var result = new RfqDrawingPartNumberUxModel();
+
+            result.SwappedPartNumber = AlternativePartNumber ?? "";
+            result.SwappedPartNumberPrice = Convert.ToDecimal(AlternativePrice);
+
+            MudDialog.Close(DialogResult.Ok(result));
+        }
+    }
+
+    // quick filter - filter globally across multiple columns with the same input
+    // Func<AlternativePartUxModel, bool> QuickFilter => x =>
+    // {
+    //     if (string.IsNullOrWhiteSpace(AlternativePartFilter))
+    //         return true;
+
+    //     // Compile filter only when it changes
+    //     if (_LastCompiledFilter != AlternativePartFilter)
+    //     {
+    //         _LastCompiledFilter = AlternativePartFilter;
+    //         var filter = AlternativePartFilter.Trim();
+    //         var comparisonType = StringComparison.OrdinalIgnoreCase;
+    //         var isNumeric = double.TryParse(filter, out double numericFilter);
+
+    //         _CompiledQuickFilter = item =>
+    //         {
+    //             // String property checks
+    //             if (item.SumitomoNumber?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.SumitomoDescription?.Contains(filter, comparisonType) == true) return true;
+    //             // if (item.MainSupplier?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.SupplierName?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.SupplierNumber?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.CurrencyCode?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.UnitOfMeasure?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.PartGroup?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.GroupDescription?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.Class1?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.Class1Name?.Contains(filter, comparisonType) == true) return true;
+    //             // if (item.Class2?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.Class2Name?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.ColourCode?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.ColorName?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.MaterialGroup?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.MaterialType?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.TypeDescription?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.CategoryCode?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.CategoryName?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.UoM?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.CustomerCode?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.CustomerId?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.Group1?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.Group2?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.Group3?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.Group4?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.Group5?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.Group6?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.Group7?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.Group8?.Contains(filter, comparisonType) == true) return true;
+    //             // if (item.Grease?.Contains(filter, comparisonType) == true) return true;
+    //             if (item.CategoryCode2?.Contains(filter, comparisonType) == true) return true;
+    //             // if (item.Tilt?.Contains(filter, comparisonType) == true) return true;
+
+    //             // Numeric property checks
+    //             if (isNumeric)
+    //             {
+    //                 if (item.Price?.ToString().Contains(filter, comparisonType) == true) return true;
+    //                 if (item.NumberOfCavity?.ToString().Contains(filter, comparisonType) == true) return true;
+    //                 if (item.InsideDiameter?.ToString().Contains(filter, comparisonType) == true) return true;
+    //                 if (item.WallThickness?.ToString().Contains(filter, comparisonType) == true) return true;
+    //                 if (item.Length?.ToString().Contains(filter, comparisonType) == true) return true;
+    //                 if (item.WidthOrOutsideDiameter?.ToString().Contains(filter, comparisonType) == true) return true;
+    //                 if (item.MassOrWeight?.ToString().Contains(filter, comparisonType) == true) return true;
+    //                 if (item.MassOrWeight2?.ToString().Contains(filter, comparisonType) == true) return true;
+    //                 if (item.Quantity?.ToString().Contains(filter, comparisonType) == true) return true;
+    //                 if (item.L1?.ToString().Contains(filter, comparisonType) == true) return true;
+    //                 if (item.L2?.ToString().Contains(filter, comparisonType) == true) return true;
+    //                 if (item.L3?.ToString().Contains(filter, comparisonType) == true) return true;
+    //                 if (item.PitchWidth?.ToString().Contains(filter, comparisonType) == true) return true;
+    //             }
+
+    //             return false;
+    //         };
+    //     }
+
+    //     return _CompiledQuickFilter?.Invoke(x) ?? true;
+    // };
+    private bool _quickFilterFunc(AlternativePartUxModel x)
+    {
+        if (string.IsNullOrWhiteSpace(AlternativePartFilter))
+            return true;
+
+        if (_lastCompiledFilter != AlternativePartFilter)
+        {
+            _lastCompiledFilter = AlternativePartFilter;
+            var filter = AlternativePartFilter.Trim();
+            var comparisonType = StringComparison.OrdinalIgnoreCase;
+            var isNumeric = double.TryParse(filter, out _);
+
+            _compiledQuickFilter = item =>
+            {
+                if (item.SumitomoNumber?.Contains(filter, comparisonType) == true) return true;
+                if (item.SumitomoDescription?.Contains(filter, comparisonType) == true) return true;
+                if (item.SupplierName?.Contains(filter, comparisonType) == true) return true;
+                if (item.SupplierNumber?.Contains(filter, comparisonType) == true) return true;
+                if (item.CurrencyCode?.Contains(filter, comparisonType) == true) return true;
+                if (item.UnitOfMeasure?.Contains(filter, comparisonType) == true) return true;
+                if (item.PartGroup?.Contains(filter, comparisonType) == true) return true;
+                if (item.GroupDescription?.Contains(filter, comparisonType) == true) return true;
+                if (item.Class1?.Contains(filter, comparisonType) == true) return true;
+                if (item.Class1Name?.Contains(filter, comparisonType) == true) return true;
+                if (item.Class2Name?.Contains(filter, comparisonType) == true) return true;
+                if (item.ColourCode?.Contains(filter, comparisonType) == true) return true;
+                if (item.ColorName?.Contains(filter, comparisonType) == true) return true;
+                if (item.MaterialGroup?.Contains(filter, comparisonType) == true) return true;
+                if (item.MaterialType?.Contains(filter, comparisonType) == true) return true;
+                if (item.TypeDescription?.Contains(filter, comparisonType) == true) return true;
+                if (item.CategoryCode?.Contains(filter, comparisonType) == true) return true;
+                if (item.CategoryName?.Contains(filter, comparisonType) == true) return true;
+                if (item.UoM?.Contains(filter, comparisonType) == true) return true;
+                if (item.CustomerCode?.Contains(filter, comparisonType) == true) return true;
+                if (item.CustomerId?.Contains(filter, comparisonType) == true) return true;
+                if (item.Group1?.Contains(filter, comparisonType) == true) return true;
+                if (item.Group2?.Contains(filter, comparisonType) == true) return true;
+                if (item.Group3?.Contains(filter, comparisonType) == true) return true;
+                if (item.Group4?.Contains(filter, comparisonType) == true) return true;
+                if (item.Group5?.Contains(filter, comparisonType) == true) return true;
+                if (item.Group6?.Contains(filter, comparisonType) == true) return true;
+                if (item.Group7?.Contains(filter, comparisonType) == true) return true;
+                if (item.Group8?.Contains(filter, comparisonType) == true) return true;
+                if (item.CategoryCode2?.Contains(filter, comparisonType) == true) return true;
+
+                if (isNumeric)
+                {
+                    if (item.Price?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.NumberOfCavity?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.InsideDiameter?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.WallThickness?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.Length?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.WidthOrOutsideDiameter?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.MassOrWeight?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.MassOrWeight2?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.Quantity?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.L1?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.L2?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.L3?.ToString().Contains(filter, comparisonType) == true) return true;
+                    if (item.PitchWidth?.ToString().Contains(filter, comparisonType) == true) return true;
+                }
+
+                return false;
+            };
+        }
+
+        return _compiledQuickFilter?.Invoke(x) ?? true;
+    }
+}

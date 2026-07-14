@@ -1,0 +1,15 @@
+﻿global using System.Globalization;
+global using System.Text;
+global using System.Text.RegularExpressions;
+global using System.Xml.Linq;
+global using CsvHelper;
+global using SharedModels.DocumentConverter.DSI.Aggregates;
+global using SharedModels.DocumentConverter.DSI.DTOs;
+global using SharedModels.DocumentConverter.EDI.Aggregates;
+global using SharedModels.DocumentConverter.EDI.DTO;
+global using SharedModels.DocumentConverter.PartsSearch.DTOs;
+global using SpreadsheetLight;
+global using Transformation.Helpers;
+global using Transformation.TypeConversion.DSI;
+global using Transformation.TypeConversion.EDI;
+global using Transformation.TypeConversion.PartSearch;

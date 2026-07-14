@@ -1,6 +1,6 @@
 ﻿namespace Master.CQRS.Query.Customer
 {
-    public class GetCustomerBusinessUserAssociationsQuery : IQuery<List<CustomerBusinessUserAssociationDto>>
+    public class GetCustomerBusinessUserAssociationsQuery : IQuery<List<CustomerBusinessUserAssociationGrpc>>
     {
         public Guid? UserGuid
         { get; set; }

@@ -2,15 +2,15 @@
 {
     public class CustomerBusinessHierarchyDto
     {
-        public required string? CustomerBusinessGroupCode
+        public string? CustomerBusinessGroupCode
         { get; set; }
-        public required string? CustomerBusinessGroupName
+        public string? CustomerBusinessGroupName
         { get; set; }
-        public required Guid? Id
+        public Guid? Id
         { get; set; }
-        public required string? SEWSEBusinessTeam
+        public string? SEWSEBusinessTeam
         { get; set; }
-        public required bool? IsActive
+        public bool? IsActive
         { get; set; }
     }
 }

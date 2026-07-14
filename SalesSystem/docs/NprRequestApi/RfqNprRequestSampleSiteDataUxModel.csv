@@ -1,0 +1,5 @@
+"Sample Site Detail","BusinessUnitCode","Business Unit Code (Master)","string","4"
+"Sample Site Detail","SampleQty","Sample Qty","int",
+"Sample Site Detail","SendSampleContactPersonName","Username (Master)","string","100"
+"Sample Site Detail","RequiredDate","yyyy-MM-dd","date",
+"Sample Site Detail","FreightAccount","(Free Text)","string",

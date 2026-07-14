@@ -1,6 +1,4 @@
-﻿using SharedKernel;
-
-namespace Master.Data.Model
+﻿namespace Master.Data.Model
 {
     public class DbVehicle : IAggregateRoot
     {

@@ -1,0 +1,128 @@
+﻿@typeparam T
+@typeparam TProperty
+
+<MudIconButton OnClick="@OpenFilter" Icon="@_icon" Size="@Size.Small" />
+<MudOverlay Visible="@_filterOpen" OnClick="@(() => _filterOpen = false)" />
+<MudPopover Open="@_filterOpen"
+            AnchorOrigin="Origin.BottomCenter"
+            TransformOrigin="Origin.TopCenter"
+            Style="width:200px">
+    <MudStack Spacing="0">
+        <MudCheckBox T="bool"
+                     Label="Select All"
+                     Size="@Size.Small"
+                     Value="@_selectAll"
+                     ValueChanged="@SelectAll" />
+        <MudStack Spacing="0" Style="overflow-y:auto;max-height:250px">
+            @foreach (var group in _distinctGroups)
+            {
+                <MudCheckBox T="bool"
+                             Label="@DisplaySelector(group)"
+                             Size="@Size.Small"
+                             Value="@(_selectedKeys.Contains(KeySelector(group)))"
+                             ValueChanged="@((value) => SelectedChanged(value, group))" />
+            }
+        </MudStack>
+        <MudStack Row="true">
+            <MudButton OnClick="@ClearFilter">Clear</MudButton>
+            <MudButton Color="@Color.Primary" OnClick="@ApplyFilter">Filter</MudButton>
+        </MudStack>
+    </MudStack>
+</MudPopover>
+
+@code {
+    [Parameter, EditorRequired]
+    public IEnumerable<T> Items { get; set; } = Enumerable.Empty<T>();
+
+    [Parameter, EditorRequired]
+    public Func<T, TProperty> KeySelector { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public Func<T, string> DisplaySelector { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public FilterContext<T> FilterContext { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<FilterDefinition<T>> FilterDefinitionChanged { get; set; }
+
+    private string _icon = Icons.Material.Outlined.FilterAlt;
+    private bool _filterOpen;
+    private bool _selectAll = true;
+
+    private List<T> _distinctGroups = new();
+    private HashSet<TProperty> _selectedKeys = new();
+    private HashSet<TProperty> _activeFilterKeys = new();
+    private FilterDefinition<T> _filterDefinition = default!;
+    private int _lastItemsCount = -1;
+    private bool _initialized;
+
+    protected override void OnParametersSet()
+    {
+        // Only rebuild when the data source actually changes (by count as a heuristic)
+        var currentCount = Items.Count();
+        if (_initialized && currentCount == _lastItemsCount)
+            return;
+
+        _lastItemsCount = currentCount;
+        _initialized = true;
+
+        _distinctGroups = Items
+            .GroupBy(KeySelector)
+            .Select(g => g.First())
+            .ToList();
+
+        if (_selectedKeys.Count == 0 && _distinctGroups.Count > 0)
+        {
+            _selectedKeys = new HashSet<TProperty>(_distinctGroups.Select(KeySelector));
+            _activeFilterKeys = new HashSet<TProperty>(_selectedKeys);
+        }
+
+        _filterDefinition = new FilterDefinition<T>
+        {
+            FilterFunction = x => _activeFilterKeys.Contains(KeySelector(x))
+        };
+    }
+
+    private void OpenFilter() => _filterOpen = true;
+
+    private void SelectAll(bool value)
+    {
+        _selectAll = value;
+        if (value)
+            _selectedKeys = new HashSet<TProperty>(_distinctGroups.Select(KeySelector));
+        else
+            _selectedKeys.Clear();
+    }
+
+    private void SelectedChanged(bool value, T item)
+    {
+        var key = KeySelector(item);
+        if (value)
+            _selectedKeys.Add(key);
+        else
+            _selectedKeys.Remove(key);
+
+        _selectAll = _selectedKeys.Count == _distinctGroups.Count;
+    }
+
+    private async Task ClearFilter()
+    {
+        _selectedKeys = new HashSet<TProperty>(_distinctGroups.Select(KeySelector));
+        _activeFilterKeys = new HashSet<TProperty>(_selectedKeys);
+        _icon = Icons.Material.Outlined.FilterAlt;
+        await FilterContext.Actions.ClearFilterAsync(_filterDefinition);
+        _filterOpen = false;
+    }
+
+    private async Task ApplyFilter()
+    {
+        _activeFilterKeys = new HashSet<TProperty>(_selectedKeys);
+        _icon = _activeFilterKeys.Count == _distinctGroups.Count
+            ? Icons.Material.Outlined.FilterAlt
+            : Icons.Material.Filled.FilterAlt;
+        await FilterContext.Actions.ApplyFilterAsync(_filterDefinition);
+        await FilterDefinitionChanged.InvokeAsync(_filterDefinition);
+        _filterOpen = false;
+    }
+}

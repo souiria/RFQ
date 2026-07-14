@@ -2,17 +2,17 @@
 {
     public class MilestoneHierarchyDto
     {
-        public required string? MilestoneEventName
+        public string? MilestoneEventName
         { get; set; }
-        public required DateTime? EventStartDate
+        public DateTime? EventStartDate
         { get; set; }
-        public required DateTime? EventEndDate
+        public DateTime? EventEndDate
         { get; set; }
-        public required Guid? ProjectHierarchyGuid
+        public Guid? ProjectHierarchyGuid
         { get; set; }
-        public required Guid? Id
+        public Guid? Id
         { get; set; }
-        public required bool? IsActive
+        public bool? IsActive
         { get; set; }
     }
 }

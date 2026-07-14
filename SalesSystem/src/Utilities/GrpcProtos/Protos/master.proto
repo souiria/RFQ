@@ -1,0 +1,498 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "Master";
+
+package master;
+
+// The master access service definition.
+service Master {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply);
+  rpc GetCurrencyGrpc (CurrencyGrpcRequest) returns (ListCurrencyGrpc);
+  rpc GetCurrencyGrpcStream (CurrencyGrpcRequest) returns (stream CurrencyGrpc);
+
+  rpc GetCustomerGrpc (CustomerGrpcRequest) returns (ListCustomerGrpc);
+  rpc GetCustomerGrpcStream (CustomerGrpcRequest) returns (stream CustomerGrpc);
+  rpc GetCustomerGrpcByUserId (CustomerByUserIdGrpcRequest) returns (ListCustomerGrpc);
+  rpc GetCustomerLocationGrpc (CustomerLocationGrpcRequest) returns (ListCustomerLocationGrpc);
+  rpc GetCustomerLocationGrpcStream (CustomerLocationGrpcRequest) returns (stream CustomerLocationGrpc);
+  rpc GetCustomerLocationGrpcByUserId (CustomerLocationByUserIdGrpcRequest) returns (ListCustomerLocationGrpc);
+  rpc GetCustomerSalesEntityGrpc (CustomerSalesEntityGrpcRequest) returns (ListCustomerSalesEntityGrpc);
+  rpc GetCustomerSalesEntityGrpcStream (CustomerSalesEntityGrpcRequest) returns (stream CustomerSalesEntityGrpc);
+  rpc GetCustomerSalesEntityGrpcByUserId (CustomerSalesEntityByUserIdGrpcRequest) returns (ListCustomerSalesEntityGrpc);
+  rpc GetCustomerProjectAssociationGrpc (CustomerProjectAssociationGrpcRequest) returns (ListCustomerProjectAssociationGrpc);
+  rpc GetCustomerProjectAssociationGrpcStream (CustomerProjectAssociationGrpcRequest) returns (stream CustomerProjectAssociationGrpc);
+  rpc GetCustomerProjectAssociationGrpcByUserId (CustomerProjectAssociationByUserIdGrpcRequest) returns (ListCustomerProjectAssociationGrpc);
+  rpc GetCustomerBusinessUserAssociationGrpc (CustomerBusinessUserAssociationGrpcRequest) returns (ListCustomerBusinessUserAssociationGrpc);
+  rpc GetCustomerBusinessUserAssociationGrpcStream (CustomerBusinessUserAssociationGrpcRequest) returns (stream CustomerBusinessUserAssociationGrpc);
+
+  rpc GetMilestoneGrpc (MilestoneGrpcRequest) returns (ListMilestoneGrpc);
+  rpc GetMilestoneGrpcStream (MilestoneGrpcRequest) returns (stream MilestoneGrpc);
+  rpc GetPlatformGrpc (PlatformGrpcRequest) returns (ListPlatformGrpc);
+  rpc GetPlatformGrpcStream (PlatformGrpcRequest) returns (stream PlatformGrpc);
+  rpc GetProgramGrpc (ProgramGrpcRequest) returns (ListProgramGrpc);
+  rpc GetProgramGrpcStream (ProgramGrpcRequest) returns (stream ProgramGrpc);
+  rpc GetProjectGrpc (ProjectGrpcRequest) returns (ListProjectGrpc);
+  rpc GetProjectGrpcStream (ProjectGrpcRequest) returns (stream ProjectGrpc);
+  rpc GetProjectEngineeringAssociationGrpc (ProjectEngineeringAssociationGrpcRequest) returns (ListProjectEngineeringAssociationGrpc);
+  rpc GetProjectEngineeringAssociationGrpcStream (ProjectEngineeringAssociationGrpcRequest) returns (stream ProjectEngineeringAssociationGrpc);
+
+  rpc GetVehicleGrpc (VehicleGrpcRequest) returns (ListVehicleGrpc);
+  rpc GetVehicleGrpcStream (VehicleGrpcRequest) returns (stream VehicleGrpc);
+
+  rpc GetSupplierGroupGrpc (SupplierGroupGrpcRequest) returns (ListSupplierGroupGrpc);
+  rpc GetSupplierGroupGrpcStream (SupplierGroupGrpcRequest) returns (stream SupplierGroupGrpc);
+
+  rpc GetSupplierGrpc (SupplierGrpcRequest) returns (ListSupplierGrpc);
+  rpc GetSupplierGrpcStream (SupplierGrpcRequest) returns (stream SupplierGrpc);
+
+  rpc FilterMasterDataGrpc (MastersFilterRequestGrpc) returns (MastersFilterResponseGrpc);
+  
+  rpc GetUnitOfMeasureGrpc (UnitOfMeasureGrpcRequest) returns (ListUnitOfMeasureGrpc);
+  rpc GetUnitOfMeasureGrpcStream (UnitOfMeasureGrpcRequest) returns (stream UnitOfMeasureGrpc);
+  
+  rpc GetBusinessUnitGrpc (BusinessUnitGrpcRequest) returns (ListBusinessUnitGrpc);
+  rpc GetBusinessUnitGrpcStream (BusinessUnitGrpcRequest) returns (stream BusinessUnitGrpc);
+
+
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings.
+message HelloReply {
+  google.protobuf.StringValue message = 1;
+}
+
+message CurrencyGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message CurrencyGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue CurrencyCode = 2;
+    google.protobuf.StringValue CurrencyName = 3;
+    google.protobuf.StringValue EuroRate = 4;
+    google.protobuf.BoolValue IsActive = 5;
+}
+
+message ListCurrencyGrpc {
+    repeated CurrencyGrpc CurrencyGrpc = 1;
+}
+
+message CustomerGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message CustomerByUserIdGrpcRequest {
+    string Id = 1;
+}
+
+message CustomerGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue CustomerBusinessGroupCode = 2;
+    google.protobuf.StringValue CustomerBusinessGroupName = 3;   
+    google.protobuf.StringValue SEWSEBusinessTeam = 4;
+    google.protobuf.BoolValue IsActive = 5;
+}
+
+message ListCustomerGrpc {
+    repeated CustomerGrpc CustomerGrpc = 1;
+}
+
+message CustomerLocationGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message CustomerLocationByUserIdGrpcRequest {
+    string UserId = 1;
+}
+
+message CustomerLocationGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue CustomerCode = 2;
+    google.protobuf.StringValue CustomerBusinessHierarchyGuid = 3;
+    google.protobuf.StringValue CustomerName = 4;   
+    google.protobuf.BoolValue IsActive = 5;
+}
+
+message ListCustomerLocationGrpc {
+    repeated CustomerLocationGrpc CustomerLocationGrpc = 1;
+}
+
+message CustomerSalesEntityGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message CustomerSalesEntityByUserIdGrpcRequest {
+  string UserId = 1;
+}
+
+message CustomerSalesEntityGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue CustomerSalesEntityCode = 2;
+    google.protobuf.StringValue CustomerSalesEntityName = 3;   
+    google.protobuf.StringValue FinanceCode = 4;  
+    google.protobuf.StringValue CustomerHierarchyGuid = 5;  
+    google.protobuf.BoolValue IsActive = 6;
+}
+
+message ListCustomerSalesEntityGrpc {
+    repeated CustomerSalesEntityGrpc CustomerSalesEntityGrpc = 1;
+}
+
+message CustomerProjectAssociationGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message CustomerProjectAssociationByUserIdGrpcRequest {
+    string UserId = 1;
+}
+
+message CustomerProjectAssociationGrpc {
+    string Id = 1;
+    string CustomerLocationGuid = 2;
+    string ProjectGuid = 3;    
+    bool IsActive = 4;
+}
+
+message ListCustomerProjectAssociationGrpc {
+    repeated CustomerProjectAssociationGrpc CustomerProjectAssociationGrpc = 1;
+}
+
+message CustomerBusinessUserAssociationGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message CustomerBusinessUserAssociationGrpc {
+    string Id = 1;
+    string CustomerBusinessHierarchyList = 2;
+    string UserGuid = 3;    
+    bool IsActive = 4;
+}
+
+message ListCustomerBusinessUserAssociationGrpc {
+    repeated CustomerBusinessUserAssociationGrpc CustomerBusinessUserAssociationGrpc = 1;
+}
+
+message MilestoneGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message MilestoneGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue MilestoneEventName = 2;
+    google.protobuf.Timestamp EventStartDate = 3;    
+    google.protobuf.Timestamp EventEndDate = 4;  
+    google.protobuf.StringValue ProjectHierarchyGuid = 5;
+    google.protobuf.BoolValue IsActive = 6;
+}
+
+message ListMilestoneGrpc {
+    repeated MilestoneGrpc MilestoneGrpc = 1;
+}
+
+message PlatformGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+
+message PlatformGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue PlatformName = 2;
+    google.protobuf.StringValue PlatformManagerName = 3;    
+    google.protobuf.StringValue CustomerHierarchyGuid = 4;
+    google.protobuf.BoolValue IsActive = 5;
+}
+
+message ListPlatformGrpc {
+    repeated PlatformGrpc PlatformGrpc = 1;
+}
+
+message ProgramGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+
+message ProgramGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue ProgramName = 2;   
+    google.protobuf.StringValue PlatformHierarchyGuid = 3;
+    google.protobuf.BoolValue IsActive = 4;
+}
+
+message ListProgramGrpc {
+    repeated ProgramGrpc ProgramGrpc = 1;
+}
+
+message ProjectGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message ProjectGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue ProjectCode = 2;   
+    google.protobuf.StringValue ProjectName = 3;
+    google.protobuf.StringValue CustomerProjectCode = 4;
+    google.protobuf.StringValue ProjectDescription = 5;
+    google.protobuf.Int32Value ProjectAnnualVolume = 6;
+    google.protobuf.StringValue ProgramHierarchyGuid = 7;
+    google.protobuf.BoolValue IsActive = 8;
+}
+
+message ListProjectGrpc {
+    repeated ProjectGrpc ProjectGrpc = 1;
+}
+
+message ProjectEngineeringAssociationGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message ListProjectEngineeringAssociationGrpc {
+    repeated ProjectEngineeringAssociationGrpc ProjectEngineeringAssociationGrpc = 1;
+}
+
+message VehicleGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+
+message VehicleGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue VehicleName = 2;   
+    google.protobuf.StringValue ProjectReference = 3;
+    google.protobuf.StringValue VehicleDisplay = 4;
+    google.protobuf.BoolValue IsActive = 5;
+}
+
+message ListVehicleGrpc {
+    repeated VehicleGrpc VehicleGrpc = 1;
+}
+
+
+message SupplierGroupGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message ListSupplierGroupGrpc {
+    repeated SupplierGroupGrpc SupplierGroupGrpc = 1;
+}
+
+message SupplierGroupGrpc {
+    google.protobuf.StringValue SupplierGroupName = 1;
+    google.protobuf.StringValue SupplierApprovalStatusGuid = 2;
+    google.protobuf.StringValue SupplierPanelGuid = 3;
+    google.protobuf.BoolValue IsActive = 4;
+    google.protobuf.BoolValue IsSWSPartNumberRequired = 5;
+    google.protobuf.StringValue Id = 6;
+    google.protobuf.Timestamp CreatedDate = 7;
+    google.protobuf.Timestamp ModifiedDate = 8;
+    google.protobuf.StringValue CreatedBy = 9;
+    google.protobuf.StringValue ModifiedBy = 10;
+    google.protobuf.Int32Value SyncToCPD = 11;
+    google.protobuf.BoolValue IsEOLRequired = 12;
+}
+
+message SupplierGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message ListSupplierGrpc {
+    repeated SupplierGrpc SupplierGrpc = 1;
+}
+
+message SupplierGrpc {
+    google.protobuf.StringValue SupplierCode = 1;
+    google.protobuf.StringValue SupplierName = 2;
+    google.protobuf.StringValue Address1 = 3;
+    google.protobuf.StringValue Address2 = 4;
+    google.protobuf.StringValue Address3 = 5;
+    google.protobuf.StringValue City = 6;
+    google.protobuf.StringValue Region = 7;
+    google.protobuf.StringValue ZipCode = 8;
+    google.protobuf.StringValue CountryGuid = 9;
+    google.protobuf.StringValue SupplierTypeGuid = 10;
+    google.protobuf.StringValue SupplierGroupGuid = 11;
+    google.protobuf.StringValue SupplierIncoTermsGuid = 12;
+    google.protobuf.StringValue SupplierCurrencyGuid = 13;
+    google.protobuf.StringValue SupplierBuyerGuid = 14;
+    google.protobuf.StringValue SupplierDevelopmentTeamGuid = 15;
+    google.protobuf.StringValue PaymentTerms = 16;
+    google.protobuf.StringValue EPOCommodityGroupGuid = 17;
+    google.protobuf.StringValue POPriceEffectiveDateTypeGuid = 18;
+    google.protobuf.StringValue SupplierApprovalStatusGuid = 19;
+    google.protobuf.BoolValue IsActive = 20;
+    google.protobuf.StringValue Id = 21;
+    google.protobuf.Timestamp CreatedDate = 22;
+    google.protobuf.Timestamp ModifiedDate = 23;
+    google.protobuf.StringValue CreatedBy = 24;
+    google.protobuf.StringValue ModifiedBy = 25;
+    google.protobuf.Int32Value SyncToCPD = 26;
+    google.protobuf.StringValue DistributionCountryOfOriginGuid = 27;
+    google.protobuf.BoolValue IsEOLRequired = 28;
+}
+message MastersFilterRequestGrpc {
+    string DatabaseList = 1;
+    string FilterExpression = 2;
+}
+
+message MastersFilterResponseGrpc {
+    bool Success = 1;
+    ListCurrencyGrpc CurrencyGrpcList = 2;
+    ListCustomerGrpc CustomerGrpcList = 3;
+    ListCustomerLocationGrpc CustomerLocationGrpcList = 4;
+    ListCustomerSalesEntityGrpc CustomerSalesEntityGrpcList = 5;
+    ListCustomerProjectAssociationGrpc CustomerProjectAssociationGrpcList = 6;
+    ListCustomerBusinessUserAssociationGrpc CustomerBusinessUserAssociationGrpcList = 7;
+    ListMilestoneGrpc MilestoneGrpcList = 8;
+    ListPlatformGrpc PlatformGrpcList = 9;
+    ListProgramGrpc ProgramGrpcList = 10;
+    ListProjectGrpc ProjectGrpcList = 11;
+    ListVehicleGrpc VehicleGrpcList = 12;
+    ListSupplierGroupGrpc SupplierGroupGrpcList = 13;
+    ListSupplierGrpc SupplierList = 14;
+     ListUnitOfMeasureGrpc UnitOfMeasureGrpcList = 15;
+     ListBusinessUnitGrpc BusinessUnitGrpcList = 16;
+     ListProjectEngineeringAssociationGrpc ProjectEngineeringAssociationGrpcList = 17;
+
+}
+message UnitOfMeasureGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message UnitOfMeasureGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue Code = 2;
+    google.protobuf.StringValue UnitOfMeasureDescription = 3;
+    google.protobuf.BoolValue IsActive = 4;
+}
+
+message ListUnitOfMeasureGrpc {
+    repeated UnitOfMeasureGrpc UnitOfMeasureGrpc = 1;
+}
+message BusinessUnitGrpcRequest {
+  int32 position = 1;
+  int32 takeamount = 2;
+}
+
+message BusinessUnitGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue BusinessUnitCode = 2;
+    google.protobuf.StringValue BusinessUnitName = 3;
+    google.protobuf.StringValue BusinessUnitTypeGuid = 4;
+    google.protobuf.StringValue StreetNumber = 5;
+    google.protobuf.StringValue StreetName = 6;
+    google.protobuf.StringValue City = 7;
+    google.protobuf.StringValue Region = 8;
+    google.protobuf.StringValue ZipCode = 9;
+    google.protobuf.StringValue CountryGuid = 10;
+    google.protobuf.BoolValue IsActive = 11;
+    google.protobuf.Timestamp CreatedDate = 12;
+    google.protobuf.Timestamp ModifiedDate = 13;
+    google.protobuf.StringValue CreatedBy = 14;
+    google.protobuf.StringValue ModifiedBy = 15;
+    google.protobuf.Int32Value SyncToCPD = 16;
+    google.protobuf.BoolValue IsExternalWarehouse = 17;
+    google.protobuf.StringValue EWMSWarehouseCode = 18;
+    google.protobuf.StringValue DisplayName = 19;
+    google.protobuf.StringValue LegacyBusinessUnitCode = 20;
+    google.protobuf.StringValue LegacyBusinessUnitName = 21;
+    google.protobuf.StringValue Company = 22;
+    google.protobuf.StringValue BusinessUnitDescription = 23;
+    google.protobuf.StringValue BusinessUnitContactName = 24;
+    google.protobuf.StringValue BusinessUnitContactNumber = 25;
+    google.protobuf.StringValue BusinessUnitAltContactNumber = 26;
+    google.protobuf.StringValue BusinessUnitMainPhoneNumber = 27;
+    google.protobuf.StringValue BusinessUnitManagerEmail = 28;
+    google.protobuf.StringValue Router = 29;
+    google.protobuf.StringValue Subnet = 30;
+    google.protobuf.StringValue HostFrom = 31;
+    google.protobuf.StringValue HostTo = 32;
+    google.protobuf.StringValue ITEngineer = 33;
+    google.protobuf.StringValue BackupOperator = 34;
+    google.protobuf.StringValue InterSeptor = 35;
+    google.protobuf.StringValue InterSeptorFirmware = 36;
+    google.protobuf.StringValue InterSeptorAlerts = 37;
+    google.protobuf.BoolValue UseLocalSupport = 38;
+    google.protobuf.StringValue VideoConference = 39;
+    google.protobuf.StringValue VideoConferenceIP = 40;
+    google.protobuf.DoubleValue AccessCircuit = 41;
+    google.protobuf.StringValue PERouter1 = 42;
+    google.protobuf.StringValue PERouter2 = 43;
+    google.protobuf.StringValue MRTG = 44;
+    google.protobuf.BoolValue WiFi = 45;
+    google.protobuf.BoolValue Printer = 46;
+    google.protobuf.BoolValue Copier = 47;
+    google.protobuf.BoolValue LocalIT = 48;
+    google.protobuf.BoolValue Wan = 49;
+    google.protobuf.StringValue WanType = 50;
+    google.protobuf.StringValue WanStatus = 51;
+    google.protobuf.Int32Value WanDownCount = 52;
+    google.protobuf.StringValue WanHighRTT = 53;
+    google.protobuf.BoolValue LocalBackups = 54;
+    google.protobuf.StringValue MitelController = 55;
+    google.protobuf.StringValue MitelControllerBackup = 56;
+    google.protobuf.StringValue Riverbed = 57;
+    google.protobuf.StringValue VCenter = 58;
+    google.protobuf.StringValue CCTV = 59;
+    google.protobuf.StringValue DefaultFileServer = 60;
+    google.protobuf.StringValue DefaultMailServer = 61;
+    google.protobuf.StringValue DefaultCopier = 62;
+    google.protobuf.StringValue DefaultWDSServer = 63;
+    google.protobuf.StringValue DefaultDeployRoot = 64;
+    google.protobuf.StringValue DefaultHRManager = 65;
+    google.protobuf.BoolValue PDR = 66;
+    google.protobuf.StringValue MapUrl = 67;
+    google.protobuf.StringValue Longtitude = 68;
+    google.protobuf.StringValue Latitude = 69;
+    google.protobuf.StringValue What3Words = 70;
+    google.protobuf.StringValue NearestWeatherCity = 71;
+    google.protobuf.StringValue WeatherTemperatureHigh = 72;
+    google.protobuf.StringValue WeatherTemperatureLow = 73;
+    google.protobuf.StringValue WeatherUrl = 74;
+    google.protobuf.StringValue WeatherMaxWindSpeed = 75;
+    google.protobuf.Int32Value WeatherTemperatureThreshold = 76;
+    google.protobuf.Timestamp WeatherReportDate = 77;
+    google.protobuf.StringValue TrafficSummary = 78;
+    //google.protobuf.Int32Value HEATSITEID = 79;
+}
+
+message ListBusinessUnitGrpc {
+    repeated BusinessUnitGrpc BusinessUnitGrpc = 1;
+}
+
+message ProjectEngineeringAssociationGrpc {
+    google.protobuf.StringValue Id = 1;
+    google.protobuf.StringValue ProjectGuid = 2;
+    google.protobuf.StringValue EngineeringADName = 3;
+    google.protobuf.StringValue EngineeringFullName = 4;
+    google.protobuf.StringValue EmailAddress = 5;
+    google.protobuf.Timestamp CreatedDate = 6;
+    google.protobuf.Timestamp ModifiedDate = 7;
+    google.protobuf.StringValue CreatedBy = 8;
+    google.protobuf.StringValue ModifiedBy = 9;
+    google.protobuf.BoolValue IsActive = 10;
+    google.protobuf.StringValue CustomerGuid = 11;
+}

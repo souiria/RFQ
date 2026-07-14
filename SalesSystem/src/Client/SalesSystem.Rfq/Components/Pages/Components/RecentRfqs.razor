@@ -1,0 +1,206 @@
+﻿@using System.Collections.Generic
+@using MudBlazor.Utilities
+
+@using SalesSystem.Rfq.Models
+@inject RfqUxClientService RfqUxClientService
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject ILogger<RecentRfqs> Logger
+@inject IDialogService DialogService
+
+<div class="d-flex flex-column" style="height: 100%; overflow: hidden;">
+    @if (IsLoading)
+    {
+        <div class="d-flex justify-center align-center" style="height: 100%;">
+            <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large">
+                <ChildContent>
+                    <MudText Typo="Typo.subtitle2">Loading...</MudText>
+                </ChildContent>
+            </MudProgressCircular>
+        </div>
+    }
+    else
+    {
+        <MudDataGrid T="RqfProjectUxModel"
+                     @ref="@_DataGrid"
+                     Items="@RfqUxClientService.RfqProjectUxs"
+                     QuickFilter="@QuickFilter"
+                     Bordered="true"
+                     Dense="true"
+                     Hover="true"
+                     FixedHeader="true"
+                     Height="calc(100% - 8px)"
+                     Class="mud-grid-no-scroll-x"
+                     Style="flex: 1 1 auto; min-height: 0; overflow-y: auto; margin: 4px 0;"
+                     HorizontalScrollbar="true">
+            <ToolBarContent>
+                <MudTooltip Text="Full text search">
+                    <MudTextField AdornmentIcon="@Icons.Material.Outlined.Search" 
+                                  Adornment="Adornment.End" 
+                                  Margin="Margin.Dense"
+                                  IconSize="Size.Medium"
+                                  Placeholder="Filter Results"
+                                  @bind-Value="_SearchString" 
+                                  DebounceInterval="100" 
+                                  Variant="Variant.Outlined" 
+                                  Clearable />
+                </MudTooltip>
+                <MudSpacer />
+                <MudTooltip Text="Refresh Dataset">
+                    <MudIconButton Size="Size.Small"
+                                   Color="Color.Primary"
+                                   Icon="@Icons.Material.Filled.Refresh"
+                                   aria-label="refresh"
+                                   @onclick="@(() => RefreshAsync())" />
+                </MudTooltip>
+            </ToolBarContent>
+            <Columns>
+                <TemplateColumn CellClass="d-flex justify-start" StickyLeft="true" Sortable="false">
+                    <CellTemplate>
+                        <MudStack Row>
+                            <MudIconButton Size="@Size.Small"
+                                           Icon="@Icons.Material.Filled.Edit"
+                                           aria-label="edit"
+                                           OnClick="@(() => NavigateToEdit(context.Item))" />
+                            <MudIconButton Size="@Size.Small"
+                                           Icon="@Icons.Material.Filled.Delete"
+                                           Color="Color.Error"
+                                           aria-label="delete"
+                                           OnClick="@(() => DeleteAsync(context.Item))" />
+                        </MudStack>
+                    </CellTemplate>
+                </TemplateColumn>
+                <PropertyColumn Property="x => x.RfqNumber" Title="RFQ #" StickyLeft="true" />
+                <PropertyColumn Property="x => x.CustomerBusinessUnit" Title="Customer" />
+                <PropertyColumn Property="x => x.ProjectCode" Title="Project" />
+                <PropertyColumn Property="x => x.RfqReason" Title="Reason" />
+                <PropertyColumn Property="x => x.VehicleVolume" Title="Volume" />
+                <PropertyColumn Property="x => x.RfqResponseDeadline" Title="Deadline" Format="dd.MM.yyyy">
+                    <CellTemplate>
+                        @if (context.Item.RfqResponseDeadline.HasValue)
+                        {
+                            <MudText>@context.Item.RfqResponseDeadline.Value.ToString("dd.MM.yyyy")</MudText>
+                        }
+                    </CellTemplate>
+                </PropertyColumn>
+            </Columns>
+        </MudDataGrid>
+    }
+</div>
+
+<style>
+    .mud-grid-no-scroll-x {
+        overflow-x: hidden !important;
+    }
+</style>
+
+@code {
+    MudDataGrid<RqfProjectUxModel> _DataGrid = null!;
+    string? _SearchString = string.Empty;
+
+    private bool IsLoading = true;
+
+    [Parameter] public GlobalValue GlobalValue { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshAsync();
+        IsLoading = false;
+    }
+
+    async Task RefreshAsync()
+    {
+        try
+        {
+            _SearchString = string.Empty;
+            Logger.LogInformation("Loading RFQ projects...");
+            var count = await RfqUxClientService.GetAllRfqProjectAsync();
+            if (count <= 0)
+            {
+                Snackbar.Add("No RFQ projects found.", Severity.Info);
+            }
+            // FIX: Assign the correct type directly, do not use Concat (Concat does not mutate the original list)
+            // _RfqProjects = RfqUxClientService.RfqProjectUxs.Cast<RqfProjectUxModel>().ToList();
+            Logger.LogInformation($"Loaded {RfqUxClientService.RfqProjectUxs.Count} RFQ projects");
+
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to load RFQ projects");
+            Snackbar.Add("Failed to load RFQ projects.", Severity.Error);
+        }
+        finally
+        {
+            StateHasChanged();
+        }
+    }
+
+    private void NavigateToEdit(RqfProjectUxModel project)
+    {
+        if (GlobalValue?.UserId != null && GlobalValue.UserId != Guid.Empty)
+        {
+            Navigation.NavigateTo($"/editRfq/{project.RowId}");
+        }
+        else
+        {
+            Snackbar.Add("User ID is required to edit RFQ.", Severity.Warning);
+        }
+    }
+
+    private async Task DeleteAsync(RqfProjectUxModel project)
+    {
+        bool? result = await DialogService.ShowMessageBox(
+            "Delete RFQ Project",
+            $"Are you sure you want to delete RFQ #{project.RfqNumber}? This action cannot be undone.",
+            yesText: "Delete",
+            cancelText: "Cancel",
+            options: new DialogOptions() { MaxWidth = MaxWidth.Small });
+
+        if (result == true)
+        {
+            try
+            {
+                Logger.LogInformation($"Deleting RFQ project with RowId: {project.RowId}");
+                var response = await RfqUxClientService.DeleteRfqProjectByRowIdAsync(project.RowId);
+
+                if (response.SaveSuccess)
+                {
+                    Snackbar.Add($"RFQ #{project.RfqNumber} deleted successfully.", Severity.Success);
+                    Logger.LogInformation($"Successfully deleted RFQ project: {project.RfqNumber}");
+
+                    // Refresh the list
+                    await RfqUxClientService.GetAllRfqProjectAsync();
+                    StateHasChanged();
+                }
+                else
+                {
+                    Snackbar.Add($"Failed to delete RFQ: {response.Message}", Severity.Error);
+                    Logger.LogWarning($"Delete failed for RFQ {project.RfqNumber}: {response.Message}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, $"Error deleting RFQ project with RowId: {project.RowId}");
+                Snackbar.Add($"An error occurred while deleting RFQ #{project.RfqNumber}.", Severity.Error);
+            }
+        }
+    }
+
+    // quick filter - filter globally across multiple columns with the same input
+    private Func<RqfProjectUxModel, bool> QuickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_SearchString))
+            return true;
+
+        if (!string.IsNullOrEmpty(x.CarModel) && x.CarModel.Contains(_SearchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (!string.IsNullOrEmpty(x.CustomerBusinessUnit) && x.CustomerBusinessUnit.Contains(_SearchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (!string.IsNullOrEmpty(x.RfqNumber) && x.RfqNumber.Contains(_SearchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    };
+}

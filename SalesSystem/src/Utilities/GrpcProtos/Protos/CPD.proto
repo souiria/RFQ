@@ -1,0 +1,108 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "CPD";
+
+package cpd;
+
+// The greeting service definition.
+service CPD {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply);
+  rpc GetAllMatSuppMstView (MatSuppMstViewGrpcRequest) returns (ListMatSuppMstGrpc);
+  rpc GetAllHarnessCostingCalculationDataView (HarnessCostingCalculationDataViewGrpcRequest) returns (ListHarnessCostingCalculationDataGrpc);
+  rpc FilterCPDGrpc (CPDFilterRequest) returns (CPDFilterResponse);
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings.
+message HelloReply {
+  string message = 1;
+}
+
+message MatSuppMstViewGrpcRequest {
+	int32 position = 1;
+	int32 takeAmount = 2;
+}
+
+message MatSuppMstViewGrpc {
+	google.protobuf.StringValue Material_No = 1;
+	google.protobuf.StringValue Supplier_C = 2;
+	google.protobuf.StringValue Po_Unit = 3;
+	google.protobuf.Int32Value Po_Minord_Qty = 4;
+	google.protobuf.DoubleValue Po_Price = 5;
+	google.protobuf.Int32Value Po_Ratio = 6;
+	google.protobuf.Int32Value Order_LTime = 7;
+	google.protobuf.StringValue Issue_Unit = 8;
+	google.protobuf.Int32Value Issue_Min_Lot = 9;
+	google.protobuf.Int32Value Unit_Confac_Po = 10;
+	google.protobuf.Int32Value Unit_Confac_Issue = 11;
+	google.protobuf.Int32Value Bag_Qty = 12;
+	google.protobuf.Int32Value Box_Qty = 13;
+	google.protobuf.StringValue Supp_Mat_No = 14;
+	google.protobuf.StringValue Supp_Mat_Nm = 15;
+	google.protobuf.StringValue Upd_Flg = 16;
+	google.protobuf.StringValue Userid = 17;
+	google.protobuf.Timestamp Ent_Dt = 18;
+	google.protobuf.Timestamp Upd_Dt = 19;
+	google.protobuf.DoubleValue Standard_Box_Length = 20;
+	google.protobuf.DoubleValue Standard_Box_Width = 21;
+	google.protobuf.DoubleValue Standard_Box_Heigh = 22;
+	google.protobuf.Int32Value Standard_Pack_Factor = 23;
+	google.protobuf.DoubleValue Copper_Wt = 24;
+	google.protobuf.DoubleValue Copper_Rate = 25;
+	google.protobuf.DoubleValue PO_Price_Excopper = 26;
+	google.protobuf.DoubleValue Initial_Vol_Qty = 27;
+	google.protobuf.StringValue Replace_Material_No = 28;
+	google.protobuf.DoubleValue Full_Box_Weight = 29;
+	google.protobuf.StringValue Active = 30;
+	google.protobuf.StringValue Comments = 31;
+	google.protobuf.StringValue PRICETYPE_DESC = 32;
+	google.protobuf.DoubleValue ExchangeRate = 33;
+	google.protobuf.Timestamp ExchangeRate_Upd_Dt = 34;
+}
+
+message ListMatSuppMstGrpc {
+	repeated MatSuppMstViewGrpc MatSuppMstViewGrpc = 1;
+}
+
+message HarnessCostingCalculationDataViewGrpcRequest {
+	int32 position = 1;
+	int32 takeAmount = 2;
+}
+
+message HarnessCostingCalculationDataGrpc {
+	google.protobuf.StringValue Material_No = 1;
+	google.protobuf.StringValue Supplier_C = 2;
+	google.protobuf.StringValue Po_Unit = 3;
+	google.protobuf.StringValue Issue_Unit = 4;
+	google.protobuf.StringValue Bom_Unit = 5;
+	google.protobuf.Int32Value Unit_Confac_Po = 6;
+	google.protobuf.Int32Value Unit_Confac_Issue = 7;
+	google.protobuf.DoubleValue Po_Price = 8;
+	google.protobuf.StringValue Curr_C = 9;
+	google.protobuf.Int32Value Po_Ratio = 10;
+	google.protobuf.DoubleValue ExchangeRate = 11;
+	google.protobuf.Timestamp ExchangeRate_Upd_Dt = 12;
+}
+
+message ListHarnessCostingCalculationDataGrpc {
+	repeated HarnessCostingCalculationDataGrpc HarnessCostingCalculationDataGrpc = 1;
+}
+
+message CPDFilterRequest {
+	string DatabaseList = 1;
+    string FilterExpression = 2;
+}
+
+message CPDFilterResponse {
+	bool Success = 1;
+	ListMatSuppMstGrpc ListMatSuppMstGrpc = 2;
+}

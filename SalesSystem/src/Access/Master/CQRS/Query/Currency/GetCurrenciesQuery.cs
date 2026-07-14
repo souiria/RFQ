@@ -1,6 +1,6 @@
 ﻿namespace Master.CQRS.Query.Currency
 {
-    public class GetCurrenciesQuery : IQuery<List<CurrencyDto>>
+    public class GetCurrenciesQuery : IQuery<List<CurrencyGrpc>>
     {
         public int? Position
         { get; set; }

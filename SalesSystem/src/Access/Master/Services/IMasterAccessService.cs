@@ -2,44 +2,78 @@
 {
     public interface IMasterAccessService
     {
+        #region UnitOfMeasure
+
+        Task<ListUnitOfMeasureGrpc> GetAllUnitOfMeasures(CancellationToken cancellationToken,int position = 0,int takeAmount = 0);
+
+        Task<bool> PopulateUnitOfMeasuresAsync(CancellationToken cancellationToken);
+
+        #endregion
+
         #region Currency
-        Task<Result<List<CurrencyDto>>> GetAllCurrencies(CancellationToken cancellationToken);
+        Task<ListCurrencyGrpc> GetAllCurrencies(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<bool> PopulateCurrenciesAsync(CancellationToken cancellationToken);
         #endregion
 
         #region Customer
 
-        Task<Result<List<CustomerBusinessHierarchyDto>>> GetAllCustomerBusinessUnits(CancellationToken cancellationToken);
+        Task<ListCustomerGrpc> GetAllCustomerBusinessUnits(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<bool> PopulateCustomersAsync(CancellationToken cancellationToken);
-        Task<Result<List<CustomerHierarchyDto>>> GetAllCustomerLocations(CancellationToken cancellationToken);
+        Task<ListCustomerLocationGrpc> GetAllCustomerLocations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<bool> PopulateCustomerLocationsAsync(CancellationToken cancellationToken);
-        Task<Result<List<CustomerProjectAssociationDto>>> GetAllCustomerProjectAssociations(CancellationToken cancellationToken);
+        Task<ListCustomerProjectAssociationGrpc> GetAllCustomerProjectAssociations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
+        Task<ListCustomerProjectAssociationGrpc> GetAllCustomerProjectAssociationsByUserId(string userId,CancellationToken cancellationToken);
         Task<bool> PopulateCustomerProjectAssociationsAsync(CancellationToken cancellationToken);
-        Task<Result<List<CustomerSalesEntityDto>>> GetAllCustomerSalesEntities(CancellationToken cancellationToken);
+        Task<ListCustomerSalesEntityGrpc> GetAllCustomerSalesEntities(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<bool> PopulateCustomerSalesEntitiesAsync(CancellationToken cancellationToken);
-        Task<Result<List<CustomerBusinessUserAssociationDto>>> GetCustomerBusinessUserAssociations(CancellationToken cancellationToken);
+        Task<ListCustomerBusinessUserAssociationGrpc> GetCustomerBusinessUserAssociations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<bool> PopulateCustomerBusinessUserAssociationsAsync(CancellationToken cancellationToken);
 
         #endregion
 
         #region Project
 
-        Task<Result<List<PlatformHierarchyDto>>> GetAllPlatforms(CancellationToken cancellationToken);
+        Task<ListPlatformGrpc> GetAllPlatforms(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<bool> PopulatePlatformsAsync(CancellationToken cancellationToken);
-        Task<Result<List<ProgramHierarchyDto>>> GetAllPrograms(CancellationToken cancellationToken);
+        Task<ListProgramGrpc> GetAllPrograms(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<bool> PopulateProgramsAsync(CancellationToken cancellationToken);
-        Task<Result<List<ProjectHierarchyDto>>> GetAllProjects(CancellationToken cancellationToken);
+        Task<ListProjectGrpc> GetAllProjects(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<bool> PopulateProjectsAsync(CancellationToken cancellationToken);
-        Task<Result<List<MilestoneHierarchyDto>>> GetAllMilestones(CancellationToken cancellationToken);
+        Task<ListMilestoneGrpc> GetAllMilestones(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<bool> PopulateMilestonesAsync(CancellationToken cancellationToken);
+        Task<ListProjectEngineeringAssociationGrpc> GetAllProjectEngineeringAssociations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
+        Task<bool> PopulateProjectEngineeringAssociationsAsync(CancellationToken cancellationToken);
 
         #endregion
 
         #region Vehicle
 
-        Task<Result<List<VehicleDto>>> GetAllVehicles(CancellationToken cancellationToken);
+        Task<ListVehicleGrpc> GetAllVehicles(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
         Task<bool> PopulateVehiclesAsync(CancellationToken cancellationToken);
 
         #endregion
+
+        #region SupplierGroup
+
+        Task<ListSupplierGroupGrpc> GetAllSupplierGroups(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
+        Task<bool> PopulateSupplierGroupsAsync(CancellationToken cancellationToken);
+
+        #endregion
+
+        #region Supplier
+
+        Task<ListSupplierGrpc> GetAllSuppliers(CancellationToken cancellationToken, int position = 0, int takeAmount = 0);
+        Task<bool> PopulateSuppliersAsync(CancellationToken cancellationToken);
+
+        #endregion
+
+        #region BusinessUnit
+        Task<ListBusinessUnitGrpc> GetAllBusinessUnits(CancellationToken cancellationToken,int position = 0,int takeAmount = 0);
+        Task<bool> PopulateBusinessUnitsAsync(CancellationToken cancellationToken);
+
+         #endregion
+
+        Task HandleFilterCase<T>(string filterExpressionString, ParsingConfig parsingConfig,
+            Action<IEnumerable<T>> setResponseCollection, CancellationToken cancellationToken);
     }
 }

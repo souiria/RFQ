@@ -1,0 +1,184 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "SFS";
+package sfs;
+
+// ==========================
+//         SERVICES
+// ==========================
+
+service SFSService {
+  rpc SayHello (HelloRequest) returns (HelloReply);
+
+  rpc GetAllCalculationTypes (google.protobuf.Empty) returns (CalculationTypeListViewGrpc);
+  rpc GetAllCarModels (google.protobuf.Empty) returns (CarModelListViewGrpc);
+  rpc GetAllDailyVolumes (google.protobuf.Empty) returns (DailyVolumeDataListViewGrpc);
+  rpc GetAllCustomers (google.protobuf.Empty) returns (CustomerListViewGrpc);
+  rpc GetAllSites (google.protobuf.Empty) returns (SiteListViewGrpc);
+  rpc GetAllForecasts (google.protobuf.Empty) returns (ForecastListViewGrpc);
+  rpc GetMonthlyVolumes (google.protobuf.Empty) returns (MonthlyVolumeDataListViewGrpc);
+  rpc GetCustomerNonWorkingDay (google.protobuf.Empty) returns (CustomerNonWorkingDayListViewGrpc);
+  rpc GetAllPeriods (google.protobuf.Empty) returns (PeriodListViewGrpc);
+  rpc GetAllProfiles (google.protobuf.Empty) returns (ProfileListViewGrpc);
+}
+
+// ==========================
+//      GREETING MESSAGES
+// ==========================
+
+
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}
+
+// ==========================
+//        DATA MODELS
+// ==========================
+
+message CalculationTypeViewGrpc {
+  string id = 1;
+  string displayMember = 2;
+}
+
+message CarModelViewGrpc {
+  int32 id = 1;
+  string modelCode = 2;
+  string modelName = 3;
+  string vehicleName = 4;
+  string custCode = 5;
+  double cuWtKg = 6;
+  double cuBase = 7;
+  string development = 8;
+  string deliverTo = 9;
+  string deliveryPoint = 10;
+  string financialYearOffset = 11;
+  google.protobuf.Timestamp updatedDate = 12;
+  string updatedBy = 13;
+  string profile = 14;
+  string H1Id= 15;  
+}
+
+message DailyVolumeDataViewGrpc {
+  int32 id = 1;
+  string profile = 2;
+  string modelCode = 3;
+  int32 volume = 4;
+  google.protobuf.Timestamp volDate = 5;
+  google.protobuf.Timestamp updatedDate = 6;
+  string updatedBy = 7;
+}
+
+message CustomerViewGrpc {
+  int32 id = 1;
+  string profile = 2;
+  string custCode = 3;
+  string custName = 4;
+  string custType = 5;
+  string applyCuAdj = 6;
+  google.protobuf.Timestamp updatedDate = 7;
+  string updatedBy = 8;
+}
+
+message CustomerNonWorkingDayViewGrpc {
+  string profile = 1;
+  int32 year = 2;
+  string delPoint = 3;
+  string nonWorkingDay = 4;
+  google.protobuf.Timestamp updatedDate = 5;
+  string updatedBy = 6;
+  int32 state = 7;
+}
+
+message ForecastViewGrpc {
+  int32 period = 1;
+  double forecastCopperLevel = 2;
+  double forecastCopperWeight = 3;
+  double priceAdjustment = 4;
+}
+
+message MonthlyVolumeDataViewGrpc {
+  string profile = 1;
+  string carModel = 2;
+  int32 year = 3;
+  int32 month = 4;
+  int32 volume = 5;
+}
+
+message PeriodViewGrpc {
+  int32 id = 1;
+  string profile = 2;
+  int32 period = 3;
+  google.protobuf.Timestamp effectiveFrom = 4;
+  google.protobuf.Timestamp effectiveTo = 5;
+  google.protobuf.Timestamp updatedDate = 6;
+  string updatedBy = 7;
+}
+
+message ProfileViewGrpc {
+  int32 id = 1;
+  string displayMember = 2;
+}
+
+message SiteViewGrpc {
+  int32 id = 1;
+  string profile = 2;
+  string siteCode = 3;
+  string siteName = 4;
+  string siteActive = 5;
+  google.protobuf.Timestamp updatedDate = 6;
+  string updatedBy = 7;
+}
+
+
+// ==========================
+//      LIST WRAPPERS
+// ==========================
+
+message CalculationTypeListViewGrpc {
+  repeated CalculationTypeViewGrpc items = 1;
+}
+
+message CarModelListViewGrpc {
+  repeated CarModelViewGrpc items = 1;
+}
+
+message DailyVolumeDataListViewGrpc {
+  repeated DailyVolumeDataViewGrpc items = 1;
+}
+
+message CustomerListViewGrpc {
+  repeated CustomerViewGrpc items = 1;
+}
+
+message CustomerNonWorkingDayListViewGrpc {
+  repeated CustomerNonWorkingDayViewGrpc items = 1;
+}
+
+message ForecastListViewGrpc {
+  repeated ForecastViewGrpc items = 1;
+}
+
+message MonthlyVolumeDataListViewGrpc {
+  repeated MonthlyVolumeDataViewGrpc items = 1;
+}
+
+message PeriodListViewGrpc {
+  repeated PeriodViewGrpc items = 1;
+}
+
+message ProfileListViewGrpc {
+  repeated ProfileViewGrpc items = 1;
+}
+
+message SiteListViewGrpc {
+  repeated SiteViewGrpc items = 1;
+}

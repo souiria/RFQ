@@ -2,13 +2,13 @@
 {
     public class CustomerProjectAssociationDto
     {
-        public required Guid? ProjectGuid
+        public Guid? ProjectGuid
         { get; set; }
-        public required Guid? CustomerLocationGuid
+        public Guid? CustomerLocationGuid
         { get; set; }
-        public required Guid? Id
+        public Guid? Id
         { get; set; }
-        public required bool? IsActive
+        public bool? IsActive
         { get; set; }
     }
 }

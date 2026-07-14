@@ -1,0 +1,151 @@
+namespace SF.Access.Nprs
+{
+    /// <summary>
+    /// The FabricRuntime creates an instance of this class for each service type instance.
+    /// </summary>
+    sealed class Nprs : StatelessService
+    {
+        public Nprs(StatelessServiceContext context)
+            : base(context)
+        { }
+
+        /// <summary>
+        /// Optional override to create listeners (like tcp, http) for this service instance.
+        /// </summary>
+        /// <returns>The collection of listeners.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0300:Simplify collection initialization", Justification = "Service Fabric Boilerplate")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "Service Fabric Boilerplate")]
+        protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
+        {
+            return new ServiceInstanceListener[]
+            {
+                new ServiceInstanceListener(serviceContext =>
+                    new KestrelCommunicationListener(serviceContext, "ServiceEndpointHttps", (url, listener) =>
+                    {
+                        ServiceEventSource._Current.ServiceMessage(serviceContext, $"Starting Kestrel on {url}");
+
+                        WebApplicationBuilder builder = WebApplication.CreateBuilder();
+
+                        builder.Services.AddSingleton(serviceContext);
+                        builder.WebHost
+                        .UseKestrel(opt =>
+                        {
+                            string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "";
+
+                            bool isDevelopment =
+                                env.Equals("Development", StringComparison.OrdinalIgnoreCase);
+
+                            int port = serviceContext.CodePackageActivationContext
+                                .GetEndpoint("ServiceEndpointHttps").Port;
+
+                            X509Certificate2 cert = isDevelopment
+                                ? GetCertificateFromStore()                  // CN=localhost
+                                : FindMatchingCertificateBySubject("*.sews-e.com");
+
+                            opt.Listen(IPAddress.IPv6Any, port, listenOptions =>
+                            {
+                                listenOptions.UseHttps(cert);
+                                listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
+                            });
+                        })
+                        .UseContentRoot(Directory.GetCurrentDirectory())
+                        .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
+                        .UseUrls(url);
+
+                        
+                        return NPR.HostBuilder.CreateApp(builder, url);
+
+                    }),"ServiceEndpointHttps")
+            };
+        }
+
+        /// <summary>
+        /// Finds the ASP .NET Core HTTPS development certificate in development environment. Update this method to use the appropriate certificate for production environment.
+        /// </summary>
+        /// <returns>Returns the ASP .NET Core HTTPS development certificate</returns>
+        static X509Certificate2 GetCertificateFromStore()
+        {
+            using X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
+            store.Open(OpenFlags.ReadOnly);
+
+            DateTime now = DateTime.UtcNow;
+
+            X509Certificate2? cert = store.Certificates
+                .OfType<X509Certificate2>()
+                .Where(c =>
+                    c.HasPrivateKey &&
+                    c.NotBefore <= now &&
+                    now <= c.NotAfter &&
+                    c.Subject.Contains("CN=localhost", StringComparison.OrdinalIgnoreCase))
+                .OrderByDescending(c => c.NotAfter)
+                .FirstOrDefault();
+
+            if (cert == null)
+            {
+                throw new InvalidOperationException(
+                    "Local development certificate 'CN=localhost' not found in LocalMachine\\My.");
+            }
+
+            return cert;
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0300:Simplify collection initialization", Justification = "Service Fabric Boilerplate")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Layout", "IDESIGN103:Avoid compound statements.", Justification = "Service Fabric Boilerplate")]
+        X509Certificate2 FindMatchingCertificateBySubject1(string subjectCommonName)
+        {
+            using X509Store store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
+            store.Open(OpenFlags.OpenExistingOnly | OpenFlags.ReadOnly);
+            X509Certificate2Collection certCollection = store.Certificates;
+            X509Certificate2Collection matchingCerts = new X509Certificate2Collection();
+
+            foreach (X509Certificate2 enumeratedCert in certCollection.Where(enumeratedCert => StringComparer.OrdinalIgnoreCase.Equals(subjectCommonName, enumeratedCert.GetNameInfo(X509NameType.SimpleName, forIssuer: false))
+                                                                                  && DateTime.Now < enumeratedCert.NotAfter
+                                                                                  && enumeratedCert.NotBefore <= DateTime.Now))
+            {
+                matchingCerts.Add(enumeratedCert);
+            }
+
+            if (matchingCerts.Count == 0)
+            {
+                foreach (X509Certificate2? enumeratedCert in certCollection.Where(enumeratedCert => StringComparer.OrdinalIgnoreCase.Equals("*.sews-e.com", enumeratedCert.GetNameInfo(X509NameType.SimpleName, forIssuer: false))
+                                                                                  && DateTime.Now < enumeratedCert.NotAfter
+                                                                                  && enumeratedCert.NotBefore <= DateTime.Now))
+                {
+                    matchingCerts.Add(enumeratedCert);
+                }
+
+                if (matchingCerts.Count == 0)
+                {
+                    throw new ArgumentNullException($"Could not find a match for a certificate with subject 'CN={subjectCommonName}'.");
+                }
+            }
+
+            return matchingCerts[0];
+        }
+        static X509Certificate2 FindMatchingCertificateBySubject(string subjectCommonName)
+        {
+            using X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
+            store.Open(OpenFlags.ReadOnly);
+
+            DateTime now = DateTime.UtcNow;
+
+            X509Certificate2? matchingCert = store.Certificates
+                .OfType<X509Certificate2>()
+                .Where(cert =>
+                    cert.HasPrivateKey &&
+                    //now >= cert.NotBefore &&
+                    now <= cert.NotAfter &&
+                    cert.Subject.Contains(subjectCommonName, StringComparison.OrdinalIgnoreCase))
+                .OrderByDescending(cert => cert.NotAfter)
+                .FirstOrDefault();
+
+            if (matchingCert == null)
+            {
+                throw new InvalidOperationException(
+                    $"Certificate '{subjectCommonName}' not found in LocalMachine\\My");
+            }
+
+            return matchingCert;
+        }
+    }
+}

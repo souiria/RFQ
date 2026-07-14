@@ -1,0 +1,120 @@
+﻿namespace CDb.Services
+{
+    public partial class CDbAccessService : ICDbAccessService
+    {
+        async Task<bool> PopulateCoverTypeData(CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+
+            if (!_CoverTypeRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _QueryCoverTypeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCoverTypesQuery, List<CoverTypeGrpc>>>();
+                    _CoverTypeRefreshInProgress = true;
+                    GetCoverTypesQuery query = new GetCoverTypesQuery();
+                    await Task.Delay(1, cancellationToken);
+                    Result<List<CoverTypeGrpc>> results = await _QueryCoverTypeHandler.Handle(query, cancellationToken);
+                    if (results.Value.Count <= 0)
+                    {
+
+                    }
+                    else
+                    {
+                        _CoverTypeGrpcs.CoverTypeGrpcs.Clear();
+                        _CoverTypeGrpcs.CoverTypeGrpcs.AddRange(results.Value);
+                    }
+
+                    _CoverTypeRefreshInProgress = false;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public async Task<ListCoverTypeGrpc> ReadAllCoverTypes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
+        {
+            await Task.Delay(1, cancellationToken);
+            if (_CoverTypeGrpcs.CoverTypeGrpcs.Any())
+            {
+                if (takeAmount <= 0)
+                {
+                    return _CoverTypeGrpcs;
+                }
+
+                ListCoverTypeGrpc returnList = new ListCoverTypeGrpc();
+                IQueryable<CoverTypeGrpc> query = _CoverTypeGrpcs.CoverTypeGrpcs.AsQueryable().Skip(position).Take(takeAmount);
+                returnList.CoverTypeGrpcs.AddRange(query);
+                return returnList;
+            }
+
+            await PopulateCoverTypeData(cancellationToken);
+            return _CoverTypeGrpcs;
+        }
+
+        public async Task<bool> CreateCoverTypes(CoverTypeGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+
+            if (request == null || request.CoverTypeGrpcsToCreate == null || request.CoverTypeGrpcsToCreate.Count == 0)
+            {
+                throw new ArgumentNullException(nameof(request), "CoverTypeGrpcRequest or CoverTypeGrpcsToCreate cannot be null or empty.");
+            }
+
+            if (!_CoverTypeRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _CommandCoverTypeHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<CoverTypeCommand>>();
+                    CoverTypeCommand command = new CoverTypeCommand(CommandType.Create, request.CoverTypeGrpcsToCreate);
+
+                    Result result = await _CommandCoverTypeHandler.Handle(command, cancellationToken);
+                    if (result.IsSuccess)
+                    {
+                        // invalidate the cache
+                        _CoverTypeRefreshInProgress = true;
+                        _CoverTypeGrpcs.CoverTypeGrpcs.Clear();
+                        _CoverTypeRefreshInProgress = false;
+                    }
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public async Task<bool> UpdateCoverTypes(CoverTypeGrpcRequest request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(1, cancellationToken);
+
+            if (request == null || request.CoverTypeGrpcsToUpdate == null || request.CoverTypeGrpcsToUpdate.Count == 0)
+            {
+                throw new ArgumentNullException(nameof(request), "CoverTypeGrpcRequest or CoverTypeGrpcsToUpdate cannot be null or empty.");
+            }
+
+            if (!_CoverTypeRefreshInProgress)
+            {
+                using (IServiceScope scope = _ServiceProvider.CreateScope())
+                {
+                    _CommandCoverTypeHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<CoverTypeCommand>>();
+                    CoverTypeCommand command = new CoverTypeCommand(CommandType.Update, request.CoverTypeGrpcsToUpdate);
+
+                    Result result = await _CommandCoverTypeHandler.Handle(command, cancellationToken);
+                    if (result.IsSuccess)
+                    {
+                        // invalidate the cache
+                        _CoverTypeRefreshInProgress = true;
+                        _CoverTypeGrpcs.CoverTypeGrpcs.Clear();
+                        _CoverTypeRefreshInProgress = false;
+                    }
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+}

@@ -1,0 +1,155 @@
+﻿@page "/createRfq"
+@* @page "/createRfq/{UserId:guid}" *@
+@inject ISnackbar Snackbar
+@inject RfqUxClientService RfqUxClientService
+@inject ILogger<CreateRfq> Logger
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+@using SalesSystem.Rfq.Components.Pages.Components
+
+<MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Create RFI/RFQ</MudText>
+<MudGrid Class="position-fixed">
+    @* Attributes *@
+    <MudItem xs="12">
+        <MudPaper Class="d-flex flex-row" Style="height:150px;">
+            @* Column 1: Customer + Reason (25%) *@
+            <MudPaper Class="pa-4" Style="flex: 0 0 25%; max-width:25%; min-width: 25%;">
+                <MudStack>
+                    <MudSelect T="string"
+                               Value="CustomerValue"
+                               For="@(() => CustomerValue)"
+                               ValueChanged="OnCustomerValueChanged"
+                               Label="Customer"
+                               Placeholder="Please Select"
+                               AdornmentIcon="@Icons.Material.Filled.People"
+                               Disabled="_UploadedSuccessfully"
+                               AdornmentColor="Color.Primary">
+                        @foreach (var customer in RfqUxClientService.Customers)
+                        {
+                            <MudSelectItem Value="@customer?.CustomerBusinessGroupName">@customer?.CustomerBusinessGroupName</MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudSelect T="string"
+                               Value="ReasonValue"
+                               For="@(() => ReasonValue)"
+                               ValueChanged="OnReasonValueChanged"
+                               Label="Reason"
+                               Placeholder="Please Select"
+                               Disabled="_UploadedSuccessfully"
+                               AdornmentIcon="@Icons.Material.Filled.Checklist"
+                               AdornmentColor="Color.Primary">
+                        @foreach (var reason in RfqUxClientService.Reasons)
+                        {
+                            <MudSelectItem Value="@reason.RfqReasonTitle">@reason.RfqReasonTitle</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudStack>
+            </MudPaper>
+
+            @* Column 2: Project + VehicleVolume (25%) *@
+            <MudPaper Class="pa-4" Style="flex: 0 0 25%; max-width:25%; min-width: 25%;">
+                <MudStack>
+                    @* CHANGED: MudSelect replaced with MudAutocomplete *@
+                    <MudAutocomplete T="RqfCustomerProjectAssociationUxModel"
+                                     @bind-Value="SelectedProject"
+                                     Label="Project"
+                                     Placeholder="Search project..."
+                                     SearchFunc="@SearchProjects"
+                                     ToStringFunc="@(p => p != null ? $"{p.ProjectCode} - {p.CustomerName}" : "")"
+                                     ResetValueOnEmptyText="true"
+                                     CoerceText="true"
+                                     CoerceValue="false"
+                                     Disabled="_UploadedSuccessfully"
+                                     AdornmentIcon="@Icons.Material.Filled.DesignServices"
+                                     AdornmentColor="Color.Primary"
+                                     Immediate="true"
+                                     Dense="true"
+                                     Clearable="true"
+                                     ShowProgressIndicator="true"
+                                     MaxItems="100">
+                        <ItemTemplate Context="project">
+                            <MudStack Spacing="0">
+                                <MudText Typo="Typo.body2">
+                                    <strong>@project.ProjectCode</strong>
+                                </MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                    @project.ProjectCode - @project.CustomerName
+                                </MudText>
+                            </MudStack>
+                        </ItemTemplate>
+                    </MudAutocomplete>
+
+                    <MudNumericField @bind-Value="VehicleVolume"
+                                     Label="Vehicle Volume"
+                                     Disabled="_UploadedSuccessfully"
+                                     Variant="Variant.Text"
+                                     Min="0" />
+                </MudStack>
+            </MudPaper>
+
+            @* Column 3: Quotation + Deadline (auto, remaining space) *@
+            <MudPaper Class="pa-2" Style="flex: 1 1 20%;  max-width:20%; min-width: 192px;">
+                <MudStack>
+                    <MudSelect T="string"
+                               Value="QuotationValue"
+                               For="@(() => QuotationValue)"
+                               ValueChanged="OnQuotationValueChanged"
+                               Label="Quotation Number"
+                               Placeholder="Please Select"
+                               Disabled="_UploadedSuccessfully"
+                               AdornmentIcon="@Icons.Material.Filled.RequestQuote"
+                               AdornmentColor="Color.Primary"
+                               OnOpen="@(() => _IsQuotationOpen = true)"
+                               OnClose="@(() => _IsQuotationOpen = false)">
+                        @if (_IsQuotationOpen)
+                        {
+                            <MudDivider Class="my-2" />
+                            <MudText Typo="Typo.caption" Class="px-4 pt-2 mt-2 mud-text-secondary">Temp Values</MudText>
+                            <MudDivider Class="my-2" />
+                        }
+                        @foreach (string quotationNumber in RfqUxClientService.QuotationNumbers)
+                        {
+                            <MudSelectItem Value="@quotationNumber">@quotationNumber</MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudDatePicker Label="Deadline"
+                                   @bind-Date="_Date"
+                                   Disabled="_UploadedSuccessfully"
+                                   DateFormat="dd.MM.yyyy" />
+
+                </MudStack>
+            </MudPaper>
+
+            @* Column 4: File Manager (max 30%) *@
+            <MudPaper Class="pa-2 w-100" Style="flex: 0 0 15%; max-width:15%; min-width: 192px;">
+                <FileManager @ref="_ComponentFileManager"
+                             FileObjects="FileObjects"
+                             OnFilesChanged="OnFilesChanged"
+                             UploadDisabled="@(!FileObjects.Any() || _UploadedSuccessfully)" />
+            </MudPaper>
+            <MudPaper Class="d-flex justify-center align-center pa-2">
+                <MudTooltip Text="Process Rfq Data and BOM Files">
+                    <MudButton StartIcon="@Icons.Material.Filled.Upload"
+                                Variant="Variant.Filled"
+                               Color="Color.Tertiary"
+                                Size="Size.Medium"
+                                Disabled="@ProcessDataDisabled"
+                                OnClick="@ProcessDataAsync">
+                        Process Rfq
+                    </MudButton>
+                </MudTooltip>
+            </MudPaper>
+        </MudPaper>
+    </MudItem>
+    @* File drop zone  *@
+    <MudItem xs="12">
+        <MudPaper Class="d-flex flex-column" Width="100%">
+            @* File Cards Section *@
+            <FileCards @ref="_ComponentFileCards"
+                       FileObjects="FileObjects"
+                       OnRemoveFile="HandleFileRemoval" />
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+

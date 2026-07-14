@@ -1,0 +1,311 @@
+﻿@using Microsoft.JSInterop
+@using MudBlazor
+@using SalesSystem.Rfq.Enums
+@using SalesSystem.Rfq.Models
+@using SalesSystem.Rfq.Services
+
+@inject IJSRuntime JSRuntime
+@inject ISnackbar Snackbar
+@inject ILogger<DatasetStatusDialog> Logger
+@inject IDialogService DialogService
+@inject CsvExportService CsvExportService
+
+<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.h5" Class="mb-4" Align="Align.Center">
+            Dataset Status – @RfqNumber
+        </MudText>
+
+        <MudGrid>
+            @* ── Parts Overview ──────────────────────────────────────────── *@
+            <MudItem xs="12">
+                <MudText Typo="Typo.h6" Class="mb-2">Parts Overview</MudText>
+            </MudItem>
+
+            <MudItem xs="12" sm="4">
+                <MudPaper Elevation="3" Class="pa-4 text-center">
+                    <MudText Typo="Typo.h3" Color="Color.Primary">@TotalParts</MudText>
+                    <MudText Typo="Typo.body1">Total Parts</MudText>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="4">
+                <MudPaper Elevation="3" Class="pa-4 text-center">
+                    <MudText Typo="Typo.h3" Color="Color.Success">@CompletedCount</MudText>
+                    <MudText Typo="Typo.body1">Completed (@CompletedPercentage%)</MudText>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="4">
+                <MudPaper Elevation="3" Class="pa-4 text-center">
+                    <MudText Typo="Typo.h3" Color="Color.Warning">@InProgressCount</MudText>
+                    <MudText Typo="Typo.body1">In Progress (@InProgressPercentage%)</MudText>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" Class="mt-2">
+                <MudProgressLinear Color="Color.Success"
+                                   Value="@CompletedPercentage"
+                                   Size="Size.Large"
+                                   Class="mb-1" />
+                <div class="d-flex justify-space-between">
+                    <MudText Typo="Typo.caption" Color="Color.Success">@CompletedPercentage% Completed</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Warning">@InProgressPercentage% In Progress</MudText>
+                </div>
+            </MudItem>
+
+            @* ── Completed Breakdown ─────────────────────────────────────── *@
+            <MudItem xs="12" Class="mt-4">
+                <MudText Typo="Typo.h6" Class="mb-2">Completed Parts Breakdown</MudText>
+            </MudItem>
+
+            <MudItem xs="12" sm="4">
+                <MudPaper Elevation="2" Class="pa-3 text-center">
+                    <MudText Typo="Typo.h4" Color="Color.Success">@ExactMatchCount</MudText>
+                    <MudText Typo="Typo.body2">Exact Match</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">@ExactMatchCountPercentage% of total parts</MudText>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="4">
+                <MudPaper Elevation="2" Class="pa-3 text-center">
+                    <MudText Typo="Typo.h4" Color="Color.Info">@SwappedCount</MudText>
+                    <MudText Typo="Typo.body2">Swapped / Alternative</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">@SwappedCountPercentage% of total parts</MudText>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="4">
+                <MudPaper Elevation="2" Class="pa-3 text-center">
+                    <MudText Typo="Typo.h4" Color="Color.Default">@NeitherCount</MudText>
+                    <MudText Typo="Typo.body2">Neither</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">@NeitherCountPercentage% of total parts</MudText>
+                </MudPaper>
+            </MudItem>
+
+            @* ── Quote Value Summary ─────────────────────────────────────── *@
+            <MudItem xs="12" Class="mt-4">
+                <MudText Typo="Typo.h6" Class="mb-2">Quote Value Summary</MudText>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudPaper Elevation="3" Class="pa-3 mb-2">
+                    <div class="d-flex align-center justify-space-between">
+                        <MudText Typo="Typo.h6" Color="Color.Primary">
+                            Total RFQ Quote Value: @TotalQuoteValue.ToString("C2", new CultureInfo("fr-FR"))
+                        </MudText>
+                        <MudText Typo="Typo.body2" Color="Color.Default">
+                            Based on @CompletedCount priced part(s) of @TotalParts total
+                        </MudText>
+                    </div>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="4">
+                <MudPaper Elevation="2" Class="pa-3">
+                    <MudText Typo="Typo.h6" Color="Color.Success">
+                        @ExactMatchValue.ToString("C2", new CultureInfo("fr-FR"))
+                    </MudText>
+                    <MudText Typo="Typo.body2">Exact Match Value</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">@ExactMatchValuePercentage% of total value</MudText>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="4">
+                <MudPaper Elevation="2" Class="pa-3">
+                    <MudText Typo="Typo.h6" Color="Color.Info">
+                        @SwappedValue.ToString("C2", new CultureInfo("fr-FR"))
+                    </MudText>
+                    <MudText Typo="Typo.body2">Swapped / Alternative Value</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">@SwappedValuePercentage% of total value</MudText>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="4">
+                <MudPaper Elevation="2" Class="pa-3">
+                    <MudText Typo="Typo.h6" Color="Color.Default">
+                        @NeitherValue.ToString("C2", new CultureInfo("fr-FR"))
+                    </MudText>
+                    <MudText Typo="Typo.body2">Neither Value</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">@NeitherValuePercentage% of total value</MudText>
+                </MudPaper>
+            </MudItem>
+
+            @if (MultiMatchCount > 0)
+            {
+                <MudItem xs="12" Class="mt-4">
+                    <MudAlert Severity="Severity.Info" Dense="true">
+                        <MudText Typo="Typo.body2">
+                            <strong>@MultiMatchCount</strong> part(s) have multiple NPR matches available
+                        </MudText>
+                    </MudAlert>
+                </MudItem>
+            }
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="ExportToCsv"
+                   Color="Color.Success"
+                   Variant="Variant.Filled"
+                   StartIcon="@Icons.Material.Filled.Download"
+                   Disabled="@_isExporting">
+            @if (_isExporting)
+            {
+                <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+                <span class="ml-2">Exporting...</span>
+            }
+            else
+            {
+                <span>Export CSV</span>
+            }
+        </MudButton>
+        <MudButton OnClick="Close" Color="Color.Primary" Variant="Variant.Filled">
+            Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter] public List<RfqDrawingPartNumberUxModel?> MatchedParts { get; set; } = new();
+    [Parameter] public List<RfqDrawingPartNumberUxModel?> UnmatchedParts { get; set; } = new();
+    [Parameter] public string RfqNumber { get; set; } = string.Empty;
+
+    private bool _isExporting;
+
+    // ── Overview ──────────────────────────────────────────────────────────────
+    private int TotalParts => MatchedParts.Count + UnmatchedParts.Count;
+    private int CompletedCount => MatchedParts.Count;
+    private int InProgressCount => UnmatchedParts.Count;
+
+    private double CompletedPercentage =>
+        TotalParts > 0 ? Math.Round((CompletedCount * 100.0) / TotalParts, 1) : 0;
+
+    private double InProgressPercentage =>
+        TotalParts > 0 ? Math.Round((InProgressCount * 100.0) / TotalParts, 1) : 0;
+
+    // ── Completed breakdown: IsExactMatch / IsSwapped / neither ───────────────
+    private List<RfqDrawingPartNumberUxModel> ExactMatchParts =>
+        MatchedParts
+            .Where(p => p?.IsExactMatch == true)
+            .Select(p => p!)
+            .ToList();
+
+    private List<RfqDrawingPartNumberUxModel> SwappedParts =>
+        MatchedParts
+            .Where(p => p?.IsSwapped == true && p.IsExactMatch == false)
+            .Select(p => p!)
+            .ToList();
+
+    private List<RfqDrawingPartNumberUxModel> NeitherParts =>
+        MatchedParts
+            .Where(p => p?.IsExactMatch == false && p?.IsSwapped == false)
+            .Select(p => p!)
+            .ToList();
+
+    private int ExactMatchCount => ExactMatchParts.Count;
+    private int SwappedCount => SwappedParts.Count;
+    private int NeitherCount => NeitherParts.Count;
+
+    private double ExactMatchCountPercentage =>
+        TotalParts > 0 ? Math.Round((ExactMatchCount * 100.0) / TotalParts, 1) : 0;
+
+    private double SwappedCountPercentage =>
+        TotalParts > 0 ? Math.Round((SwappedCount * 100.0) / TotalParts, 1) : 0;
+
+    private double NeitherCountPercentage =>
+        TotalParts > 0 ? Math.Round((NeitherCount * 100.0) / TotalParts, 1) : 0;
+
+    // ── Value: DrawingPartNumberPrice * Quantity (SwappedPartNumberPrice for swapped) ──
+    private static decimal CalculatePartValue(RfqDrawingPartNumberUxModel part, bool useSwappedPrice)
+    {
+        decimal price = useSwappedPrice ? part.SwappedPartNumberPrice : part.DrawingPartNumberPrice;
+        decimal quantity = part.Quantity ?? 0m;
+        return price * quantity;
+    }
+
+    private decimal ExactMatchValue =>
+        ExactMatchParts.Sum(p => CalculatePartValue(p, useSwappedPrice: false));
+
+    private decimal SwappedValue =>
+        SwappedParts.Sum(p => CalculatePartValue(p, useSwappedPrice: true));
+
+    private decimal NeitherValue =>
+        NeitherParts.Sum(p => CalculatePartValue(p, useSwappedPrice: false));
+
+    private decimal TotalQuoteValue => ExactMatchValue + SwappedValue + NeitherValue;
+
+    private double ExactMatchValuePercentage =>
+        TotalQuoteValue > 0 ? Math.Round((double)(ExactMatchValue / TotalQuoteValue * 100), 1) : 0;
+
+    private double SwappedValuePercentage =>
+        TotalQuoteValue > 0 ? Math.Round((double)(SwappedValue / TotalQuoteValue * 100), 1) : 0;
+
+    private double NeitherValuePercentage =>
+        TotalQuoteValue > 0 ? Math.Round((double)(NeitherValue / TotalQuoteValue * 100), 1) : 0;
+
+    // ── Misc ──────────────────────────────────────────────────────────────────
+    private int MultiMatchCount =>
+        MatchedParts.Count(p => p?.MultiMatch == true)
+        + UnmatchedParts.Count(p => p?.MultiMatch == true);
+
+    private IJSObjectReference? _module;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                _module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/FileDownload.js");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERROR initializing file download JS module: {ex.Message}");
+            }
+        }
+    }
+
+    private async Task ExportToCsv()
+    {
+        if (_isExporting || TotalParts == 0)
+        {
+            return;
+        }
+
+        _isExporting = true;
+        StateHasChanged();
+
+        try
+        {
+            Logger.LogInformation($"DatasetStatusDialog.ExportToCsv - Starting export of {TotalParts} parts (Completed: {CompletedCount}, InProgress: {InProgressCount})");
+
+            System.Collections.ObjectModel.Collection<RfqDrawingPartNumberUxModel?> matchedCollection =
+                new System.Collections.ObjectModel.Collection<RfqDrawingPartNumberUxModel?>(MatchedParts);
+
+            System.Collections.ObjectModel.Collection<RfqDrawingPartNumberUxModel?> unmatchedCollection =
+                new System.Collections.ObjectModel.Collection<RfqDrawingPartNumberUxModel?>(UnmatchedParts);
+
+            await CsvExportService.ExportPartNumbersToCsvAsync(matchedCollection, unmatchedCollection, "RFQ_Dataset_Export");
+
+            Snackbar.Add($"Successfully exported {TotalParts} parts to CSV", Severity.Success);
+            Logger.LogInformation("DatasetStatusDialog.ExportToCsv - Export completed successfully");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "DatasetStatusDialog.ExportToCsv - Error exporting data to CSV");
+            Snackbar.Add($"Error exporting data: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isExporting = false;
+            StateHasChanged();
+        }
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+}

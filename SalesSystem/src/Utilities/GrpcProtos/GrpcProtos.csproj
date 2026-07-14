@@ -7,7 +7,62 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Grpc.AspNetCore" Version="2.64.0" />
+		<PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
 	</ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\**\*.proto" GrpcServices="Both" ProtoRoot="Protos" />
+    <Protobuf Update="Protos\CDb.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\CommonTypes.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Component.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Components\Cable.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Components\Clip.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Components\Connector.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Components\Cover.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Components\Diode.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Components\Eyelet.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Components\Fuse.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Components\Grommet.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Components\Housing.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Components\MiscellaneousComponent.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Components\Plug.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Components\Relay.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Components\Seal.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Components\Shield.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Components\Sleeve.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Components\SubAssembly.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Components\Support.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Components\Terminal.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Components\Wire.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Components\WireProtection.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\CompositeComponent.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\EngSol.proto" GrpcServices="Server" />
+    <Protobuf Update="Protos\FileName.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\DSI.proto" GrpcServices="Both">
+      <ProtoRoot>Protos</ProtoRoot>
+    </Protobuf>
+    <Protobuf Update="Protos\Masters\ClipType.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Masters\CoverType.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Masters\CrimpingProcessType.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Masters\FileType.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Masters\FuseType.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Masters\MaterialType.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Masters\MiscellaneousComponentType.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Masters\Partner.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Masters\Person.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Masters\TemperatureRange.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Masters\TerminalFamily.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Masters\TerminalSize.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Masters\TypeCode.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Masters\WaterproofType.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Masters\WireProtectionType.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Masters\WireType.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\PartNumber.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Tag.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\Unit4.proto" GrpcServices="Server" />
+    <Protobuf Update="Protos\Purchasing.proto" GrpcServices="Server" />
+  </ItemGroup>
+
+
 
 </Project>

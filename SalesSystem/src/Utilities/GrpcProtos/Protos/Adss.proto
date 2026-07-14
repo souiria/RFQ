@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "Adss";
+package adss;
+
+service AdssGrpc {
+rpc SayHello (HelloRequest) returns (HelloReply);
+  rpc GetPartImage (PartImageRequest) returns (PartImageReply);
+  rpc FilterImage (FilterImageRequest) returns (FilterImageResponse);
+}
+
+message PartImageRequest {
+  string part_number = 1; // Spart
+}
+
+message PartImageReply {
+  bytes data = 1;          
+  string content_type = 2; 
+}
+
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}
+
+message FilterImageRequest {
+    google.protobuf.StringValue FilterExpression = 2;
+}
+
+message FilterImageResponse {
+    bool Success = 1;
+    repeated PartImageDataInfo PartImageData = 2;
+}
+
+message PartImageDataInfo {
+    repeated google.protobuf.StringValue SumitomoPartNumber = 1;
+    repeated PartImageReply PartImage = 2;
+}
