@@ -16,7 +16,7 @@
                 .AddEnvironmentVariables();
             builder.Logging.ClearProviders();
             builder.Logging.AddConfiguration(conf);
-
+            builder.Logging.AddSeq();
             #region Builder
 
             builder.Services.Configure<CookiePolicyOptions>(options =>

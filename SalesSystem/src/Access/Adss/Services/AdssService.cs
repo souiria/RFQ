@@ -14,7 +14,7 @@
                     _RootPath = env.IsDevelopment()
                 ? settings.RootPathLocal
                 : settings.RootPathServer;
-            Console.WriteLine($"Using root path: {_RootPath}");
+            _Logger.GenericLogInformation(information: $"Using root path: {_RootPath}");
             if (string.IsNullOrWhiteSpace(_RootPath))
             {
                 _Logger.GenericLogInformation(information: $"Root path configuration is missing.");
@@ -41,7 +41,7 @@
             if(8 < partNumber.Length && partNumber.EndsWith("00", StringComparison.InvariantCulture))
             {
                 string shortName = partNumber.Substring(0, partNumber.Length - 2);
-                candidate = Path.Combine(_RootPath, shortName, ".jpg");
+                candidate = Path.Combine(_RootPath, shortName + ".jpg");
                 if (File.Exists(candidate))
                 {
                     _Logger.GenericLogInformation(information: $"Found image for shortened part number {shortName} of {partNumber} at {candidate}");
