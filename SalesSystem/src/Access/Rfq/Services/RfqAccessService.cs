@@ -700,27 +700,10 @@
                 Result<List<DbRfqDrawingPartNumber>> result = await handler.Handle(command, cancellationToken);
                 if (result.IsSuccess)
                 {
-#if DEBUG
                     // invalidate cache and repopulate
-                    _ListRfqDrawingPartNumbersGrpc = new();
+                    _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Clear();
                     await PopulateRfqDrawingPartNumbers(cancellationToken);
                     responseList.RfqDrawingPartNumbers.AddRange(_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers);
-#else
-                    foreach (RfqDrawingPartNumbersGrpc updatedComponent in request.RfqDrawingPartNumbersGrpcsToUpdate)
-                    {
-                        RfqDrawingPartNumbersGrpc? foundItem = _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.FirstOrDefault(p => p.RowId == updatedComponent.RowId);
-                        if (foundItem == null)
-                        {
-                            continue;
-                        }
-
-                        int index = _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.IndexOf(foundItem);
-                        if (index != -1)
-                        {
-                            _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers[index] = updatedComponent;
-                        }
-                    }
-#endif
                     return true;
                 }
                 else
@@ -747,7 +730,7 @@
                 if (result.IsSuccess)
                 {
                     // invalidate cache and repopulate
-                    _ListRfqDrawingPartNumbersGrpc = new();
+                    _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Clear();
                     await PopulateRfqDrawingPartNumbers(cancellationToken);
                     responseList.RfqDrawingPartNumbers.AddRange(_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers);
                     return true;
