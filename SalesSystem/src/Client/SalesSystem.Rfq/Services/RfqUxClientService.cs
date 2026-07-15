@@ -393,14 +393,22 @@ namespace SalesSystem.Rfq.Services
         public async Task<bool> UpdateRfqDrawingPartNumber(RfqDrawingPartNumberUxModel partNumberUx)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-            await Task.Delay(1);
+            List<RfqDrawingPartNumber> partsDto = new List<RfqDrawingPartNumber>();
+            partsDto.Add(partNumberUx.ToDto());
+
             try
             {
-                return true;
+                UpdateRfqDrawingPartNumbersGrpcRequest request = new UpdateRfqDrawingPartNumbersGrpcRequest();
+                request.RfqDrawingPartNumbersGrpcsToUpdate.AddRange(partsDto);
+
+                UpdateRfqDrawingPartNumbersGrpcResponse response =
+                    await _Client.UpdateRfqDrawingPartNumbersGrpcAsync(request, cancellationToken: timeoutCts.Token);
+
+                return response.Success;
             }
             catch (Exception ex)
             {
-                _Logger?.GenericLogError($"Error in UpdateRfqDrawingPartNumber for PartNumber: {partNumberUx.CustomerPartNumber}/{partNumberUx.DrawingPartNumber}", ex);
+                _Logger?.GenericLogError($"EEE Error in UpdateRfqDrawingPartNumber for PartNumber: {partNumberUx.CustomerPartNumber}/{partNumberUx.DrawingPartNumber}", ex);
                 throw;
             }
         }
