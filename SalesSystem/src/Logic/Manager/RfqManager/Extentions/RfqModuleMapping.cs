@@ -88,9 +88,9 @@
             project.JsonData = rfqProjectGrpc.JsonData;
             return project;
         }
-        public static RfqDrawingPartNumber ToRfqDrawingPartNumber(this RfqDrawingPartNumbersGrpc rfqPartGrpc)
+        public static RfqDrawingPartNumberGrpc ToRfqDrawingPartNumber(this RfqDrawingPartNumbersGrpc rfqPartGrpc)
         {
-            RfqDrawingPartNumber part = new RfqDrawingPartNumber();
+            RfqDrawingPartNumberGrpc part = new RfqDrawingPartNumberGrpc();
             part.RowId = rfqPartGrpc.RowId;
             part.RfqId = rfqPartGrpc.RfqId;
             part.OriginalPartNumber = rfqPartGrpc.OriginalPartNumber;

@@ -41,40 +41,60 @@
 
         public override async Task<GetRfqReasonsGrpcResponse> GetRfqReasonsGrpc(GetRfqReasonsGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("GetRfqReasonsGrpc starting");
+            _Logger.GenericLogInformation($">>> GetRfqReasonsGrpc starting");
             GetRfqReasonsGrpcResponse response = await _RfqManagerService.GetRfqReasonsGrpc(request);
             return response;
         }
         public override async Task<UploadPartsRequestGrpcResponse> UploadPartsGrpc(UploadPartsRequestGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("UploadPartsGrpc starting");
+            _Logger.GenericLogInformation($">>> UploadPartsGrpc starting for {request.FileName} BOM");
             UploadPartsRequestGrpcResponse response = await _RfqManagerService.UploadPartsGrpc(request);
             return response;
         }
 
         public override async Task<CreateRfqProjectGrpcResponse> CreateRfqProjectGrpc(CreateRfqProjectGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("CreateRfqProjectGrpc starting");
+            _Logger.GenericLogInformation($">>> CreateRfqProjectGrpc starting for RfqNumber: {request.Project.RfqNumber}");
             CreateRfqProjectGrpcResponse response = await _RfqManagerService.CreateRfqProject(request);
             return response;
         }
 
         public override async Task<GetAllRfqProjectGrpcResponse> GetAllRfqProjectGrpc(GetAllRfqProjectGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("GetAllRfqProjectGrpc starting");
+            _Logger.GenericLogInformation($">>> GetAllRfqProjectGrpc starting");
             GetAllRfqProjectGrpcResponse response = await _RfqManagerService.GetAllRfqProjectGrpc(request);
             return response;
         }
         public override async Task<GetRfqProjectByIdGrpcResponse> GetRfqProjectByIdGrpc(GetRfqProjectByIdGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("GetRfqProjectByIdGrpc starting");
+            _Logger.GenericLogInformation($">>> GetRfqProjectByIdGrpc starting for RFQ RowId: {request.RowId}");
             GetRfqProjectByIdGrpcResponse response = await _RfqManagerService.GetRfqProjectByIdGrpc(request);
             return response;
         }
-        public override async Task<GetRfqDrawingPartNumbersByRfqIdGrpcResponse> GetRfqDrawingPartNumbersByRfqIdGrpc(GetRfqDrawingPartNumbersByRfqIdGrpcRequest request,  ServerCallContext context)
+        public override async Task<ListRfqDrawingPartNumbersGrpc> GetRfqDrawingPartNumbersByRfqIdGrpc(RfqDrawingPartNumbersGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("GetRfqDrawingPartNumbersByRfqIdGrpc starting");
-            return await _RfqManagerService.GetRfqDrawingPartNumbersByRfqIdGrpc(request);
+            _Logger.GenericLogInformation($">>> GetRfqDrawingPartNumbersByRfqIdGrpc starting for RFQ ID: {request.RfqId}");
+            RfqDrawingPartNumbersGrpcRequest accessRequest = new RfqDrawingPartNumbersGrpcRequest();
+            accessRequest.RfqId = request.RfqId;
+            ListRfqDrawingPartNumbersGrpc response = await _RfqManagerService.GetRfqDrawingPartNumbersByRfqIdGrpc(accessRequest);
+            return response;
+        }
+        public override async Task<RfqCrudResponse> UpdateRfqDrawingPartNumbersGrpc(
+            RfqDrawingPartNumbersGrpcRequest request,
+            ServerCallContext context)
+        {
+            _Logger.GenericLogInformation($">>> UpdateRfqDrawingPartNumbersGrpc starting for {request.RfqDrawingPartNumbersGrpcsToUpdate.Count} items");
+            RfqCrudResponse response = await _RfqManagerService.UpdateRfqDrawingPartNumbers(request);
+            return response;
+        }
+        public override async Task<RfqCrudResponse> DeleteRfqDrawingPartNumbersGrpc(
+            RfqDrawingPartNumbersGrpcRequest request,
+            ServerCallContext context)
+        {
+            _Logger.GenericLogInformation($">>> DeleteRfqDrawingPartNumbersGrpc starting for {request.RfqDrawingPartNumbersGrpcsToDelete.Count} items");
+            RfqCrudResponse response =
+                await _RfqManagerService.DeleteRfqDrawingPartNumbersGrpc(request);
+            return response;
         }
         public override async Task<UpdateRfqProjectGrpcResponse> UpdateRfqProjectGrpc(UpdateRfqProjectGrpcRequest request, ServerCallContext context)
         {
@@ -176,24 +196,6 @@
                     break;
             }
 
-            return response;
-        }
-        public override async Task<UpdateRfqDrawingPartNumbersGrpcResponse> UpdateRfqDrawingPartNumbersGrpc(
-            UpdateRfqDrawingPartNumbersGrpcRequest request,
-            ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("UpdateRfqDrawingPartNumbersGrpc starting");
-            UpdateRfqDrawingPartNumbersGrpcResponse response = await _RfqManagerService.UpdateRfqDrawingPartNumbers(request);
-            return response;
-        }
-
-        public override async Task<DeleteRfqDrawingPartNumbersGrpcResponse> DeleteRfqDrawingPartNumbersGrpc(
-            DeleteRfqDrawingPartNumbersGrpcRequest request,
-            ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("DeleteRfqDrawingPartNumbersGrpc starting");
-            DeleteRfqDrawingPartNumbersGrpcResponse response =
-                await _RfqManagerService.DeleteRfqDrawingPartNumbersGrpc(request);
             return response;
         }
 

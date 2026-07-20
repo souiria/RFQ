@@ -111,9 +111,11 @@
             return responseMessage;
         }
 
-        public override async Task<RfqCrudGrpcResponse> UpdateRfqDrawingPartNumbersGrpc(RfqDrawingPartNumbersGrpcRequest request, ServerCallContext context)
+        public override async Task<RfqCrudGrpcResponse> UpdateRfqDrawingPartNumbersGrpc(
+            RfqDrawingPartNumbersGrpcRequest request, 
+            ServerCallContext context)
         {
-            _Logger.GenericLogInformation("UpdateRfqDrawingPartNumbersGrpc starting");
+            _Logger.GenericLogInformation(">>> RfqAccess Layer UpdateRfqDrawingPartNumbersGrpc starting ");
             if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
@@ -4858,7 +4860,7 @@
 
         public override async Task<RfqFilterResponse> FilterRfqGrpc(RfqFilterRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("FilterRfqGrpc starting");
+            _Logger.GenericLogInformation($"RfqAccess Layer FilterRfqGrpc starting for {request.DatabaseList.ToUpperInvariant()} and filter: {request.FilterExpression.ToString()}");
             ParsingConfig parsingConfig = new ParsingConfig();
             RfqFilterResponse returnResponse = new RfqFilterResponse();
             switch (request.DatabaseList.ToUpperInvariant())
@@ -4873,6 +4875,7 @@
                         returnResponse.ListRfqDrawingPartNumbersGrpc = returnList;
                         returnResponse.Success = true;
                     }, context.CancellationToken);
+                _Logger.GenericLogInformation($"RfqAccess Layer FilterRfqGrpc completed for {request.DatabaseList.ToUpperInvariant()} and filter: {request.FilterExpression.ToString()} returning {returnResponse.Success} and {returnResponse.ListRfqDrawingPartNumbersGrpc?.RfqDrawingPartNumbers.Count ?? 0} items");
                 break;
                 case "RFQPROJECTGRPC":
                 try

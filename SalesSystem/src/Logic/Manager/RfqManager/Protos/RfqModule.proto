@@ -32,12 +32,17 @@ service RfqModule {
     rpc UpdateRfqProjectGrpc (UpdateRfqProjectGrpcRequest) returns (UpdateRfqProjectGrpcResponse);
     rpc GetCustomerLocationsByUserIdGrpc (GetCustomerLocationsByUserIdRequest) returns (GetCustomerLocationsByUserIdResponse);
     rpc GetCustomerBusinessUnitsByUserIdGrpc (GetCustomerBusinessUnitsByUserIdRequest) returns (GetCustomerBusinessUnitsByUserIdResponse);
-    // RfqProject Parts handling
-    rpc GetRfqDrawingPartNumbersByRfqIdGrpc (GetRfqDrawingPartNumbersByRfqIdGrpcRequest) returns (GetRfqDrawingPartNumbersByRfqIdGrpcResponse);
-    //  rpc UpdateRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequestt) returns (UpdateRfqDrawingPartNumbersGrpcResponse);
-    rpc UpdateRfqDrawingPartNumbersGrpc (UpdateRfqDrawingPartNumbersGrpcRequest) returns (UpdateRfqDrawingPartNumbersGrpcResponse);
-    rpc DeleteRfqDrawingPartNumbersGrpc (DeleteRfqDrawingPartNumbersGrpcRequest) returns (DeleteRfqDrawingPartNumbersGrpcResponse);
     rpc DeleteRfqProjectByRowIdGrpc (RfqProjectRequest) returns (RfqCrudResponse);
+    // RfqProject Parts handling
+    // old versions
+    // rpc GetRfqDrawingPartNumbersByRfqIdGrpc (GetRfqDrawingPartNumbersByRfqIdGrpcRequest) returns (GetRfqDrawingPartNumbersByRfqIdGrpcResponse);
+    // rpc UpdateRfqDrawingPartNumbersGrpc (UpdateRfqDrawingPartNumbersGrpcRequest) returns (UpdateRfqDrawingPartNumbersGrpcResponse);
+    // rpc DeleteRfqDrawingPartNumbersGrpc (DeleteRfqDrawingPartNumbersGrpcRequest) returns (DeleteRfqDrawingPartNumbersGrpcResponse);
+    rpc GetRfqDrawingPartNumbersByRfqIdGrpc (RfqDrawingPartNumbersGrpcRequest) returns (ListRfqDrawingPartNumbersGrpc);
+    rpc UpdateRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequest) returns (RfqCrudResponse);
+    rpc DeleteRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequest) returns (RfqCrudResponse);
+
+    // Alternative parts
     rpc GetAlternativePartInfoBySumitomoNumberGrpc (GetAlternativePartInfoBySumitomoNumberRequest) returns (GetAlternativePartInfoBySumitomoNumberResponse);    
     rpc GetAllAlternativePartsGrpc (GetAllAlternativePartsGrpcRequest) returns (GetAllAlternativePartsGrpcResponse);
     // NprRequest local handling
@@ -81,6 +86,20 @@ message HelloReply {
   string message = 1;
 }
 
+// Shared request parameter message
+message RfqGrpcRequestParameter {
+	int32 RequestType = 1;
+	int32 Position = 2;
+	int32 Take = 3;
+	google.protobuf.BoolValue BoolValue = 4;
+	google.protobuf.StringValue StringValue = 5;
+	google.protobuf.Int32Value IntValue = 6;
+	google.protobuf.FloatValue DecimalValue = 7;
+	google.protobuf.Timestamp DateTimeValue = 8;
+	int64 RowId = 9;
+	int64 RfqId = 10;
+}
+
 message FileUploadRequest {
   bytes file_data = 1;
   string file_name = 2;
@@ -101,16 +120,6 @@ message GetAllCustomersGrpcResponse {
     repeated CustomerGrpc Customers = 1;
     int32 TotalCount = 2;
 }
-
-//message GetCustomersByUserIdGrpcRequest {
-//	google.protobuf.StringValue UserId = 1;
-//}
-
-// Shared request parameter message
-//message GetCustomersByUserIdGrpcResponse {
-//	repeated CustomerGrpc Customers = 1;
-//	int32 TotalCount = 2;
-//}
 
 message CustomerGrpc {
     google.protobuf.StringValue Id = 1;
@@ -259,7 +268,24 @@ message UpdateRfqProjectGrpcResponse {
   bool Success = 1;
   string Message = 2;
 }
-message RfqDrawingPartNumber {
+
+
+// DrawingPartNumber
+// The one request
+message RfqDrawingPartNumbersGrpcRequest {
+  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  repeated RfqDrawingPartNumberGrpc RfqDrawingPartNumbersGrpcsToCreate = 2;
+  repeated RfqDrawingPartNumberGrpc RfqDrawingPartNumbersGrpcsToUpdate = 3;
+  repeated RfqDrawingPartNumberGrpc RfqDrawingPartNumbersGrpcsToDelete = 4;
+  int64 RfqId = 5;
+}
+
+// The one response; others will be using the RfqCrudResponse
+message ListRfqDrawingPartNumbersGrpc {
+	repeated RfqDrawingPartNumberGrpc RfqDrawingPartNumbers = 1;
+}
+
+message RfqDrawingPartNumberGrpc {
   int64 RowId = 1;
   int64 RfqId = 2;
   string OriginalPartNumber = 3;
@@ -273,40 +299,35 @@ message RfqDrawingPartNumber {
   string SumitomoPartNumber = 11;
   double Quantity = 12;
 }
-message UpdateRfqDrawingPartNumbersGrpcResponse {
-  bool Success = 1;
-  string Message = 2;
-}
-message UpdateRfqDrawingPartNumbersGrpcRequest {
-  RfqDrawingPartNumber GrpcRequestParameter = 1;
-  repeated RfqDrawingPartNumber RfqDrawingPartNumbersGrpcsToUpdate = 2;
-}
-message DeleteRfqDrawingPartNumbersGrpcResponse {
-  bool Success = 1;
-  string Message = 2;
-}
-message DeleteRfqDrawingPartNumbersGrpcRequest {
-  RfqDrawingPartNumber GrpcRequestParameter = 1;
-  repeated RfqDrawingPartNumber RfqDrawingPartNumbersGrpcsToDelete = 2;
-}
-message GetRfqDrawingPartNumbersByRfqIdGrpcRequest {
 
-  int64 RfqId = 1;
-}
-//message RfqDrawingPartNumbersGrpcRequest {
- // RfqDrawingPartNumber GrpcRequestParameter = 1;
- // repeated RfqDrawingPartNumber RfqDrawingPartNumbersGrpcsToUpdate = 2;
-//}
-message GetRfqDrawingPartNumbersByRfqIdGrpcResponse {
-  repeated RfqDrawingPartNumber Parts = 1;
-}
+// The request parameter for RfqDrawingPartNumbersGrpcRequest
+// message UpdateRfqDrawingPartNumbersGrpcResponse {
+//   bool Success = 1;
+//   string Message = 2;
+// }
+// message UpdateRfqDrawingPartNumbersGrpcRequest {
+//   repeated RfqDrawingPartNumberGrpc RfqDrawingPartNumbersGrpcsToUpdate = 1;
+// }
+// message DeleteRfqDrawingPartNumbersGrpcResponse {
+//   bool Success = 1;
+//   string Message = 2;
+// }
+// message DeleteRfqDrawingPartNumbersGrpcRequest {
+//   repeated RfqDrawingPartNumberGrpc RfqDrawingPartNumbersGrpcsToDelete = 1;
+// }
+// message GetRfqDrawingPartNumbersByRfqIdGrpcRequest {
+// 
+//   int64 RfqId = 1;
+// }
+// message GetRfqDrawingPartNumbersByRfqIdGrpcResponse {
+//   repeated RfqDrawingPartNumber Parts = 1;
+// }
 
 message RfqProjectRequest {
-  RfqProject GrpcRequestParameter = 1;
-  repeated RfqProject RfqProjectGrpcsToCreate = 2;
-  repeated RfqProject RfqProjectGrpcsToUpdate = 3;
-  repeated RfqProject RfqProjectGrpcsToDelete = 4;
-  int64 RowId = 5;
+  repeated RfqProject RfqProjectGrpcsToCreate = 1;
+  repeated RfqProject RfqProjectGrpcsToUpdate = 2;
+  repeated RfqProject RfqProjectGrpcsToDelete = 3;
+  int64 RowId = 4;
 }
 
 message RfqCrudResponse {

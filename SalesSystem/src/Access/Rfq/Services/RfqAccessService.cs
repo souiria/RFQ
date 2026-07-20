@@ -5805,8 +5805,11 @@
         {
             return await Task.Run(() =>
             {
-                _Logger.GenericLogInformation($"III RfqAccessService.Filter - Starting");
-                  return typeof(T).Name.ToUpperInvariant() switch
+                string searchType = typeof(T).Name.ToUpperInvariant();
+
+                _Logger.GenericLogInformation($"III RfqAccessService.Filter - Starting for type: {searchType}");
+
+                List<T> retVal = searchType switch
                 {
                     "RFQDRAWINGPARTNUMBERSGRPC" => _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Cast<T>().Where(func).ToList(),
                     "RFQREASONGRPC" => _ListRfqReasonsGrpc.RfqReasons.Cast<T>().Where(func).ToList(),
@@ -5846,6 +5849,10 @@
                     "RFQNPRREQUESTGRPC" => _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.Cast<T>().Where(func).ToList(),
                     _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
                 };
+
+                _Logger.GenericLogInformation($"III RfqAccessService.Filter - returning a List<{typeof(T).Name}> with {retVal.Count} items");
+
+                return retVal;
             }, cancellationToken);
         }
         void PopulateSampleData()

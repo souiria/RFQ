@@ -38,8 +38,8 @@
         RqfCustomerProjectAssociationUxModel? _PreviousSelectedProject;
 
         // Part numbers data - changed to List for mutability
-        List<RfqDrawingPartNumberUxModel?> _CompletedParts = new List<RfqDrawingPartNumberUxModel?>();
-        List<RfqDrawingPartNumberUxModel?> _InProgressParts = new List<RfqDrawingPartNumberUxModel?>();
+        List<RfqDrawingPartNumberUxModel> _CompletedParts = new List<RfqDrawingPartNumberUxModel>();
+        List<RfqDrawingPartNumberUxModel> _InProgressParts = new List<RfqDrawingPartNumberUxModel>();
 
         // Submit NPRs state tracking
         bool _IsSubmittingNprs;
@@ -234,8 +234,8 @@
             int partNumbersCount = await RfqUxClientService.GetRfqDrawingPartNumbersByRfqIdAsync(RfqProjectId);
             if (partNumbersCount > 0)
             {
-                _CompletedParts = RfqUxClientService.RfqDrawingPartNumbers.Where(x => x?.IsCompleted == true).ToList();
-                _InProgressParts = RfqUxClientService.RfqDrawingPartNumbers.Where(x => x?.IsCompleted == false).ToList();
+                _CompletedParts = RfqUxClientService.RfqDrawingPartNumbers.Where(x => x?.IsCompleted == true).Cast<RfqDrawingPartNumberUxModel>().ToList();
+                _InProgressParts = RfqUxClientService.RfqDrawingPartNumbers.Where(x => x?.IsCompleted == false).Cast<RfqDrawingPartNumberUxModel>().ToList();
             }
 
             return success;
@@ -650,19 +650,19 @@
                 bool isInCompletedList = matchedItem != null;
                 bool isInInProgressList = unmatchedItem != null;
 
-                if (updatedItem.IsCompleted && isInInProgressList)
+                if (updatedItem.IsCompleted && isInInProgressList && unmatchedItem is not null)
                 {
                     _InProgressParts.Remove(unmatchedItem);
                     _CompletedParts.Add(updatedItem);
                     Logger.GenericLogInformation($"EditRfq.HandlePartNumberUpdated - Moved part to matched: {updatedItem.CustomerPartNumber}");
                 }
-                else if (!updatedItem.IsCompleted && isInCompletedList)
+                else if (!updatedItem.IsCompleted && isInCompletedList && matchedItem is not null)
                 {
                     _CompletedParts.Remove(matchedItem);
                     _InProgressParts.Add(updatedItem);
                     Logger.GenericLogInformation($"EditRfq.HandlePartNumberUpdated - Moved part to unmatched: {updatedItem.CustomerPartNumber}");
                 }
-                else if (isInCompletedList)
+                else if (isInCompletedList && matchedItem is not null)
                 {
                     int index = _CompletedParts.IndexOf(matchedItem);
                     if (index >= 0)
@@ -672,7 +672,7 @@
 
                     Logger.GenericLogInformation($"EditRfq.HandlePartNumberUpdated - Updated matched part: {updatedItem.CustomerPartNumber}");
                 }
-                else if (isInInProgressList)
+                else if (isInInProgressList && unmatchedItem is not null)
                 {
                     int index = _InProgressParts.IndexOf(unmatchedItem);
                     if (index >= 0)
@@ -969,9 +969,15 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         async Task SaveDataAsync()
         {
-            List<RfqDrawingPartNumberUxModel?> allParts = new();
-            allParts.AddRange(_CompletedParts);
-            allParts.AddRange(_InProgressParts);
+            List<RfqDrawingPartNumberUxModel> allParts = new();
+            allParts.AddRange(_CompletedParts.Where(p => p != null).Select(p => p!));
+            allParts.AddRange(_InProgressParts.Where(p => p != null).Select(p => p!));
+            if(allParts.Count == 0)
+            {
+                Snackbar.Add("No parts to save", Severity.Info);
+                Logger.GenericLogInformation("EditRfq.SaveDataAsync - No parts available to save");
+                return;
+            }
 
             try
             {
@@ -981,14 +987,14 @@
                     await _ComponentNprEditor.SaveNprRequestsAsync();
                 }
 
-                // Update selection
+                // Update selection (save JSON Data)
                 await UpdateSelectionAsync();
 
                 // Save the RfqProject FIRST so its RowId exists before parts reference it
                 UpdateRfqProjectGrpcResponse rfqUpdateResult = await RfqUxClientService.UpdateRfqProjectAsync(RfqProject!);
-                UpdateRfqDrawingPartNumbersGrpcResponse partsUpdateResult = await RfqUxClientService.UpdateRfqDrawingPartNumbersAsync(allParts);
+                RfqCrudResponse partsUpdateResult = await RfqUxClientService.UpdateRfqDrawingPartNumbersAsync(allParts);
 
-                if (partsUpdateResult.Success && rfqUpdateResult.Success)
+                if (partsUpdateResult.SaveSuccess && rfqUpdateResult.Success)
                 {
                     Snackbar.Add("Data saved successfully", Severity.Success);
                     Logger.GenericLogInformation("EditRfq.SaveDataAsync - Data saved successfully");
@@ -1032,7 +1038,7 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         async Task SearchAllPartNumbersAsync()
         {
-            if (_InProgressParts.Count == 0)
+            if (_InProgressParts is null || !_InProgressParts.Any())
             {
                 Snackbar.Add("No in-progress parts to search", Severity.Info);
                 return;
@@ -1057,11 +1063,17 @@
             _SearchInitialTotalParts = TotalParts;
 
             // Snapshot so we can mutate _InProgressParts safely while iterating.
-            List<RfqDrawingPartNumberUxModel?> partsSnapshot = _InProgressParts.ToList();
+            List<RfqDrawingPartNumberUxModel> partsSnapshot = _InProgressParts.Where(p => p is not null).Cast<RfqDrawingPartNumberUxModel>().ToList();
+            if(partsSnapshot is null || !partsSnapshot.Any())
+            {
+                Snackbar.Add("No in-progress parts to search", Severity.Info);
+                _IsSearchingAll = false;
+                return;
+            }
 
             // Build per-part progress state and open the dialog.
             SearchProgressState progressState = new SearchProgressState();
-            progressState.Initialize(partsSnapshot.Select(p => p?.CustomerPartNumber ?? "(unknown)"));
+            progressState.Initialize(partsSnapshot.Select(p => p.CustomerPartNumber ?? "(unknown)"));
             progressState.OnCancelRequested = () =>
             {
                 try
@@ -1271,16 +1283,20 @@
                 }
 
                 // Move every auto-matched part from In-Progress to Completed.
-                List<RfqDrawingPartNumberUxModel?> toMove = _InProgressParts
+                List<RfqDrawingPartNumberUxModel> toMove = _InProgressParts
                     .Where(p => p != null
                         && (p.Status == RfqDrawingPartNumberStatus.ExactMatch
                             || p.Status == RfqDrawingPartNumberStatus.ContainsMatch))
+                    .Cast<RfqDrawingPartNumberUxModel>()
                     .ToList();
 
                 foreach (RfqDrawingPartNumberUxModel? p in toMove)
                 {
-                    _InProgressParts.Remove(p);
-                    _CompletedParts.Add(p);
+                    if(p is not null)
+                    {
+                        _InProgressParts.Remove(p);
+                        _CompletedParts.Add(p);
+                    }
                 }
 
                 // Invariant: total BOM size must not change across a Search All run.
@@ -1336,18 +1352,26 @@
             // Save the selection from the composite cards
             _SelectedComponents = components;
             // Delete and clear the existing parts lists before adding new ones
-            if (_InProgressParts.Count > 0)
+            if (_InProgressParts != null && _InProgressParts.Any())
             {
                 bool result = await RfqUxClientService.DeleteRfqDrawingPartNumbers(_InProgressParts!);
             }
+            else
+            {
+                _CompletedParts = new List<RfqDrawingPartNumberUxModel>();
+            }
 
-            if(_CompletedParts.Count > 0)
+            if (_CompletedParts != null && _CompletedParts.Any())
             {
                 bool result = await RfqUxClientService.DeleteRfqDrawingPartNumbers(_CompletedParts!);
             }
+            else
+            {
+                _InProgressParts = new List<RfqDrawingPartNumberUxModel>();
+            }
 
-            _CompletedParts.Clear();
-            _InProgressParts.Clear();
+            _CompletedParts!.Clear();
+            _InProgressParts!.Clear();
 
             if(RfqProject == null)
             {

@@ -1,4 +1,6 @@
-﻿namespace RfqModule.Services
+﻿using Google.Protobuf;
+
+namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {
@@ -242,7 +244,7 @@
                 // Call the Rfq service to get RFQ reasons
                 await Task.Delay(1);
                 RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
-                RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                Rfq.RfqGrpcRequestParameter rfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
                 rfqGrpcRequestParameter.Position = request.Position;
                 rfqGrpcRequestParameter.Take = request.Take;
                 rfqGrpcRequestParameter.RequestType = request.RequestType;
@@ -330,13 +332,13 @@
 
                 long rowId = request.RowId;
 
-                RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                Rfq.RfqGrpcRequestParameter rfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
                 rfqGrpcRequestParameter.RequestType = 3;
 
                 RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
                 rfqProjectRequest.RowId = rowId;
                 rfqProjectRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
-                RfqCrudGrpcResponse grpcResponse =  _RfqClient.DeleteRfqProjectByRowIdGrpc(rfqProjectRequest);
+                RfqCrudGrpcResponse grpcResponse = _RfqClient.DeleteRfqProjectByRowIdGrpc(rfqProjectRequest);
                 bool result = grpcResponse.SaveSuccess;
           
                 string message;
@@ -379,7 +381,7 @@
 
                 // Fetch RFQ reasons=
                 RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
-                RfqGrpcRequestParameter reasonRequestParameter = new RfqGrpcRequestParameter();
+                Rfq.RfqGrpcRequestParameter reasonRequestParameter = new Rfq.RfqGrpcRequestParameter();
                 reasonRequestParameter.Position = 0;
                 reasonRequestParameter.Take = 100;
                 reasonRequestParameter.RequestType = 1;
@@ -637,7 +639,7 @@
             rfqProject.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
             rfqProject.IsActive = request.Project.IsActive ?? false;
 
-            RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            Rfq.RfqGrpcRequestParameter rfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             rfqProjectRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
             rfqProjectRequest.RfqGrpcRequestParameter.RequestType = 70;
             rfqProjectRequest.RfqProjectGrpcsToCreate.Add(rfqProject);
@@ -681,12 +683,11 @@
                 rfqProject.JsonData = request.Project.JsonData;
 
                 RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
-                rfqProjectRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                rfqProjectRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
                 rfqProjectRequest.RfqGrpcRequestParameter.RequestType = 80;
                 rfqProjectRequest.RfqProjectGrpcsToUpdate.Add(rfqProject);
 
                 RfqCrudGrpcResponse updateResponse = _RfqClient.UpdateRfqProjectGrpc(rfqProjectRequest);
-
                 UpdateRfqProjectGrpcResponse response = new UpdateRfqProjectGrpcResponse();
                 response.Success = updateResponse.SaveSuccess;
                 response.Message = updateResponse.Message;
@@ -701,39 +702,30 @@
         }
         #endregion
         #region RfqDrawingPartNumbers
-        public async Task<UpdateRfqDrawingPartNumbersGrpcResponse> UpdateRfqDrawingPartNumbers(UpdateRfqDrawingPartNumbersGrpcRequest request)
+        public async Task<RfqCrudResponse> UpdateRfqDrawingPartNumbers(RfqDrawingPartNumbersGrpcRequest request)
         {
             try
             {
                 await Task.Delay(1);
 
-                // Map each incoming part into a gRPC DTO
+                // Map each incoming part into a gRPC access DTO
+                // it'a Rfq.RfqDrawingPartNumbersGrpc vs RfqModule.RfqDrawingPartNumberGrpc
+                // why a type is named RfqDrawingPartNumbersGrpc (plural) if accepted
+                // convention is singular? I don't know, but it is what it is. Retorical.
                 List<RfqDrawingPartNumbersGrpc> partsToUpdate = new List<RfqDrawingPartNumbersGrpc>();
-                foreach (RfqDrawingPartNumber part in request.RfqDrawingPartNumbersGrpcsToUpdate)
+                foreach (RfqDrawingPartNumberGrpc? part in request.RfqDrawingPartNumbersGrpcsToUpdate)
                 {
-                    RfqDrawingPartNumbersGrpc grpcPart = new RfqDrawingPartNumbersGrpc();
-                    grpcPart.RowId = part.RowId;
-                    grpcPart.RfqId = part.RfqId;
-                    grpcPart.SumitomoPartNumber = part.SumitomoPartNumber;
-                    grpcPart.OriginalPartNumber = part.OriginalPartNumber;
-                    grpcPart.OriginalPartNumberPrice = part.OriginalPartNumberPrice;
-                    grpcPart.SwappedPartNumber = part.SwappedPartNumber;
-                    grpcPart.SwappedPartNumberPrice = part.SwappedPartNumberPrice;
-                    grpcPart.PriceSource = part.PriceSource;
-                    grpcPart.IsExactMatch = part.IsExactMatch;
-                    grpcPart.IsSwapped = part.IsSwapped;
-                    grpcPart.Comments = part.Comments;
-                    grpcPart.Quantity = part.Quantity;
+                    RfqDrawingPartNumbersGrpc grpcPart = part.ToAccessDto();
                     partsToUpdate.Add(grpcPart);
                 }
 
-                RfqDrawingPartNumbersGrpcRequest rfqProjectRequest = new RfqDrawingPartNumbersGrpcRequest();
-                rfqProjectRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                Rfq.RfqDrawingPartNumbersGrpcRequest rfqProjectRequest = new Rfq.RfqDrawingPartNumbersGrpcRequest();
+                rfqProjectRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
                 rfqProjectRequest.RfqGrpcRequestParameter.RequestType = 80;
-                rfqProjectRequest.RfqDrawingPartNumbersGrpcsToUpdate.Add(partsToUpdate);
+                rfqProjectRequest.RfqDrawingPartNumbersGrpcsToUpdate.AddRange(partsToUpdate);
                 RfqCrudGrpcResponse updateResponse = _RfqClient.UpdateRfqDrawingPartNumbersGrpc(rfqProjectRequest);
-                UpdateRfqDrawingPartNumbersGrpcResponse response = new UpdateRfqDrawingPartNumbersGrpcResponse();
-                response.Success = updateResponse.SaveSuccess;
+                RfqCrudResponse response = new RfqCrudResponse();
+                response.SaveSuccess = updateResponse.SaveSuccess;  
                 response.Message = updateResponse.Message;
                 return response;
             }
@@ -743,13 +735,13 @@
                 throw;
             }
         }
-        public async Task<GetRfqDrawingPartNumbersByRfqIdGrpcResponse> GetRfqDrawingPartNumbersByRfqIdGrpc(GetRfqDrawingPartNumbersByRfqIdGrpcRequest request)
+        public async Task<ListRfqDrawingPartNumbersGrpc> GetRfqDrawingPartNumbersByRfqIdGrpc(RfqDrawingPartNumbersGrpcRequest request)
         {
             try
             {
                 await Task.Delay(1);
 
-                GetRfqDrawingPartNumbersByRfqIdGrpcResponse response = new GetRfqDrawingPartNumbersByRfqIdGrpcResponse();
+                ListRfqDrawingPartNumbersGrpc response = new ListRfqDrawingPartNumbersGrpc();
 
                 RfqFilterRequest rfqFilterRequest = new RfqFilterRequest();
 
@@ -771,15 +763,15 @@
                 bool hasParts = !(partNumberCount <= 0);
                 if (hasParts)
                 {
-                    List<RfqDrawingPartNumber> mappedParts = new List<RfqDrawingPartNumber>();
+                    List<RfqDrawingPartNumberGrpc> mappedParts = new List<RfqDrawingPartNumberGrpc>();
 
                     foreach (RfqDrawingPartNumbersGrpc grpcPart in rfqPartNumbers)
                     {
-                        RfqDrawingPartNumber mappedPart = grpcPart.ToRfqDrawingPartNumber();
+                        RfqDrawingPartNumberGrpc mappedPart = grpcPart.ToClientDto();
                         mappedParts.Add(mappedPart);
                     }
 
-                    response.Parts.AddRange(mappedParts);
+                    response.RfqDrawingPartNumbers.AddRange(mappedParts);
                 }
 
                 return response;
@@ -790,61 +782,34 @@
                 throw;
             }
         }
-        public async Task<DeleteRfqDrawingPartNumbersGrpcResponse> DeleteRfqDrawingPartNumbersGrpc(DeleteRfqDrawingPartNumbersGrpcRequest request)
+        public async Task<RfqCrudResponse> DeleteRfqDrawingPartNumbersGrpc(RfqDrawingPartNumbersGrpcRequest request)
         {
             try
             {
                 await Task.Delay(1);
 
-                RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
-                rfqGrpcRequestParameter.RequestType = 90;
+                Rfq.RfqDrawingPartNumbersGrpcRequest accessGgrpcRequest = new Rfq.RfqDrawingPartNumbersGrpcRequest();
 
-                RfqDrawingPartNumbersGrpcRequest grpcRequest = new RfqDrawingPartNumbersGrpcRequest();
-                grpcRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
+                accessGgrpcRequest.RfqGrpcRequestParameter = new();
+                accessGgrpcRequest.RfqGrpcRequestParameter.RequestType = 90;
+                List<RfqDrawingPartNumbersGrpc> accessDtos = request.RfqDrawingPartNumbersGrpcsToDelete.Select(p => p.ToAccessDto()).ToList();
+                accessGgrpcRequest.RfqDrawingPartNumbersGrpcsToDelete.AddRange(accessDtos);
 
-                List<RfqDrawingPartNumbersGrpc> partsToDelete = new();
-
-                foreach (RfqDrawingPartNumber? p in request.RfqDrawingPartNumbersGrpcsToDelete)
-                {
-                    if(p == null)
-                    {
-                        continue;
-                    }
-
-                    RfqDrawingPartNumbersGrpc rpcPart = new RfqDrawingPartNumbersGrpc();
-
-                    rpcPart.RowId = p.RowId;
-                    rpcPart.RfqId = p.RfqId;
-                    rpcPart.OriginalPartNumber = p.OriginalPartNumber;
-                    rpcPart.SumitomoPartNumber = p.SumitomoPartNumber;
-                    rpcPart.SwappedPartNumber = p.SwappedPartNumber;
-                    rpcPart.OriginalPartNumberPrice = p.OriginalPartNumberPrice;
-                    rpcPart.SwappedPartNumberPrice = p.SwappedPartNumberPrice;
-                    rpcPart.PriceSource = p.PriceSource;
-                    rpcPart.IsExactMatch = p.IsExactMatch;
-                    rpcPart.IsSwapped = p.IsSwapped;
-                    rpcPart.Comments = p.Comments;
-                    rpcPart.Quantity = p.Quantity;
-
-                    partsToDelete.Add(rpcPart);
-                }
-                
-                grpcRequest.RfqDrawingPartNumbersGrpcsToDelete.AddRange(partsToDelete);
-                RfqCrudGrpcResponse grpcResponse = await _RfqClient.DeleteRfqDrawingPartNumbersGrpcAsync(grpcRequest);
+                RfqCrudGrpcResponse grpcResponse = await _RfqClient.DeleteRfqDrawingPartNumbersGrpcAsync(accessGgrpcRequest);
                 bool result = grpcResponse.SaveSuccess;
 
                 string message;
                 if (result)
                 {
-                    message = $"DeleteRfqDrawingPartNumbersGrpc removed {partsToDelete.Count} parts.";
+                    message = $"DeleteRfqDrawingPartNumbersGrpc removed {accessDtos.Count} parts.";
                 }
                 else
                 {
-                    message = $"DeleteRfqDrawingPartNumbersGrpc failed to delete {partsToDelete.Count} parts.";
+                    message = $"DeleteRfqDrawingPartNumbersGrpc failed to delete {accessDtos.Count} parts.";
                 }
 
-                DeleteRfqDrawingPartNumbersGrpcResponse response = new DeleteRfqDrawingPartNumbersGrpcResponse();
-                response.Success = result;
+                RfqCrudResponse response = new();
+                response.SaveSuccess = result;
                 response.Message = message;
 
                 return response;
@@ -857,17 +822,17 @@
             }
         }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
-        RfqCrudGrpcResponse CreateRfqDrawingPartNumbers(string projectId, List<CustomerParts> customerParts)
+        Rfq.RfqCrudGrpcResponse CreateRfqDrawingPartNumbers(string projectId, List<CustomerParts> customerParts)
         {
-            RfqDrawingPartNumbersGrpcRequest partRequest = new RfqDrawingPartNumbersGrpcRequest();
-            RfqCrudGrpcResponse partResponse = new();
+            Rfq.RfqDrawingPartNumbersGrpcRequest partRequest = new Rfq.RfqDrawingPartNumbersGrpcRequest();
+            Rfq.RfqCrudGrpcResponse partResponse = new Rfq.RfqCrudGrpcResponse();
             partResponse.SaveSuccess = false;
 
             try
             {
                 _Logger.GenericLogInformation($"III RfqManagerService.CreateRfqDrawingPartNumbers - start GRPC to the access layer - sending {customerParts.Count} parts");
 
-                partRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                partRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
                 partRequest.RfqGrpcRequestParameter.RequestType = 70;
                 foreach (CustomerParts customerPart in customerParts)
                 {
@@ -882,7 +847,7 @@
 
                     if (customerPart.PartNumber3 != null)
                     {
-                        RfqDrawingPartNumbersGrpc part3 = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber3);
+                        RfqDrawingPartNumbersGrpc  part3 = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber3);
                         partRequest.RfqDrawingPartNumbersGrpcsToCreate.Add(part3);
                     }
                 }
@@ -933,7 +898,7 @@
             }
 
             // unique list of customer parts, create this part list to send to the access layer to create the RFQ parts in the database
-            RfqCrudGrpcResponse partResponse = CreateRfqDrawingPartNumbers(request.ProjectId, customerParts);
+            Rfq.RfqCrudGrpcResponse partResponse = CreateRfqDrawingPartNumbers(request.ProjectId, customerParts);
 
             if (partResponse.SaveSuccess == false)
             {
@@ -1158,14 +1123,14 @@
                     if (!string.IsNullOrWhiteSpace(branch.CircuitOption))
                     {
                         DsiCircuitOptionGrpcRequest circuitOptionRequest = new DsiCircuitOptionGrpcRequest();
-                        circuitOptionRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                        circuitOptionRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
                         circuitOptionRequest.RfqGrpcRequestParameter.RequestType = 1;
                         ListDsiCircuitOptionGrpc circuitOptions = await _RfqClient.ReadDsiCircuitOptionGrpcAsync(circuitOptionRequest);
 
                         branchGrpc.CircuitOptionId = circuitOptions.DsiCircuitOptionGrpcs.FirstOrDefault(m => m.OptionName == branch.CircuitOption)?.CircuitOptionId;
                     }
 
-                    branchConfigurationRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                    branchConfigurationRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
                     branchConfigurationRequest.RfqGrpcRequestParameter.RequestType = 70;
                     branchGrpc.HarnessId = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
                     branchGrpc.CreatedBy = userId;
@@ -1194,10 +1159,10 @@
                 }
 
                 DsiBranchConfigurationBendAssociationGrpc dsiBranchConfigurationBendAssociationGrpc = new DsiBranchConfigurationBendAssociationGrpc();
-                bendAssociationGrpcRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                bendAssociationGrpcRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
                 bendAssociationGrpcRequest.RfqGrpcRequestParameter.RequestType = 70;
                 bendAssociationGrpcRequest.DsiBranchConfigurationBendAssociationGrpcsToCreate.AddRange(bendAssociations);
-                bendRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                bendRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
                 bendRequest.RfqGrpcRequestParameter.RequestType = 70;
                 RfqCrudGrpcResponse bendReturn = await _RfqClient.CreateDsiBendGrpcAsync(bendRequest);
                 RfqCrudGrpcResponse branchConfigurationReturn = _RfqClient.CreateDsiBranchConfigurationGrpc(branchConfigurationRequest);
@@ -1225,7 +1190,7 @@
                 }
             }
 
-            branchInsulationRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            branchInsulationRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             branchInsulationRequest.RfqGrpcRequestParameter.RequestType = 70;
             RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiBranchInsulationGrpcAsync(branchInsulationRequest);
             if(clientReturn == null || clientReturn.SaveSuccess == false)
@@ -1254,9 +1219,9 @@
                 }
             }
 
-            branchInsulationThroughNodeRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            branchInsulationThroughNodeRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             branchInsulationThroughNodeRequest.RfqGrpcRequestParameter.RequestType = 70;
-            RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiBranchInsulationThroughNodeGrpcAsync(branchInsulationThroughNodeRequest);
+            Rfq.RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiBranchInsulationThroughNodeGrpcAsync(branchInsulationThroughNodeRequest);
             if(clientReturn == null || clientReturn.SaveSuccess == false)
             {
                 _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save branch insulation through node");
@@ -1279,9 +1244,9 @@
                 }
             }
 
-            componentRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            componentRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             componentRequest.RfqGrpcRequestParameter.RequestType = 70;
-            RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiComponentGrpcAsync(componentRequest);
+            Rfq.RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiComponentGrpcAsync(componentRequest);
             if(clientReturn == null || clientReturn.SaveSuccess == false)
             {
                 _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save components");
@@ -1290,7 +1255,7 @@
         async Task SaveCircuitOptionAsync(DsiAggregate dsiAggregate, string userId)
         {
             DsiCircuitOptionGrpcRequest request = new DsiCircuitOptionGrpcRequest();
-            request.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            request.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             request.RfqGrpcRequestParameter.RequestType = 1;
             ListDsiCircuitOptionGrpc currentCircuitOptions = await _RfqClient.ReadDsiCircuitOptionGrpcAsync(request);
 
@@ -1301,7 +1266,7 @@
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
             DsiCircuitOptionGrpcRequest circuitOptionGrpcRequest = new DsiCircuitOptionGrpcRequest();
-            circuitOptionGrpcRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            circuitOptionGrpcRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             circuitOptionGrpcRequest.RfqGrpcRequestParameter.RequestType = 70;
 
             if (dsiAggregate.CompositeDetailList != null && dsiAggregate.CompositeDetailList.Any())
@@ -1341,7 +1306,7 @@
 
             if (0 < circuitOptionGrpcRequest.DsiCircuitOptionGrpcsToCreate.Count)
             {
-                RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiCircuitOptionGrpcAsync(circuitOptionGrpcRequest);
+                Rfq.RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiCircuitOptionGrpcAsync(circuitOptionGrpcRequest);
                 if (clientReturn == null || clientReturn.SaveSuccess == false)
                 {
                     _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save circuit options");
@@ -1366,9 +1331,9 @@
                 }
             }
 
-            compositeOptionRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            compositeOptionRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             compositeOptionRequest.RfqGrpcRequestParameter.RequestType = 70;
-            RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiCompositeOptionGrpcAsync(compositeOptionRequest);
+            Rfq.RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiCompositeOptionGrpcAsync(compositeOptionRequest);
             if(clientReturn == null || clientReturn.SaveSuccess == false)
             {
                 _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save composite options");
@@ -1377,16 +1342,16 @@
         async Task SaveCompositeDetailsAsync(DsiAggregate dsiAggregate, string userId)
         {
             DsiCircuitOptionGrpcRequest request = new DsiCircuitOptionGrpcRequest();
-            request.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            request.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             request.RfqGrpcRequestParameter.RequestType = 1;
             ListDsiCircuitOptionGrpc currentCircuitOptions = await _RfqClient.ReadDsiCircuitOptionGrpcAsync(request);
 
             DsiCompositeDetailGrpcRequest compositeDetailGrpcRequest = new DsiCompositeDetailGrpcRequest();
-            compositeDetailGrpcRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            compositeDetailGrpcRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             compositeDetailGrpcRequest.RfqGrpcRequestParameter.RequestType = 70;
 
             DsiCompositeDetailCircuitOptionAssociationGrpcRequest compositeDetailCircuitOptionAssociationRequest = new DsiCompositeDetailCircuitOptionAssociationGrpcRequest();
-            compositeDetailCircuitOptionAssociationRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            compositeDetailCircuitOptionAssociationRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             compositeDetailCircuitOptionAssociationRequest.RfqGrpcRequestParameter.RequestType = 70;
 
             if (dsiAggregate.CompositeDetailList != null && dsiAggregate.CompositeDetailList.Any())
@@ -1423,8 +1388,8 @@
                     compositeDetailGrpcRequest.DsiCompositeDetailGrpcsToCreate.Add(compositeDetailGrpc);
                 }
 
-                RfqCrudGrpcResponse compositeDetailResponse = await _RfqClient.CreateDsiCompositeDetailGrpcAsync(compositeDetailGrpcRequest);
-                RfqCrudGrpcResponse associationResponse = await _RfqClient.CreateDsiCompositeDetailCircuitOptionAssociationGrpcAsync(compositeDetailCircuitOptionAssociationRequest);
+                Rfq.RfqCrudGrpcResponse compositeDetailResponse = await _RfqClient.CreateDsiCompositeDetailGrpcAsync(compositeDetailGrpcRequest);
+                Rfq.RfqCrudGrpcResponse associationResponse = await _RfqClient.CreateDsiCompositeDetailCircuitOptionAssociationGrpcAsync(compositeDetailCircuitOptionAssociationRequest);
 
                 if (compositeDetailResponse == null || compositeDetailResponse.SaveSuccess == false || associationResponse == null || associationResponse.SaveSuccess == false)
                 {
@@ -1435,7 +1400,7 @@
         async Task<DsiHarnessGrpc> SaveHarness(DsiAggregate dsiAggregate, string userId)
         {
             DsiHarnessGrpcRequest harnessRequest = new DsiHarnessGrpcRequest();
-            harnessRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            harnessRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             harnessRequest.RfqGrpcRequestParameter.RequestType = 1;
             ListDsiHarnessGrpc allHarnesses = await _RfqClient.ReadDsiHarnessGrpcAsync(harnessRequest);
             if(dsiAggregate.Harness != null)
@@ -1460,7 +1425,7 @@
                 harnessRequest.DsiHarnessGrpcsToCreate.Add(harnessGrpc);
             }
 
-            RfqCrudGrpcResponse response = await _RfqClient.CreateDsiHarnessGrpcAsync(harnessRequest);
+            Rfq.RfqCrudGrpcResponse response = await _RfqClient.CreateDsiHarnessGrpcAsync(harnessRequest);
             if (response == null || response.SaveSuccess == false)
             {
                 _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save harness");
@@ -1471,7 +1436,7 @@
         async Task SaveScopeAsync(DsiAggregate dsiAggregate, string userId)
         {
             DsiScopeGrpcRequest request = new DsiScopeGrpcRequest();
-            request.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            request.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             request.RfqGrpcRequestParameter.RequestType = 1;
             ListDsiScopeGrpc currentScopes = await _RfqClient.ReadDsiScopeGrpcAsync(request);
 
@@ -1481,7 +1446,7 @@
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
             DsiScopeGrpcRequest scopeGrpcRequest = new DsiScopeGrpcRequest();
-            scopeGrpcRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            scopeGrpcRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             scopeGrpcRequest.RfqGrpcRequestParameter.RequestType = 70;
 
             if (dsiAggregate.HarnessScopeList != null && dsiAggregate.HarnessScopeList.Any())
@@ -1521,7 +1486,7 @@
 
                 if (0 < scopeGrpcRequest.DsiScopeGrpcsToCreate.Count)
                 {
-                    RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiScopeGrpcAsync(scopeGrpcRequest);
+                    Rfq.RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiScopeGrpcAsync(scopeGrpcRequest);
                     if (clientReturn == null || clientReturn.SaveSuccess == false)
                     {
                         _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save scope");
@@ -1532,16 +1497,16 @@
         async Task SaveHarnessScope(DsiAggregate dsiAggregate, string userId)
         {
             DsiScopeGrpcRequest request = new DsiScopeGrpcRequest();
-            request.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            request.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             request.RfqGrpcRequestParameter.RequestType = 1;
             ListDsiScopeGrpc currentScopes = await _RfqClient.ReadDsiScopeGrpcAsync(request);
 
             DsiHarnessScopeGrpcRequest harnessScopeRequest = new DsiHarnessScopeGrpcRequest();
-            harnessScopeRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            harnessScopeRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             harnessScopeRequest.RfqGrpcRequestParameter.RequestType = 70;
 
             DsiHarnessScopeScopeAssociationGrpcRequest harnessScopeAssociationRequest = new DsiHarnessScopeScopeAssociationGrpcRequest();
-            harnessScopeAssociationRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            harnessScopeAssociationRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             harnessScopeAssociationRequest.RfqGrpcRequestParameter.RequestType = 70;
             if (dsiAggregate.HarnessScopeList != null && dsiAggregate.HarnessScopeList.Any())
             {
@@ -1607,7 +1572,7 @@
                 }
             }
 
-            manualBomQuantityGrpcRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            manualBomQuantityGrpcRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             manualBomQuantityGrpcRequest.RfqGrpcRequestParameter.RequestType = 70;
             RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiManualBomQuantityGrpcAsync(manualBomQuantityGrpcRequest);
             if (clientReturn == null || clientReturn.SaveSuccess == false)
@@ -1630,7 +1595,7 @@
                 }
             }
 
-            midWireComponentRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            midWireComponentRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             midWireComponentRequest.RfqGrpcRequestParameter.RequestType = 70;
             RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiMidWireComponentGrpcAsync(midWireComponentRequest);
             if (clientReturn == null || clientReturn.SaveSuccess == false)
@@ -1655,7 +1620,7 @@
                 }
             }
 
-            moduleChildDetailRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            moduleChildDetailRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             moduleChildDetailRequest.RfqGrpcRequestParameter.RequestType = 70;
             RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiModuleChildDetailGrpcAsync(moduleChildDetailRequest);
             if (clientReturn == null || clientReturn.SaveSuccess == false)
@@ -1680,7 +1645,7 @@
                 }
             }
 
-            moduleCompatibilityRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            moduleCompatibilityRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             moduleCompatibilityRequest.RfqGrpcRequestParameter.RequestType = 70;
             RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiModuleCompatibilityGrpcAsync(moduleCompatibilityRequest);
             if (clientReturn == null || clientReturn.SaveSuccess == false)
@@ -1705,9 +1670,9 @@
                 }
             }
 
-            multicoreSpecificationRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            multicoreSpecificationRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             multicoreSpecificationRequest.RfqGrpcRequestParameter.RequestType = 70;
-            RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiMulticoreSpecificationGrpcAsync(multicoreSpecificationRequest);
+            Rfq.RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiMulticoreSpecificationGrpcAsync(multicoreSpecificationRequest);
             if (clientReturn == null || clientReturn.SaveSuccess == false)
             {
                 _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save multicore specification");
@@ -1730,7 +1695,7 @@
                 }
             }
 
-            pinMappingRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            pinMappingRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             pinMappingRequest.RfqGrpcRequestParameter.RequestType = 70;
             RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiPinMappingGrpcAsync(pinMappingRequest);
             if (clientReturn == null || clientReturn.SaveSuccess == false)
@@ -1755,7 +1720,7 @@
                 }
             }
 
-            wireMulticoreMarkerRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            wireMulticoreMarkerRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             wireMulticoreMarkerRequest.RfqGrpcRequestParameter.RequestType = 70;
             RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiWireMulticoreMarkerGrpcAsync(wireMulticoreMarkerRequest);
             if (clientReturn == null || clientReturn.SaveSuccess == false)
@@ -1780,7 +1745,7 @@
                 }
             }
 
-            wireSpecificationRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            wireSpecificationRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             wireSpecificationRequest.RfqGrpcRequestParameter.RequestType = 70;
             RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiWireSpecificationGrpcAsync(wireSpecificationRequest);
             if (clientReturn == null || clientReturn.SaveSuccess == false)
@@ -1805,7 +1770,7 @@
                 }
             }
 
-            dsiWireThroughNodeRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            dsiWireThroughNodeRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             dsiWireThroughNodeRequest.RfqGrpcRequestParameter.RequestType = 70;
             RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiWireThroughNodeGrpcAsync(dsiWireThroughNodeRequest);
             if (clientReturn == null || clientReturn.SaveSuccess == false)
@@ -2180,7 +2145,7 @@
             Collection<RfqNprRequestGrpc> filteredList = new Collection<RfqNprRequestGrpc>();
 
             RfqNprRequestGrpcRequest rfqRequest = new RfqNprRequestGrpcRequest();
-            RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            Rfq.RfqGrpcRequestParameter rfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             rfqGrpcRequestParameter.Position = request.Position;
             rfqGrpcRequestParameter.Take = request.Take;
             rfqGrpcRequestParameter.RequestType = 1;
@@ -2208,7 +2173,7 @@
                 rfqNprRequest.RfqNprRequestGrpcsToCreate.Add(accessRfqNprRequest);
             }
 
-            rfqNprRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
+            rfqNprRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             RfqCrudGrpcResponse accessResponse = _RfqClient.CreateRfqNprRequestGrpc(rfqNprRequest);
             for (int i = 0; i < request.RfqNprRequestGrpc.Count; i++)
             {
@@ -2234,7 +2199,7 @@
         //        rfqNprRequest.RfqNprRequestGrpcsToUpdate.Add(accessRfqNprRequest);
         //    }
 
-        //    RfqCrudGrpcResponse accessResponse = _RfqClient.UpdateRfqNprRequestGrpc(rfqNprRequest);
+        //    RfqCrudResponse accessResponse = _RfqClient.UpdateRfqNprRequestGrpc(rfqNprRequest);
 
         //    response.Message = accessResponse.Message;
 
@@ -2246,7 +2211,7 @@
             await Task.Delay(0);
             UpdateRfqNprRequestGrpcResponse response = new UpdateRfqNprRequestGrpcResponse();
             RfqNprRequestGrpcRequest rfqNprRequest = new RfqNprRequestGrpcRequest();
-            RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            Rfq.RfqGrpcRequestParameter rfqGrpcRequestParameter = new Rfq.      RfqGrpcRequestParameter();
             rfqGrpcRequestParameter.RequestType = 80;
             rfqNprRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
             foreach (RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
@@ -2283,7 +2248,7 @@
                 if (firstNpr.Status != npr.Status?.ToString(CultureInfo.InvariantCulture))
                 {
                     RfqNprRequestGrpcRequest rfqNprRequestToUpdate = new RfqNprRequestGrpcRequest();
-                    RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+                    Rfq.RfqGrpcRequestParameter rfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
                     rfqGrpcRequestParameter.RequestType = 80;
                     rfqNprRequestToUpdate.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
                     Rfq.RfqNprRequestGrpc accessRfqNprRequest = npr.ToRfqNprRequestGrpcAccess();
@@ -2306,7 +2271,7 @@
             await Task.Delay(0);
             DeleteRfqNprRequestByIdGrpcResponse response = new DeleteRfqNprRequestByIdGrpcResponse();
             RfqNprRequestGrpcRequest rfqNprRequest = new RfqNprRequestGrpcRequest();
-            RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            Rfq.RfqGrpcRequestParameter rfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
             rfqGrpcRequestParameter.RequestType = 90;
             rfqNprRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
             foreach(RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
