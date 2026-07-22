@@ -1,4 +1,5 @@
-﻿namespace SalesSystem.Rfq.Services
+﻿using CommonTypes;
+namespace SalesSystem.Rfq.Services
 {
     public class DsiUxClientService : IDisposable
     {
@@ -73,7 +74,7 @@
 
         #region Hello Service
 
-        public async Task<HelloReply> SayHelloAsync(
+        public async Task<CommonTypes.HelloReply> SayHelloAsync(
             string name,
             CancellationToken cancellationToken = default)
         {
@@ -85,10 +86,10 @@
 
             try
             {
-                HelloRequest request = new HelloRequest();
+                CommonTypes.HelloRequest request = new CommonTypes.HelloRequest();
                 request.Name = name;
 
-                HelloReply response =
+                CommonTypes.HelloReply response =
                     await _Client.SayHelloAsync(
                         request,
                         cancellationToken: combinedCts.Token);

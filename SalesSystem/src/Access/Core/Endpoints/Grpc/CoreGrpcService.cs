@@ -1,4 +1,5 @@
-﻿namespace Core.Endpoints.Grpc
+﻿using CommonTypes;
+namespace Core.Endpoints.Grpc
 {
     public class CoreGrpcService : Core.CoreBase
     {
@@ -11,11 +12,11 @@
             _Logger = logger;
         }
 
-        public override Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context)
+        public override Task<CommonTypes.HelloReply> SayHello(CommonTypes.HelloRequest request, ServerCallContext context)
         {
-            HelloReply reply = new HelloReply();
+            CommonTypes.HelloReply reply = new CommonTypes.HelloReply();
             reply.Message = "Hello " + request.Name;
-            Task<HelloReply> result = Task.FromResult(reply);
+            Task<CommonTypes.HelloReply> result = Task.FromResult(reply);
             return result;
         }
 

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -7,13 +7,15 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
+		<PackageReference Include="Grpc.AspNetCore" />
 	</ItemGroup>
 
   <ItemGroup>
     <Protobuf Include="Protos\**\*.proto" GrpcServices="Both" ProtoRoot="Protos" />
+    <None Remove="Protos\Core.proto" />
+    <Protobuf Update="Protos\CommonTypes.proto" GrpcServices="None" />
     <Protobuf Update="Protos\CDb.proto" GrpcServices="Both" />
-    <Protobuf Update="Protos\CommonTypes.proto" GrpcServices="Both" />
+    <Protobuf Update="Protos\CDbCommonTypes.proto" GrpcServices="Both" />
     <Protobuf Update="Protos\Component.proto" GrpcServices="Both" />
     <Protobuf Update="Protos\Components\Cable.proto" GrpcServices="Both" />
     <Protobuf Update="Protos\Components\Clip.proto" GrpcServices="Both" />

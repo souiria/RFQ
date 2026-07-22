@@ -39,14 +39,14 @@ namespace Integration.Tests.EDI
         [Category("Integration")]
         public void SayHelloTest()
         {
-            HelloRequest request = new HelloRequest();
+            CommonTypes.HelloRequest request = new CommonTypes.HelloRequest();
             request.Name = "TestName";
 
             string methodName = nameof(_GrpcService.SayHello);
             ServerCallContext ctx = CreateServerContext(methodName);
 
-            Task<HelloReply> task = _GrpcService.SayHello(request, ctx);
-            HelloReply reply = task.Result;
+            Task<CommonTypes.HelloReply> task = _GrpcService.SayHello(request, ctx);
+            CommonTypes.HelloReply reply = task.Result;
             string expected = "Hello TestName, I am the EdiGrpcService";
             string actual = reply.Message;
 

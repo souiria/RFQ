@@ -8,9 +8,9 @@ namespace Unit4.Services
             _Logger = logger;
         }
 
-        public override async Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context)
+        public override async Task<CommonTypes.HelloReply> SayHello(CommonTypes.HelloRequest request, ServerCallContext context)
         {
-            HelloReply reply = new HelloReply();
+            CommonTypes.HelloReply reply = new CommonTypes.HelloReply();
             reply.Message = "Hello " + request.Name;
             return await Task.FromResult(reply);
         }

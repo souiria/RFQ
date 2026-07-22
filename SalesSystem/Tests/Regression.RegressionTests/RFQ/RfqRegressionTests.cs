@@ -31,14 +31,14 @@ using Rfq.Services;
             //   SayHello (kept for health check)
             // ---------------------------------------------------------
 
-            HelloRequest helloRequest;
-            helloRequest = new HelloRequest();
+            CommonTypes.HelloRequest helloRequest;
+            helloRequest = new CommonTypes.HelloRequest();
             helloRequest.Name = "TestName";
              ServerCallContext helloContext;
             helloContext = CreateServerContext(nameof(_GrpcService.SayHello));
-             Task<HelloReply> helloTask;
+             Task<CommonTypes.HelloReply> helloTask;
             helloTask = _GrpcService.SayHello(helloRequest, helloContext);
-             HelloReply helloResult;
+             CommonTypes.HelloReply helloResult;
             helloResult = await helloTask;
              string actualHello;
             actualHello = helloResult.Message;

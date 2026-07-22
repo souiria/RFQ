@@ -62,14 +62,14 @@ namespace Integration.Tests.Adss
         [Category("Integration")]
         public void SayHelloTest()
         {
-            HelloRequest request = new HelloRequest();
+            CommonTypes.HelloRequest request = new CommonTypes.HelloRequest();
             request.Name = "TestName";
 
             string methodName = nameof(_GrpcService.SayHello);
             ServerCallContext serverCallContext = CreateServerContext(methodName);
 
-            Task<HelloReply> helloTask = _GrpcService.SayHello(request, serverCallContext);
-            HelloReply helloReply = helloTask.Result;
+            Task<CommonTypes.HelloReply> helloTask = _GrpcService.SayHello(request, serverCallContext);
+            CommonTypes.HelloReply helloReply = helloTask.Result;
 
             string expected = "Hello TestName";
             EqualConstraint equalConstraint = Is.EqualTo(expected);

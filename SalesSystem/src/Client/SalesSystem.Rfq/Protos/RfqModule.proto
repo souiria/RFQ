@@ -3,6 +3,7 @@ syntax = "proto3";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
+import "CommonTypes.proto";
 
 option csharp_namespace = "RfqModule";
 
@@ -11,7 +12,7 @@ package RfqModule;
 // The RfqModule by feature
 service RfqModule {
     // Sends a greeting
-    rpc SayHello (HelloRequest) returns (HelloReply);
+     rpc SayHello (CommonTypes.HelloRequest) returns (CommonTypes.HelloReply);
 
     // Uploads a file
     rpc UploadFile (FileUploadRequest) returns (FileUploadResponse);
@@ -76,15 +77,6 @@ service RfqModule {
 
 }
 
-// The request message containing the user's name.
-message HelloRequest {
-  string name = 1;
-}
-
-// The response message containing the greetings.
-message HelloReply {
-  string message = 1;
-}
 
 // Shared request parameter message
 message RfqGrpcRequestParameter {

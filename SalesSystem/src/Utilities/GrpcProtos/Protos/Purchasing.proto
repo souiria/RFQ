@@ -3,22 +3,15 @@ syntax = "proto3";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
+import "CommonTypes.proto";
 
 option csharp_namespace = "Purchasing";
 package purchasing;
 
 service Purchasing {
-rpc SayHello (HelloRequest) returns (HelloReply);
+ rpc SayHello (CommonTypes.HelloRequest) returns (CommonTypes.HelloReply);
   rpc ReadH1CPDGrpc (H1CPDGrpcRequest) returns (ListH1CPDGrpc);
   rpc FilterPurchasingGrpc (PurchasingFilterRequest) returns (PurchasingFilterResponse);
-}
-
-message HelloRequest {
-  string name = 1;
-}
-
-message HelloReply {
-  string message = 1;
 }
 
 message PurchasingGrpcRequestParameter {

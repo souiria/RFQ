@@ -106,17 +106,17 @@ namespace SalesSystem.Rfq.Services
         #endregion
 
         #region Hello Service
-        public async Task<HelloReply> SayHelloAsync(string name, CancellationToken cancellationToken = default)
+        public async Task<CommonTypes.HelloReply> SayHelloAsync(string name, CancellationToken cancellationToken = default)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
             using CancellationTokenSource combinedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
 
             try
             {
-                HelloRequest request = new HelloRequest();
+                CommonTypes.HelloRequest request = new CommonTypes.HelloRequest();
                 request.Name = name;
 
-                HelloReply response = await _Client.SayHelloAsync(request, cancellationToken: combinedCts.Token);
+                CommonTypes.HelloReply response = await _Client.SayHelloAsync(request, cancellationToken: combinedCts.Token);
 
                 return response;
             }

@@ -31,12 +31,12 @@ namespace Regression.Tests.NPR
             //   SayHello
             // ---------------------------------------------------------
 
-            HelloRequest helloRequest = new HelloRequest();
+            CommonTypes.HelloRequest helloRequest = new CommonTypes.HelloRequest();
             helloRequest.Name = "TestName";
 
             ServerCallContext helloContext = CreateServerContext(nameof(_GrpcService.SayHello));
 
-            HelloReply helloReply = await _GrpcService.SayHello(helloRequest, helloContext);
+            CommonTypes.HelloReply helloReply = await _GrpcService.SayHello(helloRequest, helloContext);
 
             // Expected value
             string expectedHello = "Hello TestName";

@@ -38,12 +38,12 @@ namespace Unit.Tests.Commercial
         public void SayHelloTest()
         {
             // Arrange
-            HelloRequest request = new HelloRequest();
+            CommonTypes.HelloRequest request = new CommonTypes.HelloRequest();
             request.Name = "TestName";
             ServerCallContext context = CreateServerContext(nameof(_GrpcService.SayHello));
 
             // Act
-            Task<HelloReply> helloReply = _GrpcService.SayHello(request, context);
+            Task<CommonTypes.HelloReply> helloReply = _GrpcService.SayHello(request, context);
 
             // Assert
             Assert.That(helloReply, Is.Not.Null);

@@ -65,10 +65,10 @@ namespace Unit.Tests.SFS
         public async Task SayHello_ShouldReturnExpectedMessage()
         {
             // Arrange
-            HelloRequest request = new HelloRequest();
+            CommonTypes.HelloRequest request = new CommonTypes.HelloRequest();
             request.Name = "TestName";
             // Act
-            HelloReply result = await _GrpcService.SayHello(request, null!);
+            CommonTypes.HelloReply result = await _GrpcService.SayHello(request, null!);
             // Assert
             string actualMessage = result.Message;
             string expectedMessage = "Hello TestName";

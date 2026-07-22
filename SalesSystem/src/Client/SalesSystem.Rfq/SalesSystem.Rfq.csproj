@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -12,24 +12,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Components\Pages\Components\PickAlternativePartDialog.razor~RF154c0d67.TMP" />
-    <None Remove="Protos\Emacs.proto" />
-    <None Remove="Protos\RfqModule.proto" />
+    <None Remove="Protos\Emacs.proto.bak" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="33.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="9.0.6" />
+    <PackageReference Include="CsvHelper" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" />
     
-    <PackageReference Include="Google.Protobuf" Version="3.31.1" />
+    <PackageReference Include="Google.Protobuf" />
     
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" /><PackageReference Include="System.DirectoryServices.AccountManagement" Version="9.0.6" />
-	<PackageReference Include="Grpc.Net.Client" Version="2.71.0" />
-	<PackageReference Include="Grpc.Net.ClientFactory" Version="2.71.0" />
-	<PackageReference Include="Grpc.Tools" Version="2.72.0" />
-	<PackageReference Include="MudBlazor" Version="8.7.0" />
-	<PackageReference Include="SpreadsheetLight.Cross.Platform" Version="3.7.0" />
-	  <PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />	  
+    <PackageReference Include="Newtonsoft.Json" /><PackageReference Include="System.DirectoryServices.AccountManagement" />
+	<PackageReference Include="Grpc.Net.Client" />
+	<PackageReference Include="Grpc.Net.ClientFactory" />
+	<PackageReference Include="Grpc.Tools" />
+	<PackageReference Include="MudBlazor" />
+	<PackageReference Include="SpreadsheetLight.Cross.Platform" />
+	  <PackageReference Include="Grpc.AspNetCore" />	  
   </ItemGroup>
 
 	<Target Name="Tailwind" BeforeTargets="Compile">
@@ -42,6 +40,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Debug\SalesSystem.ServiceDefaults\SalesSystem.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\Utilities\GrpcProtos\GrpcProtos.csproj" />
     <ProjectReference Include="..\..\Utilities\Logging\Logging.csproj" />
     <ProjectReference Include="..\..\Utilities\SharedKernal\SharedKernel.csproj" />
     <ProjectReference Include="..\..\Utilities\SharedModels\SharedModels.csproj" />
@@ -52,8 +51,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\Emacs.proto" />
-    <Protobuf Include="Protos\RfqModule.proto" />
+    <Protobuf Include="Protos\RfqModule.proto" AdditionalImportDirs="..\..\Utilities\GrpcProtos\Protos" />
   </ItemGroup>
 
 </Project>

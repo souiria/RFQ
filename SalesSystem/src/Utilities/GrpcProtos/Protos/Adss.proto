@@ -1,12 +1,14 @@
 syntax = "proto3";
 
 import "google/protobuf/wrappers.proto";
+// import "google/protobuf/empty.proto";
+import "CommonTypes.proto";
 
 option csharp_namespace = "Adss";
 package adss;
 
 service AdssGrpc {
-rpc SayHello (HelloRequest) returns (HelloReply);
+ rpc SayHello (CommonTypes.HelloRequest) returns (CommonTypes.HelloReply);
   rpc GetPartImage (PartImageRequest) returns (PartImageReply);
   rpc FilterImage (FilterImageRequest) returns (FilterImageResponse);
 }
@@ -18,15 +20,6 @@ message PartImageRequest {
 message PartImageReply {
   bytes data = 1;          
   string content_type = 2; 
-}
-
-
-message HelloRequest {
-  string name = 1;
-}
-
-message HelloReply {
-  string message = 1;
 }
 
 message FilterImageRequest {

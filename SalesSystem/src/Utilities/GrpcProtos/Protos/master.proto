@@ -3,6 +3,7 @@ syntax = "proto3";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
+import "CommonTypes.proto";
 
 option csharp_namespace = "Master";
 
@@ -11,7 +12,7 @@ package master;
 // The master access service definition.
 service Master {
   // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply);
+   rpc SayHello (CommonTypes.HelloRequest) returns (CommonTypes.HelloReply);
   rpc GetCurrencyGrpc (CurrencyGrpcRequest) returns (ListCurrencyGrpc);
   rpc GetCurrencyGrpcStream (CurrencyGrpcRequest) returns (stream CurrencyGrpc);
 
@@ -59,16 +60,6 @@ service Master {
   rpc GetBusinessUnitGrpcStream (BusinessUnitGrpcRequest) returns (stream BusinessUnitGrpc);
 
 
-}
-
-// The request message containing the user's name.
-message HelloRequest {
-  string name = 1;
-}
-
-// The response message containing the greetings.
-message HelloReply {
-  google.protobuf.StringValue message = 1;
 }
 
 message CurrencyGrpcRequest {

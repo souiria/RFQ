@@ -77,11 +77,11 @@ namespace Integration.Tests.CDb
         [Category("Integration")]
         public void SayHelloTest()
         {
-            HelloRequest request = new HelloRequest();
+            CommonTypes.HelloRequest request = new CommonTypes.HelloRequest();
             request.Name = "FileTypesIntegrationTests";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.SayHello));
 
-            Task<HelloReply> helloReply = _GrpcService.SayHello(request, serverCallContext);
+            Task<CommonTypes.HelloReply> helloReply = _GrpcService.SayHello(request, serverCallContext);
 
             string replyString = "Hello FileTypesIntegrationTests";
             EqualConstraint equalConstraint = Is.EqualTo(replyString);

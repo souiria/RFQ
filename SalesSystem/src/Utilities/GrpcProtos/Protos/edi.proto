@@ -4,6 +4,7 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/any.proto";
+import "CommonTypes.proto";
 
 option csharp_namespace = "EDI";
 
@@ -11,18 +12,10 @@ package edi;
 
 // The edi access service definition.
 service Edi {
-    rpc SayHello (HelloRequest) returns (HelloReply);
+     rpc SayHello (CommonTypes.HelloRequest) returns (CommonTypes.HelloReply);
 	rpc GetEdiDataGrpc (EdiRequest) returns (EdiResponse);
     rpc SaveEdiDataGrpc (EdiSaveRequest) returns (EdiResponse);
     rpc FilterEdiDataGrpc (EdiFilterRequest) returns (EdiResponse);
-}
-
-message HelloRequest {
-  string name = 1;
-}
-
-message HelloReply {
-  google.protobuf.StringValue message = 1;
 }
 
 message EdiRequest {

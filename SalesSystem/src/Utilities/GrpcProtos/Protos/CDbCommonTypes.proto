@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "CDb";
+package cdb;
+
+// Shared request parameter message
+message GrpcRequestParameter {
+	int32 RequestType = 1;
+	int32 Position = 2;
+	int32 Take = 3;
+	google.protobuf.BoolValue BoolValue = 4;
+	google.protobuf.StringValue StringValue = 5;
+	google.protobuf.Int32Value IntValue = 6;
+	google.protobuf.FloatValue DecimalValue = 7;
+	google.protobuf.Timestamp DateTimeValue = 8;
+}
+
+// Shared CRUD response message
+message CDbCrudGrpcResponse {
+    bool SaveSuccess = 1;
+	string Message = 2;
+}	
