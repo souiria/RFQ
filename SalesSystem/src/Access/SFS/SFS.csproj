@@ -13,7 +13,6 @@
     </PackageReference>
     <PackageReference Include="IDesign.Analyzers" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     <PackageReference Include="Scrutor" />
     <PackageReference Include="Seq.Extensions.Logging" />
   </ItemGroup>

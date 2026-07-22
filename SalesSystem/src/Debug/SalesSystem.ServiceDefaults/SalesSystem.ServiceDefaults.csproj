@@ -13,10 +13,7 @@
     <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
     <PackageReference Include="Elastic.OpenTelemetry" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" />
-
     <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
-
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.ServiceDiscovery" />
     <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" />

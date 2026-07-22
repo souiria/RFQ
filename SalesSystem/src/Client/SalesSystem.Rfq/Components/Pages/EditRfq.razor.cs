@@ -342,7 +342,7 @@
 
             try
             {
-                bool? confirm = await DialogService.ShowMessageBox(
+                bool? confirm = await DialogService.ShowMessageBoxAsync(
                     "Confirm NPR All",
                     $"Are you sure you want to create NPR requests for all {_InProgressParts.Count} unmatched part(s)? This will UPDATE CHANGES.",
                     yesText: "Create NPR for All",
@@ -388,7 +388,7 @@
                         }
                     }
 
-                    confirm = await DialogService.ShowMessageBox(
+                    confirm = await DialogService.ShowMessageBoxAsync(
                         "Commit NPR Requests",
                         $"Are you sure you want to create {toNewNprRequests.Count} NPR requests and take over {preExistingNprRequests.Count} older NPR requests? This will UPDATE CHANGES.",
                         yesText: $"Commit {toNewNprRequests.Count + preExistingNprRequests.Count} NPR requests",
@@ -526,7 +526,7 @@
                 return;
             }
 
-            bool? confirm = await DialogService.ShowMessageBox(
+            bool? confirm = await DialogService.ShowMessageBoxAsync(
                 "Submit NPR Requests",
                 $"Submit {toSubmit.Count} NPR request(s) to the NPR API?",
                 yesText: $"Submit {toSubmit.Count}",
@@ -1044,7 +1044,7 @@
                 return;
             }
 
-            bool? confirm = await DialogService.ShowMessageBox(
+            bool? confirm = await DialogService.ShowMessageBoxAsync(
                 "Confirm Search All",
                 $"Search EMACS for all {_InProgressParts.Count} in-progress part(s)? Auto-matched parts will be moved to Completed.",
                 yesText: "Search All",

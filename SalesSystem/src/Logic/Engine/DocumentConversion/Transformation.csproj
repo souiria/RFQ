@@ -2,8 +2,7 @@
 
   <ItemGroup>
     <PackageReference Include="CsvHelper" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-    <PackageReference Include="SpreadsheetLight" />
+    <PackageReference Include="SpreadsheetLight.Cross.Platform" />
   </ItemGroup>
 
   <ItemGroup>

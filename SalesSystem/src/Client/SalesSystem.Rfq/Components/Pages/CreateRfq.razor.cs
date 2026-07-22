@@ -11,7 +11,7 @@ namespace SalesSystem.Rfq.Components.Pages
         DateTime? _Date;
         const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
         string _DragClass;
-        bool _IsQuotationOpen;
+        //bool _IsQuotationOpen;
         public CreateRfq()
         {
             _UploadedSuccessfully = false;
@@ -273,7 +273,6 @@ namespace SalesSystem.Rfq.Components.Pages
                     Logger.GenericLogInformation("CreateRfq.ProcessDataAsync - Validation failed: Reason not found");
                     return;
                 }
-
 
                 if (FileObjects.Count <= 0 || !FileObjects.Any(f => f.Status != UxObjectStatus.Deleted && f.IsFileValid))
                 {

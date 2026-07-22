@@ -655,7 +655,7 @@
             branchConfigurationGrpc.BendString = branchConfiguration.BendString;
             branchConfigurationGrpc.CreatedBy = branchConfiguration.CreatedBy.ToString();
             branchConfigurationGrpc.CreatedDate = Timestamp.FromDateTime(DateTime.UtcNow);
-            branchConfigurationGrpc.ModifiedBy = branchConfiguration.ModifiedBy.ToString();
+            branchConfigurationGrpc.ModifiedBy = branchConfiguration.ModifiedBy?.ToString(CultureInfo.InvariantCulture);
             branchConfigurationGrpc.ModifiedDate = branchConfiguration.ModifiedDate.HasValue ? Timestamp.FromDateTime(branchConfiguration.ModifiedDate.Value) : null;
             return branchConfigurationGrpc;
         }

@@ -32,7 +32,6 @@
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.AppHost" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
   </ItemGroup>
 	<PropertyGroup>
 		<StaticWebAssetsEnabled>true</StaticWebAssetsEnabled>

@@ -66,7 +66,7 @@
                                  ReadOnly="false"
                                  Bordered="true"
                                  ShowMenuIcon="true"
-                                 CommittedItemChanges="@OnItemCommitted"
+                                 CommittedItemChanges="OnItemCommitted"
                                  HorizontalScrollbar="true"
                                  Style="overflow: auto;">
                         <ToolBarContent>
@@ -189,7 +189,7 @@
         _ => Color.Default
     };
 
-    void OnItemCommitted(RfqNprRequestUxModel item)
+    Task<DataGridEditFormAction> OnItemCommitted(RfqNprRequestUxModel item)
     {
         _isDirty = true;
 
@@ -205,6 +205,7 @@
             $"Updated request Id: {item.Id}, Material: {item.MaterialNumber}");
 
         StateHasChanged();
+        return Task.FromResult(DataGridEditFormAction.Close);
     }
 
     async Task RemoveRequest(RfqNprRequestUxModel request)
@@ -242,7 +243,7 @@
 
     async Task Save()
     {
-        await _form.Validate();
+        await _form.ValidateAsync();
 
         if (!_isDirty)
         {

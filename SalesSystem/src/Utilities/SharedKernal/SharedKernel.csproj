@@ -4,7 +4,6 @@
 		<PackageReference Include="Ardalis.GuardClauses" />
 		<PackageReference Include="Ardalis.Specification" />
 		<PackageReference Include="Ardalis.Specification.EntityFrameworkCore" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
 	</ItemGroup>
 
 </Project>
