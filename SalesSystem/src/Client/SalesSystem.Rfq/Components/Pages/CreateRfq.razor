@@ -96,13 +96,11 @@
                                For="@(() => QuotationValue)"
                                ValueChanged="OnQuotationValueChanged"
                                Label="Quotation Number"
-                               Placeholder="Please Select"
+                               Placeholder="Temp Values"
                                Disabled="_UploadedSuccessfully"
+                               Clearable="true"
                                AdornmentIcon="@Icons.Material.Filled.RequestQuote"
                                AdornmentColor="Color.Primary">
-                        <MudDivider Class="my-2" />
-                        <MudText Typo="Typo.caption" Class="px-4 pt-2 mt-2 mud-text-secondary">Temp Values</MudText>
-                        <MudDivider Class="my-2" />
                         @foreach (string quotationNumber in RfqUxClientService.QuotationNumbers)
                         {
                             <MudSelectItem Value="@quotationNumber">@quotationNumber</MudSelectItem>
@@ -140,10 +138,12 @@
     @* File drop zone  *@
     <MudItem xs="12">
         <MudPaper Class="d-flex flex-column" Width="100%">
-            @* File Cards Section *@
-            <FileCards @ref="_ComponentFileCards"
-                       FileObjects="FileObjects"
-                       OnRemoveFile="HandleFileRemoval" />
+            <div style="height: calc(100vh - 324px); display: flex; flex-direction: column; overflow: auto;">
+                @* File Cards Section *@
+                <FileCards @ref="_ComponentFileCards"
+                           FileObjects="FileObjects"
+                           OnRemoveFile="HandleFileRemoval" />
+            </div>
         </MudPaper>
     </MudItem>
 </MudGrid>
