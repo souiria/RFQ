@@ -66,7 +66,7 @@ namespace Integration.Tests.Rfq
 
             // ----------------------- SUCCESS CASE -----------------------
             RfqFilterRequest successReq = new RfqFilterRequest();
-            successReq.DatabaseList = "RfqDrawingPartNumbersGrpc";
+            successReq.DatabaseList = "RfqDrawingPartNumberGrpc";
             successReq.FilterExpression = "true";
 
             Task<RfqFilterResponse> successTask = _GrpcService.FilterRfqGrpc(successReq, ctx);
@@ -74,16 +74,16 @@ namespace Integration.Tests.Rfq
 
             Assert.That(successResp, Is.Not.Null);
 
-            ListRfqDrawingPartNumbersGrpc successListContainer = successResp.ListRfqDrawingPartNumbersGrpc;
+            ListRfqDrawingPartNumberGrpc successListContainer = successResp.ListRfqDrawingPartNumbersGrpc;
             Assert.That(successListContainer, Is.Not.Null);
 
-            RepeatedField<RfqDrawingPartNumbersGrpc> successItems = successListContainer.RfqDrawingPartNumbers;
+            RepeatedField<RfqDrawingPartNumberGrpc> successItems = successListContainer.RfqDrawingPartNumbers;
             int successCount = successItems.Count;
             Assert.That(successCount, Is.Positive);
 
             // ----------------------- FAILURE CASE -----------------------
             RfqFilterRequest failReq = new RfqFilterRequest();
-            failReq.DatabaseList = "RfqDrawingPartNumbersGrpc";
+            failReq.DatabaseList = "RfqDrawingPartNumberGrpc";
             failReq.FilterExpression = "false";
 
             Task<RfqFilterResponse> failTask = _GrpcService.FilterRfqGrpc(failReq, ctx);
@@ -91,10 +91,10 @@ namespace Integration.Tests.Rfq
 
             Assert.That(failResp, Is.Not.Null);
 
-            ListRfqDrawingPartNumbersGrpc failListContainer = failResp.ListRfqDrawingPartNumbersGrpc;
+            ListRfqDrawingPartNumberGrpc failListContainer = failResp.ListRfqDrawingPartNumbersGrpc;
             Assert.That(failListContainer, Is.Not.Null);
 
-            RepeatedField<RfqDrawingPartNumbersGrpc> failItems = failListContainer.RfqDrawingPartNumbers;
+            RepeatedField<RfqDrawingPartNumberGrpc> failItems = failListContainer.RfqDrawingPartNumbers;
             int failCount = failItems.Count;
             Assert.That(failCount, Is.Zero);
         }

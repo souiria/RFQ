@@ -1,6 +1,4 @@
-﻿using Google.Protobuf;
-
-namespace RfqModule.Services
+﻿namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {
@@ -244,24 +242,26 @@ namespace RfqModule.Services
                 // Call the Rfq service to get RFQ reasons
                 await Task.Delay(1);
                 RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
-                Rfq.RfqGrpcRequestParameter rfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+                RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
                 rfqGrpcRequestParameter.Position = request.Position;
                 rfqGrpcRequestParameter.Take = request.Take;
                 rfqGrpcRequestParameter.RequestType = request.RequestType;
                 rfqReasonRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
                 RfqFilterRequest reasonFilterRequest = new RfqFilterRequest();
                 reasonFilterRequest.DatabaseList = "RFQREASONGRPC";
-                reasonFilterRequest.FilterExpression = "ReasonTitle != null && ReasonTitle != \"\"";
-               RfqFilterResponse reasonFilterResponse = _RfqClient.FilterRfqGrpc(reasonFilterRequest);
+                reasonFilterRequest.FilterExpression = "RfqReasonTitle != null && RfqReasonTitle != \"\"";
+                RfqFilterResponse reasonFilterResponse = _RfqClient.FilterRfqGrpc(reasonFilterRequest);
 
                 ListRfqReasonGrpc rfqReasons = reasonFilterResponse.ListRfqReasonGrpc ?? new ListRfqReasonGrpc();
 
                 GetRfqReasonsGrpcResponse response = new GetRfqReasonsGrpcResponse();
-                foreach (Rfq.RfqReasonGrpc? reason in rfqReasons.RfqReasons)
-                {
-                    RfqReasonGrpc rfqReason = reason.ToReason();
-                    response.RfqReasons.Add(rfqReason);
-                }
+                response.RfqReasons.Clear();
+                response.RfqReasons.AddRange(rfqReasons.RfqReasons);
+                //foreach (RfqReasonGrpc? reason in rfqReasons.RfqReasons)
+                //{
+                //    RfqReasonGrpc rfqReason = reason.ToReason();
+                //    response.RfqReasons.Add(rfqReason);
+                //}
 
                 return response;
             }
@@ -332,7 +332,7 @@ namespace RfqModule.Services
 
                 long rowId = request.RowId;
 
-                Rfq.RfqGrpcRequestParameter rfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+                RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
                 rfqGrpcRequestParameter.RequestType = 3;
 
                 RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
@@ -381,22 +381,23 @@ namespace RfqModule.Services
 
                 // Fetch RFQ reasons=
                 RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
-                Rfq.RfqGrpcRequestParameter reasonRequestParameter = new Rfq.RfqGrpcRequestParameter();
+                RfqGrpcRequestParameter reasonRequestParameter = new RfqGrpcRequestParameter();
                 reasonRequestParameter.Position = 0;
                 reasonRequestParameter.Take = 100;
                 reasonRequestParameter.RequestType = 1;
                 rfqReasonRequest.RfqGrpcRequestParameter = reasonRequestParameter;
                 RfqFilterRequest reasonFilterRequest = new RfqFilterRequest();
                 reasonFilterRequest.DatabaseList = "RFQREASONGRPC";
-                reasonFilterRequest.FilterExpression = "ReasonTitle != null && ReasonTitle != \"\"";
+                reasonFilterRequest.FilterExpression = "RfqReasonTitle != null && RfqReasonTitle != \"\"";
 
                 RfqFilterResponse reasonFilterResponse = _RfqClient.FilterRfqGrpc(reasonFilterRequest);
 
                 ListRfqReasonGrpc rfqReasons = reasonFilterResponse.ListRfqReasonGrpc ?? new ListRfqReasonGrpc();
                 // Build reason lookup
                 Dictionary<int, string> reasonLookup = rfqReasons.RfqReasons
-                    .Where(r => r.RowId != 0 && r.ReasonTitle != null)
-                    .ToDictionary(r => r.RowId, r => r.ReasonTitle);
+                    .Where(r => r.RowId.HasValue && r.RowId.Value != 0 && !string.IsNullOrEmpty(r.RfqReasonTitle))
+                    .Select(r => new { Key = r.RowId ?? 0, Value = r.RfqReasonTitle })
+                    .ToDictionary(x => x.Key, x => x.Value);    
 
                 // Fetch masterCustomers
                 GetAllCustomersGrpcRequest customerRequest = new GetAllCustomersGrpcRequest();
@@ -500,15 +501,15 @@ namespace RfqModule.Services
                 ListRfqProjectGrpc rfqProjects = filterResponse.ListRfqProjectGrpc ?? new ListRfqProjectGrpc();
                 RfqFilterRequest reasonFilterRequest = new RfqFilterRequest();
                 reasonFilterRequest.DatabaseList = "RFQREASONGRPC";
-                reasonFilterRequest.FilterExpression = "ReasonTitle != null && ReasonTitle != \"\"";
+                reasonFilterRequest.FilterExpression = "RfqReasonTitle != null && RfqReasonTitle != \"\"";
 
                 RfqFilterResponse reasonFilterResponse = _RfqClient.FilterRfqGrpc(reasonFilterRequest);
 
                 ListRfqReasonGrpc rfqReasons = reasonFilterResponse.ListRfqReasonGrpc ?? new ListRfqReasonGrpc();
 
                 Dictionary<int, string> reasonLookup = rfqReasons.RfqReasons
-                    .Where(r => r.RowId != 0 && r.ReasonTitle != null)
-                    .ToDictionary(r => r.RowId, r => r.ReasonTitle);
+                    .Where(r => r.RowId != 0 && r.RfqReasonTitle != null)
+                    .ToDictionary(r => r.RowId ?? 0, r => r.RfqReasonTitle ?? string.Empty);
 
                 // Fetch masterCustomers
                 GetAllCustomersGrpcRequest customerRequest = new GetAllCustomersGrpcRequest();
@@ -639,7 +640,7 @@ namespace RfqModule.Services
             rfqProject.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
             rfqProject.IsActive = request.Project.IsActive ?? false;
 
-            Rfq.RfqGrpcRequestParameter rfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             rfqProjectRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
             rfqProjectRequest.RfqGrpcRequestParameter.RequestType = 70;
             rfqProjectRequest.RfqProjectGrpcsToCreate.Add(rfqProject);
@@ -683,7 +684,7 @@ namespace RfqModule.Services
                 rfqProject.JsonData = request.Project.JsonData;
 
                 RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
-                rfqProjectRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+                rfqProjectRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
                 rfqProjectRequest.RfqGrpcRequestParameter.RequestType = 80;
                 rfqProjectRequest.RfqProjectGrpcsToUpdate.Add(rfqProject);
 
@@ -709,18 +710,18 @@ namespace RfqModule.Services
                 await Task.Delay(1);
 
                 // Map each incoming part into a gRPC access DTO
-                // it'a Rfq.RfqDrawingPartNumbersGrpc vs RfqModule.RfqDrawingPartNumberGrpc
+                // it'a RfqDrawingPartNumbersGrpc vs RfqModule.RfqDrawingPartNumberGrpc
                 // why a type is named RfqDrawingPartNumbersGrpc (plural) if accepted
                 // convention is singular? I don't know, but it is what it is. Retorical.
-                List<RfqDrawingPartNumbersGrpc> partsToUpdate = new List<RfqDrawingPartNumbersGrpc>();
+                List<RfqDrawingPartNumberGrpc> partsToUpdate = new List<RfqDrawingPartNumberGrpc>();
                 foreach (RfqDrawingPartNumberGrpc? part in request.RfqDrawingPartNumbersGrpcsToUpdate)
                 {
-                    RfqDrawingPartNumbersGrpc grpcPart = part.ToAccessDto();
+                    RfqDrawingPartNumberGrpc grpcPart = part; //.ToAccessDto();
                     partsToUpdate.Add(grpcPart);
                 }
 
-                Rfq.RfqDrawingPartNumbersGrpcRequest rfqProjectRequest = new Rfq.RfqDrawingPartNumbersGrpcRequest();
-                rfqProjectRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+                RfqDrawingPartNumbersGrpcRequest rfqProjectRequest = new RfqDrawingPartNumbersGrpcRequest();
+                rfqProjectRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
                 rfqProjectRequest.RfqGrpcRequestParameter.RequestType = 80;
                 rfqProjectRequest.RfqDrawingPartNumbersGrpcsToUpdate.AddRange(partsToUpdate);
                 RfqCrudGrpcResponse updateResponse = _RfqClient.UpdateRfqDrawingPartNumbersGrpc(rfqProjectRequest);
@@ -735,17 +736,17 @@ namespace RfqModule.Services
                 throw;
             }
         }
-        public async Task<ListRfqDrawingPartNumbersGrpc> GetRfqDrawingPartNumbersByRfqIdGrpc(RfqDrawingPartNumbersGrpcRequest request)
+        public async Task<ListRfqDrawingPartNumberGrpc> GetRfqDrawingPartNumbersByRfqIdGrpc(RfqDrawingPartNumbersGrpcRequest request)
         {
             try
             {
                 await Task.Delay(1);
 
-                ListRfqDrawingPartNumbersGrpc response = new ListRfqDrawingPartNumbersGrpc();
+                ListRfqDrawingPartNumberGrpc response = new ListRfqDrawingPartNumberGrpc();
 
                 RfqFilterRequest rfqFilterRequest = new RfqFilterRequest();
 
-                rfqFilterRequest.DatabaseList = "RFQDRAWINGPARTNUMBERSGRPC";
+                rfqFilterRequest.DatabaseList = "RFQDRAWINGPARTNUMBERGRPC";
                 rfqFilterRequest.FilterExpression = $"(RfqId != null && RfqId == {request.RfqId})";
 
                 RfqFilterResponse rfqFilterResponse = _RfqClient.FilterRfqGrpc(rfqFilterRequest);
@@ -757,7 +758,7 @@ namespace RfqModule.Services
                     return response;
                 }
 
-                List<RfqDrawingPartNumbersGrpc> rfqPartNumbers = rfqFilterResponse.ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.ToList();
+                List<RfqDrawingPartNumberGrpc> rfqPartNumbers = rfqFilterResponse.ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.ToList();
 
                 int partNumberCount = rfqPartNumbers.Count;
                 bool hasParts = !(partNumberCount <= 0);
@@ -765,9 +766,9 @@ namespace RfqModule.Services
                 {
                     List<RfqDrawingPartNumberGrpc> mappedParts = new List<RfqDrawingPartNumberGrpc>();
 
-                    foreach (RfqDrawingPartNumbersGrpc grpcPart in rfqPartNumbers)
+                    foreach (RfqDrawingPartNumberGrpc grpcPart in rfqPartNumbers)
                     {
-                        RfqDrawingPartNumberGrpc mappedPart = grpcPart.ToClientDto();
+                        RfqDrawingPartNumberGrpc mappedPart = grpcPart; //.ToClientDto();
                         mappedParts.Add(mappedPart);
                     }
 
@@ -788,11 +789,11 @@ namespace RfqModule.Services
             {
                 await Task.Delay(1);
 
-                Rfq.RfqDrawingPartNumbersGrpcRequest accessGgrpcRequest = new Rfq.RfqDrawingPartNumbersGrpcRequest();
+                RfqDrawingPartNumbersGrpcRequest accessGgrpcRequest = new RfqDrawingPartNumbersGrpcRequest();
 
                 accessGgrpcRequest.RfqGrpcRequestParameter = new();
                 accessGgrpcRequest.RfqGrpcRequestParameter.RequestType = 90;
-                List<RfqDrawingPartNumbersGrpc> accessDtos = request.RfqDrawingPartNumbersGrpcsToDelete.Select(p => p.ToAccessDto()).ToList();
+                List<RfqDrawingPartNumberGrpc> accessDtos = request.RfqDrawingPartNumbersGrpcsToDelete.Select(p => p).ToList();
                 accessGgrpcRequest.RfqDrawingPartNumbersGrpcsToDelete.AddRange(accessDtos);
 
                 RfqCrudGrpcResponse grpcResponse = await _RfqClient.DeleteRfqDrawingPartNumbersGrpcAsync(accessGgrpcRequest);
@@ -822,32 +823,32 @@ namespace RfqModule.Services
             }
         }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
-        Rfq.RfqCrudGrpcResponse CreateRfqDrawingPartNumbers(string projectId, List<CustomerParts> customerParts)
+        RfqCrudGrpcResponse CreateRfqDrawingPartNumbers(string projectId, List<CustomerParts> customerParts)
         {
-            Rfq.RfqDrawingPartNumbersGrpcRequest partRequest = new Rfq.RfqDrawingPartNumbersGrpcRequest();
-            Rfq.RfqCrudGrpcResponse partResponse = new Rfq.RfqCrudGrpcResponse();
+            RfqDrawingPartNumbersGrpcRequest partRequest = new RfqDrawingPartNumbersGrpcRequest();
+            RfqCrudGrpcResponse partResponse = new RfqCrudGrpcResponse();
             partResponse.SaveSuccess = false;
 
             try
             {
                 _Logger.GenericLogInformation($"III RfqManagerService.CreateRfqDrawingPartNumbers - start GRPC to the access layer - sending {customerParts.Count} parts");
 
-                partRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+                partRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
                 partRequest.RfqGrpcRequestParameter.RequestType = 70;
                 foreach (CustomerParts customerPart in customerParts)
                 {
-                    RfqDrawingPartNumbersGrpc part = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber1);
+                    RfqDrawingPartNumberGrpc part = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber1);
                     //part.Quantity = customerPart.Qua
                     partRequest.RfqDrawingPartNumbersGrpcsToCreate.Add(part);
                     if (customerPart.PartNumber2 != null)
                     {
-                        RfqDrawingPartNumbersGrpc part2 = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber2);
+                        RfqDrawingPartNumberGrpc part2 = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber2);
                         partRequest.RfqDrawingPartNumbersGrpcsToCreate.Add(part2);
                     }
 
                     if (customerPart.PartNumber3 != null)
                     {
-                        RfqDrawingPartNumbersGrpc  part3 = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber3);
+                        RfqDrawingPartNumberGrpc  part3 = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber3);
                         partRequest.RfqDrawingPartNumbersGrpcsToCreate.Add(part3);
                     }
                 }
@@ -867,9 +868,9 @@ namespace RfqModule.Services
             return partResponse;
 
         }
-        RfqDrawingPartNumbersGrpc ToRfqDrawingPartNumbers(string projectId, string partNumber)
+        RfqDrawingPartNumberGrpc ToRfqDrawingPartNumbers(string projectId, string partNumber)
         {
-            RfqDrawingPartNumbersGrpc part = new RfqDrawingPartNumbersGrpc();
+            RfqDrawingPartNumberGrpc part = new RfqDrawingPartNumberGrpc();
             part.RfqId = (long)Convert.ToDouble(projectId, CultureInfo.InvariantCulture);
             part.OriginalPartNumber = partNumber;
             part.OriginalPartNumberPrice = 0;
@@ -898,7 +899,7 @@ namespace RfqModule.Services
             }
 
             // unique list of customer parts, create this part list to send to the access layer to create the RFQ parts in the database
-            Rfq.RfqCrudGrpcResponse partResponse = CreateRfqDrawingPartNumbers(request.ProjectId, customerParts);
+            RfqCrudGrpcResponse partResponse = CreateRfqDrawingPartNumbers(request.ProjectId, customerParts);
 
             if (partResponse.SaveSuccess == false)
             {
@@ -1123,14 +1124,14 @@ namespace RfqModule.Services
                     if (!string.IsNullOrWhiteSpace(branch.CircuitOption))
                     {
                         DsiCircuitOptionGrpcRequest circuitOptionRequest = new DsiCircuitOptionGrpcRequest();
-                        circuitOptionRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+                        circuitOptionRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
                         circuitOptionRequest.RfqGrpcRequestParameter.RequestType = 1;
                         ListDsiCircuitOptionGrpc circuitOptions = await _RfqClient.ReadDsiCircuitOptionGrpcAsync(circuitOptionRequest);
 
                         branchGrpc.CircuitOptionId = circuitOptions.DsiCircuitOptionGrpcs.FirstOrDefault(m => m.OptionName == branch.CircuitOption)?.CircuitOptionId;
                     }
 
-                    branchConfigurationRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+                    branchConfigurationRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
                     branchConfigurationRequest.RfqGrpcRequestParameter.RequestType = 70;
                     branchGrpc.HarnessId = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
                     branchGrpc.CreatedBy = userId;
@@ -1159,10 +1160,10 @@ namespace RfqModule.Services
                 }
 
                 DsiBranchConfigurationBendAssociationGrpc dsiBranchConfigurationBendAssociationGrpc = new DsiBranchConfigurationBendAssociationGrpc();
-                bendAssociationGrpcRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+                bendAssociationGrpcRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
                 bendAssociationGrpcRequest.RfqGrpcRequestParameter.RequestType = 70;
                 bendAssociationGrpcRequest.DsiBranchConfigurationBendAssociationGrpcsToCreate.AddRange(bendAssociations);
-                bendRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+                bendRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
                 bendRequest.RfqGrpcRequestParameter.RequestType = 70;
                 RfqCrudGrpcResponse bendReturn = await _RfqClient.CreateDsiBendGrpcAsync(bendRequest);
                 RfqCrudGrpcResponse branchConfigurationReturn = _RfqClient.CreateDsiBranchConfigurationGrpc(branchConfigurationRequest);
@@ -1190,7 +1191,7 @@ namespace RfqModule.Services
                 }
             }
 
-            branchInsulationRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            branchInsulationRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             branchInsulationRequest.RfqGrpcRequestParameter.RequestType = 70;
             RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiBranchInsulationGrpcAsync(branchInsulationRequest);
             if(clientReturn == null || clientReturn.SaveSuccess == false)
@@ -1219,9 +1220,9 @@ namespace RfqModule.Services
                 }
             }
 
-            branchInsulationThroughNodeRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            branchInsulationThroughNodeRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             branchInsulationThroughNodeRequest.RfqGrpcRequestParameter.RequestType = 70;
-            Rfq.RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiBranchInsulationThroughNodeGrpcAsync(branchInsulationThroughNodeRequest);
+            RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiBranchInsulationThroughNodeGrpcAsync(branchInsulationThroughNodeRequest);
             if(clientReturn == null || clientReturn.SaveSuccess == false)
             {
                 _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save branch insulation through node");
@@ -1244,9 +1245,9 @@ namespace RfqModule.Services
                 }
             }
 
-            componentRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            componentRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             componentRequest.RfqGrpcRequestParameter.RequestType = 70;
-            Rfq.RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiComponentGrpcAsync(componentRequest);
+            RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiComponentGrpcAsync(componentRequest);
             if(clientReturn == null || clientReturn.SaveSuccess == false)
             {
                 _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save components");
@@ -1255,7 +1256,7 @@ namespace RfqModule.Services
         async Task SaveCircuitOptionAsync(DsiAggregate dsiAggregate, string userId)
         {
             DsiCircuitOptionGrpcRequest request = new DsiCircuitOptionGrpcRequest();
-            request.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            request.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             request.RfqGrpcRequestParameter.RequestType = 1;
             ListDsiCircuitOptionGrpc currentCircuitOptions = await _RfqClient.ReadDsiCircuitOptionGrpcAsync(request);
 
@@ -1266,7 +1267,7 @@ namespace RfqModule.Services
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
             DsiCircuitOptionGrpcRequest circuitOptionGrpcRequest = new DsiCircuitOptionGrpcRequest();
-            circuitOptionGrpcRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            circuitOptionGrpcRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             circuitOptionGrpcRequest.RfqGrpcRequestParameter.RequestType = 70;
 
             if (dsiAggregate.CompositeDetailList != null && dsiAggregate.CompositeDetailList.Any())
@@ -1306,7 +1307,7 @@ namespace RfqModule.Services
 
             if (0 < circuitOptionGrpcRequest.DsiCircuitOptionGrpcsToCreate.Count)
             {
-                Rfq.RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiCircuitOptionGrpcAsync(circuitOptionGrpcRequest);
+                RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiCircuitOptionGrpcAsync(circuitOptionGrpcRequest);
                 if (clientReturn == null || clientReturn.SaveSuccess == false)
                 {
                     _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save circuit options");
@@ -1331,9 +1332,9 @@ namespace RfqModule.Services
                 }
             }
 
-            compositeOptionRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            compositeOptionRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             compositeOptionRequest.RfqGrpcRequestParameter.RequestType = 70;
-            Rfq.RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiCompositeOptionGrpcAsync(compositeOptionRequest);
+            RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiCompositeOptionGrpcAsync(compositeOptionRequest);
             if(clientReturn == null || clientReturn.SaveSuccess == false)
             {
                 _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save composite options");
@@ -1342,16 +1343,16 @@ namespace RfqModule.Services
         async Task SaveCompositeDetailsAsync(DsiAggregate dsiAggregate, string userId)
         {
             DsiCircuitOptionGrpcRequest request = new DsiCircuitOptionGrpcRequest();
-            request.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            request.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             request.RfqGrpcRequestParameter.RequestType = 1;
             ListDsiCircuitOptionGrpc currentCircuitOptions = await _RfqClient.ReadDsiCircuitOptionGrpcAsync(request);
 
             DsiCompositeDetailGrpcRequest compositeDetailGrpcRequest = new DsiCompositeDetailGrpcRequest();
-            compositeDetailGrpcRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            compositeDetailGrpcRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             compositeDetailGrpcRequest.RfqGrpcRequestParameter.RequestType = 70;
 
             DsiCompositeDetailCircuitOptionAssociationGrpcRequest compositeDetailCircuitOptionAssociationRequest = new DsiCompositeDetailCircuitOptionAssociationGrpcRequest();
-            compositeDetailCircuitOptionAssociationRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            compositeDetailCircuitOptionAssociationRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             compositeDetailCircuitOptionAssociationRequest.RfqGrpcRequestParameter.RequestType = 70;
 
             if (dsiAggregate.CompositeDetailList != null && dsiAggregate.CompositeDetailList.Any())
@@ -1388,8 +1389,8 @@ namespace RfqModule.Services
                     compositeDetailGrpcRequest.DsiCompositeDetailGrpcsToCreate.Add(compositeDetailGrpc);
                 }
 
-                Rfq.RfqCrudGrpcResponse compositeDetailResponse = await _RfqClient.CreateDsiCompositeDetailGrpcAsync(compositeDetailGrpcRequest);
-                Rfq.RfqCrudGrpcResponse associationResponse = await _RfqClient.CreateDsiCompositeDetailCircuitOptionAssociationGrpcAsync(compositeDetailCircuitOptionAssociationRequest);
+                RfqCrudGrpcResponse compositeDetailResponse = await _RfqClient.CreateDsiCompositeDetailGrpcAsync(compositeDetailGrpcRequest);
+                RfqCrudGrpcResponse associationResponse = await _RfqClient.CreateDsiCompositeDetailCircuitOptionAssociationGrpcAsync(compositeDetailCircuitOptionAssociationRequest);
 
                 if (compositeDetailResponse == null || compositeDetailResponse.SaveSuccess == false || associationResponse == null || associationResponse.SaveSuccess == false)
                 {
@@ -1400,7 +1401,7 @@ namespace RfqModule.Services
         async Task<DsiHarnessGrpc> SaveHarness(DsiAggregate dsiAggregate, string userId)
         {
             DsiHarnessGrpcRequest harnessRequest = new DsiHarnessGrpcRequest();
-            harnessRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            harnessRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             harnessRequest.RfqGrpcRequestParameter.RequestType = 1;
             ListDsiHarnessGrpc allHarnesses = await _RfqClient.ReadDsiHarnessGrpcAsync(harnessRequest);
             if(dsiAggregate.Harness != null)
@@ -1425,7 +1426,7 @@ namespace RfqModule.Services
                 harnessRequest.DsiHarnessGrpcsToCreate.Add(harnessGrpc);
             }
 
-            Rfq.RfqCrudGrpcResponse response = await _RfqClient.CreateDsiHarnessGrpcAsync(harnessRequest);
+            RfqCrudGrpcResponse response = await _RfqClient.CreateDsiHarnessGrpcAsync(harnessRequest);
             if (response == null || response.SaveSuccess == false)
             {
                 _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save harness");
@@ -1436,7 +1437,7 @@ namespace RfqModule.Services
         async Task SaveScopeAsync(DsiAggregate dsiAggregate, string userId)
         {
             DsiScopeGrpcRequest request = new DsiScopeGrpcRequest();
-            request.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            request.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             request.RfqGrpcRequestParameter.RequestType = 1;
             ListDsiScopeGrpc currentScopes = await _RfqClient.ReadDsiScopeGrpcAsync(request);
 
@@ -1446,7 +1447,7 @@ namespace RfqModule.Services
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
             DsiScopeGrpcRequest scopeGrpcRequest = new DsiScopeGrpcRequest();
-            scopeGrpcRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            scopeGrpcRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             scopeGrpcRequest.RfqGrpcRequestParameter.RequestType = 70;
 
             if (dsiAggregate.HarnessScopeList != null && dsiAggregate.HarnessScopeList.Any())
@@ -1486,7 +1487,7 @@ namespace RfqModule.Services
 
                 if (0 < scopeGrpcRequest.DsiScopeGrpcsToCreate.Count)
                 {
-                    Rfq.RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiScopeGrpcAsync(scopeGrpcRequest);
+                    RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiScopeGrpcAsync(scopeGrpcRequest);
                     if (clientReturn == null || clientReturn.SaveSuccess == false)
                     {
                         _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save scope");
@@ -1497,16 +1498,16 @@ namespace RfqModule.Services
         async Task SaveHarnessScope(DsiAggregate dsiAggregate, string userId)
         {
             DsiScopeGrpcRequest request = new DsiScopeGrpcRequest();
-            request.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            request.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             request.RfqGrpcRequestParameter.RequestType = 1;
             ListDsiScopeGrpc currentScopes = await _RfqClient.ReadDsiScopeGrpcAsync(request);
 
             DsiHarnessScopeGrpcRequest harnessScopeRequest = new DsiHarnessScopeGrpcRequest();
-            harnessScopeRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            harnessScopeRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             harnessScopeRequest.RfqGrpcRequestParameter.RequestType = 70;
 
             DsiHarnessScopeScopeAssociationGrpcRequest harnessScopeAssociationRequest = new DsiHarnessScopeScopeAssociationGrpcRequest();
-            harnessScopeAssociationRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            harnessScopeAssociationRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             harnessScopeAssociationRequest.RfqGrpcRequestParameter.RequestType = 70;
             if (dsiAggregate.HarnessScopeList != null && dsiAggregate.HarnessScopeList.Any())
             {
@@ -1572,7 +1573,7 @@ namespace RfqModule.Services
                 }
             }
 
-            manualBomQuantityGrpcRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            manualBomQuantityGrpcRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             manualBomQuantityGrpcRequest.RfqGrpcRequestParameter.RequestType = 70;
             RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiManualBomQuantityGrpcAsync(manualBomQuantityGrpcRequest);
             if (clientReturn == null || clientReturn.SaveSuccess == false)
@@ -1595,7 +1596,7 @@ namespace RfqModule.Services
                 }
             }
 
-            midWireComponentRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            midWireComponentRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             midWireComponentRequest.RfqGrpcRequestParameter.RequestType = 70;
             RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiMidWireComponentGrpcAsync(midWireComponentRequest);
             if (clientReturn == null || clientReturn.SaveSuccess == false)
@@ -1620,7 +1621,7 @@ namespace RfqModule.Services
                 }
             }
 
-            moduleChildDetailRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            moduleChildDetailRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             moduleChildDetailRequest.RfqGrpcRequestParameter.RequestType = 70;
             RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiModuleChildDetailGrpcAsync(moduleChildDetailRequest);
             if (clientReturn == null || clientReturn.SaveSuccess == false)
@@ -1645,7 +1646,7 @@ namespace RfqModule.Services
                 }
             }
 
-            moduleCompatibilityRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            moduleCompatibilityRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             moduleCompatibilityRequest.RfqGrpcRequestParameter.RequestType = 70;
             RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiModuleCompatibilityGrpcAsync(moduleCompatibilityRequest);
             if (clientReturn == null || clientReturn.SaveSuccess == false)
@@ -1670,9 +1671,9 @@ namespace RfqModule.Services
                 }
             }
 
-            multicoreSpecificationRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            multicoreSpecificationRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             multicoreSpecificationRequest.RfqGrpcRequestParameter.RequestType = 70;
-            Rfq.RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiMulticoreSpecificationGrpcAsync(multicoreSpecificationRequest);
+            RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiMulticoreSpecificationGrpcAsync(multicoreSpecificationRequest);
             if (clientReturn == null || clientReturn.SaveSuccess == false)
             {
                 _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save multicore specification");
@@ -1695,7 +1696,7 @@ namespace RfqModule.Services
                 }
             }
 
-            pinMappingRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            pinMappingRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             pinMappingRequest.RfqGrpcRequestParameter.RequestType = 70;
             RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiPinMappingGrpcAsync(pinMappingRequest);
             if (clientReturn == null || clientReturn.SaveSuccess == false)
@@ -1720,7 +1721,7 @@ namespace RfqModule.Services
                 }
             }
 
-            wireMulticoreMarkerRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            wireMulticoreMarkerRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             wireMulticoreMarkerRequest.RfqGrpcRequestParameter.RequestType = 70;
             RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiWireMulticoreMarkerGrpcAsync(wireMulticoreMarkerRequest);
             if (clientReturn == null || clientReturn.SaveSuccess == false)
@@ -1745,7 +1746,7 @@ namespace RfqModule.Services
                 }
             }
 
-            wireSpecificationRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            wireSpecificationRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             wireSpecificationRequest.RfqGrpcRequestParameter.RequestType = 70;
             RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiWireSpecificationGrpcAsync(wireSpecificationRequest);
             if (clientReturn == null || clientReturn.SaveSuccess == false)
@@ -1770,7 +1771,7 @@ namespace RfqModule.Services
                 }
             }
 
-            dsiWireThroughNodeRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            dsiWireThroughNodeRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             dsiWireThroughNodeRequest.RfqGrpcRequestParameter.RequestType = 70;
             RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiWireThroughNodeGrpcAsync(dsiWireThroughNodeRequest);
             if (clientReturn == null || clientReturn.SaveSuccess == false)
@@ -2075,7 +2076,7 @@ namespace RfqModule.Services
         {
             await Task.Delay(1);
             GetRfqNprRequestByRfqNumberGrpcResponse response = new GetRfqNprRequestByRfqNumberGrpcResponse();
-            Collection<Rfq.RfqNprRequestGrpc> filteredList = new Collection<Rfq.RfqNprRequestGrpc>();
+            Collection<RfqShared.RfqNprRequestGrpc> filteredList = new Collection<RfqShared.RfqNprRequestGrpc>();
 
             RfqFilterRequest rfqFilterRequestGrpc = new RfqFilterRequest();
             rfqFilterRequestGrpc.DatabaseList = "RfqNprRequestGrpc";
@@ -2083,12 +2084,13 @@ namespace RfqModule.Services
             RfqFilterResponse rfqNprRequests = await _RfqClient.FilterRfqGrpcAsync(rfqFilterRequestGrpc);
             if (rfqNprRequests.ListRfqNprRequestGrpc != null)
             {
-                filteredList = ExtractRFQResponseData<Rfq.RfqNprRequestGrpc>(rfqNprRequests);
-                foreach(Rfq.RfqNprRequestGrpc accessItem in filteredList)
-                {
-                    RfqNprRequestGrpc item = accessItem.ToRfqNprRequest();
-                    response.RfqNprRequestGrpcs.Add(item);
-                }
+                filteredList = ExtractRFQResponseData<RfqShared.RfqNprRequestGrpc>(rfqNprRequests);
+                response.RfqNprRequestGrpcs.AddRange(filteredList);
+                //foreach(RfqShared.RfqNprRequestGrpc accessItem in filteredList)
+                //{
+                //    RfqNprRequestGrpc item = accessItem.ToRfqNprRequest();
+                //    response.RfqNprRequestGrpcs.Add(item);
+                //}
             }
 
             return response;
@@ -2097,7 +2099,7 @@ namespace RfqModule.Services
         {
             await Task.Delay(1);
             GetRfqNprRequestByRfqProjectIdGrpcResponse response = new GetRfqNprRequestByRfqProjectIdGrpcResponse();
-            Collection<Rfq.RfqNprRequestGrpc> filteredList = new Collection<Rfq.RfqNprRequestGrpc>();
+            Collection<RfqShared.RfqNprRequestGrpc> filteredList = new Collection<RfqShared.RfqNprRequestGrpc>();
 
             RfqFilterRequest rfqFilterRequestGrpc = new RfqFilterRequest();
             rfqFilterRequestGrpc.DatabaseList = "RfqNprRequestGrpc";
@@ -2105,12 +2107,13 @@ namespace RfqModule.Services
             RfqFilterResponse rfqNprRequests = await _RfqClient.FilterRfqGrpcAsync(rfqFilterRequestGrpc);
             if (rfqNprRequests.ListRfqNprRequestGrpc != null)
             {
-                filteredList = ExtractRFQResponseData<Rfq.RfqNprRequestGrpc>(rfqNprRequests);
-                foreach (Rfq.RfqNprRequestGrpc accessItem in filteredList)
-                {
-                    RfqNprRequestGrpc item = accessItem.ToRfqNprRequest();
-                    response.RfqNprRequestGrpcs.Add(item);
-                }
+                filteredList = ExtractRFQResponseData<RfqShared.RfqNprRequestGrpc>(rfqNprRequests);
+                response.RfqNprRequestGrpcs.AddRange(filteredList);
+                //foreach (RfqNprRequestGrpc accessItem in filteredList)
+                //{
+                //    RfqNprRequestGrpc item = accessItem.ToRfqNprRequest();
+                //    response.RfqNprRequestGrpcs.Add(item);
+                //}
             }
 
             return response;
@@ -2119,7 +2122,7 @@ namespace RfqModule.Services
         {
             await Task.Delay(1);
             GetRfqNprRequestByIdGrpcResponse response = new GetRfqNprRequestByIdGrpcResponse();
-            Collection<Rfq.RfqNprRequestGrpc> filteredList = new Collection<Rfq.RfqNprRequestGrpc>();
+            Collection<RfqShared.RfqNprRequestGrpc> filteredList = new Collection<RfqShared.RfqNprRequestGrpc>();
 
             RfqFilterRequest rfqFilterRequestGrpc = new RfqFilterRequest();
             rfqFilterRequestGrpc.DatabaseList = "RfqNprRequestGrpc";
@@ -2127,12 +2130,13 @@ namespace RfqModule.Services
             RfqFilterResponse rfqNprRequests = await _RfqClient.FilterRfqGrpcAsync(rfqFilterRequestGrpc);
             if (rfqNprRequests.ListRfqNprRequestGrpc != null)
             {
-                filteredList = ExtractRFQResponseData<Rfq.RfqNprRequestGrpc>(rfqNprRequests);
-                foreach (Rfq.RfqNprRequestGrpc accessItem in filteredList)
-                {
-                    RfqNprRequestGrpc item = accessItem.ToRfqNprRequest();
-                    response.RfqNprRequestGrpcs.Add(item);
-                }
+                filteredList = ExtractRFQResponseData<RfqShared.RfqNprRequestGrpc>(rfqNprRequests);
+                response.RfqNprRequestGrpcs.AddRange(filteredList);
+                //foreach (RfqNprRequestGrpc accessItem in filteredList)
+                //{
+                //    RfqNprRequestGrpc item = accessItem.ToRfqNprRequest();
+                //    response.RfqNprRequestGrpcs.Add(item);
+                //}
             }
 
             return response;
@@ -2142,20 +2146,21 @@ namespace RfqModule.Services
         {
             await Task.Delay(1);
             GetAllRfqNprRequestGrpcResponse response = new GetAllRfqNprRequestGrpcResponse();
-            Collection<RfqNprRequestGrpc> filteredList = new Collection<RfqNprRequestGrpc>();
+            Collection<RfqShared.RfqNprRequestGrpc> filteredList = new Collection<RfqShared.RfqNprRequestGrpc>();
 
             RfqNprRequestGrpcRequest rfqRequest = new RfqNprRequestGrpcRequest();
-            Rfq.RfqGrpcRequestParameter rfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             rfqGrpcRequestParameter.Position = request.Position;
             rfqGrpcRequestParameter.Take = request.Take;
             rfqGrpcRequestParameter.RequestType = 1;
             rfqRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
             ListRfqNprRequestGrpc rfqNprRequests = _RfqClient.ReadRfqNprRequestGrpc(rfqRequest);
-            foreach(Rfq.RfqNprRequestGrpc? item in rfqNprRequests.RfqNprRequestGrpcs)
-            {
-                RfqNprRequestGrpc rfqNpr = item.ToRfqNprRequest();
-                response.RfqNprRequestGrpcs.Add(rfqNpr);
-            }
+            response.RfqNprRequestGrpcs.AddRange(rfqNprRequests.RfqNprRequestGrpcs);
+            //foreach (RfqNprRequestGrpc? item in rfqNprRequests.RfqNprRequestGrpcs)
+            //{
+            //    RfqNprRequestGrpc rfqNpr = item.ToRfqNprRequest();
+            //    response.RfqNprRequestGrpcs.Add(rfqNpr);
+            //}
 
             return response;
         }
@@ -2167,13 +2172,14 @@ namespace RfqModule.Services
             RfqNprRequestGrpcRequest rfqNprRequest = new RfqNprRequestGrpcRequest();
             RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             rfqGrpcRequestParameter.RequestType = 70;
-            foreach (RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
-            {
-                Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRequestGrpcAccess();
-                rfqNprRequest.RfqNprRequestGrpcsToCreate.Add(accessRfqNprRequest);
-            }
+            rfqNprRequest.RfqNprRequestGrpcsToCreate.AddRange(request.RfqNprRequestGrpc);
+            //foreach (RfqShared.RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
+            //{
+            //    RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRequestGrpcAccess();
+            //    rfqNprRequest.RfqNprRequestGrpcsToCreate.Add(accessRfqNprRequest);
+            //}
 
-            rfqNprRequest.RfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            rfqNprRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             RfqCrudGrpcResponse accessResponse = _RfqClient.CreateRfqNprRequestGrpc(rfqNprRequest);
             for (int i = 0; i < request.RfqNprRequestGrpc.Count; i++)
             {
@@ -2195,7 +2201,7 @@ namespace RfqModule.Services
         //    rfqGrpcRequestParameter.RequestType = 80;
         //    foreach (RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
         //    {
-        //        Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRquestGrpcAccess();
+        //        RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRquestGrpcAccess();
         //        rfqNprRequest.RfqNprRequestGrpcsToUpdate.Add(accessRfqNprRequest);
         //    }
 
@@ -2211,14 +2217,15 @@ namespace RfqModule.Services
             await Task.Delay(0);
             UpdateRfqNprRequestGrpcResponse response = new UpdateRfqNprRequestGrpcResponse();
             RfqNprRequestGrpcRequest rfqNprRequest = new RfqNprRequestGrpcRequest();
-            Rfq.RfqGrpcRequestParameter rfqGrpcRequestParameter = new Rfq.      RfqGrpcRequestParameter();
+            RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             rfqGrpcRequestParameter.RequestType = 80;
             rfqNprRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
-            foreach (RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
-            {
-                Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRequestGrpcAccess();
-                rfqNprRequest.RfqNprRequestGrpcsToUpdate.Add(accessRfqNprRequest);
-            }
+            rfqNprRequest.RfqNprRequestGrpcsToUpdate.AddRange(request.RfqNprRequestGrpc);
+            //foreach (RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
+            //{
+            //    RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRequestGrpcAccess();
+            //    rfqNprRequest.RfqNprRequestGrpcsToUpdate.Add(accessRfqNprRequest);
+            //}
 
             RfqCrudGrpcResponse accessResponse = _RfqClient.UpdateRfqNprRequestGrpc(rfqNprRequest);
             response.Success = accessResponse.SaveSuccess;
@@ -2234,7 +2241,7 @@ namespace RfqModule.Services
             GetAllRfqNprRequestGrpcResponse allRfqNprRequests = await GetAllRfqNprRequestGrpc(rfqNprRequest);
             NPRFilterRequest nprFilterRequest = new NPRFilterRequest();
             nprFilterRequest.DatabaseList = "H1NPRVIEWGRPC";
-            foreach (RfqNprRequestGrpc? npr in allRfqNprRequests.RfqNprRequestGrpcs)
+            foreach (RfqShared.RfqNprRequestGrpc? npr in allRfqNprRequests.RfqNprRequestGrpcs)
             {
                 if (npr == null)
                 {
@@ -2248,10 +2255,10 @@ namespace RfqModule.Services
                 if (firstNpr.Status != npr.Status?.ToString(CultureInfo.InvariantCulture))
                 {
                     RfqNprRequestGrpcRequest rfqNprRequestToUpdate = new RfqNprRequestGrpcRequest();
-                    Rfq.RfqGrpcRequestParameter rfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+                    RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
                     rfqGrpcRequestParameter.RequestType = 80;
                     rfqNprRequestToUpdate.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
-                    Rfq.RfqNprRequestGrpc accessRfqNprRequest = npr.ToRfqNprRequestGrpcAccess();
+                    RfqShared.RfqNprRequestGrpc accessRfqNprRequest = npr; //.ToRfqNprRequestGrpcAccess();
 
                     if (int.TryParse(firstNpr.Status, out int parsedStatus))
                     {
@@ -2271,14 +2278,15 @@ namespace RfqModule.Services
             await Task.Delay(0);
             DeleteRfqNprRequestByIdGrpcResponse response = new DeleteRfqNprRequestByIdGrpcResponse();
             RfqNprRequestGrpcRequest rfqNprRequest = new RfqNprRequestGrpcRequest();
-            Rfq.RfqGrpcRequestParameter rfqGrpcRequestParameter = new Rfq.RfqGrpcRequestParameter();
+            RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             rfqGrpcRequestParameter.RequestType = 90;
             rfqNprRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
-            foreach(RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
-            {
-                Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRequestGrpcAccess();
-                rfqNprRequest.RfqNprRequestGrpcsToDelete.Add(accessRfqNprRequest);
-            }
+            rfqNprRequest.RfqNprRequestGrpcsToDelete.AddRange(request.RfqNprRequestGrpc);
+            //foreach(RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
+            //{
+            //    RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRequestGrpcAccess();
+            //    rfqNprRequest.RfqNprRequestGrpcsToDelete.Add(accessRfqNprRequest);
+            //}
 
             RfqCrudGrpcResponse accessResponse = _RfqClient.DeleteRfqNprRequestByIdGrpc(rfqNprRequest);
             response.Success = accessResponse.SaveSuccess;
@@ -2292,11 +2300,12 @@ namespace RfqModule.Services
            ValidateNprRequestRequest accessRequest = new ValidateNprRequestRequest();
             if (request?.Items != null && 0 < request.Items.Count )
             {
-                foreach (RfqNprRequestGrpc? mgrItem in request.Items)
-                {
-                                    Rfq.RfqNprRequestGrpc accessItem = mgrItem.ToRfqNprRequestGrpcAccess();
-                    accessRequest.Items.Add(accessItem);
-                }
+                accessRequest.Items.AddRange(request.Items);
+                //foreach (RfqNprRequestGrpc? mgrItem in request.Items)
+                //{
+                //    RfqNprRequestGrpc accessItem = mgrItem.ToRfqNprRequestGrpcAccess();
+                //    accessRequest.Items.Add(accessItem);
+                //}
             }
                       
             ValidateNprRequestResponse? accessResponse = await _RfqClient.ValidateNprRequestGrpcAsync(accessRequest);
@@ -2326,7 +2335,7 @@ namespace RfqModule.Services
 
                     if (accessLine?.Errors != null && 0 < accessLine.Errors.Count)
                     {
-                        foreach (Rfq.ValidationError? err in accessLine.Errors)
+                        foreach (Rfq.ValidationError err in accessLine.Errors)
                         {
                             MgrValidationError mgrValidationError = new MgrValidationError();
                             mgrValidationError.Field = err?.Field ?? string.Empty;
@@ -2356,36 +2365,36 @@ namespace RfqModule.Services
         //        ?? "UNKNOWN";
 
         //}
-        public async Task<CreateNprGrpcResponse> CreateNprGrpc (CreateNprGrpcRequest request)
+        public async Task<CreateNprGrpcResponse> CreateNprGrpc (CreateNprGrpcRequest request) // this comes from the client and contains a RfqShared.RfqNprRequestGrpc for each line to be submitted to NPR API
         {
             await Task.Delay(0);
             CreateNprGrpcResponse response = new CreateNprGrpcResponse();
             // ValidateNprRequestRequest validateRequest = new ValidateNprRequestRequest();
-            List<NPR.NprApiDataGrpc> accessDataList = new List<NPR.NprApiDataGrpc>();
-            List<Rfq.RfqNprRequestGrpc> rfqNprRequestList = new List<Rfq.RfqNprRequestGrpc>();
+            List<NPR.NprApiDataGrpc> nprAccessDataList = new List<NPR.NprApiDataGrpc>();
+            List<RfqShared.RfqNprRequestGrpc> rfqNprRequestList = new List<RfqShared.RfqNprRequestGrpc>();
 
             //Validate the incoming request first
             for(int i = 0; i < request.NprApiData.Count; i++)
             {
-                Rfq.RfqNprRequestGrpc rfqNprRequest = request.NprApiData[i].RfqNprRequest.ToRfqNprRequestGrpcAccess(i);
+                RfqShared.RfqNprRequestGrpc rfqNprRequest = request.NprApiData[i].RfqNprRequest; //.ToRfqNprRequestGrpcAccess(i);
                 rfqNprRequestList.Add(rfqNprRequest);
                 // validateRequest.Items.Add(rfqNprRequest);
             }
 
             // ValidateNprRequestResponse validateResponse = await _RfqClient.ValidateNprRequestGrpcAsync(validateRequest);
-            // List<Rfq.RfqNprRequestGrpc> validRequests = validateRequest.Items.Where(item => item.Id != null && validateResponse.LineStatuses.Any(line => line.Id == item.Id && line.IsValid)).ToList();  
+            // List<RfqNprRequestGrpc> validRequests = validateRequest.Items.Where(item => item.Id != null && validateResponse.LineStatuses.Any(line => line.Id == item.Id && line.IsValid)).ToList();  
             // send all requests to create RfqNprRequests replacing with the ones from NPR API for the valid requests to capture any additional data from NPR API and to update the status of the RfqNprRequest
             NprApiDataGrpc nprApiDataGrpc = new NprApiDataGrpc();
-        
-            foreach (Rfq.RfqNprRequestGrpc validRequest in rfqNprRequestList) //validRequests)
+
+            foreach (RfqShared.RfqNprRequestGrpc validRequest in rfqNprRequestList) //validRequests)
             {
-                nprApiDataGrpc.RfqNprRequest = validRequest.ToRfqNprRequest();
+                nprApiDataGrpc.RfqNprRequest = validRequest; //.ToRfqNprRequest();
                 NPR.NprApiDataGrpc nprAccessData = nprApiDataGrpc.ToNprApiAccessData();
-                accessDataList.Add(nprAccessData);
+                nprAccessDataList.Add(nprAccessData);
             }
 
             CreateNprApiGrpcRequest createNprApiGrpcRequest = new CreateNprApiGrpcRequest();
-            createNprApiGrpcRequest.NprApiData.AddRange(accessDataList);
+            createNprApiGrpcRequest.NprApiData.AddRange(nprAccessDataList);
             CreateNprApiGrpcResponse apiResponse = await _NPRGrpcClient.CreateNprApiGrpcAsync(createNprApiGrpcRequest);
             response.HttpStatusCode = apiResponse.HttpStatusCode;
             response.Message = apiResponse.Message;
@@ -2610,11 +2619,11 @@ namespace RfqModule.Services
             await Task.Delay(1);
             FilterGrpcResponse response = new FilterGrpcResponse();
             RfqFilterRequest filterRequest = new RfqFilterRequest();
-            Collection<RfqDrawingPartNumbersGrpc> filteredList = new Collection<RfqDrawingPartNumbersGrpc>();
+            Collection<RfqDrawingPartNumberGrpc> filteredList = new Collection<RfqDrawingPartNumberGrpc>();
             RfqFilterResponse rfqResponse = FilterSumitomoNumber<RfqFilterResponse>(request.StringValue, "SumitomoPartNumber", "==");
-            filteredList = ExtractRFQResponseData<RfqDrawingPartNumbersGrpc>(rfqResponse);
+            filteredList = ExtractRFQResponseData<RfqDrawingPartNumberGrpc>(rfqResponse);
             response.Success = true;
-            foreach (RfqDrawingPartNumbersGrpc part in filteredList)
+            foreach (RfqDrawingPartNumberGrpc part in filteredList)
             {
                 string sumitmoNumberString = part.SumitomoPartNumber.ToString();
                 double price = price = part.OriginalPartNumberPrice ?? 0;
@@ -2938,7 +2947,7 @@ namespace RfqModule.Services
                     compositeDetail.CreatedBy = item.CreatedBy;
                     compositeDetail.ModifiedBy = item.ModifiedBy;
 
-                    var dsiCompositeDetail = compositeDetail.ToDSICompositeDetail();
+                    DSICompositeDetailGrpc? dsiCompositeDetail = compositeDetail.ToDSICompositeDetail();
                     response.CompositeDetails.Add(dsiCompositeDetail);
                 }
 
@@ -3042,7 +3051,7 @@ namespace RfqModule.Services
                     compositeDetail.CreatedBy = item.CreatedBy;
                     compositeDetail.ModifiedBy = item.ModifiedBy;
 
-                    var dsiCompositeDetail = compositeDetail.ToDSICompositeDetail();
+                    DSICompositeDetailGrpc? dsiCompositeDetail = compositeDetail.ToDSICompositeDetail();
                     response.CompositeDetails.Add(dsiCompositeDetail);
                 }
 

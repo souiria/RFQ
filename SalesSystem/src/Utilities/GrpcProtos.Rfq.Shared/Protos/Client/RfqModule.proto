@@ -4,6 +4,7 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 import "CommonTypes.proto";
+import "RfqShared.proto";
 
 option csharp_namespace = "RfqModule";
 
@@ -39,9 +40,9 @@ service RfqModule {
     // rpc GetRfqDrawingPartNumbersByRfqIdGrpc (GetRfqDrawingPartNumbersByRfqIdGrpcRequest) returns (GetRfqDrawingPartNumbersByRfqIdGrpcResponse);
     // rpc UpdateRfqDrawingPartNumbersGrpc (UpdateRfqDrawingPartNumbersGrpcRequest) returns (UpdateRfqDrawingPartNumbersGrpcResponse);
     // rpc DeleteRfqDrawingPartNumbersGrpc (DeleteRfqDrawingPartNumbersGrpcRequest) returns (DeleteRfqDrawingPartNumbersGrpcResponse);
-    rpc GetRfqDrawingPartNumbersByRfqIdGrpc (RfqDrawingPartNumbersGrpcRequest) returns (ListRfqDrawingPartNumbersGrpc);
-    rpc UpdateRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequest) returns (RfqCrudResponse);
-    rpc DeleteRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequest) returns (RfqCrudResponse);
+    rpc GetRfqDrawingPartNumbersByRfqIdGrpc (RfqShared.RfqDrawingPartNumbersGrpcRequest) returns (RfqShared.ListRfqDrawingPartNumberGrpc);
+    rpc UpdateRfqDrawingPartNumbersGrpc (RfqShared.RfqDrawingPartNumbersGrpcRequest) returns (RfqCrudResponse);
+    rpc DeleteRfqDrawingPartNumbersGrpc (RfqShared.RfqDrawingPartNumbersGrpcRequest) returns (RfqCrudResponse);
 
     // Alternative parts
     rpc GetAlternativePartInfoBySumitomoNumberGrpc (GetAlternativePartInfoBySumitomoNumberRequest) returns (GetAlternativePartInfoBySumitomoNumberResponse);    
@@ -75,21 +76,6 @@ service RfqModule {
     rpc GetWireSpecificationByCompositeOptionGrpc (GetWireSpecificationByCompositeOptionRequest) returns (GetWireSpecificationByCompositeOptionResponse);
     rpc GetComponentsByHarnessAndOptionsGrpc (GetComponentsByHarnessAndOptionsRequest) returns (ListComponentGrpc);
 
-}
-
-
-// Shared request parameter message
-message RfqGrpcRequestParameter {
-	int32 RequestType = 1;
-	int32 Position = 2;
-	int32 Take = 3;
-	google.protobuf.BoolValue BoolValue = 4;
-	google.protobuf.StringValue StringValue = 5;
-	google.protobuf.Int32Value IntValue = 6;
-	google.protobuf.FloatValue DecimalValue = 7;
-	google.protobuf.Timestamp DateTimeValue = 8;
-	int64 RowId = 9;
-	int64 RfqId = 10;
 }
 
 message FileUploadRequest {
@@ -148,12 +134,7 @@ message GetRfqReasonsGrpcRequest {
 }
 
 message GetRfqReasonsGrpcResponse {
-    repeated RfqReasonGrpc RfqReasons = 1;
-}
-
-message RfqReasonGrpc {
-    google.protobuf.Int32Value RowId = 1;
-    google.protobuf.StringValue RfqReasonTitle = 2;   
+    repeated RfqShared.RfqReasonGrpc RfqReasons = 1;
 }
 
 message GetVehicleByProjectCodeGrpcRequest {
@@ -260,60 +241,6 @@ message UpdateRfqProjectGrpcResponse {
   bool Success = 1;
   string Message = 2;
 }
-
-
-// DrawingPartNumber
-// The one request
-message RfqDrawingPartNumbersGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
-  repeated RfqDrawingPartNumberGrpc RfqDrawingPartNumbersGrpcsToCreate = 2;
-  repeated RfqDrawingPartNumberGrpc RfqDrawingPartNumbersGrpcsToUpdate = 3;
-  repeated RfqDrawingPartNumberGrpc RfqDrawingPartNumbersGrpcsToDelete = 4;
-  int64 RfqId = 5;
-}
-
-// The one response; others will be using the RfqCrudResponse
-message ListRfqDrawingPartNumbersGrpc {
-	repeated RfqDrawingPartNumberGrpc RfqDrawingPartNumbers = 1;
-}
-
-message RfqDrawingPartNumberGrpc {
-  int64 RowId = 1;
-  int64 RfqId = 2;
-  string OriginalPartNumber = 3;
-  double OriginalPartNumberPrice = 4;
-  string SwappedPartNumber = 5;
-  double SwappedPartNumberPrice = 6;
-  string PriceSource = 7;
-  bool IsExactMatch = 8;
-  bool IsSwapped = 9;
-  string Comments = 10;
-  string SumitomoPartNumber = 11;
-  double Quantity = 12;
-}
-
-// The request parameter for RfqDrawingPartNumbersGrpcRequest
-// message UpdateRfqDrawingPartNumbersGrpcResponse {
-//   bool Success = 1;
-//   string Message = 2;
-// }
-// message UpdateRfqDrawingPartNumbersGrpcRequest {
-//   repeated RfqDrawingPartNumberGrpc RfqDrawingPartNumbersGrpcsToUpdate = 1;
-// }
-// message DeleteRfqDrawingPartNumbersGrpcResponse {
-//   bool Success = 1;
-//   string Message = 2;
-// }
-// message DeleteRfqDrawingPartNumbersGrpcRequest {
-//   repeated RfqDrawingPartNumberGrpc RfqDrawingPartNumbersGrpcsToDelete = 1;
-// }
-// message GetRfqDrawingPartNumbersByRfqIdGrpcRequest {
-// 
-//   int64 RfqId = 1;
-// }
-// message GetRfqDrawingPartNumbersByRfqIdGrpcResponse {
-//   repeated RfqDrawingPartNumber Parts = 1;
-// }
 
 message RfqProjectRequest {
   repeated RfqProject RfqProjectGrpcsToCreate = 1;
@@ -529,55 +456,55 @@ message GetAllAlternativePartsGrpcResponse
 //	google.protobuf.BoolValue IsActive = 37;
 //}
 
-message RfqNprRequestSampleSiteDataGrpc {
-	google.protobuf.StringValue BusinessUnitCode = 1;
-	google.protobuf.Int32Value SampleQty = 2;
-	google.protobuf.StringValue SendSampleContactPersonName = 3;
-	google.protobuf.Timestamp RequiredDate = 4;
-	google.protobuf.StringValue FreightAccount = 5;
-}
+// message RfqNprRequestSampleSiteDataGrpc {
+// 	google.protobuf.StringValue BusinessUnitCode = 1;
+// 	google.protobuf.Int32Value SampleQty = 2;
+// 	google.protobuf.StringValue SendSampleContactPersonName = 3;
+// 	google.protobuf.Timestamp RequiredDate = 4;
+// 	google.protobuf.StringValue FreightAccount = 5;
+// }
 
-message RfqNprRequestGrpc {
-	google.protobuf.StringValue Id = 1;
-	google.protobuf.StringValue ReasonDescription = 2;
-	google.protobuf.StringValue CustomerCode = 3;
-	google.protobuf.StringValue PlatformName = 4;
-	google.protobuf.StringValue ProgramName = 5;
-	google.protobuf.StringValue ProjectCode = 6;
-	google.protobuf.StringValue ManufacturingSite = 7;
-	google.protobuf.StringValue CustomerPartNumber = 8;
-	google.protobuf.StringValue SupplierPartNumber = 9;
-	google.protobuf.StringValue MaterialNumber = 10;
-	google.protobuf.StringValue MaterialDescription = 11;
-	google.protobuf.StringValue SEWSEUnitOfMeasurement = 12;
-	google.protobuf.StringValue SupplierGroup = 13;
-	google.protobuf.DoubleValue QtyPerVehicle = 14;
-	google.protobuf.Int32Value VehicleTotalQuantity = 15;
-	google.protobuf.Timestamp DeadlineDate = 16;
-	google.protobuf.StringValue NPRRaisedRemarks = 17;
-	google.protobuf.BoolValue IsCustomerNominatedSupplier = 18;
-	google.protobuf.BoolValue IsCustomerNominatedMaterial = 19;
-	google.protobuf.BoolValue IsSampleDataRequired = 20;
-	repeated RfqNprRequestSampleSiteDataGrpc SampleSiteDetails = 21;
-	google.protobuf.StringValue AssociatedParts = 22;
-	google.protobuf.StringValue SuggestedManufacturerGroup = 23;
-	google.protobuf.Timestamp CreatedAt = 24;
-	google.protobuf.StringValue CreatedBy = 25;
-	google.protobuf.Timestamp ModifiedAt = 26;
-	google.protobuf.StringValue ModifiedBy = 27;
-	google.protobuf.Int32Value SubmissionStatus = 28;
-	google.protobuf.StringValue RemoteEndpointResponse = 29;
-	google.protobuf.Timestamp SubmittedAt = 30;
-	google.protobuf.StringValue CustomerRfqNo = 31;
-	google.protobuf.BoolValue IsActive = 32;
-	google.protobuf.StringValue RequestID = 33;
-	google.protobuf.StringValue OriginatorName = 34;
-	google.protobuf.StringValue SupplierDetailComments = 35;
-	google.protobuf.Int32Value NPRUploadSeqNo = 36;
-	google.protobuf.Int32Value Status = 37;
-	google.protobuf.Timestamp Closed = 38;
-	google.protobuf.StringValue Reason = 39;
-}
+// message RfqNprRequestGrpc {
+// 	google.protobuf.StringValue Id = 1;
+// 	google.protobuf.StringValue ReasonDescription = 2;
+// 	google.protobuf.StringValue CustomerCode = 3;
+// 	google.protobuf.StringValue PlatformName = 4;
+// 	google.protobuf.StringValue ProgramName = 5;
+// 	google.protobuf.StringValue ProjectCode = 6;
+// 	google.protobuf.StringValue ManufacturingSite = 7;
+// 	google.protobuf.StringValue CustomerPartNumber = 8;
+// 	google.protobuf.StringValue SupplierPartNumber = 9;
+// 	google.protobuf.StringValue MaterialNumber = 10;
+// 	google.protobuf.StringValue MaterialDescription = 11;
+// 	google.protobuf.StringValue SEWSEUnitOfMeasurement = 12;
+// 	google.protobuf.StringValue SupplierGroup = 13;
+// 	google.protobuf.DoubleValue QtyPerVehicle = 14;
+// 	google.protobuf.Int32Value VehicleTotalQuantity = 15;
+// 	google.protobuf.Timestamp DeadlineDate = 16;
+// 	google.protobuf.StringValue NPRRaisedRemarks = 17;
+// 	google.protobuf.BoolValue IsCustomerNominatedSupplier = 18;
+// 	google.protobuf.BoolValue IsCustomerNominatedMaterial = 19;
+// 	google.protobuf.BoolValue IsSampleDataRequired = 20;
+// 	repeated RfqNprRequestSampleSiteDataGrpc SampleSiteDetails = 21;
+// 	google.protobuf.StringValue AssociatedParts = 22;
+// 	google.protobuf.StringValue SuggestedManufacturerGroup = 23;
+// 	google.protobuf.Timestamp CreatedAt = 24;
+// 	google.protobuf.StringValue CreatedBy = 25;
+// 	google.protobuf.Timestamp ModifiedAt = 26;
+// 	google.protobuf.StringValue ModifiedBy = 27;
+// 	google.protobuf.Int32Value SubmissionStatus = 28;
+// 	google.protobuf.StringValue RemoteEndpointResponse = 29;
+// 	google.protobuf.Timestamp SubmittedAt = 30;
+// 	google.protobuf.StringValue CustomerRfqNo = 31;
+// 	google.protobuf.BoolValue IsActive = 32;
+// 	google.protobuf.StringValue RequestID = 33;
+// 	google.protobuf.StringValue OriginatorName = 34;
+// 	google.protobuf.StringValue SupplierDetailComments = 35;
+// 	google.protobuf.Int32Value NPRUploadSeqNo = 36;
+// 	google.protobuf.Int32Value Status = 37;
+// 	google.protobuf.Timestamp Closed = 38;
+// 	google.protobuf.StringValue Reason = 39;
+// }
 
 message GetRfqNprRequestByRfqNumberGrpcRequest {
 	int32 position = 1;
@@ -585,7 +512,7 @@ message GetRfqNprRequestByRfqNumberGrpcRequest {
 	string RfqNumber = 3;
 }
 message GetRfqNprRequestByRfqNumberGrpcResponse {
-	repeated RfqNprRequestGrpc RfqNprRequestGrpcs = 1;
+	repeated RfqShared.RfqNprRequestGrpc RfqNprRequestGrpcs = 1;
 }
 message GetRfqNprRequestByRfqProjectIdGrpcRequest {
 	int32 position = 1;
@@ -593,7 +520,7 @@ message GetRfqNprRequestByRfqProjectIdGrpcRequest {
 	string RfqProjectId = 3;
 }
 message GetRfqNprRequestByRfqProjectIdGrpcResponse {
-	repeated RfqNprRequestGrpc RfqNprRequestGrpcs = 1;
+	repeated RfqShared.RfqNprRequestGrpc RfqNprRequestGrpcs = 1;
 }
 message GetRfqNprRequestByIdGrpcRequest {
 	int32 position = 1;
@@ -601,7 +528,7 @@ message GetRfqNprRequestByIdGrpcRequest {
 	string Id = 3;
 }
 message GetRfqNprRequestByIdGrpcResponse {
-	repeated RfqNprRequestGrpc RfqNprRequestGrpcs = 1;
+	repeated RfqShared.RfqNprRequestGrpc RfqNprRequestGrpcs = 1;
 }
 
 message GetAllRfqNprRequestGrpcRequest {
@@ -609,10 +536,10 @@ message GetAllRfqNprRequestGrpcRequest {
 	int32 take = 2; 
 }
 message GetAllRfqNprRequestGrpcResponse {
-	repeated RfqNprRequestGrpc RfqNprRequestGrpcs = 1;
+	repeated RfqShared.RfqNprRequestGrpc RfqNprRequestGrpcs = 1;
 }
 message CreateRfqNprRequestGrpcRequest {
-	repeated RfqNprRequestGrpc RfqNprRequestGrpc = 1;
+	repeated RfqShared.RfqNprRequestGrpc RfqNprRequestGrpc = 1;
 }
 
 message CreateRfqNprRequestGrpcResponse {
@@ -622,7 +549,7 @@ message CreateRfqNprRequestGrpcResponse {
 }
 
 message UpdateRfqNprRequestGrpcRequest {
-	repeated RfqNprRequestGrpc RfqNprRequestGrpc = 1;
+	repeated RfqShared.RfqNprRequestGrpc RfqNprRequestGrpc = 1;
 }
 message UpdateRfqNprRequestGrpcResponse {
   bool Success = 1;
@@ -637,7 +564,7 @@ message UpdateRfqNprRequestStatusGrpcResponse {
 }
 
 message DeleteRfqNprRequestByIdGrpcRequest {
-	repeated RfqNprRequestGrpc RfqNprRequestGrpc = 1;
+	repeated RfqShared.RfqNprRequestGrpc RfqNprRequestGrpc = 1;
 }
 
 message DeleteRfqNprRequestByIdGrpcResponse {
@@ -647,7 +574,7 @@ message DeleteRfqNprRequestByIdGrpcResponse {
 
 
 message MgrValidateNprRequestRequest {
-  repeated RfqNprRequestGrpc items = 1;
+  repeated RfqShared.RfqNprRequestGrpc items = 1;
 }
 
 message MgrValidationError {
@@ -670,7 +597,7 @@ message MgrValidateNprRequestResponse {
 }
 
 message NprApiDataGrpc {
-	RfqNprRequestGrpc RfqNprRequest = 1;
+	RfqShared.RfqNprRequestGrpc RfqNprRequest = 1;
 	google.protobuf.StringValue NprId = 2;
 }
 

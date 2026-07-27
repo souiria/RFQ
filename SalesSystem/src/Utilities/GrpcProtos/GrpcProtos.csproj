@@ -1,14 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<ItemGroup>
 		<PackageReference Include="Grpc.AspNetCore" />
 	</ItemGroup>
-
+	
   <ItemGroup>
-    <Protobuf Include="Protos\**\*.proto" GrpcServices="Both" ProtoRoot="Protos" />
-    <None Remove="Protos\Core.proto" />
-    <Protobuf Update="Protos\CommonTypes.proto" GrpcServices="None" />
-    <Protobuf Update="Protos\CDb.proto" GrpcServices="Both" />
+	<!-- AdditionalImportDirs lets every proto resolve CommonTypes.proto -->
+	  <Protobuf Include="Protos\**\*.proto" GrpcServices="Both" ProtoRoot="Protos">
+		  <AdditionalImportDirs>..\GrpcProtos.Shared\Protos\Shared;..\GrpcProtos.Rfq.Shared\Protos\Shared</AdditionalImportDirs>
+	  </Protobuf>
+	  <ProjectReference Include="..\GrpcProtos.Rfq.Shared\GrpcProtos.Rfq.Shared.csproj" />
+	  <ProjectReference Include="..\GrpcProtos.Shared\GrpcProtos.Shared.csproj" />
+
+	<Protobuf Update="Protos\CDb.proto" GrpcServices="Both" />
     <Protobuf Update="Protos\CDbCommonTypes.proto" GrpcServices="Both" />
     <Protobuf Update="Protos\Component.proto" GrpcServices="Both" />
     <Protobuf Update="Protos\Components\Cable.proto" GrpcServices="Both" />

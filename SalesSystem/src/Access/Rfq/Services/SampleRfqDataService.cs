@@ -3,12 +3,12 @@
     public static class SampleRfqDataService
     {
         #region RfqDrawingPartNumber
-        public static ListRfqDrawingPartNumbersGrpc PopulateRfqDrawingPartNumbersGrpc()
+        public static ListRfqDrawingPartNumberGrpc PopulateRfqDrawingPartNumbersGrpc()
         {
-            ListRfqDrawingPartNumbersGrpc listRfqDrawingPartNumbersGrpc = new ListRfqDrawingPartNumbersGrpc();
+            ListRfqDrawingPartNumberGrpc listRfqDrawingPartNumbersGrpc = new ListRfqDrawingPartNumberGrpc();
             for (int i = 0; i < 5; i++)
             {
-                RfqDrawingPartNumbersGrpc rfqDrawingPartNumbersGrpc = new RfqDrawingPartNumbersGrpc();
+                RfqDrawingPartNumberGrpc rfqDrawingPartNumbersGrpc = new RfqDrawingPartNumberGrpc();
                 rfqDrawingPartNumbersGrpc.RowId = i;
                 rfqDrawingPartNumbersGrpc.RfqId = i;
                 rfqDrawingPartNumbersGrpc.OriginalPartNumber = $"OriginalPartNumber{i}";
@@ -26,7 +26,7 @@
                 listRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Add(rfqDrawingPartNumbersGrpc);
             }
 
-            RfqDrawingPartNumbersGrpc fixedrfqDrawingPartNumbersGrpc = new RfqDrawingPartNumbersGrpc();
+            RfqDrawingPartNumberGrpc fixedrfqDrawingPartNumbersGrpc = new RfqDrawingPartNumberGrpc();
             fixedrfqDrawingPartNumbersGrpc.RowId = 6;
             fixedrfqDrawingPartNumbersGrpc.RfqId = 6;
             fixedrfqDrawingPartNumbersGrpc.OriginalPartNumber = $"TestOriginalPartNumber";
@@ -114,13 +114,13 @@
             {
                 RfqReasonGrpc rfqReasonGrpc = new RfqReasonGrpc();
                 rfqReasonGrpc.RowId = i;
-                rfqReasonGrpc.ReasonTitle = $"ReasonTitle{i}";
+                rfqReasonGrpc.RfqReasonTitle = $"ReasonTitle{i}";
                 listRfqReasonGrpc.RfqReasons.Add(rfqReasonGrpc);
             }
 
             RfqReasonGrpc fixedRfqReasonGrpc = new RfqReasonGrpc();
             fixedRfqReasonGrpc.RowId = 6;
-            fixedRfqReasonGrpc.ReasonTitle = $"TestReasonTitle";
+            fixedRfqReasonGrpc.RfqReasonTitle = $"TestReasonTitle";
             listRfqReasonGrpc.RfqReasons.Add(fixedRfqReasonGrpc);
             return listRfqReasonGrpc;
         }

@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 import "CommonTypes.proto";
+import "RfqShared.proto";
 
 option csharp_namespace = "Rfq";
 
@@ -13,10 +13,10 @@ package Rfq;
 service Rfq {
   // Sends a greeting
    rpc SayHello (CommonTypes.HelloRequest) returns (CommonTypes.HelloReply);
-  rpc CreateRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequest) returns (RfqCrudGrpcResponse);
-  rpc ReadRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequest) returns (ListRfqDrawingPartNumbersGrpc);
-  rpc UpdateRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequest) returns (RfqCrudGrpcResponse);
-  rpc DeleteRfqDrawingPartNumbersGrpc (RfqDrawingPartNumbersGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc CreateRfqDrawingPartNumbersGrpc (RfqShared.RfqDrawingPartNumbersGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc ReadRfqDrawingPartNumbersGrpc (RfqShared.RfqDrawingPartNumbersGrpcRequest) returns (RfqShared.ListRfqDrawingPartNumberGrpc);
+  rpc UpdateRfqDrawingPartNumbersGrpc (RfqShared.RfqDrawingPartNumbersGrpcRequest) returns (RfqCrudGrpcResponse);
+  rpc DeleteRfqDrawingPartNumbersGrpc (RfqShared.RfqDrawingPartNumbersGrpcRequest) returns (RfqCrudGrpcResponse);
 
   rpc CreateRfqProjectGrpc (RfqProjectGrpcRequest) returns (RfqCrudGrpcResponse);
   rpc ReadRfqProjectGrpc (RfqProjectGrpcRequest) returns (ListRfqProjectGrpc);
@@ -28,7 +28,7 @@ service Rfq {
   rpc UpdateRfqNotesGrpc (RfqNotesGrpcRequest) returns (RfqCrudGrpcResponse);
 
   rpc CreateRfqReasonGrpc (RfqReasonGrpcRequest) returns (RfqCrudGrpcResponse);
-  rpc ReadRfqReasonGrpc (RfqReasonGrpcRequest) returns (ListRfqReasonGrpc);
+  rpc ReadRfqReasonGrpc (RfqReasonGrpcRequest) returns (RfqShared.ListRfqReasonGrpc);
   rpc UpdateRfqReasonGrpc (RfqReasonGrpcRequest) returns (RfqCrudGrpcResponse);
 
   rpc CreateDsiBendGrpc (DsiBendGrpcRequest) returns (RfqCrudGrpcResponse);
@@ -168,20 +168,6 @@ rpc DeleteRfqNprRequestByIdGrpc (RfqNprRequestGrpcRequest) returns (RfqCrudGrpcR
     rpc ValidateNprRequestGrpc (ValidateNprRequestRequest) returns (ValidateNprRequestResponse);
 }
 
-// Shared request parameter message
-message RfqGrpcRequestParameter {
-	int32 RequestType = 1;
-	int32 Position = 2;
-	int32 Take = 3;
-	google.protobuf.BoolValue BoolValue = 4;
-	google.protobuf.StringValue StringValue = 5;
-	google.protobuf.Int32Value IntValue = 6;
-	google.protobuf.FloatValue DecimalValue = 7;
-	google.protobuf.Timestamp DateTimeValue = 8;
-	int64 RowId = 9;
-	int64 RfqId = 10;
-}
-
 // Shared CRUD response message
 message RfqCrudGrpcResponse {
     bool SaveSuccess = 1;
@@ -189,40 +175,8 @@ message RfqCrudGrpcResponse {
 	google.protobuf.StringValue StringValue = 3;
 }
 
-message RfqDrawingPartNumbersGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
-  repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbersGrpcsToCreate = 2;
-  repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbersGrpcsToUpdate = 3;
-  repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbersGrpcsToDelete = 4;
-  int64 RfqId = 5;
-}
-
-message RfqDrawingPartNumbersGrpc {
-  int64 RowId = 1;
-  int64 RfqId = 2;
-  google.protobuf.StringValue OriginalPartNumber = 3;
-  google.protobuf.DoubleValue OriginalPartNumberPrice = 4;
-  google.protobuf.StringValue SwappedPartNumber = 5;
-  google.protobuf.DoubleValue SwappedPartNumberPrice = 6;
-  google.protobuf.StringValue PriceSource = 7;
-  google.protobuf.BoolValue IsExactMatch = 8;
-  google.protobuf.BoolValue IsSwapped = 9;
-  google.protobuf.StringValue Comments = 10;
-  google.protobuf.StringValue SumitomoPartNumber = 11;
-  google.protobuf.StringValue SupplierPartNumber = 12;
-  google.protobuf.StringValue NprId = 13;
-  google.protobuf.StringValue CustomerPartNumber = 14;
-  google.protobuf.StringValue NprRequest = 15;
-  google.protobuf.Int32Value Status = 16;
-  google.protobuf.DoubleValue Quantity = 17;
-}
-
-message ListRfqDrawingPartNumbersGrpc {
-	repeated RfqDrawingPartNumbersGrpc RfqDrawingPartNumbers = 1;
-}
-
 message RfqProjectGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated RfqProjectGrpc RfqProjectGrpcsToCreate = 2;
   repeated RfqProjectGrpc RfqProjectGrpcsToUpdate = 3;
   repeated RfqProjectGrpc RfqProjectGrpcsToDelete = 4;
@@ -254,7 +208,7 @@ message ListRfqProjectGrpc {
 }
 
 message RfqNotesGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated RfqNotesGrpc RfqNotesGrpcsToCreate = 2;
   repeated RfqNotesGrpc RfqNotesGrpcsToUpdate = 3;
   repeated RfqNotesGrpc RfqNotesGrpcsToDelete = 4;
@@ -273,24 +227,14 @@ message ListRfqNotesGrpc {
 }
 
 message RfqReasonGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
-  repeated RfqReasonGrpc RfqReasonGrpcsToCreate = 2;
-  repeated RfqReasonGrpc RfqReasonGrpcsToUpdate = 3;
-  repeated RfqReasonGrpc RfqReasonGrpcsToDelete = 4;
-}
-
-message RfqReasonGrpc {
-	int32 RowId = 1;
-	string ReasonTitle = 2;
-
-}
-
-message ListRfqReasonGrpc {
-	repeated RfqReasonGrpc RfqReasons = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  repeated RfqShared.RfqReasonGrpc RfqReasonGrpcsToCreate = 2;
+  repeated RfqShared.RfqReasonGrpc RfqReasonGrpcsToUpdate = 3;
+  repeated RfqShared.RfqReasonGrpc RfqReasonGrpcsToDelete = 4;
 }
 
 message DsiBendGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiBendGrpc DsiBendGrpcsToCreate = 2;
   repeated DsiBendGrpc DsiBendGrpcsToUpdate = 3;
   repeated DsiBendGrpc DsiBendGrpcsToDelete = 4;
@@ -311,7 +255,7 @@ message ListDsiBendGrpc {
 }
 
 message DsiBranchConfigurationGrpcRequest {
-   RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+   RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
    repeated DsiBranchConfigurationGrpc DsiBranchConfigurationGrpcsToCreate = 2;
    repeated DsiBranchConfigurationGrpc DsiBranchConfigurationGrpcsToUpdate = 3;
    repeated DsiBranchConfigurationGrpc DsiBranchConfigurationGrpcsToDelete = 4;
@@ -345,7 +289,7 @@ message ListDsiBranchConfigurationGrpc {
 }
 
 message DsiBranchConfigurationBendAssociationGrpcRequest {
-   RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+   RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
    repeated DsiBranchConfigurationBendAssociationGrpc DsiBranchConfigurationBendAssociationGrpcsToCreate = 2;
    repeated DsiBranchConfigurationBendAssociationGrpc DsiBranchConfigurationBendAssociationGrpcsToUpdate = 3;
    repeated DsiBranchConfigurationBendAssociationGrpc DsiBranchConfigurationBendAssociationGrpcsToDelete = 4;
@@ -366,7 +310,7 @@ message ListDsiBranchConfigurationBendAssociationGrpc {
 }
 
 message DsiBranchInsulationGrpcRequest {
-   RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+   RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
    repeated DsiBranchInsulationGrpc DsiBranchInsulationGrpcsToCreate = 2;
    repeated DsiBranchInsulationGrpc DsiBranchInsulationGrpcsToUpdate = 3;
    repeated DsiBranchInsulationGrpc DsiBranchInsulationGrpcsToDelete = 4;
@@ -424,7 +368,7 @@ message ListDsiBranchInsulationGrpc {
 }
 
 message DsiBranchInsulationThroughNodeGrpcRequest {
-   RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+   RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
    repeated DsiBranchInsulationThroughNodeGrpc DsiBranchInsulationThroughNodeGrpcsToCreate = 2;
    repeated DsiBranchInsulationThroughNodeGrpc DsiBranchInsulationThroughNodeGrpcsToUpdate = 3;
    repeated DsiBranchInsulationThroughNodeGrpc DsiBranchInsulationThroughNodeGrpcsToDelete = 4;
@@ -449,7 +393,7 @@ message ListDsiBranchInsulationThroughNodeGrpc {
 }
 
 message DsiCavityMappingGrpcRequest {
-   RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+   RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
    repeated DsiCavityMappingGrpc DsiCavityMappingGrpcsToCreate = 2;
    repeated DsiCavityMappingGrpc DsiCavityMappingGrpcsToUpdate = 3;
    repeated DsiCavityMappingGrpc DsiCavityMappingGrpcsToDelete = 4;
@@ -470,7 +414,7 @@ message ListDsiCavityMappingGrpc {
 }
 
 message DsiCentreStripGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiCentreStripGrpc DsiCentreStripGrpcsToCreate = 2;
   repeated DsiCentreStripGrpc DsiCentreStripGrpcsToUpdate = 3;
   repeated DsiCentreStripGrpc DsiCentreStripGrpcsToDelete = 4;
@@ -498,7 +442,7 @@ message ListDsiCentreStripGrpc {
 }
 
 message DsiCircuitOptionGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiCircuitOptionGrpc DsiCircuitOptionGrpcsToCreate = 2;
   repeated DsiCircuitOptionGrpc DsiCircuitOptionGrpcsToUpdate = 3;
   repeated DsiCircuitOptionGrpc DsiCircuitOptionGrpcsToDelete = 4;
@@ -519,7 +463,7 @@ message ListDsiCircuitOptionGrpc {
 }
 
 message DsiComponentGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiComponentGrpc DsiComponentGrpcsToCreate = 2;
   repeated DsiComponentGrpc DsiComponentGrpcsToUpdate = 3;
   repeated DsiComponentGrpc DsiComponentGrpcsToDelete = 4;
@@ -571,7 +515,7 @@ message ListDsiComponentGrpc {
 
 
 message DsiCompositeDetailGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiCompositeDetailGrpc DsiCompositeDetailGrpcsToCreate = 2;
   repeated DsiCompositeDetailGrpc DsiCompositeDetailGrpcsToUpdate = 3;
   repeated DsiCompositeDetailGrpc DsiCompositeDetailGrpcsToDelete = 4;
@@ -629,7 +573,7 @@ message ListDsiCompositeDetailGrpc {
 }
 
 message DsiCompositeDetailCircuitOptionAssociationGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiCompositeDetailCircuitOptionAssociationGrpc DsiCompositeDetailCircuitOptionAssociationGrpcsToCreate = 2;
   repeated DsiCompositeDetailCircuitOptionAssociationGrpc DsiCompositeDetailCircuitOptionAssociationGrpcsToUpdate = 3;
   repeated DsiCompositeDetailCircuitOptionAssociationGrpc DsiCompositeDetailCircuitOptionAssociationGrpcsToDelete = 4;
@@ -650,7 +594,7 @@ message ListDsiCompositeDetailCircuitOptionAssociationGrpc {
 }
 
 message DsiCompositeOptionGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiCompositeOptionGrpc DsiCompositeOptionGrpcsToCreate = 2;
   repeated DsiCompositeOptionGrpc DsiCompositeOptionGrpcsToUpdate = 3;
   repeated DsiCompositeOptionGrpc DsiCompositeOptionGrpcsToDelete = 4;
@@ -673,7 +617,7 @@ message ListDsiCompositeOptionGrpc {
 }
 
 message DsiHarnessGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiHarnessGrpc DsiHarnessGrpcsToCreate = 2;
   repeated DsiHarnessGrpc DsiHarnessGrpcsToUpdate = 3;
   repeated DsiHarnessGrpc DsiHarnessGrpcsToDelete = 4;
@@ -735,7 +679,7 @@ message ListDsiHarnessGrpc {
 }
 
 message DsiHarnessScopeGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiHarnessScopeGrpc DsiHarnessScopeGrpcsToCreate = 2;
   repeated DsiHarnessScopeGrpc DsiHarnessScopeGrpcsToUpdate = 3;
   repeated DsiHarnessScopeGrpc DsiHarnessScopeGrpcsToDelete = 4;
@@ -761,7 +705,7 @@ message ListDsiHarnessScopeGrpc {
 }
 
 message DsiHarnessScopeScopeAssociationGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiHarnessScopeScopeAssociationGrpc DsiHarnessScopeScopeAssociationGrpcsToCreate = 2;
   repeated DsiHarnessScopeScopeAssociationGrpc DsiHarnessScopeScopeAssociationGrpcsToUpdate = 3;
   repeated DsiHarnessScopeScopeAssociationGrpc DsiHarnessScopeScopeAssociationGrpcsToDelete = 4;
@@ -782,7 +726,7 @@ message ListDsiHarnessScopeScopeAssociationGrpc {
 }
 
 message DsiManualBomQuantityGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiManualBomQuantityGrpc DsiManualBomQuantityGrpcsToCreate = 2;
   repeated DsiManualBomQuantityGrpc DsiManualBomQuantityGrpcsToUpdate = 3;
   repeated DsiManualBomQuantityGrpc DsiManualBomQuantityGrpcsToDelete = 4;
@@ -805,7 +749,7 @@ message ListDsiManualBomQuantityGrpc {
 }
 
 message DsiMidWireComponentGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiMidWireComponentGrpc DsiMidWireComponentGrpcsToCreate = 2;
   repeated DsiMidWireComponentGrpc DsiMidWireComponentGrpcsToUpdate = 3;
   repeated DsiMidWireComponentGrpc DsiMidWireComponentGrpcsToDelete = 4;
@@ -832,7 +776,7 @@ message ListDsiMidWireComponentGrpc {
 }
 
 message DsiModuleChildDetailGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiModuleChildDetailGrpc DsiModuleChildDetailGrpcsToCreate = 2;
   repeated DsiModuleChildDetailGrpc DsiModuleChildDetailGrpcsToUpdate = 3;
   repeated DsiModuleChildDetailGrpc DsiModuleChildDetailGrpcsToDelete = 4;
@@ -890,7 +834,7 @@ message ListDsiModuleChildDetailGrpc {
 }
 
 message DsiModuleCompatibilityGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiModuleCompatibilityGrpc DsiModuleCompatibilityGrpcsToCreate = 2;
   repeated DsiModuleCompatibilityGrpc DsiModuleCompatibilityGrpcsToUpdate = 3;
   repeated DsiModuleCompatibilityGrpc DsiModuleCompatibilityGrpcsToDelete = 4;
@@ -913,7 +857,7 @@ message ListDsiModuleCompatibilityGrpc {
 }
 
 message DsiMulticoreSpecificationGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiMulticoreSpecificationGrpc DsiMulticoreSpecificationGrpcsToCreate = 2;
   repeated DsiMulticoreSpecificationGrpc DsiMulticoreSpecificationGrpcsToUpdate = 3;
   repeated DsiMulticoreSpecificationGrpc DsiMulticoreSpecificationGrpcsToDelete = 4;
@@ -958,7 +902,7 @@ message ListDsiMulticoreSpecificationGrpc {
 }
 
 message DsiPinMappingGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiPinMappingGrpc DsiPinMappingGrpcsToCreate = 2;
   repeated DsiPinMappingGrpc DsiPinMappingGrpcsToUpdate = 3;
   repeated DsiPinMappingGrpc DsiPinMappingGrpcsToDelete = 4;
@@ -986,7 +930,7 @@ message ListDsiPinMappingGrpc {
 }
 
 message DsiPinMappingCavityMappingAssociationGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiPinMappingCavityMappingAssociationGrpc DsiPinMappingCavityMappingAssociationGrpcsToCreate = 2;
   repeated DsiPinMappingCavityMappingAssociationGrpc DsiPinMappingCavityMappingAssociationGrpcsToUpdate = 3;
   repeated DsiPinMappingCavityMappingAssociationGrpc DsiPinMappingCavityMappingAssociationGrpcsToDelete = 4;
@@ -1008,7 +952,7 @@ message ListDsiPinMappingCavityMappingAssociationGrpc {
 }
 
 message DsiScopeGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiScopeGrpc DsiScopeGrpcsToCreate = 2;
   repeated DsiScopeGrpc DsiScopeGrpcsToUpdate = 3;
   repeated DsiScopeGrpc DsiScopeGrpcsToDelete = 4;
@@ -1028,7 +972,7 @@ message ListDsiScopeGrpc {
 }
 
 message DsiSupplierGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiSupplierGrpc DsiSupplierGrpcsToCreate = 2;
   repeated DsiSupplierGrpc DsiSupplierGrpcsToUpdate = 3;
   repeated DsiSupplierGrpc DsiSupplierGrpcsToDelete = 4;
@@ -1054,7 +998,7 @@ message ListDsiSupplierGrpc {
 }
 
 message DsiTransformedCompositeDetailGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiTransformedCompositeDetailGrpc DsiTransformedCompositeDetailGrpcsToCreate = 2;
   repeated DsiTransformedCompositeDetailGrpc DsiTransformedCompositeDetailGrpcsToUpdate = 3;
   repeated DsiTransformedCompositeDetailGrpc DsiTransformedCompositeDetailGrpcsToDelete = 4;
@@ -1111,7 +1055,7 @@ message ListDsiTransformedCompositeDetailGrpc {
 }
 
 message DsiTransformedHarnessGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiTransformedHarnessGrpc DsiTransformedHarnessGrpcsToCreate = 2;
   repeated DsiTransformedHarnessGrpc DsiTransformedHarnessGrpcsToUpdate = 3;
   repeated DsiTransformedHarnessGrpc DsiTransformedHarnessGrpcsToDelete = 4;
@@ -1172,7 +1116,7 @@ message ListDsiTransformedHarnessGrpc {
 }
 
 message DsiTransformedModuleChildDetailGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiTransformedModuleChildDetailGrpc DsiTransformedModuleChildDetailGrpcsToCreate = 2;
   repeated DsiTransformedModuleChildDetailGrpc DsiTransformedModuleChildDetailGrpcsToUpdate = 3;
   repeated DsiTransformedModuleChildDetailGrpc DsiTransformedModuleChildDetailGrpcsToDelete = 4;
@@ -1230,7 +1174,7 @@ message ListDsiTransformedModuleChildDetailGrpc {
 }
 
 message DsiUnitOfMeasureGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiUnitOfMeasureGrpc DsiUnitOfMeasureGrpcsToCreate = 2;
   repeated DsiUnitOfMeasureGrpc DsiUnitOfMeasureGrpcsToUpdate = 3;
   repeated DsiUnitOfMeasureGrpc DsiUnitOfMeasureGrpcsToDelete = 4;
@@ -1248,7 +1192,7 @@ message ListDsiUnitOfMeasureGrpc {
 }
 
 message DsiWireMulticoreMarkerGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiWireMulticoreMarkerGrpc DsiWireMulticoreMarkerGrpcsToCreate = 2;
   repeated DsiWireMulticoreMarkerGrpc DsiWireMulticoreMarkerGrpcsToUpdate = 3;
   repeated DsiWireMulticoreMarkerGrpc DsiWireMulticoreMarkerGrpcsToDelete = 4;
@@ -1276,7 +1220,7 @@ message ListDsiWireMulticoreMarkerGrpc {
 
 
 message DsiWireSpecificationGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiWireSpecificationGrpc DsiWireSpecificationGrpcsToCreate = 2;
   repeated DsiWireSpecificationGrpc DsiWireSpecificationGrpcsToUpdate = 3;
   repeated DsiWireSpecificationGrpc DsiWireSpecificationGrpcsToDelete = 4;
@@ -1328,7 +1272,7 @@ message ListDsiWireSpecificationGrpc {
 }
 
 message DsiWireThroughNodeGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
   repeated DsiWireThroughNodeGrpc DsiWireThroughNodeGrpcsToCreate = 2;
   repeated DsiWireThroughNodeGrpc DsiWireThroughNodeGrpcsToUpdate = 3;
   repeated DsiWireThroughNodeGrpc DsiWireThroughNodeGrpcsToDelete = 4;
@@ -1354,14 +1298,14 @@ message ListDsiWireThroughNodeGrpc {
 }
 
 message RfqNprRequestGrpcRequest {
-  RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
-  repeated RfqNprRequestGrpc RfqNprRequestGrpcsToCreate = 2;
-  repeated RfqNprRequestGrpc RfqNprRequestGrpcsToUpdate = 3;
-  repeated RfqNprRequestGrpc RfqNprRequestGrpcsToDelete = 4;
+  RfqShared.RfqGrpcRequestParameter RfqGrpcRequestParameter = 1;
+  repeated RfqShared.RfqNprRequestGrpc RfqNprRequestGrpcsToCreate = 2;
+  repeated RfqShared.RfqNprRequestGrpc RfqNprRequestGrpcsToUpdate = 3;
+  repeated RfqShared.RfqNprRequestGrpc RfqNprRequestGrpcsToDelete = 4;
 }
 
 message ListRfqNprRequestGrpc {
-	repeated RfqNprRequestGrpc RfqNprRequestGrpcs = 1;
+	repeated RfqShared.RfqNprRequestGrpc RfqNprRequestGrpcs = 1;
 }
 
 //message RfqNprRequestGrpc {
@@ -1403,55 +1347,13 @@ message ListRfqNprRequestGrpc {
 //	google.protobuf.StringValue RfqNumber = 36;
 //	google.protobuf.BoolValue IsActive = 37;
 //}
-message RfqNprRequestSampleSiteDataGrpc {
-	google.protobuf.StringValue BusinessUnitCode = 1;
-	google.protobuf.Int32Value SampleQty = 2;
-	google.protobuf.StringValue SendSampleContactPersonName = 3;
-	google.protobuf.Timestamp RequiredDate = 4;
-	google.protobuf.StringValue FreightAccount = 5;
-}
-
-message RfqNprRequestGrpc {
-	google.protobuf.StringValue Id = 1;
-	google.protobuf.StringValue ReasonDescription = 2;
-	google.protobuf.StringValue CustomerCode = 3;
-	google.protobuf.StringValue PlatformName = 4;
-	google.protobuf.StringValue ProgramName = 5;
-	google.protobuf.StringValue ProjectCode = 6;
-	google.protobuf.StringValue ManufacturingSite = 7;
-	google.protobuf.StringValue CustomerPartNumber = 8;
-	google.protobuf.StringValue SupplierPartNumber = 9;
-	google.protobuf.StringValue MaterialNumber = 10;
-	google.protobuf.StringValue MaterialDescription = 11;
-	google.protobuf.StringValue SEWSEUnitOfMeasurement = 12;
-	google.protobuf.StringValue SupplierGroup = 13;
-	google.protobuf.DoubleValue QtyPerVehicle = 14;
-	google.protobuf.Int32Value VehicleTotalQuantity = 15;
-	google.protobuf.Timestamp DeadlineDate = 16;
-	google.protobuf.StringValue NPRRaisedRemarks = 17;
-	google.protobuf.BoolValue IsCustomerNominatedSupplier = 18;
-	google.protobuf.BoolValue IsCustomerNominatedMaterial = 19;
-	google.protobuf.BoolValue IsSampleDataRequired = 20;
-	repeated RfqNprRequestSampleSiteDataGrpc SampleSiteDetails = 21;
-	google.protobuf.StringValue AssociatedParts = 22;
-	google.protobuf.StringValue SuggestedManufacturerGroup = 23;
-	google.protobuf.Timestamp CreatedAt = 24;
-	google.protobuf.StringValue CreatedBy = 25;
-	google.protobuf.Timestamp ModifiedAt = 26;
-	google.protobuf.StringValue ModifiedBy = 27;
-	google.protobuf.Int32Value SubmissionStatus = 28;
-	google.protobuf.StringValue RemoteEndpointResponse = 29;
-	google.protobuf.Timestamp SubmittedAt = 30;
-	google.protobuf.StringValue CustomerRfqNo = 31;
-	google.protobuf.BoolValue IsActive = 32;
-	google.protobuf.StringValue RequestID = 33;
-	google.protobuf.StringValue OriginatorName = 34;
-	google.protobuf.StringValue SupplierDetailComments = 35;
-	google.protobuf.Int32Value NPRUploadSeqNo = 36;
-	google.protobuf.Int32Value Status = 37;
-	google.protobuf.Timestamp Closed = 38;
-	google.protobuf.StringValue Reason = 39;
-}
+// message RfqNprRequestSampleSiteDataGrpc {
+// 	google.protobuf.StringValue BusinessUnitCode = 1;
+// 	google.protobuf.Int32Value SampleQty = 2;
+// 	google.protobuf.StringValue SendSampleContactPersonName = 3;
+// 	google.protobuf.Timestamp RequiredDate = 4;
+// 	google.protobuf.StringValue FreightAccount = 5;
+// }
 
 message RfqFilterRequest {
 	string DatabaseList = 1;
@@ -1462,8 +1364,8 @@ message RfqFilterResponse {
 	bool Success = 1;
 	ListRfqProjectGrpc ListRfqProjectGrpc = 2;
 	ListRfqNotesGrpc ListRfqNotesGrpc = 3;
-	ListRfqReasonGrpc ListRfqReasonGrpc = 4;
-	ListRfqDrawingPartNumbersGrpc ListRfqDrawingPartNumbersGrpc = 5;
+	RfqShared.ListRfqReasonGrpc ListRfqReasonGrpc = 4;
+	RfqShared.ListRfqDrawingPartNumberGrpc ListRfqDrawingPartNumbersGrpc = 5;
 	ListDsiBendGrpc ListDsiBendGrpc = 6;
 	ListDsiBranchConfigurationGrpc ListDsiBranchConfigurationGrpc = 7;
 	ListDsiBranchConfigurationBendAssociationGrpc ListDsiBranchConfigurationBendAssociationGrpc = 9;
@@ -1499,7 +1401,7 @@ message RfqFilterResponse {
 }
 
 message ValidateNprRequestRequest {
-  repeated RfqNprRequestGrpc items = 1;
+  repeated RfqShared.RfqNprRequestGrpc items = 1;
 }
 message ValidationError {
   string field = 1;

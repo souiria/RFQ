@@ -30,5 +30,6 @@ global using Rfq.Endpoints.GrpcServices;
 global using Rfq.Enums;
 global using Rfq.Extensions;
 global using Rfq.Services;
+global using RfqShared;
 global using SharedKernel;
 

@@ -55,7 +55,7 @@ using Rfq.Services;
 
             RfqFilterRequest rfqDrawingPnFilterRequest;
             rfqDrawingPnFilterRequest = new RfqFilterRequest();
-            rfqDrawingPnFilterRequest.DatabaseList = "RFQDRAWINGPARTNUMBERSGRPC";
+            rfqDrawingPnFilterRequest.DatabaseList = "RFQDRAWINGPARTNUMBERGRPC";
             rfqDrawingPnFilterRequest.FilterExpression = "RfqId == 6";
              Assert.That(!string.IsNullOrWhiteSpace(rfqDrawingPnFilterRequest.FilterExpression),
                 $"FilterExpression is empty for DatabaseList = {rfqDrawingPnFilterRequest.DatabaseList}");
@@ -65,14 +65,14 @@ using Rfq.Services;
             rfqDrawingPnFilterTask = _GrpcService.FilterRfqGrpc(rfqDrawingPnFilterRequest, rfqDrawingPnFilterContext);
              RfqFilterResponse rfqDrawingPnFilterResponse;
             rfqDrawingPnFilterResponse = await rfqDrawingPnFilterTask;
-             ListRfqDrawingPartNumbersGrpc rfqDrawingPnFilteredList;
+             ListRfqDrawingPartNumberGrpc rfqDrawingPnFilteredList;
             rfqDrawingPnFilteredList = rfqDrawingPnFilterResponse.ListRfqDrawingPartNumbersGrpc;
              int rfqDrawingPnActualFilteredCount;
             rfqDrawingPnActualFilteredCount = rfqDrawingPnFilteredList.RfqDrawingPartNumbers.Count;
              int rfqDrawingPnExpectedFilteredCount;
             rfqDrawingPnExpectedFilteredCount = 1;
              Assert.That(rfqDrawingPnActualFilteredCount == rfqDrawingPnExpectedFilteredCount, Is.True);
-             RfqDrawingPartNumbersGrpc? rfqDrawingPnFirst;
+             RfqDrawingPartNumberGrpc? rfqDrawingPnFirst;
             rfqDrawingPnFirst = rfqDrawingPnFilteredList.RfqDrawingPartNumbers.FirstOrDefault();
             Assert.That(rfqDrawingPnFirst, Is.Not.Null);
              string rfqDrawingPnOriginalPart;

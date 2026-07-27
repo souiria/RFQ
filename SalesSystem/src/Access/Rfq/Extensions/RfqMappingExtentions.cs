@@ -3,9 +3,9 @@
     public static class RfqMappingExtentions
     {
         #region RfqDrawingPartNumber
-        public static RfqDrawingPartNumbersGrpc FromEntity(this DbRfqDrawingPartNumber entity)
+        public static RfqDrawingPartNumberGrpc FromEntity(this DbRfqDrawingPartNumber entity)
         {
-            RfqDrawingPartNumbersGrpc data = new RfqDrawingPartNumbersGrpc();
+            RfqDrawingPartNumberGrpc data = new RfqDrawingPartNumberGrpc();
             data.RowId = entity.RowId;
             data.RfqId = entity.RfqId;
             data.OriginalPartNumber = entity.OriginalPartNumber;
@@ -26,7 +26,7 @@
             return data;
         }
 
-        public static DbRfqDrawingPartNumber ToEntity(this RfqDrawingPartNumbersGrpc grpc)
+        public static DbRfqDrawingPartNumber ToEntity(this RfqDrawingPartNumberGrpc grpc)
         {
             DbRfqDrawingPartNumber data = new DbRfqDrawingPartNumber();
             data.RowId = grpc.RowId;
@@ -127,14 +127,14 @@
         {
             RfqReasonGrpc data = new RfqReasonGrpc();
             data.RowId = entity.RowId;
-            data.ReasonTitle = entity.ReasonTitle;
+            data.RfqReasonTitle = entity.ReasonTitle;
             return data;
         }
         public static DbRfqReason ToEntity(this RfqReasonGrpc grpc)
         {
             DbRfqReason data = new DbRfqReason();
-            data.RowId = grpc.RowId;
-            data.ReasonTitle = grpc.ReasonTitle;
+            data.RowId = grpc.RowId ?? 0;
+            data.ReasonTitle = grpc.RfqReasonTitle ?? string.Empty;
             return data;
         }
 

@@ -21,7 +21,7 @@ namespace Rfq.Endpoints.GrpcServices
         }
 
         #region RfqDrawingPartNumbers
-        public override async Task<ListRfqDrawingPartNumbersGrpc> ReadRfqDrawingPartNumbersGrpc(RfqDrawingPartNumbersGrpcRequest request, ServerCallContext context) //
+        public override async Task<ListRfqDrawingPartNumberGrpc> ReadRfqDrawingPartNumbersGrpc(RfqDrawingPartNumbersGrpcRequest request, ServerCallContext context) //
         {
             _Logger.GenericLogInformation("ReadRfqDrawingPartNumbersGrpc starting");
             if (request == null || request.RfqGrpcRequestParameter == null)
@@ -84,14 +84,14 @@ namespace Rfq.Endpoints.GrpcServices
             RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
             CancellationToken cancellationToken = context.CancellationToken;
 
-            ListRfqDrawingPartNumbersGrpc response = await _RfqAccessService.CreateRfqDrawingPartNumbers(request, cancellationToken);
+            ListRfqDrawingPartNumberGrpc response = await _RfqAccessService.CreateRfqDrawingPartNumbers(request, cancellationToken);
             _Logger.GenericLogInformation($"III Access Layer RfqGrpcService.CreateRfqDrawingPartNumbers created {response.RfqDrawingPartNumbers.Count} parts");
 
             if (request.RfqDrawingPartNumbersGrpcsToCreate.Count == response.RfqDrawingPartNumbers.Count)
             {
                 responseMessage.Message = $"{request.RfqDrawingPartNumbersGrpcsToCreate.Count} RfqDrawingPartNumbers types created successfully.";
                 responseMessage.SaveSuccess = true;
-                foreach (RfqDrawingPartNumbersGrpc drawingPartNumber in response.RfqDrawingPartNumbers)
+                foreach (RfqDrawingPartNumberGrpc drawingPartNumber in response.RfqDrawingPartNumbers)
                 {
                     responseMessage.StringValue = drawingPartNumber.RowId.ToString(CultureInfo.InvariantCulture) + ",";
                 }
@@ -549,10 +549,10 @@ namespace Rfq.Endpoints.GrpcServices
             {
                 responseMessage.Message = $"{request.RfqReasonGrpcsToCreate.Count} RfqReason types created successfully.";
                 responseMessage.SaveSuccess = true;
-                foreach (RfqReasonGrpc reason in response.RfqReasons)
-                {
-                    responseMessage.StringValue = reason.RowId.ToString(CultureInfo.InvariantCulture) + ",";
-                }
+                List<string?> idS = response.RfqReasons
+                    .Where(reason => reason is not null && 0 < reason.RowId)
+                    .Select(reason => reason.RowId?.ToString(CultureInfo.InvariantCulture)).ToList();
+                responseMessage.StringValue = string.Join(",", idS);
             }
             else
             {
@@ -629,7 +629,6 @@ namespace Rfq.Endpoints.GrpcServices
                 throw new RpcException(status);
             }
 
-            RfqCrudGrpcResponse response = new RfqCrudGrpcResponse();
             switch (requestType)
             {
                 case RequestType.Read:
@@ -883,7 +882,6 @@ namespace Rfq.Endpoints.GrpcServices
                 throw new RpcException(status);
             }
 
-            RfqCrudGrpcResponse response = new RfqCrudGrpcResponse();
             switch (requestType)
             {
                 case RequestType.Read:
@@ -1010,7 +1008,6 @@ namespace Rfq.Endpoints.GrpcServices
                 throw new RpcException(status);
             }
 
-            RfqCrudGrpcResponse response = new RfqCrudGrpcResponse();
             switch (requestType)
             {
                 case RequestType.Read:
@@ -1137,7 +1134,6 @@ namespace Rfq.Endpoints.GrpcServices
                 throw new RpcException(status);
             }
 
-            RfqCrudGrpcResponse response = new RfqCrudGrpcResponse();
             switch (requestType)
             {
                 case RequestType.Read:
@@ -1264,7 +1260,6 @@ namespace Rfq.Endpoints.GrpcServices
                 throw new RpcException(status);
             }
 
-            RfqCrudGrpcResponse response = new RfqCrudGrpcResponse();
             switch (requestType)
             {
                 case RequestType.Read:
@@ -1326,7 +1321,7 @@ namespace Rfq.Endpoints.GrpcServices
 
         public override async Task<RfqCrudGrpcResponse> UpdateDsiCavityMappingGrpc(DsiCavityMappingGrpcRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation("UpdateDsiCavityMappingGrpc starting");
+            _Logger.GenericLogInformation("UpdateDsiProjectGrpc starting");
             if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
@@ -1341,12 +1336,6 @@ namespace Rfq.Endpoints.GrpcServices
             else
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
-                throw new RpcException(status);
-            }
-
-            if (requestType != RequestType.Update)
-            {
-                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for updating dsi bends.");
                 throw new RpcException(status);
             }
 
@@ -2610,7 +2599,7 @@ namespace Rfq.Endpoints.GrpcServices
                 responseMessage.SaveSuccess = true;
                 foreach (DsiManualBomQuantityGrpc item in response.DsiManualBomQuantityGrpcs)
                 {
-                    responseMessage.StringValue += item.RowId.ToString(CultureInfo.InvariantCulture) + ",";
+                    responseMessage.StringValue = item.RowId.ToString(CultureInfo.InvariantCulture) + ",";
                 }
             }
             else
@@ -3059,136 +3048,6 @@ namespace Rfq.Endpoints.GrpcServices
 
         #endregion
 
-        #region DsiMulticoreSpecification
-
-        public override async Task<ListDsiMulticoreSpecificationGrpc> ReadDsiMulticoreSpecificationGrpc(DsiMulticoreSpecificationGrpcRequest request, ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("ReadDsiMulticoreSpecificationGrpc starting");
-
-            if (request == null || request.RfqGrpcRequestParameter == null)
-            {
-                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
-                throw new RpcException(status);
-            }
-
-            RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
-            {
-                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
-            }
-            else
-            {
-                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
-                throw new RpcException(status);
-            }
-
-            switch (requestType)
-            {
-                case RequestType.Read:
-                return await _RfqAccessService.GetAllDsiMulticoreSpecifications(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
-
-                default:
-                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
-                throw new RpcException(status);
-            }
-        }
-
-        public override async Task<RfqCrudGrpcResponse> CreateDsiMulticoreSpecificationGrpc(DsiMulticoreSpecificationGrpcRequest request, ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("CreateDsiMulticoreSpecificationGrpc starting");
-
-            if (request == null || request.RfqGrpcRequestParameter == null)
-            {
-                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
-                throw new RpcException(status);
-            }
-
-            RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
-            {
-                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
-            }
-            else
-            {
-                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
-                throw new RpcException(status);
-            }
-
-            if (requestType != RequestType.Create)
-            {
-                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for creating DsiMulticoreSpecification.");
-                throw new RpcException(status);
-            }
-
-            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
-            CancellationToken cancellationToken = context.CancellationToken;
-            ListDsiMulticoreSpecificationGrpc response = await _RfqAccessService.CreateDsiMulticoreSpecifications(request, cancellationToken);
-
-            if (response.DsiMulticoreSpecificationGrpcs.Count == request.DsiMulticoreSpecificationGrpcsToCreate.Count)
-            {
-                responseMessage.Message = $"{request.DsiMulticoreSpecificationGrpcsToCreate.Count} DsiMulticoreSpecification types created successfully.";
-                responseMessage.SaveSuccess = true;
-                foreach (DsiMulticoreSpecificationGrpc item in response.DsiMulticoreSpecificationGrpcs)
-                {
-                    responseMessage.StringValue += item.RowId.ToString(CultureInfo.InvariantCulture) + ",";
-                }
-            }
-            else
-            {
-                responseMessage.Message = "No/not all DsiMulticoreSpecification types created.";
-                responseMessage.SaveSuccess = false;
-            }
-
-            return responseMessage;
-        }
-
-        public override async Task<RfqCrudGrpcResponse> UpdateDsiMulticoreSpecificationGrpc(DsiMulticoreSpecificationGrpcRequest request, ServerCallContext context)
-        {
-            _Logger.GenericLogInformation("UpdateDsiMulticoreSpecificationGrpc starting");
-
-            if (request == null || request.RfqGrpcRequestParameter == null)
-            {
-                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
-                throw new RpcException(status);
-            }
-
-            RequestType requestType = RequestType.None;
-            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
-            {
-                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
-            }
-            else
-            {
-                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
-                throw new RpcException(status);
-            }
-
-            if (requestType != RequestType.Update)
-            {
-                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for updating DsiMulticoreSpecification.");
-                throw new RpcException(status);
-            }
-
-            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
-            CancellationToken cancellationToken = context.CancellationToken;
-            bool response = await _RfqAccessService.UpdateDsiMulticoreSpecifications(request, cancellationToken);
-
-            if (response)
-            {
-                responseMessage.Message = $"{request.DsiMulticoreSpecificationGrpcsToUpdate.Count} DsiMulticoreSpecification types updated successfully.";
-                responseMessage.SaveSuccess = true;
-            }
-            else
-            {
-                responseMessage.Message = "No/not all DsiMulticoreSpecification types updated.";
-                responseMessage.SaveSuccess = false;
-            }
-
-            return responseMessage;
-        }
-
-        #endregion
-
         #region DsiPinMapping
 
         public override async Task<ListDsiPinMappingGrpc> ReadDsiPinMappingGrpc(DsiPinMappingGrpcRequest request, ServerCallContext context)
@@ -3584,7 +3443,6 @@ namespace Rfq.Endpoints.GrpcServices
         public override async Task<ListDsiSupplierGrpc> ReadDsiSupplierGrpc(DsiSupplierGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("ReadDsiSupplierGrpc starting");
-
             if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
@@ -3602,21 +3460,22 @@ namespace Rfq.Endpoints.GrpcServices
                 throw new RpcException(status);
             }
 
+            RfqCrudGrpcResponse response = new RfqCrudGrpcResponse();
             switch (requestType)
             {
                 case RequestType.Read:
                 return await _RfqAccessService.GetAllDsiSuppliers(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
-
                 default:
-                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
-                throw new RpcException(status);
+                {
+                    Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                    throw new RpcException(status);
+                }
             }
         }
 
         public override async Task<RfqCrudGrpcResponse> CreateDsiSupplierGrpc(DsiSupplierGrpcRequest request, ServerCallContext context)
         {
             _Logger.GenericLogInformation("CreateDsiSupplierGrpc starting");
-
             if (request == null || request.RfqGrpcRequestParameter == null)
             {
                 Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
@@ -4861,22 +4720,22 @@ namespace Rfq.Endpoints.GrpcServices
 
         public override async Task<RfqFilterResponse> FilterRfqGrpc(RfqFilterRequest request, ServerCallContext context)
         {
-            _Logger.GenericLogInformation($"RfqAccess Layer FilterRfqGrpc starting for {request.DatabaseList.ToUpperInvariant()} and filter: {request.FilterExpression.ToString()}");
+            _Logger.GenericLogInformation($"RfqAccess Layer FilterRfqGrpc starting for {request.DatabaseList.ToUpperInvariant()} and filter: {request.FilterExpression}");
             ParsingConfig parsingConfig = new ParsingConfig();
             RfqFilterResponse returnResponse = new RfqFilterResponse();
             switch (request.DatabaseList.ToUpperInvariant())
             {
-                case "RFQDRAWINGPARTNUMBERSGRPC":
-                await _RfqAccessService.HandleFilterCase<RfqDrawingPartNumbersGrpc>(
+                case "RFQDRAWINGPARTNUMBERGRPC":
+                await _RfqAccessService.HandleFilterCase<RfqDrawingPartNumberGrpc>(
                     request.FilterExpression, parsingConfig,
                     filterlist =>
                     {
-                        ListRfqDrawingPartNumbersGrpc returnList = new ListRfqDrawingPartNumbersGrpc();
+                        ListRfqDrawingPartNumberGrpc returnList = new ListRfqDrawingPartNumberGrpc();
                         returnList.RfqDrawingPartNumbers.AddRange(filterlist);
                         returnResponse.ListRfqDrawingPartNumbersGrpc = returnList;
                         returnResponse.Success = true;
                     }, context.CancellationToken);
-                _Logger.GenericLogInformation($"RfqAccess Layer FilterRfqGrpc completed for {request.DatabaseList.ToUpperInvariant()} and filter: {request.FilterExpression.ToString()} returning {returnResponse.Success} and {returnResponse.ListRfqDrawingPartNumbersGrpc?.RfqDrawingPartNumbers.Count ?? 0} items");
+                _Logger.GenericLogInformation($"RfqAccess Layer FilterRfqGrpc completed for {request.DatabaseList.ToUpperInvariant()} and filter: {request.FilterExpression} returning {returnResponse.Success} and {returnResponse.ListRfqDrawingPartNumbersGrpc?.RfqDrawingPartNumbers.Count ?? 0} items");
                 break;
                 case "RFQPROJECTGRPC":
                 try

@@ -121,12 +121,12 @@
             uxModel.SwappedPartNumber = dto.SwappedPartNumber;
             uxModel.SwappedPartNumberPrice = Convert.ToDecimal(dto.SwappedPartNumberPrice, CultureInfo.InvariantCulture);
             uxModel.PriceSource = dto.PriceSource;
-            if (dto.IsSwapped)
+            if (dto.IsSwapped is not null && dto.IsSwapped.Value)
             {
                 uxModel.IsExactMatch = false;
                 uxModel.IsSwapped = true;
             }
-            else if (dto.IsExactMatch && !dto.IsSwapped)
+            else if (dto.IsExactMatch is not null && dto.IsExactMatch.Value && (dto.IsSwapped is null || !dto.IsSwapped.Value))
             {
                 uxModel.IsExactMatch = true;
                 uxModel.IsSwapped = false;

@@ -58,11 +58,11 @@
             return customerProjectAssociation;
         }
 
-        public static RfqReasonGrpc ToReason(this Rfq.RfqReasonGrpc rfqRfqReasonGrpc)
+        public static RfqReasonGrpc ToReason(this RfqReasonGrpc rfqRfqReasonGrpc)
         {
             RfqReasonGrpc reason = new RfqReasonGrpc();
             reason.RowId = rfqRfqReasonGrpc.RowId;
-            reason.RfqReasonTitle = rfqRfqReasonGrpc.ReasonTitle;
+            reason.RfqReasonTitle = rfqRfqReasonGrpc.RfqReasonTitle;
             return reason;
         }
 
@@ -88,7 +88,7 @@
             project.JsonData = rfqProjectGrpc.JsonData;
             return project;
         }
-        public static RfqDrawingPartNumberGrpc ToRfqDrawingPartNumber(this RfqDrawingPartNumbersGrpc rfqPartGrpc)
+        public static RfqDrawingPartNumberGrpc ToRfqDrawingPartNumber(this RfqDrawingPartNumberGrpc rfqPartGrpc)
         {
             RfqDrawingPartNumberGrpc part = new RfqDrawingPartNumberGrpc();
             part.RowId = rfqPartGrpc.RowId;
@@ -170,9 +170,9 @@
             part.CategoryCode2 = alternativeParts.CategoryCode2;
             return part;
         }
-        //public static Rfq.RfqNprRequestGrpc ToRfqNprRquestGrpcAccess(this RfqNprRequestGrpc rfqNprRequest)
+        //public static RfqNprRequestGrpc ToRfqNprRquestGrpcAccess(this RfqNprRequestGrpc rfqNprRequest)
         //{
-        //    Rfq.RfqNprRequestGrpc accessData = new Rfq.RfqNprRequestGrpc();
+        //    RfqNprRequestGrpc accessData = new RfqNprRequestGrpc();
         //    accessData.Id = rfqNprRequest.Id;
         //    accessData.Reason = rfqNprRequest.Reason;
         //    accessData.Customer = rfqNprRequest.Customer;
@@ -211,7 +211,7 @@
         //    accessData.RfqNumber = rfqNprRequest.RfqNumber;
         //    return accessData;
         //}
-        //public static RfqNprRequestGrpc ToRfqNprRequest(this Rfq.RfqNprRequestGrpc accessData)
+        //public static RfqNprRequestGrpc ToRfqNprRequest(this RfqNprRequestGrpc accessData)
         //{
         //    RfqNprRequestGrpc rfqNprRequest = new RfqNprRequestGrpc();
         //    rfqNprRequest.Id = accessData.Id;
@@ -252,96 +252,96 @@
         //    rfqNprRequest.RfqNumber = accessData.RfqNumber;
         //    return rfqNprRequest;
         //}
-        public static Rfq.RfqNprRequestGrpc ToRfqNprRequestGrpcAccess(this RfqNprRequestGrpc rfqNprRequest, int? index = null)
-        {
-            Rfq.RfqNprRequestGrpc accessData = new Rfq.RfqNprRequestGrpc();
-            accessData.Id = rfqNprRequest.Id;
-            accessData.ReasonDescription = rfqNprRequest.ReasonDescription;
-            accessData.CustomerCode = rfqNprRequest.CustomerCode;
-            accessData.PlatformName = rfqNprRequest.PlatformName;
-            accessData.ProgramName = rfqNprRequest.ProgramName;
-            accessData.ProjectCode = rfqNprRequest.ProjectCode;
-            accessData.ManufacturingSite = rfqNprRequest.ManufacturingSite;
-            accessData.CustomerPartNumber = rfqNprRequest.CustomerPartNumber;
-            accessData.SupplierPartNumber = rfqNprRequest.SupplierPartNumber;
-            accessData.MaterialNumber = rfqNprRequest.MaterialNumber;
-            accessData.MaterialDescription = rfqNprRequest.MaterialDescription;
-            accessData.SEWSEUnitOfMeasurement = rfqNprRequest.SEWSEUnitOfMeasurement;
-            accessData.SupplierGroup = rfqNprRequest.SupplierGroup;
-            accessData.QtyPerVehicle = rfqNprRequest.QtyPerVehicle;
-            accessData.VehicleTotalQuantity = rfqNprRequest.VehicleTotalQuantity;
-            accessData.DeadlineDate = rfqNprRequest.DeadlineDate;
-            accessData.NPRRaisedRemarks = rfqNprRequest.NPRRaisedRemarks;
-            accessData.IsCustomerNominatedSupplier = rfqNprRequest.IsCustomerNominatedSupplier;
-            accessData.IsCustomerNominatedMaterial = rfqNprRequest.IsCustomerNominatedMaterial;
-            foreach (RfqNprRequestSampleSiteDataGrpc siteGrpc in rfqNprRequest.SampleSiteDetails)
-            {
-                Rfq.RfqNprRequestSampleSiteDataGrpc rfqNprRequestSampleSiteDataGrpc = siteGrpc.ToSampleSiteAccessGrpc();
-                accessData.SampleSiteDetails.Add(rfqNprRequestSampleSiteDataGrpc);
-            }
+        //public static RfqNprRequestGrpc ToRfqNprRequestGrpcAccess(this RfqNprRequestGrpc rfqNprRequest, int? index = null)
+        //{
+        //    RfqNprRequestGrpc accessData = new RfqNprRequestGrpc();
+        //    accessData.Id = rfqNprRequest.Id;
+        //    accessData.ReasonDescription = rfqNprRequest.ReasonDescription;
+        //    accessData.CustomerCode = rfqNprRequest.CustomerCode;
+        //    accessData.PlatformName = rfqNprRequest.PlatformName;
+        //    accessData.ProgramName = rfqNprRequest.ProgramName;
+        //    accessData.ProjectCode = rfqNprRequest.ProjectCode;
+        //    accessData.ManufacturingSite = rfqNprRequest.ManufacturingSite;
+        //    accessData.CustomerPartNumber = rfqNprRequest.CustomerPartNumber;
+        //    accessData.SupplierPartNumber = rfqNprRequest.SupplierPartNumber;
+        //    accessData.MaterialNumber = rfqNprRequest.MaterialNumber;
+        //    accessData.MaterialDescription = rfqNprRequest.MaterialDescription;
+        //    accessData.SEWSEUnitOfMeasurement = rfqNprRequest.SEWSEUnitOfMeasurement;
+        //    accessData.SupplierGroup = rfqNprRequest.SupplierGroup;
+        //    accessData.QtyPerVehicle = rfqNprRequest.QtyPerVehicle;
+        //    accessData.VehicleTotalQuantity = rfqNprRequest.VehicleTotalQuantity;
+        //    accessData.DeadlineDate = rfqNprRequest.DeadlineDate;
+        //    accessData.NPRRaisedRemarks = rfqNprRequest.NPRRaisedRemarks;
+        //    accessData.IsCustomerNominatedSupplier = rfqNprRequest.IsCustomerNominatedSupplier;
+        //    accessData.IsCustomerNominatedMaterial = rfqNprRequest.IsCustomerNominatedMaterial;
+        //    foreach (RfqNprRequestSampleSiteDataGrpc siteGrpc in rfqNprRequest.SampleSiteDetails)
+        //    {
+        //        RfqNprRequestSampleSiteDataGrpc rfqNprRequestSampleSiteDataGrpc = siteGrpc.ToSampleSiteAccessGrpc();
+        //        accessData.SampleSiteDetails.Add(rfqNprRequestSampleSiteDataGrpc);
+        //    }
 
-            accessData.AssociatedParts = rfqNprRequest.AssociatedParts;
-            accessData.SuggestedManufacturerGroup = rfqNprRequest.SuggestedManufacturerGroup;
-            accessData.CreatedAt = rfqNprRequest.CreatedAt;
-            accessData.CreatedBy = rfqNprRequest.CreatedBy;
-            accessData.ModifiedAt = rfqNprRequest.ModifiedAt;
-            accessData.ModifiedBy = rfqNprRequest.ModifiedBy;
-            accessData.SubmissionStatus = rfqNprRequest.SubmissionStatus;
-            accessData.RemoteEndpointResponse = rfqNprRequest.RemoteEndpointResponse;
-            accessData.SubmittedAt = rfqNprRequest.SubmittedAt;
-            accessData.CustomerRfqNo = rfqNprRequest.CustomerRfqNo;
-            accessData.IsActive = rfqNprRequest.IsActive;
-            accessData.RequestID = rfqNprRequest.RequestID;
-            accessData.OriginatorName = rfqNprRequest.OriginatorName;
-            accessData.SupplierDetailComments = rfqNprRequest.SupplierDetailComments;
-            accessData.NPRUploadSeqNo = index ?? rfqNprRequest.NPRUploadSeqNo;
-            return accessData;
-        }
-        public static RfqNprRequestGrpc ToRfqNprRequest(this Rfq.RfqNprRequestGrpc accessData)
-        {
-            RfqNprRequestGrpc rfqNprRequest = new RfqNprRequestGrpc();
-            rfqNprRequest.Id = accessData.Id;
-            rfqNprRequest.ReasonDescription = accessData.ReasonDescription;
-            rfqNprRequest.CustomerCode = accessData.CustomerCode;
-            rfqNprRequest.PlatformName = accessData.PlatformName;
-            rfqNprRequest.ProgramName = accessData.ProgramName;
-            rfqNprRequest.ProjectCode = accessData.ProjectCode;
-            rfqNprRequest.ManufacturingSite = accessData.ManufacturingSite;
-            rfqNprRequest.CustomerPartNumber = accessData.CustomerPartNumber;
-            rfqNprRequest.SupplierPartNumber = accessData.SupplierPartNumber;
-            rfqNprRequest.MaterialNumber = accessData.MaterialNumber;
-            rfqNprRequest.MaterialDescription = accessData.MaterialDescription;
-            rfqNprRequest.SEWSEUnitOfMeasurement = accessData.SEWSEUnitOfMeasurement;
-            rfqNprRequest.SupplierGroup = accessData.SupplierGroup;
-            rfqNprRequest.QtyPerVehicle = accessData.QtyPerVehicle;
-            rfqNprRequest.VehicleTotalQuantity = accessData.VehicleTotalQuantity;
-            rfqNprRequest.DeadlineDate = accessData.DeadlineDate;
-            rfqNprRequest.NPRRaisedRemarks = accessData.NPRRaisedRemarks;
-            rfqNprRequest.IsCustomerNominatedSupplier = accessData.IsCustomerNominatedSupplier;
-            rfqNprRequest.IsCustomerNominatedMaterial = accessData.IsCustomerNominatedMaterial;
-            foreach (Rfq.RfqNprRequestSampleSiteDataGrpc siteGrpc in accessData.SampleSiteDetails)
-            {
-                RfqNprRequestSampleSiteDataGrpc rfqNprRequestSampleSiteDataGrpc = siteGrpc.ToSampleSiteGrpc();
-                rfqNprRequest.SampleSiteDetails.Add(rfqNprRequestSampleSiteDataGrpc);
-            }
+        //    accessData.AssociatedParts = rfqNprRequest.AssociatedParts;
+        //    accessData.SuggestedManufacturerGroup = rfqNprRequest.SuggestedManufacturerGroup;
+        //    accessData.CreatedAt = rfqNprRequest.CreatedAt;
+        //    accessData.CreatedBy = rfqNprRequest.CreatedBy;
+        //    accessData.ModifiedAt = rfqNprRequest.ModifiedAt;
+        //    accessData.ModifiedBy = rfqNprRequest.ModifiedBy;
+        //    accessData.SubmissionStatus = rfqNprRequest.SubmissionStatus;
+        //    accessData.RemoteEndpointResponse = rfqNprRequest.RemoteEndpointResponse;
+        //    accessData.SubmittedAt = rfqNprRequest.SubmittedAt;
+        //    accessData.CustomerRfqNo = rfqNprRequest.CustomerRfqNo;
+        //    accessData.IsActive = rfqNprRequest.IsActive;
+        //    accessData.RequestID = rfqNprRequest.RequestID;
+        //    accessData.OriginatorName = rfqNprRequest.OriginatorName;
+        //    accessData.SupplierDetailComments = rfqNprRequest.SupplierDetailComments;
+        //    accessData.NPRUploadSeqNo = index ?? rfqNprRequest.NPRUploadSeqNo;
+        //    return accessData;
+        //}
+        //public static RfqNprRequestGrpc ToRfqNprRequest(this RfqNprRequestGrpc accessData)
+        //{
+        //    RfqNprRequestGrpc rfqNprRequest = new RfqNprRequestGrpc();
+        //    rfqNprRequest.Id = accessData.Id;
+        //    rfqNprRequest.ReasonDescription = accessData.ReasonDescription;
+        //    rfqNprRequest.CustomerCode = accessData.CustomerCode;
+        //    rfqNprRequest.PlatformName = accessData.PlatformName;
+        //    rfqNprRequest.ProgramName = accessData.ProgramName;
+        //    rfqNprRequest.ProjectCode = accessData.ProjectCode;
+        //    rfqNprRequest.ManufacturingSite = accessData.ManufacturingSite;
+        //    rfqNprRequest.CustomerPartNumber = accessData.CustomerPartNumber;
+        //    rfqNprRequest.SupplierPartNumber = accessData.SupplierPartNumber;
+        //    rfqNprRequest.MaterialNumber = accessData.MaterialNumber;
+        //    rfqNprRequest.MaterialDescription = accessData.MaterialDescription;
+        //    rfqNprRequest.SEWSEUnitOfMeasurement = accessData.SEWSEUnitOfMeasurement;
+        //    rfqNprRequest.SupplierGroup = accessData.SupplierGroup;
+        //    rfqNprRequest.QtyPerVehicle = accessData.QtyPerVehicle;
+        //    rfqNprRequest.VehicleTotalQuantity = accessData.VehicleTotalQuantity;
+        //    rfqNprRequest.DeadlineDate = accessData.DeadlineDate;
+        //    rfqNprRequest.NPRRaisedRemarks = accessData.NPRRaisedRemarks;
+        //    rfqNprRequest.IsCustomerNominatedSupplier = accessData.IsCustomerNominatedSupplier;
+        //    rfqNprRequest.IsCustomerNominatedMaterial = accessData.IsCustomerNominatedMaterial;
+        //    foreach (RfqNprRequestSampleSiteDataGrpc siteGrpc in accessData.SampleSiteDetails)
+        //    {
+        //        RfqNprRequestSampleSiteDataGrpc rfqNprRequestSampleSiteDataGrpc = siteGrpc.ToSampleSiteGrpc();
+        //        rfqNprRequest.SampleSiteDetails.Add(rfqNprRequestSampleSiteDataGrpc);
+        //    }
 
-            rfqNprRequest.AssociatedParts = accessData.AssociatedParts;
-            rfqNprRequest.SuggestedManufacturerGroup = accessData.SuggestedManufacturerGroup;
-            rfqNprRequest.CreatedAt = accessData.CreatedAt;
-            rfqNprRequest.CreatedBy = accessData.CreatedBy;
-            rfqNprRequest.ModifiedAt = accessData.ModifiedAt;
-            rfqNprRequest.ModifiedBy = accessData.ModifiedBy;
-            rfqNprRequest.SubmissionStatus = accessData.SubmissionStatus;
-            rfqNprRequest.RemoteEndpointResponse = accessData.RemoteEndpointResponse;
-            rfqNprRequest.SubmittedAt = accessData.SubmittedAt;
-            rfqNprRequest.CustomerRfqNo = accessData.CustomerRfqNo;
-            rfqNprRequest.IsActive = accessData.IsActive;
-            rfqNprRequest.RequestID = accessData.RequestID;
-            rfqNprRequest.OriginatorName = accessData.OriginatorName;
-            rfqNprRequest.SupplierDetailComments = accessData.SupplierDetailComments;
-            rfqNprRequest.NPRUploadSeqNo = accessData.NPRUploadSeqNo;
-            return rfqNprRequest;
-        }
+        //    rfqNprRequest.AssociatedParts = accessData.AssociatedParts;
+        //    rfqNprRequest.SuggestedManufacturerGroup = accessData.SuggestedManufacturerGroup;
+        //    rfqNprRequest.CreatedAt = accessData.CreatedAt;
+        //    rfqNprRequest.CreatedBy = accessData.CreatedBy;
+        //    rfqNprRequest.ModifiedAt = accessData.ModifiedAt;
+        //    rfqNprRequest.ModifiedBy = accessData.ModifiedBy;
+        //    rfqNprRequest.SubmissionStatus = accessData.SubmissionStatus;
+        //    rfqNprRequest.RemoteEndpointResponse = accessData.RemoteEndpointResponse;
+        //    rfqNprRequest.SubmittedAt = accessData.SubmittedAt;
+        //    rfqNprRequest.CustomerRfqNo = accessData.CustomerRfqNo;
+        //    rfqNprRequest.IsActive = accessData.IsActive;
+        //    rfqNprRequest.RequestID = accessData.RequestID;
+        //    rfqNprRequest.OriginatorName = accessData.OriginatorName;
+        //    rfqNprRequest.SupplierDetailComments = accessData.SupplierDetailComments;
+        //    rfqNprRequest.NPRUploadSeqNo = accessData.NPRUploadSeqNo;
+        //    return rfqNprRequest;
+        //}
 
         public static NPR.NprApiDataGrpc ToNprApiAccessData(this NprApiDataGrpc nprApiData)
         {
@@ -391,7 +391,7 @@
             NprApiDataGrpc apiData = new NprApiDataGrpc();
             apiData.NprId = nprAccessData.Id;
 
-            RfqNprRequestGrpc rfqNprRequestGrpc = new RfqNprRequestGrpc();
+            RfqShared.RfqNprRequestGrpc rfqNprRequestGrpc = new RfqShared.RfqNprRequestGrpc();
             rfqNprRequestGrpc.Id = nprAccessData.RfqNprRequestId;
             rfqNprRequestGrpc.CustomerRfqNo = nprAccessData.CustomerRfqNo;
             rfqNprRequestGrpc.CustomerCode = nprAccessData.CustomerCode;
@@ -433,9 +433,9 @@
             return apiData;
         }
 
-        public static Rfq.RfqNprRequestSampleSiteDataGrpc ToSampleSiteAccessGrpc(this RfqNprRequestSampleSiteDataGrpc model)
+        public static RfqNprRequestSampleSiteDataGrpc ToSampleSiteAccessGrpc(this RfqNprRequestSampleSiteDataGrpc model)
         {
-            Rfq.RfqNprRequestSampleSiteDataGrpc grpc = new Rfq.RfqNprRequestSampleSiteDataGrpc();
+            RfqNprRequestSampleSiteDataGrpc grpc = new RfqNprRequestSampleSiteDataGrpc();
             grpc.BusinessUnitCode = model.BusinessUnitCode;
             grpc.SampleQty = model.SampleQty;
             grpc.SendSampleContactPersonName = model.SendSampleContactPersonName;
@@ -444,7 +444,7 @@
             return grpc;
         }
 
-        public static RfqNprRequestSampleSiteDataGrpc ToSampleSiteGrpc(this Rfq.RfqNprRequestSampleSiteDataGrpc model)
+        public static RfqNprRequestSampleSiteDataGrpc ToSampleSiteGrpc(this RfqNprRequestSampleSiteDataGrpc model)
         {
             RfqNprRequestSampleSiteDataGrpc grpc = new RfqNprRequestSampleSiteDataGrpc();
             grpc.BusinessUnitCode = model.BusinessUnitCode;

@@ -345,7 +345,7 @@ namespace SalesSystem.Rfq.Services
                 RfqDrawingPartNumbersGrpcRequest request = new RfqDrawingPartNumbersGrpcRequest();
                 request.RfqId = rfqId;
 
-                ListRfqDrawingPartNumbersGrpc response = await _Client.GetRfqDrawingPartNumbersByRfqIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
+                ListRfqDrawingPartNumberGrpc response = await _Client.GetRfqDrawingPartNumbersByRfqIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
                 _RfqDrawingPartNumbers.Clear();
                 if (null != response && 0 <= response.RfqDrawingPartNumbers.Count)
                 {
