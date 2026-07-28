@@ -1,5 +1,3 @@
-using RfqModule;
-
 namespace SalesSystem.Rfq.Services
 {
     public class RfqUxClientService : IDisposable

@@ -1,5 +1,4 @@
-﻿using CommonTypes;
-namespace Core.Endpoints.Grpc
+﻿namespace Core.Endpoints.Grpc
 {
     public class CoreGrpcService : Core.CoreBase
     {

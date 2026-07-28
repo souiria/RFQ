@@ -1,5 +1,4 @@
-﻿using SharedKernel;
-namespace Rfq.Endpoints.GrpcServices
+﻿namespace Rfq.Endpoints.GrpcServices
 {
     public class RfqGrpcService : Rfq.RfqBase
     {
