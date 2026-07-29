@@ -8,7 +8,7 @@
 
         #region RfqDrawingPartNumbers
 
-        ListRfqDrawingPartNumbersGrpc _ListRfqDrawingPartNumbersGrpc;
+        ListRfqDrawingPartNumberGrpc _ListRfqDrawingPartNumbersGrpc;
         #endregion
 
         #region RfqProject
@@ -158,7 +158,7 @@
 
         #region RfqDrawingPartNumbers
 
-        IQueryHandler<GetRfqDrawingPartNumberQuery, List<RfqDrawingPartNumbersGrpc>>? _RfqDrawingPartNumbersHandler;
+        IQueryHandler<GetRfqDrawingPartNumberQuery, List<RfqDrawingPartNumberGrpc>>? _RfqDrawingPartNumbersHandler;
         bool _RfqDrawingPartNumbersRefreshInProgress;
 
         #endregion
@@ -358,7 +358,7 @@
         {
             #region RfqDrawingPartNumbers
 
-            _ListRfqDrawingPartNumbersGrpc = new ListRfqDrawingPartNumbersGrpc();
+            _ListRfqDrawingPartNumbersGrpc = new ListRfqDrawingPartNumberGrpc();
             _RfqDrawingPartNumbersRefreshInProgress = false;
 
             #endregion
@@ -573,7 +573,7 @@
         #region Handlers
 
         #region RfqDrawingPartNumbers
-        public async Task<ListRfqDrawingPartNumbersGrpc> GetAllRfqDrawingPartNumbers(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
+        public async Task<ListRfqDrawingPartNumberGrpc> GetAllRfqDrawingPartNumbers(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
             await Task.Delay(1, cancellationToken);
             if (_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Any())
@@ -583,8 +583,8 @@
                     return _ListRfqDrawingPartNumbersGrpc;
                 }
 
-                ListRfqDrawingPartNumbersGrpc returnList = new ListRfqDrawingPartNumbersGrpc();
-                IEnumerable<RfqDrawingPartNumbersGrpc> query = _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Skip(position).Take(takeAmount);
+                ListRfqDrawingPartNumberGrpc returnList = new ListRfqDrawingPartNumberGrpc();
+                IEnumerable<RfqDrawingPartNumberGrpc> query = _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Skip(position).Take(takeAmount);
                 returnList.RfqDrawingPartNumbers.AddRange(query);
                 return returnList;
             }
@@ -595,11 +595,11 @@
             }
         }
 
-        public async Task<ListRfqDrawingPartNumbersGrpc> CreateRfqDrawingPartNumbers(RfqDrawingPartNumbersGrpcRequest request, CancellationToken cancellationToken)
+        public async Task<ListRfqDrawingPartNumberGrpc> CreateRfqDrawingPartNumbers(RfqDrawingPartNumbersGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
             _Logger.GenericLogInformation($"III RfqAccessService.CreateRfqDrawingPartNumbers - Entering with passed {request.RfqDrawingPartNumbersGrpcsToCreate.Count} parts passed in");
-            ListRfqDrawingPartNumbersGrpc responseList = new ListRfqDrawingPartNumbersGrpc();
+            ListRfqDrawingPartNumberGrpc responseList = new ListRfqDrawingPartNumberGrpc();
             if (request == null || request.RfqDrawingPartNumbersGrpcsToCreate == null || request.RfqDrawingPartNumbersGrpcsToCreate.Count == 0)
             {
                 return responseList;
@@ -611,8 +611,8 @@
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    List<RfqDrawingPartNumbersGrpc> itemsToCreate = new();
-                    foreach (RfqDrawingPartNumbersGrpc? part in request.RfqDrawingPartNumbersGrpcsToCreate)
+                    List<RfqDrawingPartNumberGrpc> itemsToCreate = new();
+                    foreach (RfqDrawingPartNumberGrpc? part in request.RfqDrawingPartNumbersGrpcsToCreate)
                     {
                         if(!_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Any(x => x.OriginalPartNumber == part.OriginalPartNumber && x.RfqId == part.RfqId))
                         {
@@ -640,13 +640,13 @@
                         await PopulateRfqDrawingPartNumbers(cancellationToken);
                         List<DbRfqDrawingPartNumber> createdComponents = result.Value;
 
-                        List<RfqDrawingPartNumbersGrpc> createdGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
+                        List<RfqDrawingPartNumberGrpc> createdGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
                         responseList.RfqDrawingPartNumbers.AddRange(createdGrpcComponents);
 
                         _Logger.GenericLogInformation($"III RfqAccessService.CreateRfqDrawingPartNumbers - PopulateRfqDrawingPartNumbers called, cached part count {_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Count}");
 #else
                     List<DbRfqDrawingPartNumber> createdComponents = result.Value;
-                    List<RfqDrawingPartNumbersGrpc> updatedGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
+                    List<RfqDrawingPartNumberGrpc> updatedGrpcComponents = createdComponents.Select(p => p.FromEntity()).ToList();
                     _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.AddRange(updatedGrpcComponents);
                     responseList.RfqDrawingPartNumbers.AddRange(updatedGrpcComponents);
 #endif
@@ -687,7 +687,7 @@
         public async Task<bool> UpdateRfqDrawingPartNumbers(RfqDrawingPartNumbersGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            ListRfqDrawingPartNumbersGrpc responseList = new ListRfqDrawingPartNumbersGrpc();
+            ListRfqDrawingPartNumberGrpc responseList = new ListRfqDrawingPartNumberGrpc();
             if (request == null || request.RfqDrawingPartNumbersGrpcsToUpdate == null || request.RfqDrawingPartNumbersGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -716,7 +716,7 @@
         public async Task<bool> DeleteRfqDrawingPartNumbers(RfqDrawingPartNumbersGrpcRequest request, CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
-            ListRfqDrawingPartNumbersGrpc responseList = new ListRfqDrawingPartNumbersGrpc();
+            ListRfqDrawingPartNumberGrpc responseList = new ListRfqDrawingPartNumberGrpc();
             if (request == null || request.RfqDrawingPartNumbersGrpcsToDelete == null || request.RfqDrawingPartNumbersGrpcsToDelete.Count == 0)
             {
                 return false;
@@ -4494,11 +4494,11 @@
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
                 {
-                    _RfqDrawingPartNumbersHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetRfqDrawingPartNumberQuery, List<RfqDrawingPartNumbersGrpc>>>();
+                    _RfqDrawingPartNumbersHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetRfqDrawingPartNumberQuery, List<RfqDrawingPartNumberGrpc>>>();
                     _RfqDrawingPartNumbersRefreshInProgress = true;
                     GetRfqDrawingPartNumberQuery query = new GetRfqDrawingPartNumberQuery();
                     await Task.Delay(1, cancellationToken);
-                    Result<List<RfqDrawingPartNumbersGrpc>> results = await _RfqDrawingPartNumbersHandler.Handle(query, cancellationToken);
+                    Result<List<RfqDrawingPartNumberGrpc>> results = await _RfqDrawingPartNumbersHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
                     }
@@ -5805,10 +5805,13 @@
         {
             return await Task.Run(() =>
             {
-                _Logger.GenericLogInformation($"III RfqAccessService.Filter - Starting");
-                  return typeof(T).Name.ToUpperInvariant() switch
+                string searchType = typeof(T).Name.ToUpperInvariant();
+
+                _Logger.GenericLogInformation($"III RfqAccessService.Filter - Starting for type: {searchType}");
+
+                List<T> retVal = searchType switch
                 {
-                    "RFQDRAWINGPARTNUMBERSGRPC" => _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Cast<T>().Where(func).ToList(),
+                    "RFQDRAWINGPARTNUMBERGRPC" => _ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Cast<T>().Where(func).ToList(),
                     "RFQREASONGRPC" => _ListRfqReasonsGrpc.RfqReasons.Cast<T>().Where(func).ToList(),
                     "RFQNOTESGRPC" => _ListRfqNotesGrpc.RfqNotes.Cast<T>().Where(func).ToList(),
                     "RFQPROJECTGRPC" => _ListRfqProjectsGrpc.RfqProjects.Cast<T>().Where(func).ToList(),
@@ -5846,6 +5849,10 @@
                     "RFQNPRREQUESTGRPC" => _ListRfqNprRequestGrpc.RfqNprRequestGrpcs.Cast<T>().Where(func).ToList(),
                     _ => throw new NotSupportedException($"Filtering not supported for type {typeof(T).Name}")
                 };
+
+                _Logger.GenericLogInformation($"III RfqAccessService.Filter - returning a List<{typeof(T).Name}> with {retVal.Count} items");
+
+                return retVal;
             }, cancellationToken);
         }
         void PopulateSampleData()

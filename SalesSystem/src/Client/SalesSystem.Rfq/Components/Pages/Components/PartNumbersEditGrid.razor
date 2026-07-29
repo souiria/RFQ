@@ -34,9 +34,6 @@
                  Items="@PartNumbers" 
                  ReadOnly="false" 
                  EditMode="DataGridEditMode.Form"
-                 StartedEditingItem="@StartedEditingItem" 
-                 CanceledEditingItem="@CanceledEditingItem" 
-                 CommittedItemChanges="@CommittedItemChanges"
                  Bordered="true" 
                  Dense="true" 
                  EditTrigger="DataGridEditTrigger.Manual"
@@ -155,27 +152,27 @@
     }
 
     // events
-    void StartedEditingItem(RfqDrawingPartNumberUxModel item)
-    {
-        //_events.Insert(0, $"Event = StartedEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
-    }
+    // void StartedEditingItem(RfqDrawingPartNumberUxModel item)
+    // {
+    //     _events.Insert(0, $"Event = StartedEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    // }
 
-    void CanceledEditingItem(RfqDrawingPartNumberUxModel item)
-    {
-        //_events.Insert(0, $"Event = CanceledEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
-    }
+    // void CanceledEditingItem(RfqDrawingPartNumberUxModel item)
+    // {
+    //     _events.Insert(0, $"Event = CanceledEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    // }
 
-    void CommittedItemChanges(RfqDrawingPartNumberUxModel item)
-    {
-        //_events.Insert(0, $"Event = CommittedItemChanges, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
-    }
+    // void CommittedItemChanges(RfqDrawingPartNumberUxModel item)
+    // {
+    //     _events.Insert(0, $"Event = CommittedItemChanges, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    // }
 
     private async Task OnSearch(RfqDrawingPartNumberUxModel item)
     {
         if (item == null)
         {
             Logger.GenericLogInformation($"No part number found for null item...");
-            await DialogService.ShowMessageBox("Search Part Number", $"No part number found for null item...");
+            await DialogService.ShowMessageBoxAsync("Search Part Number", $"No part number found for null item...");
             return;
         }
 
@@ -189,7 +186,7 @@
         if (string.IsNullOrEmpty(cleanedUpPn))
         {
             Logger.GenericLogInformation($"No valid part number found for item with Row ID: {item.RowId}");
-            await DialogService.ShowMessageBox("Search Part Number", $"No valid part number found for item with Row ID: {item.RowId}");
+            await DialogService.ShowMessageBoxAsync("Search Part Number", $"No valid part number found for item with Row ID: {item.RowId}");
             return;
         }
 
@@ -348,7 +345,7 @@
         catch (Exception ex)
         {
             Logger.GenericLogError($"Error searching for part number: {item.CustomerPartNumber}/{item.DrawingPartNumber}", ex);
-            await DialogService.ShowMessageBox(
+            await DialogService.ShowMessageBoxAsync(
                 "Error",
                 $"An error occurred while searching: {ex.Message}"
             );
@@ -422,7 +419,7 @@
             catch (Exception ex)
             {
                 Logger.GenericLogError($"Error updating part number: {editedItem.CustomerPartNumber}/{editedItem.DrawingPartNumber}", ex);
-                await DialogService.ShowMessageBox(
+                await DialogService.ShowMessageBoxAsync(
                     "Error",
                     $"An error occurred while updating the part number: {ex.Message}"
                 );
@@ -459,7 +456,7 @@
         messageBuilder.AppendLine($"Is Matched: {item.IsCompleted}");
         messageBuilder.AppendLine($"Comments: {item.Comments ?? "N/A"}");
 
-        bool? result = await DialogService.ShowMessageBox(
+        bool? result = await DialogService.ShowMessageBoxAsync(
             "Confirm Delete",
             messageBuilder.ToString(),
             yesText: "Delete",
@@ -492,7 +489,7 @@
             catch (Exception ex)
             {
                 Logger.GenericLogError($"Error deleting part number: {item.CustomerPartNumber}/{item.DrawingPartNumber}", ex);
-                await DialogService.ShowMessageBox(
+                await DialogService.ShowMessageBoxAsync(
                     "Error",
                     $"An error occurred while deleting the part number: {ex.Message}"
                 );

@@ -33,15 +33,15 @@ namespace Regression.Tests.Purchasing
             //   SayHello
             // ---------------------------------------------------------
 
-            HelloRequest helloRequest;
-            helloRequest = new HelloRequest();
+            CommonTypes.HelloRequest helloRequest;
+            helloRequest = new CommonTypes.HelloRequest();
 
             helloRequest.Name = "TestName";
 
             ServerCallContext helloContext;
             helloContext = CreateServerContext(nameof(_GrpcService.SayHello));
 
-            HelloReply helloReply;
+            CommonTypes.HelloReply helloReply;
             helloReply = await _GrpcService.SayHello(helloRequest, helloContext);
 
             // Expected value

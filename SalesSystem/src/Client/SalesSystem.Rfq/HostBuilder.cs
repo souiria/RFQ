@@ -11,6 +11,7 @@
             builder.Configuration
             .SetBasePath(AppContext.BaseDirectory)
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
             .AddEnvironmentVariables();
             string? managerUrl = builder.Configuration["GrpcService:Url"]
             ?? throw new InvalidOperationException("GrpcService:Url is missing in configuration.");

@@ -42,10 +42,10 @@ namespace Regression.Tests.CDb
             // ---------------------------------------------------------
             //   SayHello (health check)
             // ---------------------------------------------------------
-            HelloRequest helloRequest = new HelloRequest();
+            CommonTypes.HelloRequest helloRequest = new CommonTypes.HelloRequest();
             helloRequest.Name = "TestName";
             ServerCallContext helloContext = CreateServerContext(nameof(_GrpcService.SayHello));
-            HelloReply helloResult = await _GrpcService.SayHello(helloRequest, helloContext);
+            CommonTypes.HelloReply helloResult = await _GrpcService.SayHello(helloRequest, helloContext);
             Assert.That(helloResult.Message == "Hello TestName", Is.True);
 
             // ---------------------------------------------------------

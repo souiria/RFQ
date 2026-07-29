@@ -149,7 +149,7 @@
 
     private async Task DeleteAsync(RqfProjectUxModel project)
     {
-        bool? result = await DialogService.ShowMessageBox(
+        bool? result = await DialogService.ShowMessageBoxAsync(
             "Delete RFQ Project",
             $"Are you sure you want to delete RFQ #{project.RfqNumber}? This action cannot be undone.",
             yesText: "Delete",

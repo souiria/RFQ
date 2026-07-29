@@ -404,7 +404,7 @@
             await Task.Yield();
 
             // Validate form
-            await _form.Validate();
+            await _form.ValidateAsync();
 
             // Final update
             StateHasChanged();
@@ -458,7 +458,7 @@
 
     private async Task Apply()
     {
-        await _form.Validate();
+        await _form.ValidateAsync();
         if (_isValid)
         {
             var result = new RfqDrawingPartNumberUxModel();

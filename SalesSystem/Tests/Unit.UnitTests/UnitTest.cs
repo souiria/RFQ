@@ -21,12 +21,11 @@ namespace Unit.Tests
         [Test]
         public void SayHelloTest()
         {
-            HelloRequest request = new HelloRequest();
+            CommonTypes.HelloRequest request = new CommonTypes.HelloRequest();
             request.Name = "TestName";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.SayHello));
 
-            Task<HelloReply> helloReply = _GrpcService.SayHello(request, serverCallContext);
-
+            Task<CommonTypes.HelloReply> helloReply = _GrpcService.SayHello(request, serverCallContext);
             string replyString = "Hello TestName";
             EqualConstraint equalConstraint = Is.EqualTo(replyString);
             Assert.That(helloReply, Is.Not.Null);

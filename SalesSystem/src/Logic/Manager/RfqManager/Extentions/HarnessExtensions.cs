@@ -1,6 +1,4 @@
-﻿using DSI;
-
-namespace RfqModule.Extentions
+﻿namespace RfqModule.Extentions
 {
     public static class HarnessExtensions
     {

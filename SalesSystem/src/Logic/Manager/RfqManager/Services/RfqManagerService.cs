@@ -249,17 +249,19 @@
                 rfqReasonRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
                 RfqFilterRequest reasonFilterRequest = new RfqFilterRequest();
                 reasonFilterRequest.DatabaseList = "RFQREASONGRPC";
-                reasonFilterRequest.FilterExpression = "ReasonTitle != null && ReasonTitle != \"\"";
-               RfqFilterResponse reasonFilterResponse = _RfqClient.FilterRfqGrpc(reasonFilterRequest);
+                reasonFilterRequest.FilterExpression = "RfqReasonTitle != null && RfqReasonTitle != \"\"";
+                RfqFilterResponse reasonFilterResponse = _RfqClient.FilterRfqGrpc(reasonFilterRequest);
 
                 ListRfqReasonGrpc rfqReasons = reasonFilterResponse.ListRfqReasonGrpc ?? new ListRfqReasonGrpc();
 
                 GetRfqReasonsGrpcResponse response = new GetRfqReasonsGrpcResponse();
-                foreach (Rfq.RfqReasonGrpc? reason in rfqReasons.RfqReasons)
-                {
-                    RfqReasonGrpc rfqReason = reason.ToReason();
-                    response.RfqReasons.Add(rfqReason);
-                }
+                response.RfqReasons.Clear();
+                response.RfqReasons.AddRange(rfqReasons.RfqReasons);
+                //foreach (RfqReasonGrpc? reason in rfqReasons.RfqReasons)
+                //{
+                //    RfqReasonGrpc rfqReason = reason.ToReason();
+                //    response.RfqReasons.Add(rfqReason);
+                //}
 
                 return response;
             }
@@ -336,7 +338,7 @@
                 RfqProjectGrpcRequest rfqProjectRequest = new RfqProjectGrpcRequest();
                 rfqProjectRequest.RowId = rowId;
                 rfqProjectRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
-                RfqCrudGrpcResponse grpcResponse =  _RfqClient.DeleteRfqProjectByRowIdGrpc(rfqProjectRequest);
+                RfqCrudGrpcResponse grpcResponse = _RfqClient.DeleteRfqProjectByRowIdGrpc(rfqProjectRequest);
                 bool result = grpcResponse.SaveSuccess;
           
                 string message;
@@ -386,15 +388,16 @@
                 rfqReasonRequest.RfqGrpcRequestParameter = reasonRequestParameter;
                 RfqFilterRequest reasonFilterRequest = new RfqFilterRequest();
                 reasonFilterRequest.DatabaseList = "RFQREASONGRPC";
-                reasonFilterRequest.FilterExpression = "ReasonTitle != null && ReasonTitle != \"\"";
+                reasonFilterRequest.FilterExpression = "RfqReasonTitle != null && RfqReasonTitle != \"\"";
 
                 RfqFilterResponse reasonFilterResponse = _RfqClient.FilterRfqGrpc(reasonFilterRequest);
 
                 ListRfqReasonGrpc rfqReasons = reasonFilterResponse.ListRfqReasonGrpc ?? new ListRfqReasonGrpc();
                 // Build reason lookup
                 Dictionary<int, string> reasonLookup = rfqReasons.RfqReasons
-                    .Where(r => r.RowId != 0 && r.ReasonTitle != null)
-                    .ToDictionary(r => r.RowId, r => r.ReasonTitle);
+                    .Where(r => r.RowId.HasValue && r.RowId.Value != 0 && !string.IsNullOrEmpty(r.RfqReasonTitle))
+                    .Select(r => new { Key = r.RowId ?? 0, Value = r.RfqReasonTitle })
+                    .ToDictionary(x => x.Key, x => x.Value);    
 
                 // Fetch masterCustomers
                 GetAllCustomersGrpcRequest customerRequest = new GetAllCustomersGrpcRequest();
@@ -498,15 +501,15 @@
                 ListRfqProjectGrpc rfqProjects = filterResponse.ListRfqProjectGrpc ?? new ListRfqProjectGrpc();
                 RfqFilterRequest reasonFilterRequest = new RfqFilterRequest();
                 reasonFilterRequest.DatabaseList = "RFQREASONGRPC";
-                reasonFilterRequest.FilterExpression = "ReasonTitle != null && ReasonTitle != \"\"";
+                reasonFilterRequest.FilterExpression = "RfqReasonTitle != null && RfqReasonTitle != \"\"";
 
                 RfqFilterResponse reasonFilterResponse = _RfqClient.FilterRfqGrpc(reasonFilterRequest);
 
                 ListRfqReasonGrpc rfqReasons = reasonFilterResponse.ListRfqReasonGrpc ?? new ListRfqReasonGrpc();
 
                 Dictionary<int, string> reasonLookup = rfqReasons.RfqReasons
-                    .Where(r => r.RowId != 0 && r.ReasonTitle != null)
-                    .ToDictionary(r => r.RowId, r => r.ReasonTitle);
+                    .Where(r => r.RowId != 0 && r.RfqReasonTitle != null)
+                    .ToDictionary(r => r.RowId ?? 0, r => r.RfqReasonTitle ?? string.Empty);
 
                 // Fetch masterCustomers
                 GetAllCustomersGrpcRequest customerRequest = new GetAllCustomersGrpcRequest();
@@ -686,7 +689,6 @@
                 rfqProjectRequest.RfqProjectGrpcsToUpdate.Add(rfqProject);
 
                 RfqCrudGrpcResponse updateResponse = _RfqClient.UpdateRfqProjectGrpc(rfqProjectRequest);
-
                 UpdateRfqProjectGrpcResponse response = new UpdateRfqProjectGrpcResponse();
                 response.Success = updateResponse.SaveSuccess;
                 response.Message = updateResponse.Message;
@@ -701,39 +703,30 @@
         }
         #endregion
         #region RfqDrawingPartNumbers
-        public async Task<UpdateRfqDrawingPartNumbersGrpcResponse> UpdateRfqDrawingPartNumbers(UpdateRfqDrawingPartNumbersGrpcRequest request)
+        public async Task<RfqCrudResponse> UpdateRfqDrawingPartNumbers(RfqDrawingPartNumbersGrpcRequest request)
         {
             try
             {
                 await Task.Delay(1);
 
-                // Map each incoming part into a gRPC DTO
-                List<RfqDrawingPartNumbersGrpc> partsToUpdate = new List<RfqDrawingPartNumbersGrpc>();
-                foreach (RfqDrawingPartNumber part in request.RfqDrawingPartNumbersGrpcsToUpdate)
+                // Map each incoming part into a gRPC access DTO
+                // it'a RfqDrawingPartNumbersGrpc vs RfqModule.RfqDrawingPartNumberGrpc
+                // why a type is named RfqDrawingPartNumbersGrpc (plural) if accepted
+                // convention is singular? I don't know, but it is what it is. Retorical.
+                List<RfqDrawingPartNumberGrpc> partsToUpdate = new List<RfqDrawingPartNumberGrpc>();
+                foreach (RfqDrawingPartNumberGrpc? part in request.RfqDrawingPartNumbersGrpcsToUpdate)
                 {
-                    RfqDrawingPartNumbersGrpc grpcPart = new RfqDrawingPartNumbersGrpc();
-                    grpcPart.RowId = part.RowId;
-                    grpcPart.RfqId = part.RfqId;
-                    grpcPart.SumitomoPartNumber = part.SumitomoPartNumber;
-                    grpcPart.OriginalPartNumber = part.OriginalPartNumber;
-                    grpcPart.OriginalPartNumberPrice = part.OriginalPartNumberPrice;
-                    grpcPart.SwappedPartNumber = part.SwappedPartNumber;
-                    grpcPart.SwappedPartNumberPrice = part.SwappedPartNumberPrice;
-                    grpcPart.PriceSource = part.PriceSource;
-                    grpcPart.IsExactMatch = part.IsExactMatch;
-                    grpcPart.IsSwapped = part.IsSwapped;
-                    grpcPart.Comments = part.Comments;
-                    grpcPart.Quantity = part.Quantity;
+                    RfqDrawingPartNumberGrpc grpcPart = part; //.ToAccessDto();
                     partsToUpdate.Add(grpcPart);
                 }
 
                 RfqDrawingPartNumbersGrpcRequest rfqProjectRequest = new RfqDrawingPartNumbersGrpcRequest();
                 rfqProjectRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
                 rfqProjectRequest.RfqGrpcRequestParameter.RequestType = 80;
-                rfqProjectRequest.RfqDrawingPartNumbersGrpcsToUpdate.Add(partsToUpdate);
+                rfqProjectRequest.RfqDrawingPartNumbersGrpcsToUpdate.AddRange(partsToUpdate);
                 RfqCrudGrpcResponse updateResponse = _RfqClient.UpdateRfqDrawingPartNumbersGrpc(rfqProjectRequest);
-                UpdateRfqDrawingPartNumbersGrpcResponse response = new UpdateRfqDrawingPartNumbersGrpcResponse();
-                response.Success = updateResponse.SaveSuccess;
+                RfqCrudResponse response = new RfqCrudResponse();
+                response.SaveSuccess = updateResponse.SaveSuccess;  
                 response.Message = updateResponse.Message;
                 return response;
             }
@@ -743,17 +736,17 @@
                 throw;
             }
         }
-        public async Task<GetRfqDrawingPartNumbersByRfqIdGrpcResponse> GetRfqDrawingPartNumbersByRfqIdGrpc(GetRfqDrawingPartNumbersByRfqIdGrpcRequest request)
+        public async Task<ListRfqDrawingPartNumberGrpc> GetRfqDrawingPartNumbersByRfqIdGrpc(RfqDrawingPartNumbersGrpcRequest request)
         {
             try
             {
                 await Task.Delay(1);
 
-                GetRfqDrawingPartNumbersByRfqIdGrpcResponse response = new GetRfqDrawingPartNumbersByRfqIdGrpcResponse();
+                ListRfqDrawingPartNumberGrpc response = new ListRfqDrawingPartNumberGrpc();
 
                 RfqFilterRequest rfqFilterRequest = new RfqFilterRequest();
 
-                rfqFilterRequest.DatabaseList = "RFQDRAWINGPARTNUMBERSGRPC";
+                rfqFilterRequest.DatabaseList = "RFQDRAWINGPARTNUMBERGRPC";
                 rfqFilterRequest.FilterExpression = $"(RfqId != null && RfqId == {request.RfqId})";
 
                 RfqFilterResponse rfqFilterResponse = _RfqClient.FilterRfqGrpc(rfqFilterRequest);
@@ -765,21 +758,21 @@
                     return response;
                 }
 
-                List<RfqDrawingPartNumbersGrpc> rfqPartNumbers = rfqFilterResponse.ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.ToList();
+                List<RfqDrawingPartNumberGrpc> rfqPartNumbers = rfqFilterResponse.ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.ToList();
 
                 int partNumberCount = rfqPartNumbers.Count;
                 bool hasParts = !(partNumberCount <= 0);
                 if (hasParts)
                 {
-                    List<RfqDrawingPartNumber> mappedParts = new List<RfqDrawingPartNumber>();
+                    List<RfqDrawingPartNumberGrpc> mappedParts = new List<RfqDrawingPartNumberGrpc>();
 
-                    foreach (RfqDrawingPartNumbersGrpc grpcPart in rfqPartNumbers)
+                    foreach (RfqDrawingPartNumberGrpc grpcPart in rfqPartNumbers)
                     {
-                        RfqDrawingPartNumber mappedPart = grpcPart.ToRfqDrawingPartNumber();
+                        RfqDrawingPartNumberGrpc mappedPart = grpcPart; //.ToClientDto();
                         mappedParts.Add(mappedPart);
                     }
 
-                    response.Parts.AddRange(mappedParts);
+                    response.RfqDrawingPartNumbers.AddRange(mappedParts);
                 }
 
                 return response;
@@ -790,61 +783,34 @@
                 throw;
             }
         }
-        public async Task<DeleteRfqDrawingPartNumbersGrpcResponse> DeleteRfqDrawingPartNumbersGrpc(DeleteRfqDrawingPartNumbersGrpcRequest request)
+        public async Task<RfqCrudResponse> DeleteRfqDrawingPartNumbersGrpc(RfqDrawingPartNumbersGrpcRequest request)
         {
             try
             {
                 await Task.Delay(1);
 
-                RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
-                rfqGrpcRequestParameter.RequestType = 90;
+                RfqDrawingPartNumbersGrpcRequest accessGgrpcRequest = new RfqDrawingPartNumbersGrpcRequest();
 
-                RfqDrawingPartNumbersGrpcRequest grpcRequest = new RfqDrawingPartNumbersGrpcRequest();
-                grpcRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
+                accessGgrpcRequest.RfqGrpcRequestParameter = new();
+                accessGgrpcRequest.RfqGrpcRequestParameter.RequestType = 90;
+                List<RfqDrawingPartNumberGrpc> accessDtos = request.RfqDrawingPartNumbersGrpcsToDelete.Select(p => p).ToList();
+                accessGgrpcRequest.RfqDrawingPartNumbersGrpcsToDelete.AddRange(accessDtos);
 
-                List<RfqDrawingPartNumbersGrpc> partsToDelete = new();
-
-                foreach (RfqDrawingPartNumber? p in request.RfqDrawingPartNumbersGrpcsToDelete)
-                {
-                    if(p == null)
-                    {
-                        continue;
-                    }
-
-                    RfqDrawingPartNumbersGrpc rpcPart = new RfqDrawingPartNumbersGrpc();
-
-                    rpcPart.RowId = p.RowId;
-                    rpcPart.RfqId = p.RfqId;
-                    rpcPart.OriginalPartNumber = p.OriginalPartNumber;
-                    rpcPart.SumitomoPartNumber = p.SumitomoPartNumber;
-                    rpcPart.SwappedPartNumber = p.SwappedPartNumber;
-                    rpcPart.OriginalPartNumberPrice = p.OriginalPartNumberPrice;
-                    rpcPart.SwappedPartNumberPrice = p.SwappedPartNumberPrice;
-                    rpcPart.PriceSource = p.PriceSource;
-                    rpcPart.IsExactMatch = p.IsExactMatch;
-                    rpcPart.IsSwapped = p.IsSwapped;
-                    rpcPart.Comments = p.Comments;
-                    rpcPart.Quantity = p.Quantity;
-
-                    partsToDelete.Add(rpcPart);
-                }
-                
-                grpcRequest.RfqDrawingPartNumbersGrpcsToDelete.AddRange(partsToDelete);
-                RfqCrudGrpcResponse grpcResponse = await _RfqClient.DeleteRfqDrawingPartNumbersGrpcAsync(grpcRequest);
+                RfqCrudGrpcResponse grpcResponse = await _RfqClient.DeleteRfqDrawingPartNumbersGrpcAsync(accessGgrpcRequest);
                 bool result = grpcResponse.SaveSuccess;
 
                 string message;
                 if (result)
                 {
-                    message = $"DeleteRfqDrawingPartNumbersGrpc removed {partsToDelete.Count} parts.";
+                    message = $"DeleteRfqDrawingPartNumbersGrpc removed {accessDtos.Count} parts.";
                 }
                 else
                 {
-                    message = $"DeleteRfqDrawingPartNumbersGrpc failed to delete {partsToDelete.Count} parts.";
+                    message = $"DeleteRfqDrawingPartNumbersGrpc failed to delete {accessDtos.Count} parts.";
                 }
 
-                DeleteRfqDrawingPartNumbersGrpcResponse response = new DeleteRfqDrawingPartNumbersGrpcResponse();
-                response.Success = result;
+                RfqCrudResponse response = new();
+                response.SaveSuccess = result;
                 response.Message = message;
 
                 return response;
@@ -860,7 +826,7 @@
         RfqCrudGrpcResponse CreateRfqDrawingPartNumbers(string projectId, List<CustomerParts> customerParts)
         {
             RfqDrawingPartNumbersGrpcRequest partRequest = new RfqDrawingPartNumbersGrpcRequest();
-            RfqCrudGrpcResponse partResponse = new();
+            RfqCrudGrpcResponse partResponse = new RfqCrudGrpcResponse();
             partResponse.SaveSuccess = false;
 
             try
@@ -871,18 +837,18 @@
                 partRequest.RfqGrpcRequestParameter.RequestType = 70;
                 foreach (CustomerParts customerPart in customerParts)
                 {
-                    RfqDrawingPartNumbersGrpc part = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber1);
+                    RfqDrawingPartNumberGrpc part = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber1);
                     //part.Quantity = customerPart.Qua
                     partRequest.RfqDrawingPartNumbersGrpcsToCreate.Add(part);
                     if (customerPart.PartNumber2 != null)
                     {
-                        RfqDrawingPartNumbersGrpc part2 = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber2);
+                        RfqDrawingPartNumberGrpc part2 = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber2);
                         partRequest.RfqDrawingPartNumbersGrpcsToCreate.Add(part2);
                     }
 
                     if (customerPart.PartNumber3 != null)
                     {
-                        RfqDrawingPartNumbersGrpc part3 = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber3);
+                        RfqDrawingPartNumberGrpc  part3 = ToRfqDrawingPartNumbers(projectId, customerPart.PartNumber3);
                         partRequest.RfqDrawingPartNumbersGrpcsToCreate.Add(part3);
                     }
                 }
@@ -902,9 +868,9 @@
             return partResponse;
 
         }
-        RfqDrawingPartNumbersGrpc ToRfqDrawingPartNumbers(string projectId, string partNumber)
+        RfqDrawingPartNumberGrpc ToRfqDrawingPartNumbers(string projectId, string partNumber)
         {
-            RfqDrawingPartNumbersGrpc part = new RfqDrawingPartNumbersGrpc();
+            RfqDrawingPartNumberGrpc part = new RfqDrawingPartNumberGrpc();
             part.RfqId = (long)Convert.ToDouble(projectId, CultureInfo.InvariantCulture);
             part.OriginalPartNumber = partNumber;
             part.OriginalPartNumberPrice = 0;
@@ -2110,7 +2076,7 @@
         {
             await Task.Delay(1);
             GetRfqNprRequestByRfqNumberGrpcResponse response = new GetRfqNprRequestByRfqNumberGrpcResponse();
-            Collection<Rfq.RfqNprRequestGrpc> filteredList = new Collection<Rfq.RfqNprRequestGrpc>();
+            Collection<RfqShared.RfqNprRequestGrpc> filteredList = new Collection<RfqShared.RfqNprRequestGrpc>();
 
             RfqFilterRequest rfqFilterRequestGrpc = new RfqFilterRequest();
             rfqFilterRequestGrpc.DatabaseList = "RfqNprRequestGrpc";
@@ -2118,12 +2084,13 @@
             RfqFilterResponse rfqNprRequests = await _RfqClient.FilterRfqGrpcAsync(rfqFilterRequestGrpc);
             if (rfqNprRequests.ListRfqNprRequestGrpc != null)
             {
-                filteredList = ExtractRFQResponseData<Rfq.RfqNprRequestGrpc>(rfqNprRequests);
-                foreach(Rfq.RfqNprRequestGrpc accessItem in filteredList)
-                {
-                    RfqNprRequestGrpc item = accessItem.ToRfqNprRequest();
-                    response.RfqNprRequestGrpcs.Add(item);
-                }
+                filteredList = ExtractRFQResponseData<RfqShared.RfqNprRequestGrpc>(rfqNprRequests);
+                response.RfqNprRequestGrpcs.AddRange(filteredList);
+                //foreach(RfqShared.RfqNprRequestGrpc accessItem in filteredList)
+                //{
+                //    RfqNprRequestGrpc item = accessItem.ToRfqNprRequest();
+                //    response.RfqNprRequestGrpcs.Add(item);
+                //}
             }
 
             return response;
@@ -2132,7 +2099,7 @@
         {
             await Task.Delay(1);
             GetRfqNprRequestByRfqProjectIdGrpcResponse response = new GetRfqNprRequestByRfqProjectIdGrpcResponse();
-            Collection<Rfq.RfqNprRequestGrpc> filteredList = new Collection<Rfq.RfqNprRequestGrpc>();
+            Collection<RfqShared.RfqNprRequestGrpc> filteredList = new Collection<RfqShared.RfqNprRequestGrpc>();
 
             RfqFilterRequest rfqFilterRequestGrpc = new RfqFilterRequest();
             rfqFilterRequestGrpc.DatabaseList = "RfqNprRequestGrpc";
@@ -2140,12 +2107,13 @@
             RfqFilterResponse rfqNprRequests = await _RfqClient.FilterRfqGrpcAsync(rfqFilterRequestGrpc);
             if (rfqNprRequests.ListRfqNprRequestGrpc != null)
             {
-                filteredList = ExtractRFQResponseData<Rfq.RfqNprRequestGrpc>(rfqNprRequests);
-                foreach (Rfq.RfqNprRequestGrpc accessItem in filteredList)
-                {
-                    RfqNprRequestGrpc item = accessItem.ToRfqNprRequest();
-                    response.RfqNprRequestGrpcs.Add(item);
-                }
+                filteredList = ExtractRFQResponseData<RfqShared.RfqNprRequestGrpc>(rfqNprRequests);
+                response.RfqNprRequestGrpcs.AddRange(filteredList);
+                //foreach (RfqNprRequestGrpc accessItem in filteredList)
+                //{
+                //    RfqNprRequestGrpc item = accessItem.ToRfqNprRequest();
+                //    response.RfqNprRequestGrpcs.Add(item);
+                //}
             }
 
             return response;
@@ -2154,7 +2122,7 @@
         {
             await Task.Delay(1);
             GetRfqNprRequestByIdGrpcResponse response = new GetRfqNprRequestByIdGrpcResponse();
-            Collection<Rfq.RfqNprRequestGrpc> filteredList = new Collection<Rfq.RfqNprRequestGrpc>();
+            Collection<RfqShared.RfqNprRequestGrpc> filteredList = new Collection<RfqShared.RfqNprRequestGrpc>();
 
             RfqFilterRequest rfqFilterRequestGrpc = new RfqFilterRequest();
             rfqFilterRequestGrpc.DatabaseList = "RfqNprRequestGrpc";
@@ -2162,12 +2130,13 @@
             RfqFilterResponse rfqNprRequests = await _RfqClient.FilterRfqGrpcAsync(rfqFilterRequestGrpc);
             if (rfqNprRequests.ListRfqNprRequestGrpc != null)
             {
-                filteredList = ExtractRFQResponseData<Rfq.RfqNprRequestGrpc>(rfqNprRequests);
-                foreach (Rfq.RfqNprRequestGrpc accessItem in filteredList)
-                {
-                    RfqNprRequestGrpc item = accessItem.ToRfqNprRequest();
-                    response.RfqNprRequestGrpcs.Add(item);
-                }
+                filteredList = ExtractRFQResponseData<RfqShared.RfqNprRequestGrpc>(rfqNprRequests);
+                response.RfqNprRequestGrpcs.AddRange(filteredList);
+                //foreach (RfqNprRequestGrpc accessItem in filteredList)
+                //{
+                //    RfqNprRequestGrpc item = accessItem.ToRfqNprRequest();
+                //    response.RfqNprRequestGrpcs.Add(item);
+                //}
             }
 
             return response;
@@ -2177,7 +2146,7 @@
         {
             await Task.Delay(1);
             GetAllRfqNprRequestGrpcResponse response = new GetAllRfqNprRequestGrpcResponse();
-            Collection<RfqNprRequestGrpc> filteredList = new Collection<RfqNprRequestGrpc>();
+            Collection<RfqShared.RfqNprRequestGrpc> filteredList = new Collection<RfqShared.RfqNprRequestGrpc>();
 
             RfqNprRequestGrpcRequest rfqRequest = new RfqNprRequestGrpcRequest();
             RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
@@ -2186,11 +2155,12 @@
             rfqGrpcRequestParameter.RequestType = 1;
             rfqRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
             ListRfqNprRequestGrpc rfqNprRequests = _RfqClient.ReadRfqNprRequestGrpc(rfqRequest);
-            foreach(Rfq.RfqNprRequestGrpc? item in rfqNprRequests.RfqNprRequestGrpcs)
-            {
-                RfqNprRequestGrpc rfqNpr = item.ToRfqNprRequest();
-                response.RfqNprRequestGrpcs.Add(rfqNpr);
-            }
+            response.RfqNprRequestGrpcs.AddRange(rfqNprRequests.RfqNprRequestGrpcs);
+            //foreach (RfqNprRequestGrpc? item in rfqNprRequests.RfqNprRequestGrpcs)
+            //{
+            //    RfqNprRequestGrpc rfqNpr = item.ToRfqNprRequest();
+            //    response.RfqNprRequestGrpcs.Add(rfqNpr);
+            //}
 
             return response;
         }
@@ -2202,13 +2172,14 @@
             RfqNprRequestGrpcRequest rfqNprRequest = new RfqNprRequestGrpcRequest();
             RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             rfqGrpcRequestParameter.RequestType = 70;
-            foreach (RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
-            {
-                Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRequestGrpcAccess();
-                rfqNprRequest.RfqNprRequestGrpcsToCreate.Add(accessRfqNprRequest);
-            }
+            rfqNprRequest.RfqNprRequestGrpcsToCreate.AddRange(request.RfqNprRequestGrpc);
+            //foreach (RfqShared.RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
+            //{
+            //    RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRequestGrpcAccess();
+            //    rfqNprRequest.RfqNprRequestGrpcsToCreate.Add(accessRfqNprRequest);
+            //}
 
-            rfqNprRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
+            rfqNprRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             RfqCrudGrpcResponse accessResponse = _RfqClient.CreateRfqNprRequestGrpc(rfqNprRequest);
             for (int i = 0; i < request.RfqNprRequestGrpc.Count; i++)
             {
@@ -2230,11 +2201,11 @@
         //    rfqGrpcRequestParameter.RequestType = 80;
         //    foreach (RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
         //    {
-        //        Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRquestGrpcAccess();
+        //        RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRquestGrpcAccess();
         //        rfqNprRequest.RfqNprRequestGrpcsToUpdate.Add(accessRfqNprRequest);
         //    }
 
-        //    RfqCrudGrpcResponse accessResponse = _RfqClient.UpdateRfqNprRequestGrpc(rfqNprRequest);
+        //    RfqCrudResponse accessResponse = _RfqClient.UpdateRfqNprRequestGrpc(rfqNprRequest);
 
         //    response.Message = accessResponse.Message;
 
@@ -2249,11 +2220,12 @@
             RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             rfqGrpcRequestParameter.RequestType = 80;
             rfqNprRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
-            foreach (RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
-            {
-                Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRequestGrpcAccess();
-                rfqNprRequest.RfqNprRequestGrpcsToUpdate.Add(accessRfqNprRequest);
-            }
+            rfqNprRequest.RfqNprRequestGrpcsToUpdate.AddRange(request.RfqNprRequestGrpc);
+            //foreach (RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
+            //{
+            //    RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRequestGrpcAccess();
+            //    rfqNprRequest.RfqNprRequestGrpcsToUpdate.Add(accessRfqNprRequest);
+            //}
 
             RfqCrudGrpcResponse accessResponse = _RfqClient.UpdateRfqNprRequestGrpc(rfqNprRequest);
             response.Success = accessResponse.SaveSuccess;
@@ -2269,7 +2241,7 @@
             GetAllRfqNprRequestGrpcResponse allRfqNprRequests = await GetAllRfqNprRequestGrpc(rfqNprRequest);
             NPRFilterRequest nprFilterRequest = new NPRFilterRequest();
             nprFilterRequest.DatabaseList = "H1NPRVIEWGRPC";
-            foreach (RfqNprRequestGrpc? npr in allRfqNprRequests.RfqNprRequestGrpcs)
+            foreach (RfqShared.RfqNprRequestGrpc? npr in allRfqNprRequests.RfqNprRequestGrpcs)
             {
                 if (npr == null)
                 {
@@ -2286,7 +2258,7 @@
                     RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
                     rfqGrpcRequestParameter.RequestType = 80;
                     rfqNprRequestToUpdate.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
-                    Rfq.RfqNprRequestGrpc accessRfqNprRequest = npr.ToRfqNprRequestGrpcAccess();
+                    RfqShared.RfqNprRequestGrpc accessRfqNprRequest = npr; //.ToRfqNprRequestGrpcAccess();
 
                     if (int.TryParse(firstNpr.Status, out int parsedStatus))
                     {
@@ -2309,11 +2281,12 @@
             RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
             rfqGrpcRequestParameter.RequestType = 90;
             rfqNprRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
-            foreach(RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
-            {
-                Rfq.RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRequestGrpcAccess();
-                rfqNprRequest.RfqNprRequestGrpcsToDelete.Add(accessRfqNprRequest);
-            }
+            rfqNprRequest.RfqNprRequestGrpcsToDelete.AddRange(request.RfqNprRequestGrpc);
+            //foreach(RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
+            //{
+            //    RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRequestGrpcAccess();
+            //    rfqNprRequest.RfqNprRequestGrpcsToDelete.Add(accessRfqNprRequest);
+            //}
 
             RfqCrudGrpcResponse accessResponse = _RfqClient.DeleteRfqNprRequestByIdGrpc(rfqNprRequest);
             response.Success = accessResponse.SaveSuccess;
@@ -2327,11 +2300,12 @@
            ValidateNprRequestRequest accessRequest = new ValidateNprRequestRequest();
             if (request?.Items != null && 0 < request.Items.Count )
             {
-                foreach (RfqNprRequestGrpc? mgrItem in request.Items)
-                {
-                                    Rfq.RfqNprRequestGrpc accessItem = mgrItem.ToRfqNprRequestGrpcAccess();
-                    accessRequest.Items.Add(accessItem);
-                }
+                accessRequest.Items.AddRange(request.Items);
+                //foreach (RfqNprRequestGrpc? mgrItem in request.Items)
+                //{
+                //    RfqNprRequestGrpc accessItem = mgrItem.ToRfqNprRequestGrpcAccess();
+                //    accessRequest.Items.Add(accessItem);
+                //}
             }
                       
             ValidateNprRequestResponse? accessResponse = await _RfqClient.ValidateNprRequestGrpcAsync(accessRequest);
@@ -2361,7 +2335,7 @@
 
                     if (accessLine?.Errors != null && 0 < accessLine.Errors.Count)
                     {
-                        foreach (Rfq.ValidationError? err in accessLine.Errors)
+                        foreach (Rfq.ValidationError err in accessLine.Errors)
                         {
                             MgrValidationError mgrValidationError = new MgrValidationError();
                             mgrValidationError.Field = err?.Field ?? string.Empty;
@@ -2391,36 +2365,36 @@
         //        ?? "UNKNOWN";
 
         //}
-        public async Task<CreateNprGrpcResponse> CreateNprGrpc (CreateNprGrpcRequest request)
+        public async Task<CreateNprGrpcResponse> CreateNprGrpc (CreateNprGrpcRequest request) // this comes from the client and contains a RfqShared.RfqNprRequestGrpc for each line to be submitted to NPR API
         {
             await Task.Delay(0);
             CreateNprGrpcResponse response = new CreateNprGrpcResponse();
             // ValidateNprRequestRequest validateRequest = new ValidateNprRequestRequest();
-            List<NPR.NprApiDataGrpc> accessDataList = new List<NPR.NprApiDataGrpc>();
-            List<Rfq.RfqNprRequestGrpc> rfqNprRequestList = new List<Rfq.RfqNprRequestGrpc>();
+            List<NPR.NprApiDataGrpc> nprAccessDataList = new List<NPR.NprApiDataGrpc>();
+            List<RfqShared.RfqNprRequestGrpc> rfqNprRequestList = new List<RfqShared.RfqNprRequestGrpc>();
 
             //Validate the incoming request first
             for(int i = 0; i < request.NprApiData.Count; i++)
             {
-                Rfq.RfqNprRequestGrpc rfqNprRequest = request.NprApiData[i].RfqNprRequest.ToRfqNprRequestGrpcAccess(i);
+                RfqShared.RfqNprRequestGrpc rfqNprRequest = request.NprApiData[i].RfqNprRequest; //.ToRfqNprRequestGrpcAccess(i);
                 rfqNprRequestList.Add(rfqNprRequest);
                 // validateRequest.Items.Add(rfqNprRequest);
             }
 
             // ValidateNprRequestResponse validateResponse = await _RfqClient.ValidateNprRequestGrpcAsync(validateRequest);
-            // List<Rfq.RfqNprRequestGrpc> validRequests = validateRequest.Items.Where(item => item.Id != null && validateResponse.LineStatuses.Any(line => line.Id == item.Id && line.IsValid)).ToList();  
+            // List<RfqNprRequestGrpc> validRequests = validateRequest.Items.Where(item => item.Id != null && validateResponse.LineStatuses.Any(line => line.Id == item.Id && line.IsValid)).ToList();  
             // send all requests to create RfqNprRequests replacing with the ones from NPR API for the valid requests to capture any additional data from NPR API and to update the status of the RfqNprRequest
             NprApiDataGrpc nprApiDataGrpc = new NprApiDataGrpc();
-        
-            foreach (Rfq.RfqNprRequestGrpc validRequest in rfqNprRequestList) //validRequests)
+
+            foreach (RfqShared.RfqNprRequestGrpc validRequest in rfqNprRequestList) //validRequests)
             {
-                nprApiDataGrpc.RfqNprRequest = validRequest.ToRfqNprRequest();
+                nprApiDataGrpc.RfqNprRequest = validRequest; //.ToRfqNprRequest();
                 NPR.NprApiDataGrpc nprAccessData = nprApiDataGrpc.ToNprApiAccessData();
-                accessDataList.Add(nprAccessData);
+                nprAccessDataList.Add(nprAccessData);
             }
 
             CreateNprApiGrpcRequest createNprApiGrpcRequest = new CreateNprApiGrpcRequest();
-            createNprApiGrpcRequest.NprApiData.AddRange(accessDataList);
+            createNprApiGrpcRequest.NprApiData.AddRange(nprAccessDataList);
             CreateNprApiGrpcResponse apiResponse = await _NPRGrpcClient.CreateNprApiGrpcAsync(createNprApiGrpcRequest);
             response.HttpStatusCode = apiResponse.HttpStatusCode;
             response.Message = apiResponse.Message;
@@ -2645,11 +2619,11 @@
             await Task.Delay(1);
             FilterGrpcResponse response = new FilterGrpcResponse();
             RfqFilterRequest filterRequest = new RfqFilterRequest();
-            Collection<RfqDrawingPartNumbersGrpc> filteredList = new Collection<RfqDrawingPartNumbersGrpc>();
+            Collection<RfqDrawingPartNumberGrpc> filteredList = new Collection<RfqDrawingPartNumberGrpc>();
             RfqFilterResponse rfqResponse = FilterSumitomoNumber<RfqFilterResponse>(request.StringValue, "SumitomoPartNumber", "==");
-            filteredList = ExtractRFQResponseData<RfqDrawingPartNumbersGrpc>(rfqResponse);
+            filteredList = ExtractRFQResponseData<RfqDrawingPartNumberGrpc>(rfqResponse);
             response.Success = true;
-            foreach (RfqDrawingPartNumbersGrpc part in filteredList)
+            foreach (RfqDrawingPartNumberGrpc part in filteredList)
             {
                 string sumitmoNumberString = part.SumitomoPartNumber.ToString();
                 double price = price = part.OriginalPartNumberPrice ?? 0;
@@ -2973,7 +2947,7 @@
                     compositeDetail.CreatedBy = item.CreatedBy;
                     compositeDetail.ModifiedBy = item.ModifiedBy;
 
-                    var dsiCompositeDetail = compositeDetail.ToDSICompositeDetail();
+                    DSICompositeDetailGrpc? dsiCompositeDetail = compositeDetail.ToDSICompositeDetail();
                     response.CompositeDetails.Add(dsiCompositeDetail);
                 }
 
@@ -3077,7 +3051,7 @@
                     compositeDetail.CreatedBy = item.CreatedBy;
                     compositeDetail.ModifiedBy = item.ModifiedBy;
 
-                    var dsiCompositeDetail = compositeDetail.ToDSICompositeDetail();
+                    DSICompositeDetailGrpc? dsiCompositeDetail = compositeDetail.ToDSICompositeDetail();
                     response.CompositeDetails.Add(dsiCompositeDetail);
                 }
 

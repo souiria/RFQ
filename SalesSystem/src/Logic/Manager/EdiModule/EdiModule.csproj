@@ -1,18 +1,28 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
 	<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
   </PropertyGroup>
+	
 
   <ItemGroup>
-    <Protobuf Include="Protos\greet.proto" GrpcServices="Server" />
+	  <!-- AdditionalImportDirs lets every proto resolve CommonTypes.proto -->
+	  <Protobuf Include="Protos\**\*.proto" GrpcServices="Both" ProtoRoot="Protos">
+		  <AdditionalImportDirs>..\..\..\Utilities\GrpcProtos.Shared\Protos\Shared</AdditionalImportDirs>
+	  </Protobuf>	  
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Grpc.AspNetCore" Version="2.64.0" />
+	  <PackageReference Include="Grpc.AspNetCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Utilities\GrpcProtos.Edi.Shared\GrpcProtos.Edi.Shared.csproj" />
+    <ProjectReference Include="..\..\..\Utilities\GrpcProtos\GrpcProtos.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Protos\" />
   </ItemGroup>
 
 </Project>

@@ -103,7 +103,7 @@
         StateHasChanged();
     }
 
-    void OnItemCommitted(RfqNprRequestSampleSiteDataUxModel item)
+    Task<DataGridEditFormAction> OnItemCommitted(RfqNprRequestSampleSiteDataUxModel item)
     {
         if (item.UxStatus == UxObjectStatus.Read)
         {
@@ -111,5 +111,6 @@
         }
 
         StateHasChanged();
+        return Task.FromResult(DataGridEditFormAction.Close);
     }
 }

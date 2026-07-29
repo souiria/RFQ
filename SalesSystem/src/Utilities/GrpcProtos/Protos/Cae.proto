@@ -1,0 +1,13 @@
+syntax = "proto3";
+import "CommonTypes.proto";
+
+option csharp_namespace = "Cae";
+
+package Cae;
+
+// The greeting service definition.
+service CaeService {
+  // Sends a greeting
+  rpc SayHello (CommonTypes.HelloRequest) returns (CommonTypes.HelloReply);
+}
+

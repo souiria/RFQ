@@ -94,7 +94,7 @@
         #endregion
 
         #region RfqDrawingPartNumberUxModel Conversion
-        public static RfqDrawingPartNumberUxModel? ToUx(this RfqDrawingPartNumber dto)
+        public static RfqDrawingPartNumberUxModel? ToUx(this RfqDrawingPartNumberGrpc dto)
         {
             if (dto == null)
             {
@@ -121,12 +121,12 @@
             uxModel.SwappedPartNumber = dto.SwappedPartNumber;
             uxModel.SwappedPartNumberPrice = Convert.ToDecimal(dto.SwappedPartNumberPrice, CultureInfo.InvariantCulture);
             uxModel.PriceSource = dto.PriceSource;
-            if (dto.IsSwapped)
+            if (dto.IsSwapped is not null && dto.IsSwapped.Value)
             {
                 uxModel.IsExactMatch = false;
                 uxModel.IsSwapped = true;
             }
-            else if (dto.IsExactMatch && !dto.IsSwapped)
+            else if (dto.IsExactMatch is not null && dto.IsExactMatch.Value && (dto.IsSwapped is null || !dto.IsSwapped.Value))
             {
                 uxModel.IsExactMatch = true;
                 uxModel.IsSwapped = false;
@@ -142,14 +142,14 @@
 
             return uxModel;
         }
-        public static RfqDrawingPartNumber ToDto(this RfqDrawingPartNumberUxModel uxModel)
+        public static RfqDrawingPartNumberGrpc ToDto(this RfqDrawingPartNumberUxModel uxModel)
         {
             if (uxModel == null)
             {
                 throw new ArgumentNullException(nameof(uxModel));
             }
 
-            RfqDrawingPartNumber dto = new RfqDrawingPartNumber();
+            RfqDrawingPartNumberGrpc dto = new RfqDrawingPartNumberGrpc();
 
             dto.RowId = uxModel.RowId;
             dto.RfqId = uxModel.RfqId;
@@ -170,6 +170,7 @@
             {
                 dto.Comments = uxModel.Comments;
             }
+
             dto.Quantity = Convert.ToDouble(uxModel.Quantity, CultureInfo.InvariantCulture);
 
             return dto;

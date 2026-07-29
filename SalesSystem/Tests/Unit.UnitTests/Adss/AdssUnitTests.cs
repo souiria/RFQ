@@ -49,14 +49,14 @@ namespace Unit.Tests.Adss
         [Category("Unit")]
         public void SayHelloTest()
         {
-            HelloRequest request = new HelloRequest();
+            CommonTypes.HelloRequest request = new CommonTypes.HelloRequest();
             request.Name = "TestName";
 
             string methodName = nameof(_GrpcService.SayHello);
             ServerCallContext serverCallContext = CreateServerContext(methodName);
 
-            Task<HelloReply> task = _GrpcService.SayHello(request, serverCallContext);
-            HelloReply helloReply = task.Result;
+            Task<CommonTypes.HelloReply> task = _GrpcService.SayHello(request, serverCallContext);
+            CommonTypes.HelloReply helloReply = task.Result;
 
             string expected = "Hello TestName";
             EqualConstraint equalConstraint = Is.EqualTo(expected);

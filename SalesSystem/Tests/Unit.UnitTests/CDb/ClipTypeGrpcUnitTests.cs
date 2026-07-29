@@ -124,16 +124,16 @@ namespace Unit.Tests.CDb
         public void SayHelloTest()
         {
             // Arrange
-            HelloRequest request = new HelloRequest();
+            CommonTypes.HelloRequest request = new CommonTypes.HelloRequest();
             request.Name = "ClipTypeGrpcUnitTests";
             ServerCallContext serverCallContext = CreateServerContext(nameof(_GrpcService.SayHello));
 
             // Act
-            Task<HelloReply> helloReply = _GrpcService.SayHello(request, serverCallContext);
+            Task<CommonTypes.HelloReply> helloReply = _GrpcService.SayHello(request, serverCallContext);
 
             // Assert
             string replyString = "Hello ClipTypeGrpcUnitTests";
-            NUnit.Framework.Constraints.EqualConstraint equalConstraint = Is.EqualTo(replyString);
+            EqualConstraint equalConstraint = Is.EqualTo(replyString);
             Assert.That(helloReply, Is.Not.Null);
             Assert.That(helloReply.Result.Message, equalConstraint);
         }

@@ -104,17 +104,17 @@ namespace SalesSystem.Rfq.Services
         #endregion
 
         #region Hello Service
-        public async Task<HelloReply> SayHelloAsync(string name, CancellationToken cancellationToken = default)
+        public async Task<CommonTypes.HelloReply> SayHelloAsync(string name, CancellationToken cancellationToken = default)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
             using CancellationTokenSource combinedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
 
             try
             {
-                HelloRequest request = new HelloRequest();
+                CommonTypes.HelloRequest request = new CommonTypes.HelloRequest();
                 request.Name = name;
 
-                HelloReply response = await _Client.SayHelloAsync(request, cancellationToken: combinedCts.Token);
+                CommonTypes.HelloReply response = await _Client.SayHelloAsync(request, cancellationToken: combinedCts.Token);
 
                 return response;
             }
@@ -340,14 +340,14 @@ namespace SalesSystem.Rfq.Services
 
             try
             {
-                GetRfqDrawingPartNumbersByRfqIdGrpcRequest request = new GetRfqDrawingPartNumbersByRfqIdGrpcRequest();
+                RfqDrawingPartNumbersGrpcRequest request = new RfqDrawingPartNumbersGrpcRequest();
                 request.RfqId = rfqId;
 
-                GetRfqDrawingPartNumbersByRfqIdGrpcResponse response = await _Client.GetRfqDrawingPartNumbersByRfqIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
+                ListRfqDrawingPartNumberGrpc response = await _Client.GetRfqDrawingPartNumbersByRfqIdGrpcAsync(request, cancellationToken: timeoutCts.Token);
                 _RfqDrawingPartNumbers.Clear();
-                if (null != response && 0 <= response.Parts.Count)
+                if (null != response && 0 <= response.RfqDrawingPartNumbers.Count)
                 {
-                    List<RfqDrawingPartNumberUxModel?> uxs = response.Parts.Select(x => x.ToUx()).ToList();
+                    List<RfqDrawingPartNumberUxModel?> uxs = response.RfqDrawingPartNumbers.Select(x => x.ToUx()).ToList();
                     _RfqDrawingPartNumbers.AddRange(uxs);
                     return _RfqDrawingPartNumbers.Count;
                 }
@@ -360,25 +360,31 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-        public async Task<UpdateRfqDrawingPartNumbersGrpcResponse> UpdateRfqDrawingPartNumbersAsync(IEnumerable<RfqDrawingPartNumberUxModel?> parts)
+        public async Task<RfqCrudResponse> UpdateRfqDrawingPartNumbersAsync(IEnumerable<RfqDrawingPartNumberUxModel> parts)
         {
+            if (parts == null || !parts.Any())
+            {
+                _Logger?.GenericLogInformation("EEE UpdateRfqDrawingPartNumbersAsync called with null or empty parts list");
+                return new RfqCrudResponse { SaveSuccess = false, Message = "No parts to update (client side call check)!" };
+            }
+
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-            List<RfqDrawingPartNumber> partsDto = new List<RfqDrawingPartNumber>();
-            foreach (RfqDrawingPartNumberUxModel? part in parts)
+            List<RfqDrawingPartNumberGrpc> partsDto = new List<RfqDrawingPartNumberGrpc>();
+            foreach (RfqDrawingPartNumberUxModel part in parts)
             {
                 if (part != null)
                 {
-                    RfqDrawingPartNumber dto = part.ToDto();
+                    RfqDrawingPartNumberGrpc dto = part.ToDto();
                     partsDto.Add(dto);
                 }
             }
 
             try
             {
-                UpdateRfqDrawingPartNumbersGrpcRequest request = new UpdateRfqDrawingPartNumbersGrpcRequest();
+                RfqDrawingPartNumbersGrpcRequest request = new RfqDrawingPartNumbersGrpcRequest();
                 request.RfqDrawingPartNumbersGrpcsToUpdate.AddRange(partsDto);
 
-                UpdateRfqDrawingPartNumbersGrpcResponse response =
+                RfqCrudResponse response =
                     await _Client.UpdateRfqDrawingPartNumbersGrpcAsync(request, cancellationToken: timeoutCts.Token);
 
                 return response;
@@ -392,48 +398,38 @@ namespace SalesSystem.Rfq.Services
         // !!!Check this!!!
         public async Task<bool> UpdateRfqDrawingPartNumber(RfqDrawingPartNumberUxModel partNumberUx)
         {
-            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-            List<RfqDrawingPartNumber> partsDto = new List<RfqDrawingPartNumber>();
-            partsDto.Add(partNumberUx.ToDto());
-
-            try
+            if (partNumberUx == null)
             {
-                UpdateRfqDrawingPartNumbersGrpcRequest request = new UpdateRfqDrawingPartNumbersGrpcRequest();
-                request.RfqDrawingPartNumbersGrpcsToUpdate.AddRange(partsDto);
-
-                UpdateRfqDrawingPartNumbersGrpcResponse response =
-                    await _Client.UpdateRfqDrawingPartNumbersGrpcAsync(request, cancellationToken: timeoutCts.Token);
-
-                return response.Success;
+                _Logger?.GenericLogInformation("EEE UpdateRfqDrawingPartNumber called with null partNumberUx");
+                return false;
             }
-            catch (Exception ex)
-            {
-                _Logger?.GenericLogError($"EEE Error in UpdateRfqDrawingPartNumber for PartNumber: {partNumberUx.CustomerPartNumber}/{partNumberUx.DrawingPartNumber}", ex);
-                throw;
-            }
+
+            List<RfqDrawingPartNumberUxModel> partList = new List<RfqDrawingPartNumberUxModel> { partNumberUx };
+            RfqCrudResponse result = await UpdateRfqDrawingPartNumbersAsync(partList);
+
+            return result.SaveSuccess;
         }
-        public async Task<bool> DeleteRfqDrawingPartNumbers(List<RfqDrawingPartNumberUxModel>? partNumbers)
+        public async Task<bool> DeleteRfqDrawingPartNumbers(List<RfqDrawingPartNumberUxModel> partNumbers)
         {
-            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-            await Task.Delay(0);
-            if (partNumbers == null || partNumbers.Count == 0)
+            if (partNumbers == null || !partNumbers.Any())
             {
                 _Logger?.GenericLogInformation("EEE DeleteRfqDrawingPartNumbers called with null list or empty list of parts to delete");
                 return false;
             }
 
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
             try
             {
-                List<RfqDrawingPartNumber> dtos = new();
+                List<RfqDrawingPartNumberGrpc> dtos = new();
                 dtos.AddRange(partNumbers.Select(x => x.ToDto()));
-                DeleteRfqDrawingPartNumbersGrpcRequest request = new DeleteRfqDrawingPartNumbersGrpcRequest();
+                RfqDrawingPartNumbersGrpcRequest request = new RfqDrawingPartNumbersGrpcRequest();
                 request.RfqDrawingPartNumbersGrpcsToDelete.AddRange(dtos);
-                DeleteRfqDrawingPartNumbersGrpcResponse result =
-                    await _Client.DeleteRfqDrawingPartNumbersGrpcAsync(request);
+                RfqCrudResponse result =
+                    await _Client.DeleteRfqDrawingPartNumbersGrpcAsync(request, cancellationToken: timeoutCts.Token);
 
                 _Logger?.GenericLogInformation(
                     $"Deleted {partNumbers.Count} ({result.Message}) part numbers");
-                return result.Success;
+                return result.SaveSuccess;
             }
             catch (Exception ex)
             {
@@ -1210,7 +1206,7 @@ namespace SalesSystem.Rfq.Services
 
                 if (matching.Count == 0)
                 {
-                    _Logger?.GenericLogInformation($"No NPR requests found for RfqNumber: {rfqProjectId}");
+                    _Logger?.GenericLogInformation($"No NPR requests found for RfqProjectID: {rfqProjectId}");
                     return null;
                 }
 
@@ -1218,7 +1214,7 @@ namespace SalesSystem.Rfq.Services
             }
             catch (Exception ex)
             {
-                _Logger?.GenericLogError($"Error in GetNprRequestsByRfqProjectIdAsync for RfqNumber: {rfqProjectId}", ex);
+                _Logger?.GenericLogError($"Error in GetNprRequestsByRfqProjectIdAsync for RfqProjectId: {rfqProjectId}", ex);
                 throw;
             }
         }
