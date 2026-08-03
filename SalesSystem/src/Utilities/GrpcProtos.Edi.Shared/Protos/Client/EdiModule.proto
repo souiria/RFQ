@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+import "CommonTypes.proto";
+
+option csharp_namespace = "EdiModule";
+
+package EdiModule;
+
+// The greeting service definition.
+service EdiModule {
+  // Sends a greeting
+   rpc SayHello (CommonTypes.HelloRequest) returns (CommonTypes.HelloReply);
+}
+

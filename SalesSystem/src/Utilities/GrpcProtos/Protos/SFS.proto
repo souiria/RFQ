@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/wrappers.proto";
+import "CommonTypes.proto";
 
 option csharp_namespace = "SFS";
 package sfs;
@@ -12,7 +12,7 @@ package sfs;
 // ==========================
 
 service SFSService {
-  rpc SayHello (HelloRequest) returns (HelloReply);
+   rpc SayHello (CommonTypes.HelloRequest) returns (CommonTypes.HelloReply);
 
   rpc GetAllCalculationTypes (google.protobuf.Empty) returns (CalculationTypeListViewGrpc);
   rpc GetAllCarModels (google.protobuf.Empty) returns (CarModelListViewGrpc);
@@ -24,20 +24,6 @@ service SFSService {
   rpc GetCustomerNonWorkingDay (google.protobuf.Empty) returns (CustomerNonWorkingDayListViewGrpc);
   rpc GetAllPeriods (google.protobuf.Empty) returns (PeriodListViewGrpc);
   rpc GetAllProfiles (google.protobuf.Empty) returns (ProfileListViewGrpc);
-}
-
-// ==========================
-//      GREETING MESSAGES
-// ==========================
-
-
-
-message HelloRequest {
-  string name = 1;
-}
-
-message HelloReply {
-  string message = 1;
 }
 
 // ==========================

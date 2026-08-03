@@ -31,13 +31,13 @@ namespace Regression.Tests.EDI
             // ---------------------------------------------------------
             //   SayHello
             // ---------------------------------------------------------
-            HelloRequest helloRequest = new HelloRequest();
+            CommonTypes.HelloRequest helloRequest = new CommonTypes.HelloRequest();
             helloRequest.Name = "TestName";
 
             string helloMethodName = nameof(_GrpcService.SayHello);
             ServerCallContext helloContext = CreateServerContext(helloMethodName);
 
-            HelloReply helloReply = await _GrpcService.SayHello(helloRequest, helloContext);
+            CommonTypes.HelloReply helloReply = await _GrpcService.SayHello(helloRequest, helloContext);
 
             string expectedHello = "Hello TestName, I am the EdiGrpcService";
             string actualHello = helloReply.Message;

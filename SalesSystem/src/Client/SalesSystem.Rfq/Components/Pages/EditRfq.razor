@@ -56,7 +56,7 @@ else
                                    AdornmentColor="Color.Primary">
                             @foreach (var customer in RfqUxClientService.Customers)
                             {
-                                <MudSelectItem Value="@customer?.Id">@customer?.CustomerBusinessGroupName</MudSelectItem>
+                                <MudSelectItem T="string" Value="@customer?.Id">@customer?.CustomerBusinessGroupName</MudSelectItem>
                             }
                         </MudSelect>
                         <MudSelect T="int?"
@@ -68,7 +68,7 @@ else
                                    AdornmentColor="Color.Primary">
                             @foreach (var reason in RfqUxClientService.Reasons)
                             {
-                                <MudSelectItem Value="@((int?)reason.RowId)">@reason.RfqReasonTitle</MudSelectItem>
+                                <MudSelectItem T="int?" Value="@((int?)reason.RowId)">@reason.RfqReasonTitle</MudSelectItem>
                             }
                         </MudSelect>
                     </MudStack>
@@ -226,72 +226,62 @@ else
         </MudItem>
 
         <MudItem xs="12" Class="pt-2">
-            <MudTabs Elevation="2"
-                     Rounded="true"
-                     ApplyEffectsToContainer="true"
-                     PanelClass="pa-3"
-                     MinimumTabWidth="12vw"
-                     KeepPanelsAlive="true"
-                     @bind-ActivePanelIndex="_ActiveTabIndex">
-                <MudTabPanel Text="BOM Files"
-                             Icon="@Icons.Material.Filled.Api"
-                             BadgeData='"BOM"'
-                             BadgeColor="Color.Success">
-                    <div class="d-flex flex-column" style="height: calc(100vh - 364px); overflow: hidden;">
-@*                         <FileCards @ref="_ComponentFileCards"
-                                   FileObjects="FileObjects"
-                                   OnRemoveFile="HandleFileRemoval" /> *@
-                        @if(_Composites.Count > 0)
-                        {
-                            <CompositeCards @ref="_CompositeCardsRef"
-                                            DsiComposites="@_Composites"
-                                            PreselectedIds="@_PreselectedDerivativeIds"
-                                            OnComponentsSelected="@HandleComponentsSelectedAsync" />
-
-                            @* <MudButton Class="mt-4"
-                                       Color="Color.Primary"
-                                       Variant="Variant.Filled"
-                                       StartIcon="@Icons.Material.Filled.Save"
-                                       OnClick="@UpdateSelectionAsync">
-                                Update Selection
-                            </MudButton> *@
-                        }
-                    </div>
-                </MudTabPanel>
-                <MudTabPanel Text="Parts Lists" Icon="@Icons.Material.Filled.Api" BadgeData='"PROJ"' BadgeColor="Color.Info">
-                    <div class="d-flex flex-column" style="height: calc(100vh - 364px); overflow: hidden;">
-                        <PartNumberSection PartNumbers="@_InProgressParts"
-                                           Label="In progress"
-                                           BackgroundColor="var(--mud-palette-warning)"
-                                           InitiallyExpanded="true"
-                                           OnPartNumberDeleted="@HandlePartNumberDeleted"
-                                           OnPartNumberUpdated="@HandlePartNumberUpdated"/>
-                        <MudDivider Style="margin: 4px 0;"/>
-                        <PartNumberSection PartNumbers="@_CompletedParts"
-                                           Label="Completed"
-                                           BackgroundColor="var(--mud-palette-success)"
-                                           InitiallyExpanded="false"
-                                           OnPartNumberDeleted="@HandlePartNumberDeleted"
-                                           OnPartNumberUpdated="@HandlePartNumberUpdated"/>
-                    </div>
-                </MudTabPanel>
-                <MudTabPanel Text="@($"NPRs")"
-                             Disabled="@(RfqProject.NprRequests == null || RfqProject.NprRequests.Count == 0)"
-                             Icon="@Icons.Material.Filled.RequestPage" BadgeData="@(RfqProject.NprRequests?.Count ?? 0)" BadgeColor="Color.Primary">
-                    <div class="d-flex flex-column" style="height: calc(100vh - 364px); overflow: hidden;">
-                        @if (RfqProject.NprRequests != null && RfqProject.NprRequests.Count > 0)
-                        {
-                            <NprRequestsEditor @ref="_ComponentNprEditor" RfqProject="@RfqProject" GlobalValue="@GlobalValue"/>
-                        }
-                        else
-                        {
-                            <MudAlert Severity="Severity.Info" Class="ma-4">
-                                No NPR requests available. Use the "Add NPRs" button to create NPR requests for in-progress parts.
-                            </MudAlert>
-                        }
-                    </div>
-                </MudTabPanel>
-            </MudTabs>
+                <MudTabs Elevation="2"
+                         Rounded="true"
+                         ApplyEffectsToContainer="true"
+                         MinimumTabWidth="12vw"
+                         Style="height: 100%; overflow: hidden;"
+                         @bind-ActivePanelIndex="_ActiveTabIndex">
+                    <MudTabPanel Text="BOM Files"
+                                 Icon="@Icons.Material.Filled.Api"
+                                 BadgeData='"BOM"'
+                                 BadgeColor="Color.Success">
+                        <div style="height: calc(100vh - 344px); display: flex; flex-direction: column; overflow: auto;">
+                            @if(_Composites.Count > 0)
+                            {
+                                <CompositeCards @ref="_CompositeCardsRef"
+                                                DsiComposites="@_Composites"
+                                                PreselectedIds="@_PreselectedDerivativeIds"
+                                                OnComponentsSelected="@HandleComponentsSelectedAsync" />
+                            }
+                        </div>
+                    </MudTabPanel>
+                    <MudTabPanel Text="Parts Lists" Icon="@Icons.Material.Filled.Api" BadgeData='"PROJ"' BadgeColor="Color.Info">
+                        <div style="height: calc(100vh - 344px); display: flex; flex-direction: column; overflow: auto;">
+                            <PartNumberSection PartNumbers="@_InProgressParts"
+                                               Label="In progress"
+                                               BackgroundColor="var(--mud-palette-warning)"
+                                               InitiallyExpanded="true"
+                                               OnPartNumberDeleted="@HandlePartNumberDeleted"
+                                               OnPartNumberUpdated="@HandlePartNumberUpdated"/>
+                            <MudDivider Style="margin: 4px 0;"/>
+                            <PartNumberSection PartNumbers="@_CompletedParts"
+                                               Label="Completed"
+                                               BackgroundColor="var(--mud-palette-success)"
+                                               InitiallyExpanded="false"
+                                               OnPartNumberDeleted="@HandlePartNumberDeleted"
+                                               OnPartNumberUpdated="@HandlePartNumberUpdated"/>
+                        </div>
+                    </MudTabPanel>
+                    <MudTabPanel Text="@($"NPRs")"
+                                 Disabled="@(RfqProject.NprRequests == null || RfqProject.NprRequests.Count == 0)"
+                                 Icon="@Icons.Material.Filled.RequestPage"
+                                 BadgeData="@(RfqProject.NprRequests?.Count ?? 0)"
+                                 BadgeColor="Color.Primary">
+                        <div style="height: calc(100vh - 344px); display: flex; flex-direction: column; overflow: auto;">
+                            @if (RfqProject.NprRequests != null && RfqProject.NprRequests.Count > 0)
+                            {
+                                <NprRequestsEditor @ref="_ComponentNprEditor" RfqProject="@RfqProject" GlobalValue="@GlobalValue"/>
+                            }
+                            else
+                            {
+                                <MudAlert Severity="Severity.Info" Class="ma-4">
+                                    No NPR requests available. Use the "Add NPRs" button to create NPR requests for in-progress parts.
+                                </MudAlert>
+                            }
+                        </div>
+                    </MudTabPanel>
+                </MudTabs>
         </MudItem>
     </MudGrid>
 }

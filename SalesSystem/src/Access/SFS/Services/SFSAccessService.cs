@@ -212,12 +212,12 @@ namespace SFS.Services
             return _DailyVolumeGrpcs;
         }
 
-        public Task<HelloReply> SayHelloAsync(string name)
+        public Task<CommonTypes.HelloReply> SayHelloAsync(string name)
         {
-            HelloReply reply = new HelloReply();
+            CommonTypes.HelloReply reply = new CommonTypes.HelloReply();
             reply.Message = "Hello " + name;
 
-            Task<HelloReply> result = Task.FromResult(reply);
+            Task<CommonTypes.HelloReply> result = Task.FromResult(reply);
             return result;
         }
     }

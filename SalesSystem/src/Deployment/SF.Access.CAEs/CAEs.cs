@@ -53,7 +53,7 @@ namespace SF.Access.CAEs
                          .UseUrls(url);
 
                         
-                        return CAE.HostBuilder.CreateApp(builder, url);
+                        return Cae.HostBuilder.CreateApp(builder, url);
 
                     }),"ServiceEndpointHttps")
             };

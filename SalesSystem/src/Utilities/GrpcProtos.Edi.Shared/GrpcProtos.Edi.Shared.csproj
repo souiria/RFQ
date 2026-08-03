@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<ItemGroup>
+		<PackageReference Include="Grpc.AspNetCore" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\GrpcProtos.Shared\GrpcProtos.Shared.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Protobuf Include="Protos\Client\EdiModule.proto" GrpcServices="Both">
+			<AdditionalImportDirs>..\GrpcProtos.Shared\Protos\Shared;Protos\Shared</AdditionalImportDirs>
+		</Protobuf>
+	</ItemGroup>
+
+</Project>

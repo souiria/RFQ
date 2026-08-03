@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
+import "CommonTypes.proto";
 
 option csharp_namespace = "EngSol";
 
@@ -11,22 +11,12 @@ package engsol;
 // The greeting service definition.
 service EngSol {
   // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply);
+   rpc SayHello (CommonTypes.HelloRequest) returns (CommonTypes.HelloReply);
   rpc GetDerivativeWireByIdGrpc (GetDerivativeWireByIdGrpcRequest) returns (ListDerivativeWiresGrpc);
   rpc GetDerivativePartByIdGrpc (GetDerivativePartByIdGrpcRequest) returns (ListDerivativePartsGrpc);
   rpc GetDerivativesGrpc (GetDerivativesGrpcRequest) returns (ListDerivatives);
   rpc GetDerivativeByDerivativeId (GetDerivativeByIdGrpcRequest) returns (DerivativeGrpc);
   rpc EngSolFilterDataGrpc (EngSolFilterDataGrpcRequest) returns (EngSolFilterDataGrpcResponse);
-}
-
-// The request message containing the user's name.
-message HelloRequest {
-  string name = 1;
-}
-
-// The response message containing the greetings.
-message HelloReply {
-  string message = 1;
 }
 
 message GetDerivativeWiresGrpcRequest {

@@ -50,22 +50,22 @@
 
 <div class="d-flex flex-column" style="height: 100%; overflow: hidden;">
     <MudDataGrid T="RfqNprRequestUxModel"
-    @ref="_dataGrid"
-    Items="@RfqProject.NprRequests"
-    ReadOnly="true"
-    Bordered="true"
-    Dense="true"
-    EditTrigger="DataGridEditTrigger.Manual"
-    FixedHeader="true"
-    Height="calc(100% - 64px)"
-    Class="mud-npr-req-grid"
-    Style="flex: 1 1 auto; min-height: 0; overflow-y: auto; margin: 8px 0;"
-    RowStyleFunc="@RowStyleFunc"
-    ColumnResizeMode="ResizeMode.Column"
-    Filterable="true"
-    FilterMode="DataGridFilterMode.ColumnFilterRow"
-    FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive"
-    QuickFilter="@QuickFilter">
+                    @ref="_dataGrid"
+                    Items="@RfqProject.NprRequests"
+                    ReadOnly="true"
+                    Bordered="true"
+                    Dense="true"
+                    EditTrigger="DataGridEditTrigger.Manual"
+                    FixedHeader="true"
+                    Height="calc(100% - 44px)"
+                    Class="mud-npr-req-grid"
+                    Style="flex: 1 1 auto; min-height: 0; overflow-y: auto; margin: 8px 0;"
+                    RowStyleFunc="@RowStyleFunc"
+                    ColumnResizeMode="ResizeMode.Column"
+                    Filterable="true"
+                    FilterMode="DataGridFilterMode.ColumnFilterRow"
+                    FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive"
+                    QuickFilter="@QuickFilter">
         <ToolBarContent>
             <MudText Typo="Typo.subtitle1" Class="mr-4">
                 NPR Requests for @RfqProject.RfqNumber (@ActiveNprCount)

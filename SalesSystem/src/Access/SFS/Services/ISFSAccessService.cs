@@ -12,7 +12,7 @@
         Task<CustomerNonWorkingDayListViewGrpc> GetCustomerNonWorkingDay(CancellationToken cancellationToken);
         Task<DailyVolumeDataListViewGrpc> GetAllDailyVolumes(CancellationToken cancellationToken);
         Task<CalculationTypeListViewGrpc> GetAllCalculationTypes(CancellationToken cancellationToken);
-        Task<HelloReply> SayHelloAsync(string name);
+        Task<CommonTypes.HelloReply> SayHelloAsync(string name);
     }
 }
 

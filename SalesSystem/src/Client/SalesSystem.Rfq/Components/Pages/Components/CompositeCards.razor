@@ -28,7 +28,7 @@
 
 </style>
 
-<MudPaper Style="display: grid; grid-template-columns: repeat(auto-fill, minmax(500px, 1fr)); align-items: start; gap: 16px; height: calc(100vh - 364px); overflow-y: auto;" Class="pa-4" Outlined="true">
+<MudPaper Style="display: grid; grid-template-columns: repeat(auto-fill, minmax(500px, 1fr)); align-items: start; gap: 16px; height: calc(100vh - 344px); overflow-y: auto;" Class="pa-4" Outlined="true">
     @if (DsiComposites.Count > 0)
     {
         @foreach (var compositeObject in DsiComposites)
@@ -159,7 +159,7 @@
             else
             {
                 // Handle the case where no components were found
-                await DialogService.ShowMessageBox("No Components Found", "No components were found for the selected composite.");
+                await DialogService.ShowMessageBoxAsync("No Components Found", "No components were found for the selected composite.");
             }
         }
         catch (Exception ex)

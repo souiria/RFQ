@@ -39,7 +39,9 @@
         builder.AddProject<Projects.SalesSystem_Rfq>("RfqFrontEnd")
             .WithExternalHttpEndpoints()
             .WithReference(apiService)
-            .WaitFor(apiService);
+            .WithReference(rfqManager)
+            .WaitFor(apiService)
+            .WaitFor(rfqManager);
 
         builder.Build().Run();
     }

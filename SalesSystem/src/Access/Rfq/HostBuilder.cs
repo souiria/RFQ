@@ -7,6 +7,7 @@
             string dir = Directory.GetCurrentDirectory();
         
             builder ??= WebApplication.CreateBuilder(args);
+            string version = typeof(HostBuilder).Assembly.GetName().Version?.ToString() ?? "unknown";
             IConfigurationSection conf = builder.Configuration.GetSection("Logging");
             builder.Configuration
                 .SetBasePath(dir)
@@ -15,7 +16,6 @@
                 .AddEnvironmentVariables();
             builder.Logging.ClearProviders();
             builder.Logging.AddConfiguration(conf);
-            builder.Logging.AddSeq();
             #region Builder
             #region Kestrel
             builder.WebHost.ConfigureKestrel(options =>
@@ -64,7 +64,16 @@
             ILogger logger = app.Services.GetRequiredService<ILoggerFactory>()
                 .CreateLogger("Rfq.Startup");
 
-            logger.GenericLogInformation("III RFQ Service starting up - SEQ test message");
+            logger.GenericLogInformation($"III RFQ Access Layer Service version {version} starting up - SEQ test message");
+            // what database are we connected to?
+            using (IServiceScope scope = app.Services.CreateScope())
+            {
+                RfqDbContext dbContext = scope.ServiceProvider.GetRequiredService<RfqDbContext>();
+                string? connectionString = dbContext.Database.GetConnectionString();
+                string? databaseName = dbContext.Database.GetDbConnection().Database;
+                string? dataSource = dbContext.Database.GetDbConnection().DataSource;
+                logger.GenericLogInformation($"III RFQ Access Layer Service {version}  connected to database: '{databaseName}' on server: '{dataSource}' | Full connection: '{connectionString}'");
+            }
 
             if (app.Environment.IsDevelopment())
             {

@@ -1,10 +1,11 @@
 syntax = "proto3";
 
-import "google/protobuf/empty.proto";
-import "google/protobuf/timestamp.proto";
-import "google/protobuf/wrappers.proto";
+// import "google/protobuf/empty.proto";
+// import "google/protobuf/timestamp.proto";
+// import "google/protobuf/wrappers.proto";
 
 // Common types
+import "CDbCommonTypes.proto";
 import "CommonTypes.proto";
 
 //Main
@@ -40,7 +41,7 @@ package cdb;
 // The greeting service definition.
 service CDbService {
 	// Sends a greeting
-	rpc SayHello (HelloRequest) returns (HelloReply);
+	 rpc SayHello (CommonTypes.HelloRequest) returns (CommonTypes.HelloReply);
 
 	// Master services
 	// ClipTypeGrpc
@@ -151,16 +152,6 @@ service CDbService {
 	rpc DeleteCompositeComponentGrpc (CompositeComponentGrpcRequest) returns (CDbCrudGrpcResponse);
 
 	rpc FilterCdbDataGrpc (CdbFilterRequestGrpc) returns (CdbFilterResponseGrpc);
-}
-
-// The request message containing the user's name.
-message HelloRequest {
-	string Name = 1;
-}
-
-// The response message containing the greetings.
-message HelloReply {
-	string Message = 1;
 }
 
 message CdbFilterRequestGrpc {

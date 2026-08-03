@@ -24,14 +24,14 @@ namespace Regression.Tests.SFS
             anyToken = It.IsAny<CancellationToken>();
 
             // --- SayHello ---
-            HelloRequest helloRequest;
-            helloRequest = new HelloRequest();
+            CommonTypes.HelloRequest helloRequest;
+            helloRequest = new CommonTypes.HelloRequest();
             helloRequest.Name = "TestName";
 
-            Task<HelloReply> helloTask;
+            Task<CommonTypes.HelloReply> helloTask;
             helloTask = _GrpcService.SayHello(helloRequest, null!);
 
-            HelloReply helloResult;
+            CommonTypes.HelloReply helloResult;
             helloResult = await helloTask;
 
             string actualHello;

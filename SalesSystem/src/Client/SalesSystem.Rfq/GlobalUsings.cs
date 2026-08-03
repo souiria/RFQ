@@ -29,6 +29,7 @@ global using Microsoft.JSInterop;
 global using MudBlazor;
 global using MudBlazor.Services;
 global using RfqModule;
+global using RfqShared;
 global using SharedModels.Filtering;
 global using SharedModels.Global;
 global using Microsoft.AspNetCore.Components.Authorization;
