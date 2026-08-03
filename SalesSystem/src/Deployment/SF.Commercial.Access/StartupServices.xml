@@ -4,7 +4,6 @@
     <Parameter Name="SF.Access.Masters_InstanceCount" DefaultValue="-1" />
     <Parameter Name="SF.Access.Rfqs_InstanceCount" DefaultValue="-1" />
     <Parameter Name="SF.Access.Nprs_InstanceCount" DefaultValue="-1" />
-    <Parameter Name="SF.Access.Adsss_InstanceCount" DefaultValue="-1" />
     <Parameter Name="SF.Access.CPDs_InstanceCount" DefaultValue="-1" />
     <Parameter Name="SF.Access.SFSs_InstanceCount" DefaultValue="-1" />
     <Parameter Name="SF.Access.Emacss_InstanceCount" DefaultValue="-1" />
@@ -32,11 +31,6 @@
     </Service>
     <Service Name="SF.Access.Nprs" ServiceDnsName="Access.Npr.SalesSystem" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SF.Access.NprsType" InstanceCount="[SF.Access.Nprs_InstanceCount]">
-        <SingletonPartition />
-      </StatelessService>
-    </Service>
-    <Service Name="SF.Access.Adsss" ServiceDnsName="Access.Adss.SalesSystem" ServicePackageActivationMode="ExclusiveProcess">
-      <StatelessService ServiceTypeName="SF.Access.AdsssType" InstanceCount="[SF.Access.Adsss_InstanceCount]">
         <SingletonPartition />
       </StatelessService>
     </Service>

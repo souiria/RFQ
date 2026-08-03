@@ -39,9 +39,7 @@
     <Content Include="StartupServiceParameters\UAT.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SF.Logic.RfqModules\SF.Logic.RfqModules.csproj">
-      <ServiceLaunchUrl>https://localhost:{ServicePort}/</ServiceLaunchUrl>
-    </ProjectReference>
+    <ProjectReference Include="..\SF.Logic.RfqModules\SF.Logic.RfqModules.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <PropertyGroup>
