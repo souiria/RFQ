@@ -1,0 +1,120 @@
+@using MudBlazor
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<MudDialog>
+    <DialogContent>
+        <div style="min-width: 560px;">
+            <div class="d-flex align-center mb-3">
+                <MudIcon Icon="@(IsSuccess ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Error)"
+                         Color="@(IsSuccess ? Color.Success : Color.Error)"
+                         Size="Size.Large"
+                         Class="mr-2" />
+                <MudText Typo="Typo.h6" Color="@(IsSuccess ? Color.Success : Color.Error)">
+                    @(IsSuccess ? "NPR Submission Successful" : "NPR Submission Failed")
+                </MudText>
+            </div>
+
+            <MudText Typo="Typo.body2" Class="mb-1"><strong>RFQ:</strong> @RfqNumber</MudText>
+            @if (IsSuccess && !string.IsNullOrWhiteSpace(NprRequestNumber))
+            {
+                <MudText Typo="Typo.body2" Class="mb-3"><strong>NPR Request Number:</strong> @NprRequestNumber</MudText>
+            }
+
+            <MudTextField T="string"
+                          Value="@StatusMessage"
+                          ReadOnly="true"
+                          Lines="8"
+                          Variant="Variant.Outlined"
+                          FullWidth="true"
+                          Class="npr-status-message"
+                          Style="overflow-y: auto;"
+                          Label="Details" />
+        </div>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="ExportAsync"
+                   StartIcon="@Icons.Material.Filled.Download"
+                   Variant="Variant.Outlined"
+                   Color="Color.Primary">
+            Export
+        </MudButton>
+        <MudButton OnClick="Close"
+                   Color="@(IsSuccess ? Color.Success : Color.Error)"
+                   Variant="Variant.Filled">
+            Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public IMudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter]
+    public bool IsSuccess { get; set; }
+
+    [Parameter]
+    public string RfqNumber { get; set; } = string.Empty;
+
+    [Parameter]
+    public string? NprRequestNumber { get; set; }
+
+    [Parameter]
+    public string StatusMessage { get; set; } = string.Empty;
+
+    IJSObjectReference? _Module;
+
+    async Task<IJSObjectReference> GetModuleAsync()
+    {
+        return _Module ??= await JS.InvokeAsync<IJSObjectReference>(
+            "import", "./js/nprSubmissionExport.js");
+    }
+
+    async Task ExportAsync()
+    {
+        string fileName = BuildFileName();
+        IJSObjectReference module = await GetModuleAsync();
+        await module.InvokeVoidAsync("downloadTextFile", fileName, StatusMessage);
+    }
+
+    string BuildFileName()
+    {
+        string date = DateTime.Now.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+        string safeRfqNumber = Sanitize(RfqNumber);
+
+        if (IsSuccess)
+        {
+            string safeRequestNumber = Sanitize(NprRequestNumber ?? "unknown");
+            return $"success-{date}-{safeRfqNumber}-{safeRequestNumber}.txt";
+        }
+
+        return $"error-{date}-{safeRfqNumber}.txt";
+    }
+
+    static string Sanitize(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return "unknown";
+        }
+
+        char[] invalid = System.IO.Path.GetInvalidFileNameChars();
+        string cleaned = new string(value.Select(c => invalid.Contains(c) ? '_' : c).ToArray());
+        return cleaned.Replace(' ', '_');
+    }
+
+    void Close()
+    {
+        MudDialog.Close(DialogResult.Ok(IsSuccess));
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_Module != null)
+        {
+            await _Module.DisposeAsync();
+        }
+    }
+}

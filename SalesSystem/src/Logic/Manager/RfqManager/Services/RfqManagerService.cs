@@ -74,7 +74,7 @@
                 MastersFilterRequestGrpc filterRequest = new MastersFilterRequestGrpc();
                 filterRequest.DatabaseList = "CUSTOMERLOCATIONGRPC";
 #pragma warning disable CA1308
-                filterRequest.FilterExpression = $"CustomerBusinessHierarchyGuid != null && CustomerBusinessHierarchyGuid.ToUpperInvariant() == \"{request.CustomerId.ToUpperInvariant()}\"";
+                filterRequest.FilterExpression = $"CustomerBusinessHierarchyGuid != null && IsActive == true && CustomerBusinessHierarchyGuid.ToUpperInvariant() == \"{request.CustomerId.ToUpperInvariant()}\"";
 #pragma warning restore CA1308
                 MastersFilterResponseGrpc locations = _MasterClient.FilterMasterDataGrpc(filterRequest);
                 // List<CustomerLocationGrpc> extractedLocations = ExtractMastersResponseData<CustomerLocationGrpc>(locations).ToList();
@@ -91,14 +91,14 @@
 
                 // load innermost loop in memory
                 filterRequest.DatabaseList = "PROJECTGRPC";
-                filterRequest.FilterExpression = $"Id != null";
+                filterRequest.FilterExpression = $"Id != null && IsActive == true";
                 MastersFilterResponseGrpc projects = _MasterClient.FilterMasterDataGrpc(filterRequest);
                 List<ProjectGrpc> allProjects = ExtractMastersResponseData<ProjectGrpc>(projects).ToList();
 
                 // load second loop in memory
                 filterRequest.DatabaseList = "CUSTOMERPROJECTASSOCIATIONGRPC";
 #pragma warning disable CA1308
-                filterRequest.FilterExpression = $"CustomerLocationGuid != null";
+                filterRequest.FilterExpression = $"CustomerLocationGuid != null && IsActive == true";
 #pragma warning restore CA1308
                 MastersFilterResponseGrpc projectAssociations = _MasterClient.FilterMasterDataGrpc(filterRequest);
                 // List<CustomerProjectAssociationGrpc> allProjectAssociations = ExtractMastersResponseData<CustomerProjectAssociationGrpc>(projectAssociations).ToList();
@@ -115,7 +115,7 @@
                 ////List<ProjectEngineeringAssociationGrpc> extractedAssociations = projectEngineeringAssociations.ProjectEngineeringAssociationGrpcList.ProjectEngineeringAssociationGrpc
                 ////                    .Where(x => x.Id != null && x.Id.Equals(, StringComparison.OrdinalIgnoreCase))
                 ////                    .ToList();
-
+                List<ProjectGrpc> extractedProjects = new List<ProjectGrpc>();
                 foreach (CustomerLocationGrpc? location in extractedLocations)
                 {
                     //                    filterRequest.DatabaseList = "CUSTOMERPROJECTASSOCIATIONGRPC";
@@ -151,16 +151,15 @@
                         //filterRequest.FilterExpression = $"Id != null && Id.ToUpperInvariant() == \"{customerProjectAssociation.ProjectGuid.ToUpperInvariant()}\"";
                         //MastersFilterResponseGrpc projects = _MasterClient.FilterMasterDataGrpc(filterRequest);
                         //List<ProjectGrpc> extractedProjects = ExtractMastersResponseData<ProjectGrpc>(projects).ToList();
-                        List<ProjectGrpc> extractedProjects = allProjects
-                            .Where(p => p.Id != null && p.Id.Equals(customerProjectAssociation.ProjectGuid, StringComparison.OrdinalIgnoreCase))
-                            .ToList();
+                        extractedProjects = allProjects
+                                .Where(p => p.Id != null && p.Id.Equals(customerProjectAssociation.ProjectGuid, StringComparison.OrdinalIgnoreCase))
+                                .ToList();
 
                         if (extractedProjects.Count <= 0)
                         {
                             continue;
                         }
 
-                        _Projects.AddRange(extractedProjects);
                         foreach (ProjectGrpc? project in extractedProjects)
                         {
                             ProjectAssociation projectAssociation = new ProjectAssociation();
@@ -176,6 +175,23 @@
                     }
                 }
 
+                VehicleGrpcRequest vehicleRequest = new VehicleGrpcRequest();
+                ListVehicleGrpc vehicles = _MasterClient.GetVehicleGrpc(vehicleRequest);
+                List<ProjectAssociation> matchedProjectAssociations = response.ProjectAssociation
+                    .Where(pa => HasMatchingVehicle(pa.CustomerProjectCode, vehicles.VehicleGrpc))
+                    .ToList();
+
+                response.ProjectAssociation.Clear();
+                response.ProjectAssociation.AddRange(matchedProjectAssociations);
+
+                foreach(ProjectGrpc project in extractedProjects)
+                {
+                    response.ProjectAssociation.Where(x => x.CustomerProjectGuid == project.Id).ToList().ForEach(pa =>
+                    {
+                        _Projects = extractedProjects.Where(p => p.Id == pa.CustomerProjectGuid).ToList();
+                    });
+                }
+
                 response.Success = true;
                 return response;
             }
@@ -184,6 +200,36 @@
                 _Logger.GenericLogError("Error fetching project associations from Master service", ex);
                 throw;
             }
+        }
+
+        static bool HasMatchingVehicle(string customerProjectCode, Google.Protobuf.Collections.RepeatedField<Master.VehicleGrpc> vehicles)
+        {
+            if (string.IsNullOrWhiteSpace(customerProjectCode))
+            {
+                return false;
+            }
+
+            foreach (Master.VehicleGrpc? vehicle in vehicles)
+            {
+                if (vehicle.ProjectReference.Contains('+', StringComparison.InvariantCulture))
+                {
+                    string[] vehiclprojectReferenceSplit = vehicle.ProjectReference.Split('+');
+                    foreach (string code in vehiclprojectReferenceSplit)
+                    {
+                        if (!string.IsNullOrWhiteSpace(code) &&
+                            customerProjectCode.Contains(code, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                else if (customerProjectCode.Contains(vehicle.ProjectReference, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public async Task<List<VehicleGrpc>> GetVehiclesByProjectCodeGrpc(string projectCode)
@@ -2179,7 +2225,7 @@
             //    rfqNprRequest.RfqNprRequestGrpcsToCreate.Add(accessRfqNprRequest);
             //}
 
-            rfqNprRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            rfqNprRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter; // new RfqGrpcRequestParameter();
             RfqCrudGrpcResponse accessResponse = _RfqClient.CreateRfqNprRequestGrpc(rfqNprRequest);
             for (int i = 0; i < request.RfqNprRequestGrpc.Count; i++)
             {

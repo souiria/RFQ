@@ -1,4 +1,7 @@
-﻿namespace SalesSystem.Rfq.Components.Pages
+﻿using Azure;
+using Microsoft.AspNetCore.Http.HttpResults;
+
+namespace SalesSystem.Rfq.Components.Pages
 {
     public partial class EditRfq : IDisposable
     {
@@ -560,11 +563,38 @@
 
                 bool ok = string.Equals(response.HttpStatusCode, "OK", StringComparison.OrdinalIgnoreCase);
 
-                Snackbar.Add(
-                    ok
-                        ? $"Submitted {response.NprApiData.Count} NPR request(s) successfully. {response.Message}"
-                        : $"NPR submission returned {response.HttpStatusCode}: {response.Message}",
-                    ok ? Severity.Success : Severity.Warning);
+                string? nprRequestNumber = response.NprApiData
+                    .Select(d => d.NprId)
+                    .FirstOrDefault(id => !string.IsNullOrWhiteSpace(id));
+
+                string statusMessage = ok
+                    ? $"Submitted {response.NprApiData.Count} NPR request(s) successfully.{Environment.NewLine}{Environment.NewLine}" +
+                      $"HTTP Status: {response.HttpStatusCode}{Environment.NewLine}" +
+                      $"API Message: {response.Message}"
+                    : $"NPR submission did not complete successfully.{Environment.NewLine}{Environment.NewLine}" +
+                      $"HTTP Status: {response.HttpStatusCode}{Environment.NewLine}" +
+                      $"API Message: {response.Message}";
+
+                DialogParameters submitStatusParameters = new DialogParameters
+                {
+                    { nameof(NprSubmissionStatusDialog.IsSuccess), ok },
+                    { nameof(NprSubmissionStatusDialog.RfqNumber), RfqProject.RfqNumber },
+                    { nameof(NprSubmissionStatusDialog.NprRequestNumber), nprRequestNumber },
+                    { nameof(NprSubmissionStatusDialog.StatusMessage), statusMessage }
+                };
+
+                DialogOptions submitStatusOptions = new DialogOptions
+                {
+                    MaxWidth = MaxWidth.Medium,
+                    FullWidth = true,
+                    CloseButton = true,
+                    CloseOnEscapeKey = true
+                };
+
+                await DialogService.ShowAsync<NprSubmissionStatusDialog>(
+                    ok ? "NPR Submission Successful" : "NPR Submission Warning",
+                    submitStatusParameters,
+                    submitStatusOptions);
 
                 // Refresh from DB so any RequestID assignments / status changes are picked up.
                 await LoadNprRequests();
@@ -576,7 +606,214 @@
             catch (Exception ex)
             {
                 Logger.GenericLogError("EditRfq.SubmitNprRequestsAsync - Error submitting NPR requests", ex);
-                Snackbar.Add($"Error submitting NPR requests: {ex.Message}", Severity.Error);
+
+                DialogParameters submitErrorParameters = new DialogParameters
+                {
+                    { nameof(NprSubmissionStatusDialog.IsSuccess), false },
+                    { nameof(NprSubmissionStatusDialog.RfqNumber), RfqProject?.RfqNumber ?? string.Empty },
+                    { nameof(NprSubmissionStatusDialog.NprRequestNumber), null },
+                    { nameof(NprSubmissionStatusDialog.StatusMessage), $"Error submitting NPR requests:{Environment.NewLine}{Environment.NewLine}{ex.Message}" }
+                };
+
+                DialogOptions submitErrorOptions = new DialogOptions
+                {
+                    MaxWidth = MaxWidth.Medium,
+                    FullWidth = true,
+                    CloseButton = true,
+                    CloseOnEscapeKey = true
+                };
+
+                await DialogService.ShowAsync<NprSubmissionStatusDialog>(
+                    "NPR Submission Error",
+                    submitErrorParameters,
+                    submitErrorOptions);
+            }
+            finally
+            {
+                _IsSubmittingNprs = false;
+            }
+
+            StateHasChanged();
+        }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
+        async Task TestSubmitNprRequestsAsync()
+        {
+            //if (RfqProject?.NprRequests == null || RfqProject.NprRequests.Count == 0)
+            //{
+            //    Snackbar.Add("No NPR requests to submit", Severity.Info);
+            //    return;
+            //}
+
+            // material needs to be unique every time, so we can use a timestamp to make it unique
+            DateTime now = DateTime.Now;
+
+            // xxx: Day of the year, padded to 3 digits (001-366)
+            int dayOfYear = now.DayOfYear;
+
+            // yyy: Minutes elapsed from midnight, padded to 4 digits (0000-1439)
+            int minutesFromMidnight = (int)now.TimeOfDay.TotalMinutes;
+
+            // Construct the final string "Mdddmmmm"
+            string materialNumber = $"M{dayOfYear:D3}{minutesFromMidnight:D4}";
+
+            RfqNprRequestUxModel testNprRequest = new RfqNprRequestUxModel()
+            {
+                CustomerRfqNo = RfqProject?.RfqNumber ?? "TEST RFQ",
+                CustomerCode =  "FORD",
+                OriginatorName = "Williams, Darran (YST)",
+                DeadlineDate = DateTime.Now + TimeSpan.FromDays(30),
+                ReasonDescription = "Supplier Tender",
+                MaterialNumber = materialNumber,
+                MaterialDescription = "Test Mat desc",
+                CustomerPartNumber = "19062024AC",
+                SupplierPartNumber = "15OCT2024003",
+                BOMUnitOfMeasurement = "EU",
+                SupplierGroup = "New Supplier",
+                SupplierDetailComments = "TestRFQ",
+                ProjectCode = "Lion V6 CU ED 01/04/2022 FMC",
+                QtyPerVehicle = 10,
+                IsSampleDataRequired = false,
+                //SampleSiteDetails = new List<RfqNprRequestSampleSiteDataUxModel>(),
+                NPRRaisedRemarks = "Test",
+                ManufacturingSite = "KENI",
+                IsCustomerNominatedSupplier = false,
+                IsCustomerNominatedMaterial = false,
+                SuggestedManufacturerGroup = "ACAPLAST",
+                AssociatedParts = "NO",
+                NPRUploadSeqNo = 1
+            };
+
+            // Only submit requests that are not soft-deleted.
+            List<RfqNprRequestUxModel> toSubmit = new();
+            toSubmit.Add(testNprRequest);
+
+            bool? confirm = await DialogService.ShowMessageBoxAsync(
+                "Submit a Test NPR Request",
+                $"Submit {testNprRequest.MaterialNumber}/{testNprRequest.CustomerPartNumber}/{testNprRequest.SupplierPartNumber} NPR request to the NPR API?",
+                yesText: $"Submit {toSubmit.Count}",
+                cancelText: "Cancel"
+            );
+
+            if (confirm != true)
+            {
+                return;
+            }
+
+            // show NprSubmissionStatusDialog with a message that the submission is in progress and show the test npr attached
+            string statusMessage = 
+                $"Submitting {testNprRequest.CustomerPartNumber}/{testNprRequest.SupplierPartNumber} with {testNprRequest.MaterialNumber} material number.{Environment.NewLine}{Environment.NewLine}" +
+                $"for RfqProject Id {RfqProject?.RfqNumber} {Environment.NewLine}" +
+                $"day of year / minute of day: {dayOfYear}/{minutesFromMidnight}";
+
+            DialogParameters submitStatusParameters = new DialogParameters
+                    {
+                        { nameof(NprSubmissionStatusDialog.IsSuccess), true },
+                        { nameof(NprSubmissionStatusDialog.RfqNumber), RfqProject?.RfqNumber },
+                        { nameof(NprSubmissionStatusDialog.NprRequestNumber), "" },
+                        { nameof(NprSubmissionStatusDialog.StatusMessage), statusMessage }
+                    };
+
+            DialogOptions submitStatusOptions = new DialogOptions
+            {
+                MaxWidth = MaxWidth.Medium,
+                FullWidth = true,
+                CloseButton = true,
+                CloseOnEscapeKey = true
+            };
+
+            await DialogService.ShowAsync<NprSubmissionStatusDialog>(
+                "NPR Submission Test",
+                submitStatusParameters,
+                submitStatusOptions);
+
+            _IsSubmittingNprs = true;
+            StateHasChanged();
+
+            try
+            {
+                // Persist any pending NPR edits BEFORE submitting so the API sees the latest data.
+                if (_ComponentNprEditor != null && _ComponentNprEditor.HasPendingChanges)
+                {
+                    await _ComponentNprEditor.SaveNprRequestsAsync();
+                }
+
+                Logger.GenericLogInformation(
+                    $"EditRfq.TestSubmitNprRequestsAsync - Submitting {toSubmit.Count} NPR request(s) for RFQ {RfqProject?.RfqNumber}");
+
+                CreateNprGrpcResponse response = await RfqUxClientService.CreateNprGrpcAsync(toSubmit);
+
+                Snackbar.Add($"Test NPR request submitted. HTTP Status: {response.HttpStatusCode}, Message: {response.Message}", Severity.Info);
+
+                Logger.GenericLogInformation(
+                    $"EditRfq.TestSubmitNprRequestsAsync - Response: HttpStatusCode='{response.HttpStatusCode}', " +
+                    $"Message='{response.Message}', returned {response.NprApiData.Count} entry(ies)");
+
+                bool ok = string.Equals(response.HttpStatusCode, "OK", StringComparison.OrdinalIgnoreCase);
+
+                string? nprRequestNumber = response.NprApiData
+                    .Select(d => d.NprId)
+                    .FirstOrDefault(id => !string.IsNullOrWhiteSpace(id));
+
+                statusMessage = ok
+                    ? $"Submitted {response.NprApiData.Count} NPR request(s) successfully.{Environment.NewLine}{Environment.NewLine}" +
+                      $"HTTP Status: {response.HttpStatusCode}{Environment.NewLine}" +
+                      $"API Message: {response.Message}"
+                    : $"NPR submission did not complete successfully.{Environment.NewLine}{Environment.NewLine}" +
+                      $"HTTP Status: {response.HttpStatusCode}{Environment.NewLine}" +
+                      $"API Message: {response.Message}";
+
+                submitStatusParameters = new DialogParameters
+                {
+                    { nameof(NprSubmissionStatusDialog.IsSuccess), ok },
+                    { nameof(NprSubmissionStatusDialog.RfqNumber), RfqProject?.RfqNumber },
+                    { nameof(NprSubmissionStatusDialog.NprRequestNumber), nprRequestNumber },
+                    { nameof(NprSubmissionStatusDialog.StatusMessage), statusMessage }
+                };
+
+                submitStatusOptions = new DialogOptions
+                {
+                    MaxWidth = MaxWidth.Medium,
+                    FullWidth = true,
+                    CloseButton = true,
+                    CloseOnEscapeKey = true
+                };
+
+                await DialogService.ShowAsync<NprSubmissionStatusDialog>(
+                    ok ? "NPR Submission Successful" : "NPR Submission Warning",
+                    submitStatusParameters,
+                    submitStatusOptions);
+
+                // Refresh from DB so any RequestID assignments / status changes are picked up.
+                await LoadNprRequests();
+                if (_ComponentNprEditor != null)
+                {
+                    _ComponentNprEditor.NotifyStateChanged();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.GenericLogError("EditRfq.SubmitNprRequestsAsync - Error submitting NPR requests", ex);
+
+                DialogParameters submitErrorParameters = new DialogParameters
+                {
+                    { nameof(NprSubmissionStatusDialog.IsSuccess), false },
+                    { nameof(NprSubmissionStatusDialog.RfqNumber), RfqProject?.RfqNumber ?? string.Empty },
+                    { nameof(NprSubmissionStatusDialog.NprRequestNumber), null },
+                    { nameof(NprSubmissionStatusDialog.StatusMessage), $"Error submitting NPR requests:{Environment.NewLine}{Environment.NewLine}{ex.Message}" }
+                };
+
+                DialogOptions submitErrorOptions = new DialogOptions
+                {
+                    MaxWidth = MaxWidth.Medium,
+                    FullWidth = true,
+                    CloseButton = true,
+                    CloseOnEscapeKey = true
+                };
+
+                await DialogService.ShowAsync<NprSubmissionStatusDialog>(
+                    "NPR Submission Error",
+                    submitErrorParameters,
+                    submitErrorOptions);
             }
             finally
             {
