@@ -2225,7 +2225,7 @@
             //    rfqNprRequest.RfqNprRequestGrpcsToCreate.Add(accessRfqNprRequest);
             //}
 
-            rfqNprRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
+            rfqNprRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter; // new RfqGrpcRequestParameter();
             RfqCrudGrpcResponse accessResponse = _RfqClient.CreateRfqNprRequestGrpc(rfqNprRequest);
             for (int i = 0; i < request.RfqNprRequestGrpc.Count; i++)
             {

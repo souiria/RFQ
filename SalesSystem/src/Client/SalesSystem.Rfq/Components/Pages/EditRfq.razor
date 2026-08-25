@@ -182,6 +182,16 @@ else
                                         Submit NPRs
                                     </MudButton>
                                 </MudTooltip>
+                                <MudTooltip Text="Test Submit NPR Request to the NPR API">
+                                    <MudButton Color="Color.Success"
+                                               OnClick="@TestSubmitNprRequestsAsync"
+                                               Variant="Variant.Filled"
+                                               Size="Size.Small"
+                                               StartIcon="@Icons.Material.Filled.CloudUpload"
+                                               FullWidth="true">
+                                        Submit Test NPR
+                                    </MudButton>
+                                </MudTooltip>
                             </MudStack>
 
                             @* Column 2: Status, Reload, Update *@
