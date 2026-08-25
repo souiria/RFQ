@@ -50,7 +50,10 @@
             });
             builder.Services.AddInfrastructure(builder.Configuration);
             IAsyncPolicy<HttpResponseMessage> policy = GetRetryPolicy();
-            builder.Services.AddHttpClient("MyClient").AddPolicyHandler(policy);
+            builder.Services.AddHttpClient("MyClient", client =>
+            {
+                client.Timeout = TimeSpan.FromSeconds(180);
+            }).AddPolicyHandler(policy);
             builder.Services.AddSingleton<INPRAccessService, NPRAccessService>();
             builder.Services.AddHostedService<DataImportSchedulerService>();
 
