@@ -140,7 +140,9 @@ namespace SalesSystem.Rfq.Components.Pages
             // If no search text, return all projects
             if (string.IsNullOrWhiteSpace(searchText))
             {
-                return RfqUxClientService.CustomerProjectAssociations;
+                return RfqUxClientService.CustomerProjectAssociations
+                    .OrderBy(p => p.ProjectCode)
+                    .ThenBy(p => p.CustomerName);
             }
 
             // Search across project name, customer name, and location name
@@ -301,18 +303,18 @@ namespace SalesSystem.Rfq.Components.Pages
 
                 if (response == null)
                 {
-                    progressState.SetError("Failed to create project", "Failed to create project. Response is null.");
+                    progressState.SetError("Failed to create project", $"Failed to create project:{Environment.NewLine}Response is null.");
                     Logger.GenericLogInformation("CreateRfq.ProcessDataAsync - Failed to create project. Response is null.");
                     return;
                 }
                 else if (response.Success == false)
                 {
-                    progressState.SetError("Failed to create project", $"Failed to create project. {response.Message}");
+                    progressState.SetError("Failed to create project", $"Failed to create project:{Environment.NewLine}{response.Message}");
                     Logger.GenericLogInformation($"CreateRfq.ProcessDataAsync - Failed to create project. {response.Message}");
                     return;
                 }
 
-                progressState.SetCheckpointCompleted(1, $"Project created: {response.CreatedProjectId}");
+                progressState.SetCheckpointCompleted(1, $"Project created:{Environment.NewLine}{response.CreatedProjectId}");
                 Logger.GenericLogInformation($"CreateRfq.ProcessDataAsync - Checkpoint: RFQ created with ID {response.CreatedProjectId}");
                 CreatedProjectId = Convert.ToInt32(response.CreatedProjectId, CultureInfo.InvariantCulture);
 
@@ -339,7 +341,7 @@ namespace SalesSystem.Rfq.Components.Pages
                         }
 
                         fileCount++;
-                        progressState.UpdateProgress($"CreateRfq.ProcessDataAsync - Uploading file {fileCount} of {totalFiles}: {fileObject.File.Name}", 2);
+                        progressState.UpdateProgress($"CreateRfq.ProcessDataAsync {Environment.NewLine} Uploading file {fileCount} of {totalFiles}: {fileObject.File.Name}", 2);
 
                         UploadPartsRequestGrpcResponse uploadFileResponse = await RfqUxClientService.UploadBomFileAsync(response.CreatedProjectId, fileObject.File, GlobalValue?.UserId, 16_000_000);
                         fileObject.UploadStatus = new FileObjectUploadStatus(uploadFileResponse);
@@ -368,21 +370,21 @@ namespace SalesSystem.Rfq.Components.Pages
                 }
 
                 string uploadSummary = skippedCount > 0
-                    ? $"Uploaded {fileCount} files, skipped {skippedCount} invalid files"
-                    : $"Uploaded {fileCount} files";
+                    ? $"{Environment.NewLine}Uploaded {fileCount} files, skipped {skippedCount} invalid files"
+                    : $"{Environment.NewLine}Uploaded {fileCount} files";
 
                 progressState.SetCheckpointCompleted(2, uploadSummary);
                 Logger.GenericLogInformation($"CreateRfq.ProcessDataAsync - Checkpoint: {uploadSummary}");
 
                 // Checkpoint 4: Finalize
-                progressState.UpdateProgress("Finalizing submission...", 3);
+                progressState.UpdateProgress($"{Environment.NewLine}Finalizing submission...", 3);
                 progressState.SetCheckpointActive(3);
 
                 await Task.Delay(500); // Small delay for UX
 
                 _UploadedSuccessfully = allOk;
                 progressState.SetCheckpointCompleted(3, "Submission completed");
-                Logger.GenericLogInformation($"CreateRfq.ProcessDataAsync - Checkpoint: Submission finalized, success: {allOk}");
+                Logger.GenericLogInformation($"CreateRfq.ProcessDataAsync - Checkpoint:{Environment.NewLine}Submission finalized, success: {allOk}");
 
                 // Final update
                 progressState.SetCompleted(allOk ? "RFQ submission completed successfully!" : "RFQ submission completed with some errors", !allOk);

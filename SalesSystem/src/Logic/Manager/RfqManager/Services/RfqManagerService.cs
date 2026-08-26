@@ -50,8 +50,11 @@
                 GetAllCustomersGrpcResponse getAllCustomersGrpcResponse = new GetAllCustomersGrpcResponse();                
                 foreach (Master.CustomerGrpc? masterCustomer in customers.CustomerGrpc)
                 {
-                    CustomerGrpc customer = masterCustomer.ToCustomerGrpc();
-                    getAllCustomersGrpcResponse.Customers.Add(customer);
+                    if (masterCustomer != null)
+                    {
+                        CustomerGrpc customer = masterCustomer.ToCustomerGrpc();
+                        getAllCustomersGrpcResponse.Customers.Add(customer);
+                    }
                 }
 
                 return getAllCustomersGrpcResponse;
@@ -186,9 +189,9 @@
 
                 foreach(ProjectGrpc project in extractedProjects)
                 {
-                    response.ProjectAssociation.Where(x => x.CustomerProjectGuid == project.Id).ToList().ForEach(pa =>
+                    response.ProjectAssociation.Where(x => x.CustomerProjectGuid.ToUpperInvariant() == project.Id.ToUpperInvariant()).ToList().ForEach(pa =>
                     {
-                        _Projects = extractedProjects.Where(p => p.Id == pa.CustomerProjectGuid).ToList();
+                        _Projects = extractedProjects.Where(p => p.Id.ToUpperInvariant() == pa.CustomerProjectGuid.ToUpperInvariant()).ToList();
                     });
                 }
 
@@ -654,12 +657,19 @@
 
         public async Task<CreateRfqProjectGrpcResponse> CreateRfqProject(CreateRfqProjectGrpcRequest request)
         {
-            //GetProjectAssociationsByCustomerIdRequest req = new GetProjectAssociationsByCustomerIdRequest();
-            //req.CustomerId = request.Project.CustomerBusinessUnitGuid;
+            GetProjectAssociationsByCustomerIdRequest req = new GetProjectAssociationsByCustomerIdRequest();
+            req.CustomerId = request.Project.CustomerBusinessUnitGuid;
+            await GetProjectAssociationsByCustomerId(req);
 
-            //await GetProjectAssociationsByCustomerId(req);
+            ProjectGrpc? project = _Projects.FirstOrDefault(p => p.Id.ToUpperInvariant() == request.Project.ProjectGuid.ToUpperInvariant());
+            if (project == null)
+            {
+                CreateRfqProjectGrpcResponse errorResponse = new CreateRfqProjectGrpcResponse();
+                errorResponse.Success = false;
+                errorResponse.Message = $"No project association by customer id found!";
+                return errorResponse;
+            }
 
-            ProjectGrpc project = _Projects.First(p => p.Id.ToUpperInvariant() == request.Project.ProjectGuid.ToUpperInvariant());
             string projectCode = project.CustomerProjectCode;
             List<VehicleGrpc> vehiclesResponse = await GetVehiclesByProjectCodeGrpc(projectCode);
             CreateRfqProjectGrpcResponse response = new CreateRfqProjectGrpcResponse();
@@ -1949,10 +1959,10 @@
             Collection<AlternativePartsGrpc> alternativePartsFilteredList = new Collection<AlternativePartsGrpc>();
             Collection<PartImageDataInfo> partImageFilteredList = new Collection<PartImageDataInfo>();
 
-            EmacsFilterRequestGrpc emacsFilterRequestGrpc = new EmacsFilterRequestGrpc();
-            emacsFilterRequestGrpc.DatabaseList = "AlternativePartsGrpc";
-            emacsFilterRequestGrpc.FilterExpression = $"SumitomoNumber != null && SumitomoNumber == \"{sumitomoNumber}\"";
-            EmacsFilterResponseGrpc alternativeParts = _EmacsClient.FilterEmacsDataGrpc(emacsFilterRequestGrpc);
+            EmacsFilterRequestGrpc emacsFilterRequest = new EmacsFilterRequestGrpc();
+            emacsFilterRequest.DatabaseList = "AlternativePartsGrpc";
+            emacsFilterRequest.FilterExpression = $"SumitomoNumber != null && SumitomoNumber == \"{sumitomoNumber}\"";
+            EmacsFilterResponseGrpc alternativeParts = _EmacsClient.FilterEmacsDataGrpc(emacsFilterRequest);
             if (alternativeParts.ListAlternativePartsGrpc != null)
             {
                 alternativePartsFilteredList = ExtractEmacsResponseData<AlternativePartsGrpc>(alternativeParts);
@@ -1991,12 +2001,12 @@
                     // the next line fails:
                     DateTime deadline = DateTime.UtcNow.AddSeconds(60);
                     CallOptions callOptions = new CallOptions(deadline: deadline);
-                    ListAlternativePartsGrpc listResponse = await _EmacsClient.GetAlternativePartsGrpcAsync(requestAll, callOptions);
+                    ListAlternativePartsGrpc accessResponse = await _EmacsClient.GetAlternativePartsGrpcAsync(requestAll, callOptions);
                     //2026 - 01 - 26T10: 32:06 info: Grpc.Net.Client.Internal.GrpcCall[17]
                     //2026 - 01 - 26T10: 32:06 Error reading message.
                     //2026 - 01 - 26T10: 32:06 System.Net.Http.HttpIOException: The response ended prematurely, with at least 4105 additional bytes expected. (ResponseEnded)
 
-                    ListAlternativePartsGrpc partsList = listResponse ?? new ListAlternativePartsGrpc();
+                    ListAlternativePartsGrpc partsList = accessResponse ?? new ListAlternativePartsGrpc();
 
                     GetAllAlternativePartsGrpcResponse response = new GetAllAlternativePartsGrpcResponse();
                     foreach (AlternativePartsGrpc part in partsList.AlternativePartsGrpc)
@@ -2245,11 +2255,13 @@
         //    RfqNprRequestGrpcRequest rfqNprRequest = new RfqNprRequestGrpcRequest();
         //    RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
         //    rfqGrpcRequestParameter.RequestType = 80;
-        //    foreach (RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
-        //    {
-        //        RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRquestGrpcAccess();
-        //        rfqNprRequest.RfqNprRequestGrpcsToUpdate.Add(accessRfqNprRequest);
-        //    }
+        //    rfqNprRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
+        //    rfqNprRequest.RfqNprRequestGrpcsToUpdate.AddRange(request.RfqNprRequestGrpc);
+        //    //foreach (RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
+        //    //{
+        //    //    RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRequestGrpcAccess();
+        //    //    rfqNprRequest.RfqNprRequestGrpcsToUpdate.Add(accessRfqNprRequest);
+        //    //}
 
         //    RfqCrudResponse accessResponse = _RfqClient.UpdateRfqNprRequestGrpc(rfqNprRequest);
 

@@ -1,7 +1,4 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Http.HttpResults;
-
-namespace SalesSystem.Rfq.Components.Pages
+﻿namespace SalesSystem.Rfq.Components.Pages
 {
     public partial class EditRfq : IDisposable
     {
