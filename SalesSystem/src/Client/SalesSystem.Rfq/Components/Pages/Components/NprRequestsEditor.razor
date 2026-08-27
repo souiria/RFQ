@@ -148,6 +148,14 @@
                         aria-label="validate"
                         OnClick="@(() => ValidateNprRequest(context.Item))" />
                     </MudTooltip>
+                    <MudTooltip Text="Send NPR Request">
+                        <MudIconButton Size="@Size.Small"
+                        Color="Color.Success"
+                        Icon="@Icons.Material.Filled.Send"
+                        aria-label="send"
+                        Disabled="@(_isBusy || _isModalOpen || !context.Item.Validate())"
+                        OnClick="@(() => OnSendSingleNprClicked(context.Item))" />
+                    </MudTooltip>
                 </CellTemplate>
             </TemplateColumn>
             @* <PropertyColumn Property="x => x.CustomerRfqNo" Title="RFQ Number" /> *@
@@ -208,7 +216,7 @@
     //valid sends
     bool _isBusy;
     bool _isModalOpen = false;
-    MarkupString _markupContent;
+    // MarkupString _markupContent;
 
     Func<RfqNprRequestUxModel, bool> QuickFilter => _quickFilterFunc;
 
@@ -382,6 +390,12 @@
 
             var validNprs = RfqProject.NprRequests.Where(npr => npr.Validate()).ToList();
 
+            if (validNprs.Count == 0)
+            {
+                Snackbar.Add("No valid NPR requests to send", Severity.Warning);
+                return;
+            }
+
             List<RfqNprRequestUxModel> nprs = new List<RfqNprRequestUxModel>();
             foreach (RfqNprRequestUxModel npr in validNprs)
             {
@@ -389,25 +403,149 @@
                 nprs.Add(npr);
             }
 
-            CreateNprGrpcResponse response = await RfqUxClientService.CreateNprGrpcAsync(validNprs);
+            CreateNprGrpcResponse response = await RfqUxClientService.CreateNprGrpcAsync(nprs);
 
-            string rawMessage = response.Message;
-            string logText = ErrorMarkupFormatter.FormatForMessageBox(rawMessage);
-            Logger?.GenericLogInformation(
-                $"OnSendValidsClicked - Manager response: HttpStatusCode='{response.HttpStatusCode}', " +
-                $"Message='{logText}', returned {response.NprApiData.Count} entry(ies)");
-
-            _markupContent = ErrorMarkupFormatter.ConvertToHtmlMarkup(rawMessage);
-            _isModalOpen = true;
+            await ShowNprSubmissionResultAsync(response);
         }
         catch (Exception ex)
         {
             Logger?.GenericLogError($"OnSendValidsClicked - Exception: {ex.Message}", ex);
+            await ShowNprSubmissionExceptionAsync(ex);
         }
         finally
         {
             _isBusy = false;
         }
+    }
+
+    private async Task OnSendSingleNprClicked(RfqNprRequestUxModel npr)
+    {
+        if (!npr.Validate())
+        {
+            Snackbar.Add("NPR request is not valid", Severity.Warning);
+            return;
+        }
+
+        _isBusy = true;
+        try
+        {
+            npr.ProjectCode = RfqProject.Project;
+
+            List<RfqNprRequestUxModel> nprs = new List<RfqNprRequestUxModel> { npr };
+
+            CreateNprGrpcResponse response = await RfqUxClientService.CreateNprGrpcAsync(nprs);
+
+            await ShowNprSubmissionResultAsync(response);
+        }
+        catch (Exception ex)
+        {
+            Logger?.GenericLogError($"OnSendSingleNprClicked - Exception: {ex.Message}", ex);
+            await ShowNprSubmissionExceptionAsync(ex);
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+
+    /// <summary>
+    /// Parses the gRPC response, logs it, and shows the NprSubmissionStatusDialog with the
+    /// appropriate success/failure state and a human readable status message.
+    /// </summary>
+    private async Task ShowNprSubmissionResultAsync(CreateNprGrpcResponse response)
+    {
+        string rawMessage = response.Message ?? string.Empty;
+        bool isSuccess = IsSuccessStatusCode(response.HttpStatusCode) && response.NprApiData.Count > 0;
+
+        string nprRequestNumbers = response.NprApiData.Count > 0
+            ? string.Join(", ", response.NprApiData.Select(d => d.NprId).Where(id => !string.IsNullOrWhiteSpace(id)))
+            : string.Empty;
+
+        string statusMessage = isSuccess
+            ? (string.IsNullOrWhiteSpace(rawMessage) ? "NPR request(s) submitted successfully." : rawMessage)
+            : FormatFailureMessage(rawMessage, response.HttpStatusCode);
+
+        Logger?.GenericLogInformation(
+            $"ShowNprSubmissionResultAsync - HttpStatusCode='{response.HttpStatusCode}', " +
+            $"IsSuccess={isSuccess}, Message='{ErrorMarkupFormatter.FormatForMessageBox(rawMessage)}', " +
+            $"returned {response.NprApiData.Count} entry(ies)");
+
+        await ShowNprSubmissionDialogAsync(isSuccess, nprRequestNumbers, statusMessage);
+    }
+
+    /// <summary>
+    /// Shows the NprSubmissionStatusDialog for an unhandled exception raised while sending the request.
+    /// </summary>
+    private async Task ShowNprSubmissionExceptionAsync(Exception ex)
+    {
+        string statusMessage = $"An unexpected error occurred while sending the NPR request:\r\n{ex.Message}";
+
+        await ShowNprSubmissionDialogAsync(isSuccess: false, nprRequestNumber: null, statusMessage: statusMessage);
+    }
+
+    private async Task ShowNprSubmissionDialogAsync(bool isSuccess, string? nprRequestNumber, string statusMessage)
+    {
+        DialogParameters<NprSubmissionStatusDialog> parameters = new DialogParameters<NprSubmissionStatusDialog>
+        {
+            { x => x.IsSuccess, isSuccess },
+            { x => x.RfqNumber, RfqProject?.RfqNumber ?? string.Empty },
+            { x => x.NprRequestNumber, nprRequestNumber },
+            { x => x.StatusMessage, statusMessage }
+        };
+
+        DialogOptions options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true,
+            CloseOnEscapeKey = true,
+            BackdropClick = false
+        };
+
+        await DialogService.ShowAsync<NprSubmissionStatusDialog>(
+            isSuccess ? "NPR Submission Successful" : "NPR Submission Failed",
+            parameters,
+            options);
+
+        Snackbar.Add(
+            isSuccess ? "NPR request(s) submitted successfully" : "NPR request submission failed",
+            isSuccess ? Severity.Success : Severity.Error);
+    }
+
+    private static bool IsSuccessStatusCode(string? httpStatusCode)
+    {
+        if (string.IsNullOrWhiteSpace(httpStatusCode))
+        {
+            return false;
+        }
+
+        if (int.TryParse(httpStatusCode, out int numericCode))
+        {
+            return numericCode is >= 200 and < 300;
+        }
+
+        return httpStatusCode.Equals("OK", StringComparison.OrdinalIgnoreCase)
+            || httpStatusCode.Equals("Created", StringComparison.OrdinalIgnoreCase)
+            || httpStatusCode.Equals("Accepted", StringComparison.OrdinalIgnoreCase)
+            || httpStatusCode.Equals("NoContent", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string FormatFailureMessage(string rawMessage, string? httpStatusCode)
+    {
+        string formatted = ErrorMarkupFormatter.FormatForMessageBox(rawMessage);
+
+        if (string.IsNullOrWhiteSpace(formatted))
+        {
+            formatted = string.IsNullOrWhiteSpace(rawMessage)
+                ? "The NPR request submission failed with no additional details from the API."
+                : rawMessage;
+        }
+
+        if (!string.IsNullOrWhiteSpace(httpStatusCode))
+        {
+            formatted = $"HTTP Status: {httpStatusCode}\r\n\r\n{formatted}";
+        }
+
+        return formatted;
     }
 
     #region NPR Tab - inline management (public methods callable by parent)
@@ -608,13 +746,6 @@
                     if (nprRequest.UxStatus == UxObjectStatus.Read)
                     {
                         nprRequest.UxStatus = UxObjectStatus.Updated;
-                    }
-
-                    // Refresh the chip counts if a validation run has already been done,
-                    // because the edited record may now be valid or invalid.
-                    if (_validationRun)
-                    {
-                        RecomputeValidationCounts();
                     }
 
                     Logger.GenericLogInformation(

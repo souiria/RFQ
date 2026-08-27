@@ -127,7 +127,7 @@ else
                         <MudDatePicker Label="Deadline"
                                        @bind-Date="RfqProject.RfqResponseDeadline"
                                        DateFormat="dd.MM.yyyy" />
-                        <MudCheckBox Label="Is Active"
+                        <MudCheckBox T="bool" Label="Is Active"
                                      @bind-Value="RfqProject.IsActive"
                                      Disabled="true"/>
                     </MudStack>
@@ -182,7 +182,7 @@ else
                                         Submit NPRs
                                     </MudButton>
                                 </MudTooltip>
-                                <MudTooltip Text="Test Submit NPR Request to the NPR API">
+                                @* <MudTooltip Text="Test Submit NPR Request to the NPR API">
                                     <MudButton Color="Color.Success"
                                                OnClick="@TestSubmitNprRequestsAsync"
                                                Variant="Variant.Filled"
@@ -191,7 +191,7 @@ else
                                                FullWidth="true">
                                         Submit Test NPR
                                     </MudButton>
-                                </MudTooltip>
+                                </MudTooltip> *@
                             </MudStack>
 
                             @* Column 2: Status, Reload, Update *@
