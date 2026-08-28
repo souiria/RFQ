@@ -499,7 +499,7 @@ namespace SalesSystem.Rfq.Services
 
             try
             {
-                // TBD these should be renamed, as actually they only load BOM files, not parts.  But the GRPC service is called UploadPartsGrpcAsync, so we keep the name for now.
+                // TBD these should be renamed, as actually they only load BOM files, not parts. But the GRPC service is called UploadPartsGrpcAsync, so we keep the name for now.
                 UploadPartsRequestGrpcRequest request = new UploadPartsRequestGrpcRequest();
                 request.ProjectId = projectId;
                 request.FileName = file.Name;
