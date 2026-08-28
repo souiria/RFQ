@@ -235,6 +235,7 @@ namespace SalesSystem.Rfq.Components.Pages
 
             IDialogReference dialog = await DialogService.ShowAsync<SubmissionProgressDialog>("Processing RFQ", parameters, options);
 
+#pragma warning disable CA1031 // Do not catch general exception types
             try
             {
                 // Checkpoint 1: Validation
@@ -425,8 +426,10 @@ namespace SalesSystem.Rfq.Components.Pages
             {
                 Logger.GenericLogError("CreateRfq.ProcessDataAsync - Unexpected error during submission", ex);
                 progressState.SetError("An unexpected error occurred", $"Error: {ex.Message}", isCompleted: true);
-                throw;
+                // Do NOT rethrow here — the dialog already reflects the error state,
+                // and rethrowing crashes the render pipeline before the user can click Close.
             }
+#pragma warning restore CA1031 // Do not catch general exception types
         }
 
         void SetDragClass()

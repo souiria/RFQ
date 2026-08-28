@@ -1064,6 +1064,17 @@
                     && !string.IsNullOrWhiteSpace(cr.PartNumber2)
                     && !string.IsNullOrWhiteSpace(cr.PartNumber3))
                     .ToList();
+
+                if(!components.Any())
+                {
+                    // didn't found anything, it's probably a flat DSI file, so we will take any component that has at least one part number
+                    components = dsiAggregate.ComponentList
+                        .Where(cr => !string.IsNullOrWhiteSpace(cr.PartNumber1)
+                        || !string.IsNullOrWhiteSpace(cr.PartNumber2)
+                        || !string.IsNullOrWhiteSpace(cr.PartNumber3))
+                        .ToList();
+                }
+
                 foreach (ComponentDto component in components)
                 {
 
