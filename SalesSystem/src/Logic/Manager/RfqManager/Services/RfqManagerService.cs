@@ -945,7 +945,7 @@
             UploadPartsRequestGrpcResponse uploadResponse = new UploadPartsRequestGrpcResponse();
             (List<CustomerParts> customerParts, bool hasDerivatives) = await ConvertDocumentAsync(request);
 
-            // if the file hase derivatives, don't create a part list as the user needs to select which derivatives to create RFQ parts for
+            // if the file has derivatives, don't create a part list as the user needs to select which derivatives to create RFQ parts for
             if (hasDerivatives)
             {
                 uploadResponse.Success = true;
