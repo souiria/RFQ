@@ -382,11 +382,11 @@
         _isBusy = true;
         try
         {
-            // // Persist any pending NPR edits BEFORE submitting so the API sees the latest data.
-            // if (HasPendingChanges)
-            // {
-            //     await SaveNprRequestsAsync();
-            // }
+            // Persist any pending NPR edits BEFORE submitting so the API sees the latest data.
+            if (HasPendingChanges)
+            {
+                await SaveNprRequestsAsync();
+            }
 
             var validNprs = RfqProject.NprRequests.Where(npr => npr.Validate()).ToList();
 
@@ -403,7 +403,36 @@
                 nprs.Add(npr);
             }
 
-            CreateNprGrpcResponse response = await RfqUxClientService.CreateNprGrpcAsync(nprs);
+            // display wait dialog
+            DialogParameters loadingParameters = new DialogParameters
+                {
+                    { nameof(LoadingDialog.Message), "Sending Npr Request to Engineering endpoint, please wait!" }
+                };
+
+            DialogOptions loadingOptions = new DialogOptions
+            {
+                MaxWidth = MaxWidth.Small,
+                FullWidth = false,
+                CloseButton = false,
+                CloseOnEscapeKey = false,
+                BackdropClick = false,
+                NoHeader = true
+            };
+
+            IDialogReference loadingDialog = await DialogService.ShowAsync<LoadingDialog>(
+                string.Empty,
+                loadingParameters,
+                loadingOptions);
+
+            CreateNprGrpcResponse response;
+            try
+            {
+                response = await RfqUxClientService.CreateNprGrpcAsync(nprs);
+            }
+            finally
+            {
+                loadingDialog.Close();
+            }
 
             await ShowNprSubmissionResultAsync(response);
         }
@@ -433,7 +462,36 @@
 
             List<RfqNprRequestUxModel> nprs = new List<RfqNprRequestUxModel> { npr };
 
-            CreateNprGrpcResponse response = await RfqUxClientService.CreateNprGrpcAsync(nprs);
+            // display wait dialog
+            DialogParameters loadingParameters = new DialogParameters
+            {
+                { nameof(LoadingDialog.Message), "Sending Npr Request to Engineering endpoint, please wait!" }
+            };
+
+            DialogOptions loadingOptions = new DialogOptions
+            {
+                MaxWidth = MaxWidth.Small,
+                FullWidth = false,
+                CloseButton = false,
+                CloseOnEscapeKey = false,
+                BackdropClick = false,
+                NoHeader = true
+            };
+
+            IDialogReference loadingDialog = await DialogService.ShowAsync<LoadingDialog>(
+                string.Empty,
+                loadingParameters,
+                loadingOptions);
+
+            CreateNprGrpcResponse response;
+            try
+            {
+                response = await RfqUxClientService.CreateNprGrpcAsync(nprs);
+            }
+            finally
+            {
+                loadingDialog.Close();
+            }
 
             await ShowNprSubmissionResultAsync(response);
         }

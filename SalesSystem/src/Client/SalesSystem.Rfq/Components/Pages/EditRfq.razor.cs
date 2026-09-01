@@ -551,8 +551,36 @@
 
                 Logger.GenericLogInformation(
                     $"EditRfq.SubmitNprRequestsAsync - Submitting {toSubmit.Count} NPR request(s) for RFQ {RfqProject.RfqNumber}");
+                // display wait dialog
+                DialogParameters loadingParameters = new DialogParameters
+                {
+                    { nameof(LoadingDialog.Message), "Sending Npr Request to Engineering endpoint, please wait!" }
+                };
 
-                CreateNprGrpcResponse response = await RfqUxClientService.CreateNprGrpcAsync(toSubmit);
+                DialogOptions loadingOptions = new DialogOptions
+                {
+                    MaxWidth = MaxWidth.Small,
+                    FullWidth = false,
+                    CloseButton = false,
+                    CloseOnEscapeKey = false,
+                    BackdropClick = false,
+                    NoHeader = true
+                };
+
+                IDialogReference loadingDialog = await DialogService.ShowAsync<LoadingDialog>(
+                    string.Empty,
+                    loadingParameters,
+                    loadingOptions);
+
+                CreateNprGrpcResponse response;
+                try
+                {
+                    response = await RfqUxClientService.CreateNprGrpcAsync(toSubmit);
+                }
+                finally
+                {
+                    loadingDialog.Close();
+                }
 
                 Logger.GenericLogInformation(
                     $"EditRfq.SubmitNprRequestsAsync - Response: HttpStatusCode='{response.HttpStatusCode}', " +

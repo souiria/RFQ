@@ -1,0 +1,23 @@
+@using MudBlazor
+
+<MudDialog>
+    <DialogContent>
+        <div class="d-flex flex-column align-center pa-4" style="min-width: 350px;">
+            <MudProgressCircular Color="Color.Primary"
+                                 Size="Size.Large"
+                                 Indeterminate="true"
+                                 Class="mb-4" />
+            <MudText Typo="Typo.body1" Align="Align.Center">
+                @Message
+            </MudText>
+        </div>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public IMudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter]
+    public string Message { get; set; } = "Please wait...";
+}
