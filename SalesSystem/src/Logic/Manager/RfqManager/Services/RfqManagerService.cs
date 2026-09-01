@@ -1453,6 +1453,18 @@
                     _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save compositeDetail or compositeDetailOptionAssociation");
                 }
             }
+
+            DsiCompositeDetailGrpc generatedCompositeDetailGrpc = GenerateCompositeDetailGrpc();
+
+            generatedCompositeDetailGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
+            generatedCompositeDetailGrpc.HarnessName1 = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessName1 : null;
+            generatedCompositeDetailGrpc.CompositeDetailId = Guid.NewGuid().ToString();
+            generatedCompositeDetailGrpc.CreatedBy = userId;
+            generatedCompositeDetailGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+            generatedCompositeDetailGrpc.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+            generatedCompositeDetailGrpc.ModifiedBy = userId;
+            compositeDetailGrpcRequest.DsiCompositeDetailGrpcsToCreate.Add(generatedCompositeDetailGrpc);
+            RfqCrudGrpcResponse generatedCompositeDetailResponse = await _RfqClient.CreateDsiCompositeDetailGrpcAsync(compositeDetailGrpcRequest);
         }
         async Task<DsiHarnessGrpc> SaveHarness(DsiAggregate dsiAggregate, string userId)
         {
@@ -2215,6 +2227,7 @@
             //foreach (RfqNprRequestGrpc? item in rfqNprRequests.RfqNprRequestGrpcs)
             //{
             //    RfqNprRequestGrpc rfqNpr = item.ToRfqNprRequest();
+
             //    response.RfqNprRequestGrpcs.Add(rfqNpr);
             //}
 
@@ -3295,6 +3308,54 @@
 
                 throw;
             }
+        }
+
+        DsiCompositeDetailGrpc GenerateCompositeDetailGrpc()
+        {
+            DsiCompositeDetailGrpc compositeDetailGrpc = new DsiCompositeDetailGrpc();
+            compositeDetailGrpc.HarnessName1 = "Harness1";
+            compositeDetailGrpc.SimilarHarnessName1 = "SimilarHarness1";
+            compositeDetailGrpc.HarnessIssue1 = "Issue1";
+            compositeDetailGrpc.SimilarHarnessIssue1 = "SimilarIssue1";
+            compositeDetailGrpc.HarnessDate1 = Timestamp.FromDateTime(DateTime.UtcNow);
+            compositeDetailGrpc.HarnessName2 = "Harness2";
+            compositeDetailGrpc.SimilarHarnessName2 = "SimilarHarness2";
+            compositeDetailGrpc.HarnessIssue2 = "Issue2";
+            compositeDetailGrpc.SimilarHarnessIssue2 = "SimilarIssue2";
+            compositeDetailGrpc.HarnessDate2 = Timestamp.FromDateTime(DateTime.UtcNow);
+            compositeDetailGrpc.Customer = "Customer1";
+            compositeDetailGrpc.Site = "Site1";
+            compositeDetailGrpc.Range = "Range1";
+            compositeDetailGrpc.BoardLength = 0;
+            compositeDetailGrpc.BoardWidth = 0;
+            compositeDetailGrpc.Datum = "Datum1";
+            compositeDetailGrpc.UserField1 = "UserField1";
+            compositeDetailGrpc.UserField2 = "UserField2";
+            compositeDetailGrpc.UserField3 = "UserField3";
+            compositeDetailGrpc.UserField4 = "UserField4";
+            compositeDetailGrpc.UserField5 = "UserField5";
+            compositeDetailGrpc.Checker = "Checker1";
+            compositeDetailGrpc.Inputter = "Inputter1";
+            compositeDetailGrpc.DraftedBy = "DraftedBy1";
+            compositeDetailGrpc.PreparedBy = "PreparedBy1";
+            compositeDetailGrpc.Type = "Type1";
+            compositeDetailGrpc.Title = "Title1";
+            compositeDetailGrpc.EngineSize = "EngineSize1";
+            compositeDetailGrpc.ManufacturingCell = "ManufacturingCell1";
+            compositeDetailGrpc.Trim = "Trim1";
+            compositeDetailGrpc.HandDrive = "HandDrive1";
+            compositeDetailGrpc.TubeAddOnType = "TubeAddOnType1";
+            compositeDetailGrpc.TubeAddOnFactor = 0;
+            compositeDetailGrpc.IsManualTerminal = false;
+            compositeDetailGrpc.IsAllConnectorsSealed = false;
+            compositeDetailGrpc.AlphaCode = "AlphaCode1";
+            compositeDetailGrpc.HarnessID = "HarnessID1";
+            compositeDetailGrpc.CircuitOption = "ALL";
+            compositeDetailGrpc.CreatedDate = Timestamp.FromDateTime(DateTime.UtcNow);
+            compositeDetailGrpc.ModifiedDate = Timestamp.FromDateTime(DateTime.UtcNow);
+            compositeDetailGrpc.CreatedBy = "CreatedBy1";
+            compositeDetailGrpc.ModifiedBy = "ModifiedBy1";
+            return compositeDetailGrpc;
         }
         #endregion
     }

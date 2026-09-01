@@ -40,7 +40,7 @@
         { get; set; }
         public Guid? CreatedBy
         { get; set; }
-        public DateTime? ModifiedBy
+        public Guid? ModifiedBy
         { get; set; }
     }
 }
