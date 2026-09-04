@@ -1382,6 +1382,15 @@ namespace SalesSystem.Rfq.Services
             }
         }
 
+        public async Task<bool> UpdateRfqNprRequestStatusAsync()
+        {
+            UpdateRfqNprRequestStatusGrpcRequest request = new UpdateRfqNprRequestStatusGrpcRequest();
+            UpdateRfqNprRequestStatusGrpcResponse response = await _Client.UpdateRfqNprRequestStatusGrpcAsync(request);
+            _Logger?.GenericLogInformation(
+                   $"UpdateRfqNprRequestStatusAsync message: {response.Message}");
+            return response.Success;
+        }
+
 #if DEBUG
         public async Task<bool> DeleteNprRequestAsync(Guid requestId)
         {

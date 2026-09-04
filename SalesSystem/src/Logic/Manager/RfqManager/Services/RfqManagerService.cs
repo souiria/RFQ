@@ -2330,6 +2330,11 @@
                     continue;
                 }
 
+                if(npr.RequestID == null)
+                {
+                    continue;
+                }
+
                 nprFilterRequest.FilterExpression = $"RefNo != null && RefNo.ToUpperInvariant().TrimEnd() == \"{npr.RequestID.ToUpperInvariant().TrimEnd()}\"";
                 NPRFilterResponse s = await _NPRGrpcClient.FilterNPRGrpcAsync(nprFilterRequest);
 

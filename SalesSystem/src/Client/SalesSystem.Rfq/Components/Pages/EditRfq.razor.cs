@@ -77,6 +77,7 @@
                 NavigationManager.NavigateTo("/");
             }
 
+            _ = UpdateRfqNprRequestsAsync();
             try
             {
                 if (await LoadDataAsync())
@@ -1729,7 +1730,28 @@
 
             await Task.CompletedTask;
        }
+
+        // update npr requests
+        async Task UpdateRfqNprRequestsAsync()
+        {
+            Logger.GenericLogInformation("updating RfqNprRequests...");
+            Stopwatch sw = Stopwatch.StartNew();
+
+            bool status = await RfqUxClientService.UpdateRfqNprRequestStatusAsync();
+
+            sw.Stop();
+            Logger.GenericLogInformation($"updating RfqNprRequests - Updated NPR requests in {sw.ElapsedMilliseconds}ms");
+            if(status)
+            {
+                Logger.GenericLogInformation("updating RfqNprRequests - NPR requests updated successfully");
+            }
+            else
+            {
+                Logger.GenericLogInformation("updating RfqNprRequests - NPR requests update failed");
+            }
+        }
     }
+
      public class SelectionLogData
     {
         public string? HarnessId { get; set; }
