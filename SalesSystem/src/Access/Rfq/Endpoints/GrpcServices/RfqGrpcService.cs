@@ -4841,6 +4841,7 @@
                 await _RfqAccessService.GetComponentsByHarnessAndOptions(
                     request.HarnessName,
                     request.CompositeOptions,
+                    request.HarnessTitle,
                     context.CancellationToken);
 
             return response;

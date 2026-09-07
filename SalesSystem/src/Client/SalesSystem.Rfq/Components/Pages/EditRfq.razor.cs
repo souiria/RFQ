@@ -260,7 +260,7 @@
                 return;
             }
 
-            // comnposite data is stored in the JsonData field of the RfqProject, so we need to deserialize it
+            // composite data is stored in the JsonData field of the RfqProject, so we need to deserialize it
             SelectionLogData? selectionLog = null;
             try
             {
@@ -1765,4 +1765,9 @@
         public string? HarnessName2 { get; set; }
         public string? Customer { get; set; }
     }
+    //public class CompositeData
+    //{
+    //    public string? HarnessId { get; set; }
+    //    public IEnumerable<SelectedCompositeData>? Selections { get; set; }
+    //}
 }

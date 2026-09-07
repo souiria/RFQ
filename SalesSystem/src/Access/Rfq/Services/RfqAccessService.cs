@@ -1960,7 +1960,7 @@
                 return responseList;
             }
 
-            List<DsiCompositeDetailGrpc> itemsToCreate = request.DsiCompositeDetailGrpcsToCreate.Where(p => !_ListDsiCompositeDetailGrpc.DsiCompositeDetailGrpcs.Any(x => x.HarnessName1 == p.HarnessName1 && x.HarnessID == p.HarnessID)).ToList();
+            List<DsiCompositeDetailGrpc> itemsToCreate = request.DsiCompositeDetailGrpcsToCreate.Where(p => !_ListDsiCompositeDetailGrpc.DsiCompositeDetailGrpcs.Any(x => x.HarnessName1 == p.HarnessName1 && x.HarnessID == p.HarnessID && x.Title == p.Title)).ToList();
 
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
@@ -2224,7 +2224,7 @@
                 return responseList;
             }
 
-            List<DsiHarnessGrpc> itemsToCreate = request.DsiHarnessGrpcsToCreate.Where(p => !_ListDsiHarnessGrpc.DsiHarnessGrpcs.Any(x => x.HarnessName1 == p.HarnessName1 && x.Customer == p.Customer)).ToList();
+            List<DsiHarnessGrpc> itemsToCreate = request.DsiHarnessGrpcsToCreate.Where(p => !_ListDsiHarnessGrpc.DsiHarnessGrpcs.Any(x => x.HarnessName1 == p.HarnessName1 && x.Customer == p.Customer && x.Title == p.Title)).ToList();
 
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
@@ -5585,6 +5585,7 @@
         public async Task<ListDsiComponentGrpc> GetComponentsByHarnessAndOptions(
             IEnumerable<string> harnessNames,
             IEnumerable<string> compositeOptions,
+            IEnumerable<string> harnessTitle,
             CancellationToken cancellationToken)
         {
             await Task.Delay(1, cancellationToken);
@@ -5600,7 +5601,7 @@
             }
 
             //////////////////////////////////////////////////////
-            // STEP 2: Normalize Harness Names
+            // STEP 2: Normalize Harness Names and Titles
             //////////////////////////////////////////////////////
             List<string> harnessNameList = new List<string>();
 
@@ -5618,13 +5619,27 @@
                 return response;
             }
 
+            List<string> titleList = new List<string>();
+
+            if (harnessTitle != null)
+            {
+                titleList = harnessTitle
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Select(x => x.Trim())
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+            }
+
             //////////////////////////////////////////////////////
             // STEP 3: Resolve Harness IDs
             //////////////////////////////////////////////////////
             HashSet<string> harnessIds = _ListDsiHarnessGrpc.DsiHarnessGrpcs
                 .Where(h => !string.IsNullOrWhiteSpace(h.HarnessName1)
                             && !string.IsNullOrWhiteSpace(h.HarnessId)
-                            && harnessNameList.Contains(h.HarnessName1, StringComparer.OrdinalIgnoreCase))
+                            && harnessNameList.Contains(h.HarnessName1, StringComparer.OrdinalIgnoreCase)
+                            && (!titleList.Any()
+                                || (!string.IsNullOrWhiteSpace(h.Title)
+                                    && titleList.Contains(h.Title, StringComparer.OrdinalIgnoreCase))))
                 .Select(h => h.HarnessId!)
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 

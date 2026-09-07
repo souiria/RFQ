@@ -1214,6 +1214,7 @@
                             bendGrpc.Bend = bend;
                             bendGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
                             bendGrpc.CreatedBy = userId;
+                            bendGrpc.BendId = Guid.NewGuid().ToString();
                             bendRequest.DsiBendGrpcsToCreate.Add(bendGrpc);
                             dsiBranchConfigurationBendAssociation.BendId = bendGrpc.BendId;
                             dsiBranchConfigurationBendAssociation.BranchConfigurationId = branchGrpc.BranchConfigurationId;
@@ -1469,6 +1470,7 @@
 
             generatedCompositeDetailGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
             generatedCompositeDetailGrpc.HarnessName1 = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessName1 : null;
+            generatedCompositeDetailGrpc.Title = dsiAggregate.Harness != null ? dsiAggregate.Harness.Title : null;
             generatedCompositeDetailGrpc.CompositeDetailId = Guid.NewGuid().ToString();
             generatedCompositeDetailGrpc.CreatedBy = userId;
             generatedCompositeDetailGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
@@ -1485,7 +1487,9 @@
             ListDsiHarnessGrpc allHarnesses = await _RfqClient.ReadDsiHarnessGrpcAsync(harnessRequest);
             if(dsiAggregate.Harness != null)
             {
-                DsiHarnessGrpc? existingHarness = allHarnesses.DsiHarnessGrpcs.Where(x => x.HarnessName1 == dsiAggregate.Harness.HarnessName1).FirstOrDefault();
+                DsiHarnessGrpc? existingHarness = allHarnesses.DsiHarnessGrpcs.Where(x => x.HarnessName1 == dsiAggregate.Harness.HarnessName1 
+                && x.Customer == dsiAggregate.Harness.Customer 
+                && x.Title == dsiAggregate.Harness.Title).FirstOrDefault();
                 if (existingHarness != null)
                 {
                     dsiAggregate.Harness.HarnessId = Guid.Parse(existingHarness.HarnessId);
@@ -2891,6 +2895,7 @@
                     harness.HarnessName1 = item.HarnessName1;
                     harness.Customer = item.Customer;
                     harness.Site = item.Site;
+                    harness.Title = item.Title;
 
                     DSIHarnessGrpc? dsiHarness = harness.ToDSIHarness();
                     response.HarnessList.Add(dsiHarness);
@@ -3248,6 +3253,12 @@
                     .Distinct(StringComparer.OrdinalIgnoreCase)
                     .ToList();
 
+                List<string> validHarnessTitles = request.HarnessTitle
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Select(x => x.Trim())
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+
                 _Logger.GenericLogInformation(
                     $"GetComponentsByHarnessAndOptionsGrpc - HarnessName count: {validHarnessNames.Count}");
                 _Logger.GenericLogInformation(
@@ -3258,8 +3269,14 @@
                 _Logger.GenericLogInformation(
                     $"GetComponentsByHarnessAndOptionsGrpc - CompositeOptions values: [{string.Join(", ", validCompositeOptions)}]");
 
+                _Logger.GenericLogInformation(
+                    $"GetComponentsByHarnessAndOptionsGrpc - HarnessTitle count: {validHarnessTitles.Count}");
+                _Logger.GenericLogInformation(
+                    $"GetComponentsByHarnessAndOptionsGrpc - HarnessTitle values: [{string.Join(", ", validHarnessTitles)}]");
+
                 dsiRequest.HarnessName.AddRange(validHarnessNames);
                 dsiRequest.CompositeOptions.AddRange(validCompositeOptions);
+                dsiRequest.HarnessTitle.AddRange(validHarnessTitles);
 
                 ListDsiComponentGrpc? dsiResponse =
                     await _RfqClient.GetDSIComponentsByHarnessAndOptionsAsync(dsiRequest);

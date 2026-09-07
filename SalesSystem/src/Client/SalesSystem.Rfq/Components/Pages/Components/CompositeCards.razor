@@ -132,11 +132,6 @@
         {
             _components.Clear();
 
-            List<string> harnessNames = new List<string>
-            {
-                compositeObject.HarnessName1!
-            };
-
             List<string> compositeOptions = _compositeDetails[compositeObject.Id]
                 .Where(x => !string.IsNullOrWhiteSpace(x.CircuitOption))
                 .SelectMany(x => x.CircuitOption!
@@ -146,8 +141,9 @@
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToList();
 
+
             await DsiUxClientService.GetComponentsByHarnessAndOptionsAsync(
-                harnessNames,
+                compositeObject,
                 compositeOptions);
 
             _components = DsiUxClientService.Components.ToList();
