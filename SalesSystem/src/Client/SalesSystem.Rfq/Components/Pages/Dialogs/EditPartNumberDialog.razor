@@ -11,7 +11,9 @@
         <MudForm @ref="_form" @bind-IsValid="_isValid">
             <MudGrid>
                 <MudItem xs="12" sm="4">
-                    <MudTextField @bind-Value="EditedItem.CustomerPartNumber"
+                    <MudTextField 
+                                  T="string"
+                                  @bind-Value="EditedItem.CustomerPartNumber"
                                   Label="Customer Part Number"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"

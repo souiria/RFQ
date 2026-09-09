@@ -164,7 +164,6 @@
             data.CreatedDate = grpc.CreatedDate.ToDateTime().ToUniversalTime();
             data.ModifiedDate = grpc.ModifiedDate?.ToDateTime().ToUniversalTime();
             data.CreatedBy = Guid.Parse(grpc.CreatedBy);
-            data.ModifiedBy = Guid.Parse(grpc.ModifiedBy);
             return data;
         }
 

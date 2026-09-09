@@ -333,6 +333,7 @@
         Task<ListDsiComponentGrpc> GetComponentsByHarnessAndOptions(
                     IEnumerable<string> harnessNames,
                     IEnumerable<string> compositeOptions,
+                    IEnumerable<string> harnessTitle,
                     CancellationToken cancellationToken);
     }
 }

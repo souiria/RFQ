@@ -329,10 +329,15 @@
 
         #region Components
         public async Task<int> GetComponentsByHarnessAndOptionsAsync(
-            IEnumerable<string> harnessNames,
+            DsiHarnessUxModel compositeObject,
             IEnumerable<string> compositeOptions,
             CancellationToken cancellationToken = default)
         {
+            if (compositeObject == null)
+            {
+                throw new ArgumentNullException(nameof(compositeObject));
+            }
+
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
             using CancellationTokenSource combinedCts =
                 CancellationTokenSource.CreateLinkedTokenSource(
@@ -345,10 +350,9 @@
                     new GetComponentsByHarnessAndOptionsRequest();
 
                 //////////////////////////////////////////////////////
-                //  USE FIRST HARNESS NAME ONLY
+                //  HARNESS NAME
                 //////////////////////////////////////////////////////
-                string selectedHarnessName = harnessNames
-                    .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x)) ?? string.Empty;
+                string selectedHarnessName = compositeObject.HarnessName1 ?? string.Empty;
 
                 if (!string.IsNullOrWhiteSpace(selectedHarnessName))
                 {
@@ -363,6 +367,13 @@
                     request.CompositeOptions.AddRange(
                         compositeOptions.Where(x => !string.IsNullOrWhiteSpace(x)));
                 }
+
+                _Logger?.GenericLogInformation(
+                    $"GetComponentsByHarnessAndOptionsAsync - HarnessName: {selectedHarnessName}, Title: {compositeObject.Title}");
+
+                string title = compositeObject.Title ?? string.Empty;
+
+                request.HarnessTitle.Add(title);
 
                 ListComponentGrpc response =
                     await _Client.GetComponentsByHarnessAndOptionsGrpcAsync(
