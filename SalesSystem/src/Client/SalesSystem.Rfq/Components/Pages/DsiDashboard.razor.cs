@@ -82,11 +82,6 @@ namespace SalesSystem.Rfq.Components.Pages
                 _LoadingComponents = true;
                 _Components.Clear();
 
-                List<string> harnessNames = new List<string>
-            {
-                _SelectedHarness.HarnessName1!
-            };
-
                 List<string> compositeOptions = _SelectedCompositeDetails
                     .Where(x => !string.IsNullOrWhiteSpace(x.CircuitOption))
                     .SelectMany(x => x.CircuitOption!
@@ -97,7 +92,7 @@ namespace SalesSystem.Rfq.Components.Pages
                     .ToList();
 
                 await DsiUxClientService.GetComponentsByHarnessAndOptionsAsync(
-                    harnessNames,
+                    _SelectedHarness,
                     compositeOptions);
 
                 _Components = DsiUxClientService.Components.ToList();

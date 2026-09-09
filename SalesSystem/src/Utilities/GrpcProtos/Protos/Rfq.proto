@@ -1425,4 +1425,5 @@ message ValidateNprRequestResponse {
 message GetDSIComponentByHarnessRequest {
    repeated  string harnessName = 1;
     repeated string compositeOptions = 2;
+	repeated string harnessTitle = 3;
 }

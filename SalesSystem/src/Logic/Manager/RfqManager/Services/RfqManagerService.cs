@@ -50,8 +50,11 @@
                 GetAllCustomersGrpcResponse getAllCustomersGrpcResponse = new GetAllCustomersGrpcResponse();                
                 foreach (Master.CustomerGrpc? masterCustomer in customers.CustomerGrpc)
                 {
-                    CustomerGrpc customer = masterCustomer.ToCustomerGrpc();
-                    getAllCustomersGrpcResponse.Customers.Add(customer);
+                    if (masterCustomer != null)
+                    {
+                        CustomerGrpc customer = masterCustomer.ToCustomerGrpc();
+                        getAllCustomersGrpcResponse.Customers.Add(customer);
+                    }
                 }
 
                 return getAllCustomersGrpcResponse;
@@ -186,9 +189,9 @@
 
                 foreach(ProjectGrpc project in extractedProjects)
                 {
-                    response.ProjectAssociation.Where(x => x.CustomerProjectGuid == project.Id).ToList().ForEach(pa =>
+                    response.ProjectAssociation.Where(x => x.CustomerProjectGuid.ToUpperInvariant() == project.Id.ToUpperInvariant()).ToList().ForEach(pa =>
                     {
-                        _Projects = extractedProjects.Where(p => p.Id == pa.CustomerProjectGuid).ToList();
+                        _Projects = extractedProjects.Where(p => p.Id.ToUpperInvariant() == pa.CustomerProjectGuid.ToUpperInvariant()).ToList();
                     });
                 }
 
@@ -654,12 +657,19 @@
 
         public async Task<CreateRfqProjectGrpcResponse> CreateRfqProject(CreateRfqProjectGrpcRequest request)
         {
-            //GetProjectAssociationsByCustomerIdRequest req = new GetProjectAssociationsByCustomerIdRequest();
-            //req.CustomerId = request.Project.CustomerBusinessUnitGuid;
+            GetProjectAssociationsByCustomerIdRequest req = new GetProjectAssociationsByCustomerIdRequest();
+            req.CustomerId = request.Project.CustomerBusinessUnitGuid;
+            await GetProjectAssociationsByCustomerId(req);
 
-            //await GetProjectAssociationsByCustomerId(req);
+            ProjectGrpc? project = _Projects.FirstOrDefault(p => p.Id.ToUpperInvariant() == request.Project.ProjectGuid.ToUpperInvariant());
+            if (project == null)
+            {
+                CreateRfqProjectGrpcResponse errorResponse = new CreateRfqProjectGrpcResponse();
+                errorResponse.Success = false;
+                errorResponse.Message = $"No project association by customer id found!";
+                return errorResponse;
+            }
 
-            ProjectGrpc project = _Projects.First(p => p.Id.ToUpperInvariant() == request.Project.ProjectGuid.ToUpperInvariant());
             string projectCode = project.CustomerProjectCode;
             List<VehicleGrpc> vehiclesResponse = await GetVehiclesByProjectCodeGrpc(projectCode);
             CreateRfqProjectGrpcResponse response = new CreateRfqProjectGrpcResponse();
@@ -935,7 +945,7 @@
             UploadPartsRequestGrpcResponse uploadResponse = new UploadPartsRequestGrpcResponse();
             (List<CustomerParts> customerParts, bool hasDerivatives) = await ConvertDocumentAsync(request);
 
-            // if the file hase derivatives, don't create a part list as the user needs to select which derivatives to create RFQ parts for
+            // if the file has derivatives, don't create a part list as the user needs to select which derivatives to create RFQ parts for
             if (hasDerivatives)
             {
                 uploadResponse.Success = true;
@@ -1054,6 +1064,17 @@
                     && !string.IsNullOrWhiteSpace(cr.PartNumber2)
                     && !string.IsNullOrWhiteSpace(cr.PartNumber3))
                     .ToList();
+
+                if(!components.Any())
+                {
+                    // didn't found anything, it's probably a flat DSI file, so we will take any component that has at least one part number
+                    components = dsiAggregate.ComponentList
+                        .Where(cr => !string.IsNullOrWhiteSpace(cr.PartNumber1)
+                        || !string.IsNullOrWhiteSpace(cr.PartNumber2)
+                        || !string.IsNullOrWhiteSpace(cr.PartNumber3))
+                        .ToList();
+                }
+
                 foreach (ComponentDto component in components)
                 {
 
@@ -1193,6 +1214,7 @@
                             bendGrpc.Bend = bend;
                             bendGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
                             bendGrpc.CreatedBy = userId;
+                            bendGrpc.BendId = Guid.NewGuid().ToString();
                             bendRequest.DsiBendGrpcsToCreate.Add(bendGrpc);
                             dsiBranchConfigurationBendAssociation.BendId = bendGrpc.BendId;
                             dsiBranchConfigurationBendAssociation.BranchConfigurationId = branchGrpc.BranchConfigurationId;
@@ -1443,6 +1465,19 @@
                     _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save compositeDetail or compositeDetailOptionAssociation");
                 }
             }
+
+            DsiCompositeDetailGrpc generatedCompositeDetailGrpc = GenerateCompositeDetailGrpc();
+
+            generatedCompositeDetailGrpc.HarnessID = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessId.ToString() : null;
+            generatedCompositeDetailGrpc.HarnessName1 = dsiAggregate.Harness != null ? dsiAggregate.Harness.HarnessName1 : null;
+            generatedCompositeDetailGrpc.Title = dsiAggregate.Harness != null ? dsiAggregate.Harness.Title : null;
+            generatedCompositeDetailGrpc.CompositeDetailId = Guid.NewGuid().ToString();
+            generatedCompositeDetailGrpc.CreatedBy = userId;
+            generatedCompositeDetailGrpc.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+            generatedCompositeDetailGrpc.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
+            generatedCompositeDetailGrpc.ModifiedBy = userId;
+            compositeDetailGrpcRequest.DsiCompositeDetailGrpcsToCreate.Add(generatedCompositeDetailGrpc);
+            RfqCrudGrpcResponse generatedCompositeDetailResponse = await _RfqClient.CreateDsiCompositeDetailGrpcAsync(compositeDetailGrpcRequest);
         }
         async Task<DsiHarnessGrpc> SaveHarness(DsiAggregate dsiAggregate, string userId)
         {
@@ -1452,7 +1487,9 @@
             ListDsiHarnessGrpc allHarnesses = await _RfqClient.ReadDsiHarnessGrpcAsync(harnessRequest);
             if(dsiAggregate.Harness != null)
             {
-                DsiHarnessGrpc? existingHarness = allHarnesses.DsiHarnessGrpcs.Where(x => x.HarnessName1 == dsiAggregate.Harness.HarnessName1).FirstOrDefault();
+                DsiHarnessGrpc? existingHarness = allHarnesses.DsiHarnessGrpcs.Where(x => x.HarnessName1 == dsiAggregate.Harness.HarnessName1 
+                && x.Customer == dsiAggregate.Harness.Customer 
+                && x.Title == dsiAggregate.Harness.Title).FirstOrDefault();
                 if (existingHarness != null)
                 {
                     dsiAggregate.Harness.HarnessId = Guid.Parse(existingHarness.HarnessId);
@@ -1949,10 +1986,10 @@
             Collection<AlternativePartsGrpc> alternativePartsFilteredList = new Collection<AlternativePartsGrpc>();
             Collection<PartImageDataInfo> partImageFilteredList = new Collection<PartImageDataInfo>();
 
-            EmacsFilterRequestGrpc emacsFilterRequestGrpc = new EmacsFilterRequestGrpc();
-            emacsFilterRequestGrpc.DatabaseList = "AlternativePartsGrpc";
-            emacsFilterRequestGrpc.FilterExpression = $"SumitomoNumber != null && SumitomoNumber == \"{sumitomoNumber}\"";
-            EmacsFilterResponseGrpc alternativeParts = _EmacsClient.FilterEmacsDataGrpc(emacsFilterRequestGrpc);
+            EmacsFilterRequestGrpc emacsFilterRequest = new EmacsFilterRequestGrpc();
+            emacsFilterRequest.DatabaseList = "AlternativePartsGrpc";
+            emacsFilterRequest.FilterExpression = $"SumitomoNumber != null && SumitomoNumber == \"{sumitomoNumber}\"";
+            EmacsFilterResponseGrpc alternativeParts = _EmacsClient.FilterEmacsDataGrpc(emacsFilterRequest);
             if (alternativeParts.ListAlternativePartsGrpc != null)
             {
                 alternativePartsFilteredList = ExtractEmacsResponseData<AlternativePartsGrpc>(alternativeParts);
@@ -1991,12 +2028,12 @@
                     // the next line fails:
                     DateTime deadline = DateTime.UtcNow.AddSeconds(60);
                     CallOptions callOptions = new CallOptions(deadline: deadline);
-                    ListAlternativePartsGrpc listResponse = await _EmacsClient.GetAlternativePartsGrpcAsync(requestAll, callOptions);
+                    ListAlternativePartsGrpc accessResponse = await _EmacsClient.GetAlternativePartsGrpcAsync(requestAll, callOptions);
                     //2026 - 01 - 26T10: 32:06 info: Grpc.Net.Client.Internal.GrpcCall[17]
                     //2026 - 01 - 26T10: 32:06 Error reading message.
                     //2026 - 01 - 26T10: 32:06 System.Net.Http.HttpIOException: The response ended prematurely, with at least 4105 additional bytes expected. (ResponseEnded)
 
-                    ListAlternativePartsGrpc partsList = listResponse ?? new ListAlternativePartsGrpc();
+                    ListAlternativePartsGrpc partsList = accessResponse ?? new ListAlternativePartsGrpc();
 
                     GetAllAlternativePartsGrpcResponse response = new GetAllAlternativePartsGrpcResponse();
                     foreach (AlternativePartsGrpc part in partsList.AlternativePartsGrpc)
@@ -2205,6 +2242,7 @@
             //foreach (RfqNprRequestGrpc? item in rfqNprRequests.RfqNprRequestGrpcs)
             //{
             //    RfqNprRequestGrpc rfqNpr = item.ToRfqNprRequest();
+
             //    response.RfqNprRequestGrpcs.Add(rfqNpr);
             //}
 
@@ -2245,11 +2283,13 @@
         //    RfqNprRequestGrpcRequest rfqNprRequest = new RfqNprRequestGrpcRequest();
         //    RfqGrpcRequestParameter rfqGrpcRequestParameter = new RfqGrpcRequestParameter();
         //    rfqGrpcRequestParameter.RequestType = 80;
-        //    foreach (RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
-        //    {
-        //        RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRquestGrpcAccess();
-        //        rfqNprRequest.RfqNprRequestGrpcsToUpdate.Add(accessRfqNprRequest);
-        //    }
+        //    rfqNprRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
+        //    rfqNprRequest.RfqNprRequestGrpcsToUpdate.AddRange(request.RfqNprRequestGrpc);
+        //    //foreach (RfqNprRequestGrpc? rfqNpr in request.RfqNprRequestGrpc)
+        //    //{
+        //    //    RfqNprRequestGrpc accessRfqNprRequest = rfqNpr.ToRfqNprRequestGrpcAccess();
+        //    //    rfqNprRequest.RfqNprRequestGrpcsToUpdate.Add(accessRfqNprRequest);
+        //    //}
 
         //    RfqCrudResponse accessResponse = _RfqClient.UpdateRfqNprRequestGrpc(rfqNprRequest);
 
@@ -2290,6 +2330,11 @@
             foreach (RfqShared.RfqNprRequestGrpc? npr in allRfqNprRequests.RfqNprRequestGrpcs)
             {
                 if (npr == null)
+                {
+                    continue;
+                }
+
+                if(npr.RequestID == null)
                 {
                     continue;
                 }
@@ -2850,6 +2895,7 @@
                     harness.HarnessName1 = item.HarnessName1;
                     harness.Customer = item.Customer;
                     harness.Site = item.Site;
+                    harness.Title = item.Title;
 
                     DSIHarnessGrpc? dsiHarness = harness.ToDSIHarness();
                     response.HarnessList.Add(dsiHarness);
@@ -3207,6 +3253,12 @@
                     .Distinct(StringComparer.OrdinalIgnoreCase)
                     .ToList();
 
+                List<string> validHarnessTitles = request.HarnessTitle
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Select(x => x.Trim())
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+
                 _Logger.GenericLogInformation(
                     $"GetComponentsByHarnessAndOptionsGrpc - HarnessName count: {validHarnessNames.Count}");
                 _Logger.GenericLogInformation(
@@ -3217,8 +3269,14 @@
                 _Logger.GenericLogInformation(
                     $"GetComponentsByHarnessAndOptionsGrpc - CompositeOptions values: [{string.Join(", ", validCompositeOptions)}]");
 
+                _Logger.GenericLogInformation(
+                    $"GetComponentsByHarnessAndOptionsGrpc - HarnessTitle count: {validHarnessTitles.Count}");
+                _Logger.GenericLogInformation(
+                    $"GetComponentsByHarnessAndOptionsGrpc - HarnessTitle values: [{string.Join(", ", validHarnessTitles)}]");
+
                 dsiRequest.HarnessName.AddRange(validHarnessNames);
                 dsiRequest.CompositeOptions.AddRange(validCompositeOptions);
+                dsiRequest.HarnessTitle.AddRange(validHarnessTitles);
 
                 ListDsiComponentGrpc? dsiResponse =
                     await _RfqClient.GetDSIComponentsByHarnessAndOptionsAsync(dsiRequest);
@@ -3283,6 +3341,54 @@
 
                 throw;
             }
+        }
+
+        DsiCompositeDetailGrpc GenerateCompositeDetailGrpc()
+        {
+            DsiCompositeDetailGrpc compositeDetailGrpc = new DsiCompositeDetailGrpc();
+            compositeDetailGrpc.HarnessName1 = "Harness1";
+            compositeDetailGrpc.SimilarHarnessName1 = "SimilarHarness1";
+            compositeDetailGrpc.HarnessIssue1 = "Issue1";
+            compositeDetailGrpc.SimilarHarnessIssue1 = "SimilarIssue1";
+            compositeDetailGrpc.HarnessDate1 = Timestamp.FromDateTime(DateTime.UtcNow);
+            compositeDetailGrpc.HarnessName2 = "Harness2";
+            compositeDetailGrpc.SimilarHarnessName2 = "SimilarHarness2";
+            compositeDetailGrpc.HarnessIssue2 = "Issue2";
+            compositeDetailGrpc.SimilarHarnessIssue2 = "SimilarIssue2";
+            compositeDetailGrpc.HarnessDate2 = Timestamp.FromDateTime(DateTime.UtcNow);
+            compositeDetailGrpc.Customer = "Customer1";
+            compositeDetailGrpc.Site = "Site1";
+            compositeDetailGrpc.Range = "Range1";
+            compositeDetailGrpc.BoardLength = 0;
+            compositeDetailGrpc.BoardWidth = 0;
+            compositeDetailGrpc.Datum = "Datum1";
+            compositeDetailGrpc.UserField1 = "UserField1";
+            compositeDetailGrpc.UserField2 = "UserField2";
+            compositeDetailGrpc.UserField3 = "UserField3";
+            compositeDetailGrpc.UserField4 = "UserField4";
+            compositeDetailGrpc.UserField5 = "UserField5";
+            compositeDetailGrpc.Checker = "Checker1";
+            compositeDetailGrpc.Inputter = "Inputter1";
+            compositeDetailGrpc.DraftedBy = "DraftedBy1";
+            compositeDetailGrpc.PreparedBy = "PreparedBy1";
+            compositeDetailGrpc.Type = "Type1";
+            compositeDetailGrpc.Title = "Title1";
+            compositeDetailGrpc.EngineSize = "EngineSize1";
+            compositeDetailGrpc.ManufacturingCell = "ManufacturingCell1";
+            compositeDetailGrpc.Trim = "Trim1";
+            compositeDetailGrpc.HandDrive = "HandDrive1";
+            compositeDetailGrpc.TubeAddOnType = "TubeAddOnType1";
+            compositeDetailGrpc.TubeAddOnFactor = 0;
+            compositeDetailGrpc.IsManualTerminal = false;
+            compositeDetailGrpc.IsAllConnectorsSealed = false;
+            compositeDetailGrpc.AlphaCode = "AlphaCode1";
+            compositeDetailGrpc.HarnessID = "HarnessID1";
+            compositeDetailGrpc.CircuitOption = "ALL";
+            compositeDetailGrpc.CreatedDate = Timestamp.FromDateTime(DateTime.UtcNow);
+            compositeDetailGrpc.ModifiedDate = Timestamp.FromDateTime(DateTime.UtcNow);
+            compositeDetailGrpc.CreatedBy = "CreatedBy1";
+            compositeDetailGrpc.ModifiedBy = "ModifiedBy1";
+            return compositeDetailGrpc;
         }
         #endregion
     }

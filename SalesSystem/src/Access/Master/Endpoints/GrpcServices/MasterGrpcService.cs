@@ -291,7 +291,7 @@ namespace Master.Endpoints.GrpcServices
 
             switch (request.DatabaseList.ToUpperInvariant())
             {
-                case "v     ":
+                case "PROJECTENGINEERINGASSOCIATIONGRPC":
 
                 await _MasterAccessService.PopulateProjectEngineeringAssociationsAsync(context.CancellationToken);
 

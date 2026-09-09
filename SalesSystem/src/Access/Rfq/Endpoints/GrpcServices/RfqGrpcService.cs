@@ -3047,6 +3047,135 @@
 
         #endregion
 
+        #region DsiMulticoreSpecification
+
+        public override async Task<ListDsiMulticoreSpecificationGrpc> ReadDsiMulticoreSpecificationGrpc(DsiMulticoreSpecificationGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("ReadDsiMulticoreSpecificationGrpc starting");
+
+            if (request == null || request.RfqGrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            switch (requestType)
+            {
+                case RequestType.Read:
+                return await _RfqAccessService.GetAllDsiMulticoreSpecifications(context.CancellationToken, request.RfqGrpcRequestParameter.Position, request.RfqGrpcRequestParameter.Take);
+
+                default:
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+        }
+
+        public override async Task<RfqCrudGrpcResponse> CreateDsiMulticoreSpecificationGrpc(DsiMulticoreSpecificationGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("CreateDsiMulticoreSpecificationGrpc starting");
+
+            if (request == null || request.RfqGrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            if (requestType != RequestType.Create)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for creating DsiModuleCompatibility.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            ListDsiMulticoreSpecificationGrpc response = await _RfqAccessService.CreateDsiMulticoreSpecifications(request, cancellationToken);
+
+            if (response.DsiMulticoreSpecificationGrpcs.Count == request.DsiMulticoreSpecificationGrpcsToCreate.Count)
+            {
+                responseMessage.Message = $"{request.DsiMulticoreSpecificationGrpcsToCreate.Count} DsiMulticoreSpecification types created successfully.";
+                responseMessage.SaveSuccess = true;
+                foreach (DsiMulticoreSpecificationGrpc item in response.DsiMulticoreSpecificationGrpcs)
+                {
+                    responseMessage.StringValue += item.RowId.ToString(CultureInfo.InvariantCulture) + ",";
+                }
+            }
+            else
+            {
+                responseMessage.Message = "No/not all DsiMulticoreSpecification types created.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
+
+        public override async Task<RfqCrudGrpcResponse> UpdateDsiMulticoreSpecificationGrpc(DsiMulticoreSpecificationGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("UpdateDsiMulticoreSpecificationGrpc starting");
+
+            if (request == null || request.RfqGrpcRequestParameter == null)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Null request or request parameters.");
+                throw new RpcException(status);
+            }
+
+            RequestType requestType = RequestType.None;
+            if (System.Enum.IsDefined(typeof(RequestType), request.RfqGrpcRequestParameter.RequestType))
+            {
+                requestType = (RequestType)request.RfqGrpcRequestParameter.RequestType;
+            }
+            else
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type parameter value.");
+                throw new RpcException(status);
+            }
+
+            if (requestType != RequestType.Update)
+            {
+                Status status = new Status(StatusCode.InvalidArgument, "Invalid request type for updating DsiMulticoreSpecification.");
+                throw new RpcException(status);
+            }
+
+            RfqCrudGrpcResponse responseMessage = new RfqCrudGrpcResponse();
+            CancellationToken cancellationToken = context.CancellationToken;
+            bool response = await _RfqAccessService.UpdateDsiMulticoreSpecifications(request, cancellationToken);
+
+            if (response)
+            {
+                responseMessage.Message = $"{request.DsiMulticoreSpecificationGrpcsToUpdate.Count} DsiMulticoreSpecification types updated successfully.";
+                responseMessage.SaveSuccess = true;
+            }
+            else
+            {
+                responseMessage.Message = "No/not all DsiMulticoreSpecification types updated.";
+                responseMessage.SaveSuccess = false;
+            }
+
+            return responseMessage;
+        }
+        #endregion
+
         #region DsiPinMapping
 
         public override async Task<ListDsiPinMappingGrpc> ReadDsiPinMappingGrpc(DsiPinMappingGrpcRequest request, ServerCallContext context)
@@ -4712,6 +4841,7 @@
                 await _RfqAccessService.GetComponentsByHarnessAndOptions(
                     request.HarnessName,
                     request.CompositeOptions,
+                    request.HarnessTitle,
                     context.CancellationToken);
 
             return response;

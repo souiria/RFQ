@@ -1015,6 +1015,7 @@ message GetWireSpecificationByCompositeOptionResponse {
 message GetComponentsByHarnessAndOptionsRequest {
     repeated string HarnessName = 1;
     repeated string CompositeOptions = 2;
+    repeated string HarnessTitle = 3;
 }
 message ListComponentGrpc {
     repeated DSIComponentGrpc ComponentList = 1;
