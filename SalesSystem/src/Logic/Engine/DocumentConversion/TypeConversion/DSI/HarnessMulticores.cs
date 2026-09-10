@@ -5,7 +5,6 @@
         public static IEnumerable<MulticoreSpecificationDto> GetHarnessMulticores(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            MulticoreSpecificationDto model = new MulticoreSpecificationDto();
             List<MulticoreSpecificationDto> collection = new List<MulticoreSpecificationDto>();
             foreach (string line in lines)
             {
@@ -21,7 +20,9 @@
                 string itemPart1Value = "";
                 string itemPart2Value = "";
                 string itemPart3Value = "";
-
+                
+                MulticoreSpecificationDto model = new MulticoreSpecificationDto();
+    
                 if (split.Length == 26)
                 {
                     bool unmodifiedMulticoreLengthCheck = double.TryParse(split[20], out unmodifiedMulticoreLength);

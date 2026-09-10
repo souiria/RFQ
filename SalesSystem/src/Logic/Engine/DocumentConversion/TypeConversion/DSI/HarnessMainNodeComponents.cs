@@ -8,7 +8,6 @@
             List<ComponentDto> collection = new List<ComponentDto>();
             foreach (string line in lines)
             {
-                ComponentDto model = new ComponentDto();
                 string[] split = line.Split(separator, StringSplitOptions.None);
                 ErrorCheckHelper.CheckLineLengthException(split.Length, 31, line);
 
@@ -16,6 +15,7 @@
                 bool crossSectionalAreaCheck = double.TryParse(split[10], out double crossSectionalArea);
                 bool assemblyItemNumberCheck = double.TryParse(split[26], out double assemblyItemNumber);
                 bool numberOfCavitiesCheck = double.TryParse(split[28], out double numberOfCavities);
+                ComponentDto model = new ComponentDto();
 
                 model.NodeName = split[0];
                 model.CavityName = split[1];

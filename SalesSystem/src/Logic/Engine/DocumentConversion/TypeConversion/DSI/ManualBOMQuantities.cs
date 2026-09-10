@@ -5,7 +5,6 @@
         public static IEnumerable<ManualBomQuantityDto> GetManualBOMQuantities(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            ManualBomQuantityDto model = new ManualBomQuantityDto();
             List<ManualBomQuantityDto> collection = new List<ManualBomQuantityDto>();
             foreach (string line in lines)
             {
@@ -13,6 +12,7 @@
                 ErrorCheckHelper.CheckLineLengthException(split.Length, 4, line);
 
                 bool percentageCheck = double.TryParse(split[2], out double percentage);
+                ManualBomQuantityDto model = new ManualBomQuantityDto();
 
                 model.SplitValue = split[0];
                 model.ModuleCode = split[1];

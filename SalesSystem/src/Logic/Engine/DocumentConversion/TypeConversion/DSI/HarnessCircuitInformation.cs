@@ -6,12 +6,11 @@
         {
             string[] separator = [splitter];
             List<CompositeDetailDto> collection = new List<CompositeDetailDto>();
-            CompositeDetailDto model = new CompositeDetailDto();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);
                 ErrorCheckHelper.CheckLineLengthException(split.Length, 37, line);
-
+                CompositeDetailDto model = new CompositeDetailDto();
                 bool boardLengthCheck = double.TryParse(split[13], out double boardLength);
                 bool boardWidthCheck = double.TryParse(split[14], out double boardWidth);
                 bool tubeAddOnFactorCheck = double.TryParse(split[32], out double tubeAddOnFactor);
@@ -45,7 +44,7 @@
                 model.EngineSize = split[27];
                 model.ManufacturingCell = split[28];
                 model.Trim = split[29];
-                model.HandDrive = split[30];
+                model.HandDrive = split[30]; // is in a different position in the DSI file, so we need to adjust the index accordingly
                 model.TubeAddOnType = split[31];
                 model.TubeAddOnFactor = tubeAddOnFactor;
                 model.IsManualTerminal = ValueCalculator.CalculateLogicalValue(split[33], false);

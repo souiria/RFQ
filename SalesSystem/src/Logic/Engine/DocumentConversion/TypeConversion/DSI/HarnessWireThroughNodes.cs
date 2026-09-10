@@ -6,13 +6,14 @@
         {
             string[] separator = [splitter];
             List<WireThroughNodeDto> collection = new List<WireThroughNodeDto>();
-            WireThroughNodeDto model = new WireThroughNodeDto();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);
                 ErrorCheckHelper.CheckLineLengthException(split.Length, 7, line);
 
                 bool throughOrderCheck = double.TryParse(split[2], out double throughOrder);
+                WireThroughNodeDto model = new WireThroughNodeDto();
+
                 model.WireName = split[0];
                 model.Option = split[1];
                 model.ThroughOrder = throughOrder;

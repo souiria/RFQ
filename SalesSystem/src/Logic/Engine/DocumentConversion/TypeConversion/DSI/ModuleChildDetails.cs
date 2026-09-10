@@ -5,7 +5,6 @@
         public static IEnumerable<ModuleChildDetailDto> GetModuleChildDetails(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            ModuleChildDetailDto model = new ModuleChildDetailDto();
             List<ModuleChildDetailDto> collection = new List<ModuleChildDetailDto>();
             foreach (string line in lines)
             {
@@ -15,6 +14,7 @@
                 bool boardLengthCheck = double.TryParse(split[15], out double boardLength);
                 bool boardWidthCheck = double.TryParse(split[16], out double boardWidth);
                 bool tubeAddOnFactorCheck = double.TryParse(split[34], out double tubeAddOnFactor);
+                ModuleChildDetailDto model = new ModuleChildDetailDto();
 
                 model.ModuleCode = split[0];
                 model.IsCoreModule = ValueCalculator.CalculateLogicalValue(split[1], false);

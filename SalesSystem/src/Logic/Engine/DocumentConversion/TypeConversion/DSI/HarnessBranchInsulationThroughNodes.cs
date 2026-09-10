@@ -5,12 +5,12 @@
         public static IEnumerable<BranchInsulationThroughNodeDto> GetHarnessBranchInsulationThroughNodes(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            BranchInsulationThroughNodeDto model = new BranchInsulationThroughNodeDto();
             List<BranchInsulationThroughNodeDto> collection = new List<BranchInsulationThroughNodeDto>();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);
                 ErrorCheckHelper.CheckLineLengthException(split.Length, 6, line);
+                BranchInsulationThroughNodeDto model = new BranchInsulationThroughNodeDto();
 
                 bool throughOrderCheck = double.TryParse(split[1], out double throughOrder);
 

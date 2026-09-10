@@ -5,12 +5,12 @@
         public static IEnumerable<PinMappingDto> GetHarnessPinMappings(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            PinMappingDto model = new PinMappingDto();
             List<PinMappingDto> collection = new List<PinMappingDto>();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);
                 ErrorCheckHelper.CheckLineLengthException(split.Length, 10, line);
+                PinMappingDto model = new PinMappingDto();
 
                 model.Node1 = split[0];
                 model.Node2 = split[1];
