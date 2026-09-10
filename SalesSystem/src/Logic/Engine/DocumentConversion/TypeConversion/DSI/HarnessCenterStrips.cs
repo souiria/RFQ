@@ -5,12 +5,12 @@
         public static IEnumerable<CentreStripDto> GetHarnessCenterStrips(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            CentreStripDto model = new CentreStripDto();
             List<CentreStripDto> collection = new List<CentreStripDto>();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);
                 ErrorCheckHelper.CheckLineLengthException(split.Length, 9, line);
+                CentreStripDto model = new CentreStripDto();
 
                 bool stripLengthCheck = double.TryParse(split[3], out double stripLength);
                 bool lengthChangeValueCheck = double.TryParse(split[5], out double lengthChangeValue);

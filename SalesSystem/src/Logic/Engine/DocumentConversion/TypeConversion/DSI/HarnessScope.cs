@@ -5,12 +5,12 @@
         public static IEnumerable<HarnessScopeDto> GetHarnessScope(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            HarnessScopeDto model = new HarnessScopeDto();
             List<HarnessScopeDto> collection = new List<HarnessScopeDto>();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);
                 ErrorCheckHelper.CheckLineLengthException(split.Length, 7, line);
+                HarnessScopeDto model = new HarnessScopeDto();
 
                 model.HarnessName1 = split[0];
                 model.HarnessIssue1 = split[1];

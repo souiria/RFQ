@@ -5,12 +5,12 @@
         public static IEnumerable<BranchInsulationDto> GetHarnessBranchInsulations(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            BranchInsulationDto model = new BranchInsulationDto();
             List<BranchInsulationDto> collection = new List<BranchInsulationDto>();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);
                 ErrorCheckHelper.CheckLineLengthException(split.Length, 39, line);
+                BranchInsulationDto model = new BranchInsulationDto();
 
                 bool diameterCheck = double.TryParse(split[6], out double diameter);
                 bool manualAmountCheck = double.TryParse(split[13], out double manualAmount);

@@ -6,11 +6,11 @@
         {
             string[] separator = [splitter];
             List<BranchConfigurationDto> collection = new List<BranchConfigurationDto>();
-            BranchConfigurationDto model = new BranchConfigurationDto();
             foreach (string line in lines)
             {
                 string[] split = line.Split(separator, StringSplitOptions.None);
                 ErrorCheckHelper.CheckLineLengthException(split.Length, 14, line);
+                BranchConfigurationDto model = new BranchConfigurationDto();
 
                 bool lengthCheck = double.TryParse(split[6], out double length);
                 bool bundleDiameterCheck = double.TryParse(split[8], out double bundleDiameter);
