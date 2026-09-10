@@ -5,7 +5,6 @@
         public static IEnumerable<MidWireComponentDto> GetHarnessMidWireComponents(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            MidWireComponentDto model = new MidWireComponentDto();
             List<MidWireComponentDto> collection = new List<MidWireComponentDto>();
             foreach (string line in lines)
             {
@@ -13,6 +12,7 @@
                 ErrorCheckHelper.CheckLineLengthException(split.Length, 8, line);
 
                 bool throughOrderCheck = double.TryParse(split[6], out double throughOrder);
+                MidWireComponentDto model = new MidWireComponentDto();
 
                 model.NodeName = split[0];
                 model.Route = split[1];

@@ -5,7 +5,6 @@
         public static IEnumerable<WireSpecificationDto> GetHarnessWireSpecification(IEnumerable<string> lines, string splitter)
         {
             string[] separator = [splitter];
-            WireSpecificationDto model = new WireSpecificationDto();
             List<WireSpecificationDto> collection = new List<WireSpecificationDto>();
             foreach (string line in lines)
             {
@@ -19,6 +18,7 @@
                 bool modifiedWireLengthCheck = double.TryParse(split[25], out double modifiedWireLength);
                 bool cutbackAtEnd1Check = double.TryParse(split[26], out double cutbackAtEnd1);
                 bool cutbackAtEnd2Check = double.TryParse(split[27], out double cutbackAtEnd2);
+                WireSpecificationDto model = new WireSpecificationDto();
 
                 model.WireName = split[0];
                 model.CompositeOptionString = split[1];

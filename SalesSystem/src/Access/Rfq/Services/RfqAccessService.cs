@@ -5709,7 +5709,7 @@
                 .Where(w => !string.IsNullOrWhiteSpace(w.CompositeOptionString)
                             && !string.IsNullOrWhiteSpace(w.HarnessID)
                             && harnessIds.Contains(w.HarnessID)
-                            && options.Contains(w.CompositeOptionString, StringComparer.OrdinalIgnoreCase))
+                            && (options.Contains(w.CompositeOptionString, StringComparer.OrdinalIgnoreCase) || options.Contains("ALL", StringComparer.OrdinalIgnoreCase)))
                 .ToList();
 
             if (!wires.Any())
