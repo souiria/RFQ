@@ -18,7 +18,7 @@
         CancellationTokenSource? _SearchCancellationTokenSource;
 
         // Reference to autocomplete for reset
-        MudAutocomplete<RqfCustomerProjectAssociationUxModel>? _ProjectAutocomplete;
+        MudAutocomplete<RfqCustomerProjectAssociationUxModel>? _ProjectAutocomplete;
 
         // Helper property for total parts count
         int TotalParts => _CompletedParts.Count + _InProgressParts.Count;
@@ -27,15 +27,15 @@
         bool IsLoading
         { get; set; }
         // this is set in the OnInitialAsync based on the RfqProjectId parameter
-        RqfProjectUxModel? RfqProject 
+        RfqProjectUxModel? RfqProject 
         { get; set; }
 
         // Simplified project selection (like CreateRfq)
-        RqfCustomerProjectAssociationUxModel? SelectedProject
+        RfqCustomerProjectAssociationUxModel? SelectedProject
         { get; set; }
 
         // Track previous selected project to detect changes
-        RqfCustomerProjectAssociationUxModel? _PreviousSelectedProject;
+        RfqCustomerProjectAssociationUxModel? _PreviousSelectedProject;
 
         // Part numbers data - changed to List for mutability
         List<RfqDrawingPartNumberUxModel> _CompletedParts = new List<RfqDrawingPartNumberUxModel>();
@@ -218,12 +218,12 @@
                     .FirstOrDefault(p => p.ProjectId == RfqProject.ProjectId);
                 if (SelectedProject != null)
                 {
-                    RfqProject.ProjectCode = SelectedProject.ProjectCode;
+                    RfqProject.ProjectName = SelectedProject.ProjectCode;
                     RfqProject.Project = SelectedProject.ProjectName;
                     RfqProject.CustomerCode = SelectedProject.CustomerCode ?? string.Empty;
                 }
 
-                RfqProject.RfqReason = RfqUxClientService.Reasons.FirstOrDefault(r => r.RowId == RfqProject.RfqReasonId)?.RfqReasonTitle ?? string.Empty;
+                RfqProject.RfqReasonName = RfqUxClientService.Reasons.FirstOrDefault(r => r.RowId == RfqProject.RfqReasonId)?.RfqReasonTitle ?? string.Empty;
 
                 _PreviousSelectedProject = SelectedProject;
                 IsLoading = false;
@@ -696,7 +696,7 @@
         //        BOMUnitOfMeasurement = "EU",
         //        SupplierGroup = "New Supplier",
         //        SupplierDetailComments = "TestRFQ",
-        //        ProjectCode = "Lion V6 CU ED 01/04/2022 FMC",
+        //        ProjectName = "Lion V6 CU ED 01/04/2022 FMC",
         //        QtyPerVehicle = 10,
         //        IsSampleDataRequired = false,
         //        //SampleSiteDetails = new List<RfqNprRequestSampleSiteDataUxModel>(),
@@ -1023,7 +1023,7 @@
 
         #region Project Autocomplete
         // Search function for MudAutocomplete (same as CreateRfq)
-        async Task<IEnumerable<RqfCustomerProjectAssociationUxModel>> SearchProjects(string searchText, CancellationToken cancellationToken)
+        async Task<IEnumerable<RfqCustomerProjectAssociationUxModel>> SearchProjects(string searchText, CancellationToken cancellationToken)
         {
             await Task.Delay(0, cancellationToken);
 

@@ -221,7 +221,7 @@
 
     Func<RfqNprRequestUxModel, bool> QuickFilter => _quickFilterFunc;
 
-    [Parameter] public RqfProjectUxModel RfqProject { get; set; } = new();
+    [Parameter] public RfqProjectUxModel RfqProject { get; set; } = new();
     [Parameter] public GlobalValue GlobalValue { get; set; } = null!;
 
     public bool HasPendingChanges =>

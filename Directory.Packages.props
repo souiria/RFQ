@@ -53,7 +53,8 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.12.0-beta.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.15.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.0" />
-    <PackageVersion Include="Polly" Version="8.6.6" />
+	  <PackageVersion Include="OpenTelemetry.Resources.Host" Version="1.11.0-beta.1" />
+	  <PackageVersion Include="Polly" Version="8.6.6" />
     <PackageVersion Include="Polly.Extensions.Http" Version="3.0.0" />
     <PackageVersion Include="Scrutor" Version="7.0.0" />
     <PackageVersion Include="Seq.Extensions.Logging" Version="9.0.0" />
@@ -65,4 +66,12 @@
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
   </ItemGroup>
+
+  <!--
+    Suppress the specific known advisory for OpenTelemetry.Instrumentation.GrpcNetClient
+    1.12.0-beta.1 until a patched, stable release is available.
+  -->
+	<ItemGroup>
+		<NuGetAuditSuppress Include="https://github.com/advisories/GHSA-v8pv-4842-x354" />
+	</ItemGroup>
 </Project>

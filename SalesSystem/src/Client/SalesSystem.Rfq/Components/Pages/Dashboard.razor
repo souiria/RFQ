@@ -11,11 +11,11 @@
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 
-<MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Dashboard</MudText>
+<MudText Typo="Typo.body2" Class="mb-auto" Align="Align.Center">&nbsp;</MudText>
 <MudGrid>
     <MudItem xs="12" sm="6" md="3">
-        <MudPaper Elevation="24" Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
-            <MudIcon Icon="@Icons.Material.Filled.Euro" Color="Color.Primary" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+        <MudPaper Elevation="24" Class="d-flex flex-row pt-4 pb-4" Style="height:10vh;">
+            <MudIcon Icon="@Icons.Material.Filled.Euro" Color="Color.Primary" Class="mx-4" Style="height:6vh;"></MudIcon>
             <div>
                 <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">RFQ KPI 1</MudText>
                 <MudText Typo="Typo.h5">3,125,000</MudText>
@@ -23,8 +23,8 @@
         </MudPaper>
     </MudItem>
     <MudItem xs="12" sm="6" md="3">
-        <MudPaper Elevation="24" Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
-            <MudIcon Icon="@Icons.Material.Filled.Layers" Color="Color.Secondary" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+        <MudPaper Elevation="24" Class="d-flex flex-row pt-4 pb-4" Style="height:10vh;">
+            <MudIcon Icon="@Icons.Material.Filled.Layers" Color="Color.Secondary" Class="mx-4" Style="height:6vh;"></MudIcon>
             <div>
                 <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">RFQ KPI 2</MudText>
                 <MudText Typo="Typo.h5">150,000</MudText>
@@ -32,8 +32,8 @@
         </MudPaper>
     </MudItem>
     <MudItem xs="12" sm="6" md="3">
-        <MudPaper Elevation="24" Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
-            <MudIcon Icon="@Icons.Material.Filled.Public" Color="Color.Success" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+        <MudPaper Elevation="24" Class="d-flex flex-row pt-4 pb-4" Style="height:10vh;">
+            <MudIcon Icon="@Icons.Material.Filled.Public" Color="Color.Success" Class="mx-4" Style="height:6vh;"></MudIcon>
             <div>
                 <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">RFQ KPI 3</MudText>
                 <MudText Typo="Typo.h5">12%</MudText>
@@ -41,16 +41,16 @@
         </MudPaper>
     </MudItem>
     <MudItem xs="12" sm="6" md="3">
-        <MudPaper Elevation="24" Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+        <MudPaper Elevation="24" Class="d-flex flex-row pt-4 pb-4" Style="height:10vh;">
             @if (_ShowAdmin)
             {
                 <MudLink Href='@($"/adminRfq/{Uri.EscapeDataString(_AdminName)}")' Underline="Underline.None">
-                    <MudIcon Icon="@Icons.Custom.Uncategorized.Radioactive" Color="Color.Warning" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+                    <MudIcon Icon="@Icons.Custom.Uncategorized.Radioactive" Color="Color.Warning" Class="mx-4" Style="height:6vh;"></MudIcon>
                 </MudLink>
             }
             else
             {
-                <MudIcon Icon="@Icons.Custom.Uncategorized.Radioactive" Color="Color.Warning" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+                <MudIcon Icon="@Icons.Custom.Uncategorized.Radioactive" Color="Color.Warning" Class="mx-4" Style="height:6vh;"></MudIcon>
             }
             <div>
                 <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">RFQ KPI 4</MudText>
@@ -59,23 +59,23 @@
         </MudPaper>
     </MudItem>
     <MudItem xs="12" sm="8">
-        <MudPaper Elevation="24" Class="pa-4" Style="height:300px;">
+        <MudPaper Elevation="24" Class="pa-4" Style="height:20vh;">
             Some Charts
         </MudPaper>
     </MudItem>
     <MudItem xs="12" sm="4">
-        <MudPaper Elevation="24" Class="pa-4" Style="height:300px;">
+        <MudPaper Elevation="24" Class="pa-4" Style="height:20vh;">
             Another Chart
         </MudPaper>
     </MudItem>
     <MudItem xs="12" sm="12" md="6">
-        <MudCard Elevation="24">
-            <MudCardHeader Class="px-1 py-1">
+        <MudCard Elevation="24" Style="height: 49vh;">
+            <MudCardHeader Class="px-1 py-0">
                 <CardHeaderContent>
                     <MudText Typo="Typo.h6">RFQ Successes</MudText>
                 </CardHeaderContent>
             </MudCardHeader>
-            <MudCardContent Class="px-1 pb-2 pt-0" Style="height: calc(100vh - 624px); min-height: 300px;">
+            <MudCardContent Class="px-1 pb-2 pt-0">
                 <MudSimpleTable Dense="true" Elevation="0" Hover="true">
                     <thead>
                         <tr>
@@ -108,12 +108,12 @@
     </MudItem>
     <MudItem xs="12" sm="12" md="6">
         <MudCard Elevation="24">
-            <MudCardHeader Class="px-1 py-1">
+            <MudCardHeader Class="px-1 py-0">
                 <CardHeaderContent>
                     <MudText Typo="Typo.h6">Recent RFQ's'</MudText>
                 </CardHeaderContent>
             </MudCardHeader>
-            <MudCardContent Class="px-2 pt-0 pb-2" Style="height: calc(100vh - 624px); min-height: 300px;">
+            <MudCardContent Class="px-2 pt-0 pb-2">
                 <RecentRfqs GlobalValue="@GlobalValue" />
             </MudCardContent>
         </MudCard>

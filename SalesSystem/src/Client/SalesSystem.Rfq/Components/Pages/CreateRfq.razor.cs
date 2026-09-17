@@ -24,7 +24,7 @@ namespace SalesSystem.Rfq.Components.Pages
         { get; set; }
         string? CustomerProjectValue
         { get; set; }  // Keep for backward compatibility with validation
-        RqfCustomerProjectAssociationUxModel? SelectedProject 
+        RfqCustomerProjectAssociationUxModel? SelectedProject 
         { get; set; }  // Holds the selected project object
         string? ReasonValue 
         { get; set; }
@@ -133,7 +133,7 @@ namespace SalesSystem.Rfq.Components.Pages
         #region Project Autocomplete
 
         // Add CancellationToken parameter to match MudAutocomplete's delegate signature
-        async Task<IEnumerable<RqfCustomerProjectAssociationUxModel>> SearchProjects(string searchText, CancellationToken cancellationToken)
+        async Task<IEnumerable<RfqCustomerProjectAssociationUxModel>> SearchProjects(string searchText, CancellationToken cancellationToken)
         {
             await Task.Delay(0, cancellationToken); // Keep async signature and respect cancellation
 
@@ -267,7 +267,7 @@ namespace SalesSystem.Rfq.Components.Pages
                 // Use selectedProject directly (already validated above)
                 // TBD there is a need to check why this selection, even though is valid in the combo, it fails on backend with a
                 // message related to not haveing some vhehicle count associated or some sh%#$$@
-                RqfCustomerProjectAssociationUxModel customerProject = SelectedProject;
+                RfqCustomerProjectAssociationUxModel customerProject = SelectedProject;
 
                 RfqReasonGrpc? reason = RfqUxClientService.Reasons.FirstOrDefault(r => r.RfqReasonTitle == ReasonValue);
                 if (reason is null)
