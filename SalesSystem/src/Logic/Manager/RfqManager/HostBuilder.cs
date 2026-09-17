@@ -166,13 +166,15 @@
             .ConfigureHttpClient(client =>
             {
                 client.Timeout = TimeSpan.FromSeconds(600);
-            });
-
-            // Long timeouts for RFQ
-            builder.Services.Configure<HttpStandardResilienceOptions>("GrpcClient.Rfq.Rfq+RfqClient", options =>
+            })
+            .AddStandardResilienceHandler(options =>
             {
+                // Long timeouts for RFQ - applied directly to this client's pipeline
+                // to guarantee it takes effect regardless of named-options binding.
                 options.TotalRequestTimeout.Timeout = TimeSpan.FromMinutes(10);
                 options.AttemptTimeout.Timeout = TimeSpan.FromMinutes(5);
+                // CircuitBreaker sampling duration must be at least double the AttemptTimeout.
+                options.CircuitBreaker.SamplingDuration = TimeSpan.FromMinutes(10);
             });
 
             // -------------- Other clients unchanged --------------
@@ -215,7 +217,25 @@
                 options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
                 options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
             })
-            .ConfigurePrimaryHttpMessageHandler(CreateHandlerWithClientCert);
+            .ConfigurePrimaryHttpMessageHandler(CreateHandlerWithClientCert)
+            .ConfigureChannel(options =>
+            {
+                options.MaxReceiveMessageSize = 64 * 1024 * 1024;
+                options.MaxSendMessageSize = 64 * 1024 * 1024;
+            })
+            .ConfigureHttpClient(client =>
+            {
+                client.Timeout = TimeSpan.FromSeconds(600);
+            })
+            .AddStandardResilienceHandler(options =>
+            {
+                // Long timeouts for NPR - applied directly to this client's pipeline
+                // to guarantee it takes effect regardless of named-options binding.
+                options.TotalRequestTimeout.Timeout = TimeSpan.FromMinutes(10);
+                options.AttemptTimeout.Timeout = TimeSpan.FromMinutes(5);
+                // CircuitBreaker sampling duration must be at least double the AttemptTimeout.
+                options.CircuitBreaker.SamplingDuration = TimeSpan.FromMinutes(10);
+            });
 
             builder.Services.AddGrpcClient<CPD.CPD.CPDClient>(o =>
             {

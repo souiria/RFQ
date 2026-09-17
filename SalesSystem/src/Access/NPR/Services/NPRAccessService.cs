@@ -139,22 +139,44 @@
             }
 
             List<NprApiRequestData> requestDataList = new List<NprApiRequestData>();
+            int count = 1;
             foreach (NprApiDataGrpc data in request.NprApiData)
             {
                 NprApiRequestData apiData = data.ToNprApiData();
+                apiData.NPRUploadSeqNo = count;
                 requestDataList.Add(apiData);
+                count++;
             }
 
             HttpClient httpClient = _HttpClientFactory.CreateClient("MyClient");
             string? uri = _Configuration["NprApi:Url"];
-            HttpResponseMessage httpResponse = await httpClient.PostAsJsonAsync(uri, requestDataList, cancellationToken);
+            HttpResponseMessage httpResponse;
+            httpResponse = await httpClient.PostAsJsonAsync(uri, requestDataList, cancellationToken);
+            //try
+            //{
+            //    httpResponse = await httpClient.PostAsJsonAsync(uri, requestDataList, cancellationToken);
+            //}
+            //catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            //{
+            //    // The caller (gRPC client) canceled the request or its deadline expired.
+            //    response.Message = "Request to NprApi was canceled by the caller or exceeded the deadline.";
+            //    response.HttpStatusCode = HttpStatusCode.RequestTimeout.ToString();
+            //    return response;
+            //}
+            //catch (OperationCanceledException ex)
+            //{
+            //    // Cancellation not requested by our token: underlying connection was aborted unexpectedly.
+            //    response.Message = $"Request to NprApi failed unexpectedly: {ex.Message}";
+            //    response.HttpStatusCode = HttpStatusCode.ServiceUnavailable.ToString();
+            //    return response;
+            //}
 
             response.HttpStatusCode = httpResponse.StatusCode.ToString();
 
             switch (httpResponse.StatusCode)
             {
                 case HttpStatusCode.OK:
-                await PopulateH1NPRViewAsync(cancellationToken);
+                //await PopulateH1NPRViewAsync(cancellationToken);
                 return await HandleSuccess(httpResponse, request, response, cancellationToken);
 
                 case HttpStatusCode.UnprocessableContent:
@@ -180,7 +202,7 @@
             try
             {
                 string httpJsonString = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
-                List<NprApiReturnData>? nprApiDatas = JsonConvert.DeserializeObject<List<NprApiReturnData>>(httpJsonString);
+                //List<NprApiReturnData>? nprApiDatas = JsonConvert.DeserializeObject<List<NprApiReturnData>>(httpJsonString);
                 NprApiResponseData? nprApiData = JsonConvert.DeserializeObject<NprApiResponseData>(httpJsonString);
                 if (nprApiData != null && nprApiData.Data != null)
                 {

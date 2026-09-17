@@ -379,8 +379,13 @@
 
     private async Task OnSendValidsClicked()
     {
-        await Task.Delay(1); // simulate some delay
+        if (_isBusy)
+        {
+            return;
+        }
+
         _isBusy = true;
+        StateHasChanged();
         try
         {
             // Persist any pending NPR edits BEFORE submitting so the API sees the latest data.
@@ -450,6 +455,11 @@
 
     private async Task OnSendSingleNprClicked(RfqNprRequestUxModel npr)
     {
+        if (_isBusy)
+        {
+            return;
+        }
+
         if (!npr.Validate())
         {
             Snackbar.Add("NPR request is not valid", Severity.Warning);
@@ -457,6 +467,7 @@
         }
 
         _isBusy = true;
+        StateHasChanged();
         try
         {
             npr.ProjectCode = RfqProject.Project;
@@ -517,7 +528,7 @@
         bool isSuccess = IsSuccessStatusCode(response.HttpStatusCode) && response.NprApiData.Count > 0;
 
         string nprRequestNumbers = response.NprApiData.Count > 0
-            ? string.Join(", ", response.NprApiData.Select(d => d.NprId).Where(id => !string.IsNullOrWhiteSpace(id)))
+            ? string.Join(", ", response.NprApiData.Select(d => d.RfqNprRequest.RequestID).Where(id => !string.IsNullOrWhiteSpace(id)))
             : string.Empty;
 
         string statusMessage = isSuccess
