@@ -59,10 +59,18 @@
             });
             builder.Services.AddInfrastructure(builder.Configuration);
             IAsyncPolicy<HttpResponseMessage> policy = GetRetryPolicy();
+#pragma warning disable IDESIGN103 // Avoid compound statements.
             builder.Services.AddHttpClient("MyClient", client =>
             {
                 client.Timeout = TimeSpan.FromSeconds(600);
-            }).AddPolicyHandler(policy);
+            })
+            .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+            {
+                PooledConnectionLifetime = TimeSpan.FromMinutes(2)
+            })
+            .AddPolicyHandler(policy);
+#pragma warning restore IDESIGN103 // Avoid compound statements.
+
             builder.Services.AddSingleton<INPRAccessService, NPRAccessService>();
             builder.Services.AddHostedService<DataImportSchedulerService>();
 

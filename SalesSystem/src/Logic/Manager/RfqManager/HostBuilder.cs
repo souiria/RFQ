@@ -165,7 +165,7 @@
             })
             .ConfigureHttpClient(client =>
             {
-                client.Timeout = TimeSpan.FromSeconds(600);
+                client.Timeout = Timeout.InfiniteTimeSpan;
             })
             .AddStandardResilienceHandler(options =>
             {
@@ -186,7 +186,8 @@
                 options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
                 options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
             })
-            .ConfigurePrimaryHttpMessageHandler(CreateHandlerWithClientCert);
+            .ConfigurePrimaryHttpMessageHandler(CreateHandlerWithClientCert)
+            .AddStandardResilienceHandler();
 
             builder.Services.AddGrpcClient<Emacs.Emacs.EmacsClient>(o =>
             {
@@ -197,7 +198,8 @@
                 options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
                 options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
             })
-            .ConfigurePrimaryHttpMessageHandler(CreateHandlerWithClientCert);
+            .ConfigurePrimaryHttpMessageHandler(CreateHandlerWithClientCert)
+            .AddStandardResilienceHandler();
 
             builder.Services.AddGrpcClient<Adss.AdssGrpc.AdssGrpcClient>(o =>
             {
@@ -207,7 +209,8 @@
                 options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
                 options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
             })
-            .ConfigurePrimaryHttpMessageHandler(CreateHandlerWithClientCert);
+            .ConfigurePrimaryHttpMessageHandler(CreateHandlerWithClientCert)
+            .AddStandardResilienceHandler();
 
             builder.Services.AddGrpcClient<NPR.NPR.NPRClient>(o =>
             {
@@ -245,7 +248,8 @@
                 options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
                 options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
             })
-            .ConfigurePrimaryHttpMessageHandler(CreateHandlerWithClientCert);
+            .ConfigurePrimaryHttpMessageHandler(CreateHandlerWithClientCert)
+            .AddStandardResilienceHandler();
       //      builder.Services.AddGrpcClient<DSI.DSI.DSIClient>(o =>
       //      {
       //          o.Address = new Uri(dsiUrl);
