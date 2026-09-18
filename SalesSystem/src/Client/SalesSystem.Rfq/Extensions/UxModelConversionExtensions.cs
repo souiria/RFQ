@@ -115,13 +115,18 @@
             {
                 uxModel.CustomerPartNumber = dto.OriginalPartNumber;
                 uxModel.DrawingPartNumber = string.Empty;
+
             }
             else
             {
                 uxModel.CustomerPartNumber = dto.OriginalPartNumber;
                 uxModel.DrawingPartNumber = dto.SumitomoPartNumber;
+              
             }
 
+            uxModel.PartNumber1 = dto.PartNumber1 ?? string.Empty;
+            uxModel.PartNumber2 = dto.PartNumber2 ?? string.Empty;
+            uxModel.PartNumber3 = dto.PartNumber3 ?? string.Empty;
             uxModel.DrawingPartNumberPrice = Convert.ToDecimal(dto.OriginalPartNumberPrice, CultureInfo.InvariantCulture);
             uxModel.SwappedPartNumber = dto.SwappedPartNumber;
             uxModel.SwappedPartNumberPrice = Convert.ToDecimal(dto.SwappedPartNumberPrice, CultureInfo.InvariantCulture);
@@ -166,8 +171,11 @@
             dto.PriceSource = uxModel.PriceSource;
             dto.IsExactMatch = uxModel.IsExactMatch == true;
             dto.IsSwapped = uxModel.IsSwapped == true;
+            dto.PartNumber1 = uxModel.PartNumber1;
+            dto.PartNumber2 = uxModel.PartNumber2;
+            dto.PartNumber3 = uxModel.PartNumber3;
             // dto.IsActive = uxModel.IsActive;
-            if(!string.IsNullOrEmpty(uxModel.Comments) && uxModel.Comments.Contains("||<<<", StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(uxModel.Comments) && uxModel.Comments.Contains("||<<<", StringComparison.OrdinalIgnoreCase))
             {
                 dto.Comments = uxModel.Comments.Split("||<<<", StringSplitOptions.None)[0];
             }
@@ -200,7 +208,9 @@
                 // Map the primary active part number from the component data profile
                 CustomerPartNumber = component.PartNumber1 ?? string.Empty,
                 DrawingPartNumber = component.PartNumber1 ?? string.Empty,
-
+                PartNumber1 = component.PartNumber1 ?? string.Empty,
+                PartNumber2 = component.PartNumber2 ?? string.Empty,
+                PartNumber3 = component.PartNumber3 ?? string.Empty,
                 // Convert double? quantity to decimal safely, defaulting to 0 if null
                 DrawingPartNumberPrice = 0m,
                 SwappedPartNumber = string.Empty,

@@ -70,6 +70,11 @@
                 </CellTemplate>
             </TemplateColumn>
             @* <PropertyColumn Property="x => x.RowId" Title="ID" Editable="false" /> *@
+            <PropertyColumn Property="x => x.CustomerPartNumber" Title="Customer Part N°" />
+            <PropertyColumn Property="x => x.PartNumber1" Title="Part Number 1" Hidden="true"/>
+            <PropertyColumn Property="x => x.PartNumber2" Title="Part Number 2" />
+            <PropertyColumn Property="x => x.PartNumber3"Title="Part Number 3" />
+
             <PropertyColumn Property="x => x.CustomerPartNumber" Title="Customer P/N" />
             <PropertyColumn Property="x => x.DrawingPartNumber" Title="Drawing P/N" />
             <PropertyColumn Property="x => x.DrawingPartNumberPrice"

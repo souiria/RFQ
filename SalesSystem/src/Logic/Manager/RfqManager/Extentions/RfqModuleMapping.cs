@@ -103,6 +103,9 @@
             part.Comments = rfqPartGrpc.Comments;
             part.SumitomoPartNumber = rfqPartGrpc.SumitomoPartNumber;
             part.Quantity = rfqPartGrpc.Quantity ?? 0;
+            part.PartNumber1 = rfqPartGrpc.PartNumber1;
+            part.PartNumber2 = rfqPartGrpc.PartNumber2;
+            part.PartNumber3 = rfqPartGrpc.PartNumber3;
             return part;
         }
 

@@ -27,6 +27,12 @@
         { get; set; }
         public string DrawingPartNumber
         { get; set; }
+        public string? PartNumber1
+        { get; set; }
+        public string? PartNumber2
+        { get; set; }
+        public string? PartNumber3
+        { get; set; }
         [Column(TypeName = "decimal(12, 5)")]
         public decimal DrawingPartNumberPrice
         { get; set; }

@@ -49,6 +49,9 @@ message RfqDrawingPartNumberGrpc {
   google.protobuf.StringValue NprRequest = 15;
   google.protobuf.Int32Value Status = 16;
   google.protobuf.DoubleValue Quantity = 17;
+  google.protobuf.StringValue PartNumber2 = 18;
+  google.protobuf.StringValue PartNumber3 = 19;
+    google.protobuf.StringValue PartNumber1 = 20;
 }
 
 message ListRfqDrawingPartNumberGrpc {
