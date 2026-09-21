@@ -13,6 +13,9 @@
             MultiMatch = false;
 
             CustomerPartNumber = string.Empty;
+            PartNumber1 = string.Empty;
+            PartNumber2 = string.Empty;
+            PartNumber3 = string.Empty;
             DrawingPartNumber = string.Empty;
             SwappedPartNumber = string.Empty;
             PriceSource = string.Empty;
