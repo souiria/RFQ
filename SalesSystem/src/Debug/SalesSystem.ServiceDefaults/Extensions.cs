@@ -32,8 +32,15 @@ namespace Microsoft.Extensions.Hosting
 
             builder.Services.ConfigureHttpClientDefaults(http =>
             {
-                // Turn on resilience by default
-                http.AddStandardResilienceHandler();
+                // NOTE: Standard resilience handler is intentionally NOT added here.
+                // Adding it globally via ConfigureHttpClientDefaults stacks a second
+                // resilience pipeline (with the default 30s TotalRequestTimeout) on top
+                // of any client-specific AddStandardResilienceHandler(...) configuration
+                // (e.g. RFQ/NPR gRPC clients configured with multi-minute timeouts),
+                // causing calls to fail with a 30s TimeoutRejectedException even though
+                // the client was explicitly configured for a much longer timeout.
+                // Clients that need resilience should call AddStandardResilienceHandler()
+                // explicitly with settings appropriate to that client.
 
                 // Turn on service discovery by default
                 http.AddServiceDiscovery();

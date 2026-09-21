@@ -59,8 +59,8 @@ namespace SalesSystem.Rfq.Services
             _Logger = logger;
 
             string serviceUrl = configuration["GrpcService:Url"] ?? "GrpcService:Core-Url is missing in configuration.";
-            int timeoutSeconds = configuration.GetValue("GrpcService:TimeoutSeconds", 120);
-            _Timeout = TimeSpan.FromSeconds(300);
+            int timeoutSeconds = configuration.GetValue("GrpcService:TimeoutSeconds", 600);
+            _Timeout = TimeSpan.FromSeconds(timeoutSeconds);
             _MAX_GRPC_RESPONSE_SIZE = 64 * 1024 * 1024;
 
             _Channel = GrpcChannel.ForAddress(serviceUrl, new GrpcChannelOptions
@@ -674,6 +674,36 @@ namespace SalesSystem.Rfq.Services
             catch (Exception ex)
             {
                 _Logger?.GenericLogError($"Error in SearchNprSewsePn", ex);
+                throw;
+            }
+        }
+        public async Task<SearchResultUxModel> SearchNprCustomerNumber(string customerNumber)
+        {
+            using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
+            await Task.Delay(1);
+            try
+            {
+                FilterGrpcResponse response = await FilterByRequestTypeAsync(
+                    RfqManagerFilterType.FilterNPRByCustomerNumber,
+                    customerNumber
+                );
+
+                if (response.Success
+                    && response.StringList != null
+                    && 0 <= response.StringList.Count)
+                {
+                    SearchResultUxModel r = response.ToUx();
+                    return r;
+                }
+                else
+                {
+                    SearchResultUxModel r = new SearchResultUxModel();
+                    return r;
+                }
+            }
+            catch (Exception ex)
+            {
+                _Logger?.GenericLogError($"Error in SearchNprCustomerNumber", ex);
                 throw;
             }
         }

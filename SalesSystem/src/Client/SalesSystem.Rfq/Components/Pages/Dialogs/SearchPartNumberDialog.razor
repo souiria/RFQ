@@ -171,7 +171,7 @@
                         {
                             await Task.WhenAll(
                                 LoadPartImageAsync(matchedPart),
-                                LoadNprDataAsync(matchedPart)
+                                LoadNprDataAsync(matchedPart, SearchedPartNumber.CustomerPartNumber)
                             );
                         }
                         catch (Exception ex)
@@ -258,7 +258,7 @@
         }
     }
 
-    private async Task LoadNprDataAsync(RfqDrawingPartNumberUxModel matchedPartNumber)
+    private async Task LoadNprDataAsync(RfqDrawingPartNumberUxModel matchedPartNumber, string customerPartNumber)
     {
         if (string.IsNullOrWhiteSpace(matchedPartNumber.DrawingPartNumber))
         {
@@ -274,6 +274,10 @@
             Logger.GenericLogInformation($"Loading NPR data for part number: {matchedPartNumber.DrawingPartNumber}");
 
             SearchResultUxModel response = await RfqUxClientService.SearchNprSewsePn(matchedPartNumber.DrawingPartNumber);
+            if ( response.StringList.Count <= 0)
+            {
+                response = await RfqUxClientService.SearchNprCustomerNumber(customerPartNumber);
+            }
 
             if (response.IsSuccessful &&
                 response.StringList != null &&

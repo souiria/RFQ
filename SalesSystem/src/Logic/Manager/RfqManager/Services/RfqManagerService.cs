@@ -2141,8 +2141,20 @@
                             {
                                 priceInfo.Price = nprResponse.DoubleList.First();
                                 priceInfo.PriceSource = "NPR";
+                                return;
                             }
                             // TODO Search RFQ
+
+                            // Step 3: fall back to searching NPR by the original customer part number
+                            FilterGrpcRequest customerPartNumberRequest = new FilterGrpcRequest();
+                            customerPartNumberRequest.StringValue = item.CustomerPartNumber;
+
+                            FilterGrpcResponse nprByCustomerResponse = await FilterNPRByCustomerPartNumber(customerPartNumberRequest);
+                            if (0 < nprByCustomerResponse.StringList.Count)
+                            {
+                                priceInfo.Price = nprByCustomerResponse.DoubleList.First();
+                                priceInfo.PriceSource = "NPR";
+                            }
                         });
 
                     await Task.WhenAll(innerTasks);
@@ -2488,7 +2500,7 @@
             createNprApiGrpcRequest.NprApiData.AddRange(nprAccessDataList);
             CreateNprApiGrpcResponse apiResponse = await _NPRGrpcClient.CreateNprApiGrpcAsync(createNprApiGrpcRequest);
             response.HttpStatusCode = apiResponse.HttpStatusCode;
-            response.Message = apiResponse.Message;
+            response.Message = "API Response = " + apiResponse.Message;
 
             UpdateRfqNprRequestGrpcRequest updateRequest = new UpdateRfqNprRequestGrpcRequest();
             foreach (NPR.NprApiDataGrpc? accessData in apiResponse.NprApiData)
@@ -2688,14 +2700,14 @@
             filteredList = ExtractCPDResponseData<MatSuppMstViewGrpc>(cpdResponse);
             response.Success = true;
 
-            DateTime sixMonthsAgo = DateTime.UtcNow.AddMonths(-6);
+            //DateTime sixMonthsAgo = DateTime.UtcNow.AddMonths(-6);
 
             foreach (MatSuppMstViewGrpc part in filteredList)
             {
-                if (part.UpdDt == null || part.UpdDt.ToDateTime() < sixMonthsAgo)
-                {
-                    continue;
-                }
+                //if (part.UpdDt == null || part.UpdDt.ToDateTime() < sixMonthsAgo)
+                //{
+                //    continue;
+                //}
 
                 string sumitmoNumberString = part.MaterialNo.ToString();
                 double price = part.PoPrice ?? 0;
@@ -2724,6 +2736,33 @@
                 }
 
                 response.StringList.Add(sumitmoNumberString);
+                response.DoubleList.Add(price);
+            }
+
+            return response;
+        }
+
+        public async Task<FilterGrpcResponse> FilterNPRByCustomerPartNumber(FilterGrpcRequest request)
+        {
+            await Task.Delay(1);
+            FilterGrpcResponse response = new FilterGrpcResponse();
+            NPRFilterRequest filterRequest = new NPRFilterRequest();
+            Collection<H1NPRViewGrpc> filteredList = new Collection<H1NPRViewGrpc>();
+            NPRFilterResponse nprResponse = FilterSumitomoNumber<NPRFilterResponse>(request.StringValue, "CustomerNo", "==");
+            filteredList = ExtractNRPResponseData<H1NPRViewGrpc>(nprResponse);
+            response.Success = true;
+            foreach (H1NPRViewGrpc part in filteredList)
+            {
+                //if (part.ExpiryDate == null || part.ExpiryDate.ToDateTime() < DateTime.UtcNow)
+                //{
+                //    continue;
+                //}
+
+                string customerNumberString = part.CustomerNo.ToString();
+                double price = part.Price ?? 0;
+                response.StringList.Add(customerNumberString);
+                string partJson = JsonConvert.SerializeObject(part);
+                response.StringList2.Add(partJson);
                 response.DoubleList.Add(price);
             }
 

@@ -18,6 +18,7 @@
             _Logger.GenericLogInformation("Background service is running");
 
             await PopulateGlobalDataAsync(stoppingToken);
+            await PopulateH1NPRViewDataAsync(stoppingToken);
             await DailyWorker(23, 30, 00, async () => await PopulateGlobalDataAsync(stoppingToken), stoppingToken);
             await DailyWorker(01, 00, 00, async () => await PopulateH1NPRViewDataAsync(stoppingToken), stoppingToken);
 
