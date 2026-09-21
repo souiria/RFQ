@@ -10,42 +10,101 @@
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 <style>
-    .mud-npr-req-grid .mud-table-head {
-    background-color: lightgrey;
+    :root {
+        --appbar-height: 64px;
+        --pane-gap: 16px;
+        --dashboard-background: #f2f2f2;
+        --rfq-grid-height: 12px;
+    }
+    /* Bottom panels */
+    .data-pane {
+        display: flex;
+        flex-direction: column;
+        padding: 6px;
     }
 
-    .mud-npr-req-grid .mud-table-head th {
-    background-color: lightgrey;
+    .pane-title {
+        padding-top: 1px;
+        padding-bottom: 1px;
+        padding-left: 4px;
+        padding-right: 4px;
+        flex: 0 0 auto;
+        margin: 0 0 4px 0;
     }
 
-    .mud-npr-req-grid {
-    overflow-x: hidden !important;
-    border: 1px solid #bdbdbd;
-    border-radius: 4px;
+    .table-host {
+        display: flex;
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: hidden;
     }
 
-    .mud-table-sticky-header {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    background-color: var(--mud-palette-surface);
+    /*
+              DataGrid:
+              - FixedHeader keeps the DataGrid header visible.
+              - The toolbar is outside the table's scrolling container.
+              - Fixed table layout plus widths summing to 100% prevents horizontal scrolling.
+            */
+
+
+    .mud-npr-req-grid .mud-table-container {
+        overflow-x: auto !important;
+        overflow-y: auto !important;
     }
 
-    /* First row: column headers */
-    .mud-npr-req-grid .mud-table-head tr:first-child th {
-    position: sticky;
-    top: 0;
-    z-index: 3;
-    background-color: lightgrey;
+    .mud-npr-req-grid table {
+        width: 100% !important;
+        table-layout: fixed !important;
     }
 
-    /* Second row: filter inputs */
-    .mud-npr-req-grid .mud-table-head tr:nth-child(2) th {
-    position: sticky;
-    top: 36px;
-    z-index: 3;
-    background-color: #f5f5f5;
+    .mud-npr-req-grid .mud-table-cell {
+        padding: 1px !important;
+        overflow: hidden;
+        font-size: var(--rfq-grid-height) !important;
+        line-height: 1;
+        text-align: left;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+        white-space: nowrap;
     }
+
+    .mud-npr-req-grid .mud-table-head .mud-table-cell {
+        font-size: 12px !important;
+        font-weight: 700;
+    }
+
+    .row-action-buttons .mud-icon-button {
+        height: var(--rfq-grid-height);
+    }
+
+    .toolbar-row {
+        display: grid;
+        grid-template-columns: minmax(0, 5fr) minmax(0, 3.5fr) minmax(0, 1.5fr);
+        width: 100%;
+        min-width: 0;
+        min-height: 0;
+    }
+
+    /* Ensure MudBlazor's own toolbar wrapper doesn't constrain the width we set above */
+    .mud-npr-req-grid .mud-table-toolbar,
+    .mud-npr-req-grid .mud-toolbar {
+        width: 100%;
+        max-width: 100%;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        height: 36px;
+    }
+
+    .mud-npr-req-grid .mud-toolbar .mud-input-slot {
+        margin-top: 0;
+        margin-bottom: 0px;
+    }
+
+    .quick-search {
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+
 </style>
 
 <div class="d-flex flex-column" style="height: 100%; overflow: hidden;">
@@ -62,9 +121,6 @@
                     Style="flex: 1 1 auto; min-height: 0; overflow-y: auto; margin: 8px 0;"
                     RowStyleFunc="@RowStyleFunc"
                     ColumnResizeMode="ResizeMode.Column"
-                    Filterable="true"
-                    FilterMode="DataGridFilterMode.ColumnFilterRow"
-                    FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive"
                     QuickFilter="@QuickFilter">
         <ToolBarContent>
             <MudText Typo="Typo.subtitle1" Class="mr-4">
@@ -400,7 +456,7 @@
             List<RfqNprRequestUxModel> nprs = new List<RfqNprRequestUxModel>();
             foreach (RfqNprRequestUxModel npr in validNprs)
             {
-                npr.ProjectCode = RfqProject.Project;
+                npr.ProjectCode = RfqProject.ProjectName;
                 nprs.Add(npr);
             }
 
@@ -459,7 +515,7 @@
         _isBusy = true;
         try
         {
-            npr.ProjectCode = RfqProject.Project;
+            npr.ProjectCode = RfqProject.ProjectName;
 
             List<RfqNprRequestUxModel> nprs = new List<RfqNprRequestUxModel> { npr };
 

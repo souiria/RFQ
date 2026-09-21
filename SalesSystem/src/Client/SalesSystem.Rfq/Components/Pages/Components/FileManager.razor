@@ -147,7 +147,6 @@
     {
         try
         {
-            Console.WriteLine($">>> ENTER OnChange file upload, {e.FileCount} files");
             var addedFiles = new List<string>();
             var rejectedFiles = new List<string>();
 
@@ -159,7 +158,6 @@
                     if (IsFileAlreadyAdded(file))
                     {
                         rejectedFiles.Add($"{file.Name} (duplicate)");
-                        Console.WriteLine($"Rejected duplicate file: {file.Name}");
                         continue;
                     }
 
@@ -171,7 +169,6 @@
                     {
                         FileObjects.Add(fileObject);
                         addedFiles.Add(file.Name);
-                        Console.WriteLine($"Added file: {fileObject.File?.Name} ({fileObject.File?.Size} bytes) as {fileType}, ID: {fileObject.Id}");
                     }
                     else
                     {
@@ -179,13 +176,11 @@
                                        fileObject.File?.Size > MAX_FILE_SIZE ? "file too large" : 
                                        "invalid file size";
                         rejectedFiles.Add($"{file.Name} ({reason})");
-                        Console.WriteLine($"Rejected file: {file.Name} - {reason}");
                     }
                 }
                 catch (Exception fileEx)
                 {
                     rejectedFiles.Add($"{file.Name} (error: {fileEx.Message})");
-                    Console.WriteLine($"Error processing file {file.Name}: {fileEx.Message}");
                 }
             }
 
@@ -211,7 +206,6 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"ERROR in OnChange: {ex.Message}");
             Snackbar.Add($"Error uploading files: {ex.Message}", Severity.Error);
         }
     }
@@ -253,51 +247,6 @@
         };
     }
 
-    // private string GetFAFileTypeIcon(RfqFileType fileType)
-    // {
-    //     return fileType switch
-    //     {
-    //         RfqFileType.UNK => "fa-solid fa-paperclip",
-    //         RfqFileType.DSI => "fa-solid fa-cogs",
-    //         RfqFileType.CSV => "fa-solid fa-file-csv",
-    //         RfqFileType.TXT => "fa-solid fa-file",
-    //         RfqFileType.XLS => "fa-solid fa-file-excel",
-    //         RfqFileType.XML => "fa-solid fa-file-lines",
-    //         RfqFileType.MTF => "fa-solid fa-file-alt",
-    //         _ => "fa-solid fa-paperclip"
-    //     };
-    // }
-
-    // private string GetFileTypeIcon(RfqFileType fileType)
-    // {
-    //     return fileType switch
-    //     {
-    //         RfqFileType.UNK => Icons.Material.Filled.AttachFile,
-    //         RfqFileType.DSI => Icons.Material.Filled.Engineering,
-    //         RfqFileType.CSV => Icons.Material.Filled.TextFormat,
-    //         RfqFileType.TXT => Icons.Material.Filled.TextFormat,
-    //         RfqFileType.XLS => Icons.Material.Filled.Workspaces,
-    //         RfqFileType.XML => Icons.Material.Filled.DataExploration,
-    //         RfqFileType.MTF => Icons.Material.Filled.DataObject,
-    //         _ => Icons.Material.Filled.AttachFile
-    //     };
-    // }
-
-    // private Color GetFileTypeColor(RfqFileType fileType)
-    // {
-    //     return fileType switch
-    //     {
-    //         RfqFileType.UNK => Color.Error,
-    //         RfqFileType.DSI => Color.Success,
-    //         RfqFileType.CSV => Color.Success,
-    //         RfqFileType.TXT => Color.Warning,
-    //         RfqFileType.XLS => Color.Success,
-    //         RfqFileType.XML => Color.Success,
-    //         RfqFileType.MTF => Color.Success,
-    //         _ => Color.Error
-    //     };
-    // }
-
     private async Task ClearAllFiles()
     {
         try
@@ -317,11 +266,9 @@
             // Show success message
             Snackbar.Add("All files cleared successfully", Severity.Success);
             
-            Console.WriteLine(">>> All files cleared from FileManager");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"ERROR in ClearAllFiles: {ex.Message}");
             Snackbar.Add($"Error clearing files: {ex.Message}", Severity.Error);
         }
     }
@@ -415,13 +362,11 @@
                 
                 await NotifyFilesChanged();
                 
-                Console.WriteLine($">>> Removed file: {fileObject.File?.Name}");
                 Snackbar.Add($"File '{fileObject.File?.Name}' removed successfully", Severity.Info);
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"ERROR removing file: {ex.Message}");
             Snackbar.Add($"Error removing file: {ex.Message}", Severity.Error);
         }
     }

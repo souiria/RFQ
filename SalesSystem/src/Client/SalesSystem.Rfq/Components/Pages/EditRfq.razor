@@ -16,7 +16,18 @@
 @inject NavigationManager NavigationManager
 
 @rendermode InteractiveServer
-
+<style>
+    .edit-rfq-panel {
+        height: calc(100vh - 224px);
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+    }
+    .compact-input {
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+</style>
 @if (IsLoading || RfqProject == null)
 {
     <MudContainer Class="d-flex justify-center align-center" Style="height: calc(100vh - 128px);">
@@ -31,124 +42,46 @@
 }
 else
 {
-    <MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Edit RFI/RFQ @RfqProject.RfqNumber</MudText>
+    <MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Edit @RfqProject.RfqNumber (@RfqProject.CustomerCode / @RfqProject.ProjectName - @RfqProject.CarModelName)</MudText>
     <MudGrid Class="position-fixed">
         <MudItem xs="12">
-            <MudPaper Class="d-flex flex-row" Style="height:150px;">
+            <MudStack Row="true">
                 @* Region label *@
                 <MudPaper Style="width: 48px; background-color: var(--mud-palette-primary); position: relative; overflow: visible;">
-                    <MudText Style="transform: rotate(-90deg); transform-origin: left bottom; white-space: nowrap; position: absolute; bottom: 20px; left: 36px; font-weight: 500; color: white;"
+                    <MudText Style="transform: rotate(-90deg); transform-origin: left bottom; white-space: nowrap; position: absolute; bottom: 10px; left: 36px; font-weight: 500; color: white;"
                              Typo="Typo.h6">
-                        Edit RFQ/RFI
+                        Rfq
                     </MudText>
                 </MudPaper>
 
-                @* Column 1: Customer + Reason *@
-                <MudPaper Class="pa-4" Style="flex: 0 0 20%; max-width:20%; min-width: 20%;">
-                    <MudStack>
-                        <MudSelect T="string"
-                                   Value="@RfqProject.CustomerCode"
-                                   For="@(() => RfqProject.CustomerBusinessUnitId)"
-                                   ValueChanged="OnCustomerValueChanged"
-                                   Label="Customer"
-                                   Placeholder="Please Select"
-                                   AdornmentIcon="@Icons.Material.Filled.People"
-                                   AdornmentColor="Color.Primary">
-                            @foreach (var customer in RfqUxClientService.Customers)
-                            {
-                                <MudSelectItem T="string" Value="@customer?.Id">@customer?.CustomerBusinessGroupName</MudSelectItem>
-                            }
-                        </MudSelect>
-                        <MudSelect T="int?"
-                                   Value="@(RfqProject.RfqReasonId == 0 ? null : (int?)RfqProject.RfqReasonId)"
-                                   ValueChanged="OnReasonValueChanged"
-                                   Label="Reason"
-                                   Placeholder="Please Select"
-                                   AdornmentIcon="@Icons.Material.Filled.Checklist"
-                                   AdornmentColor="Color.Primary">
-                            @foreach (var reason in RfqUxClientService.Reasons)
-                            {
-                                <MudSelectItem T="int?" Value="@((int?)reason.RowId)">@reason.RfqReasonTitle</MudSelectItem>
-                            }
-                        </MudSelect>
-                    </MudStack>
-                </MudPaper>
-
-                @* Column 2: Project + VehicleVolume *@
-                <MudPaper Class="pa-4" Style="flex: 0 0 20%; max-width:20%; min-width: 20%;">
-                    <MudStack>
-                        <MudAutocomplete T="RfqCustomerProjectAssociationUxModel"
-                                         @ref="_ProjectAutocomplete"
-                                         @bind-Value="SelectedProject"
-                                         Label="Project"
-                                         Placeholder="Search project..."
-                                         SearchFunc="@SearchProjects"
-                                         ToStringFunc="@(p => p != null ? $"{p.ProjectCode} - {p.CustomerName}" : "")"
-                                         Strict="false"
-                                         ResetValueOnEmptyText="false"
-                                         CoerceText="true"
-                                         CoerceValue="true"
-                                         SelectValueOnTab="true"
-                                         AdornmentIcon="@Icons.Material.Filled.DesignServices"
-                                         AdornmentColor="Color.Primary"
-                                         Dense="true"
-                                         Clearable="true"
-                                         DebounceInterval="250"
-                                         MinCharacters="0"
-                                         ShowProgressIndicator="true"
-                                         MaxItems="100">
-                            <ItemTemplate Context="project">
-                                <MudStack Spacing="0">
-                                    <MudText Typo="Typo.body2">
-                                        <strong>@project.ProjectCode</strong>
-                                    </MudText>
-                                    <MudText Typo="Typo.caption" Color="Color.Secondary">
-                                        @project.CustomerName
-                                    </MudText>
-                                </MudStack>
-                            </ItemTemplate>
-                            <NoItemsTemplate>
-                                <MudText Typo="Typo.body2" Align="Align.Center" Class="pa-2">
-                                    No projects found matching your search.
-                                </MudText>
-                            </NoItemsTemplate>
-                        </MudAutocomplete>
-
-                        <MudNumericField @bind-Value="@RfqProject.VehicleVolume"
-                                         Label="Vehicle Volume"
-                                         Variant="Variant.Text"
-                                         Min="0" />
-                    </MudStack>
-                </MudPaper>
-
-                @* Column 3: Deadline + IsActive *@
-                <MudPaper Class="pa-4" Style="flex: 1 1 20%; max-width:20%; min-width: 192px;">
-                    <MudStack>
-                        <MudDatePicker Label="Deadline"
-                                       @bind-Date="RfqProject.RfqResponseDeadline"
-                                       DateFormat="dd.MM.yyyy" />
-                        <MudCheckBox T="bool" Label="Is Active"
-                                     @bind-Value="RfqProject.IsActive"
-                                     Disabled="true"/>
-                    </MudStack>
-                </MudPaper>
-
-                @* Column 4: FileManager *@
-@*                 <MudPaper Class="pa-2 w-100" Style="flex: 0 0 15%; max-width:15%; min-width: 192px;">
-                    <FileManager @ref="_ComponentFileManager"
-                                 FileObjects="FileObjects"
-                                 OnFilesChanged="OnFilesChanged"
-                                 OnUploadClicked="@UploadFilesAsync"
-                                 UploadDisabled="@(FileObjects.Count == 0)" />
-                </MudPaper> *@
+                <MudSelect T="int?"
+                           Value="@(RfqProject.RfqReasonId == 0 ? null : (int?)RfqProject.RfqReasonId)"
+                           ValueChanged="OnReasonValueChanged"
+                           Label="Reason"
+                           Placeholder="Please Select"
+                           AdornmentIcon="@Icons.Material.Filled.Checklist"
+                           AdornmentColor="Color.Primary">
+                    @foreach (var reason in RfqUxClientService.Reasons)
+                    {
+                        <MudSelectItem T="int?" Value="@((int?)reason.RowId)">@reason.RfqReasonTitle</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudNumericField @bind-Value="@RfqProject.VehicleVolume"
+                                 Label="Vehicle Volume"
+                                 Variant="Variant.Text"
+                                 Min="0" 
+                                 HideSpinButtons="true"
+                                 Class="compact-input"/>
+                <MudDatePicker Label="Deadline"
+                               @bind-Date="RfqProject.RfqResponseDeadline"
+                               DateFormat="dd.MM.yyyy" />
 
                 @* Controls – scrollable inner wrapper *@
-                <MudPaper Class="pa-0"
-                          Style="height: 150px; overflow: hidden; flex-shrink: 0;">
-                    <div style="height: 100%; overflow-y: auto; padding: 6px;">
-                        <MudStack Row Spacing="2">
-                            @* Column 1: Search & NPR actions *@
-                            <MudStack Spacing="1">
+
+                        <MudStack Row
+                                  AlignItems="AlignItems.Center"
+                                  Spacing="2">
+                            @* Column 1: Search & Status *@
                                 <MudTooltip Text="Search All InProgress Parts">
                                     <MudButton Color="Color.Info"
                                                OnClick="@SearchAllPartNumbersAsync"
@@ -156,10 +89,25 @@ else
                                                Size="Size.Small"
                                                StartIcon="@Icons.Material.Filled.TravelExplore"
                                                FullWidth="true"
-                                               Disabled="@(_InProgressParts.Count == 0 || _IsSearchingAll)">
+                                               Disabled="@(_InProgressParts.Count == 0 || _IsSearchingAll)"
+                                               Class="mud-text-nowrap">
                                         Search
                                     </MudButton>
                                 </MudTooltip>
+                                <MudTooltip Text="RFQ Project Stats and Statistics">
+                                    <MudButton Color="Color.Dark"
+                                               OnClick="@ShowDatasetStatusAsync"
+                                               Variant="Variant.Filled"
+                                               Size="Size.Small"
+                                               StartIcon="@Icons.Material.Filled.Assessment"
+                                               FullWidth="true"
+                                               Disabled="@(TotalParts == 0)"
+                                               Class="mud-text-nowrap">
+                                        Status
+                                    </MudButton>
+                                </MudTooltip>
+
+                            @* Column 2: NPR handling *@
                                 <MudTooltip Text="Create NPR Requests for ALL InProgress Parts">
                                     <MudButton Color="Color.Info"
                                                OnClick="@NprAllInProgressPartsAsync"
@@ -167,8 +115,9 @@ else
                                                Size="Size.Small"
                                                StartIcon="@Icons.Material.Filled.AddTask"
                                                FullWidth="true"
-                                               Disabled="@(IsCreateNprRequestsPermitted)">
-                                        Add NPRs
+                                               Disabled="@(IsCreateNprRequestsPermitted)"
+                                               Class="mud-text-nowrap">
+                                        Add&nbsp;NPRs
                                     </MudButton>
                                 </MudTooltip>
                                 <MudTooltip Text="Submit existing NPR Requests to the NPR API">
@@ -178,42 +127,22 @@ else
                                                Size="Size.Small"
                                                StartIcon="@Icons.Material.Filled.CloudUpload"
                                                FullWidth="true"
-                                               Disabled="@(_IsSubmittingNprs || RfqProject?.NprRequests == null || RfqProject.NprRequests.Count == 0)">
-                                        Submit NPRs
+                                               Disabled="@(_IsSubmittingNprs || RfqProject?.NprRequests == null || RfqProject.NprRequests.Count == 0)"
+                                               Class="mud-text-nowrap">
+                                        Submit&nbsp;NPRs
                                     </MudButton>
                                 </MudTooltip>
-                                @* <MudTooltip Text="Test Submit NPR Request to the NPR API">
-                                    <MudButton Color="Color.Success"
-                                               OnClick="@TestSubmitNprRequestsAsync"
-                                               Variant="Variant.Filled"
-                                               Size="Size.Small"
-                                               StartIcon="@Icons.Material.Filled.CloudUpload"
-                                               FullWidth="true">
-                                        Submit Test NPR
-                                    </MudButton>
-                                </MudTooltip> *@
-                            </MudStack>
+                                
 
-                            @* Column 2: Status, Reload, Update *@
-                            <MudStack Spacing="1">
-                                <MudTooltip Text="RFQ Project Stats and Statistics">
-                                    <MudButton Color="Color.Dark"
-                                               OnClick="@ShowDatasetStatusAsync"
-                                               Variant="Variant.Filled"
-                                               Size="Size.Small"
-                                               StartIcon="@Icons.Material.Filled.Assessment"
-                                               FullWidth="true"
-                                               Disabled="@(TotalParts == 0)">
-                                        Status
-                                    </MudButton>
-                                </MudTooltip>
+                            @* Column 3: Reload, Update *@
                                 <MudTooltip Text="Reload from DB and Drop Changes">
                                     <MudButton Color="Color.Warning"
                                                OnClick="@ReloadDataAsync"
                                                Variant="Variant.Filled"
                                                Size="Size.Small"
                                                StartIcon="@Icons.Material.Filled.Repeat"
-                                               FullWidth="true">
+                                               FullWidth="true"
+                                               Class="mud-text-nowrap">
                                         Reload
                                     </MudButton>
                                 </MudTooltip>
@@ -223,30 +152,29 @@ else
                                                Variant="Variant.Filled"
                                                Size="Size.Small"
                                                StartIcon="@Icons.Material.Filled.Save"
-                                               FullWidth="true">
+                                               FullWidth="true"
+                                               Class="mud-text-nowrap">
                                         Update
                                     </MudButton>
                                 </MudTooltip>
-                            </MudStack>
                         </MudStack>
-                    </div>
-                </MudPaper>
 
-            </MudPaper>
+
+            </MudStack>
         </MudItem>
 
         <MudItem xs="12" Class="pt-2">
                 <MudTabs Elevation="2"
                          Rounded="true"
                          ApplyEffectsToContainer="true"
-                         MinimumTabWidth="12vw"
+                         MinimumTabWidth="16vw"
                          Style="height: 100%; overflow: hidden;"
                          @bind-ActivePanelIndex="_ActiveTabIndex">
                     <MudTabPanel Text="BOM Files"
                                  Icon="@Icons.Material.Filled.Api"
                                  BadgeData='"BOM"'
                                  BadgeColor="Color.Success">
-                        <div style="height: calc(100vh - 344px); display: flex; flex-direction: column; overflow: auto;">
+                        <div class="edit-rfq-panel">
                             @if(_Composites.Count > 0)
                             {
                                 <CompositeCards @ref="_CompositeCardsRef"
@@ -257,7 +185,7 @@ else
                         </div>
                     </MudTabPanel>
                     <MudTabPanel Text="Parts Lists" Icon="@Icons.Material.Filled.Api" BadgeData='"PROJ"' BadgeColor="Color.Info">
-                        <div style="height: calc(100vh - 344px); display: flex; flex-direction: column; overflow: auto;">
+                        <div  class="edit-rfq-panel">
                             <PartNumberSection PartNumbers="@_InProgressParts"
                                                Label="In progress"
                                                BackgroundColor="var(--mud-palette-warning)"
@@ -278,7 +206,7 @@ else
                                  Icon="@Icons.Material.Filled.RequestPage"
                                  BadgeData="@(RfqProject.NprRequests?.Count ?? 0)"
                                  BadgeColor="Color.Primary">
-                        <div style="height: calc(100vh - 344px); display: flex; flex-direction: column; overflow: auto;">
+                        <div class="edit-rfq-panel">
                             @if (RfqProject.NprRequests != null && RfqProject.NprRequests.Count > 0)
                             {
                                 <NprRequestsEditor @ref="_ComponentNprEditor" RfqProject="@RfqProject" GlobalValue="@GlobalValue"/>

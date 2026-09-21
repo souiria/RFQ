@@ -21,7 +21,7 @@
         { get; set; }
         public string ProjectId
         { get; set; }
-        public string? Project
+        public string? ProjectName
         { get; set; }
         public int RfqReasonId
         { get; set; }
@@ -38,8 +38,6 @@
         public bool IsActive
         { get; set; }
         public string CustomerCode
-        { get; set; }
-        public string? ProjectName
         { get; set; }
         public string? CustomerBusinessGroupCode
         { get; set; }

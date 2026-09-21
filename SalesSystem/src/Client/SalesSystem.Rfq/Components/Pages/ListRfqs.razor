@@ -1,0 +1,362 @@
+@page "/listRfqs"
+@using System.Collections.Generic
+@using MudBlazor.Utilities
+@using SalesSystem.Rfq.Models
+
+@inject RfqUxClientService RfqUxClientService
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject ILogger<ListRfqs> Logger
+@inject IDialogService DialogService
+
+<style>
+    :root {
+        --appbar-height: 64px;
+        --pane-gap: 16px;
+        --dashboard-background: #f2f2f2;
+        --rfq-grid-height: 12px;
+    }
+
+    .list-rfqs-page {
+        position: fixed;
+        inset: var(--appbar-height) 0 0 0;
+        display: flex;
+        flex-direction: column;
+        padding: var(--pane-gap);
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    .data-pane {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        min-height: 0;
+        padding: 6px;
+    }
+
+    .pane-title {
+        padding-top: 1px;
+        padding-bottom: 1px;
+        padding-left: 4px;
+        padding-right: 4px;
+        flex: 0 0 auto;
+        margin: 0 0 4px 0;
+    }
+
+    .table-host {
+        display: flex;
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    /*
+          DataGrid:
+          - FixedHeader keeps the DataGrid header visible.
+          - The toolbar is outside the table's scrolling container.
+          - Fixed table layout plus widths summing to 100% prevents horizontal scrolling.
+        */
+    .rfq-grid {
+        overflow: hidden;
+    }
+
+    .rfq-grid .mud-table-container {
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+    }
+
+    .rfq-grid table {
+        width: 100% !important;
+        table-layout: fixed !important;
+    }
+
+    .rfq-grid .mud-table-cell {
+        padding: 1px !important;
+        overflow: hidden;
+        font-size: var(--rfq-grid-height) !important;
+        line-height: 1;
+        text-align: left;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .rfq-grid .mud-table-head .mud-table-cell {
+        font-size: 14px !important;
+        font-weight: 700;
+    }
+
+    .row-action-buttons .mud-icon-button {
+        height: var(--rfq-grid-height);
+    }
+
+    .toolbar-row {
+        display: grid;
+        grid-template-columns: minmax(0, 5fr) minmax(0, 3.5fr) minmax(0, 1.5fr);
+        width: 100%;
+        min-width: 0;
+        min-height: 0;
+    }
+
+    /* Ensure MudBlazor's own toolbar wrapper doesn't constrain the width we set above */
+    .rfq-grid .mud-table-toolbar,
+    .rfq-grid .mud-toolbar {
+        width: 100%;
+        max-width: 100%;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        height: 36px;
+    }
+
+    .rfq-grid .mud-toolbar .mud-input-slot {
+        margin-top: 0;
+        margin-bottom: 0px;
+    }
+
+    .quick-search {
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+</style>
+
+<div class="list-rfqs-page">
+    <MudPaper Elevation="6" Class="dashboard-pane data-pane">
+        <MudText Typo="Typo.h6" Class="pane-title">All RFQs</MudText>
+
+        @if (IsLoading)
+        {
+            <div class="d-flex justify-center align-center" style="height: 100%;">
+                <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large">
+                    <ChildContent>
+                        <MudText Typo="Typo.subtitle2">Loading...</MudText>
+                    </ChildContent>
+                </MudProgressCircular>
+            </div>
+        }
+        else
+        {
+            <div class="table-host">
+                <MudDataGrid T="RfqProjectUxModel"
+                             @ref="@_DataGrid"
+                             Items="@RfqUxClientService.RfqProjectUxs"
+                             Dense="true"
+                             FixedHeader="true"
+                             Height="100%"
+                             SortMode="SortMode.Multiple"
+                             Filterable="false"
+                             QuickFilter="@QuickFilter"
+                             Class="rfq-grid">
+
+                    <ToolBarContent>
+                        <div class="toolbar-row">
+                            <div>
+                                <MudTextField T="string"
+                                              @bind-Value="_SearchString"
+                                              Immediate="true"
+                                              Placeholder="Quick search..."
+                                              Adornment="Adornment.End"
+                                              AdornmentIcon="@Icons.Material.Filled.Search"
+                                              Class="quick-search" />
+                            </div>
+                            <div>&ensp;</div>
+                            <div class="toolbar-action-group">
+                                <MudTooltip Text="Refresh Dataset">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Refresh"
+                                                   Size="Size.Small"
+                                                   Color="Color.Primary"
+                                                   @onclick="@(() => RefreshAsync())" />
+                                </MudTooltip>
+
+                                <MudTooltip Text="@(_showActionsColumn ? "Hide Actions column" : "Show Actions column")">
+                                    <MudIconButton Size="Size.Small"
+                                                   Color="@(_showActionsColumn ? Color.Default : Color.Warning)"
+                                                   Icon="@(_showActionsColumn ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility)"
+                                                   aria-label="toggle-actions"
+                                                   @onclick="@(() => _showActionsColumn = !_showActionsColumn)" />
+                                </MudTooltip>
+                            </div>
+                        </div>
+                    </ToolBarContent>
+
+                    <Columns>
+                        <PropertyColumn Property="x => x.RfqNumber"
+                                        Title="RFQ"
+                                        HeaderStyle="width:*;"
+                                        CellStyle="width:*" />
+
+                        <PropertyColumn Property="x => x.CustomerLocationName"
+                                        Title="Customer"
+                                        HeaderStyle="width:12%;"
+                                        CellStyle="width:12%;" />
+
+                        <PropertyColumn Property="x => x.ProjectName"
+                                        Title="Project"
+                                        HeaderStyle="width:10%;"
+                                        CellStyle="width:10%;" />
+
+                        <PropertyColumn Property="x => x.RfqReasonName"
+                                        Title="Reason"
+                                        HeaderStyle="width:16%;"
+                                        CellStyle="width:16%;" />
+
+                        <PropertyColumn Property="x => x.VehicleVolume"
+                                        Title="Volume"
+                                        Format="N0"
+                                        HeaderStyle="width:10%;"
+                                        CellStyle="width:10%;" />
+
+                        <PropertyColumn Property="x => x.RfqResponseDeadline"
+                                        Title="Date"
+                                        Format="dd MMM yy"
+                                        HeaderStyle="width:13%;"
+                                        CellStyle="width:13%;" />
+
+                        <TemplateColumn Title="Actions"
+                                        StickyRight="true"
+                                        HeaderStyle="width:12%;"
+                                        CellStyle="width:12%;"
+                                        HeaderClass="rfq-actions-header"
+                                        CellClass="rfq-actions-cell"
+                                        Hidden="@(!_showActionsColumn)" StickyLeft="true">
+
+                            <CellTemplate>
+                                <div class="row-action-buttons">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Visibility"
+                                                   Size="Size.Small"
+                                                   Color="Color.Primary"
+                                                   OnClick="@(() => NavigateToEdit(context.Item))" />
+
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                   Size="Size.Small"
+                                                   Color="Color.Secondary"
+                                                   OnClick="@(() => DeleteAsync(context.Item))" />
+                                </div>
+                            </CellTemplate>
+                        </TemplateColumn>
+                    </Columns>
+
+                    <PagerContent>
+                        <MudDataGridPager T="RfqProjectUxModel" />
+                    </PagerContent>
+                </MudDataGrid>
+            </div>
+        }
+    </MudPaper>
+</div>
+
+@code {
+    MudDataGrid<RfqProjectUxModel> _DataGrid = null!;
+    string? _SearchString = string.Empty;
+
+    // Actions column visibility
+    bool _showActionsColumn = true;
+
+    private string _quickSearch = string.Empty;
+
+    [CascadingParameter(Name = "GlobalValue")]
+    public GlobalValue? GlobalValue { get; set; }
+
+    private bool IsLoading = true;
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshAsync();
+        IsLoading = false;
+    }
+
+    async Task RefreshAsync()
+    {
+        try
+        {
+            _SearchString = string.Empty;
+            Logger.LogInformation("Loading RFQ projects...");
+            var count = await RfqUxClientService.GetAllRfqProjectAsync(0,0);
+            if (count <= 0)
+            {
+                Snackbar.Add("No RFQ projects found.", Severity.Info);
+            }
+            Logger.LogInformation($"Loaded {RfqUxClientService.RfqProjectUxs.Count} RFQ projects");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to load RFQ projects");
+            Snackbar.Add("Failed to load RFQ projects.", Severity.Error);
+        }
+        finally
+        {
+            StateHasChanged();
+        }
+    }
+
+    private void NavigateToEdit(RfqProjectUxModel project)
+    {
+        if (GlobalValue?.UserId != null && GlobalValue.UserId != Guid.Empty)
+        {
+            Navigation.NavigateTo($"/editRfq/{project.RowId}");
+        }
+        else
+        {
+            Snackbar.Add("User ID is required to edit RFQ.", Severity.Warning);
+        }
+    }
+
+    private async Task DeleteAsync(RfqProjectUxModel project)
+    {
+        bool? result = await DialogService.ShowMessageBoxAsync(
+            "Delete RFQ Project",
+            $"Are you sure you want to delete RFQ #{project.RfqNumber}? This action cannot be undone.",
+            yesText: "Delete",
+            cancelText: "Cancel",
+            options: new DialogOptions() { MaxWidth = MaxWidth.Small });
+
+        if (result == true)
+        {
+            try
+            {
+                Logger.LogInformation($"Deleting RFQ project with RowId: {project.RowId}");
+                var response = await RfqUxClientService.DeleteRfqProjectByRowIdAsync(project.RowId);
+
+                if (response.SaveSuccess)
+                {
+                    Snackbar.Add($"RFQ #{project.RfqNumber} deleted successfully.", Severity.Success);
+                    Logger.LogInformation($"Successfully deleted RFQ project: {project.RfqNumber}");
+
+                    // Refresh the list
+                    await RfqUxClientService.GetAllRfqProjectAsync();
+                    StateHasChanged();
+                }
+                else
+                {
+                    Snackbar.Add($"Failed to delete RFQ: {response.Message}", Severity.Error);
+                    Logger.LogWarning($"Delete failed for RFQ {project.RfqNumber}: {response.Message}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, $"Error deleting RFQ project with RowId: {project.RowId}");
+                Snackbar.Add($"An error occurred while deleting RFQ #{project.RfqNumber}.", Severity.Error);
+            }
+        }
+    }
+
+    // quick filter - filter globally across multiple columns with the same input
+    private Func<RfqProjectUxModel, bool> QuickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_SearchString))
+            return true;
+
+        if (!string.IsNullOrEmpty(x.CarModel) && x.CarModel.Contains(_SearchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (!string.IsNullOrEmpty(x.CustomerBusinessUnit) && x.CustomerBusinessUnit.Contains(_SearchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (!string.IsNullOrEmpty(x.RfqNumber) && x.RfqNumber.Contains(_SearchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (!string.IsNullOrEmpty(x.ProjectName) && x.ProjectName.Contains(_SearchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    };
+}

@@ -18,7 +18,7 @@
         CancellationTokenSource? _SearchCancellationTokenSource;
 
         // Reference to autocomplete for reset
-        MudAutocomplete<RfqCustomerProjectAssociationUxModel>? _ProjectAutocomplete;
+        //MudAutocomplete<RfqCustomerProjectAssociationUxModel>? _ProjectAutocomplete;
 
         // Helper property for total parts count
         int TotalParts => _CompletedParts.Count + _InProgressParts.Count;
@@ -136,12 +136,12 @@
                     if (SelectedProject != null)
                     {
                         RfqProject!.ProjectId = SelectedProject.ProjectId!;
-                        Logger.GenericLogInformation($"EditRfq.OnAfterRender - Project changed to {SelectedProject.Id} - {SelectedProject.ProjectCode}");
+                        Logger.GenericLogInformation($"EditRfq.OnAfterRender - ProjectName changed to {SelectedProject.Id} - {SelectedProject.ProjectCode}");
                     }
                     else
                     {
                         RfqProject!.ProjectId = "";
-                        Logger.GenericLogInformation($"EditRfq.OnAfterRender - Project cleared");
+                        Logger.GenericLogInformation($"EditRfq.OnAfterRender - ProjectName cleared");
                     }
 
                     _PreviousSelectedProject = SelectedProject;
@@ -185,14 +185,14 @@
             if (rfqProject == null)
             {
                 Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-                Snackbar.Add($"RFQ Project with Id {RfqProjectId} not found", Severity.Error);
-                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - RFQ Project with Id {RfqProjectId} not found");
+                Snackbar.Add($"RFQ ProjectName with Id {RfqProjectId} not found", Severity.Error);
+                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - RFQ ProjectName with Id {RfqProjectId} not found");
                 NavigationManager.NavigateTo("/");
                 return success;
             }
             else
             {
-                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Retrieved RFQ Project with Id {rfqProject.RowId} - {rfqProject.RfqNumber} - Customer {rfqProject.CustomerBusinessUnitGuid} / {rfqProject.CustomerBusinessGroupCode} - Project {rfqProject.ProjectGuid} / {rfqProject.ProjectName}");
+                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Retrieved RFQ ProjectName with Id {rfqProject.RowId} - {rfqProject.RfqNumber} - Customer {rfqProject.CustomerBusinessUnitGuid} / {rfqProject.CustomerBusinessGroupCode} - ProjectName {rfqProject.ProjectGuid} / {rfqProject.ProjectName}");
             }
 
             if (RfqUxClientService.CustomerProjectAssociations.Count == 0)
@@ -206,8 +206,8 @@
             if (RfqProject == null)
             {
                 Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-                Snackbar.Add($"Error mapping RFQ Project with Id {RfqProjectId}", Severity.Error);
-                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Error mapping RFQ Project with Id {RfqProjectId}");
+                Snackbar.Add($"Error mapping RFQ ProjectName with Id {RfqProjectId}", Severity.Error);
+                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Error mapping RFQ ProjectName with Id {RfqProjectId}");
                 NavigationManager.NavigateTo("/");
                 return success;
             }
@@ -219,7 +219,7 @@
                 if (SelectedProject != null)
                 {
                     RfqProject.ProjectName = SelectedProject.ProjectCode;
-                    RfqProject.Project = SelectedProject.ProjectName;
+                    RfqProject.ProjectName = SelectedProject.ProjectName;
                     RfqProject.CustomerCode = SelectedProject.CustomerCode ?? string.Empty;
                 }
 
@@ -228,7 +228,7 @@
                 _PreviousSelectedProject = SelectedProject;
                 IsLoading = false;
                 success = true;
-                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded RFQ Project with Id {RfqProject.RowId} - {RfqProject.RfqNumber} {RfqProject.ProjectId}");
+                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded RFQ ProjectName with Id {RfqProject.RowId} - {RfqProject.RfqNumber} {RfqProject.ProjectId}");
             }
 
             // get the part numbers
@@ -331,7 +331,7 @@
         {
             if (RfqProject == null)
             {
-                Snackbar.Add("No Rfq Project to process for NPR", Severity.Error);
+                Snackbar.Add("No Rfq ProjectName to process for NPR", Severity.Error);
                 return;
             }
 
@@ -962,88 +962,88 @@
         #endregion
 
         #region Customer
-        async Task OnCustomerValueChanged(string value)
-        {
-            RfqProject!.CustomerBusinessUnitId = value;
+        //async Task OnCustomerValueChanged(string value)
+        //{
+        //    RfqProject!.CustomerBusinessUnitId = value;
 
-            CustomerUxModel? customer = RfqUxClientService.Customers.FirstOrDefault(c => c?.Id == value);
-            if (customer == null)
-            {
-                Logger.GenericLogInformation($"EditRfq.OnCustomerValueChanged - Customer with ID '{value}' not found");
-                return;
-            }
+        //    CustomerUxModel? customer = RfqUxClientService.Customers.FirstOrDefault(c => c?.Id == value);
+        //    if (customer == null)
+        //    {
+        //        Logger.GenericLogInformation($"EditRfq.OnCustomerValueChanged - Customer with ID '{value}' not found");
+        //        return;
+        //    }
 
-            Logger.GenericLogInformation($"EditRfq.OnCustomerValueChanged - Customer changed to {customer.Id} - {customer.CustomerBusinessGroupName}");
+        //    Logger.GenericLogInformation($"EditRfq.OnCustomerValueChanged - Customer changed to {customer.Id} - {customer.CustomerBusinessGroupName}");
 
-            // Clear selected project when customer changes (like CreateRfq)
-            SelectedProject = null;
-            _PreviousSelectedProject = null;
-            RfqProject.ProjectId = "";
+        //    // Clear selected project when customer changes (like CreateRfq)
+        //    SelectedProject = null;
+        //    _PreviousSelectedProject = null;
+        //    RfqProject.ProjectId = "";
 
-            // Reset the autocomplete component
-            if (_ProjectAutocomplete != null)
-            {
-                await _ProjectAutocomplete.ClearAsync();
-            }
+        //    // Reset the autocomplete component
+        //    if (_ProjectAutocomplete != null)
+        //    {
+        //        await _ProjectAutocomplete.ClearAsync();
+        //    }
 
-            try
-            {
-                await GetProjectAssociationsByCustomerName(customer.CustomerBusinessGroupName);
-            }
-            catch (ArgumentNullException ex)
-            {
-                Logger.GenericLogError($"EditRfq.OnCustomerValueChanged - ArgumentNullException loading customer projects for customer '{customer.CustomerBusinessGroupName}'", ex);
-            }
-            catch (InvalidOperationException ex)
-            {
-                Logger.GenericLogError($"EditRfq.OnCustomerValueChanged - InvalidOperationException loading customer projects for customer '{customer.CustomerBusinessGroupName}'", ex);
-            }
+        //    try
+        //    {
+        //        await GetProjectAssociationsByCustomerName(customer.CustomerBusinessGroupName);
+        //    }
+        //    catch (ArgumentNullException ex)
+        //    {
+        //        Logger.GenericLogError($"EditRfq.OnCustomerValueChanged - ArgumentNullException loading customer projects for customer '{customer.CustomerBusinessGroupName}'", ex);
+        //    }
+        //    catch (InvalidOperationException ex)
+        //    {
+        //        Logger.GenericLogError($"EditRfq.OnCustomerValueChanged - InvalidOperationException loading customer projects for customer '{customer.CustomerBusinessGroupName}'", ex);
+        //    }
 
-            StateHasChanged();
-        }
+        //    StateHasChanged();
+        //}
 
-        async Task GetProjectAssociationsByCustomerName(string? customerBusinessGroupName)
-        {
-            if (!string.IsNullOrWhiteSpace(RfqProject!.CustomerBusinessUnitId))
-            {
-                CustomerUxModel? customer = RfqUxClientService.Customers.FirstOrDefault(c => c?.CustomerBusinessGroupName == customerBusinessGroupName);
+        //async Task GetProjectAssociationsByCustomerName(string? customerBusinessGroupName)
+        //{
+        //    if (!string.IsNullOrWhiteSpace(RfqProject!.CustomerBusinessUnitId))
+        //    {
+        //        CustomerUxModel? customer = RfqUxClientService.Customers.FirstOrDefault(c => c?.CustomerBusinessGroupName == customerBusinessGroupName);
 
-                if (customer != null && Guid.TryParse(customer.Id, out Guid customerId))
-                {
-                    await RfqUxClientService.GetProjectAssociationsByCustomerIdAsync(customerId.ToString());
-                    StateHasChanged();
-                }
-                else
-                {
-                    Logger.GenericLogInformation($"EditRfq.GetProjectAssociationsByCustomerName - Customer not found or invalid ID for '{customerBusinessGroupName}'");
-                }
-            }
-        }
+        //        if (customer != null && Guid.TryParse(customer.Id, out Guid customerId))
+        //        {
+        //            await RfqUxClientService.GetProjectAssociationsByCustomerIdAsync(customerId.ToString());
+        //            StateHasChanged();
+        //        }
+        //        else
+        //        {
+        //            Logger.GenericLogInformation($"EditRfq.GetProjectAssociationsByCustomerName - Customer not found or invalid ID for '{customerBusinessGroupName}'");
+        //        }
+        //    }
+        //}
         #endregion
 
         #region Project Autocomplete
         // Search function for MudAutocomplete (same as CreateRfq)
-        async Task<IEnumerable<RfqCustomerProjectAssociationUxModel>> SearchProjects(string searchText, CancellationToken cancellationToken)
-        {
-            await Task.Delay(0, cancellationToken);
+        //async Task<IEnumerable<RfqCustomerProjectAssociationUxModel>> SearchProjects(string searchText, CancellationToken cancellationToken)
+        //{
+        //    await Task.Delay(0, cancellationToken);
 
-            // If no search text, return all projects (sorted)
-            if (string.IsNullOrWhiteSpace(searchText))
-            {
-                return RfqUxClientService.CustomerProjectAssociations
-                    .OrderBy(p => p.ProjectCode)
-                    .ThenBy(p => p.CustomerName);
-            }
+        //    // If no search text, return all projects (sorted)
+        //    if (string.IsNullOrWhiteSpace(searchText))
+        //    {
+        //        return RfqUxClientService.CustomerProjectAssociations
+        //            .OrderBy(p => p.ProjectCode)
+        //            .ThenBy(p => p.CustomerName);
+        //    }
 
-            // Search across project name and customer name
-            return RfqUxClientService.CustomerProjectAssociations
-                .Where(p =>
-                    (p.ProjectCode?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                    (p.CustomerName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false))
-                .OrderBy(p => p.ProjectCode?.StartsWith(searchText, StringComparison.OrdinalIgnoreCase) == true ? 0 : 1)
-                .ThenBy(p => p.ProjectCode)
-                .ThenBy(p => p.CustomerName);
-        }
+        //    // Search across project name and customer name
+        //    return RfqUxClientService.CustomerProjectAssociations
+        //        .Where(p =>
+        //            (p.ProjectCode?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+        //            (p.CustomerName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false))
+        //        .OrderBy(p => p.ProjectCode?.StartsWith(searchText, StringComparison.OrdinalIgnoreCase) == true ? 0 : 1)
+        //        .ThenBy(p => p.ProjectCode)
+        //        .ThenBy(p => p.CustomerName);
+        //}
         #endregion
 
         #region Reason
