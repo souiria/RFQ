@@ -35,6 +35,94 @@
         z-index: 1;
         background-color: var(--mud-palette-surface);
     }
+    /* Bottom panels */
+    .data-pane {
+        display: flex;
+        flex-direction: column;
+        padding: 6px;
+    }
+
+    .pane-title {
+        padding-top: 1px;
+        padding-bottom: 1px;
+        padding-left: 4px;
+        padding-right: 4px;
+        flex: 0 0 auto;
+        margin: 0 0 4px 0;
+    }
+
+    .table-host {
+        display: flex;
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: hidden;
+    }
+    /*
+            DataGrid:
+            - FixedHeader keeps the DataGrid header visible.
+            - The toolbar is outside the table's scrolling container.
+            - Fixed table layout plus widths summing to 100% prevents horizontal scrolling.
+        */
+    .mud-parts-list {
+        overflow: hidden;
+    }
+
+        .mud-parts-list .mud-table-container {
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+        }
+
+        .mud-parts-list table {
+            width: 100% !important;
+            table-layout: fixed !important;
+        }
+
+        .mud-parts-list .mud-table-cell {
+            padding: 1px !important;
+            overflow: hidden;
+            font-size: var(--rfq-grid-height) !important;
+            line-height: 1;
+            text-align: left;
+            text-overflow: ellipsis;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .mud-parts-list .mud-table-head .mud-table-cell {
+            font-size: 14px !important;
+            font-weight: 700;
+        }
+
+    .row-action-buttons .mud-icon-button {
+        height: var(--rfq-grid-height);
+    }
+
+    .toolbar-row {
+        display: grid;
+        grid-template-columns: minmax(0, 5fr) minmax(0, 3.5fr) minmax(0, 1.5fr);
+        width: 100%;
+        min-width: 0;
+        min-height: 0;
+    }
+    /* Ensure MudBlazor's own toolbar wrapper doesn't constrain the width we set above */
+    .mud-parts-list .mud-table-toolbar,
+    .mud-parts-list .mud-toolbar {
+        width: 100%;
+        max-width: 100%;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        height: 36px;
+    }
+
+        .mud-parts-list .mud-toolbar .mud-input-slot {
+            margin-top: 0;
+            margin-bottom: 0px;
+        }
+
+    .quick-search {
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
 </style>
 <div class="d-flex flex-column" style="height: 100%; overflow: hidden;">
     <MudDataGrid T="RfqDrawingPartNumberUxModel"
@@ -51,7 +139,34 @@
                  RowStyleFunc="@RowStyleFunc"
                  ColumnResizeMode="ResizeMode.Column">
         <Columns>
-            <TemplateColumn Title="Actions" CellClass="d-flex justify-start">
+            <PropertyColumn Property="x => x.CustomerPartNumber" Title="Customer Part N°" />
+            <PropertyColumn Property="x => x.PartNumber1" Title="Part Number 1" Hidden="true" />
+            <PropertyColumn Property="x => x.PartNumber2" Title="Part Number 2" />
+            <PropertyColumn Property="x => x.PartNumber3" Title="Part Number 3" />
+            <PropertyColumn Property="x => x.DrawingPartNumber"
+                            Title="Drawing P/N" />
+            <PropertyColumn Property="x => x.DrawingPartNumberPrice"
+                            Title="Drawing P/N Price"
+                            Format="0.##### €" />
+            <PropertyColumn Property="x => x.Quantity"
+                            Title="Quantity"
+                            Format="0.####" />
+            <PropertyColumn Property="x => x.SwappedPartNumber"
+                            Title="Dummy/Alt. P/N" />
+            <PropertyColumn Property="x => x.SwappedPartNumberPrice"
+                            Title="Dummy/Alt. P/N Price"
+                            Format="0.##### €" />
+            <PropertyColumn Property="x => x.PriceSource"
+                            Title="Price Source" />
+            <PropertyColumn Property="x => x.IsExactMatch"
+                            Title="Exact Match" />
+            <PropertyColumn Property="x => x.IsSwapped"
+                            Title="Swapped" />
+            <TemplateColumn Title="Actions"
+                            HeaderStyle="width: 96px;"
+                            CellStyle="width: 96px;"
+                            StickyRight="true"
+                            CellClass="rfq-actions-cell">
                 <CellTemplate>
                     <MudTooltip Text="Search Part Number">
                         <MudIconButton Size="@Size.Small"
