@@ -5,7 +5,7 @@
         #region Attribs
         //[Parameter]
         //public IReadOnlySet<long> PreselectedDerivativeIds { get; set; } = new HashSet<long>();
-        CompositeCards? _CompositeCardsRef;
+        Composites? _CompositesRef;
         // Store the current selection from the CompositeCards checkboxes
         IEnumerable<DsiComponentUxModel> _SelectedComponents = new List<DsiComponentUxModel>();
         // Reference to the Harnesses
@@ -18,7 +18,7 @@
         CancellationTokenSource? _SearchCancellationTokenSource;
 
         // Reference to autocomplete for reset
-        MudAutocomplete<RfqCustomerProjectAssociationUxModel>? _ProjectAutocomplete;
+        //MudAutocomplete<RfqCustomerProjectAssociationUxModel>? _ProjectAutocomplete;
 
         // Helper property for total parts count
         int TotalParts => _CompletedParts.Count + _InProgressParts.Count;
@@ -136,12 +136,12 @@
                     if (SelectedProject != null)
                     {
                         RfqProject!.ProjectId = SelectedProject.ProjectId!;
-                        Logger.GenericLogInformation($"EditRfq.OnAfterRender - Project changed to {SelectedProject.Id} - {SelectedProject.ProjectCode}");
+                        Logger.GenericLogInformation($"EditRfq.OnAfterRender - ProjectName changed to {SelectedProject.Id} - {SelectedProject.ProjectCode}");
                     }
                     else
                     {
                         RfqProject!.ProjectId = "";
-                        Logger.GenericLogInformation($"EditRfq.OnAfterRender - Project cleared");
+                        Logger.GenericLogInformation($"EditRfq.OnAfterRender - ProjectName cleared");
                     }
 
                     _PreviousSelectedProject = SelectedProject;
@@ -185,14 +185,14 @@
             if (rfqProject == null)
             {
                 Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-                Snackbar.Add($"RFQ Project with Id {RfqProjectId} not found", Severity.Error);
-                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - RFQ Project with Id {RfqProjectId} not found");
+                Snackbar.Add($"RFQ ProjectName with Id {RfqProjectId} not found", Severity.Error);
+                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - RFQ ProjectName with Id {RfqProjectId} not found");
                 NavigationManager.NavigateTo("/");
                 return success;
             }
             else
             {
-                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Retrieved RFQ Project with Id {rfqProject.RowId} - {rfqProject.RfqNumber} - Customer {rfqProject.CustomerBusinessUnitGuid} / {rfqProject.CustomerBusinessGroupCode} - Project {rfqProject.ProjectGuid} / {rfqProject.ProjectName}");
+                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Retrieved RFQ ProjectName with Id {rfqProject.RowId} - {rfqProject.RfqNumber} - Customer {rfqProject.CustomerBusinessUnitGuid} / {rfqProject.CustomerBusinessGroupCode} - ProjectName {rfqProject.ProjectGuid} / {rfqProject.ProjectName}");
             }
 
             if (RfqUxClientService.CustomerProjectAssociations.Count == 0)
@@ -206,8 +206,8 @@
             if (RfqProject == null)
             {
                 Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-                Snackbar.Add($"Error mapping RFQ Project with Id {RfqProjectId}", Severity.Error);
-                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Error mapping RFQ Project with Id {RfqProjectId}");
+                Snackbar.Add($"Error mapping RFQ ProjectName with Id {RfqProjectId}", Severity.Error);
+                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Error mapping RFQ ProjectName with Id {RfqProjectId}");
                 NavigationManager.NavigateTo("/");
                 return success;
             }
@@ -219,7 +219,7 @@
                 if (SelectedProject != null)
                 {
                     RfqProject.ProjectName = SelectedProject.ProjectCode;
-                    RfqProject.Project = SelectedProject.ProjectName;
+                    RfqProject.ProjectName = SelectedProject.ProjectName;
                     RfqProject.CustomerCode = SelectedProject.CustomerCode ?? string.Empty;
                 }
 
@@ -228,7 +228,7 @@
                 _PreviousSelectedProject = SelectedProject;
                 IsLoading = false;
                 success = true;
-                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded RFQ Project with Id {RfqProject.RowId} - {RfqProject.RfqNumber} {RfqProject.ProjectId}");
+                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded RFQ ProjectName with Id {RfqProject.RowId} - {RfqProject.RfqNumber} {RfqProject.ProjectId}");
             }
 
             // get the part numbers
@@ -331,7 +331,7 @@
         {
             if (RfqProject == null)
             {
-                Snackbar.Add("No Rfq Project to process for NPR", Severity.Error);
+                Snackbar.Add("No Rfq ProjectName to process for NPR", Severity.Error);
                 return;
             }
 
@@ -662,192 +662,6 @@
             StateHasChanged();
         }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
-        //async Task TestSubmitNprRequestsAsync()
-        //{
-        //    //if (RfqProject?.NprRequests == null || RfqProject.NprRequests.Count == 0)
-        //    //{
-        //    //    Snackbar.Add("No NPR requests to submit", Severity.Info);
-        //    //    return;
-        //    //}
-
-        //    // material needs to be unique every time, so we can use a timestamp to make it unique
-        //    DateTime now = DateTime.Now;
-
-        //    // xxx: Day of the year, padded to 3 digits (001-366)
-        //    int dayOfYear = now.DayOfYear;
-
-        //    // yyy: Minutes elapsed from midnight, padded to 4 digits (0000-1439)
-        //    int minutesFromMidnight = (int)now.TimeOfDay.TotalMinutes;
-
-        //    // Construct the final string "Mdddmmmm"
-        //    string materialNumber = $"M{dayOfYear:D3}{minutesFromMidnight:D4}";
-
-        //    RfqNprRequestUxModel testNprRequest = new RfqNprRequestUxModel()
-        //    {
-        //        CustomerRfqNo = RfqProject?.RfqNumber ?? "TEST RFQ",
-        //        CustomerCode =  "FORD",
-        //        OriginatorName = "Williams, Darran (YST)",
-        //        DeadlineDate = DateTime.Now + TimeSpan.FromDays(30),
-        //        ReasonDescription = "Supplier Tender",
-        //        MaterialNumber = materialNumber,
-        //        MaterialDescription = "Test Mat desc",
-        //        CustomerPartNumber = "19062024AC",
-        //        SupplierPartNumber = "15OCT2024003",
-        //        BOMUnitOfMeasurement = "EU",
-        //        SupplierGroup = "New Supplier",
-        //        SupplierDetailComments = "TestRFQ",
-        //        ProjectName = "Lion V6 CU ED 01/04/2022 FMC",
-        //        QtyPerVehicle = 10,
-        //        IsSampleDataRequired = false,
-        //        //SampleSiteDetails = new List<RfqNprRequestSampleSiteDataUxModel>(),
-        //        NPRRaisedRemarks = "Test",
-        //        ManufacturingSite = "KENI",
-        //        IsCustomerNominatedSupplier = false,
-        //        IsCustomerNominatedMaterial = false,
-        //        SuggestedManufacturerGroup = "ACAPLAST",
-        //        AssociatedParts = "NO",
-        //        NPRUploadSeqNo = 1
-        //    };
-
-        //    // Only submit requests that are not soft-deleted.
-        //    List<RfqNprRequestUxModel> toSubmit = new();
-        //    toSubmit.Add(testNprRequest);
-
-        //    bool? confirm = await DialogService.ShowMessageBoxAsync(
-        //        "Submit a Test NPR Request",
-        //        $"Submit {testNprRequest.MaterialNumber}/{testNprRequest.CustomerPartNumber}/{testNprRequest.SupplierPartNumber} NPR request to the NPR API?",
-        //        yesText: $"Submit {toSubmit.Count}",
-        //        cancelText: "Cancel"
-        //    );
-
-        //    if (confirm != true)
-        //    {
-        //        return;
-        //    }
-
-        //    // show NprSubmissionStatusDialog with a message that the submission is in progress and show the test npr attached
-        //    string statusMessage = 
-        //        $"Submitting {testNprRequest.CustomerPartNumber}/{testNprRequest.SupplierPartNumber} with {testNprRequest.MaterialNumber} material number.{Environment.NewLine}{Environment.NewLine}" +
-        //        $"for RfqProject Id {RfqProject?.RfqNumber} {Environment.NewLine}" +
-        //        $"day of year / minute of day: {dayOfYear}/{minutesFromMidnight}";
-
-        //    DialogParameters submitStatusParameters = new DialogParameters
-        //            {
-        //                { nameof(NprSubmissionStatusDialog.IsSuccess), true },
-        //                { nameof(NprSubmissionStatusDialog.RfqNumber), RfqProject?.RfqNumber },
-        //                { nameof(NprSubmissionStatusDialog.NprRequestNumber), "" },
-        //                { nameof(NprSubmissionStatusDialog.StatusMessage), statusMessage }
-        //            };
-
-        //    DialogOptions submitStatusOptions = new DialogOptions
-        //    {
-        //        MaxWidth = MaxWidth.Medium,
-        //        FullWidth = true,
-        //        CloseButton = true,
-        //        CloseOnEscapeKey = true
-        //    };
-
-        //    await DialogService.ShowAsync<NprSubmissionStatusDialog>(
-        //        "NPR Submission Test",
-        //        submitStatusParameters,
-        //        submitStatusOptions);
-
-        //    _IsSubmittingNprs = true;
-        //    StateHasChanged();
-
-        //    try
-        //    {
-        //        // Persist any pending NPR edits BEFORE submitting so the API sees the latest data.
-        //        if (_ComponentNprEditor != null && _ComponentNprEditor.HasPendingChanges)
-        //        {
-        //            await _ComponentNprEditor.SaveNprRequestsAsync();
-        //        }
-
-        //        Logger.GenericLogInformation(
-        //            $"EditRfq.TestSubmitNprRequestsAsync - Submitting {toSubmit.Count} NPR request(s) for RFQ {RfqProject?.RfqNumber}");
-
-        //        CreateNprGrpcResponse response = await RfqUxClientService.CreateNprGrpcAsync(toSubmit);
-
-        //        Snackbar.Add($"Test NPR request submitted. HTTP Status: {response.HttpStatusCode}, Message: {response.Message}", Severity.Info);
-
-        //        Logger.GenericLogInformation(
-        //            $"EditRfq.TestSubmitNprRequestsAsync - Response: HttpStatusCode='{response.HttpStatusCode}', " +
-        //            $"Message='{response.Message}', returned {response.NprApiData.Count} entry(ies)");
-
-        //        bool ok = string.Equals(response.HttpStatusCode, "OK", StringComparison.OrdinalIgnoreCase);
-
-        //        string? nprRequestNumber = response.NprApiData
-        //            .Select(d => d.NprId)
-        //            .FirstOrDefault(id => !string.IsNullOrWhiteSpace(id));
-
-        //        statusMessage = ok
-        //            ? $"Submitted {response.NprApiData.Count} NPR request(s) successfully.{Environment.NewLine}{Environment.NewLine}" +
-        //              $"HTTP Status: {response.HttpStatusCode}{Environment.NewLine}" +
-        //              $"API Message: {response.Message}"
-        //            : $"NPR submission did not complete successfully.{Environment.NewLine}{Environment.NewLine}" +
-        //              $"HTTP Status: {response.HttpStatusCode}{Environment.NewLine}" +
-        //              $"API Message: {response.Message}";
-
-        //        submitStatusParameters = new DialogParameters
-        //        {
-        //            { nameof(NprSubmissionStatusDialog.IsSuccess), ok },
-        //            { nameof(NprSubmissionStatusDialog.RfqNumber), RfqProject?.RfqNumber },
-        //            { nameof(NprSubmissionStatusDialog.NprRequestNumber), nprRequestNumber },
-        //            { nameof(NprSubmissionStatusDialog.StatusMessage), statusMessage }
-        //        };
-
-        //        submitStatusOptions = new DialogOptions
-        //        {
-        //            MaxWidth = MaxWidth.Medium,
-        //            FullWidth = true,
-        //            CloseButton = true,
-        //            CloseOnEscapeKey = true
-        //        };
-
-        //        await DialogService.ShowAsync<NprSubmissionStatusDialog>(
-        //            ok ? "NPR Submission Successful" : "NPR Submission Warning",
-        //            submitStatusParameters,
-        //            submitStatusOptions);
-
-        //        // Refresh from DB so any RequestID assignments / status changes are picked up.
-        //        await LoadNprRequests();
-        //        if (_ComponentNprEditor != null)
-        //        {
-        //            _ComponentNprEditor.NotifyStateChanged();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.GenericLogError("EditRfq.SubmitNprRequestsAsync - Error submitting NPR requests", ex);
-
-        //        DialogParameters submitErrorParameters = new DialogParameters
-        //        {
-        //            { nameof(NprSubmissionStatusDialog.IsSuccess), false },
-        //            { nameof(NprSubmissionStatusDialog.RfqNumber), RfqProject?.RfqNumber ?? string.Empty },
-        //            { nameof(NprSubmissionStatusDialog.NprRequestNumber), null },
-        //            { nameof(NprSubmissionStatusDialog.StatusMessage), $"Error submitting NPR requests:{Environment.NewLine}{Environment.NewLine}{ex.Message}" }
-        //        };
-
-        //        DialogOptions submitErrorOptions = new DialogOptions
-        //        {
-        //            MaxWidth = MaxWidth.Medium,
-        //            FullWidth = true,
-        //            CloseButton = true,
-        //            CloseOnEscapeKey = true
-        //        };
-
-        //        await DialogService.ShowAsync<NprSubmissionStatusDialog>(
-        //            "NPR Submission Error",
-        //            submitErrorParameters,
-        //            submitErrorOptions);
-        //    }
-        //    finally
-        //    {
-        //        _IsSubmittingNprs = false;
-        //    }
-
-        //    StateHasChanged();
-        //}
         async Task ShowDatasetStatusAsync()
         {
             DialogParameters parameters = new DialogParameters
@@ -962,88 +776,88 @@
         #endregion
 
         #region Customer
-        async Task OnCustomerValueChanged(string value)
-        {
-            RfqProject!.CustomerBusinessUnitId = value;
+        //async Task OnCustomerValueChanged(string value)
+        //{
+        //    RfqProject!.CustomerBusinessUnitId = value;
 
-            CustomerUxModel? customer = RfqUxClientService.Customers.FirstOrDefault(c => c?.Id == value);
-            if (customer == null)
-            {
-                Logger.GenericLogInformation($"EditRfq.OnCustomerValueChanged - Customer with ID '{value}' not found");
-                return;
-            }
+        //    CustomerUxModel? customer = RfqUxClientService.Customers.FirstOrDefault(c => c?.Id == value);
+        //    if (customer == null)
+        //    {
+        //        Logger.GenericLogInformation($"EditRfq.OnCustomerValueChanged - Customer with ID '{value}' not found");
+        //        return;
+        //    }
 
-            Logger.GenericLogInformation($"EditRfq.OnCustomerValueChanged - Customer changed to {customer.Id} - {customer.CustomerBusinessGroupName}");
+        //    Logger.GenericLogInformation($"EditRfq.OnCustomerValueChanged - Customer changed to {customer.Id} - {customer.CustomerBusinessGroupName}");
 
-            // Clear selected project when customer changes (like CreateRfq)
-            SelectedProject = null;
-            _PreviousSelectedProject = null;
-            RfqProject.ProjectId = "";
+        //    // Clear selected project when customer changes (like CreateRfq)
+        //    SelectedProject = null;
+        //    _PreviousSelectedProject = null;
+        //    RfqProject.ProjectId = "";
 
-            // Reset the autocomplete component
-            if (_ProjectAutocomplete != null)
-            {
-                await _ProjectAutocomplete.ClearAsync();
-            }
+        //    // Reset the autocomplete component
+        //    if (_ProjectAutocomplete != null)
+        //    {
+        //        await _ProjectAutocomplete.ClearAsync();
+        //    }
 
-            try
-            {
-                await GetProjectAssociationsByCustomerName(customer.CustomerBusinessGroupName);
-            }
-            catch (ArgumentNullException ex)
-            {
-                Logger.GenericLogError($"EditRfq.OnCustomerValueChanged - ArgumentNullException loading customer projects for customer '{customer.CustomerBusinessGroupName}'", ex);
-            }
-            catch (InvalidOperationException ex)
-            {
-                Logger.GenericLogError($"EditRfq.OnCustomerValueChanged - InvalidOperationException loading customer projects for customer '{customer.CustomerBusinessGroupName}'", ex);
-            }
+        //    try
+        //    {
+        //        await GetProjectAssociationsByCustomerName(customer.CustomerBusinessGroupName);
+        //    }
+        //    catch (ArgumentNullException ex)
+        //    {
+        //        Logger.GenericLogError($"EditRfq.OnCustomerValueChanged - ArgumentNullException loading customer projects for customer '{customer.CustomerBusinessGroupName}'", ex);
+        //    }
+        //    catch (InvalidOperationException ex)
+        //    {
+        //        Logger.GenericLogError($"EditRfq.OnCustomerValueChanged - InvalidOperationException loading customer projects for customer '{customer.CustomerBusinessGroupName}'", ex);
+        //    }
 
-            StateHasChanged();
-        }
+        //    StateHasChanged();
+        //}
 
-        async Task GetProjectAssociationsByCustomerName(string? customerBusinessGroupName)
-        {
-            if (!string.IsNullOrWhiteSpace(RfqProject!.CustomerBusinessUnitId))
-            {
-                CustomerUxModel? customer = RfqUxClientService.Customers.FirstOrDefault(c => c?.CustomerBusinessGroupName == customerBusinessGroupName);
+        //async Task GetProjectAssociationsByCustomerName(string? customerBusinessGroupName)
+        //{
+        //    if (!string.IsNullOrWhiteSpace(RfqProject!.CustomerBusinessUnitId))
+        //    {
+        //        CustomerUxModel? customer = RfqUxClientService.Customers.FirstOrDefault(c => c?.CustomerBusinessGroupName == customerBusinessGroupName);
 
-                if (customer != null && Guid.TryParse(customer.Id, out Guid customerId))
-                {
-                    await RfqUxClientService.GetProjectAssociationsByCustomerIdAsync(customerId.ToString());
-                    StateHasChanged();
-                }
-                else
-                {
-                    Logger.GenericLogInformation($"EditRfq.GetProjectAssociationsByCustomerName - Customer not found or invalid ID for '{customerBusinessGroupName}'");
-                }
-            }
-        }
+        //        if (customer != null && Guid.TryParse(customer.Id, out Guid customerId))
+        //        {
+        //            await RfqUxClientService.GetProjectAssociationsByCustomerIdAsync(customerId.ToString());
+        //            StateHasChanged();
+        //        }
+        //        else
+        //        {
+        //            Logger.GenericLogInformation($"EditRfq.GetProjectAssociationsByCustomerName - Customer not found or invalid ID for '{customerBusinessGroupName}'");
+        //        }
+        //    }
+        //}
         #endregion
 
         #region Project Autocomplete
         // Search function for MudAutocomplete (same as CreateRfq)
-        async Task<IEnumerable<RfqCustomerProjectAssociationUxModel>> SearchProjects(string searchText, CancellationToken cancellationToken)
-        {
-            await Task.Delay(0, cancellationToken);
+        //async Task<IEnumerable<RfqCustomerProjectAssociationUxModel>> SearchProjects(string searchText, CancellationToken cancellationToken)
+        //{
+        //    await Task.Delay(0, cancellationToken);
 
-            // If no search text, return all projects (sorted)
-            if (string.IsNullOrWhiteSpace(searchText))
-            {
-                return RfqUxClientService.CustomerProjectAssociations
-                    .OrderBy(p => p.ProjectCode)
-                    .ThenBy(p => p.CustomerName);
-            }
+        //    // If no search text, return all projects (sorted)
+        //    if (string.IsNullOrWhiteSpace(searchText))
+        //    {
+        //        return RfqUxClientService.CustomerProjectAssociations
+        //            .OrderBy(p => p.ProjectCode)
+        //            .ThenBy(p => p.CustomerName);
+        //    }
 
-            // Search across project name and customer name
-            return RfqUxClientService.CustomerProjectAssociations
-                .Where(p =>
-                    (p.ProjectCode?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                    (p.CustomerName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false))
-                .OrderBy(p => p.ProjectCode?.StartsWith(searchText, StringComparison.OrdinalIgnoreCase) == true ? 0 : 1)
-                .ThenBy(p => p.ProjectCode)
-                .ThenBy(p => p.CustomerName);
-        }
+        //    // Search across project name and customer name
+        //    return RfqUxClientService.CustomerProjectAssociations
+        //        .Where(p =>
+        //            (p.ProjectCode?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+        //            (p.CustomerName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false))
+        //        .OrderBy(p => p.ProjectCode?.StartsWith(searchText, StringComparison.OrdinalIgnoreCase) == true ? 0 : 1)
+        //        .ThenBy(p => p.ProjectCode)
+        //        .ThenBy(p => p.CustomerName);
+        //}
         #endregion
 
         #region Reason
@@ -1904,7 +1718,7 @@
              
          async Task UpdateSelectionAsync()
         {
-            HashSet<DsiCompositeDetailUxModel>? currentSelections = _CompositeCardsRef?.SelectedItems;
+            HashSet<DsiCompositeDetailUxModel>? currentSelections = _CompositesRef?.SelectedItems;
 
             //if (currentSelections == null || !currentSelections.Any())
             //{

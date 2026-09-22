@@ -287,7 +287,7 @@ namespace SalesSystem.Rfq.Components.Pages
                 progressState.SetCheckpointCompleted(0, "All validations passed");
                 Logger.GenericLogInformation($"CreateRfq.ProcessDataAsync - Checkpoint: Validations OK");
 
-                // Checkpoint 2: Create RFQ Project
+                // Checkpoint 2: Create RFQ ProjectName
                 progressState.UpdateProgress("Creating RFQ project...", 1);
                 progressState.SetCheckpointActive(1);
 
@@ -315,7 +315,7 @@ namespace SalesSystem.Rfq.Components.Pages
                     return;
                 }
 
-                progressState.SetCheckpointCompleted(1, $"Project created:{Environment.NewLine}{response.CreatedProjectId}");
+                progressState.SetCheckpointCompleted(1, $"ProjectName created:{Environment.NewLine}{response.CreatedProjectId}");
                 Logger.GenericLogInformation($"CreateRfq.ProcessDataAsync - Checkpoint: RFQ created with ID {response.CreatedProjectId}");
                 CreatedProjectId = Convert.ToInt32(response.CreatedProjectId, CultureInfo.InvariantCulture);
 

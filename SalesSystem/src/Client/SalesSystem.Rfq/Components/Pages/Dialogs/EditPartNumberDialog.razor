@@ -17,7 +17,7 @@
                                   Label="Customer Part Number"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
-                                  Required="true"
+                                  Disabled="true"
                                   RequiredError="Original part number is required" />
                 </MudItem>
                 <MudItem xs="12" sm="4">
@@ -25,6 +25,7 @@
                                   Label="Original Part Number"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
+                                  Disabled="true"
                                   RequiredError="Original part number is required" />
                 </MudItem>
                 <MudItem xs="12" sm="4">
@@ -98,6 +99,7 @@
                     <MudTextField @bind-Value="EditedItem.SwappedPartNumber"
                                   Label="Dummy/Alt. Part Number"
                                   Variant="Variant.Outlined"
+                                  Required="true"
                                   Margin="Margin.Dense" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
@@ -115,11 +117,13 @@
                     <MudTextField @bind-Value="EditedItem.PriceSource"
                                   Label="Price Source"
                                   Variant="Variant.Outlined"
+                                  Required="true"
                                   Margin="Margin.Dense" />
                 </MudItem>
                 <MudItem xs="12" sm="4">
                     <MudCheckBox @bind-Value="EditedItem.IsExactMatch"
-                                 ReadOnly="true"    
+                                 ReadOnly="true"
+                                 Disabled="true"
                                  Label="Is Exact Match"
                                  Color="Color.Primary"
                                  Dense="true" />
@@ -127,6 +131,7 @@
                 <MudItem xs="12" sm="4">
                     <MudCheckBox Value="EditedItem.IsSwapped"
                                  ReadOnly="true"
+                                 Disabled="true"
                                  Label="Is Swapped"
                                  Color="Color.Primary"
                                  Dense="true" />
@@ -134,6 +139,7 @@
                 <MudItem xs="12" sm="4">
                     <MudCheckBox Value="EditedItem.IsCompleted"
                                  ReadOnly="true"
+                                 Disabled="true"
                                  Label="Is Matched"
                                  Color="Color.Primary"
                                  Dense="true" />

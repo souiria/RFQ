@@ -17,6 +17,15 @@
             builder.Logging.AddConfiguration(conf);
 
             #region Builder
+
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.Limits.MaxRequestBodySize = 64 * 1024 * 1024; // 256 MB
+                options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10);
+                options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(5);
+                options.Limits.MinResponseDataRate = null;
+                options.Limits.MinRequestBodyDataRate = null;
+            });
             builder.Services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => true;
@@ -50,10 +59,18 @@
             });
             builder.Services.AddInfrastructure(builder.Configuration);
             IAsyncPolicy<HttpResponseMessage> policy = GetRetryPolicy();
+#pragma warning disable IDESIGN103 // Avoid compound statements.
             builder.Services.AddHttpClient("MyClient", client =>
             {
-                client.Timeout = TimeSpan.FromSeconds(180);
-            }).AddPolicyHandler(policy);
+                client.Timeout = TimeSpan.FromSeconds(600);
+            })
+            .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+            {
+                PooledConnectionLifetime = TimeSpan.FromMinutes(2)
+            })
+            .AddPolicyHandler(policy);
+#pragma warning restore IDESIGN103 // Avoid compound statements.
+
             builder.Services.AddSingleton<INPRAccessService, NPRAccessService>();
             builder.Services.AddHostedService<DataImportSchedulerService>();
 

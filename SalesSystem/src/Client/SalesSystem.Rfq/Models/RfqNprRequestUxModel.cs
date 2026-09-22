@@ -112,7 +112,7 @@ namespace SalesSystem.Rfq.Models
         public string? SupplierDetailComments
         { get; set; }
 
-        /// <summary>Project (Master)</summary>
+        /// <summary>ProjectName (Master)</summary>
         [MaxLength(18)]
         public string? ProjectCode
         { get; set; }
@@ -447,7 +447,7 @@ namespace SalesSystem.Rfq.Models
 
             if (string.IsNullOrWhiteSpace(ProjectCode))
             {
-                Err(nameof(ProjectCode), ProjectCode ?? "", "Project Code is required.");
+                Err(nameof(ProjectCode), ProjectCode ?? "", "ProjectName Code is required.");
             }
 
             if (QtyPerVehicle <= 0)
