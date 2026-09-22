@@ -46,5 +46,11 @@
         { get; set; }
         public decimal Quantity 
         { get; set; }
+        public string? PartNumber1
+        { get; set; }
+        public string? PartNumber2
+        { get; set; }
+        public string? PartNumber3
+        { get; set; }
     }
 }

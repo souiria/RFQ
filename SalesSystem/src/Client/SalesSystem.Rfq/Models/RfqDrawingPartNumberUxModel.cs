@@ -13,6 +13,9 @@
             MultiMatch = false;
 
             CustomerPartNumber = string.Empty;
+            PartNumber1 = string.Empty;
+            PartNumber2 = string.Empty;
+            PartNumber3 = string.Empty;
             DrawingPartNumber = string.Empty;
             SwappedPartNumber = string.Empty;
             PriceSource = string.Empty;
@@ -26,6 +29,12 @@
         public string CustomerPartNumber
         { get; set; }
         public string DrawingPartNumber
+        { get; set; }
+        public string? PartNumber1
+        { get; set; }
+        public string? PartNumber2
+        { get; set; }
+        public string? PartNumber3
         { get; set; }
         [Column(TypeName = "decimal(12, 5)")]
         public decimal DrawingPartNumberPrice

@@ -70,7 +70,7 @@
     Suppress the specific known advisory for OpenTelemetry.Instrumentation.GrpcNetClient
     1.12.0-beta.1 until a patched, stable release is available.
   -->
-	<ItemGroup>
-		<NuGetAuditSuppress Include="https://github.com/advisories/GHSA-v8pv-4842-x354" />
-	</ItemGroup>
+  <ItemGroup>
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-v8pv-4842-x354" />
+  </ItemGroup>
 </Project>

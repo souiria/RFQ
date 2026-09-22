@@ -58,40 +58,40 @@
         overflow: hidden;
     }
     /*
-        DataGrid:
-        - FixedHeader keeps the DataGrid header visible.
-        - The toolbar is outside the table's scrolling container.
-        - Fixed table layout plus widths summing to 100% prevents horizontal scrolling.
-    */
+            DataGrid:
+            - FixedHeader keeps the DataGrid header visible.
+            - The toolbar is outside the table's scrolling container.
+            - Fixed table layout plus widths summing to 100% prevents horizontal scrolling.
+        */
     .mud-parts-list {
         overflow: hidden;
     }
 
-    .mud-parts-list .mud-table-container {
-        overflow-x: hidden !important;
-        overflow-y: auto !important;
-    }
+        .mud-parts-list .mud-table-container {
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+        }
 
-    .mud-parts-list table {
-        width: 100% !important;
-        table-layout: fixed !important;
-    }
+        .mud-parts-list table {
+            width: 100% !important;
+            table-layout: fixed !important;
+        }
 
-    .mud-parts-list .mud-table-cell {
-        padding: 1px !important;
-        overflow: hidden;
-        font-size: var(--rfq-grid-height) !important;
-        line-height: 1;
-        text-align: left;
-        text-overflow: ellipsis;
-        vertical-align: middle;
-        white-space: nowrap;
-    }
+        .mud-parts-list .mud-table-cell {
+            padding: 1px !important;
+            overflow: hidden;
+            font-size: var(--rfq-grid-height) !important;
+            line-height: 1;
+            text-align: left;
+            text-overflow: ellipsis;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
 
-    .mud-parts-list .mud-table-head .mud-table-cell {
-        font-size: 14px !important;
-        font-weight: 700;
-    }
+        .mud-parts-list .mud-table-head .mud-table-cell {
+            font-size: 14px !important;
+            font-weight: 700;
+        }
 
     .row-action-buttons .mud-icon-button {
         height: var(--rfq-grid-height);
@@ -114,10 +114,10 @@
         height: 36px;
     }
 
-    .mud-parts-list .mud-toolbar .mud-input-slot {
-        margin-top: 0;
-        margin-bottom: 0px;
-    }
+        .mud-parts-list .mud-toolbar .mud-input-slot {
+            margin-top: 0;
+            margin-bottom: 0px;
+        }
 
     .quick-search {
         padding-top: 0px;
@@ -125,12 +125,12 @@
     }
 </style>
 <div class="d-flex flex-column" style="height: 100%; overflow: hidden;">
-    <MudDataGrid T="RfqDrawingPartNumberUxModel" 
-                 Items="@PartNumbers" 
-                 ReadOnly="false" 
+    <MudDataGrid T="RfqDrawingPartNumberUxModel"
+                 Items="@PartNumbers"
+                 ReadOnly="false"
                  EditMode="DataGridEditMode.Form"
-                 Bordered="true" 
-                 Dense="true" 
+                 Bordered="true"
+                 Dense="true"
                  EditTrigger="DataGridEditTrigger.Manual"
                  FixedHeader="true"
                  Height="calc(100% - 16px)"
@@ -139,8 +139,10 @@
                  RowStyleFunc="@RowStyleFunc"
                  ColumnResizeMode="ResizeMode.Column">
         <Columns>
-            <PropertyColumn Property="x => x.CustomerPartNumber"
-                            Title="Customer P/N" />
+            <PropertyColumn Property="x => x.CustomerPartNumber" Title="Customer Part N°" />
+            <PropertyColumn Property="x => x.PartNumber1" Title="Part Number 1" Hidden="true" />
+            <PropertyColumn Property="x => x.PartNumber2" Title="Part Number 2" />
+            <PropertyColumn Property="x => x.PartNumber3" Title="Part Number 3" />
             <PropertyColumn Property="x => x.DrawingPartNumber"
                             Title="Drawing P/N" />
             <PropertyColumn Property="x => x.DrawingPartNumberPrice"
@@ -195,8 +197,8 @@
 
 <style>
     /* .mud-grid-no-scroll-x {
-        overflow-x: hidden !important;
-    } */
+            overflow-x: hidden !important;
+        } */
     .mud-table-sticky-header {
         position: sticky;
         top: 0;
@@ -217,7 +219,7 @@
 
     private string RowStyleFunc(RfqDrawingPartNumberUxModel item, int index)
     {
-        if(item == null)
+        if (item == null)
         {
             return string.Empty;
         }
@@ -234,14 +236,14 @@
         };
 
         // Special case: if ContainsMatch and has a priced result, use lighter green
-        if (item.Status == RfqDrawingPartNumberStatus.ContainsMatch 
+        if (item.Status == RfqDrawingPartNumberStatus.ContainsMatch
             && item.SearchResultPartNumbers != null
             && item.SearchResultPartNumbers.Count > 0
             && item.SearchResultPartNumbers.Any(x => (x?.DrawingPartNumberPrice ?? 0.0m) > 0.0m))
         {
             color = "background-color: #A5D6A7;";
         }
-        
+
         return color;
     }
 
@@ -287,7 +289,7 @@
         try
         {
             // Call SearchEmacsContainsCustomerPn
-            if(item.CustomerPartNumber == null)
+            if (item.CustomerPartNumber == null)
             {
                 Logger.GenericLogInformation("CustomerPartNumber is null");
                 return;
@@ -498,10 +500,10 @@
 
                     Logger.GenericLogInformation($"Successfully updated part number: {editedItem.CustomerPartNumber}/{editedItem.DrawingPartNumber}");
                     Snackbar.Add($"Part number {editedItem.CustomerPartNumber}/{editedItem.DrawingPartNumber} updated successfully", Severity.Success);
-                    
+
                     // Notify parent component
                     await OnPartNumberUpdated.InvokeAsync(editedItem);
-                    
+
                     StateHasChanged();
                 }
                 else
@@ -541,12 +543,12 @@
         messageBuilder.AppendLine($"RFQ ID: {item.RfqId}");
         messageBuilder.AppendLine($"Customer Part Number: {item.CustomerPartNumber ?? "N/A"}");
         messageBuilder.AppendLine($"Drawing Part Number: {item.DrawingPartNumber ?? "N/A"}");
-        messageBuilder.AppendLine($"Drawing Part Number Price: {(item.DrawingPartNumberPrice >0 ? $"${item.DrawingPartNumberPrice.ToString("C5")}" : "N/A")}");
+        messageBuilder.AppendLine($"Drawing Part Number Price: {(item.DrawingPartNumberPrice > 0 ? $"${item.DrawingPartNumberPrice.ToString("C5")}" : "N/A")}");
         messageBuilder.AppendLine($"Dummy/Alt. Part Number: {item.SwappedPartNumber ?? "N/A"}");
-        messageBuilder.AppendLine($"Dummy/Alt. Price: {(item.SwappedPartNumberPrice >0 ? $"${item.SwappedPartNumberPrice.ToString("C5")}" : "N/A")}");
+        messageBuilder.AppendLine($"Dummy/Alt. Price: {(item.SwappedPartNumberPrice > 0 ? $"${item.SwappedPartNumberPrice.ToString("C5")}" : "N/A")}");
         messageBuilder.AppendLine($"Price Source: {item.PriceSource ?? "N/A"}");
-        messageBuilder.AppendLine($"Is Exact Match: {(item.IsExactMatch==true ? "YES" : "NO")}");
-        messageBuilder.AppendLine($"Is Swapped: {(item.IsSwapped==true ? "YES" : "NO")}");
+        messageBuilder.AppendLine($"Is Exact Match: {(item.IsExactMatch == true ? "YES" : "NO")}");
+        messageBuilder.AppendLine($"Is Swapped: {(item.IsSwapped == true ? "YES" : "NO")}");
         messageBuilder.AppendLine($"Is Matched: {item.IsCompleted}");
         messageBuilder.AppendLine($"Comments: {item.Comments ?? "N/A"}");
 
