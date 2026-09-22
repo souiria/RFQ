@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Protos\**" />
+    <Content Remove="Protos\**" />
+    <EmbeddedResource Remove="Protos\**" />
+    <None Remove="Protos\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CsvHelper" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" />
     
@@ -40,15 +47,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Protos\" />
     <Folder Include="wwwroot\assets\fontawesome\" />
-  </ItemGroup>
-
-  <ItemGroup>
-	  <!-- AdditionalImportDirs lets every proto resolve CommonTypes.proto -->
-	  <Protobuf Include="Protos\**\*.proto" GrpcServices="Both" ProtoRoot="Protos">
-		  <AdditionalImportDirs>..\..\..\Utilities\GrpcProto.Shared\Protos\Shared;..\..\..\Utilities\GrpcProtos.Rfq.Shared\Protos\Shared;..\..\..\Utilities\GrpcProtos.Rfq.Shared\Protos\Shared</AdditionalImportDirs>
-	  </Protobuf>	  
   </ItemGroup>
 
 </Project>

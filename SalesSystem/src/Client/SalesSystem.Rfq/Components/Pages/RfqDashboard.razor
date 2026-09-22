@@ -1,0 +1,284 @@
+﻿@page "/"
+@page "/{UserId:guid}"
+@using System.Globalization
+@using SalesSystem.Rfq.Components.Pages.Components
+
+<style>
+    :root {
+        --appbar-height: 64px;
+        --pane-gap: 16px;
+        --dashboard-background: #f2f2f2;
+        --rfq-grid-height: 12px;
+    }
+
+    .rfq-dashboard {
+        position: fixed;
+        inset: var(--appbar-height) 0 0 0;
+        display: grid;
+        grid-template-rows: 10vh 16vh minmax(0, 1fr);
+        gap: var(--pane-gap);
+        padding: var(--pane-gap);
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    /* Each row uses grid to preserve alignment at every width */
+    .kpi-row {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: var(--pane-gap);
+        min-width: 0;
+        min-height: 0;
+    }
+
+    .chart-row {
+        display: grid;
+        grid-template-columns: minmax(0, 7fr) minmax(0, 3fr);
+        gap: var(--pane-gap);
+        min-width: 0;
+        min-height: 0;
+    }
+
+    .data-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: var(--pane-gap);
+        min-width: 0;
+        min-height: 0;
+        background-color: transparent;
+    }
+
+    /* Shared visual appearance for all white panes */
+    .dashboard-pane {
+        min-width: 0;
+        min-height: 0;
+        overflow: hidden;
+        box-sizing: border-box;
+        border-radius: 4px;
+        background-color: transparent;
+    }
+
+    /* KPI cards */
+    .kpi-card {
+        display: flex;
+        align-items: center;
+        gap: clamp(6px, 0.8vw, 16px);
+        padding: clamp(6px, 0.7vw, 14px);
+    }
+
+    .kpi-icon {
+        flex: 0 0 auto;
+        font-size: clamp(20px, 3.2vh, 42px) !important;
+    }
+
+    .kpi-content {
+        min-width: 0;
+        line-height: 1;
+    }
+
+    .kpi-label {
+        overflow: hidden;
+        font-size: clamp(10px, 1.6vh, 18px);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .kpi-value {
+        overflow: hidden;
+        margin-top: 2px;
+        font-size: clamp(14px, 2.8vh, 32px);
+        line-height: 1.05;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Middle chart cards */
+    .chart-pane {
+        padding: 14px 20px;
+    }
+
+    /* Bottom panels */
+    .data-pane {
+        display: flex;
+        flex-direction: column;
+        padding: 6px;
+    }
+
+    .pane-title {
+        padding-top: 1px;
+        padding-bottom: 1px;
+        padding-left: 4px;
+        padding-right: 4px;
+        flex: 0 0 auto;
+        margin: 0 0 4px 0;
+    }
+
+    .table-host {
+        display: flex;
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    /* Make both MudBlazor tabular components consume their available pane height */
+    .success-table,
+    .rfq-grid {
+        flex: 1 1 auto;
+        min-width: 0;
+        min-height: 0;
+    }
+
+    /* RFQ-successes table styling */
+    .success-table .mud-table-container {
+        overflow-y: auto;
+    }
+
+    .company-cell {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .company-avatar {
+        flex: 0 0 auto;
+        background: #bdbdbd;
+        color: transparent;
+    }
+
+    .company-details {
+        min-width: 0;
+    }
+
+    .company-name {
+        font-weight: 600;
+    }
+
+</style>
+
+    <MudPaper class="rfq-dashboard">
+        @* Row 1: four equal KPI cards, 6vh high *@
+        <MudPaper class="kpi-row">
+            @foreach (var kpi in _kpis)
+            {
+                <MudPaper Elevation="6" Class="dashboard-pane kpi-card">
+                    <MudIcon Icon="@kpi.Icon"
+                             Color="@kpi.Color"
+                             Class="kpi-icon" />
+
+                    <div class="kpi-content">
+                        <MudText Class="kpi-label">@kpi.Label</MudText>
+                        <MudText Class="kpi-value">@kpi.Value</MudText>
+                    </div>
+                </MudPaper>
+            }
+        </MudPaper>
+
+        @* Row 2: 70% / 30%, 10vh high *@
+        <MudPaper class="chart-row">
+            <MudPaper Elevation="6" Class="dashboard-pane chart-pane">
+                <MudText Typo="Typo.subtitle1">Some Charts</MudText>
+            </MudPaper>
+
+            <MudPaper Elevation="6" Class="dashboard-pane chart-pane">
+                <MudText Typo="Typo.subtitle1">Another Chart</MudText>
+            </MudPaper>
+        </MudPaper>
+
+        @* Row 3: fills all remaining vertical space *@
+    <MudPaper class="data-row">
+
+            <MudPaper Elevation="6" Class="dashboard-pane data-pane">
+                <MudText Typo="Typo.h6" Class="pane-title">RFQ Successes</MudText>
+
+                <div class="table-host">
+                    <MudTable T="SuccessRow"
+                              Items="@_successes"
+                              Dense="true"
+                              FixedHeader="true"
+                              Height="100%"
+                              Class="success-table">
+
+                        <HeaderContent>
+                            <MudTh>Company</MudTh>
+                            <MudTh>Project</MudTh>
+                            <MudTh>Business Won</MudTh>
+                        </HeaderContent>
+
+                        <RowTemplate>
+                            <MudTd DataLabel="Company">
+                                <div class="company-cell">
+                                    <MudAvatar Class="company-avatar">
+                                        @context.Initials
+                                    </MudAvatar>
+
+                                    <div class="company-details">
+                                        <MudText Typo="Typo.body2" Class="company-name">
+                                            @context.Company
+                                        </MudText>
+                                        <MudText Typo="Typo.body2">
+                                            @context.Contact
+                                        </MudText>
+                                    </div>
+                                </div>
+                            </MudTd>
+
+                            <MudTd DataLabel="Project">
+                                <MudChip T="string"
+                                         Size="Size.Small"
+                                         Color="@context.PriorityColor">
+                                    @context.Priority
+                                </MudChip>
+                            </MudTd>
+
+                            <MudTd DataLabel="Business Won">
+                                @context.BusinessWon.ToString("C0", CultureInfo.InvariantCulture)
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </div>
+            </MudPaper>
+
+            <MudPaper Elevation="6" Class="dashboard-pane data-pane">
+                <MudText Typo="Typo.h6" Class="pane-title">Recent RFQs</MudText>
+
+                <div class="table-host">
+                    <RecentRfqs GlobalValue="@GlobalValue"/>
+                </div>
+            </MudPaper>
+        </MudPaper>
+    </MudPaper>
+
+@code {
+
+    [Parameter]
+    public Guid? UserId
+    { get; set; }
+
+    [CascadingParameter(Name = "GlobalValue")]
+    public GlobalValue? GlobalValue { get; set; }
+
+    private readonly List<KpiCard> _kpis =
+    [
+        new("RFQ KPI 1", "3,125,000", Icons.Material.Filled.AttachMoney, Color.Primary),
+        new("RFQ KPI 2", "150,000", Icons.Material.Filled.Layers, Color.Secondary),
+        new("RFQ KPI 3", "12%", Icons.Material.Filled.Public, Color.Success),
+        new("RFQ KPI 4", "3.6", Icons.Material.Filled.TrendingUp, Color.Warning)
+    ];
+
+    private readonly List<SuccessRow> _successes =
+    [
+        new("GM", "Garderoben", "CSS Magician", "High", Color.Primary, 1337),
+        new("LR", "Lunees", "Reactor Engineer", "Low", Color.Success, 1),
+        new("MG", "Mikes-gh", "Developer", "Medium", Color.Secondary, 19120)
+    ];
+
+    private sealed record KpiCard(string Label, string Value, string Icon, Color Color);
+
+    private sealed record SuccessRow(
+        string Initials,
+        string Company,
+        string Contact,
+        string Priority,
+        Color PriorityColor,
+        decimal BusinessWon);
+}

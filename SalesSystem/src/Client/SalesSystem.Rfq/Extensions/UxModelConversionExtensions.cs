@@ -3,15 +3,15 @@
     public static class UxModelConversionExtensions
 
     {
-        #region RqfCustomerProjectAssociationUxModel Conversion
-        public static RqfCustomerProjectAssociationUxModel? ToUx(this ProjectAssociation association)
+        #region RfqCustomerProjectAssociationUxModel Conversion
+        public static RfqCustomerProjectAssociationUxModel? ToUx(this ProjectAssociation association)
         {
             if (association == null)
             {
                 return null;
             }
 
-            RqfCustomerProjectAssociationUxModel projectAssociation = new RqfCustomerProjectAssociationUxModel();
+            RfqCustomerProjectAssociationUxModel projectAssociation = new RfqCustomerProjectAssociationUxModel();
             projectAssociation.ProjectId = association.CustomerProjectGuid.ToUpperInvariant();
             projectAssociation.ProjectName = association.CustomerProjectName;
             projectAssociation.CustomerId = association.CustomerLocationGuid.ToUpperInvariant();
@@ -23,15 +23,15 @@
         }
         #endregion
 
-        #region RqfProjectUxModel Conversion
-        public static RqfProjectUxModel? ToUx(this RfqProject? rfqProject)
+        #region RfqProjectUxModel Conversion
+        public static RfqProjectUxModel? ToUx(this RfqProject? rfqProject)
         {
             if (rfqProject == null)
             {
                 return null;
             }
 
-            RqfProjectUxModel uxModel = new RqfProjectUxModel();
+            RfqProjectUxModel uxModel = new RfqProjectUxModel();
             uxModel.RowId = rfqProject.RowId;
             uxModel.RfqNumber = rfqProject.RfqNumber;
             uxModel.CustomerBusinessUnitId = rfqProject.CustomerBusinessUnitGuid.Trim().ToUpperInvariant();
@@ -41,12 +41,17 @@
             uxModel.RfqResponseDeadline = rfqProject.RfqResponseDeadline?.ToDateTime();
             uxModel.CarModelId = rfqProject.CarModelGuid.Trim().ToUpperInvariant();
             uxModel.VehicleVolume = rfqProject.VehicleVolume;
+            uxModel.RfqReasonName = rfqProject.RfqReasonName;
+            uxModel.ProjectName = rfqProject.ProjectName;
+            uxModel.CustomerBusinessGroupCode = rfqProject.CustomerBusinessGroupCode;
+            uxModel.CustomerLocationName = rfqProject.CustomerLocationName;
+            uxModel.CarModelName = rfqProject.CarModelName;
             uxModel.IsActive = rfqProject.IsActive ?? false;
             uxModel.JsonData = rfqProject.JsonData;
 
             return uxModel;
         }
-        public static RfqProject ToDto(this RqfProjectUxModel uxModel)
+        public static RfqProject ToDto(this RfqProjectUxModel uxModel)
         {
             if (uxModel == null)
             {
@@ -341,7 +346,7 @@
 
         #region NprRequests
         // convert a drawing number in a given rfq project into a npr request
-        public static RfqNprRequestUxModel ToNprRequest(this RfqDrawingPartNumberUxModel partNumber, RqfProjectUxModel rfqProject)
+        public static RfqNprRequestUxModel ToNprRequest(this RfqDrawingPartNumberUxModel partNumber, RfqProjectUxModel rfqProject)
         {
             RfqNprRequestUxModel nprRequest = new RfqNprRequestUxModel();
             nprRequest.DeadlineDate = rfqProject.RfqResponseDeadline;
@@ -356,9 +361,9 @@
             nprRequest.MaterialNumber = "";
             //nprRequest.PlatformName = "";
             //nprRequest.ProgramName = "";
-            nprRequest.ProjectCode = rfqProject.ProjectCode;
+            nprRequest.ProjectCode = rfqProject.ProjectName;
             nprRequest.NPRRaisedRemarks = "";
-            nprRequest.ReasonDescription = rfqProject.RfqReason;
+            nprRequest.ReasonDescription = rfqProject.RfqReasonName;
             nprRequest.SuggestedManufacturerGroup = "";
             nprRequest.ManufacturingSite = rfqProject.CustomerLocation;
             nprRequest.SupplierGroup = "";
@@ -375,14 +380,14 @@
             return nprRequest;
         }
 
-        public static RfqNprRequestUxModel Update(this RfqNprRequestUxModel nprRequest, RqfProjectUxModel rfqProject, GlobalValue globalValue)
+        public static RfqNprRequestUxModel Update(this RfqNprRequestUxModel nprRequest, RfqProjectUxModel rfqProject, GlobalValue globalValue)
         {
             nprRequest.CustomerCode = rfqProject.CustomerCode;
             nprRequest.OriginatorName = globalValue.DisplayName;
             nprRequest.CustomerRfqNo = rfqProject.RfqNumber;
             nprRequest.DeadlineDate = rfqProject.RfqResponseDeadline;
             //nprRequest.BOMUnitOfMeasurement = "";
-            nprRequest.ProjectCode = rfqProject.ProjectCode;
+            nprRequest.ProjectCode = rfqProject.ProjectName;
             //nprRequest.VehicleTotalQuantity = rfqProject.VehicleVolume;
             nprRequest.ManufacturingSite = rfqProject.CustomerLocation ?? nprRequest.ManufacturingSite;
             

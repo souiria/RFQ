@@ -14,10 +14,10 @@ namespace SalesSystem.Rfq.Services
         public static int MAX_GRPC_RESPONSE_SIZE => _MAX_GRPC_RESPONSE_SIZE;
         // Cached Data
         List<RfqDrawingPartNumberUxModel?> _RfqDrawingPartNumbers;
-        List<RqfProjectUxModel> _RfqProjectUxs;
+        List<RfqProjectUxModel> _RfqProjectUxs;
         List<CustomerUxModel?> _Customers;
         List<RfqReasonGrpc> _Reasons;
-        List<RqfCustomerProjectAssociationUxModel> _CustomerProjectAssociations;
+        List<RfqCustomerProjectAssociationUxModel> _CustomerProjectAssociations;
         List<string> _QuotationNumbers;
         List<SupplierUxModel> _Suppliers;
         List<SupplierGroupUxModel> _SupplierGroups;
@@ -43,10 +43,10 @@ namespace SalesSystem.Rfq.Services
 
         // Cached data accessors
         public IReadOnlyCollection<RfqDrawingPartNumberUxModel?> RfqDrawingPartNumbers => _RfqDrawingPartNumbers.AsReadOnly();
-        public IReadOnlyCollection<RqfProjectUxModel> RfqProjectUxs => _RfqProjectUxs.AsReadOnly(); // only active projects are here
+        public IReadOnlyCollection<RfqProjectUxModel> RfqProjectUxs => _RfqProjectUxs.AsReadOnly(); // only active projects are here
         public IReadOnlyCollection<CustomerUxModel?> Customers => _Customers.AsReadOnly();
         public IReadOnlyCollection<RfqReasonGrpc> Reasons => _Reasons.AsReadOnly();
-        public IReadOnlyCollection<RqfCustomerProjectAssociationUxModel> CustomerProjectAssociations => _CustomerProjectAssociations.AsReadOnly();
+        public IReadOnlyCollection<RfqCustomerProjectAssociationUxModel> CustomerProjectAssociations => _CustomerProjectAssociations.AsReadOnly();
         public IReadOnlyCollection<string> QuotationNumbers => _QuotationNumbers.AsReadOnly();
         public IReadOnlyCollection<AlternativePartUxModel> AlternativeParts => _AlternativeParts.AsReadOnly();
         public IReadOnlyCollection<RfqNprRequestUxModel> NprRequests => _NprRequests.AsReadOnly();
@@ -198,7 +198,7 @@ namespace SalesSystem.Rfq.Services
                         continue; // skip inactive projects
                     }
 
-                    RqfProjectUxModel? uxModel = rfqProject.ToUx();
+                    RfqProjectUxModel? uxModel = rfqProject.ToUx();
                     if (null != uxModel)
                     {
                         _RfqProjectUxs.Add(uxModel);
@@ -251,7 +251,7 @@ namespace SalesSystem.Rfq.Services
                 throw;
             }
         }
-        public async Task<UpdateRfqProjectGrpcResponse> UpdateRfqProjectAsync(RqfProjectUxModel project)
+        public async Task<UpdateRfqProjectGrpcResponse> UpdateRfqProjectAsync(RfqProjectUxModel project)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
             RfqProject projectDto = project.ToDto();
@@ -314,7 +314,7 @@ namespace SalesSystem.Rfq.Services
                 IOrderedEnumerable<ProjectAssociation> associations = response.ProjectAssociation.ToList().OrderBy(x => x.CustomerProjectName).ThenBy(x => x.CustomerLocationName);
                 foreach (ProjectAssociation? association in associations)
                 {
-                    RqfCustomerProjectAssociationUxModel? projectAssociation = association.ToUx();
+                    RfqCustomerProjectAssociationUxModel? projectAssociation = association.ToUx();
                     if (null == projectAssociation)
                     {
                         continue;
@@ -1009,7 +1009,7 @@ namespace SalesSystem.Rfq.Services
                     //    $"BOMUnitOfMeasurement: {model.BOMUnitOfMeasurement}\n" +
                     //    $"SupplierGroup: {model.SupplierGroup}\n" +
                     //    $"SupplierDetailComments: {model.SupplierDetailComments}\n" +
-                    //    $"ProjectCode: {model.ProjectCode}\n" +
+                    //    $"ProjectName: {model.ProjectName}\n" +
                     //    $"QtyPerVehicle: {model.QtyPerVehicle}\n" +
                     //    $"IsSampleDataRequired: {model.IsSampleDataRequired}\n" +
                     //    $"SampleSiteDetails Count: {model.SampleSiteDetails.Count}\n" +
