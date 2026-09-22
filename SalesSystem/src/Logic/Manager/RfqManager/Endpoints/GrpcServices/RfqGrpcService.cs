@@ -191,6 +191,9 @@
                 case RfqManagerFilterType.FilterRFQBySumitomoPartNumber:
                     response = await _RfqManagerService.FilterRFQBySumitomoPartNumber(request);
                     break;
+                case RfqManagerFilterType.FilterNPRByCustomerNumber:
+                    response = await _RfqManagerService.FilterNPRByCustomerPartNumber(request);
+                    break;
                 default:
                     _Logger.GenericLogInformation($"FilterGrpc received unknown filter type: {filterType}");
                     break;

@@ -177,10 +177,10 @@ else
                         <div class="edit-rfq-panel">
                             @if(_Composites.Count > 0)
                             {
-                                <CompositeCards @ref="_CompositeCardsRef"
-                                                DsiComposites="@_Composites"
-                                                PreselectedIds="@_PreselectedDerivativeIds"
-                                                OnComponentsSelected="@HandleComponentsSelectedAsync" />
+                                <Composites @ref="_CompositesRef"
+                                            DsiComposites="@_Composites"
+                                            PreselectedIds="@_PreselectedDerivativeIds"
+                                            OnComponentsSelected="@HandleComponentsSelectedAsync" />
                             }
                         </div>
                     </MudTabPanel>

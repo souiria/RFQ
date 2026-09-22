@@ -12,5 +12,6 @@
         FilterNPRBySumitomoPartNumber = 7,
         FilterCPDBySumitomoPartNumber = 8,
         FilterRFQBySumitomoPartNumber = 9,
+        FilterNPRByCustomerNumber = 10,
     }
 }
