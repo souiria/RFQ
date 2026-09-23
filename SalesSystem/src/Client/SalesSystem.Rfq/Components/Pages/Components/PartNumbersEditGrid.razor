@@ -247,22 +247,6 @@
         return color;
     }
 
-    // events
-    // void StartedEditingItem(RfqDrawingPartNumberUxModel item)
-    // {
-    //     _events.Insert(0, $"Event = StartedEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
-    // }
-
-    // void CanceledEditingItem(RfqDrawingPartNumberUxModel item)
-    // {
-    //     _events.Insert(0, $"Event = CanceledEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
-    // }
-
-    // void CommittedItemChanges(RfqDrawingPartNumberUxModel item)
-    // {
-    //     _events.Insert(0, $"Event = CommittedItemChanges, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
-    // }
-
     private async Task OnSearch(RfqDrawingPartNumberUxModel item)
     {
         if (item == null)
@@ -294,51 +278,39 @@
                 Logger.GenericLogInformation("CustomerPartNumber is null");
                 return;
             }
-            SearchResultUxModel responseExact = await RfqUxClientService.SearchEmacsExactCustomerPn(item.CustomerPartNumber);
-            SearchResultUxModel responseContains = await RfqUxClientService.SearchEmacsContainsCustomerPn(cleanedUpPn);
-            // SearchPartPricesGrpcResponse response = await RfqUxClientService.SearchPartPricesAsync(
-            //     new List<string> { item.CustomerPartNumber });
 
-            if ((responseContains.IsSuccessful && 0 <= responseContains.StringList.Count)
-            || (responseExact.IsSuccessful && 0 <= responseExact.StringList.Count))
+            SearchPartPricesGrpcResponse response = await RfqUxClientService.SearchPartPricesAsync(
+                new List<string> { item.CustomerPartNumber });
+
+            PriceResponse? priceResponse = response.PriceResponse
+                .FirstOrDefault(pr =>
+                    string.Equals(
+                        pr.CustomerPartNumber,
+                        item.CustomerPartNumber,
+                        StringComparison.OrdinalIgnoreCase));
+
+            if(priceResponse?.PriceInformation != null && priceResponse.PriceInformation.Count>0)
             {
-                Logger.GenericLogInformation($"Item {item.CustomerPartNumber} exact matches: {responseExact.StringList.Count}");
-                Logger.GenericLogInformation($"Item {item.CustomerPartNumber} contains matches: {responseContains.StringList.Count}");
-
                 // Show custom dialog with MudList
                 int index = 0;
 
                 var commentData = new RfqDrawingPartNumberUxSearchResult();
                 commentData.User = "System";
                 commentData.Timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
-                commentData.Action = "AutoSearch_NPR_Applied";
+                commentData.Action = "Individual search";
 
-                // look for exact matches first
-                var exactMatches = responseExact.StringList.ToRfqDrawingPartNumberUxList(true);
-                commentData.ExactMatchPartNumbers.AddRange(exactMatches);
-                foreach (string pn in responseExact.StringList)
+                // just add all to the search list
+                foreach (var priceInfo in priceResponse.PriceInformation)
                 {
                     var matchedPartNumber = new RfqDrawingPartNumberUxModel();
-                    matchedPartNumber.IsExactMatch = true;  // exact match
+                    matchedPartNumber.IsExactMatch = priceInfo.SumitomoNumber
+                                                                .ToUpperInvariant()
+                                                                .CompareTo(item.CustomerPartNumber.ToUpperInvariant()) == 0;
                     matchedPartNumber.Index = index++;
-                    matchedPartNumber.DrawingPartNumber = pn;
-
+                    matchedPartNumber.DrawingPartNumber = priceInfo.SumitomoNumber;
+                    matchedPartNumber.DrawingPartNumberPrice = priceInfo.Price is null ? 0.0m : (decimal)priceInfo.Price;
                     item.SearchResultPartNumbers.Add(matchedPartNumber);
                 }
-
-                // then look for partial matches
-                var containsMatches = responseContains.StringList.ToRfqDrawingPartNumberUxList(false);
-                commentData.ContainsMatchPartNumbers.AddRange(containsMatches);
-                foreach (string pn in responseContains.StringList)
-                {
-                    var matchedPartNumber = new RfqDrawingPartNumberUxModel();
-                    matchedPartNumber.IsExactMatch = false;  // exact match
-                    matchedPartNumber.Index = index++;
-                    matchedPartNumber.DrawingPartNumber = pn;
-
-                    item.SearchResultPartNumbers.Add(matchedPartNumber);
-                }
-
 
                 DialogParameters parameters = new DialogParameters
                 {
@@ -366,7 +338,7 @@
                 {
                     try
                     {
-                        Logger.GenericLogInformation($"NPR data applied to part number: {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber}");
+                        Logger.GenericLogInformation($"Search data applied to part number: {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber}");
 
                         // Call the service to update the part number
                         bool success = await RfqUxClientService.UpdateRfqDrawingPartNumber(updatedItem);
@@ -417,11 +389,16 @@
                 Logger.GenericLogInformation(message);
 
                 // Show empty results dialog
+
                 DialogParameters parameters = new DialogParameters
                 {
                     { "SearchedPartNumber", item },
-                    { "SearchResults", new List<string?>() },
                 };
+                // DialogParameters parameters = new DialogParameters
+                // {
+                //     { "SearchedPartNumber", item },
+                //     { "SearchResults", new List<string?>() },
+                // };
 
                 DialogOptions options = new DialogOptions
                 {

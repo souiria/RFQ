@@ -105,11 +105,23 @@
         padding-top: 0px;
         padding-bottom: 0px;
     }
+
+    .loading-container {
+        display: flex;
+        flex: 1 1 auto;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        min-height: 100%;
+        box-sizing: border-box;
+    }
 </style>
 
 @if (IsLoading)
 {
-    <div class="d-flex justify-center align-center" style="height: 100%;">
+    <div class="loading-container">
         <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large">
             <ChildContent>
                 <MudText Typo="Typo.subtitle2" Align="Align.Center">Loading...</MudText>
