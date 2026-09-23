@@ -255,50 +255,118 @@
         async Task LoadCompositesAsync()
         {
             _Composites.Clear();
-            if (RfqProject == null || string.IsNullOrWhiteSpace(RfqProject.JsonData))
+
+            if (RfqProject == null
+                || string.IsNullOrWhiteSpace(RfqProject.JsonData))
             {
                 return;
             }
 
-            // composite data is stored in the JsonData field of the RfqProject, so we need to deserialize it
+            // Composite data is stored in the JsonData field of the RfqProject,
+            // so we need to deserialize it.
             SelectionLogData? selectionLog = null;
+
             try
             {
-                selectionLog = JsonSerializer.Deserialize<SelectionLogData>(RfqProject.JsonData, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+                JsonSerializerOptions serializerOptions =
+                    new JsonSerializerOptions();
+
+                serializerOptions.PropertyNameCaseInsensitive = true;
+                serializerOptions.PreferredObjectCreationHandling =
+                    JsonObjectCreationHandling.Populate;
+
+                selectionLog =
+                    JsonSerializer.Deserialize<SelectionLogData>(
+                        RfqProject.JsonData,
+                        serializerOptions);
             }
             catch (JsonException ex)
             {
-                Logger.GenericLogError("Error parsing JsonData for SelectionLogData", ex);
+                Logger.GenericLogError(
+                    "Error parsing JsonData for SelectionLogData",
+                    ex);
+
                 return;
             }
 
-            if (selectionLog == null || string.IsNullOrWhiteSpace(selectionLog.HarnessId))
+            if (selectionLog == null)
             {
-                Logger.GenericLogInformation("HarnessId is null or empty in JsonData");
+                Logger.GenericLogInformation(
+                    "SelectionLogData is null");
+
                 return;
             }
 
-            if (!Guid.TryParse(selectionLog.HarnessId, out Guid id))
+            HashSet<Guid> harnessIds = new HashSet<Guid>();
+
+            // New format: multiple harnesses.
+            if (selectionLog.HarnessIds.Count > 0)
             {
-                Logger.GenericLogInformation($"Invalid HarnessId format: {selectionLog.HarnessId}");
+                foreach (string harnessId in selectionLog.HarnessIds)
+                {
+                    if (Guid.TryParse(
+                            harnessId,
+                            out Guid parsedId))
+                    {
+                        harnessIds.Add(parsedId);
+                    }
+                    else
+                    {
+                        Logger.GenericLogInformation(
+                            $"Invalid HarnessId format: {harnessId}");
+                    }
+                }
+            }
+            // Backward compatibility: single harness.
+            else if (!string.IsNullOrWhiteSpace(selectionLog.HarnessId))
+            {
+                if (Guid.TryParse(
+                        selectionLog.HarnessId,
+                        out Guid parsedId))
+                {
+                    harnessIds.Add(parsedId);
+                }
+                else
+                {
+                    Logger.GenericLogInformation(
+                        $"Invalid HarnessId format: {selectionLog.HarnessId}");
+                }
+            }
+
+            if (harnessIds.Count == 0)
+            {
+                Logger.GenericLogInformation(
+                    "No valid HarnessIds found in JsonData");
+
                 return;
             }
 
-            // for testing 
-            // Guid id = Guid.Parse("237ad12c-3e00-46a4-baeb-ba12fff53fa6");
             await DsiUxClientService.GetAllHarnessAsync();
-            _Composites.AddRange(DsiUxClientService.Harnesses.Where(h => h.Id == id));
+
+            IEnumerable<DsiHarnessUxModel> linkedHarnesses =
+                DsiUxClientService.Harnesses
+                    .Where(
+                        harness =>
+                            harnessIds.Contains(harness.Id))
+                    .GroupBy(harness => harness.Id)
+                    .Select(group => group.First());
+
+            _Composites.AddRange(linkedHarnesses);
+
+            Logger.GenericLogInformation(
+                $"LoadCompositesAsync - Found {_Composites.Count} " +
+                $"linked harnesses from {harnessIds.Count} stored HarnessIds");
 
             _PreselectedDerivativeIds.Clear();
 
-            if (selectionLog.Selections != null && selectionLog.Selections.Any())
+            if (selectionLog.Selections != null
+                && selectionLog.Selections.Any())
             {
-                foreach (SelectedCompositeData selection in selectionLog.Selections)
+                foreach (SelectedCompositeData selection
+                         in selectionLog.Selections)
                 {
-                    _PreselectedDerivativeIds.Add(selection.Id);
+                    _PreselectedDerivativeIds.Add(
+                        selection.Id);
                 }
             }
         }
@@ -1044,64 +1112,138 @@
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+    "Design",
+    "CA1031:Do not catch general exception types",
+    Justification = "<Pending>")]
         async Task SaveDataAsync()
         {
-            List<RfqDrawingPartNumberUxModel> allParts = new();
-            allParts.AddRange(_CompletedParts.Where(p => p != null).Select(p => p!));
-            allParts.AddRange(_InProgressParts.Where(p => p != null).Select(p => p!));
-            if(allParts.Count == 0)
+            if (RfqProject == null)
             {
-                Snackbar.Add("No parts to save", Severity.Info);
-                Logger.GenericLogInformation("EditRfq.SaveDataAsync - No parts available to save");
+                Snackbar.Add(
+                    "RFQ project is not available",
+                    Severity.Error);
+
+                Logger.GenericLogInformation(
+                    "EditRfq.SaveDataAsync - RfqProject is null");
+
                 return;
             }
 
+            List<RfqDrawingPartNumberUxModel> allParts =
+                new List<RfqDrawingPartNumberUxModel>();
+
+            allParts.AddRange(
+                _CompletedParts
+                    .Where(part => part != null));
+
+            allParts.AddRange(
+                _InProgressParts
+                    .Where(part => part != null));
+
             try
             {
-                // Save pending NPR changes BEFORE reloading (otherwise the editor gets destroyed)
-                if (_ComponentNprEditor != null && _ComponentNprEditor.HasPendingChanges)
+                // Save pending NPR changes before reloading the project.
+                if (_ComponentNprEditor != null
+                    && _ComponentNprEditor.HasPendingChanges)
                 {
                     await _ComponentNprEditor.SaveNprRequestsAsync();
                 }
 
-                // Update selection (save JSON Data)
+                // Always save the BOM selection and HarnessIds,
+                // even when the Parts Lists are empty.
                 await UpdateSelectionAsync();
 
-                // Save the RfqProject FIRST so its RowId exists before parts reference it
-                UpdateRfqProjectGrpcResponse rfqUpdateResult = await RfqUxClientService.UpdateRfqProjectAsync(RfqProject!);
-                RfqCrudResponse partsUpdateResult = await RfqUxClientService.UpdateRfqDrawingPartNumbersAsync(allParts);
+                // Persist the RFQ project, including JsonData.
+                UpdateRfqProjectGrpcResponse rfqUpdateResult =
+                    await RfqUxClientService.UpdateRfqProjectAsync(
+                        RfqProject);
 
-                if (partsUpdateResult.SaveSuccess && rfqUpdateResult.Success)
+                bool partsSaveSuccess = true;
+
+                // Only call the parts update endpoint when parts exist.
+                if (allParts.Count > 0)
                 {
-                    Snackbar.Add("Data saved successfully", Severity.Success);
-                    Logger.GenericLogInformation("EditRfq.SaveDataAsync - Data saved successfully");
+                    RfqCrudResponse partsUpdateResult =
+                        await RfqUxClientService
+                            .UpdateRfqDrawingPartNumbersAsync(
+                                allParts);
 
-                    // Reload part numbers
+                    partsSaveSuccess =
+                        partsUpdateResult.SaveSuccess;
+                }
+                else
+                {
+                    Logger.GenericLogInformation(
+                        "EditRfq.SaveDataAsync - " +
+                        "No parts available. RFQ and BOM selection " +
+                        "will still be saved.");
+                }
+
+                if (rfqUpdateResult.Success
+                    && partsSaveSuccess)
+                {
+                    if (allParts.Count > 0)
+                    {
+                        Snackbar.Add(
+                            "Data saved successfully",
+                            Severity.Success);
+                    }
+                    else
+                    {
+                        Snackbar.Add(
+                            "BOM selection saved successfully",
+                            Severity.Success);
+                    }
+
+                    Logger.GenericLogInformation(
+                        "EditRfq.SaveDataAsync - " +
+                        $"RFQ saved successfully. " +
+                        $"Parts={allParts.Count}, " +
+                        $"Harnesses={_Composites.Count}, " +
+                        $"Selections=" +
+                        $"{_CompositesRef?.SelectedItems.Count ?? 0}");
+
+                    // Reload RFQ and part-number data.
                     await LoadRfqAndPartNumbersAsync();
 
-                    // Reload NPR requests so the tab remains enabled and data is fresh
+                    // Important: reload HarnessIds and selected derivative IDs
+                    // from the newly saved JsonData.
+                    await LoadCompositesAsync();
+
+                    // Reload NPR requests so the tab remains enabled.
                     await LoadNprRequests();
 
-                    // Notify the NPR editor to re-render with the fresh data
-                    // (the parent replaced RfqProject.NprRequests but Blazor won't
-                    //  detect the change since the RfqProject reference is the same)
                     if (_ComponentNprEditor != null)
                     {
-                        // await _ComponentNprEditor.RefreshNprRequestsAsync();
                         _ComponentNprEditor.NotifyStateChanged();
                     }
                 }
                 else
                 {
-                    Snackbar.Add("Error saving data", Severity.Error);
-                    Logger.GenericLogInformation("EditRfq.SaveDataAsync - Error saving data");
+                    Snackbar.Add(
+                        "Error saving data",
+                        Severity.Error);
+
+                    Logger.GenericLogInformation(
+                        "EditRfq.SaveDataAsync - " +
+                        $"Error saving data. " +
+                        $"RfqSuccess={rfqUpdateResult.Success}, " +
+                        $"PartsSuccess={partsSaveSuccess}");
                 }
 
                 StateHasChanged();
             }
             catch (Exception ex)
             {
-                Logger.GenericLogError($"EditRfq.SaveDataAsync - Unexpected error during data save {ex.Message}", ex);
+                Logger.GenericLogError(
+                    "EditRfq.SaveDataAsync - " +
+                    $"Unexpected error during data save: {ex.Message}",
+                    ex);
+
+                Snackbar.Add(
+                    $"Error saving data: {ex.Message}",
+                    Severity.Error);
             }
         }
         #endregion
@@ -1715,80 +1857,89 @@
             StateHasChanged();
             await Task.CompletedTask;
         }
-             
-         async Task UpdateSelectionAsync()
+
+        async Task UpdateSelectionAsync()
         {
-            HashSet<DsiCompositeDetailUxModel>? currentSelections = _CompositesRef?.SelectedItems;
+            HashSet<DsiCompositeDetailUxModel>? currentSelections =
+                _CompositesRef?.SelectedItems;
 
-            //if (currentSelections == null || !currentSelections.Any())
-            //{
-            //    Snackbar.Add("No components selected to update.", Severity.Warning);
-            //    return;
-            //}
+            SelectionLogData selectionLog =
+                new SelectionLogData();
 
-            string? harnessId = _Composites.FirstOrDefault()?.Id.ToString();
-            SelectionLogData selectionLog = new SelectionLogData
+            selectionLog.RfqId = RfqProjectId;
+
+            foreach (DsiHarnessUxModel composite in _Composites)
             {
-                HarnessId = harnessId,
-                RfqId = RfqProjectId
-            };
+                string harnessId = composite.Id.ToString();
 
-            if (currentSelections != null && currentSelections.Any())
-            {
-                selectionLog.Selections = currentSelections.Select(x => new SelectedCompositeData
+                if (!selectionLog.HarnessIds.Contains(harnessId))
                 {
-                    Id = x.Id,
-                    HarnessName1 = x.HarnessName1,
-                    HarnessName2 = x.HarnessName2,
-                    Customer = x.Customer
-                }).ToList();
+                    selectionLog.HarnessIds.Add(harnessId);
+                }
+            }
+
+            // Keep the old single HarnessId property for backward compatibility.
+            DsiHarnessUxModel? firstComposite =
+                _Composites.FirstOrDefault();
+
+            if (firstComposite != null)
+            {
+                selectionLog.HarnessId =
+                    firstComposite.Id.ToString();
+            }
+
+            if (currentSelections != null
+                && currentSelections.Count > 0)
+            {
+                List<SelectedCompositeData> selections =
+                    new List<SelectedCompositeData>();
+
+                foreach (DsiCompositeDetailUxModel selection
+                         in currentSelections)
+                {
+                    SelectedCompositeData selectedComposite =
+                        new SelectedCompositeData();
+
+                    selectedComposite.Id = selection.Id;
+                    selectedComposite.HarnessName1 =
+                        selection.HarnessName1;
+                    selectedComposite.HarnessName2 =
+                        selection.HarnessName2;
+                    selectedComposite.Customer =
+                        selection.Customer;
+
+                    selections.Add(selectedComposite);
+                }
+
+                selectionLog.Selections = selections;
             }
             else
             {
-                selectionLog.Selections = new List<SelectedCompositeData>();
+                selectionLog.Selections =
+                    new List<SelectedCompositeData>();
             }
 
-            // Explicit string declaration
-            string jsonOutput = JsonSerializer.Serialize(selectionLog, new JsonSerializerOptions
+            JsonSerializerOptions serializerOptions =
+                new JsonSerializerOptions();
+
+            serializerOptions.WriteIndented = true;
+
+            string jsonOutput =
+                JsonSerializer.Serialize(
+                    selectionLog,
+                    serializerOptions);
+
+            Logger.GenericLogInformation(
+                $">>> Serializing derivatives selection JSON data: " +
+                $"{jsonOutput}");
+
+            if (RfqProject != null)
             {
-                WriteIndented = true
-            });
-
-            Logger.GenericLogInformation($">>> Serializing derivatives selection JSON data: {jsonOutput}");
-
-            RfqProject!.JsonData = jsonOutput;
-
-            //try
-            //{
-            //    UpdateRfqProjectGrpcResponse result =
-            //        await RfqUxClientService.UpdateRfqProjectAsync(RfqProject);
-
-            //    if (result.Success)
-            //    {
-            //        Snackbar.Add(" JSON data saved to RFQ successfully", Severity.Success);
-            //    }
-            //    else
-            //    {
-            //        Snackbar.Add("Failed to save JSON data", Severity.Error);
-            //    }
-            //}
-            //catch (InvalidOperationException ex)
-            //{
-            //    Snackbar.Add($"Invalid operation: {ex.Message}", Severity.Error);
-            //}
-            //catch (ArgumentNullException ex)
-            //{
-            //    Snackbar.Add($"Missing data: {ex.Message}", Severity.Error);
-            //}
-            //catch (HttpRequestException ex)
-            //{
-            //    Snackbar.Add($"Network error: {ex.Message}", Severity.Error);
-            //}
-
-            //Snackbar.Add($"{currentSelections?.Count} components selected", Severity.Success);
+                RfqProject.JsonData = jsonOutput;
+            }
 
             await Task.CompletedTask;
-       }
+        }
 
         // update npr requests
         async Task UpdateRfqNprRequestsAsync()
@@ -1811,11 +1962,22 @@
         }
     }
 
-     public class SelectionLogData
+    public class SelectionLogData
     {
         public string? HarnessId { get; set; }
+
+        [JsonObjectCreationHandling(
+            JsonObjectCreationHandling.Populate)]
+        public Collection<string> HarnessIds { get; } =
+            new Collection<string>();
+
         public long RfqId { get; set; }
-        public IEnumerable<SelectedCompositeData>? Selections { get; set; }
+
+        public IEnumerable<SelectedCompositeData>? Selections
+        {
+            get;
+            set;
+        }
     }
     public class SelectedCompositeData
     {
