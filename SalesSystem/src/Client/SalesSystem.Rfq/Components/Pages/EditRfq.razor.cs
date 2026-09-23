@@ -255,50 +255,118 @@
         async Task LoadCompositesAsync()
         {
             _Composites.Clear();
-            if (RfqProject == null || string.IsNullOrWhiteSpace(RfqProject.JsonData))
+
+            if (RfqProject == null
+                || string.IsNullOrWhiteSpace(RfqProject.JsonData))
             {
                 return;
             }
 
-            // composite data is stored in the JsonData field of the RfqProject, so we need to deserialize it
+            // Composite data is stored in the JsonData field of the RfqProject,
+            // so we need to deserialize it.
             SelectionLogData? selectionLog = null;
+
             try
             {
-                selectionLog = JsonSerializer.Deserialize<SelectionLogData>(RfqProject.JsonData, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+                JsonSerializerOptions serializerOptions =
+                    new JsonSerializerOptions();
+
+                serializerOptions.PropertyNameCaseInsensitive = true;
+                serializerOptions.PreferredObjectCreationHandling =
+                    JsonObjectCreationHandling.Populate;
+
+                selectionLog =
+                    JsonSerializer.Deserialize<SelectionLogData>(
+                        RfqProject.JsonData,
+                        serializerOptions);
             }
             catch (JsonException ex)
             {
-                Logger.GenericLogError("Error parsing JsonData for SelectionLogData", ex);
+                Logger.GenericLogError(
+                    "Error parsing JsonData for SelectionLogData",
+                    ex);
+
                 return;
             }
 
-            if (selectionLog == null || string.IsNullOrWhiteSpace(selectionLog.HarnessId))
+            if (selectionLog == null)
             {
-                Logger.GenericLogInformation("HarnessId is null or empty in JsonData");
+                Logger.GenericLogInformation(
+                    "SelectionLogData is null");
+
                 return;
             }
 
-            if (!Guid.TryParse(selectionLog.HarnessId, out Guid id))
+            HashSet<Guid> harnessIds = new HashSet<Guid>();
+
+            // New format: multiple harnesses.
+            if (selectionLog.HarnessIds.Count > 0)
             {
-                Logger.GenericLogInformation($"Invalid HarnessId format: {selectionLog.HarnessId}");
+                foreach (string harnessId in selectionLog.HarnessIds)
+                {
+                    if (Guid.TryParse(
+                            harnessId,
+                            out Guid parsedId))
+                    {
+                        harnessIds.Add(parsedId);
+                    }
+                    else
+                    {
+                        Logger.GenericLogInformation(
+                            $"Invalid HarnessId format: {harnessId}");
+                    }
+                }
+            }
+            // Backward compatibility: single harness.
+            else if (!string.IsNullOrWhiteSpace(selectionLog.HarnessId))
+            {
+                if (Guid.TryParse(
+                        selectionLog.HarnessId,
+                        out Guid parsedId))
+                {
+                    harnessIds.Add(parsedId);
+                }
+                else
+                {
+                    Logger.GenericLogInformation(
+                        $"Invalid HarnessId format: {selectionLog.HarnessId}");
+                }
+            }
+
+            if (harnessIds.Count == 0)
+            {
+                Logger.GenericLogInformation(
+                    "No valid HarnessIds found in JsonData");
+
                 return;
             }
 
-            // for testing 
-            // Guid id = Guid.Parse("237ad12c-3e00-46a4-baeb-ba12fff53fa6");
             await DsiUxClientService.GetAllHarnessAsync();
-            _Composites.AddRange(DsiUxClientService.Harnesses.Where(h => h.Id == id));
+
+            IEnumerable<DsiHarnessUxModel> linkedHarnesses =
+                DsiUxClientService.Harnesses
+                    .Where(
+                        harness =>
+                            harnessIds.Contains(harness.Id))
+                    .GroupBy(harness => harness.Id)
+                    .Select(group => group.First());
+
+            _Composites.AddRange(linkedHarnesses);
+
+            Logger.GenericLogInformation(
+                $"LoadCompositesAsync - Found {_Composites.Count} " +
+                $"linked harnesses from {harnessIds.Count} stored HarnessIds");
 
             _PreselectedDerivativeIds.Clear();
 
-            if (selectionLog.Selections != null && selectionLog.Selections.Any())
+            if (selectionLog.Selections != null
+                && selectionLog.Selections.Any())
             {
-                foreach (SelectedCompositeData selection in selectionLog.Selections)
+                foreach (SelectedCompositeData selection
+                         in selectionLog.Selections)
                 {
-                    _PreselectedDerivativeIds.Add(selection.Id);
+                    _PreselectedDerivativeIds.Add(
+                        selection.Id);
                 }
             }
         }
@@ -1814,6 +1882,8 @@
      public class SelectionLogData
     {
         public string? HarnessId { get; set; }
+        [JsonObjectCreationHandling(JsonObjectCreationHandling.Populate)]
+        public Collection<string> HarnessIds { get; } = new();
         public long RfqId { get; set; }
         public IEnumerable<SelectedCompositeData>? Selections { get; set; }
     }

@@ -1024,12 +1024,22 @@
                     crossReferenceDtos = DocumentTransformer.ConvertRenaultCSVFile(fileData).ToList();
                     break;
                     case ".DSI":
-                        // Handle DSI file processing
-                        _Logger.GenericLogInformation("Processing DSI file: " + fileName);
-                        dsiAggregate = DocumentTransformer.ConvertDsiFile(fileData);
-                        _ = Task.Run(async () => await SaveDsiAggregateAsync(dsiAggregate, request.UserId));
-                        hasDerivatives = dsiAggregate.ComponentList != null && dsiAggregate.ComponentList.Any();    
-                        break;
+                    // Handle DSI file processing
+                    _Logger.GenericLogInformation(
+                        "Processing DSI file: " + fileName);
+
+                    dsiAggregate =
+                        DocumentTransformer.ConvertDsiFile(fileData);
+
+                    await SaveDsiAggregateAsync(
+                        dsiAggregate,
+                        request.UserId);
+
+                    hasDerivatives =
+                        dsiAggregate.ComponentList != null
+                        && dsiAggregate.ComponentList.Any();
+
+                    break;
                     default:
                     _Logger.GenericLogInformation("Unsupported file type:" + fileExtension);
                     return (customerParts, false);
@@ -1123,23 +1133,64 @@
 
                 if (lastRfqProject != null && dsiAggregate.Harness != null)
                 {
+                    List<string> harnessIds = new();
+
+                    if (!string.IsNullOrWhiteSpace(lastRfqProject.JsonData))
+                    {
+                        try
+                        {
+                            JObject existingJson = JObject.Parse(lastRfqProject.JsonData);
+
+                            JArray? existingHarnessIds =
+                                existingJson["HarnessIds"] as JArray;
+
+                            if (existingHarnessIds != null)
+                            {
+                                harnessIds.AddRange(
+                                    existingHarnessIds
+                                        .Select(x => x?.ToString())
+                                        .Where(x => !string.IsNullOrWhiteSpace(x))!);
+                            }
+                            else if (existingJson["HarnessId"] != null)
+                            {
+                                JToken? harnessIdToken = existingJson["HarnessId"];
+
+                                if (harnessIdToken != null)
+                                {
+                                    string harnessId = harnessIdToken.ToString();
+                                    harnessIds.Add(harnessId);
+                                }
+                            }
+                        }
+                        catch (JsonReaderException ex)
+                        {
+                            _Logger.GenericLogError(
+                                "Invalid JsonData while reading HarnessIds",
+                                ex);
+                        }
+                    }
+
+                    string newHarnessId = dsiAggregate.Harness.HarnessId.ToString();
+
+                    if (!harnessIds.Contains(newHarnessId))
+                    {
+                        harnessIds.Add(newHarnessId);
+                    }
+
                     JObject jsonObject = new JObject();
-                    jsonObject["HarnessId"] = dsiAggregate.Harness.HarnessId.ToString();
-
-                    string jsonData = jsonObject.ToString(Formatting.None);
-
-                    lastRfqProject.JsonData = jsonData;
+                    jsonObject["HarnessIds"] = JArray.FromObject(harnessIds);
+                   lastRfqProject.JsonData = jsonObject.ToString(Formatting.None);
 
                     UpdateRfqProjectGrpcRequest updateRequest = new UpdateRfqProjectGrpcRequest();
                     updateRequest.Project = lastRfqProject;
                          UpdateRfqProjectGrpcResponse updateResponse =
                         await UpdateRfqProject(updateRequest);
 
-                    _Logger.GenericLogInformation(
-                        $"RFQ Project {lastRfqProject.RfqNumber} updated. JsonData={jsonData}");
+                    //_Logger.GenericLogInformation(
+                    //    $"RFQ Project {lastRfqProject.RfqNumber} updated. JsonData={jsonData}");
                 }
 
-                await SaveHarness(dsiAggregate, userId);
+                //await SaveHarness(dsiAggregate, userId);
                 await SaveBranchConfigurationAsync(dsiAggregate, userId);
                 await SaveBranchInsulationAsync(dsiAggregate, userId);
                 await SaveBranchInsulationThroughNodeAsync(dsiAggregate, userId);
@@ -1517,65 +1568,102 @@
 
             return harnessRequest.DsiHarnessGrpcsToCreate.FirstOrDefault() ?? new DsiHarnessGrpc();
         }
-        async Task SaveScopeAsync(DsiAggregate dsiAggregate, string userId)
+        async Task SaveScopeAsync(
+        DsiAggregate dsiAggregate,
+        string userId)
         {
-            DsiScopeGrpcRequest request = new DsiScopeGrpcRequest();
-            request.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
-            request.RfqGrpcRequestParameter.RequestType = 1;
-            ListDsiScopeGrpc currentScopes = await _RfqClient.ReadDsiScopeGrpcAsync(request);
-
-            HashSet<string> existingOptionNames = currentScopes.DsiScopeGrpcs
-                .Where(o => !string.IsNullOrWhiteSpace(o.Scope))
-                .Select(o => o.Scope)
-                .ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-            DsiScopeGrpcRequest scopeGrpcRequest = new DsiScopeGrpcRequest();
-            scopeGrpcRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
-            scopeGrpcRequest.RfqGrpcRequestParameter.RequestType = 70;
-
-            if (dsiAggregate.HarnessScopeList != null && dsiAggregate.HarnessScopeList.Any())
+            if (dsiAggregate.HarnessScopeList == null
+                || !dsiAggregate.HarnessScopeList.Any())
             {
-                foreach (HarnessScopeDto harnessScope in dsiAggregate.HarnessScopeList)
+                return;
+            }
+
+            DsiScopeGrpcRequest readRequest =
+                new DsiScopeGrpcRequest();
+
+            readRequest.RfqGrpcRequestParameter =
+                new RfqGrpcRequestParameter();
+
+            readRequest.RfqGrpcRequestParameter.RequestType = 1;
+
+            ListDsiScopeGrpc currentScopes =
+                await _RfqClient.ReadDsiScopeGrpcAsync(
+                    readRequest);
+
+            HashSet<string> existingScopeNames =
+                currentScopes.DsiScopeGrpcs
+                    .Where(scope =>
+                        !string.IsNullOrWhiteSpace(scope.Scope))
+                    .Select(scope => scope.Scope)
+                    .ToHashSet(
+                        StringComparer.OrdinalIgnoreCase);
+
+            DsiScopeGrpcRequest createRequest =
+                new DsiScopeGrpcRequest();
+
+            createRequest.RfqGrpcRequestParameter =
+                new RfqGrpcRequestParameter();
+
+            createRequest.RfqGrpcRequestParameter.RequestType = 70;
+
+            Timestamp timestamp =
+                DateTime.UtcNow.ToTimestamp();
+
+            foreach (HarnessScopeDto harnessScope
+                     in dsiAggregate.HarnessScopeList)
+            {
+                if (string.IsNullOrWhiteSpace(harnessScope.Scope))
                 {
-                    if (string.IsNullOrWhiteSpace(harnessScope.Scope))
+                    continue;
+                }
+
+                string[] scopes = harnessScope.Scope.Split(
+                    ',',
+                    StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (string scope in scopes)
+                {
+                    string trimmedScope = scope.Trim();
+
+                    if (string.IsNullOrWhiteSpace(trimmedScope))
                     {
                         continue;
                     }
 
-                    string[] scopes = harnessScope.Scope.Split(',');
-                    foreach (string scope in scopes)
+                    if (existingScopeNames.Contains(trimmedScope))
                     {
-                        string trimmedOption = scope.Trim();
-                        if (string.IsNullOrWhiteSpace(trimmedOption))
-                        {
-                            continue;
-                        }
-
-                        // Only add if this option does NOT already exist in the current list
-                        if (!existingOptionNames.Contains(trimmedOption))
-                        {
-                            DsiScopeGrpc newScope = new DsiScopeGrpc();
-                            newScope.Scope = trimmedOption;
-                            newScope.CreatedBy = userId;
-                            newScope.CreatedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
-                            newScope.ModifiedDate = DateTime.Now.ToUniversalTime().ToTimestamp();
-                            newScope.ModifiedBy = userId;
-                            scopeGrpcRequest.DsiScopeGrpcsToCreate.Add(newScope);
-
-                            // Track it so we don't add duplicates within this same batch
-                            existingOptionNames.Add(trimmedOption);
-                        }
+                        continue;
                     }
-                }
 
-                if (0 < scopeGrpcRequest.DsiScopeGrpcsToCreate.Count)
-                {
-                    RfqCrudGrpcResponse clientReturn = await _RfqClient.CreateDsiScopeGrpcAsync(scopeGrpcRequest);
-                    if (clientReturn == null || clientReturn.SaveSuccess == false)
-                    {
-                        _Logger.GenericLogInformation("Error saving DSI aggregate - failed to save scope");
-                    }
+                    DsiScopeGrpc newScope = new DsiScopeGrpc();
+
+                    newScope.Scope = trimmedScope;
+                    newScope.CreatedBy = userId;
+                    newScope.CreatedDate = timestamp;
+                    newScope.ModifiedDate = timestamp;
+                    newScope.ModifiedBy = userId;
+
+                    createRequest.DsiScopeGrpcsToCreate.Add(
+                        newScope);
+
+                    existingScopeNames.Add(trimmedScope);
                 }
+            }
+
+            if (createRequest.DsiScopeGrpcsToCreate.Count <= 0)
+            {
+                return;
+            }
+
+            RfqCrudGrpcResponse clientReturn =
+                await _RfqClient.CreateDsiScopeGrpcAsync(
+                    createRequest);
+
+            if (clientReturn == null
+                || clientReturn.SaveSuccess == false)
+            {
+                _Logger.GenericLogInformation(
+                    "Error saving DSI aggregate - failed to save scope");
             }
         }
         async Task SaveHarnessScope(DsiAggregate dsiAggregate, string userId)

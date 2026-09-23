@@ -1,28 +1,40 @@
 ﻿namespace Rfq.CQRS.Handler.DsiCircuitOption
 {
-    public class QueryHandler : IQueryHandler<GetDsiCircuitOptionQuery, List<DsiCircuitOptionGrpc>>
+    public class QueryHandler :
+        IQueryHandler<GetDsiCircuitOptionQuery, List<DsiCircuitOptionGrpc>>
     {
         readonly IRfqRepository<DbDsiCircuitOption> _Repository;
-        List<DsiCircuitOptionGrpc> _DsiCircuitOptionGrpc;
 
-        public QueryHandler(IRfqRepository<DbDsiCircuitOption> repository)
+        public QueryHandler(
+            IRfqRepository<DbDsiCircuitOption> repository)
         {
             _Repository = repository;
-            _DsiCircuitOptionGrpc = new List<DsiCircuitOptionGrpc>();
         }
 
-        public async Task<Result<List<DsiCircuitOptionGrpc>>> Handle(GetDsiCircuitOptionQuery query, CancellationToken cancellationToken)
+        public async Task<Result<List<DsiCircuitOptionGrpc>>> Handle(
+            GetDsiCircuitOptionQuery query,
+            CancellationToken cancellationToken)
         {
-            _DsiCircuitOptionGrpc.Clear();
-            GetDsiCircuitOptionReadOnlySpec spec = new GetDsiCircuitOptionReadOnlySpec(query.Position, query.TakeAmount);
-            List<DbDsiCircuitOption> results = await _Repository.ListAsync(spec, cancellationToken);
+            GetDsiCircuitOptionReadOnlySpec spec =
+                new GetDsiCircuitOptionReadOnlySpec(
+                    query.Position,
+                    query.TakeAmount);
+
+            List<DbDsiCircuitOption> results =
+                await _Repository.ListAsync(
+                    spec,
+                    cancellationToken);
+
+            List<DsiCircuitOptionGrpc> dsiCircuitOptionGrpcs =
+                new List<DsiCircuitOptionGrpc>();
+
             foreach (DbDsiCircuitOption result in results)
             {
                 DsiCircuitOptionGrpc grpc = result.FromEntity();
-                _DsiCircuitOptionGrpc.Add(grpc);
+                dsiCircuitOptionGrpcs.Add(grpc);
             }
 
-            return _DsiCircuitOptionGrpc;
+            return dsiCircuitOptionGrpcs;
         }
     }
 }
