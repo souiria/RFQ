@@ -25,7 +25,7 @@
                         <MudPaper Elevation="2" Class="pa-3 mb-2">
                             <MudGrid>
                                 <MudItem xs="12" sm="@(partNumber.HasImage ? 8 : 12)">
-                                    <MudText Typo="Typo.subtitle2" Color="Color.Primary">
+                                    <MudText Typo="Typo.body2" Color="Color.Primary">
                                         Part #@(partNumber.Index + 1) @(partNumber.IsExactMatch == true ? "(Exact Match)" : "(Contains Match)")
                                     </MudText>
                                     <MudText Typo="Typo.body2">
