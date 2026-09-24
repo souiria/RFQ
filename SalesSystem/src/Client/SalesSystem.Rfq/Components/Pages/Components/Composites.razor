@@ -70,6 +70,15 @@
                           Adornment="Adornment.End"
                           AdornmentIcon="@Icons.Material.Filled.Search"
                           Class="mr-4" />
+            <MudSpacer />
+            <MudTooltip Text="Generate Parts List for Selected Derivatives">
+                <MudIconButton Size="Size.Small"
+                               Variant="Variant.Filled"
+                               Icon="@Icons.Material.Filled.ImportExport"
+                               Color="Color.Primary"
+                               OnClick="ShowSelectedPartsListAsync"
+                               Disabled="@(_selectedCompositeDetails.Count == 0)" />
+            </MudTooltip>
         </ToolBarContent>
 
         <Columns>
@@ -83,19 +92,6 @@
             <TemplateColumn Title="Parts">
                 <CellTemplate>
                     @(_compositeDetails.TryGetValue(context.Item.Id, out var details) ? details.Count : 0)
-                </CellTemplate>
-            </TemplateColumn>
-
-            <TemplateColumn Title="Actions" StickyRight="true">
-                <CellTemplate>
-                    <MudTooltip Text="Generate Component List">
-                        <MudIconButton Size="Size.Small"
-                                       Variant="Variant.Filled"
-                                       Icon="@Icons.Material.Filled.ImportExport"
-                                       Color="Color.Primary"
-                                       OnClick="async () => await ShowCompositeInfo(context.Item)"
-                                       Disabled="@(_selectedCompositeDetails.Count == 0)" />
-                    </MudTooltip>
                 </CellTemplate>
             </TemplateColumn>
         </Columns>
@@ -324,29 +320,12 @@
 
         if (result != null && !result.Canceled)
         {
-            // callback to process the selected components if needed
-            // await OnComponentsSelected.InvokeAsync(componentsToDisplay);
-            //  Only use selected derivatives
-            var selectedDerivatives = _selectedCompositeDetails;
-
-            if (selectedDerivatives == null || !selectedDerivatives.Any())
+            // The dialog's Export button returns the full (already-filtered)
+            // component set for every checked derivative in the grid.
+            if (result.Data is IEnumerable<DsiComponentUxModel> exportedComponents)
             {
-                return;
+                await OnComponentsSelected.InvokeAsync(exportedComponents);
             }
-
-            //  Filter components based on selected derivatives
-            var selectedComponents = _components
-                // .Where(c =>
-                //     selectedDerivatives.Any(d =>
-                //         c.HarnessName1 == d.HarnessName1 &&
-                //         (string.IsNullOrWhiteSpace(d.CircuitOption) ||
-                //          c.CircuitOption?.Contains(d.CircuitOption) == true)
-                //     ))
-                .ToList();
-
-            //  Send ONLY filtered components
-           await OnComponentsSelected.InvokeAsync(selectedComponents);
-
         }
     }
 
@@ -355,5 +334,80 @@
     {
         await DsiUxClientService.GetCompositeDetailByHarnessIdAsync(harnessId.ToString());
         return DsiUxClientService.CompositeDetails.ToList();
+    }
+
+    async Task ShowSelectedPartsListAsync()
+    {
+        try
+        {
+            _components.Clear();
+
+            if (_selectedCompositeDetails.Count == 0)
+            {
+                await DialogService.ShowMessageBoxAsync(
+                    "No Derivatives Selected",
+                    "Please select at least one derivative to generate the parts list.");
+                return;
+            }
+
+            List<DsiComponentUxModel> allComponents = new();
+
+            // Selections can span multiple composites - resolve each selected
+            // derivative back to the composite that owns it so we can call
+            // the service with the correct harness/options pairing.
+            foreach (KeyValuePair<Guid, List<DsiCompositeDetailUxModel>> compositeEntry in _compositeDetails)
+            {
+                DsiHarnessUxModel? composite = DsiComposites.FirstOrDefault(c => c.Id == compositeEntry.Key);
+                if (composite == null)
+                {
+                    continue;
+                }
+
+                List<DsiCompositeDetailUxModel> selectedForComposite = compositeEntry.Value
+                    .Where(d => _selectedCompositeDetails.Contains(d))
+                    .ToList();
+
+                if (selectedForComposite.Count == 0)
+                {
+                    continue;
+                }
+
+                List<string> compositeOptions = selectedForComposite
+                    .Where(x => !string.IsNullOrWhiteSpace(x.CircuitOption))
+                    .SelectMany(x => x.CircuitOption!
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries))
+                    .Select(x => x.Trim())
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+
+                if (compositeOptions.Count == 0)
+                {
+                    continue;
+                }
+
+                await DsiUxClientService.GetComponentsByHarnessAndOptionsAsync(composite, compositeOptions);
+
+                // Copy immediately - the service's underlying collection is reused/cleared on each call.
+                allComponents.AddRange(DsiUxClientService.Components);
+            }
+
+            _components = allComponents;
+
+            if (_components.Count > 0)
+            {
+                await ShowDsiComponentListDialog(_components);
+            }
+            else
+            {
+                await DialogService.ShowMessageBoxAsync(
+                    "No Components Found",
+                    "No components were found for the selected derivatives.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching components: {ex.Message}");
+        }
     }
 }

@@ -177,6 +177,7 @@
         <MudButton OnClick="PickDummy" 
                    Color="Color.Secondary" 
                    Variant="Variant.Filled"
+                   Size="Size.Small"
                    StartIcon="@Icons.Material.Filled.Add"
                    Style="margin-right: 8px;">
             Pick Dummy
@@ -184,6 +185,7 @@
         <MudButton OnClick="CreateNpr" 
                    Color="Color.Info" 
                    Variant="Variant.Filled"
+                   Size="Size.Small"
                    StartIcon="@Icons.Material.Filled.NoteAdd"
                    Style="margin-right: auto;">
             Create NPR
@@ -192,12 +194,19 @@
                    Disabled="!EditedItem.IsCompleted || !(0 < EditedItem.DrawingPartNumberPrice)"
                    Color="Color.Info"
                    Variant="Variant.Filled"
+                   Size="Size.Small"
                    StartIcon="@Icons.Material.Filled.IncompleteCircle"
                    Style="margin-right: auto;">
             Complete
         </MudButton>
-        <MudButton OnClick="Cancel" Color="Color.Default">Cancel</MudButton>
-        <MudButton OnClick="Save" Color="Color.Primary" Variant="Variant.Filled" Disabled="!_isValid">Save</MudButton>
+        <MudButton OnClick="Cancel"
+                   Color="Color.Default"
+                   Size="Size.Small">Cancel</MudButton>
+        <MudButton OnClick="Save"
+                   Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   Size="Size.Small"
+                   Disabled="!_isValid">Save</MudButton>
     </DialogActions>
 </MudDialog>
 
