@@ -8,6 +8,10 @@
 @inject IDialogService DialogService
 
 <style>
+    :root {
+        --alt-part-grid-font-size: 10px;
+    }
+
     .mud-alt-part-grid .mud-table-head {
         background-color: lightgrey;
     }
@@ -17,9 +21,30 @@
         }
 
     .mud-alt-part-grid {
-        overflow-x: hidden !important;
+        overflow-x: auto !important;
         border: 1px solid #bdbdbd;
         border-radius: 4px;
+    }
+
+    .mud-alt-part-grid .mud-table-container {
+        overflow-x: auto !important;
+        overflow-y: auto !important;
+    }
+
+    .mud-alt-part-grid .mud-table-cell {
+        padding: 1px !important;
+        overflow: hidden;
+        font-size: var(--alt-part-grid-font-size) !important;
+        line-height: 1;
+        text-align: left;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .mud-alt-part-grid .mud-table-head .mud-table-cell {
+        font-size: 11px !important;
+        font-weight: 700;
     }
 
     .mud-table-sticky-header {
@@ -43,45 +68,186 @@
         top: 36px;
         z-index: 3;
         background-color: #f5f5f5;
+        font-size: 11px !important;
+    }
+
+        .mud-alt-part-grid .mud-table-head tr:nth-child(2) th * {
+            font-size: 11px !important;
+        }
+
+    /* Dialog action controls: compact font and minimal padding/margins */
+    .mud-alt-part-dialog-actions {
+        font-size: 10px !important;
+    }
+
+    .mud-alt-part-dialog-actions .mud-input-slot,
+    .mud-alt-part-dialog-actions .mud-input-root,
+    .mud-alt-part-dialog-actions .mud-input,
+    .mud-alt-part-dialog-actions .mud-button-root,
+    .mud-alt-part-dialog-actions .mud-typography,
+    .mud-alt-part-dialog-actions label,
+    .mud-alt-part-dialog-actions input {
+        font-size: 10px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .mud-alt-part-dialog-actions .mud-input-control {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .mud-alt-part-dialog-actions .mud-input {
+        padding: 2px 4px !important;
+    }
+
+    .mud-alt-part-dialog-actions .mud-button-root {
+        padding: 2px 6px !important;
+        min-width: 0;
+    }
+
+    .mud-alt-part-dialog-actions .mud-form-helper-text {
+        margin: 0 !important;
+    }
+
+    .alt-part-search-field,
+    .alt-part-search-field .mud-input-slot,
+    .alt-part-search-field input,
+    .alt-part-search-field .mud-input-adornment {
+        font-size: 12px !important;
+    }
+
+    .alt-part-search-tooltip .mud-tooltip {
+        font-size: 12px !important;
+    }
+
+    .alt-part-number-field .mud-input-outlined-input,
+    .alt-part-price-field .mud-input-outlined-input {
+        padding: 1px !important;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        box-sizing: border-box;
+    }
+
+    .alt-part-number-field .mud-input-slot,
+    .alt-part-price-field .mud-input-slot {
+        height: 28px;
+        display: flex;
+        align-items: center;
+        padding: 0 !important;
+    }
+
+    .alt-part-number-field .mud-input-adornment,
+    .alt-part-price-field .mud-input-adornment {
+        height: 28px;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Collapse the outlined variant's extra space reserved for the floating-label notch */
+    .alt-part-number-field.mud-input-control,
+    .alt-part-price-field.mud-input-control,
+    .alt-part-number-field .mud-input-control,
+    .alt-part-price-field .mud-input-control {
+        height: 28px;
+        min-height: 28px;
+    }
+
+    .alt-part-number-field .mud-input-control-input-container,
+    .alt-part-price-field .mud-input-control-input-container {
+        height: 28px;
+        min-height: 28px;
+        display: flex;
+        align-items: center;
+    }
+
+    .alt-part-number-field .mud-input-outlined-border,
+    .alt-part-price-field .mud-input-outlined-border {
+        top: 0 !important;
+        height: 28px !important;
+    }
+
+        .alt-part-number-field .mud-input-outlined-border legend,
+        .alt-part-price-field .mud-input-outlined-border legend {
+            display: none;
+        }
+
+    .alt-part-number-field .mud-input-label,
+    .alt-part-price-field .mud-input-label {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        line-height: 1;
+        margin: 0 !important;
+    }
+
+    /* Make the dialog content and grid stretch to fill available vertical space */
+    .mud-alt-part-dialog-content {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .mud-alt-part-dialog-content .mud-grid {
+        flex: 1 1 auto;
+        min-height: 0;
+        height: 100%;
+    }
+
+    .mud-alt-part-dialog-content .mud-grid-item:has(.mud-alt-part-grid) {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .mud-alt-part-grid {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .mud-alt-part-grid .mud-table-container {
+        flex: 1 1 auto;
+        min-height: 0;
     }
 </style>
 
-<MudDialog>
+<MudDialog Style="height: 80vh;">
     <DialogContent>
-        <MudText Typo="Typo.h6" Class="mb-4">
-            Enter Dummy Part Number Information
-        </MudText>
-        <MudForm @ref="_form" @bind-IsValid="_isValid">
-            <MudGrid>
-                <MudItem xs="12">
-                    @if (IsLoading)
-                    {
-                        <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
-                        <MudText Typo="Typo.body2" Class="mt-2">Loading alternative parts...</MudText>
-                    }
-                    else
-                    {
-                        <MudDataGrid T="AlternativePartUxModel"
-                                     @ref="_alternativePartNumbersGrid"
-                                     Items="@RfqUxClientService.AlternativeParts"
-                                     Virtualize="true"
-                                     FixedHeader="true"
-                                     ItemSize="20f"
-                                     Height="320px"
-                                     Dense="true"
-                                     DragDropColumnReordering="true"
-                                     ApplyDropClassesOnDragStarted="true"
-                                     ColumnResizeMode="ResizeMode.Column"
-                                     SortMode="SortMode.Multiple"
-                                     Hideable="true"
-                                     Filterable="true"
-                                     FilterMode="DataGridFilterMode.ColumnFilterRow"
-                                     Groupable="true"
-                                     QuickFilter="@QuickFilter"
-                                     ReadOnly="true"
-                                     Bordered="true"
-                                     Class="mud-alt-part-grid"
-                                     ShowMenuIcon="true">
+        <div class="mud-alt-part-dialog-content">
+            <MudForm @ref="_form" @bind-IsValid="_isValid" Style="height:100%;">
+                <MudGrid Style="height:100%;">
+                    <MudItem xs="12" Style="height:100%; display:flex; flex-direction:column;">
+                        @if (IsLoading)
+                        {
+                            <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+                            <MudText Typo="Typo.body2" Class="mt-2">Loading alternative parts...</MudText>
+                        }
+                        else
+                        {
+                            <MudDataGrid T="AlternativePartUxModel"
+                                         @ref="_alternativePartNumbersGrid"
+                                         Items="@RfqUxClientService.AlternativeParts"
+                                         Virtualize="true"
+                                         FixedHeader="true"
+                                         ItemSize="20f"
+                                         Height="100%"
+                                         Dense="true"
+                                         DragDropColumnReordering="true"
+                                         ApplyDropClassesOnDragStarted="true"
+                                         ColumnResizeMode="ResizeMode.Column"
+                                         SortMode="SortMode.Multiple"
+                                         Hideable="true"
+                                         Filterable="true"
+                                         FilterMode="DataGridFilterMode.ColumnFilterRow"
+                                         Groupable="true"
+                                         QuickFilter="@QuickFilter"
+                                         ReadOnly="true"
+                                         Bordered="true"
+                                         Class="mud-alt-part-grid"
+                                         ShowMenuIcon="true">
                             <ToolBarContent>
                                 <MudTooltip Text="Full text search">
                                     <MudTextField @bind-Value="AlternativePartFilter" 
@@ -89,8 +255,8 @@
                                                   Adornment="Adornment.Start" 
                                                   Immediate="true"
                                                   AdornmentIcon="@Icons.Material.Filled.Search" 
-                                                  IconSize="Size.Medium" 
-                                                  Class="mt-0" />
+                                                  IconSize="Size.Small" 
+                                                  Class="mt-0 alt-part-search-field" />
                                 </MudTooltip>
                                 <span>&nbsp;</span>
                             </ToolBarContent>
@@ -223,7 +389,6 @@
                                 <PropertyColumn Property="x => x.Group7" Title="Group 7" />
                                 <PropertyColumn Property="x => x.Group8" Title="Group 8" />
                                 <PropertyColumn Property="x => x.CustomerId" Title="Customer ID" />
-                                <PropertyColumn Property="x => x.CustomerCode" Title="Customer Code" />
                                 <PropertyColumn Property="x => x.MassOrWeight2" Title="Mass / Weight 2" />
                                 <PropertyColumn Property="x => x.L1" Title="L1" />
                                 <PropertyColumn Property="x => x.L2" Title="L2" />
@@ -282,29 +447,33 @@
                 </MudItem> *@
             </MudGrid>
         </MudForm>
+        </div>
     </DialogContent>
     <DialogActions>
-        <MudStack Row Spacing="2" Class="ma-1">
+        <MudStack Row Spacing="1" Class="ma-0 pa-0 mud-alt-part-dialog-actions">
             <MudTextField @bind-Value="AlternativePartNumber"
                           Label="Dummy Part Number"
                           Variant="Variant.Outlined"
                           Margin="Margin.Dense"
                           Required="true"
                           RequiredError="Dummy part number is required"
+                          Class="alt-part-number-field"
                           Disabled="true" />
             <MudNumericField @bind-Value="AlternativePrice"
                              Label="Dummy Price"
                              Variant="Variant.Outlined"
                              Margin="Margin.Dense"
+                             HideSpinButtons="true"
                              Format="0.#####"
                              Adornment="Adornment.End"
                              AdornmentText="€"
                              Min="0m"
                              Required="true"
                              RequiredError="Dummy price is required"
+                             Class="alt-part-price-field"
                              Disabled="true" />
-            <MudButton OnClick="Cancel" Color="Color.Default">Cancel</MudButton>
-            <MudButton OnClick="Apply" Color="Color.Primary" Variant="Variant.Filled" Disabled="!_isValid">OK</MudButton>
+            <MudButton OnClick="Cancel" Color="Color.Default" Size="Size.Small" Variant="Variant.Filled" Class="pa-1">Cancel</MudButton>
+            <MudButton OnClick="Apply" Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" Disabled="!_isValid" Class="pa-1">OK</MudButton>
         </MudStack>
 
     </DialogActions>
@@ -449,8 +618,6 @@
         return;
     }
 
-
-
     private void Cancel()
     {
         MudDialog.Cancel();
@@ -470,82 +637,6 @@
         }
     }
 
-    // quick filter - filter globally across multiple columns with the same input
-    // Func<AlternativePartUxModel, bool> QuickFilter => x =>
-    // {
-    //     if (string.IsNullOrWhiteSpace(AlternativePartFilter))
-    //         return true;
-
-    //     // Compile filter only when it changes
-    //     if (_LastCompiledFilter != AlternativePartFilter)
-    //     {
-    //         _LastCompiledFilter = AlternativePartFilter;
-    //         var filter = AlternativePartFilter.Trim();
-    //         var comparisonType = StringComparison.OrdinalIgnoreCase;
-    //         var isNumeric = double.TryParse(filter, out double numericFilter);
-
-    //         _CompiledQuickFilter = item =>
-    //         {
-    //             // String property checks
-    //             if (item.SumitomoNumber?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.SumitomoDescription?.Contains(filter, comparisonType) == true) return true;
-    //             // if (item.MainSupplier?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.SupplierName?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.SupplierNumber?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.CurrencyCode?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.UnitOfMeasure?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.PartGroup?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.GroupDescription?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.Class1?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.Class1Name?.Contains(filter, comparisonType) == true) return true;
-    //             // if (item.Class2?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.Class2Name?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.ColourCode?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.ColorName?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.MaterialGroup?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.MaterialType?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.TypeDescription?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.CategoryCode?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.CategoryName?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.UoM?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.CustomerCode?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.CustomerId?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.Group1?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.Group2?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.Group3?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.Group4?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.Group5?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.Group6?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.Group7?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.Group8?.Contains(filter, comparisonType) == true) return true;
-    //             // if (item.Grease?.Contains(filter, comparisonType) == true) return true;
-    //             if (item.CategoryCode2?.Contains(filter, comparisonType) == true) return true;
-    //             // if (item.Tilt?.Contains(filter, comparisonType) == true) return true;
-
-    //             // Numeric property checks
-    //             if (isNumeric)
-    //             {
-    //                 if (item.Price?.ToString().Contains(filter, comparisonType) == true) return true;
-    //                 if (item.NumberOfCavity?.ToString().Contains(filter, comparisonType) == true) return true;
-    //                 if (item.InsideDiameter?.ToString().Contains(filter, comparisonType) == true) return true;
-    //                 if (item.WallThickness?.ToString().Contains(filter, comparisonType) == true) return true;
-    //                 if (item.Length?.ToString().Contains(filter, comparisonType) == true) return true;
-    //                 if (item.WidthOrOutsideDiameter?.ToString().Contains(filter, comparisonType) == true) return true;
-    //                 if (item.MassOrWeight?.ToString().Contains(filter, comparisonType) == true) return true;
-    //                 if (item.MassOrWeight2?.ToString().Contains(filter, comparisonType) == true) return true;
-    //                 if (item.Quantity?.ToString().Contains(filter, comparisonType) == true) return true;
-    //                 if (item.L1?.ToString().Contains(filter, comparisonType) == true) return true;
-    //                 if (item.L2?.ToString().Contains(filter, comparisonType) == true) return true;
-    //                 if (item.L3?.ToString().Contains(filter, comparisonType) == true) return true;
-    //                 if (item.PitchWidth?.ToString().Contains(filter, comparisonType) == true) return true;
-    //             }
-
-    //             return false;
-    //         };
-    //     }
-
-    //     return _CompiledQuickFilter?.Invoke(x) ?? true;
-    // };
     private bool _quickFilterFunc(AlternativePartUxModel x)
     {
         if (string.IsNullOrWhiteSpace(AlternativePartFilter))

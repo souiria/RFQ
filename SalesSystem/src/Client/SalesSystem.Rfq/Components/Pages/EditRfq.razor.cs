@@ -5,7 +5,7 @@
         #region Attribs
         //[Parameter]
         //public IReadOnlySet<long> PreselectedDerivativeIds { get; set; } = new HashSet<long>();
-        CompositeCards? _CompositeCardsRef;
+        Composites? _CompositesRef;
         // Store the current selection from the CompositeCards checkboxes
         IEnumerable<DsiComponentUxModel> _SelectedComponents = new List<DsiComponentUxModel>();
         // Reference to the Harnesses
@@ -18,7 +18,7 @@
         CancellationTokenSource? _SearchCancellationTokenSource;
 
         // Reference to autocomplete for reset
-        MudAutocomplete<RqfCustomerProjectAssociationUxModel>? _ProjectAutocomplete;
+        //MudAutocomplete<RfqCustomerProjectAssociationUxModel>? _ProjectAutocomplete;
 
         // Helper property for total parts count
         int TotalParts => _CompletedParts.Count + _InProgressParts.Count;
@@ -27,15 +27,15 @@
         bool IsLoading
         { get; set; }
         // this is set in the OnInitialAsync based on the RfqProjectId parameter
-        RqfProjectUxModel? RfqProject 
+        RfqProjectUxModel? RfqProject 
         { get; set; }
 
         // Simplified project selection (like CreateRfq)
-        RqfCustomerProjectAssociationUxModel? SelectedProject
+        RfqCustomerProjectAssociationUxModel? SelectedProject
         { get; set; }
 
         // Track previous selected project to detect changes
-        RqfCustomerProjectAssociationUxModel? _PreviousSelectedProject;
+        RfqCustomerProjectAssociationUxModel? _PreviousSelectedProject;
 
         // Part numbers data - changed to List for mutability
         List<RfqDrawingPartNumberUxModel> _CompletedParts = new List<RfqDrawingPartNumberUxModel>();
@@ -136,12 +136,12 @@
                     if (SelectedProject != null)
                     {
                         RfqProject!.ProjectId = SelectedProject.ProjectId!;
-                        Logger.GenericLogInformation($"EditRfq.OnAfterRender - Project changed to {SelectedProject.Id} - {SelectedProject.ProjectCode}");
+                        Logger.GenericLogInformation($"EditRfq.OnAfterRender - ProjectName changed to {SelectedProject.Id} - {SelectedProject.ProjectCode}");
                     }
                     else
                     {
                         RfqProject!.ProjectId = "";
-                        Logger.GenericLogInformation($"EditRfq.OnAfterRender - Project cleared");
+                        Logger.GenericLogInformation($"EditRfq.OnAfterRender - ProjectName cleared");
                     }
 
                     _PreviousSelectedProject = SelectedProject;
@@ -185,14 +185,14 @@
             if (rfqProject == null)
             {
                 Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-                Snackbar.Add($"RFQ Project with Id {RfqProjectId} not found", Severity.Error);
-                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - RFQ Project with Id {RfqProjectId} not found");
+                Snackbar.Add($"RFQ ProjectName with Id {RfqProjectId} not found", Severity.Error);
+                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - RFQ ProjectName with Id {RfqProjectId} not found");
                 NavigationManager.NavigateTo("/");
                 return success;
             }
             else
             {
-                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Retrieved RFQ Project with Id {rfqProject.RowId} - {rfqProject.RfqNumber} - Customer {rfqProject.CustomerBusinessUnitGuid} / {rfqProject.CustomerBusinessGroupCode} - Project {rfqProject.ProjectGuid} / {rfqProject.ProjectName}");
+                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Retrieved RFQ ProjectName with Id {rfqProject.RowId} - {rfqProject.RfqNumber} - Customer {rfqProject.CustomerBusinessUnitGuid} / {rfqProject.CustomerBusinessGroupCode} - ProjectName {rfqProject.ProjectGuid} / {rfqProject.ProjectName}");
             }
 
             if (RfqUxClientService.CustomerProjectAssociations.Count == 0)
@@ -206,8 +206,8 @@
             if (RfqProject == null)
             {
                 Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-                Snackbar.Add($"Error mapping RFQ Project with Id {RfqProjectId}", Severity.Error);
-                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Error mapping RFQ Project with Id {RfqProjectId}");
+                Snackbar.Add($"Error mapping RFQ ProjectName with Id {RfqProjectId}", Severity.Error);
+                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Error mapping RFQ ProjectName with Id {RfqProjectId}");
                 NavigationManager.NavigateTo("/");
                 return success;
             }
@@ -218,17 +218,17 @@
                     .FirstOrDefault(p => p.ProjectId == RfqProject.ProjectId);
                 if (SelectedProject != null)
                 {
-                    RfqProject.ProjectCode = SelectedProject.ProjectCode;
-                    RfqProject.Project = SelectedProject.ProjectName;
+                    RfqProject.ProjectName = SelectedProject.ProjectCode;
+                    RfqProject.ProjectName = SelectedProject.ProjectName;
                     RfqProject.CustomerCode = SelectedProject.CustomerCode ?? string.Empty;
                 }
 
-                RfqProject.RfqReason = RfqUxClientService.Reasons.FirstOrDefault(r => r.RowId == RfqProject.RfqReasonId)?.RfqReasonTitle ?? string.Empty;
+                RfqProject.RfqReasonName = RfqUxClientService.Reasons.FirstOrDefault(r => r.RowId == RfqProject.RfqReasonId)?.RfqReasonTitle ?? string.Empty;
 
                 _PreviousSelectedProject = SelectedProject;
                 IsLoading = false;
                 success = true;
-                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded RFQ Project with Id {RfqProject.RowId} - {RfqProject.RfqNumber} {RfqProject.ProjectId}");
+                Logger.GenericLogInformation($"EditRfq.OnInitializedAsync - Loaded RFQ ProjectName with Id {RfqProject.RowId} - {RfqProject.RfqNumber} {RfqProject.ProjectId}");
             }
 
             // get the part numbers
@@ -255,50 +255,118 @@
         async Task LoadCompositesAsync()
         {
             _Composites.Clear();
-            if (RfqProject == null || string.IsNullOrWhiteSpace(RfqProject.JsonData))
+
+            if (RfqProject == null
+                || string.IsNullOrWhiteSpace(RfqProject.JsonData))
             {
                 return;
             }
 
-            // composite data is stored in the JsonData field of the RfqProject, so we need to deserialize it
+            // Composite data is stored in the JsonData field of the RfqProject,
+            // so we need to deserialize it.
             SelectionLogData? selectionLog = null;
+
             try
             {
-                selectionLog = JsonSerializer.Deserialize<SelectionLogData>(RfqProject.JsonData, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+                JsonSerializerOptions serializerOptions =
+                    new JsonSerializerOptions();
+
+                serializerOptions.PropertyNameCaseInsensitive = true;
+                serializerOptions.PreferredObjectCreationHandling =
+                    JsonObjectCreationHandling.Populate;
+
+                selectionLog =
+                    JsonSerializer.Deserialize<SelectionLogData>(
+                        RfqProject.JsonData,
+                        serializerOptions);
             }
             catch (JsonException ex)
             {
-                Logger.GenericLogError("Error parsing JsonData for SelectionLogData", ex);
+                Logger.GenericLogError(
+                    "Error parsing JsonData for SelectionLogData",
+                    ex);
+
                 return;
             }
 
-            if (selectionLog == null || string.IsNullOrWhiteSpace(selectionLog.HarnessId))
+            if (selectionLog == null)
             {
-                Logger.GenericLogInformation("HarnessId is null or empty in JsonData");
+                Logger.GenericLogInformation(
+                    "SelectionLogData is null");
+
                 return;
             }
 
-            if (!Guid.TryParse(selectionLog.HarnessId, out Guid id))
+            HashSet<Guid> harnessIds = new HashSet<Guid>();
+
+            // New format: multiple harnesses.
+            if (selectionLog.HarnessIds.Count > 0)
             {
-                Logger.GenericLogInformation($"Invalid HarnessId format: {selectionLog.HarnessId}");
+                foreach (string harnessId in selectionLog.HarnessIds)
+                {
+                    if (Guid.TryParse(
+                            harnessId,
+                            out Guid parsedId))
+                    {
+                        harnessIds.Add(parsedId);
+                    }
+                    else
+                    {
+                        Logger.GenericLogInformation(
+                            $"Invalid HarnessId format: {harnessId}");
+                    }
+                }
+            }
+            // Backward compatibility: single harness.
+            else if (!string.IsNullOrWhiteSpace(selectionLog.HarnessId))
+            {
+                if (Guid.TryParse(
+                        selectionLog.HarnessId,
+                        out Guid parsedId))
+                {
+                    harnessIds.Add(parsedId);
+                }
+                else
+                {
+                    Logger.GenericLogInformation(
+                        $"Invalid HarnessId format: {selectionLog.HarnessId}");
+                }
+            }
+
+            if (harnessIds.Count == 0)
+            {
+                Logger.GenericLogInformation(
+                    "No valid HarnessIds found in JsonData");
+
                 return;
             }
 
-            // for testing 
-            // Guid id = Guid.Parse("237ad12c-3e00-46a4-baeb-ba12fff53fa6");
             await DsiUxClientService.GetAllHarnessAsync();
-            _Composites.AddRange(DsiUxClientService.Harnesses.Where(h => h.Id == id));
+
+            IEnumerable<DsiHarnessUxModel> linkedHarnesses =
+                DsiUxClientService.Harnesses
+                    .Where(
+                        harness =>
+                            harnessIds.Contains(harness.Id))
+                    .GroupBy(harness => harness.Id)
+                    .Select(group => group.First());
+
+            _Composites.AddRange(linkedHarnesses);
+
+            Logger.GenericLogInformation(
+                $"LoadCompositesAsync - Found {_Composites.Count} " +
+                $"linked harnesses from {harnessIds.Count} stored HarnessIds");
 
             _PreselectedDerivativeIds.Clear();
 
-            if (selectionLog.Selections != null && selectionLog.Selections.Any())
+            if (selectionLog.Selections != null
+                && selectionLog.Selections.Any())
             {
-                foreach (SelectedCompositeData selection in selectionLog.Selections)
+                foreach (SelectedCompositeData selection
+                         in selectionLog.Selections)
                 {
-                    _PreselectedDerivativeIds.Add(selection.Id);
+                    _PreselectedDerivativeIds.Add(
+                        selection.Id);
                 }
             }
         }
@@ -331,7 +399,7 @@
         {
             if (RfqProject == null)
             {
-                Snackbar.Add("No Rfq Project to process for NPR", Severity.Error);
+                Snackbar.Add("No Rfq ProjectName to process for NPR", Severity.Error);
                 return;
             }
 
@@ -662,192 +730,6 @@
             StateHasChanged();
         }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
-        //async Task TestSubmitNprRequestsAsync()
-        //{
-        //    //if (RfqProject?.NprRequests == null || RfqProject.NprRequests.Count == 0)
-        //    //{
-        //    //    Snackbar.Add("No NPR requests to submit", Severity.Info);
-        //    //    return;
-        //    //}
-
-        //    // material needs to be unique every time, so we can use a timestamp to make it unique
-        //    DateTime now = DateTime.Now;
-
-        //    // xxx: Day of the year, padded to 3 digits (001-366)
-        //    int dayOfYear = now.DayOfYear;
-
-        //    // yyy: Minutes elapsed from midnight, padded to 4 digits (0000-1439)
-        //    int minutesFromMidnight = (int)now.TimeOfDay.TotalMinutes;
-
-        //    // Construct the final string "Mdddmmmm"
-        //    string materialNumber = $"M{dayOfYear:D3}{minutesFromMidnight:D4}";
-
-        //    RfqNprRequestUxModel testNprRequest = new RfqNprRequestUxModel()
-        //    {
-        //        CustomerRfqNo = RfqProject?.RfqNumber ?? "TEST RFQ",
-        //        CustomerCode =  "FORD",
-        //        OriginatorName = "Williams, Darran (YST)",
-        //        DeadlineDate = DateTime.Now + TimeSpan.FromDays(30),
-        //        ReasonDescription = "Supplier Tender",
-        //        MaterialNumber = materialNumber,
-        //        MaterialDescription = "Test Mat desc",
-        //        CustomerPartNumber = "19062024AC",
-        //        SupplierPartNumber = "15OCT2024003",
-        //        BOMUnitOfMeasurement = "EU",
-        //        SupplierGroup = "New Supplier",
-        //        SupplierDetailComments = "TestRFQ",
-        //        ProjectCode = "Lion V6 CU ED 01/04/2022 FMC",
-        //        QtyPerVehicle = 10,
-        //        IsSampleDataRequired = false,
-        //        //SampleSiteDetails = new List<RfqNprRequestSampleSiteDataUxModel>(),
-        //        NPRRaisedRemarks = "Test",
-        //        ManufacturingSite = "KENI",
-        //        IsCustomerNominatedSupplier = false,
-        //        IsCustomerNominatedMaterial = false,
-        //        SuggestedManufacturerGroup = "ACAPLAST",
-        //        AssociatedParts = "NO",
-        //        NPRUploadSeqNo = 1
-        //    };
-
-        //    // Only submit requests that are not soft-deleted.
-        //    List<RfqNprRequestUxModel> toSubmit = new();
-        //    toSubmit.Add(testNprRequest);
-
-        //    bool? confirm = await DialogService.ShowMessageBoxAsync(
-        //        "Submit a Test NPR Request",
-        //        $"Submit {testNprRequest.MaterialNumber}/{testNprRequest.CustomerPartNumber}/{testNprRequest.SupplierPartNumber} NPR request to the NPR API?",
-        //        yesText: $"Submit {toSubmit.Count}",
-        //        cancelText: "Cancel"
-        //    );
-
-        //    if (confirm != true)
-        //    {
-        //        return;
-        //    }
-
-        //    // show NprSubmissionStatusDialog with a message that the submission is in progress and show the test npr attached
-        //    string statusMessage = 
-        //        $"Submitting {testNprRequest.CustomerPartNumber}/{testNprRequest.SupplierPartNumber} with {testNprRequest.MaterialNumber} material number.{Environment.NewLine}{Environment.NewLine}" +
-        //        $"for RfqProject Id {RfqProject?.RfqNumber} {Environment.NewLine}" +
-        //        $"day of year / minute of day: {dayOfYear}/{minutesFromMidnight}";
-
-        //    DialogParameters submitStatusParameters = new DialogParameters
-        //            {
-        //                { nameof(NprSubmissionStatusDialog.IsSuccess), true },
-        //                { nameof(NprSubmissionStatusDialog.RfqNumber), RfqProject?.RfqNumber },
-        //                { nameof(NprSubmissionStatusDialog.NprRequestNumber), "" },
-        //                { nameof(NprSubmissionStatusDialog.StatusMessage), statusMessage }
-        //            };
-
-        //    DialogOptions submitStatusOptions = new DialogOptions
-        //    {
-        //        MaxWidth = MaxWidth.Medium,
-        //        FullWidth = true,
-        //        CloseButton = true,
-        //        CloseOnEscapeKey = true
-        //    };
-
-        //    await DialogService.ShowAsync<NprSubmissionStatusDialog>(
-        //        "NPR Submission Test",
-        //        submitStatusParameters,
-        //        submitStatusOptions);
-
-        //    _IsSubmittingNprs = true;
-        //    StateHasChanged();
-
-        //    try
-        //    {
-        //        // Persist any pending NPR edits BEFORE submitting so the API sees the latest data.
-        //        if (_ComponentNprEditor != null && _ComponentNprEditor.HasPendingChanges)
-        //        {
-        //            await _ComponentNprEditor.SaveNprRequestsAsync();
-        //        }
-
-        //        Logger.GenericLogInformation(
-        //            $"EditRfq.TestSubmitNprRequestsAsync - Submitting {toSubmit.Count} NPR request(s) for RFQ {RfqProject?.RfqNumber}");
-
-        //        CreateNprGrpcResponse response = await RfqUxClientService.CreateNprGrpcAsync(toSubmit);
-
-        //        Snackbar.Add($"Test NPR request submitted. HTTP Status: {response.HttpStatusCode}, Message: {response.Message}", Severity.Info);
-
-        //        Logger.GenericLogInformation(
-        //            $"EditRfq.TestSubmitNprRequestsAsync - Response: HttpStatusCode='{response.HttpStatusCode}', " +
-        //            $"Message='{response.Message}', returned {response.NprApiData.Count} entry(ies)");
-
-        //        bool ok = string.Equals(response.HttpStatusCode, "OK", StringComparison.OrdinalIgnoreCase);
-
-        //        string? nprRequestNumber = response.NprApiData
-        //            .Select(d => d.NprId)
-        //            .FirstOrDefault(id => !string.IsNullOrWhiteSpace(id));
-
-        //        statusMessage = ok
-        //            ? $"Submitted {response.NprApiData.Count} NPR request(s) successfully.{Environment.NewLine}{Environment.NewLine}" +
-        //              $"HTTP Status: {response.HttpStatusCode}{Environment.NewLine}" +
-        //              $"API Message: {response.Message}"
-        //            : $"NPR submission did not complete successfully.{Environment.NewLine}{Environment.NewLine}" +
-        //              $"HTTP Status: {response.HttpStatusCode}{Environment.NewLine}" +
-        //              $"API Message: {response.Message}";
-
-        //        submitStatusParameters = new DialogParameters
-        //        {
-        //            { nameof(NprSubmissionStatusDialog.IsSuccess), ok },
-        //            { nameof(NprSubmissionStatusDialog.RfqNumber), RfqProject?.RfqNumber },
-        //            { nameof(NprSubmissionStatusDialog.NprRequestNumber), nprRequestNumber },
-        //            { nameof(NprSubmissionStatusDialog.StatusMessage), statusMessage }
-        //        };
-
-        //        submitStatusOptions = new DialogOptions
-        //        {
-        //            MaxWidth = MaxWidth.Medium,
-        //            FullWidth = true,
-        //            CloseButton = true,
-        //            CloseOnEscapeKey = true
-        //        };
-
-        //        await DialogService.ShowAsync<NprSubmissionStatusDialog>(
-        //            ok ? "NPR Submission Successful" : "NPR Submission Warning",
-        //            submitStatusParameters,
-        //            submitStatusOptions);
-
-        //        // Refresh from DB so any RequestID assignments / status changes are picked up.
-        //        await LoadNprRequests();
-        //        if (_ComponentNprEditor != null)
-        //        {
-        //            _ComponentNprEditor.NotifyStateChanged();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.GenericLogError("EditRfq.SubmitNprRequestsAsync - Error submitting NPR requests", ex);
-
-        //        DialogParameters submitErrorParameters = new DialogParameters
-        //        {
-        //            { nameof(NprSubmissionStatusDialog.IsSuccess), false },
-        //            { nameof(NprSubmissionStatusDialog.RfqNumber), RfqProject?.RfqNumber ?? string.Empty },
-        //            { nameof(NprSubmissionStatusDialog.NprRequestNumber), null },
-        //            { nameof(NprSubmissionStatusDialog.StatusMessage), $"Error submitting NPR requests:{Environment.NewLine}{Environment.NewLine}{ex.Message}" }
-        //        };
-
-        //        DialogOptions submitErrorOptions = new DialogOptions
-        //        {
-        //            MaxWidth = MaxWidth.Medium,
-        //            FullWidth = true,
-        //            CloseButton = true,
-        //            CloseOnEscapeKey = true
-        //        };
-
-        //        await DialogService.ShowAsync<NprSubmissionStatusDialog>(
-        //            "NPR Submission Error",
-        //            submitErrorParameters,
-        //            submitErrorOptions);
-        //    }
-        //    finally
-        //    {
-        //        _IsSubmittingNprs = false;
-        //    }
-
-        //    StateHasChanged();
-        //}
         async Task ShowDatasetStatusAsync()
         {
             DialogParameters parameters = new DialogParameters
@@ -962,88 +844,88 @@
         #endregion
 
         #region Customer
-        async Task OnCustomerValueChanged(string value)
-        {
-            RfqProject!.CustomerBusinessUnitId = value;
+        //async Task OnCustomerValueChanged(string value)
+        //{
+        //    RfqProject!.CustomerBusinessUnitId = value;
 
-            CustomerUxModel? customer = RfqUxClientService.Customers.FirstOrDefault(c => c?.Id == value);
-            if (customer == null)
-            {
-                Logger.GenericLogInformation($"EditRfq.OnCustomerValueChanged - Customer with ID '{value}' not found");
-                return;
-            }
+        //    CustomerUxModel? customer = RfqUxClientService.Customers.FirstOrDefault(c => c?.Id == value);
+        //    if (customer == null)
+        //    {
+        //        Logger.GenericLogInformation($"EditRfq.OnCustomerValueChanged - Customer with ID '{value}' not found");
+        //        return;
+        //    }
 
-            Logger.GenericLogInformation($"EditRfq.OnCustomerValueChanged - Customer changed to {customer.Id} - {customer.CustomerBusinessGroupName}");
+        //    Logger.GenericLogInformation($"EditRfq.OnCustomerValueChanged - Customer changed to {customer.Id} - {customer.CustomerBusinessGroupName}");
 
-            // Clear selected project when customer changes (like CreateRfq)
-            SelectedProject = null;
-            _PreviousSelectedProject = null;
-            RfqProject.ProjectId = "";
+        //    // Clear selected project when customer changes (like CreateRfq)
+        //    SelectedProject = null;
+        //    _PreviousSelectedProject = null;
+        //    RfqProject.ProjectId = "";
 
-            // Reset the autocomplete component
-            if (_ProjectAutocomplete != null)
-            {
-                await _ProjectAutocomplete.ClearAsync();
-            }
+        //    // Reset the autocomplete component
+        //    if (_ProjectAutocomplete != null)
+        //    {
+        //        await _ProjectAutocomplete.ClearAsync();
+        //    }
 
-            try
-            {
-                await GetProjectAssociationsByCustomerName(customer.CustomerBusinessGroupName);
-            }
-            catch (ArgumentNullException ex)
-            {
-                Logger.GenericLogError($"EditRfq.OnCustomerValueChanged - ArgumentNullException loading customer projects for customer '{customer.CustomerBusinessGroupName}'", ex);
-            }
-            catch (InvalidOperationException ex)
-            {
-                Logger.GenericLogError($"EditRfq.OnCustomerValueChanged - InvalidOperationException loading customer projects for customer '{customer.CustomerBusinessGroupName}'", ex);
-            }
+        //    try
+        //    {
+        //        await GetProjectAssociationsByCustomerName(customer.CustomerBusinessGroupName);
+        //    }
+        //    catch (ArgumentNullException ex)
+        //    {
+        //        Logger.GenericLogError($"EditRfq.OnCustomerValueChanged - ArgumentNullException loading customer projects for customer '{customer.CustomerBusinessGroupName}'", ex);
+        //    }
+        //    catch (InvalidOperationException ex)
+        //    {
+        //        Logger.GenericLogError($"EditRfq.OnCustomerValueChanged - InvalidOperationException loading customer projects for customer '{customer.CustomerBusinessGroupName}'", ex);
+        //    }
 
-            StateHasChanged();
-        }
+        //    StateHasChanged();
+        //}
 
-        async Task GetProjectAssociationsByCustomerName(string? customerBusinessGroupName)
-        {
-            if (!string.IsNullOrWhiteSpace(RfqProject!.CustomerBusinessUnitId))
-            {
-                CustomerUxModel? customer = RfqUxClientService.Customers.FirstOrDefault(c => c?.CustomerBusinessGroupName == customerBusinessGroupName);
+        //async Task GetProjectAssociationsByCustomerName(string? customerBusinessGroupName)
+        //{
+        //    if (!string.IsNullOrWhiteSpace(RfqProject!.CustomerBusinessUnitId))
+        //    {
+        //        CustomerUxModel? customer = RfqUxClientService.Customers.FirstOrDefault(c => c?.CustomerBusinessGroupName == customerBusinessGroupName);
 
-                if (customer != null && Guid.TryParse(customer.Id, out Guid customerId))
-                {
-                    await RfqUxClientService.GetProjectAssociationsByCustomerIdAsync(customerId.ToString());
-                    StateHasChanged();
-                }
-                else
-                {
-                    Logger.GenericLogInformation($"EditRfq.GetProjectAssociationsByCustomerName - Customer not found or invalid ID for '{customerBusinessGroupName}'");
-                }
-            }
-        }
+        //        if (customer != null && Guid.TryParse(customer.Id, out Guid customerId))
+        //        {
+        //            await RfqUxClientService.GetProjectAssociationsByCustomerIdAsync(customerId.ToString());
+        //            StateHasChanged();
+        //        }
+        //        else
+        //        {
+        //            Logger.GenericLogInformation($"EditRfq.GetProjectAssociationsByCustomerName - Customer not found or invalid ID for '{customerBusinessGroupName}'");
+        //        }
+        //    }
+        //}
         #endregion
 
         #region Project Autocomplete
         // Search function for MudAutocomplete (same as CreateRfq)
-        async Task<IEnumerable<RqfCustomerProjectAssociationUxModel>> SearchProjects(string searchText, CancellationToken cancellationToken)
-        {
-            await Task.Delay(0, cancellationToken);
+        //async Task<IEnumerable<RfqCustomerProjectAssociationUxModel>> SearchProjects(string searchText, CancellationToken cancellationToken)
+        //{
+        //    await Task.Delay(0, cancellationToken);
 
-            // If no search text, return all projects (sorted)
-            if (string.IsNullOrWhiteSpace(searchText))
-            {
-                return RfqUxClientService.CustomerProjectAssociations
-                    .OrderBy(p => p.ProjectCode)
-                    .ThenBy(p => p.CustomerName);
-            }
+        //    // If no search text, return all projects (sorted)
+        //    if (string.IsNullOrWhiteSpace(searchText))
+        //    {
+        //        return RfqUxClientService.CustomerProjectAssociations
+        //            .OrderBy(p => p.ProjectCode)
+        //            .ThenBy(p => p.CustomerName);
+        //    }
 
-            // Search across project name and customer name
-            return RfqUxClientService.CustomerProjectAssociations
-                .Where(p =>
-                    (p.ProjectCode?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                    (p.CustomerName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false))
-                .OrderBy(p => p.ProjectCode?.StartsWith(searchText, StringComparison.OrdinalIgnoreCase) == true ? 0 : 1)
-                .ThenBy(p => p.ProjectCode)
-                .ThenBy(p => p.CustomerName);
-        }
+        //    // Search across project name and customer name
+        //    return RfqUxClientService.CustomerProjectAssociations
+        //        .Where(p =>
+        //            (p.ProjectCode?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+        //            (p.CustomerName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false))
+        //        .OrderBy(p => p.ProjectCode?.StartsWith(searchText, StringComparison.OrdinalIgnoreCase) == true ? 0 : 1)
+        //        .ThenBy(p => p.ProjectCode)
+        //        .ThenBy(p => p.CustomerName);
+        //}
         #endregion
 
         #region Reason
@@ -1230,64 +1112,138 @@
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+    "Design",
+    "CA1031:Do not catch general exception types",
+    Justification = "<Pending>")]
         async Task SaveDataAsync()
         {
-            List<RfqDrawingPartNumberUxModel> allParts = new();
-            allParts.AddRange(_CompletedParts.Where(p => p != null).Select(p => p!));
-            allParts.AddRange(_InProgressParts.Where(p => p != null).Select(p => p!));
-            if(allParts.Count == 0)
+            if (RfqProject == null)
             {
-                Snackbar.Add("No parts to save", Severity.Info);
-                Logger.GenericLogInformation("EditRfq.SaveDataAsync - No parts available to save");
+                Snackbar.Add(
+                    "RFQ project is not available",
+                    Severity.Error);
+
+                Logger.GenericLogInformation(
+                    "EditRfq.SaveDataAsync - RfqProject is null");
+
                 return;
             }
 
+            List<RfqDrawingPartNumberUxModel> allParts =
+                new List<RfqDrawingPartNumberUxModel>();
+
+            allParts.AddRange(
+                _CompletedParts
+                    .Where(part => part != null));
+
+            allParts.AddRange(
+                _InProgressParts
+                    .Where(part => part != null));
+
             try
             {
-                // Save pending NPR changes BEFORE reloading (otherwise the editor gets destroyed)
-                if (_ComponentNprEditor != null && _ComponentNprEditor.HasPendingChanges)
+                // Save pending NPR changes before reloading the project.
+                if (_ComponentNprEditor != null
+                    && _ComponentNprEditor.HasPendingChanges)
                 {
                     await _ComponentNprEditor.SaveNprRequestsAsync();
                 }
 
-                // Update selection (save JSON Data)
+                // Always save the BOM selection and HarnessIds,
+                // even when the Parts Lists are empty.
                 await UpdateSelectionAsync();
 
-                // Save the RfqProject FIRST so its RowId exists before parts reference it
-                UpdateRfqProjectGrpcResponse rfqUpdateResult = await RfqUxClientService.UpdateRfqProjectAsync(RfqProject!);
-                RfqCrudResponse partsUpdateResult = await RfqUxClientService.UpdateRfqDrawingPartNumbersAsync(allParts);
+                // Persist the RFQ project, including JsonData.
+                UpdateRfqProjectGrpcResponse rfqUpdateResult =
+                    await RfqUxClientService.UpdateRfqProjectAsync(
+                        RfqProject);
 
-                if (partsUpdateResult.SaveSuccess && rfqUpdateResult.Success)
+                bool partsSaveSuccess = true;
+
+                // Only call the parts update endpoint when parts exist.
+                if (allParts.Count > 0)
                 {
-                    Snackbar.Add("Data saved successfully", Severity.Success);
-                    Logger.GenericLogInformation("EditRfq.SaveDataAsync - Data saved successfully");
+                    RfqCrudResponse partsUpdateResult =
+                        await RfqUxClientService
+                            .UpdateRfqDrawingPartNumbersAsync(
+                                allParts);
 
-                    // Reload part numbers
+                    partsSaveSuccess =
+                        partsUpdateResult.SaveSuccess;
+                }
+                else
+                {
+                    Logger.GenericLogInformation(
+                        "EditRfq.SaveDataAsync - " +
+                        "No parts available. RFQ and BOM selection " +
+                        "will still be saved.");
+                }
+
+                if (rfqUpdateResult.Success
+                    && partsSaveSuccess)
+                {
+                    if (allParts.Count > 0)
+                    {
+                        Snackbar.Add(
+                            "Data saved successfully",
+                            Severity.Success);
+                    }
+                    else
+                    {
+                        Snackbar.Add(
+                            "BOM selection saved successfully",
+                            Severity.Success);
+                    }
+
+                    Logger.GenericLogInformation(
+                        "EditRfq.SaveDataAsync - " +
+                        $"RFQ saved successfully. " +
+                        $"Parts={allParts.Count}, " +
+                        $"Harnesses={_Composites.Count}, " +
+                        $"Selections=" +
+                        $"{_CompositesRef?.SelectedItems.Count ?? 0}");
+
+                    // Reload RFQ and part-number data.
                     await LoadRfqAndPartNumbersAsync();
 
-                    // Reload NPR requests so the tab remains enabled and data is fresh
+                    // Important: reload HarnessIds and selected derivative IDs
+                    // from the newly saved JsonData.
+                    await LoadCompositesAsync();
+
+                    // Reload NPR requests so the tab remains enabled.
                     await LoadNprRequests();
 
-                    // Notify the NPR editor to re-render with the fresh data
-                    // (the parent replaced RfqProject.NprRequests but Blazor won't
-                    //  detect the change since the RfqProject reference is the same)
                     if (_ComponentNprEditor != null)
                     {
-                        // await _ComponentNprEditor.RefreshNprRequestsAsync();
                         _ComponentNprEditor.NotifyStateChanged();
                     }
                 }
                 else
                 {
-                    Snackbar.Add("Error saving data", Severity.Error);
-                    Logger.GenericLogInformation("EditRfq.SaveDataAsync - Error saving data");
+                    Snackbar.Add(
+                        "Error saving data",
+                        Severity.Error);
+
+                    Logger.GenericLogInformation(
+                        "EditRfq.SaveDataAsync - " +
+                        $"Error saving data. " +
+                        $"RfqSuccess={rfqUpdateResult.Success}, " +
+                        $"PartsSuccess={partsSaveSuccess}");
                 }
 
                 StateHasChanged();
             }
             catch (Exception ex)
             {
-                Logger.GenericLogError($"EditRfq.SaveDataAsync - Unexpected error during data save {ex.Message}", ex);
+                Logger.GenericLogError(
+                    "EditRfq.SaveDataAsync - " +
+                    $"Unexpected error during data save: {ex.Message}",
+                    ex);
+
+                Snackbar.Add(
+                    $"Error saving data: {ex.Message}",
+                    Severity.Error);
             }
         }
         #endregion
@@ -1301,18 +1257,21 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         async Task SearchAllPartNumbersAsync()
         {
-            if (_InProgressParts is null || !_InProgressParts.Any())
+            if (_InProgressParts == null || !_InProgressParts.Any())
             {
-                Snackbar.Add("No in-progress parts to search", Severity.Info);
+                Snackbar.Add(
+                    "No in-progress parts to search",
+                    Severity.Info);
+
                 return;
             }
 
             bool? confirm = await DialogService.ShowMessageBoxAsync(
                 "Confirm Search All",
-                $"Search EMACS for all {_InProgressParts.Count} in-progress part(s)? Auto-matched parts will be moved to Completed.",
+                $"Search EMACS for all {_InProgressParts.Count} in-progress part(s)? " +
+                "Auto-matched parts will be moved to Completed.",
                 yesText: "Search All",
-                cancelText: "Cancel"
-            );
+                cancelText: "Cancel");
 
             if (confirm != true)
             {
@@ -1320,23 +1279,68 @@
             }
 
             _IsSearchingAll = true;
+
             _SearchCancellationTokenSource?.Dispose();
             _SearchCancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = _SearchCancellationTokenSource.Token;
+
+            CancellationToken cancellationToken =
+                _SearchCancellationTokenSource.Token;
+
             _SearchInitialTotalParts = TotalParts;
 
-            // Snapshot so we can mutate _InProgressParts safely while iterating.
-            List<RfqDrawingPartNumberUxModel> partsSnapshot = _InProgressParts.Where(p => p is not null).Cast<RfqDrawingPartNumberUxModel>().ToList();
-            if(partsSnapshot is null || !partsSnapshot.Any())
+            // Create a snapshot so the original lists can be modified safely.
+            List<RfqDrawingPartNumberUxModel> partsSnapshot =
+                _InProgressParts
+                    .Where(part => part != null)
+                    .ToList();
+
+            if (partsSnapshot.Count == 0)
             {
-                Snackbar.Add("No in-progress parts to search", Severity.Info);
+                Snackbar.Add(
+                    "No in-progress parts to search",
+                    Severity.Info);
+
                 _IsSearchingAll = false;
                 return;
             }
 
-            // Build per-part progress state and open the dialog.
+            // Build the progress-dialog labels.
             SearchProgressState progressState = new SearchProgressState();
-            progressState.Initialize(partsSnapshot.Select(p => p.CustomerPartNumber ?? "(unknown)"));
+
+            progressState.Initialize(
+                partsSnapshot.Select(part =>
+                {
+                    List<string> displayPartNumbers = new List<string>();
+
+                    if (!string.IsNullOrWhiteSpace(part.PartNumber1))
+                    {
+                        displayPartNumbers.Add(part.PartNumber1.Trim());
+                    }
+                    else if (!string.IsNullOrWhiteSpace(part.CustomerPartNumber))
+                    {
+                        displayPartNumbers.Add(
+                            part.CustomerPartNumber.Trim());
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(part.PartNumber2))
+                    {
+                        displayPartNumbers.Add(part.PartNumber2.Trim());
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(part.PartNumber3))
+                    {
+                        displayPartNumbers.Add(part.PartNumber3.Trim());
+                    }
+
+                    displayPartNumbers = displayPartNumbers
+                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                        .ToList();
+
+                    return displayPartNumbers.Count > 0
+                        ? string.Join(" / ", displayPartNumbers)
+                        : "(unknown)";
+                }));
+
             progressState.OnCancelRequested = () =>
             {
                 try
@@ -1345,14 +1349,15 @@
                 }
                 catch (ObjectDisposedException)
                 {
-                    // Already disposed — nothing to do.
+                    // The cancellation token source was already disposed.
                 }
             };
 
-            DialogParameters parameters = new DialogParameters<SearchProgressDialog>
-            {
-                { x => x.ProgressState, progressState }
-            };
+            DialogParameters parameters =
+                new DialogParameters<SearchProgressDialog>
+                {
+            { x => x.ProgressState, progressState }
+                };
 
             DialogOptions options = new DialogOptions
             {
@@ -1363,8 +1368,11 @@
                 FullWidth = true
             };
 
-            IDialogReference dialog = await DialogService.ShowAsync<SearchProgressDialog>(
-                "Search All Part Numbers", parameters, options);
+            IDialogReference dialog =
+                await DialogService.ShowAsync<SearchProgressDialog>(
+                    "Search All Part Numbers",
+                    parameters,
+                    options);
 
             int processed = 0;
             int movedExact = 0;
@@ -1375,156 +1383,308 @@
             {
                 StateHasChanged();
 
-                // ----------------------------------------------------------------
-                // Search each part successively so the dialog updates after every
-                // individual gRPC call rather than waiting for a full batch.
-                // ----------------------------------------------------------------
-                for (int partIndex = 0; partIndex < partsSnapshot.Count; partIndex++)
+                for (int partIndex = 0;
+                     partIndex < partsSnapshot.Count;
+                     partIndex++)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    RfqDrawingPartNumberUxModel? item = partsSnapshot[partIndex];
-                    if (item == null)
+                    RfqDrawingPartNumberUxModel item =
+                        partsSnapshot[partIndex];
+
+                    /*
+                     * Create one search list for this grid row.
+                     *
+                     * The list can contain:
+                     * - PartNumber1
+                     * - PartNumber2
+                     * - PartNumber3
+                     *
+                     * CustomerPartNumber is used as a fallback for older records
+                     * where PartNumber1 was not stored separately.
+                     */
+                    List<string> partNumbersToSearch =
+                        new List<string>();
+
+                    if (!string.IsNullOrWhiteSpace(item.PartNumber1))
                     {
-                        progressState.CompletePartAsUnmatched(partIndex, "skipped (null)");
-                        unmatched++;
-                        continue;
+                        partNumbersToSearch.Add(
+                            item.PartNumber1.Trim());
+                    }
+                    else if (!string.IsNullOrWhiteSpace(
+                                 item.CustomerPartNumber))
+                    {
+                        partNumbersToSearch.Add(
+                            item.CustomerPartNumber.Trim());
                     }
 
-                    // Mark this checkpoint active in the dialog immediately.
+                    if (!string.IsNullOrWhiteSpace(item.PartNumber2))
+                    {
+                        partNumbersToSearch.Add(
+                            item.PartNumber2.Trim());
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(item.PartNumber3))
+                    {
+                        partNumbersToSearch.Add(
+                            item.PartNumber3.Trim());
+                    }
+
+                    // Remove duplicate and empty values.
+                    partNumbersToSearch = partNumbersToSearch
+                        .Where(partNumber =>
+                            !string.IsNullOrWhiteSpace(partNumber))
+                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                        .ToList();
+
+                    string progressPartNumbers =
+                        partNumbersToSearch.Count > 0
+                            ? string.Join(" / ", partNumbersToSearch)
+                            : "(unknown)";
+
                     progressState.StartPart(
                         partIndex,
-                        $"Searching {partIndex + 1} of {partsSnapshot.Count}: {item.CustomerPartNumber}");
+                        $"Searching {partIndex + 1} of " +
+                        $"{partsSnapshot.Count}: " +
+                        progressPartNumbers);
 
                     processed++;
 
-                    // Reset previous search state on the part (mirrors PartNumbersEditGrid.OnSearch).
-                    // `item` is the SAME reference held by _InProgressParts — mutations persist on the
-                    // in-progress object.
+                    // Clear previous search results before running this search.
                     item.SearchResultPartNumbers.Clear();
                     item.Comments = string.Empty;
 
-                    if (string.IsNullOrEmpty(item.CustomerPartNumber))
+                    if (partNumbersToSearch.Count == 0)
                     {
                         Logger.GenericLogInformation(
-                            $"EditRfq.SearchAllPartNumbersAsync - No valid part number for Row ID: {item.RowId}");
-                        progressState.CompletePartAsUnmatched(partIndex, "invalid part number");
+                            $"EditRfq.SearchAllPartNumbersAsync - " +
+                            $"No valid part numbers for RowId={item.RowId}");
+
+                        progressState.CompletePartAsUnmatched(
+                            partIndex,
+                            "invalid part numbers");
+
                         unmatched++;
                         continue;
                     }
 
                     try
                     {
-                        // One gRPC call per part — response arrives and the dialog checkpoint
-                        // is completed before we move on to the next part.
-                        SearchPartPricesGrpcResponse response = await RfqUxClientService.SearchPartPricesAsync(
-                            new List<string> { item.CustomerPartNumber },
-                            cancellationToken);
+                        Logger.GenericLogInformation(
+                            $"EditRfq.SearchAllPartNumbersAsync - " +
+                            $"Searching RowId={item.RowId}, " +
+                            $"PartNumbers=[" +
+                            $"{string.Join(", ", partNumbersToSearch)}]");
 
-                        // The service returns one PriceResponse per input part number.
-                        PriceResponse? priceResponse = response.PriceResponse
-                            .FirstOrDefault(pr =>
-                                string.Equals(
-                                    pr.CustomerPartNumber,
-                                    item.CustomerPartNumber,
-                                    StringComparison.OrdinalIgnoreCase));
+                        /*
+                         * One gRPC call for this grid row.
+                         *
+                         * Example request:
+                         * ["PART-1", "PART-2", "PART-3"]
+                         */
+                        SearchPartPricesGrpcResponse response =
+                            await RfqUxClientService
+                                .SearchPartPricesAsync(
+                                    partNumbersToSearch,
+                                    cancellationToken);
 
-                        if (priceResponse != null)
+                        int candidateIndex = 0;
+
+                        /*
+                         * The service should return one PriceResponse for each
+                         * input part number. Process all returned responses.
+                         */
+                        foreach (PriceResponse priceResponse
+                                 in response.PriceResponse)
                         {
-                            bool isExactMatch = priceResponse.ExactMatch ?? false;
-                            int candidateIndex = 0;
+                            string searchedPartNumber =
+                                priceResponse.CustomerPartNumber?.Trim()
+                                ?? string.Empty;
 
-                            // -------------------------------------------------------
-                            // Save ALL returned price lines onto the in-progress part's
-                            // SearchResultPartNumbers list for later manual review.
-                            // -------------------------------------------------------
-                            foreach (PriceInformation priceInfo in priceResponse.PriceInformation)
+                            bool isExactMatch =
+                                priceResponse.ExactMatch ?? false;
+
+                            foreach (PriceInformation priceInfo
+                                     in priceResponse.PriceInformation)
                             {
-                                RfqDrawingPartNumberUxModel candidate = new RfqDrawingPartNumberUxModel();
-                                candidate.IsExactMatch = isExactMatch;
-                                candidate.Index = candidateIndex++;
-                                candidate.DrawingPartNumber = priceInfo.SumitomoNumber ?? string.Empty;
-                                candidate.DrawingPartNumberPrice = priceInfo.Price is double d
-                                    ? Convert.ToDecimal(d, CultureInfo.InvariantCulture)
-                                    : 0m;
-                                candidate.PriceSource = priceInfo.PriceSource ?? string.Empty;
-                                item.SearchResultPartNumbers.Add(candidate);
+                                decimal candidatePrice =
+                                    priceInfo.Price is double price
+                                        ? Convert.ToDecimal(
+                                            price,
+                                            CultureInfo.InvariantCulture)
+                                        : 0m;
+
+                                RfqDrawingPartNumberUxModel candidate =
+                                    new RfqDrawingPartNumberUxModel
+                                    {
+                                        Index = candidateIndex++,
+
+                                        /*
+                                         * Store the input part number that produced
+                                         * this candidate.
+                                         */
+                                        CustomerPartNumber =
+                                            searchedPartNumber,
+
+                                        PartNumber1 =
+                                            searchedPartNumber,
+
+                                        DrawingPartNumber =
+                                            priceInfo.SumitomoNumber
+                                            ?? string.Empty,
+
+                                        DrawingPartNumberPrice =
+                                            candidatePrice,
+
+                                        PriceSource =
+                                            priceInfo.PriceSource
+                                            ?? string.Empty,
+
+                                        IsExactMatch =
+                                            isExactMatch,
+
+                                        IsSwapped =
+                                            false
+                                    };
+
+                                item.SearchResultPartNumbers.Add(
+                                    candidate);
                             }
 
                             Logger.GenericLogInformation(
-                                $"EditRfq.SearchAllPartNumbersAsync - {item.CustomerPartNumber}: " +
-                                $"exactMatch={isExactMatch}, candidates={item.SearchResultPartNumbers.Count}");
+                                $"EditRfq.SearchAllPartNumbersAsync - " +
+                                $"InputPart={searchedPartNumber}, " +
+                                $"ExactMatch={isExactMatch}, " +
+                                $"Candidates=" +
+                                $"{priceResponse.PriceInformation.Count}");
                         }
 
-                        // Pick the best priced candidate from the (now populated) list.
-                        RfqDrawingPartNumberUxModel? bestExact = item.SearchResultPartNumbers
-                            .FirstOrDefault(x => x.IsExactMatch && x.DrawingPartNumberPrice > 0m);
+                        Logger.GenericLogInformation(
+                            $"EditRfq.SearchAllPartNumbersAsync - " +
+                            $"RowId={item.RowId}, " +
+                            $"Searched=[" +
+                            $"{string.Join(", ", partNumbersToSearch)}], " +
+                            $"TotalCandidates=" +
+                            $"{item.SearchResultPartNumbers.Count}");
 
-                        RfqDrawingPartNumberUxModel? bestContains = bestExact == null
-                            ? item.SearchResultPartNumbers
-                                .FirstOrDefault(x => !x.IsExactMatch && x.DrawingPartNumberPrice > 0m)
-                            : null;
+                        /*
+                         * First preference:
+                         * Any exact match with a price.
+                         */
+                        RfqDrawingPartNumberUxModel? bestExact =
+                            item.SearchResultPartNumbers
+                                .FirstOrDefault(candidate =>
+                                    candidate.IsExactMatch &&
+                                    candidate.DrawingPartNumberPrice > 0m);
 
-                        RfqDrawingPartNumberUxModel? bestMatch = bestExact ?? bestContains;
+                        /*
+                         * Second preference:
+                         * A contains match with a price.
+                         */
+                        RfqDrawingPartNumberUxModel? bestContains =
+                            bestExact == null
+                                ? item.SearchResultPartNumbers
+                                    .FirstOrDefault(candidate =>
+                                        !candidate.IsExactMatch &&
+                                        candidate.DrawingPartNumberPrice > 0m)
+                                : null;
+
+                        RfqDrawingPartNumberUxModel? bestMatch =
+                            bestExact ?? bestContains;
 
                         if (bestMatch != null)
                         {
-                            // Auto-match: swap the matched part number / price into the part's fields.
-                            // SearchResultPartNumbers is intentionally NOT cleared so all candidates
-                            // remain visible on the completed row.
-                            item.DrawingPartNumber = bestMatch.DrawingPartNumber;
-                            item.DrawingPartNumberPrice = bestMatch.DrawingPartNumberPrice;
-                            item.IsExactMatch = bestExact != null;
-                            item.IsSwapped = false;
-                            item.PriceSource = bestMatch.PriceSource;
+                            string matchedInputPartNumber =
+                                bestMatch.CustomerPartNumber;
+
+                            item.DrawingPartNumber =
+                                bestMatch.DrawingPartNumber;
+
+                            item.DrawingPartNumberPrice =
+                                bestMatch.DrawingPartNumberPrice;
+
+                            item.IsExactMatch =
+                                bestExact != null;
+
+                            item.IsSwapped =
+                                false;
+
+                            item.PriceSource =
+                                bestMatch.PriceSource;
+
                             item.Status = bestExact != null
                                 ? RfqDrawingPartNumberStatus.ExactMatch
                                 : RfqDrawingPartNumberStatus.ContainsMatch;
 
-                            bool ok = await RfqUxClientService.UpdateRfqDrawingPartNumber(item);
-                            if (ok)
+                            bool updateSucceeded =
+                                await RfqUxClientService
+                                    .UpdateRfqDrawingPartNumber(item);
+
+                            if (updateSucceeded)
                             {
+                                string matchDescription =
+                                    $"{matchedInputPartNumber} -> " +
+                                    $"{item.DrawingPartNumber} @ " +
+                                    $"{item.DrawingPartNumberPrice:0.#####} €";
+
                                 if (bestExact != null)
                                 {
                                     movedExact++;
+
                                     progressState.CompletePartAsExactMatch(
                                         partIndex,
-                                        $"exact: {item.DrawingPartNumber} @ {item.DrawingPartNumberPrice:0.##### €}");
+                                        $"exact: {matchDescription}");
                                 }
                                 else
                                 {
                                     movedContains++;
-                                    progressState.CompletePartAsContainsMatch(
-                                        partIndex,
-                                        $"contains: {item.DrawingPartNumber} @ {item.DrawingPartNumberPrice:0.##### €}");
+
+                                    progressState
+                                        .CompletePartAsContainsMatch(
+                                            partIndex,
+                                            $"contains: {matchDescription}");
                                 }
 
                                 Logger.GenericLogInformation(
-                                    $"EditRfq.SearchAllPartNumbersAsync - Auto-matched ({item.Status}): " +
-                                    $"{item.CustomerPartNumber} -> {item.DrawingPartNumber} @ {item.DrawingPartNumberPrice}");
+                                    $"EditRfq.SearchAllPartNumbersAsync - " +
+                                    $"Auto-matched ({item.Status}): " +
+                                    $"Input={matchedInputPartNumber}, " +
+                                    $"Drawing={item.DrawingPartNumber}, " +
+                                    $"Price={item.DrawingPartNumberPrice}");
                             }
                             else
                             {
                                 Logger.GenericLogInformation(
-                                    $"EditRfq.SearchAllPartNumbersAsync - Failed to persist auto-match for {item.CustomerPartNumber}");
-                                progressState.CompletePartAsUnmatched(partIndex, "persist failed");
+                                    $"EditRfq.SearchAllPartNumbersAsync - " +
+                                    $"Failed to persist auto-match for " +
+                                    $"RowId={item.RowId}");
+
+                                progressState.CompletePartAsUnmatched(
+                                    partIndex,
+                                    "persist failed");
+
                                 unmatched++;
                             }
                         }
                         else
                         {
-                            // No priced hit — keep in In-Progress; candidate list preserved for manual review.
                             unmatched++;
-                            int candidateCount = item.SearchResultPartNumbers.Count;
+
+                            int candidateCount =
+                                item.SearchResultPartNumbers.Count;
+
                             progressState.CompletePartAsUnmatched(
                                 partIndex,
                                 candidateCount == 0
                                     ? "no matches"
-                                    : $"{candidateCount} candidate(s) saved, no price");
+                                    : $"{candidateCount} candidate(s) " +
+                                      "saved, no price");
 
                             Logger.GenericLogInformation(
-                                $"EditRfq.SearchAllPartNumbersAsync - No priced match for {item.CustomerPartNumber}; " +
-                                $"saved {candidateCount} candidate(s) on the in-progress part for review");
+                                $"EditRfq.SearchAllPartNumbersAsync - " +
+                                $"No priced match for [" +
+                                $"{string.Join(", ", partNumbersToSearch)}]; " +
+                                $"saved {candidateCount} candidate(s)");
                         }
                     }
                     catch (OperationCanceledException)
@@ -1534,64 +1694,105 @@
                     catch (Exception ex)
                     {
                         Logger.GenericLogError(
-                            $"EditRfq.SearchAllPartNumbersAsync - Error processing {item.CustomerPartNumber}", ex);
-                        progressState.CompletePartAsError(partIndex, "Search failed!");
+                            $"EditRfq.SearchAllPartNumbersAsync - " +
+                            $"Error processing RowId={item.RowId}, " +
+                            $"PartNumbers=[" +
+                            $"{string.Join(", ", partNumbersToSearch)}]",
+                            ex);
+
+                        progressState.CompletePartAsError(
+                            partIndex,
+                            "Search failed!");
+
                         unmatched++;
                     }
 
-                    // Yield to the Blazor renderer so the dialog re-renders with this
-                    // part's completed checkpoint before starting the next search call.
+                    // Allow the progress dialog to update after each grid row.
                     StateHasChanged();
                     await Task.Yield();
                 }
 
-                // Move every auto-matched part from In-Progress to Completed.
-                List<RfqDrawingPartNumberUxModel> toMove = _InProgressParts
-                    .Where(p => p != null
-                        && (p.Status == RfqDrawingPartNumberStatus.ExactMatch
-                            || p.Status == RfqDrawingPartNumberStatus.ContainsMatch))
-                    .Cast<RfqDrawingPartNumberUxModel>()
-                    .ToList();
+                /*
+                 * Move successfully matched rows from In Progress
+                 * to Completed.
+                 */
+                List<RfqDrawingPartNumberUxModel> toMove =
+                    _InProgressParts
+                        .Where(part =>
+                            part.Status ==
+                                RfqDrawingPartNumberStatus.ExactMatch ||
+                            part.Status ==
+                                RfqDrawingPartNumberStatus.ContainsMatch)
+                        .ToList();
 
-                foreach (RfqDrawingPartNumberUxModel? p in toMove)
+                foreach (RfqDrawingPartNumberUxModel part in toMove)
                 {
-                    if(p is not null)
+                    _InProgressParts.Remove(part);
+
+                    if (!_CompletedParts.Contains(part))
                     {
-                        _InProgressParts.Remove(p);
-                        _CompletedParts.Add(p);
+                        _CompletedParts.Add(part);
                     }
                 }
 
-                // Invariant: total BOM size must not change across a Search All run.
                 Debug.Assert(
-                    _CompletedParts.Count + _InProgressParts.Count == _SearchInitialTotalParts,
+                    _CompletedParts.Count + _InProgressParts.Count ==
+                    _SearchInitialTotalParts,
                     "SearchAllPartNumbersAsync changed total BOM size");
 
-                string summary = $"Processed {processed}, exact-matched {movedExact}, " +
-                                 $"contains-matched {movedContains}, unmatched {unmatched}";
+                string summary =
+                    $"Processed {processed}, " +
+                    $"exact-matched {movedExact}, " +
+                    $"contains-matched {movedContains}, " +
+                    $"unmatched {unmatched}";
+
                 progressState.SetCompleted(summary);
 
                 Snackbar.Add(
                     $"Search All complete: {summary}",
-                    unmatched == 0 && (movedExact + movedContains) > 0 ? Severity.Success : Severity.Info);
+                    unmatched == 0 &&
+                    movedExact + movedContains > 0
+                        ? Severity.Success
+                        : Severity.Info);
             }
             catch (OperationCanceledException)
             {
-                progressState.SetError("Search cancelled", "Cancellation was requested by the user.", isCompleted: true);
-                Snackbar.Add("Search All cancelled", Severity.Warning);
-                Logger.GenericLogInformation("EditRfq.SearchAllPartNumbersAsync - Cancelled by user");
+                progressState.SetError(
+                    "Search cancelled",
+                    "Cancellation was requested by the user.",
+                    isCompleted: true);
+
+                Snackbar.Add(
+                    "Search All cancelled",
+                    Severity.Warning);
+
+                Logger.GenericLogInformation(
+                    "EditRfq.SearchAllPartNumbersAsync - " +
+                    "Cancelled by user");
             }
             catch (Exception ex)
             {
-                progressState.SetError("Search failed", ex.Message, isCompleted: true);
-                Logger.GenericLogError("EditRfq.SearchAllPartNumbersAsync - Unexpected error during Search All", ex);
-                Snackbar.Add($"Search All failed: {ex.Message}", Severity.Error);
+                progressState.SetError(
+                    "Search failed",
+                    ex.Message,
+                    isCompleted: true);
+
+                Logger.GenericLogError(
+                    "EditRfq.SearchAllPartNumbersAsync - " +
+                    "Unexpected error during Search All",
+                    ex);
+
+                Snackbar.Add(
+                    $"Search All failed: {ex.Message}",
+                    Severity.Error);
             }
             finally
             {
                 _IsSearchingAll = false;
                 progressState.OnCancelRequested = null;
+
                 StateHasChanged();
+
                 _ = await dialog.Result;
             }
         }
@@ -1656,80 +1857,89 @@
             StateHasChanged();
             await Task.CompletedTask;
         }
-             
-         async Task UpdateSelectionAsync()
+
+        async Task UpdateSelectionAsync()
         {
-            HashSet<DsiCompositeDetailUxModel>? currentSelections = _CompositeCardsRef?.SelectedItems;
+            HashSet<DsiCompositeDetailUxModel>? currentSelections =
+                _CompositesRef?.SelectedItems;
 
-            //if (currentSelections == null || !currentSelections.Any())
-            //{
-            //    Snackbar.Add("No components selected to update.", Severity.Warning);
-            //    return;
-            //}
+            SelectionLogData selectionLog =
+                new SelectionLogData();
 
-            string? harnessId = _Composites.FirstOrDefault()?.Id.ToString();
-            SelectionLogData selectionLog = new SelectionLogData
+            selectionLog.RfqId = RfqProjectId;
+
+            foreach (DsiHarnessUxModel composite in _Composites)
             {
-                HarnessId = harnessId,
-                RfqId = RfqProjectId
-            };
+                string harnessId = composite.Id.ToString();
 
-            if (currentSelections != null && currentSelections.Any())
-            {
-                selectionLog.Selections = currentSelections.Select(x => new SelectedCompositeData
+                if (!selectionLog.HarnessIds.Contains(harnessId))
                 {
-                    Id = x.Id,
-                    HarnessName1 = x.HarnessName1,
-                    HarnessName2 = x.HarnessName2,
-                    Customer = x.Customer
-                }).ToList();
+                    selectionLog.HarnessIds.Add(harnessId);
+                }
+            }
+
+            // Keep the old single HarnessId property for backward compatibility.
+            DsiHarnessUxModel? firstComposite =
+                _Composites.FirstOrDefault();
+
+            if (firstComposite != null)
+            {
+                selectionLog.HarnessId =
+                    firstComposite.Id.ToString();
+            }
+
+            if (currentSelections != null
+                && currentSelections.Count > 0)
+            {
+                List<SelectedCompositeData> selections =
+                    new List<SelectedCompositeData>();
+
+                foreach (DsiCompositeDetailUxModel selection
+                         in currentSelections)
+                {
+                    SelectedCompositeData selectedComposite =
+                        new SelectedCompositeData();
+
+                    selectedComposite.Id = selection.Id;
+                    selectedComposite.HarnessName1 =
+                        selection.HarnessName1;
+                    selectedComposite.HarnessName2 =
+                        selection.HarnessName2;
+                    selectedComposite.Customer =
+                        selection.Customer;
+
+                    selections.Add(selectedComposite);
+                }
+
+                selectionLog.Selections = selections;
             }
             else
             {
-                selectionLog.Selections = new List<SelectedCompositeData>();
+                selectionLog.Selections =
+                    new List<SelectedCompositeData>();
             }
 
-            // Explicit string declaration
-            string jsonOutput = JsonSerializer.Serialize(selectionLog, new JsonSerializerOptions
+            JsonSerializerOptions serializerOptions =
+                new JsonSerializerOptions();
+
+            serializerOptions.WriteIndented = true;
+
+            string jsonOutput =
+                JsonSerializer.Serialize(
+                    selectionLog,
+                    serializerOptions);
+
+            Logger.GenericLogInformation(
+                $">>> Serializing derivatives selection JSON data: " +
+                $"{jsonOutput}");
+
+            if (RfqProject != null)
             {
-                WriteIndented = true
-            });
-
-            Logger.GenericLogInformation($">>> Serializing derivatives selection JSON data: {jsonOutput}");
-
-            RfqProject!.JsonData = jsonOutput;
-
-            //try
-            //{
-            //    UpdateRfqProjectGrpcResponse result =
-            //        await RfqUxClientService.UpdateRfqProjectAsync(RfqProject);
-
-            //    if (result.Success)
-            //    {
-            //        Snackbar.Add(" JSON data saved to RFQ successfully", Severity.Success);
-            //    }
-            //    else
-            //    {
-            //        Snackbar.Add("Failed to save JSON data", Severity.Error);
-            //    }
-            //}
-            //catch (InvalidOperationException ex)
-            //{
-            //    Snackbar.Add($"Invalid operation: {ex.Message}", Severity.Error);
-            //}
-            //catch (ArgumentNullException ex)
-            //{
-            //    Snackbar.Add($"Missing data: {ex.Message}", Severity.Error);
-            //}
-            //catch (HttpRequestException ex)
-            //{
-            //    Snackbar.Add($"Network error: {ex.Message}", Severity.Error);
-            //}
-
-            //Snackbar.Add($"{currentSelections?.Count} components selected", Severity.Success);
+                RfqProject.JsonData = jsonOutput;
+            }
 
             await Task.CompletedTask;
-       }
+        }
 
         // update npr requests
         async Task UpdateRfqNprRequestsAsync()
@@ -1752,11 +1962,22 @@
         }
     }
 
-     public class SelectionLogData
+    public class SelectionLogData
     {
         public string? HarnessId { get; set; }
+
+        [JsonObjectCreationHandling(
+            JsonObjectCreationHandling.Populate)]
+        public Collection<string> HarnessIds { get; } =
+            new Collection<string>();
+
         public long RfqId { get; set; }
-        public IEnumerable<SelectedCompositeData>? Selections { get; set; }
+
+        public IEnumerable<SelectedCompositeData>? Selections
+        {
+            get;
+            set;
+        }
     }
     public class SelectedCompositeData
     {

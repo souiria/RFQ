@@ -21,6 +21,7 @@
         Task<FilterGrpcResponse> FilterNPRBySumitomoPartNumber(FilterGrpcRequest request);
         Task<FilterGrpcResponse> FilterCPDBySumitomoPartNumber(FilterGrpcRequest request);
         Task<FilterGrpcResponse> FilterRFQBySumitomoPartNumber(FilterGrpcRequest request);
+        Task<FilterGrpcResponse> FilterNPRByCustomerPartNumber(FilterGrpcRequest request);
         Task<ListRfqDrawingPartNumberGrpc> GetRfqDrawingPartNumbersByRfqIdGrpc(RfqDrawingPartNumbersGrpcRequest request);
         Task<RfqCrudResponse> DeleteRfqDrawingPartNumbersGrpc(RfqDrawingPartNumbersGrpcRequest request);
         Task<RfqCrudResponse> UpdateRfqDrawingPartNumbers(RfqDrawingPartNumbersGrpcRequest request);

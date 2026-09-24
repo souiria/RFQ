@@ -1,6 +1,6 @@
 ﻿namespace SalesSystem.Rfq.Models
 {
-    public class RqfProjectUxModel
+    public class RfqProjectUxModel
     {
         #region Fields
         List<RfqNprRequestUxModel> _NprRequests;
@@ -21,11 +21,11 @@
         { get; set; }
         public string ProjectId
         { get; set; }
-        public string? Project
+        public string? ProjectName
         { get; set; }
         public int RfqReasonId
         { get; set; }
-        public string? RfqReason
+        public string? RfqReasonName
         { get; set; }
         public DateTime? RfqResponseDeadline
         { get; set; }
@@ -39,7 +39,11 @@
         { get; set; }
         public string CustomerCode
         { get; set; }
-        public string? ProjectCode
+        public string? CustomerBusinessGroupCode
+        { get; set; }
+        public string? CustomerLocationName
+        { get; set; }
+        public string? CarModelName
         { get; set; }
         public string? JsonData 
         { get; set; }
@@ -53,7 +57,7 @@
         #endregion
 
         #region Ctor
-        public RqfProjectUxModel()
+        public RfqProjectUxModel()
         {
             RfqNumber = "";
             CustomerBusinessUnitId = string.Empty;
@@ -65,7 +69,7 @@
             RfqReasonId = 0;
             IsActive = false;
             CustomerCode = string.Empty;
-            ProjectCode = string.Empty;
+            ProjectName = string.Empty;
             JsonData = string.Empty;
             _NprRequests = new();
 

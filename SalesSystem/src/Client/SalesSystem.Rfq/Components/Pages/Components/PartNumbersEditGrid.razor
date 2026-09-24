@@ -8,6 +8,13 @@
 @inject IDialogService DialogService
 
 <style>
+    :root {
+        --appbar-height: 64px;
+        --pane-gap: 16px;
+        --dashboard-background: #f2f2f2;
+        --rfq-grid-height: 12px;
+    }
+
     .mud-parts-list .mud-table-head {
         background-color: lightgrey;
     }
@@ -28,14 +35,102 @@
         z-index: 1;
         background-color: var(--mud-palette-surface);
     }
+    /* Bottom panels */
+    .data-pane {
+        display: flex;
+        flex-direction: column;
+        padding: 6px;
+    }
+
+    .pane-title {
+        padding-top: 1px;
+        padding-bottom: 1px;
+        padding-left: 4px;
+        padding-right: 4px;
+        flex: 0 0 auto;
+        margin: 0 0 4px 0;
+    }
+
+    .table-host {
+        display: flex;
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: hidden;
+    }
+    /*
+            DataGrid:
+            - FixedHeader keeps the DataGrid header visible.
+            - The toolbar is outside the table's scrolling container.
+            - Fixed table layout plus widths summing to 100% prevents horizontal scrolling.
+        */
+    .mud-parts-list {
+        overflow: hidden;
+    }
+
+        .mud-parts-list .mud-table-container {
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+        }
+
+        .mud-parts-list table {
+            width: 100% !important;
+            table-layout: fixed !important;
+        }
+
+        .mud-parts-list .mud-table-cell {
+            padding: 1px !important;
+            overflow: hidden;
+            font-size: var(--rfq-grid-height) !important;
+            line-height: 1;
+            text-align: left;
+            text-overflow: ellipsis;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .mud-parts-list .mud-table-head .mud-table-cell {
+            font-size: 14px !important;
+            font-weight: 700;
+        }
+
+    .row-action-buttons .mud-icon-button {
+        height: var(--rfq-grid-height);
+    }
+
+    .toolbar-row {
+        display: grid;
+        grid-template-columns: minmax(0, 5fr) minmax(0, 3.5fr) minmax(0, 1.5fr);
+        width: 100%;
+        min-width: 0;
+        min-height: 0;
+    }
+    /* Ensure MudBlazor's own toolbar wrapper doesn't constrain the width we set above */
+    .mud-parts-list .mud-table-toolbar,
+    .mud-parts-list .mud-toolbar {
+        width: 100%;
+        max-width: 100%;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        height: 36px;
+    }
+
+        .mud-parts-list .mud-toolbar .mud-input-slot {
+            margin-top: 0;
+            margin-bottom: 0px;
+        }
+
+    .quick-search {
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
 </style>
 <div class="d-flex flex-column" style="height: 100%; overflow: hidden;">
-    <MudDataGrid T="RfqDrawingPartNumberUxModel" 
-                 Items="@PartNumbers" 
-                 ReadOnly="false" 
+    <MudDataGrid T="RfqDrawingPartNumberUxModel"
+                 Items="@PartNumbers"
+                 ReadOnly="false"
                  EditMode="DataGridEditMode.Form"
-                 Bordered="true" 
-                 Dense="true" 
+                 Bordered="true"
+                 Dense="true"
                  EditTrigger="DataGridEditTrigger.Manual"
                  FixedHeader="true"
                  Height="calc(100% - 16px)"
@@ -44,7 +139,34 @@
                  RowStyleFunc="@RowStyleFunc"
                  ColumnResizeMode="ResizeMode.Column">
         <Columns>
-            <TemplateColumn Title="Actions" CellClass="d-flex justify-start">
+            <PropertyColumn Property="x => x.CustomerPartNumber" Title="Customer Part N°" />
+            <PropertyColumn Property="x => x.PartNumber1" Title="Part Number 1" Hidden="true" />
+            <PropertyColumn Property="x => x.PartNumber2" Title="Part Number 2" />
+            <PropertyColumn Property="x => x.PartNumber3" Title="Part Number 3" />
+            <PropertyColumn Property="x => x.DrawingPartNumber"
+                            Title="Drawing P/N" />
+            <PropertyColumn Property="x => x.DrawingPartNumberPrice"
+                            Title="Drawing P/N Price"
+                            Format="0.##### €" />
+            <PropertyColumn Property="x => x.Quantity"
+                            Title="Quantity"
+                            Format="0.####" />
+            <PropertyColumn Property="x => x.SwappedPartNumber"
+                            Title="Dummy/Alt. P/N" />
+            <PropertyColumn Property="x => x.SwappedPartNumberPrice"
+                            Title="Dummy/Alt. P/N Price"
+                            Format="0.##### €" />
+            <PropertyColumn Property="x => x.PriceSource"
+                            Title="Price Source" />
+            <PropertyColumn Property="x => x.IsExactMatch"
+                            Title="Exact Match" />
+            <PropertyColumn Property="x => x.IsSwapped"
+                            Title="Swapped" />
+            <TemplateColumn Title="Actions"
+                            HeaderStyle="width: 96px;"
+                            CellStyle="width: 96px;"
+                            StickyRight="true"
+                            CellClass="rfq-actions-cell">
                 <CellTemplate>
                     <MudTooltip Text="Search Part Number">
                         <MudIconButton Size="@Size.Small"
@@ -69,40 +191,14 @@
                     </MudTooltip>
                 </CellTemplate>
             </TemplateColumn>
-            @* <PropertyColumn Property="x => x.RowId" Title="ID" Editable="false" /> *@
-            <PropertyColumn Property="x => x.CustomerPartNumber" Title="Customer P/N" />
-            <PropertyColumn Property="x => x.DrawingPartNumber" Title="Drawing P/N" />
-            <PropertyColumn Property="x => x.DrawingPartNumberPrice"
-                            Title="Drawing P/N Price"
-                            Format="0.##### €">
-            </PropertyColumn>
-            <PropertyColumn Property="x => x.Quantity" Title="Quantity" Format="0.####">
-            </PropertyColumn>
-            <PropertyColumn Property="x => x.SwappedPartNumber" Title="Dummy/Alt. P/N" />
-            <PropertyColumn Property="x => x.SwappedPartNumberPrice"
-                            Title="Dummy/Alt. P/N Price"
-                            Format="0.##### €">
-            </PropertyColumn>
-            <PropertyColumn Property="x => x.PriceSource" Title="Price Source" />
-            <PropertyColumn Property="x => x.IsExactMatch" Title="Exact Match">
-            </PropertyColumn>
-            <PropertyColumn Property="x => x.IsSwapped" Title="Swapped">
-            </PropertyColumn>
-@*             <PropertyColumn Property="x => x.Comments" Title="Comments">
-                <EditTemplate>
-                    <MudTextField @bind-Value="context.Item.Comments" 
-                                 Lines="2" 
-                                 Margin="@Margin.Dense" />
-                </EditTemplate>
-            </PropertyColumn> *@
         </Columns>
     </MudDataGrid>
 </div>
 
 <style>
     /* .mud-grid-no-scroll-x {
-        overflow-x: hidden !important;
-    } */
+            overflow-x: hidden !important;
+        } */
     .mud-table-sticky-header {
         position: sticky;
         top: 0;
@@ -123,7 +219,7 @@
 
     private string RowStyleFunc(RfqDrawingPartNumberUxModel item, int index)
     {
-        if(item == null)
+        if (item == null)
         {
             return string.Empty;
         }
@@ -140,32 +236,16 @@
         };
 
         // Special case: if ContainsMatch and has a priced result, use lighter green
-        if (item.Status == RfqDrawingPartNumberStatus.ContainsMatch 
+        if (item.Status == RfqDrawingPartNumberStatus.ContainsMatch
             && item.SearchResultPartNumbers != null
             && item.SearchResultPartNumbers.Count > 0
             && item.SearchResultPartNumbers.Any(x => (x?.DrawingPartNumberPrice ?? 0.0m) > 0.0m))
         {
             color = "background-color: #A5D6A7;";
         }
-        
+
         return color;
     }
-
-    // events
-    // void StartedEditingItem(RfqDrawingPartNumberUxModel item)
-    // {
-    //     _events.Insert(0, $"Event = StartedEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
-    // }
-
-    // void CanceledEditingItem(RfqDrawingPartNumberUxModel item)
-    // {
-    //     _events.Insert(0, $"Event = CanceledEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
-    // }
-
-    // void CommittedItemChanges(RfqDrawingPartNumberUxModel item)
-    // {
-    //     _events.Insert(0, $"Event = CommittedItemChanges, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
-    // }
 
     private async Task OnSearch(RfqDrawingPartNumberUxModel item)
     {
@@ -193,56 +273,44 @@
         try
         {
             // Call SearchEmacsContainsCustomerPn
-            if(item.CustomerPartNumber == null)
+            if (item.CustomerPartNumber == null)
             {
                 Logger.GenericLogInformation("CustomerPartNumber is null");
                 return;
             }
-            SearchResultUxModel responseExact = await RfqUxClientService.SearchEmacsExactCustomerPn(item.CustomerPartNumber);
-            SearchResultUxModel responseContains = await RfqUxClientService.SearchEmacsContainsCustomerPn(cleanedUpPn);
-            // SearchPartPricesGrpcResponse response = await RfqUxClientService.SearchPartPricesAsync(
-            //     new List<string> { item.CustomerPartNumber });
 
-            if ((responseContains.IsSuccessful && 0 <= responseContains.StringList.Count)
-            || (responseExact.IsSuccessful && 0 <= responseExact.StringList.Count))
+            SearchPartPricesGrpcResponse response = await RfqUxClientService.SearchPartPricesAsync(
+                new List<string> { item.CustomerPartNumber });
+
+            PriceResponse? priceResponse = response.PriceResponse
+                .FirstOrDefault(pr =>
+                    string.Equals(
+                        pr.CustomerPartNumber,
+                        item.CustomerPartNumber,
+                        StringComparison.OrdinalIgnoreCase));
+
+            if(priceResponse?.PriceInformation != null && priceResponse.PriceInformation.Count>0)
             {
-                Logger.GenericLogInformation($"Item {item.CustomerPartNumber} exact matches: {responseExact.StringList.Count}");
-                Logger.GenericLogInformation($"Item {item.CustomerPartNumber} contains matches: {responseContains.StringList.Count}");
-
                 // Show custom dialog with MudList
                 int index = 0;
 
                 var commentData = new RfqDrawingPartNumberUxSearchResult();
                 commentData.User = "System";
                 commentData.Timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
-                commentData.Action = "AutoSearch_NPR_Applied";
+                commentData.Action = "Individual search";
 
-                // look for exact matches first
-                var exactMatches = responseExact.StringList.ToRfqDrawingPartNumberUxList(true);
-                commentData.ExactMatchPartNumbers.AddRange(exactMatches);
-                foreach (string pn in responseExact.StringList)
+                // just add all to the search list
+                foreach (var priceInfo in priceResponse.PriceInformation)
                 {
                     var matchedPartNumber = new RfqDrawingPartNumberUxModel();
-                    matchedPartNumber.IsExactMatch = true;  // exact match
+                    matchedPartNumber.IsExactMatch = priceInfo.SumitomoNumber
+                                                                .ToUpperInvariant()
+                                                                .CompareTo(item.CustomerPartNumber.ToUpperInvariant()) == 0;
                     matchedPartNumber.Index = index++;
-                    matchedPartNumber.DrawingPartNumber = pn;
-
+                    matchedPartNumber.DrawingPartNumber = priceInfo.SumitomoNumber;
+                    matchedPartNumber.DrawingPartNumberPrice = priceInfo.Price is null ? 0.0m : (decimal)priceInfo.Price;
                     item.SearchResultPartNumbers.Add(matchedPartNumber);
                 }
-
-                // then look for partial matches
-                var containsMatches = responseContains.StringList.ToRfqDrawingPartNumberUxList(false);
-                commentData.ContainsMatchPartNumbers.AddRange(containsMatches);
-                foreach (string pn in responseContains.StringList)
-                {
-                    var matchedPartNumber = new RfqDrawingPartNumberUxModel();
-                    matchedPartNumber.IsExactMatch = false;  // exact match
-                    matchedPartNumber.Index = index++;
-                    matchedPartNumber.DrawingPartNumber = pn;
-
-                    item.SearchResultPartNumbers.Add(matchedPartNumber);
-                }
-
 
                 DialogParameters parameters = new DialogParameters
                 {
@@ -270,7 +338,7 @@
                 {
                     try
                     {
-                        Logger.GenericLogInformation($"NPR data applied to part number: {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber}");
+                        Logger.GenericLogInformation($"Search data applied to part number: {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber}");
 
                         // Call the service to update the part number
                         bool success = await RfqUxClientService.UpdateRfqDrawingPartNumber(updatedItem);
@@ -321,11 +389,16 @@
                 Logger.GenericLogInformation(message);
 
                 // Show empty results dialog
+
                 DialogParameters parameters = new DialogParameters
                 {
                     { "SearchedPartNumber", item },
-                    { "SearchResults", new List<string?>() },
                 };
+                // DialogParameters parameters = new DialogParameters
+                // {
+                //     { "SearchedPartNumber", item },
+                //     { "SearchResults", new List<string?>() },
+                // };
 
                 DialogOptions options = new DialogOptions
                 {
@@ -404,10 +477,10 @@
 
                     Logger.GenericLogInformation($"Successfully updated part number: {editedItem.CustomerPartNumber}/{editedItem.DrawingPartNumber}");
                     Snackbar.Add($"Part number {editedItem.CustomerPartNumber}/{editedItem.DrawingPartNumber} updated successfully", Severity.Success);
-                    
+
                     // Notify parent component
                     await OnPartNumberUpdated.InvokeAsync(editedItem);
-                    
+
                     StateHasChanged();
                 }
                 else
@@ -447,12 +520,12 @@
         messageBuilder.AppendLine($"RFQ ID: {item.RfqId}");
         messageBuilder.AppendLine($"Customer Part Number: {item.CustomerPartNumber ?? "N/A"}");
         messageBuilder.AppendLine($"Drawing Part Number: {item.DrawingPartNumber ?? "N/A"}");
-        messageBuilder.AppendLine($"Drawing Part Number Price: {(item.DrawingPartNumberPrice >0 ? $"${item.DrawingPartNumberPrice.ToString("C5")}" : "N/A")}");
+        messageBuilder.AppendLine($"Drawing Part Number Price: {(item.DrawingPartNumberPrice > 0 ? $"${item.DrawingPartNumberPrice.ToString("C5")}" : "N/A")}");
         messageBuilder.AppendLine($"Dummy/Alt. Part Number: {item.SwappedPartNumber ?? "N/A"}");
-        messageBuilder.AppendLine($"Dummy/Alt. Price: {(item.SwappedPartNumberPrice >0 ? $"${item.SwappedPartNumberPrice.ToString("C5")}" : "N/A")}");
+        messageBuilder.AppendLine($"Dummy/Alt. Price: {(item.SwappedPartNumberPrice > 0 ? $"${item.SwappedPartNumberPrice.ToString("C5")}" : "N/A")}");
         messageBuilder.AppendLine($"Price Source: {item.PriceSource ?? "N/A"}");
-        messageBuilder.AppendLine($"Is Exact Match: {(item.IsExactMatch==true ? "YES" : "NO")}");
-        messageBuilder.AppendLine($"Is Swapped: {(item.IsSwapped==true ? "YES" : "NO")}");
+        messageBuilder.AppendLine($"Is Exact Match: {(item.IsExactMatch == true ? "YES" : "NO")}");
+        messageBuilder.AppendLine($"Is Swapped: {(item.IsSwapped == true ? "YES" : "NO")}");
         messageBuilder.AppendLine($"Is Matched: {item.IsCompleted}");
         messageBuilder.AppendLine($"Comments: {item.Comments ?? "N/A"}");
 

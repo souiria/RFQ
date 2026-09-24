@@ -17,7 +17,7 @@
                                   Label="Customer Part Number"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
-                                  Required="true"
+                                  Disabled="true"
                                   RequiredError="Original part number is required" />
                 </MudItem>
                 <MudItem xs="12" sm="4">
@@ -25,6 +25,7 @@
                                   Label="Original Part Number"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
+                                  Disabled="true"
                                   RequiredError="Original part number is required" />
                 </MudItem>
                 <MudItem xs="12" sm="4">
@@ -98,6 +99,8 @@
                     <MudTextField @bind-Value="EditedItem.SwappedPartNumber"
                                   Label="Dummy/Alt. Part Number"
                                   Variant="Variant.Outlined"
+                                  ReadOnly="true"
+                                  Disabled="true"
                                   Margin="Margin.Dense" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
@@ -108,6 +111,7 @@
                                      Format="0.#####"
                                      Adornment="Adornment.End"
                                      AdornmentText="€"
+                                     ReadOnly="true"
                                      Disabled="true"
                                      Min="0m" />
                 </MudItem>
@@ -115,11 +119,13 @@
                     <MudTextField @bind-Value="EditedItem.PriceSource"
                                   Label="Price Source"
                                   Variant="Variant.Outlined"
+                                  Disabled="true"
                                   Margin="Margin.Dense" />
                 </MudItem>
                 <MudItem xs="12" sm="4">
                     <MudCheckBox @bind-Value="EditedItem.IsExactMatch"
-                                 ReadOnly="true"    
+                                 ReadOnly="true"
+                                 Disabled="true"
                                  Label="Is Exact Match"
                                  Color="Color.Primary"
                                  Dense="true" />
@@ -127,6 +133,7 @@
                 <MudItem xs="12" sm="4">
                     <MudCheckBox Value="EditedItem.IsSwapped"
                                  ReadOnly="true"
+                                 Disabled="true"
                                  Label="Is Swapped"
                                  Color="Color.Primary"
                                  Dense="true" />
@@ -134,6 +141,7 @@
                 <MudItem xs="12" sm="4">
                     <MudCheckBox Value="EditedItem.IsCompleted"
                                  ReadOnly="true"
+                                 Disabled="true"
                                  Label="Is Matched"
                                  Color="Color.Primary"
                                  Dense="true" />
@@ -169,6 +177,7 @@
         <MudButton OnClick="PickDummy" 
                    Color="Color.Secondary" 
                    Variant="Variant.Filled"
+                   Size="Size.Small"
                    StartIcon="@Icons.Material.Filled.Add"
                    Style="margin-right: 8px;">
             Pick Dummy
@@ -176,6 +185,7 @@
         <MudButton OnClick="CreateNpr" 
                    Color="Color.Info" 
                    Variant="Variant.Filled"
+                   Size="Size.Small"
                    StartIcon="@Icons.Material.Filled.NoteAdd"
                    Style="margin-right: auto;">
             Create NPR
@@ -184,12 +194,19 @@
                    Disabled="!EditedItem.IsCompleted || !(0 < EditedItem.DrawingPartNumberPrice)"
                    Color="Color.Info"
                    Variant="Variant.Filled"
+                   Size="Size.Small"
                    StartIcon="@Icons.Material.Filled.IncompleteCircle"
                    Style="margin-right: auto;">
             Complete
         </MudButton>
-        <MudButton OnClick="Cancel" Color="Color.Default">Cancel</MudButton>
-        <MudButton OnClick="Save" Color="Color.Primary" Variant="Variant.Filled" Disabled="!_isValid">Save</MudButton>
+        <MudButton OnClick="Cancel"
+                   Color="Color.Default"
+                   Size="Size.Small">Cancel</MudButton>
+        <MudButton OnClick="Save"
+                   Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   Size="Size.Small"
+                   Disabled="!_isValid">Save</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -217,7 +234,11 @@
             IsExactMatch = OriginalItem.IsExactMatch,
             IsSwapped = OriginalItem.IsSwapped,
             Comments = OriginalItem.Comments,
-            Status = OriginalItem.Status
+            Status = OriginalItem.Status,
+            PartNumber1 = OriginalItem.CustomerPartNumber,
+             PartNumber2 = OriginalItem.PartNumber2,
+           PartNumber3 = OriginalItem.PartNumber3
+
         };
         EditedItem.SearchResultPartNumbers.AddRange(OriginalItem.SearchResultPartNumbers);
     }
