@@ -3,20 +3,6 @@
 @using SalesSystem.Rfq.Models
 @using MudBlazor
 
-<style>
-    ::deep .mud-dialog-content {
-        padding: 16px 24px;
-    }
-
-    ::deep .mud-grid {
-        margin: 0;
-    }
-
-    ::deep .mud-input-outlined {
-        margin-bottom: 0;
-    }
-</style>
-
 <MudDialog>
     <DialogContent>
         <MudForm @ref="_Form">
@@ -56,6 +42,7 @@
                                   Label="Customer P/N"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
+                                  Required="true"
                                   Disabled="true"
                                   MaxLength="26" />
                 </MudItem>
@@ -99,6 +86,7 @@
                                      SearchFunc="@SearchBusinessUnit"
                                      ToStringFunc="@(r => r?.LegacyBusinessUnitCode ?? "")"
                                      Strict="false"
+                                     Required="true"
                                      ResetValueOnEmptyText="false"
                                      CoerceText="true"
                                      SelectValueOnTab="true"
@@ -169,6 +157,7 @@
                     <MudDatePicker @bind-Date="NprRequest.DeadlineDate"
                                    Label="Deadline Date"
                                    DateFormat="dd.MM.yyyy"
+                                   Required="true"
                                    Variant="Variant.Outlined"
                                    Margin="Margin.Dense" />
                 </MudItem>
@@ -199,6 +188,7 @@
                                      AdornmentColor="Color.Primary"
                                      Variant="Variant.Outlined"
                                      Margin="Margin.Dense"
+                                     Required="true"
                                      Clearable="true"
                                      DebounceInterval="250"
                                      MinCharacters="0"
@@ -265,6 +255,7 @@
                                      SearchFunc="@SearchUnitOfMeasure"
                                      ToStringFunc="@(uom => uom?.Code ?? "")"
                                      Strict="false"
+                                     Required="true"
                                      ResetValueOnEmptyText="false"
                                      CoerceText="true"
                                      CoerceValue="true"
@@ -320,35 +311,32 @@
                 </MudItem>
 
                 @* Row 8: Flags *@
-                <MudItem xs="3">
+                <MudItem xs="4">
                     <MudCheckBox @bind-Value="NprRequest.IsCustomerNominatedSupplier"
                                  Label="Cust. Nom. Supplier"
                                  Dense="true" />
                 </MudItem>
-                <MudItem xs="3">
+                <MudItem xs="4">
                     <MudCheckBox @bind-Value="NprRequest.IsCustomerNominatedMaterial"
                                  Label="Cust. Nom. Material"
                                  Dense="true" />
                 </MudItem>
-                <MudItem xs="3">
+                <MudItem xs="4">
+                    <MudRadioGroup @bind-Value="NprRequest.AssociatedParts" Required="true">
+                        <MudText Typo="Typo.body1">Associated Parts</MudText>
+                        <MudRadio Value="@("YES")" Color="Color.Primary" Dense="true" Size="Size.Small">Yes</MudRadio>
+                        <MudRadio Value="@("NO")" Color="Color.Primary" Dense="true" Size="Size.Small">No</MudRadio>
+                    </MudRadioGroup>
+                </MudItem>
+
+                @* Row 9: Samples require flasg *@
+                <MudItem xs="12">
                     <MudCheckBox @bind-Value="NprRequest.IsSampleDataRequired"
                                  Label="Samples Required"
                                  Dense="true" />
                 </MudItem>
-                <MudItem xs="3">
-                    @* <MudTextField @bind-Value="NprRequest.AssociatedParts"
-                                  Label="Associated Parts (YES/NO/UNKNOWN)"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense"
-                                  MaxLength="50" /> *@
-                    <MudRadioGroup @bind-Value="NprRequest.AssociatedParts">
-                        <MudText Typo="Typo.body2">Associated Parts</MudText>
-                        <MudRadio Value="@("YES")" Color="Color.Primary" Dense="true">Yes</MudRadio>
-                        <MudRadio Value="@("NO")" Color="Color.Primary" Dense="true">No</MudRadio>
-                    </MudRadioGroup>
-                </MudItem>
 
-                @* Row 9: Sample details (only when required) *@
+                @* Row 10: Sample details (only when required) *@
                 @if (NprRequest.IsSampleDataRequired)
                 {
                     <NprRequestSamples Samples="NprRequest.SampleSiteDetails" />
@@ -360,18 +348,21 @@
         <MudButton OnClick="ValidateAsync"
                    Color="Color.Secondary"
                    Variant="Variant.Outlined"
+                   Size="Size.Small"
                    StartIcon="@Icons.Material.Filled.PlaylistAddCheck">
             Validate
         </MudButton>
         <MudSpacer />
         <MudButton OnClick="Cancel"
                    Color="Color.Secondary"
+                   Size="Size.Small"
                    Variant="Variant.Text">
             Cancel
         </MudButton>
         <MudButton OnClick="Save"
                    Color="Color.Primary"
                    Variant="Variant.Filled"
+                   Size="Size.Small"
                    StartIcon="@Icons.Material.Filled.Save">
             Save
         </MudButton>
