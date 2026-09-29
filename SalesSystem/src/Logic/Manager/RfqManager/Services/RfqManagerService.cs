@@ -2337,8 +2337,35 @@
             rfqGrpcRequestParameter.Take = request.Take;
             rfqGrpcRequestParameter.RequestType = 1;
             rfqRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
-            ListRfqNprRequestGrpc rfqNprRequests = _RfqClient.ReadRfqNprRequestGrpc(rfqRequest);
-            response.RfqNprRequestGrpcs.AddRange(rfqNprRequests.RfqNprRequestGrpcs);
+            ListRfqNprRequestGrpc rfqNprRequests = await _RfqClient.ReadRfqNprRequestGrpcAsync(rfqRequest);
+            RFQStatusRequest statusRequest = new RFQStatusRequest();
+            statusRequest.Position = 0;
+            statusRequest.Takeamount = 1000;
+            ListRFQStatusGrpc rfqStatusResponse = await _NPRGrpcClient.GetAllRFQStatusGrpcAsync(statusRequest);
+            foreach(RfqShared.RfqNprRequestGrpc? item in rfqNprRequests.RfqNprRequestGrpcs)
+            {
+                if(item == null)
+                {
+                    continue;
+                }
+
+                if (item.Status == null)
+                {
+                    item.Status = 0;
+                }
+
+                string itemStatus = "" + item.Status;
+                RFQStatusGrpc? status = rfqStatusResponse.RFQStatusGrpc.FirstOrDefault(st => string.Equals(st.NPRStage, itemStatus, StringComparison.Ordinal));
+                if (status != null)
+                {
+                    item.RfqStatusName = status.RFQStatusDescription;
+                }
+
+                response.RfqNprRequestGrpcs.Add(item);
+            }
+
+            //response.RfqNprRequestGrpcs.AddRange(rfqNprRequests.RfqNprRequestGrpcs);
+            //rfqstatusName
             //foreach (RfqNprRequestGrpc? item in rfqNprRequests.RfqNprRequestGrpcs)
             //{
             //    RfqNprRequestGrpc rfqNpr = item.ToRfqNprRequest();
@@ -2457,7 +2484,7 @@
                     }
 
                     rfqNprRequestToUpdate.RfqNprRequestGrpcsToUpdate.Add(accessRfqNprRequest);
-                    _RfqClient.UpdateRfqNprRequestGrpc(rfqNprRequestToUpdate);
+                    await _RfqClient.UpdateRfqNprRequestGrpcAsync(rfqNprRequestToUpdate);
                 }
             }
 
@@ -2603,7 +2630,7 @@
 
                 if (matchedRequest != null && !string.IsNullOrEmpty(mgrData.RfqNprRequest.RequestID))
                 {
-                    matchedRequest.RfqNprRequest.CustomerRfqNo = mgrData.RfqNprRequest.RequestID;
+                    matchedRequest.RfqNprRequest.RequestID = mgrData.RfqNprRequest.RequestID;
                     updateRequest.RfqNprRequestGrpc.Add(matchedRequest.RfqNprRequest);
                 }
 

@@ -2213,7 +2213,7 @@
             data.NPRUploadSeqNo = entity.NPRUploadSeqNo;
             data.CreatedAt = entity.Created.ToUniversalTime().ToTimestamp();
             data.ModifiedAt = entity.Updated.ToUniversalTime().ToTimestamp();
-            data.SubmissionStatus = (int?)entity.Status;
+            data.Status = (int?)entity.Status;
             data.IsActive = entity.IsActive;
             data.SubmittedAt = entity.Closed?.ToUniversalTime().ToTimestamp();
             data.RemoteEndpointResponse = entity.Reason;
@@ -2244,6 +2244,7 @@
             data.QtyPerVehicle = (decimal?)grpc.QtyPerVehicle;
             data.VehicleTotalQuantity = grpc.VehicleTotalQuantity;
             data.IsSampleDataRequired = grpc.IsSampleDataRequired ?? false;
+            data.Status = grpc.Status ?? 0;
 
             // Map SampleSiteDetails
             List<RfqNprSampleSiteData> sampleSiteList = new List<RfqNprSampleSiteData>();
@@ -2271,7 +2272,6 @@
             data.NPRUploadSeqNo = grpc.NPRUploadSeqNo;
             data.Created = grpc.CreatedAt != null ? grpc.CreatedAt.ToDateTime() : DateTime.UtcNow;
             data.Updated = grpc.ModifiedAt != null ? grpc.ModifiedAt.ToDateTime() : DateTime.UtcNow;
-            data.Status = (SubmissionStatus)(grpc.SubmissionStatus ?? 0);
             data.Closed = grpc.SubmittedAt?.ToDateTime();
             data.Reason = grpc.RemoteEndpointResponse;
             // 😁As IsActive is a non-nullable field in the entity, we need to provide a default value if it's null in the gRPC model. Assuming that if it's null, it should be treated as true (active), we can set it to true by default.
