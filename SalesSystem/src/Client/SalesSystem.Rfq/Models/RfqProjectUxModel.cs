@@ -132,17 +132,6 @@
 
             return true;
         }
-
-        public void SetAllStatus(RfqNprRequestSet status)
-        {
-            DateTime now = DateTime.UtcNow;
-            foreach (RfqNprRequestUxModel request in _NprRequests)
-            {
-                request.Status = status;
-                request.Updated = now;
-            }
-        }
-
         #endregion
 
         #endregion

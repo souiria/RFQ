@@ -12,9 +12,18 @@
             return (T)Enum.Parse(typeof(T), value, true);
         }
 
-        public static T FromInt<T>(int intValue) where T : Enum
+        //public static T FromInt<T>(int intValue) where T : Enum
+        //{
+        //    return (T)Enum.ToObject(typeof(T), intValue);
+        //}
+        public static T FromInt<T>(this int value) where T : Enum
         {
-            return (T)Enum.ToObject(typeof(T), intValue);
+            if (Enum.IsDefined(typeof(T), value))
+            {
+                return (T)Enum.ToObject(typeof(T), value);
+            }
+
+            throw new ArgumentException($"Value '{value}' is not defined for enum '{typeof(T).FullName}'.");
         }
     }
 }
