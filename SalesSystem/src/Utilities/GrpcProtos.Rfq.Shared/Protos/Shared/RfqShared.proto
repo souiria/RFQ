@@ -118,4 +118,5 @@ message RfqNprRequestGrpc {
 	google.protobuf.Int32Value Status = 37;
 	google.protobuf.Timestamp Closed = 38;
 	google.protobuf.StringValue Reason = 39;
+	google.protobuf.StringValue RfqStatusName = 40;
 }
