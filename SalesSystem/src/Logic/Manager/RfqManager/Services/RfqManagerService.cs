@@ -432,7 +432,15 @@
                 RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
                 RfqGrpcRequestParameter reasonRequestParameter = new RfqGrpcRequestParameter();
                 reasonRequestParameter.Position = 0;
-                reasonRequestParameter.Take = 100;
+                if (request.Take == 0)
+                {
+                    reasonRequestParameter.Take = 0;
+                }
+                else
+                {
+                    reasonRequestParameter.Take = request.Take;
+                }
+
                 reasonRequestParameter.RequestType = 1;
                 rfqReasonRequest.RfqGrpcRequestParameter = reasonRequestParameter;
                 RfqFilterRequest reasonFilterRequest = new RfqFilterRequest();
@@ -510,16 +518,22 @@
                     }
 
                     // Attach customer location name
-                    if (locationLookup.TryGetValue(mappedProject.CustomerLocationGuid, out string? locationName))
+#pragma warning disable CA1308 // Normalize strings to uppercase
+#pragma warning disable IDESIGN103 // Avoid compound statements.
+                    string? locationName;
+                    if (locationLookup.TryGetValue(mappedProject.CustomerLocationGuid.ToLowerInvariant(), out locationName))
                     {
                         mappedProject.GetType().GetProperty("CustomerLocationName")?.SetValue(mappedProject, locationName ?? string.Empty);
                     }
 
                     // Attach project name
-                    if (projectLookup.TryGetValue(mappedProject.ProjectGuid, out string? projectName))
+                    string? projectName;
+                    if (projectLookup.TryGetValue(mappedProject.ProjectGuid.ToLowerInvariant(), out projectName))
                     {
                         mappedProject.GetType().GetProperty("ProjectName")?.SetValue(mappedProject, projectName ?? string.Empty);
                     }
+#pragma warning restore IDESIGN103 // Avoid compound statements.
+#pragma warning restore CA1308 // Normalize strings to uppercase
 
                     // Attach car model name
                     if (vehicleLookup.TryGetValue(mappedProject.CarModelGuid, out string? carModelName))

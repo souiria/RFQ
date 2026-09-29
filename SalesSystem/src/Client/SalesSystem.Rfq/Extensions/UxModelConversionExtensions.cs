@@ -476,18 +476,21 @@
             nprGrpc.AssociatedParts = model.AssociatedParts;
             nprGrpc.SuggestedManufacturerGroup = model.SuggestedManufacturerGroup;
             nprGrpc.CreatedAt = model.Created.ToUniversalTime().ToTimestamp();
-            //nprGrpc.CreatedBy = model.CreatedBy.ToString();
             nprGrpc.ModifiedAt = model.Updated.ToUniversalTime().ToTimestamp();
-            //nprGrpc.ModifiedBy = model.ModifiedBy.ToString();
-            nprGrpc.SubmissionStatus = (int?)model.Status;
-            //nprGrpc.RemoteEndpointResponse = model.RemoteEndpointResponse;
-            //nprGrpc.SubmittedAt = model.SubmittedAt?.ToUniversalTime().ToTimestamp();
+            nprGrpc.SubmissionStatus = (int?)model.SubmissionStatus;
+            nprGrpc.RfqStatusName = model.SubmissionStatusName;
             nprGrpc.CustomerRfqNo = model.CustomerRfqNo;
             nprGrpc.RequestID = model.RequestID;
             nprGrpc.OriginatorName = model.OriginatorName;
             nprGrpc.NPRUploadSeqNo = model.NPRUploadSeqNo;
 
             nprGrpc.IsActive = model.UxStatus != UxObjectStatus.Deleted;
+
+            nprGrpc.CreatedBy = model.CreatedBy.ToString();
+            nprGrpc.ModifiedBy = model.ModifiedBy.ToString();
+            nprGrpc.SubmittedAt = model.SubmittedAt?.ToUniversalTime().ToTimestamp();
+            nprGrpc.Closed = model.Closed?.ToUniversalTime().ToTimestamp();
+            nprGrpc.Reason = model.Reason;
 
             return nprGrpc;
         }
@@ -532,17 +535,20 @@
             model.Created = grpc.CreatedAt is null
                 ? DateTime.UtcNow
                 : grpc.CreatedAt.ToDateTime();
-            //nprGrpc.CreatedBy = model.CreatedBy.ToString();
             model.Updated = grpc.ModifiedAt is null
                 ? DateTime.UtcNow
                 : grpc.ModifiedAt.ToDateTime();
-            //nprGrpc.ModifiedBy = model.ModifiedBy.ToString();
-            model.Status = grpc.SubmissionStatus.HasValue ? (RfqNprRequestSet)grpc.SubmissionStatus.Value : new RfqNprRequestSet();
-            //nprGrpc.RemoteEndpointResponse = model.RemoteEndpointResponse;
-            //nprGrpc.SubmittedAt = model.SubmittedAt?.ToUniversalTime().ToTimestamp();
+            model.SubmissionStatus = grpc.SubmissionStatus.HasValue ? grpc.SubmissionStatus.Value : 0;
+            model.SubmissionStatusName = grpc.RfqStatusName;
             model.CustomerRfqNo = grpc.CustomerRfqNo;
 
             model.UxStatus = grpc.IsActive == false ? UxObjectStatus.Deleted : UxObjectStatus.Read;
+
+            model.CreatedBy = Guid.TryParse(grpc.CreatedBy, out Guid createdBy) ? createdBy : Guid.Empty;
+            model.ModifiedBy = Guid.TryParse(grpc.ModifiedBy, out Guid modifiedBy) ? modifiedBy : Guid.Empty;
+            model.SubmittedAt = grpc.SubmittedAt?.ToDateTime();
+            model.Closed = grpc.Closed?.ToDateTime();
+            model.Reason = grpc.Reason;
 
             return model;
         }

@@ -312,12 +312,14 @@
 
                 @* Row 8: Flags *@
                 <MudItem xs="4">
-                    <MudCheckBox @bind-Value="NprRequest.IsCustomerNominatedSupplier"
+                    <MudCheckBox T="bool"
+                                 @bind-Value="NprRequest.IsCustomerNominatedSupplier"
                                  Label="Cust. Nom. Supplier"
                                  Dense="true" />
                 </MudItem>
                 <MudItem xs="4">
-                    <MudCheckBox @bind-Value="NprRequest.IsCustomerNominatedMaterial"
+                    <MudCheckBox T="bool" 
+                                 @bind-Value="NprRequest.IsCustomerNominatedMaterial"
                                  Label="Cust. Nom. Material"
                                  Dense="true" />
                 </MudItem>

@@ -1022,7 +1022,7 @@ namespace SalesSystem.Rfq.Services
                     //    $"NPRUploadSeqNo: {model.NPRUploadSeqNo}\n" +
                     //    $"Created: {model.Created}\n" +
                     //    $"Updated: {model.Updated}\n" +
-                    //    $"Status: {model.Status}\n" +
+                    //    $"SubmissionStatus: {model.SubmissionStatus}\n" +
                     //    $"UxStatus: {model.UxStatus}\n" +
                     //    $"IsActive: {model.IsActive}\n" +
                     //    $"IsValid: {model.IsValid}\n" +

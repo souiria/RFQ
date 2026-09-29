@@ -3,6 +3,7 @@
 @using SalesSystem.Rfq.Enums
 @using SalesSystem.Rfq.Extensions
 @using SalesSystem.Rfq.Models
+@using SharedKernel
 
 @inject ISnackbar Snackbar
 @inject RfqUxClientService RfqUxClientService
@@ -53,12 +54,13 @@
     }
 
     .mud-npr-req-grid table {
-        width: 100% !important;
-        table-layout: fixed !important;
+        width: auto !important;
+        min-width: 100% !important;
+        table-layout: auto !important;
     }
 
     .mud-npr-req-grid .mud-table-cell {
-        padding: 1px !important;
+        padding: 1px 8px !important;
         overflow: hidden;
         font-size: var(--rfq-grid-height) !important;
         line-height: 1;
@@ -71,6 +73,10 @@
     .mud-npr-req-grid .mud-table-head .mud-table-cell {
         font-size: 12px !important;
         font-weight: 700;
+        white-space: nowrap !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+        min-width: fit-content;
     }
 
     .row-action-buttons .mud-icon-button {
@@ -216,8 +222,6 @@
             </TemplateColumn>
             @* <PropertyColumn Property="x => x.CustomerRfqNo" Title="RFQ Number" /> *@
             @* <PropertyColumn Property="x => x.CustomerCode" Title="Customer Code" /> *@
-            @* <PropertyColumn Property="x => x.RequestID" Title="Request ID" /> *@
-            @* <PropertyColumn Property="x => x.OriginatorName" Title="Originator" /> *@
             <PropertyColumn Property="x => x.DeadlineDate" Title="Deadline Date" Format="dd.MM.yyyy" />
             <PropertyColumn Property="x => x.ReasonDescription" Title="Reason" />
             <PropertyColumn Property="x => x.MaterialNumber" Title="Material Number" />
@@ -240,9 +244,14 @@
             <PropertyColumn Property="x => x.SuggestedManufacturerGroup" Title="Suggested Mfr. Group" />
             <PropertyColumn Property="x => x.AssociatedParts" Title="Associated Parts" />
             @* <PropertyColumn Property="x => x.NPRUploadSeqNo" Title="Upload Seq. No." /> *@
-             <PropertyColumn Property="x => x.Status" Title="Status" /> 
             <PropertyColumn Property="x => x.Created" Title="Created" Format="dd.MM.yyyy HH:mm" />
             <PropertyColumn Property="x => x.Updated" Title="Updated" Format="dd.MM.yyyy HH:mm" />
+            <PropertyColumn Property="x => x.SubmittedAt" Title="Submitted At" Format="dd.MM.yyyy HH:mm" />
+            <PropertyColumn Property="x => x.RequestID" Title="Request ID" />
+            <PropertyColumn Property="x => x.SubmissionStatusName" Title="Submission Status" />
+            <PropertyColumn Property="x => x.Closed" Title="Closed" Format="dd.MM.yyyy HH:mm" />
+            <PropertyColumn Property="x => x.Reason" Title="Reason" />
+
         </Columns>
         <NoRecordsContent>
             <MudText Typo="Typo.body2" Align="Align.Center" Class="pa-4">
@@ -342,7 +351,7 @@
             Snackbar.Add("No NPR requests to update", Severity.Info);
             return;
         }
-        
+
         _updateCount = 0;
 
         foreach (RfqNprRequestUxModel request in RfqProject.NprRequests)
@@ -561,7 +570,27 @@
                 loadingDialog.Close();
             }
 
+            Logger?.GenericLogInformation($"OnSendSingleNprClicked - NPR request '{npr.MaterialNumber ?? npr.CustomerPartNumber}' submission returned status code: {response.HttpStatusCode}");
+            if(response.HttpStatusCode == "OK")
+            {
+                var nprList = response.NprApiData.Select(d => d.RfqNprRequest).ToList();
+                var existingNpr = nprList.FirstOrDefault(x => x.CustomerPartNumber.ToUpperInvariant() == npr.CustomerPartNumber?.ToUpperInvariant());
+                if (existingNpr != null)
+                {
+                    npr.RequestID = existingNpr.RequestID;
+                    npr.SubmissionStatus = existingNpr.SubmissionStatus ?? 0;
+                    npr.SubmissionStatusName = npr.SubmissionStatus == 0 ? "" : existingNpr.RfqStatusName;
+                    npr.SubmittedAt = existingNpr.SubmittedAt?.ToDateTime();
+                    npr.Closed = existingNpr.Closed?.ToDateTime();
+                    npr.Reason = existingNpr.Reason;
+                    npr.UxStatus = UxObjectStatus.Read; // Mark as read after successful submission
+                }
+            }
+            UpdateAllNprRequests();
+
             await ShowNprSubmissionResultAsync(response);
+
+            return;
         }
         catch (Exception ex)
         {
