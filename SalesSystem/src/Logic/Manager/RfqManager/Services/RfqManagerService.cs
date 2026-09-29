@@ -2618,7 +2618,6 @@
             response.Message = "API Response = " + apiResponse.Message;
 
             UpdateRfqNprRequestGrpcRequest updateRequest = new UpdateRfqNprRequestGrpcRequest();
-            // Test with the ford one
             foreach (NPR.NprApiDataGrpc? accessData in apiResponse.NprApiData)
             {
                 NprApiDataGrpc mgrData = accessData.ToNprApiData();
