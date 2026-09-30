@@ -250,6 +250,15 @@
             {
                 RfqProject!.NprRequests = nprRequests;
             }
+            // update the npr status names
+            List<RFQStatusGrpc> rfqStatuses = RfqUxClientService.RFQStatuses.ToList();
+            foreach (RfqNprRequestUxModel? nprRequest in RfqProject?.NprRequests ?? Enumerable.Empty<RfqNprRequestUxModel>())
+            {
+                if (nprRequest != null)
+                {
+                    nprRequest.StatusName = rfqStatuses.FirstOrDefault(s => s.NPRStage == nprRequest.Status.ToString(CultureInfo.InvariantCulture))?.RFQStatusDescription ?? string.Empty;
+                }
+            }
         }
 
         async Task LoadCompositesAsync()
@@ -663,10 +672,10 @@
 
                 string statusMessage = ok
                     ? $"Submitted {response.NprApiData.Count} NPR request(s) successfully.{Environment.NewLine}{Environment.NewLine}" +
-                      $"HTTP SubmissionStatus: {response.HttpStatusCode}{Environment.NewLine}" +
+                      $"HTTP Status: {response.HttpStatusCode}{Environment.NewLine}" +
                       $"API Message: {response.Message}"
                     : $"NPR submission did not complete successfully.{Environment.NewLine}{Environment.NewLine}" +
-                      $"HTTP SubmissionStatus: {response.HttpStatusCode}{Environment.NewLine}" +
+                      $"HTTP Status: {response.HttpStatusCode}{Environment.NewLine}" +
                       $"API Message: {response.Message}";
 
                 DialogParameters submitStatusParameters = new DialogParameters
@@ -748,7 +757,7 @@
             };
 
             IDialogReference dialog = await DialogService.ShowAsync<DatasetStatusDialog>(
-                $"Dataset SubmissionStatus – {RfqProject?.RfqNumber}",
+                $"Dataset Status – {RfqProject?.RfqNumber}",
                 parameters,
                 options
             );
@@ -982,7 +991,7 @@
 
         //        await Task.Delay(500); // Small delay for UX
 
-        //        List<FileObjectUxModel> validFiles = FileObjects.Where(f => f.SubmissionStatus != UxObjectStatus.Deleted && f.IsFileValid).ToList();
+        //        List<FileObjectUxModel> validFiles = FileObjects.Where(f => f.Status != UxObjectStatus.Deleted && f.IsFileValid).ToList();
 
         //        if (validFiles.Count == 0)
         //        {
@@ -1021,14 +1030,14 @@
                         //fileObject.UploadStatus = new FileObjectUploadStatus(uploadFileResponse);
                         //allOk = allOk && uploadFileResponse.Success;
 
-        //                Logger.GenericLogInformation($"EditRfq.UploadFilesAsync - Uploaded file {fileObject.File.Name}/{fileObject.File.Size}, {fileObject.UploadStatus.SubmissionStatus}/{fileObject.UploadStatus.Message}");
+        //                Logger.GenericLogInformation($"EditRfq.UploadFilesAsync - Uploaded file {fileObject.File.Name}/{fileObject.File.Size}, {fileObject.UploadStatus.Status}/{fileObject.UploadStatus.Message}");
         //            }
         //            catch (Exception fileEx)
         //            {
         //                Logger.GenericLogError($"EditRfq.UploadFilesAsync - Error uploading file {fileObject.DisplayName}", fileEx);
         //                fileObject.UploadStatus = new FileObjectUploadStatus
         //                {
-        //                    SubmissionStatus = FileUploadStatus.Failed,
+        //                    Status = FileUploadStatus.Failed,
         //                    Message = $"Upload error: {fileEx.Message}"
         //                };
         //                allOk = false;

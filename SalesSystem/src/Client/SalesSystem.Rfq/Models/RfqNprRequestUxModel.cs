@@ -194,10 +194,10 @@ namespace SalesSystem.Rfq.Models
         public DateTime Updated
         { get; set; }
 
-        public int SubmissionStatus
+        public int Status
         { get; set; }
 
-        public string SubmissionStatusName
+        public string StatusName
         { get; set; }
         #endregion
 
@@ -258,8 +258,8 @@ namespace SalesSystem.Rfq.Models
         {
             Id = Guid.NewGuid();
             AssociatedParts = "NO";
-            SubmissionStatus = 0;
-            SubmissionStatusName = "";
+            Status = 0;
+            StatusName = "";
             UxStatus = UxObjectStatus.Created;
             SampleSiteDetails = new Collection<RfqNprRequestSampleSiteDataUxModel>();
             Created = DateTime.UtcNow;
