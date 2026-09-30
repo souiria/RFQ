@@ -1,3 +1,8 @@
+using NPR;
+using NprApiDataGrpc = RfqModule.NprApiDataGrpc;
+using RfqNprRequestGrpc = RfqShared.RfqNprRequestGrpc;
+using RFQStatusGrpc = RfqModule.RFQStatusGrpc;
+
 namespace SalesSystem.Rfq.Services
 {
     public class RfqUxClientService : IDisposable
@@ -32,6 +37,8 @@ namespace SalesSystem.Rfq.Services
         List<RfqNprRequestUxModel> _NprRequests;
         // track changes in UX
         bool _NprRequestsHasChanges;
+        List<RFQStatusGrpc> _RFQStatuses;
+
         public bool NprRequestsHasChanges
         {
             get
@@ -50,6 +57,7 @@ namespace SalesSystem.Rfq.Services
         public IReadOnlyCollection<string> QuotationNumbers => _QuotationNumbers.AsReadOnly();
         public IReadOnlyCollection<AlternativePartUxModel> AlternativeParts => _AlternativeParts.AsReadOnly();
         public IReadOnlyCollection<RfqNprRequestUxModel> NprRequests => _NprRequests.AsReadOnly();
+        public IReadOnlyCollection<RFQStatusGrpc> RFQStatuses => _RFQStatuses.AsReadOnly();
         #endregion
 
         #region Ctor
@@ -98,6 +106,7 @@ namespace SalesSystem.Rfq.Services
             _NprRequestsHasChanges = false;
             _UnitOfMeasures = new();
             _BusinessUnits = new();
+            _RFQStatuses = new();
 
             _Logger.GenericLogInformation($">>> RfqUxClientService was created with storage via GRPC endpoints");
         }
@@ -1022,7 +1031,7 @@ namespace SalesSystem.Rfq.Services
                     //    $"NPRUploadSeqNo: {model.NPRUploadSeqNo}\n" +
                     //    $"Created: {model.Created}\n" +
                     //    $"Updated: {model.Updated}\n" +
-                    //    $"SubmissionStatus: {model.SubmissionStatus}\n" +
+                    //    $"Status: {model.Status}\n" +
                     //    $"UxStatus: {model.UxStatus}\n" +
                     //    $"IsActive: {model.IsActive}\n" +
                     //    $"IsValid: {model.IsValid}\n" +
@@ -1160,6 +1169,12 @@ namespace SalesSystem.Rfq.Services
 
                 _NprRequests.Clear();
                 _NprRequests.AddRange(requests);
+
+                // load once
+                if(RFQStatuses.Count == 0)
+                {
+                    await GetAllRFQStatusAsync();
+                }
             }
             catch (Exception ex)
             {
@@ -1209,7 +1224,20 @@ namespace SalesSystem.Rfq.Services
 
             return false;
         }
-
+        public async Task GetAllRFQStatusAsync()
+        {
+            await Task.Delay(1);
+            GetAllRFQStatusGrpcRequest request = new GetAllRFQStatusGrpcRequest();
+            RfqModule.ListRFQStatusGrpc response = _Client.GetAllRFQStatusGrpc(request);
+            if(response != null && response.RFQStatusGrpc != null)
+            {
+                _RFQStatuses.Clear();
+                foreach (RFQStatusGrpc status in response.RFQStatusGrpc.ToList())
+                {
+                    _RFQStatuses.Add(status);
+                }
+            }
+        }
         public async Task<int> GetAllNprRequestsAsync()
         {
             try

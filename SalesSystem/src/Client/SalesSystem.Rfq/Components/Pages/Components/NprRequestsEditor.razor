@@ -248,7 +248,7 @@
             <PropertyColumn Property="x => x.Updated" Title="Updated" Format="dd.MM.yyyy HH:mm" />
             <PropertyColumn Property="x => x.SubmittedAt" Title="Submitted At" Format="dd.MM.yyyy HH:mm" />
             <PropertyColumn Property="x => x.RequestID" Title="Request ID" />
-            <PropertyColumn Property="x => x.SubmissionStatusName" Title="Submission Status" />
+            <PropertyColumn Property="x => x.StatusName" Title="Submission Status" />
             <PropertyColumn Property="x => x.Closed" Title="Closed" Format="dd.MM.yyyy HH:mm" />
             <PropertyColumn Property="x => x.Reason" Title="Reason" />
 
@@ -574,15 +574,16 @@
             if(response.HttpStatusCode == "OK")
             {
                 var nprList = response.NprApiData.Select(d => d.RfqNprRequest).ToList();
-                var existingNpr = nprList.FirstOrDefault(x => x.CustomerPartNumber.ToUpperInvariant() == npr.CustomerPartNumber?.ToUpperInvariant());
-                if (existingNpr != null)
+                var returnedNpr = nprList.FirstOrDefault(x => x.CustomerPartNumber.ToUpperInvariant() == npr.CustomerPartNumber?.ToUpperInvariant());
+                string submissionStatus = (returnedNpr?.Status ?? 0).ToString();
+                if (returnedNpr != null)
                 {
-                    npr.RequestID = existingNpr.RequestID;
-                    npr.SubmissionStatus = existingNpr.SubmissionStatus ?? 0;
-                    npr.SubmissionStatusName = npr.SubmissionStatus == 0 ? "" : existingNpr.RfqStatusName;
-                    npr.SubmittedAt = existingNpr.SubmittedAt?.ToDateTime();
-                    npr.Closed = existingNpr.Closed?.ToDateTime();
-                    npr.Reason = existingNpr.Reason;
+                    npr.RequestID = returnedNpr.RequestID;
+                    npr.Status = returnedNpr.SubmissionStatus ?? 0;
+                    npr.StatusName = RfqUxClientService.RFQStatuses.FirstOrDefault(s => s.NPRStage == submissionStatus)?.RFQStatusDescription ?? string.Empty;  //npr.SubmissionStatus == 0 ? "" : existingNpr.RfqStatusName;
+                    npr.SubmittedAt = returnedNpr.SubmittedAt?.ToDateTime();
+                    npr.Closed = returnedNpr.Closed?.ToDateTime();
+                    npr.Reason = returnedNpr.Reason;
                     npr.UxStatus = UxObjectStatus.Read; // Mark as read after successful submission
                 }
             }

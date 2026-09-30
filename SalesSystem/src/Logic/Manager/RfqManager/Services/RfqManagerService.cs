@@ -2645,6 +2645,7 @@
                 if (matchedRequest != null && !string.IsNullOrEmpty(mgrData.RfqNprRequest.RequestID))
                 {
                     matchedRequest.RfqNprRequest.RequestID = mgrData.RfqNprRequest.RequestID;
+                    mgrData.RfqNprRequest.Status = 4;
                     updateRequest.RfqNprRequestGrpc.Add(matchedRequest.RfqNprRequest);
                 }
 

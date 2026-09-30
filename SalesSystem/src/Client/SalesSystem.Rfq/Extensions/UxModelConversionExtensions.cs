@@ -477,8 +477,8 @@
             nprGrpc.SuggestedManufacturerGroup = model.SuggestedManufacturerGroup;
             nprGrpc.CreatedAt = model.Created.ToUniversalTime().ToTimestamp();
             nprGrpc.ModifiedAt = model.Updated.ToUniversalTime().ToTimestamp();
-            nprGrpc.SubmissionStatus = (int?)model.SubmissionStatus;
-            nprGrpc.RfqStatusName = model.SubmissionStatusName;
+            nprGrpc.Status = (int?)model.Status;
+            nprGrpc.RfqStatusName = model.StatusName;
             nprGrpc.CustomerRfqNo = model.CustomerRfqNo;
             nprGrpc.RequestID = model.RequestID;
             nprGrpc.OriginatorName = model.OriginatorName;
@@ -538,8 +538,8 @@
             model.Updated = grpc.ModifiedAt is null
                 ? DateTime.UtcNow
                 : grpc.ModifiedAt.ToDateTime();
-            model.SubmissionStatus = grpc.SubmissionStatus.HasValue ? grpc.SubmissionStatus.Value : 0;
-            model.SubmissionStatusName = grpc.RfqStatusName;
+            model.Status = grpc.Status.HasValue ? grpc.Status.Value : 0;
+            model.StatusName = grpc.RfqStatusName;
             model.CustomerRfqNo = grpc.CustomerRfqNo;
 
             model.UxStatus = grpc.IsActive == false ? UxObjectStatus.Deleted : UxObjectStatus.Read;
