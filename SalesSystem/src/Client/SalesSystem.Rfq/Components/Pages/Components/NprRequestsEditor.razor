@@ -574,15 +574,16 @@
             if(response.HttpStatusCode == "OK")
             {
                 var nprList = response.NprApiData.Select(d => d.RfqNprRequest).ToList();
-                var existingNpr = nprList.FirstOrDefault(x => x.CustomerPartNumber.ToUpperInvariant() == npr.CustomerPartNumber?.ToUpperInvariant());
-                if (existingNpr != null)
+                var returnedNpr = nprList.FirstOrDefault(x => x.CustomerPartNumber.ToUpperInvariant() == npr.CustomerPartNumber?.ToUpperInvariant());
+                string submissionStatus = (returnedNpr?.SubmissionStatus ?? 0).ToString();
+                if (returnedNpr != null)
                 {
-                    npr.RequestID = existingNpr.RequestID;
-                    npr.SubmissionStatus = existingNpr.SubmissionStatus ?? 0;
-                    npr.SubmissionStatusName = npr.SubmissionStatus == 0 ? "" : existingNpr.RfqStatusName;
-                    npr.SubmittedAt = existingNpr.SubmittedAt?.ToDateTime();
-                    npr.Closed = existingNpr.Closed?.ToDateTime();
-                    npr.Reason = existingNpr.Reason;
+                    npr.RequestID = returnedNpr.RequestID;
+                    npr.SubmissionStatus = returnedNpr.SubmissionStatus ?? 0;
+                    npr.SubmissionStatusName = RfqUxClientService.RFQStatuses.FirstOrDefault(s => s.NPRStage == submissionStatus)?.RFQStatusDescription ?? string.Empty;  //npr.SubmissionStatus == 0 ? "" : existingNpr.RfqStatusName;
+                    npr.SubmittedAt = returnedNpr.SubmittedAt?.ToDateTime();
+                    npr.Closed = returnedNpr.Closed?.ToDateTime();
+                    npr.Reason = returnedNpr.Reason;
                     npr.UxStatus = UxObjectStatus.Read; // Mark as read after successful submission
                 }
             }
