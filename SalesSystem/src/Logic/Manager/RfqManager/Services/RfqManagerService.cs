@@ -2355,7 +2355,7 @@
             RFQStatusRequest statusRequest = new RFQStatusRequest();
             statusRequest.Position = 0;
             statusRequest.Takeamount = 1000;
-            ListRFQStatusGrpc rfqStatusResponse = await _NPRGrpcClient.GetAllRFQStatusGrpcAsync(statusRequest);
+            NPR.ListRFQStatusGrpc rfqStatusResponse = await _NPRGrpcClient.GetAllRFQStatusGrpcAsync(statusRequest);
             foreach(RfqShared.RfqNprRequestGrpc? item in rfqNprRequests.RfqNprRequestGrpcs)
             {
                 if(item == null)
@@ -2369,7 +2369,7 @@
                 }
 
                 string itemStatus = "" + item.Status;
-                RFQStatusGrpc? status = rfqStatusResponse.RFQStatusGrpc.FirstOrDefault(st => string.Equals(st.NPRStage, itemStatus, StringComparison.Ordinal));
+                NPR.RFQStatusGrpc? status = rfqStatusResponse.RFQStatusGrpc.FirstOrDefault(st => string.Equals(st.NPRStage, itemStatus, StringComparison.Ordinal));
                 if (status != null)
                 {
                     item.RfqStatusName = status.RFQStatusDescription;
@@ -2699,6 +2699,21 @@
         }
         #endregion
 
+        public async Task<ListRFQStatusGrpc> GetAllRFQStatusGrpc(GetAllRFQStatusGrpcRequest request)
+        {
+            RFQStatusRequest statusRequest = new RFQStatusRequest();
+            statusRequest.Position = request.Position;
+            statusRequest.Takeamount = request.Take;
+            NPR.ListRFQStatusGrpc rfqStatusResponse = await _NPRGrpcClient.GetAllRFQStatusGrpcAsync(statusRequest);
+            ListRFQStatusGrpc response = new ListRFQStatusGrpc();
+            foreach (NPR.RFQStatusGrpc? status in rfqStatusResponse.RFQStatusGrpc)
+            {
+                RFQStatusGrpc statusGrpc = status.ToRFQStatusGrpc();
+                response.RFQStatusGrpc.Add(statusGrpc);
+            }
+
+            return response;
+        }
         #region Filtering
 
         public Task<FilterGrpcResponse> FilterByCustomerId(FilterGrpcRequest request)

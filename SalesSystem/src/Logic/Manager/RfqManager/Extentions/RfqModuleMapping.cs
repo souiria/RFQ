@@ -1088,5 +1088,13 @@
             wireThroughNodeGrpc.CreatedDate = Timestamp.FromDateTime(DateTime.UtcNow);
             return wireThroughNodeGrpc;
         }
+
+        public static RFQStatusGrpc ToRFQStatusGrpc(this NPR.RFQStatusGrpc rfqStatus)
+        {
+            RFQStatusGrpc rfqStatusGrpc = new RFQStatusGrpc();
+            rfqStatusGrpc.RFQStatusDescription = rfqStatus.RFQStatusDescription;
+            rfqStatusGrpc.NPRStage = rfqStatus.NPRStage;
+            return rfqStatusGrpc;
+        }
     }
 }

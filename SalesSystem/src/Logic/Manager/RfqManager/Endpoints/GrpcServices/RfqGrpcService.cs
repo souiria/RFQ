@@ -348,5 +348,13 @@
 
             return response;
         }
-     }
+
+        public override async Task<ListRFQStatusGrpc> GetAllRFQStatusGrpc(GetAllRFQStatusGrpcRequest request, ServerCallContext context)
+        {
+            _Logger.GenericLogInformation("GetAllRFQStatusGrpc starting");
+            ListRFQStatusGrpc response =
+                await _RfqManagerService.GetAllRFQStatusGrpc(request);
+            return response;
+        }
+    }
 }
