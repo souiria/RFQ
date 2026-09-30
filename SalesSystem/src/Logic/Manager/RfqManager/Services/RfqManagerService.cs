@@ -2699,6 +2699,21 @@
         }
         #endregion
 
+        public async Task<ListRFQStatusGrpc> GetAllRFQStatusGrpc(GetAllRFQStatusGrpcRequest request)
+        {
+            RFQStatusRequest statusRequest = new RFQStatusRequest();
+            statusRequest.Position = request.Position;
+            statusRequest.Takeamount = request.Take;
+            NPR.ListRFQStatusGrpc rfqStatusResponse = await _NPRGrpcClient.GetAllRFQStatusGrpcAsync(statusRequest);
+            ListRFQStatusGrpc response = new ListRFQStatusGrpc();
+            foreach (NPR.RFQStatusGrpc? status in rfqStatusResponse.RFQStatusGrpc)
+            {
+                RFQStatusGrpc statusGrpc = status.ToRFQStatusGrpc();
+                response.RFQStatusGrpc.Add(statusGrpc);
+            }
+
+            return response;
+        }
         #region Filtering
 
         public Task<FilterGrpcResponse> FilterByCustomerId(FilterGrpcRequest request)
@@ -2897,6 +2912,7 @@
 
             return response;
         }
+
 
         Collection<TItem> ExtractEmacsResponseData<TItem>(EmacsFilterResponseGrpc response)
         {
