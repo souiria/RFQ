@@ -147,7 +147,6 @@ else
                 <div>
                     <MudTextField T="string"
                                   @bind-Value="_quickSearch"
-                                  Immediate="true"
                                   Placeholder="Quick search..."
                                   Adornment="Adornment.End"
                                   AdornmentIcon="@Icons.Material.Filled.Search"
@@ -166,7 +165,6 @@ else
                         <MudIconButton Size="Size.Small"
                                        Color="@(_showActionsColumn ? Color.Default : Color.Warning)"
                                        Icon="@(_showActionsColumn ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility)"
-                                       aria-label="toggle-actions"
                                        @onclick="@(() => _showActionsColumn = !_showActionsColumn)" />
                     </MudTooltip>
                 </div>

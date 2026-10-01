@@ -49,6 +49,7 @@
         Task<GetCompositeDetailByHarnessNameResponse> GetCompositeDetailByHarnessNameGrpc(GetCompositeDetailByHarnessNameRequest request);
         Task<GetWireSpecificationByCompositeOptionResponse> GetWireSpecificationByCompositeOptionGrpc(GetWireSpecificationByCompositeOptionRequest request);
         Task<ListComponentGrpc> GetComponentsByHarnessAndOptionsGrpc(GetComponentsByHarnessAndOptionsRequest request);
+        Task<ListRFQStatusGrpc> GetAllRFQStatusGrpc(GetAllRFQStatusGrpcRequest request);
      }
 }
 

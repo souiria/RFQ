@@ -174,19 +174,34 @@ namespace SalesSystem.Rfq.Models
         public int? NPRUploadSeqNo
         { get; set; }
 
-        #endregion
+        public Guid CreatedBy
+        { get; set; }
 
-        #region Local Properties
+        public Guid ModifiedBy
+        { get; set; }
 
+        public DateTime? SubmittedAt
+        { get; set; }
+
+        public DateTime? Closed
+        { get; set; }
+
+        public  string? Reason
+        { get; set; }
         public DateTime Created
         { get; set; }
 
         public DateTime Updated
         { get; set; }
 
-        public RfqNprRequestSet Status
+        public int Status
         { get; set; }
 
+        public string StatusName
+        { get; set; }
+        #endregion
+
+        #region Local Properties
         UxObjectStatus _UxStatus;
         public UxObjectStatus UxStatus
         {
@@ -235,12 +250,6 @@ namespace SalesSystem.Rfq.Models
         int _ErrorCount;
         public int ErrorCount => _ErrorCount;
 
-        public DateTime? Closed
-        { get; set; }
-
-        public string? Reason
-        { get; set; }
-
         #endregion
 
         #region Constructors
@@ -249,7 +258,8 @@ namespace SalesSystem.Rfq.Models
         {
             Id = Guid.NewGuid();
             AssociatedParts = "NO";
-            Status = RfqNprRequestSet.Draft;
+            Status = 0;
+            StatusName = "";
             UxStatus = UxObjectStatus.Created;
             SampleSiteDetails = new Collection<RfqNprRequestSampleSiteDataUxModel>();
             Created = DateTime.UtcNow;
@@ -301,10 +311,11 @@ namespace SalesSystem.Rfq.Models
                 }
             }
 
-            //if (string.IsNullOrWhiteSpace(requestId))
-            //{
-            //    Err(nameof(item.RequestID), "requestId is required.");
-            //}
+            if (!string.IsNullOrWhiteSpace(RequestID))
+            {
+                Err(nameof(RequestID),
+                    RequestID, "NPR Request already registered, existing RequestID!");
+            }
 
             if (string.IsNullOrWhiteSpace(ManufacturingSite))
             {
@@ -363,10 +374,10 @@ namespace SalesSystem.Rfq.Models
             }
             else
             {
-                if (MaterialNumber.Length < 8 || 26 < MaterialNumber.Length)
+                if (MaterialNumber.Length > 8)
                 {
                     Err(nameof(MaterialNumber), MaterialNumber,
-                        "MaterialNumber Can not be less than 8 and greater than 26 characters");
+                        "MaterialNumber must more than 8 characters");
                 }
             }
 

@@ -432,7 +432,15 @@
                 RfqReasonGrpcRequest rfqReasonRequest = new RfqReasonGrpcRequest();
                 RfqGrpcRequestParameter reasonRequestParameter = new RfqGrpcRequestParameter();
                 reasonRequestParameter.Position = 0;
-                reasonRequestParameter.Take = 100;
+                if (request.Take == 0)
+                {
+                    reasonRequestParameter.Take = 0;
+                }
+                else
+                {
+                    reasonRequestParameter.Take = request.Take;
+                }
+
                 reasonRequestParameter.RequestType = 1;
                 rfqReasonRequest.RfqGrpcRequestParameter = reasonRequestParameter;
                 RfqFilterRequest reasonFilterRequest = new RfqFilterRequest();
@@ -510,16 +518,22 @@
                     }
 
                     // Attach customer location name
-                    if (locationLookup.TryGetValue(mappedProject.CustomerLocationGuid, out string? locationName))
+#pragma warning disable CA1308 // Normalize strings to uppercase
+#pragma warning disable IDESIGN103 // Avoid compound statements.
+                    string? locationName;
+                    if (locationLookup.TryGetValue(mappedProject.CustomerLocationGuid.ToLowerInvariant(), out locationName))
                     {
                         mappedProject.GetType().GetProperty("CustomerLocationName")?.SetValue(mappedProject, locationName ?? string.Empty);
                     }
 
                     // Attach project name
-                    if (projectLookup.TryGetValue(mappedProject.ProjectGuid, out string? projectName))
+                    string? projectName;
+                    if (projectLookup.TryGetValue(mappedProject.ProjectGuid.ToLowerInvariant(), out projectName))
                     {
                         mappedProject.GetType().GetProperty("ProjectName")?.SetValue(mappedProject, projectName ?? string.Empty);
                     }
+#pragma warning restore IDESIGN103 // Avoid compound statements.
+#pragma warning restore CA1308 // Normalize strings to uppercase
 
                     // Attach car model name
                     if (vehicleLookup.TryGetValue(mappedProject.CarModelGuid, out string? carModelName))
@@ -2337,8 +2351,35 @@
             rfqGrpcRequestParameter.Take = request.Take;
             rfqGrpcRequestParameter.RequestType = 1;
             rfqRequest.RfqGrpcRequestParameter = rfqGrpcRequestParameter;
-            ListRfqNprRequestGrpc rfqNprRequests = _RfqClient.ReadRfqNprRequestGrpc(rfqRequest);
-            response.RfqNprRequestGrpcs.AddRange(rfqNprRequests.RfqNprRequestGrpcs);
+            ListRfqNprRequestGrpc rfqNprRequests = await _RfqClient.ReadRfqNprRequestGrpcAsync(rfqRequest);
+            RFQStatusRequest statusRequest = new RFQStatusRequest();
+            statusRequest.Position = 0;
+            statusRequest.Takeamount = 1000;
+            NPR.ListRFQStatusGrpc rfqStatusResponse = await _NPRGrpcClient.GetAllRFQStatusGrpcAsync(statusRequest);
+            foreach(RfqShared.RfqNprRequestGrpc? item in rfqNprRequests.RfqNprRequestGrpcs)
+            {
+                if(item == null)
+                {
+                    continue;
+                }
+
+                if (item.Status == null)
+                {
+                    item.Status = 0;
+                }
+
+                string itemStatus = "" + item.Status;
+                NPR.RFQStatusGrpc? status = rfqStatusResponse.RFQStatusGrpc.FirstOrDefault(st => string.Equals(st.NPRStage, itemStatus, StringComparison.Ordinal));
+                if (status != null)
+                {
+                    item.RfqStatusName = status.RFQStatusDescription;
+                }
+
+                response.RfqNprRequestGrpcs.Add(item);
+            }
+
+            //response.RfqNprRequestGrpcs.AddRange(rfqNprRequests.RfqNprRequestGrpcs);
+            //rfqstatusName
             //foreach (RfqNprRequestGrpc? item in rfqNprRequests.RfqNprRequestGrpcs)
             //{
             //    RfqNprRequestGrpc rfqNpr = item.ToRfqNprRequest();
@@ -2457,7 +2498,7 @@
                     }
 
                     rfqNprRequestToUpdate.RfqNprRequestGrpcsToUpdate.Add(accessRfqNprRequest);
-                    _RfqClient.UpdateRfqNprRequestGrpc(rfqNprRequestToUpdate);
+                    await _RfqClient.UpdateRfqNprRequestGrpcAsync(rfqNprRequestToUpdate);
                 }
             }
 
@@ -2603,7 +2644,8 @@
 
                 if (matchedRequest != null && !string.IsNullOrEmpty(mgrData.RfqNprRequest.RequestID))
                 {
-                    matchedRequest.RfqNprRequest.CustomerRfqNo = mgrData.RfqNprRequest.RequestID;
+                    matchedRequest.RfqNprRequest.RequestID = mgrData.RfqNprRequest.RequestID;
+                    mgrData.RfqNprRequest.Status = 4;
                     updateRequest.RfqNprRequestGrpc.Add(matchedRequest.RfqNprRequest);
                 }
 
@@ -2658,6 +2700,21 @@
         }
         #endregion
 
+        public async Task<ListRFQStatusGrpc> GetAllRFQStatusGrpc(GetAllRFQStatusGrpcRequest request)
+        {
+            RFQStatusRequest statusRequest = new RFQStatusRequest();
+            statusRequest.Position = request.Position;
+            statusRequest.Takeamount = request.Take;
+            NPR.ListRFQStatusGrpc rfqStatusResponse = await _NPRGrpcClient.GetAllRFQStatusGrpcAsync(statusRequest);
+            ListRFQStatusGrpc response = new ListRFQStatusGrpc();
+            foreach (NPR.RFQStatusGrpc? status in rfqStatusResponse.RFQStatusGrpc)
+            {
+                RFQStatusGrpc statusGrpc = status.ToRFQStatusGrpc();
+                response.RFQStatusGrpc.Add(statusGrpc);
+            }
+
+            return response;
+        }
         #region Filtering
 
         public Task<FilterGrpcResponse> FilterByCustomerId(FilterGrpcRequest request)

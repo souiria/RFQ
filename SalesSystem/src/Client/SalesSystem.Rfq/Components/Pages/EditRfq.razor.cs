@@ -250,6 +250,15 @@
             {
                 RfqProject!.NprRequests = nprRequests;
             }
+            // update the npr status names
+            List<RFQStatusGrpc> rfqStatuses = RfqUxClientService.RFQStatuses.ToList();
+            foreach (RfqNprRequestUxModel? nprRequest in RfqProject?.NprRequests ?? Enumerable.Empty<RfqNprRequestUxModel>())
+            {
+                if (nprRequest != null)
+                {
+                    nprRequest.StatusName = rfqStatuses.FirstOrDefault(s => s.NPRStage == nprRequest.Status.ToString(CultureInfo.InvariantCulture))?.RFQStatusDescription ?? string.Empty;
+                }
+            }
         }
 
         async Task LoadCompositesAsync()

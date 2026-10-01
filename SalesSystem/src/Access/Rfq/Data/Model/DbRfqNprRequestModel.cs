@@ -137,7 +137,7 @@
         public DateTime Updated
         { get; set; }
 
-        public SubmissionStatus Status
+        public int Status
         { get; set; }
 
         public bool IsActive

@@ -172,7 +172,6 @@
                                     <MudIconButton Size="Size.Small"
                                                    Color="@(_showActionsColumn ? Color.Default : Color.Warning)"
                                                    Icon="@(_showActionsColumn ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility)"
-                                                   aria-label="toggle-actions"
                                                    @onclick="@(() => _showActionsColumn = !_showActionsColumn)" />
                                 </MudTooltip>
                             </div>
@@ -235,10 +234,6 @@
                             </CellTemplate>
                         </TemplateColumn>
                     </Columns>
-
-                    <PagerContent>
-                        <MudDataGridPager T="RfqProjectUxModel" />
-                    </PagerContent>
                 </MudDataGrid>
             </div>
         }

@@ -76,6 +76,8 @@ service RfqModule {
     rpc GetWireSpecificationByCompositeOptionGrpc (GetWireSpecificationByCompositeOptionRequest) returns (GetWireSpecificationByCompositeOptionResponse);
     rpc GetComponentsByHarnessAndOptionsGrpc (GetComponentsByHarnessAndOptionsRequest) returns (ListComponentGrpc);
 
+    rpc GetAllRFQStatusGrpc (GetAllRFQStatusGrpcRequest) returns (ListRFQStatusGrpc);
+
 }
 
 message FileUploadRequest {
@@ -1066,4 +1068,18 @@ message GetHarnessByIdGrpcRequest {
 
 message GetHarnessByIdGrpcResponse {
     DSIHarnessGrpc Harness = 1;
+}
+
+message GetAllRFQStatusGrpcRequest {
+    int32 Position = 1;
+    int32 Take = 2;
+}
+
+message RFQStatusGrpc {
+	google.protobuf.StringValue RFQStatusDescription = 1;
+	google.protobuf.StringValue NPRStage = 2;
+}
+
+message ListRFQStatusGrpc {
+	repeated RFQStatusGrpc RFQStatusGrpc = 1;
 }
