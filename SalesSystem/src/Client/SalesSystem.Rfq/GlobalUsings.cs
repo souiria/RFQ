@@ -31,3 +31,4 @@ global using RfqModule;
 global using RfqShared;
 global using SharedModels.Filtering;
 global using SharedModels.Global;
+global using CommunityToolkit.Mvvm.ComponentModel;

@@ -239,7 +239,8 @@ else
 
     private string _quickSearch = string.Empty;
 
-    [Parameter] public GlobalValue GlobalValue { get; set; } = null!;
+    [CascadingParameter(Name = "GlobalValue")]
+    public GlobalValue? GlobalValue { get; set; }
 
     private bool IsLoading = true;
     protected override async Task OnInitializedAsync()
