@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SF.Commercial.AccessType" ApplicationTypeVersion="1.6.6" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SF.Commercial.AccessType" ApplicationTypeVersion="1.6.7" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="SF.Access.Adsss_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
     <Parameter Name="SF.Access.Masters_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
@@ -48,7 +48,7 @@
     </Policies>
   </ServiceManifestImport>
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SF.Access.AdsssPkg" ServiceManifestVersion="1.6.6" />
+    <ServiceManifestRef ServiceManifestName="SF.Access.AdsssPkg" ServiceManifestVersion="1.6.7" />
     <ConfigOverrides />
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Adsss_ASPNETCORE_ENVIRONMENT]" />

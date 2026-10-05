@@ -62,7 +62,7 @@
                 app.UseHsts();
             }
 
-            GrpcWebOptions grpcWebOptions = new GrpcWebOptions();
+              GrpcWebOptions grpcWebOptions = new GrpcWebOptions();
             grpcWebOptions.DefaultEnabled = true;
             app.UseGrpcWeb(grpcWebOptions);
             app.MapGrpcService<AdssGrpcService>();
