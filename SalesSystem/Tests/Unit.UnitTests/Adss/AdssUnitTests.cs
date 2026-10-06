@@ -42,7 +42,7 @@ namespace Unit.Tests.Adss
             Mock<ILogger<AdssGrpcService>> grpcLogger = new Mock<ILogger<AdssGrpcService>>();
 
             _AdssService = new AdssService(options.Object, env.Object, adssLogger.Object);
-            _GrpcService = new AdssGrpcService(_AdssService, grpcLogger.Object);
+            _GrpcService = new AdssGrpcService(_AdssService, grpcLogger.Object, options.Object);
         }
 
         [Test]

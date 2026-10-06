@@ -44,7 +44,7 @@ namespace Integration.Tests.Adss
             ILogger<AdssService> adssLogger = _LoggerFactory.CreateLogger<AdssService>();
             _AdssService = new AdssService(options.Object, env.Object, adssLogger);
             ILogger<AdssGrpcService> grpcLogger = _LoggerFactory.CreateLogger<AdssGrpcService>();
-            _GrpcService = new AdssGrpcService(_AdssService, grpcLogger);
+            _GrpcService = new AdssGrpcService(_AdssService,grpcLogger,options.Object);
 
         }
 

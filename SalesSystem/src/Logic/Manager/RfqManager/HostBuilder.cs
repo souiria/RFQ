@@ -209,8 +209,19 @@
                 options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
                 options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
             })
-            .ConfigurePrimaryHttpMessageHandler(CreateHandlerWithClientCert)
-            .AddStandardResilienceHandler();
+            .ConfigureHttpClient(client =>
+            {
+                client.Timeout = Timeout.InfiniteTimeSpan;
+            })
+            .AddStandardResilienceHandler(options =>
+            {
+                // Long timeouts for Adss - applied directly to this client's pipeline
+                // to guarantee it takes effect regardless of named-options binding.
+                options.TotalRequestTimeout.Timeout = TimeSpan.FromMinutes(10);
+                options.AttemptTimeout.Timeout = TimeSpan.FromMinutes(5);
+                // CircuitBreaker sampling duration must be at least double the AttemptTimeout.
+                options.CircuitBreaker.SamplingDuration = TimeSpan.FromMinutes(10);
+            });
 
             builder.Services.AddGrpcClient<NPR.NPR.NPRClient>(o =>
             {
