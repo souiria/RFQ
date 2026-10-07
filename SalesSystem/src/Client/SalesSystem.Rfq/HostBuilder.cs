@@ -48,6 +48,7 @@ namespace SalesSystem.Rfq
             builder.Services.AddTransient<RecentRfqsViewModel>();
             builder.Services.AddTransient<ListRfqsViewModel>();
             builder.Services.AddTransient<CreateRfqViewModel>();
+            builder.Services.AddTransient<EditRfqViewModel>();
 
             #region Additional Services
 

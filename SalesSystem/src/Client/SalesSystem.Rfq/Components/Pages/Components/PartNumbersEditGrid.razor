@@ -123,7 +123,15 @@
         padding-top: 0px;
         padding-bottom: 0px;
     }
+
+    .mud-table-sticky-header {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background-color: var(--mud-palette-surface);
+    }
 </style>
+
 <div class="d-flex flex-column" style="height: 100%; overflow: hidden;">
     <MudDataGrid T="RfqDrawingPartNumberUxModel"
                  Items="@PartNumbers"
@@ -194,18 +202,6 @@
         </Columns>
     </MudDataGrid>
 </div>
-
-<style>
-    /* .mud-grid-no-scroll-x {
-            overflow-x: hidden !important;
-        } */
-    .mud-table-sticky-header {
-        position: sticky;
-        top: 0;
-        z-index: 1;
-        background-color: var(--mud-palette-surface);
-    }
-</style>
 
 @code {
     [Parameter] public IEnumerable<RfqDrawingPartNumberUxModel?> PartNumbers { get; set; } = new List<RfqDrawingPartNumberUxModel>();
@@ -376,41 +372,30 @@
                     {
                         Logger.GenericLogInformation($"Search data applied to part number: {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber}");
 
-                        // Call the service to update the part number
-                        bool success = await RfqUxClientService.UpdateRfqDrawingPartNumber(updatedItem);
+                        // Update the original item's properties with the updated values.
+                        item.DrawingPartNumber = updatedItem.DrawingPartNumber;
+                        item.DrawingPartNumberPrice = updatedItem.DrawingPartNumberPrice;
+                        item.SwappedPartNumber = updatedItem.SwappedPartNumber;
+                        item.SwappedPartNumberPrice = updatedItem.SwappedPartNumberPrice;
+                        item.PriceSource = updatedItem.PriceSource;
+                        item.IsExactMatch = updatedItem.IsExactMatch;
+                        item.IsSwapped = updatedItem.IsSwapped;
+                        item.Comments = updatedItem.Comments;
 
-                        if (success)
-                        {
-                            // Update the original item's properties with the updated values
-                            item.DrawingPartNumber = updatedItem.DrawingPartNumber;
-                            item.DrawingPartNumberPrice = updatedItem.DrawingPartNumberPrice;
-                            item.SwappedPartNumber = updatedItem.SwappedPartNumber;
-                            item.SwappedPartNumberPrice = updatedItem.SwappedPartNumberPrice;
-                            item.PriceSource = updatedItem.PriceSource;
-                            item.IsExactMatch = updatedItem.IsExactMatch;
-                            item.IsSwapped = updatedItem.IsSwapped;
-                            item.Comments = updatedItem.Comments;
+                        item.SearchResultPartNumbers.Clear();
+                        item.SearchResultPartNumbers.AddRange(updatedItem.SearchResultPartNumbers);
 
-                            item.SearchResultPartNumbers.Clear();
-                            item.SearchResultPartNumbers.AddRange(updatedItem.SearchResultPartNumbers);
+                        Logger.GenericLogInformation($"Successfully applied search data to part number: {item.CustomerPartNumber}/{item.DrawingPartNumber}");
+                        Snackbar.Add($"Part number {item.CustomerPartNumber}/{item.DrawingPartNumber} updated with NPR data. Click Update to save.", Severity.Success);
 
-                            Logger.GenericLogInformation($"Successfully updated part number with NPR data: {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber}");
-                            Snackbar.Add($"Part number {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber} updated with NPR data", Severity.Success);
+                        // Notify parent component to refresh and potentially move between lists.
+                        await OnPartNumberUpdated.InvokeAsync(item);
 
-                            // Notify parent component to refresh and potentially move between lists
-                            await OnPartNumberUpdated.InvokeAsync(updatedItem);
-
-                            StateHasChanged();
-                        }
-                        else
-                        {
-                            Logger.GenericLogInformation($"Failed to update part number: {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber}");
-                            Snackbar.Add($"Failed to update part number {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber}", Severity.Error);
-                        }
+                        StateHasChanged();
                     }
                     catch (Exception ex)
                     {
-                        Logger.GenericLogError($"Error updating part number with NPR data: {updatedItem.CustomerPartNumber}/{updatedItem.DrawingPartNumber}", ex);
+                        Logger.GenericLogError($"Error applying search data to part number: {item.CustomerPartNumber}/{item.DrawingPartNumber}", ex);
                         Snackbar.Add($"Error updating part number: {ex.Message}", Severity.Error);
                     }
                 }
@@ -430,11 +415,6 @@
                 {
                     { "SearchedPartNumber", item },
                 };
-                // DialogParameters parameters = new DialogParameters
-                // {
-                //     { "SearchedPartNumber", item },
-                //     { "SearchResults", new List<string?>() },
-                // };
 
                 DialogOptions options = new DialogOptions
                 {
@@ -548,26 +528,38 @@
             return;
         }
 
-        // Build confirmation message with part number details
+        // Build confirmation message with part number details as an HTML table
         System.Text.StringBuilder messageBuilder = new System.Text.StringBuilder();
-        messageBuilder.AppendLine("Are you sure you want to delete this part number?");
-        messageBuilder.AppendLine();
-        messageBuilder.AppendLine($"Row ID: {item.RowId}");
-        messageBuilder.AppendLine($"RFQ ID: {item.RfqId}");
-        messageBuilder.AppendLine($"Customer Part Number: {item.CustomerPartNumber ?? "N/A"}");
-        messageBuilder.AppendLine($"Drawing Part Number: {item.DrawingPartNumber ?? "N/A"}");
-        messageBuilder.AppendLine($"Drawing Part Number Price: {(item.DrawingPartNumberPrice > 0 ? $"${item.DrawingPartNumberPrice.ToString("C5")}" : "N/A")}");
-        messageBuilder.AppendLine($"Dummy/Alt. Part Number: {item.SwappedPartNumber ?? "N/A"}");
-        messageBuilder.AppendLine($"Dummy/Alt. Price: {(item.SwappedPartNumberPrice > 0 ? $"${item.SwappedPartNumberPrice.ToString("C5")}" : "N/A")}");
-        messageBuilder.AppendLine($"Price Source: {item.PriceSource ?? "N/A"}");
-        messageBuilder.AppendLine($"Is Exact Match: {(item.IsExactMatch == true ? "YES" : "NO")}");
-        messageBuilder.AppendLine($"Is Swapped: {(item.IsSwapped == true ? "YES" : "NO")}");
-        messageBuilder.AppendLine($"Is Matched: {item.IsCompleted}");
-        messageBuilder.AppendLine($"Comments: {item.Comments ?? "N/A"}");
+        messageBuilder.Append("<p>Are you sure you want to delete this part number?</p>");
+        messageBuilder.Append("<table style=\"width:100%; border-collapse: collapse;\">");
+        messageBuilder.Append("<tbody>");
+
+        void AppendRow(string property, string value)
+        {
+            messageBuilder.Append("<tr>");
+            messageBuilder.Append($"<td style=\"padding:2px 12px 2px 0; font-weight:600; vertical-align:top; white-space:nowrap;\">{System.Net.WebUtility.HtmlEncode(property)}</td>");
+            messageBuilder.Append($"<td style=\"padding:2px 0;\">{System.Net.WebUtility.HtmlEncode(value)}</td>");
+            messageBuilder.Append("</tr>");
+        }
+
+        AppendRow("Row ID", item.RowId.ToString());
+        AppendRow("RFQ ID", item.RfqId.ToString());
+        AppendRow("Customer Part Number", item.CustomerPartNumber ?? "N/A");
+        AppendRow("Drawing Part Number", item.DrawingPartNumber ?? "N/A");
+        AppendRow("Drawing Part Number Price", item.DrawingPartNumberPrice > 0 ? $"${item.DrawingPartNumberPrice:C5}" : "N/A");
+        AppendRow("Dummy/Alt. Part Number", item.SwappedPartNumber ?? "N/A");
+        AppendRow("Dummy/Alt. Price", item.SwappedPartNumberPrice > 0 ? $"${item.SwappedPartNumberPrice:C5}" : "N/A");
+        AppendRow("Price Source", item.PriceSource ?? "N/A");
+        AppendRow("Is Exact Match", item.IsExactMatch == true ? "YES" : "NO");
+        AppendRow("Is Swapped", item.IsSwapped == true ? "YES" : "NO");
+        AppendRow("Is Matched", item.IsCompleted.ToString());
+        AppendRow("Comments", item.Comments ?? "N/A");
+
+        messageBuilder.Append("</tbody></table>");
 
         bool? result = await DialogService.ShowMessageBoxAsync(
             "Confirm Delete",
-            messageBuilder.ToString(),
+            (MarkupString)messageBuilder.ToString(),
             yesText: "Delete",
             cancelText: "Cancel"
         );

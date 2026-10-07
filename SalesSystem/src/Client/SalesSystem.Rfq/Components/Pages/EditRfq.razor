@@ -1,19 +1,9 @@
-﻿@page "/editRfq/{RfqProjectId:long}"
+@page "/editRfq/{RfqProjectId:long}"
 @* @page "/editRfq/{UserId:guid}/{RfqProjectId:long}" *@
 
-@using Google.Protobuf.WellKnownTypes
 @using SalesSystem.Rfq.Components.Pages.Components
-@using SalesSystem.Rfq.Components.Pages.Dialogs
-@using SalesSystem.Rfq.Enums
-@using SalesSystem.Rfq.Extensions
-@using SalesSystem.Rfq.Models
-
-@inject ISnackbar Snackbar
-@inject RfqUxClientService RfqUxClientService
-@inject DsiUxClientService DsiUxClientService
-@inject ILogger<EditRfq> Logger
-@inject IDialogService DialogService
-@inject NavigationManager NavigationManager
+@using SalesSystem.Rfq.ViewModels
+@inherits MvvmComponentBase<EditRfqViewModel>
 
 @rendermode InteractiveServer
 <style>
@@ -28,7 +18,7 @@
         padding-bottom: 0px;
     }
 </style>
-@if (IsLoading || RfqProject == null)
+@if (ViewModel.IsLoading || ViewModel.RfqProject == null)
 {
     <MudContainer Class="d-flex justify-center align-center" Style="height: calc(100vh - 128px);">
         <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large">
@@ -42,7 +32,7 @@
 }
 else
 {
-    <MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Edit @RfqProject.RfqNumber (@RfqProject.CustomerCode / @RfqProject.ProjectName - @RfqProject.CarModelName)</MudText>
+    <MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Edit @ViewModel.RfqProject.RfqNumber (@ViewModel.RfqProject.CustomerCode / @ViewModel.RfqProject.ProjectName - @ViewModel.RfqProject.CarModelName)</MudText>
     <MudGrid Class="position-fixed">
         <MudItem xs="12">
             <MudStack Row="true">
@@ -55,25 +45,26 @@ else
                 </MudPaper>
 
                 <MudSelect T="int?"
-                           Value="@(RfqProject.RfqReasonId == 0 ? null : (int?)RfqProject.RfqReasonId)"
-                           ValueChanged="OnReasonValueChanged"
+                           Value="@(ViewModel.RfqProject.RfqReasonId == 0 ? null : (int?)ViewModel.RfqProject.RfqReasonId)"
+                           ValueChanged="ViewModel.OnReasonValueChanged"
                            Label="Reason"
                            Placeholder="Please Select"
                            AdornmentIcon="@Icons.Material.Filled.Checklist"
                            AdornmentColor="Color.Primary">
-                    @foreach (var reason in RfqUxClientService.Reasons)
+                    @foreach (var reason in ViewModel.Reasons)
                     {
                         <MudSelectItem T="int?" Value="@((int?)reason.RowId)">@reason.RfqReasonTitle</MudSelectItem>
                     }
                 </MudSelect>
-                <MudNumericField @bind-Value="@RfqProject.VehicleVolume"
+                <MudNumericField @bind-Value="@ViewModel.RfqProject.VehicleVolume"
+                                 T="int"
                                  Label="Vehicle Volume"
                                  Variant="Variant.Text"
                                  Min="0" 
                                  HideSpinButtons="true"
                                  Class="compact-input"/>
                 <MudDatePicker Label="Deadline"
-                               @bind-Date="RfqProject.RfqResponseDeadline"
+                               @bind-Date="ViewModel.RfqProject.RfqResponseDeadline"
                                DateFormat="dd.MM.yyyy" />
 
                 @* Controls – scrollable inner wrapper *@
@@ -84,24 +75,24 @@ else
                             @* Column 1: Search & Status *@
                                 <MudTooltip Text="Search All InProgress Parts">
                                     <MudButton Color="Color.Info"
-                                               OnClick="@SearchAllPartNumbersAsync"
+                                               OnClick="@ViewModel.SearchAllPartNumbersAsync"
                                                Variant="Variant.Filled"
                                                Size="Size.Small"
                                                StartIcon="@Icons.Material.Filled.TravelExplore"
                                                FullWidth="true"
-                                               Disabled="@(_InProgressParts.Count == 0 || _IsSearchingAll)"
+                                               Disabled="@(ViewModel.InProgressParts.Count == 0 || ViewModel.IsSearchingAll)"
                                                Class="mud-text-nowrap">
                                         Search
                                     </MudButton>
                                 </MudTooltip>
                                 <MudTooltip Text="RFQ Project Stats and Statistics">
                                     <MudButton Color="Color.Dark"
-                                               OnClick="@ShowDatasetStatusAsync"
+                                               OnClick="@ViewModel.ShowDatasetStatusAsync"
                                                Variant="Variant.Filled"
                                                Size="Size.Small"
                                                StartIcon="@Icons.Material.Filled.Assessment"
                                                FullWidth="true"
-                                               Disabled="@(TotalParts == 0)"
+                                               Disabled="@(ViewModel.TotalParts == 0)"
                                                Class="mud-text-nowrap">
                                         Status
                                     </MudButton>
@@ -110,24 +101,24 @@ else
                             @* Column 2: NPR handling *@
                                 <MudTooltip Text="Create NPR Requests for ALL InProgress Parts">
                                     <MudButton Color="Color.Info"
-                                               OnClick="@NprAllInProgressPartsAsync"
+                                               OnClick="@ViewModel.NprAllInProgressPartsAsync"
                                                Variant="Variant.Filled"
                                                Size="Size.Small"
                                                StartIcon="@Icons.Material.Filled.AddTask"
                                                FullWidth="true"
-                                               Disabled="@(IsCreateNprRequestsPermitted)"
+                                               Disabled="@(ViewModel.IsCreateNprRequestsPermitted)"
                                                Class="mud-text-nowrap">
                                         Add&nbsp;NPRs
                                     </MudButton>
                                 </MudTooltip>
                                 <MudTooltip Text="Submit existing NPR Requests to the NPR API">
                                     <MudButton Color="Color.Success"
-                                               OnClick="@SubmitNprRequestsAsync"
+                                               OnClick="@ViewModel.SubmitNprRequestsAsync"
                                                Variant="Variant.Filled"
                                                Size="Size.Small"
                                                StartIcon="@Icons.Material.Filled.CloudUpload"
                                                FullWidth="true"
-                                               Disabled="@(_IsSubmittingNprs || RfqProject?.NprRequests == null || RfqProject.NprRequests.Count == 0)"
+                                               Disabled="@(ViewModel.IsSubmittingNprs || ViewModel.RfqProject?.NprRequests == null || ViewModel.RfqProject.NprRequests.Count == 0)"
                                                Class="mud-text-nowrap">
                                         Submit&nbsp;NPRs
                                     </MudButton>
@@ -137,7 +128,7 @@ else
                             @* Column 3: Reload, Update *@
                                 <MudTooltip Text="Reload from DB and Drop Changes">
                                     <MudButton Color="Color.Warning"
-                                               OnClick="@ReloadDataAsync"
+                                               OnClick="@ViewModel.ReloadDataAsync"
                                                Variant="Variant.Filled"
                                                Size="Size.Small"
                                                StartIcon="@Icons.Material.Filled.Repeat"
@@ -148,7 +139,7 @@ else
                                 </MudTooltip>
                                 <MudTooltip Text="Save to DB">
                                     <MudButton Color="Color.Primary"
-                                               OnClick="@SaveDataAsync"
+                                               OnClick="@ViewModel.SaveDataAsync"
                                                Variant="Variant.Filled"
                                                Size="Size.Small"
                                                StartIcon="@Icons.Material.Filled.Save"
@@ -169,47 +160,35 @@ else
                          ApplyEffectsToContainer="true"
                          MinimumTabWidth="16vw"
                          Style="height: 100%; overflow: hidden;"
-                         @bind-ActivePanelIndex="_ActiveTabIndex">
+                         @bind-ActivePanelIndex="ViewModel.ActiveTabIndex">
                     <MudTabPanel Text="BOM Files"
                                  Icon="@Icons.Material.Filled.Api"
                                  BadgeData='"BOM"'
                                  BadgeColor="Color.Success">
                         <div class="edit-rfq-panel">
-                            @if(_Composites.Count > 0)
+                            @if(ViewModel.Composites.Count > 0)
                             {
                                 <Composites @ref="_CompositesRef"
-                                            DsiComposites="@_Composites"
-                                            PreselectedIds="@_PreselectedDerivativeIds"
-                                            OnComponentsSelected="@HandleComponentsSelectedAsync" />
+                                            DsiComposites="@ViewModel.Composites"
+                                            PreselectedIds="@ViewModel.PreselectedDerivativeIds"
+                                            OnComponentsSelected="@ViewModel.HandleComponentsSelectedAsync" />
                             }
                         </div>
                     </MudTabPanel>
                     <MudTabPanel Text="Parts Lists" Icon="@Icons.Material.Filled.Api" BadgeData='"PROJ"' BadgeColor="Color.Info">
-                        <div  class="edit-rfq-panel">
-                            <PartNumberSection PartNumbers="@_InProgressParts"
-                                               Label="In progress"
-                                               BackgroundColor="var(--mud-palette-warning)"
-                                               InitiallyExpanded="true"
-                                               OnPartNumberDeleted="@HandlePartNumberDeleted"
-                                               OnPartNumberUpdated="@HandlePartNumberUpdated"/>
-                            <MudDivider Style="margin: 4px 0;"/>
-                            <PartNumberSection PartNumbers="@_CompletedParts"
-                                               Label="Completed"
-                                               BackgroundColor="var(--mud-palette-success)"
-                                               InitiallyExpanded="false"
-                                               OnPartNumberDeleted="@HandlePartNumberDeleted"
-                                               OnPartNumberUpdated="@HandlePartNumberUpdated"/>
-                        </div>
+                        <RfqPartsListPanel CompletedParts="@ViewModel.CompletedParts"
+                                           InProgressParts="@ViewModel.InProgressParts"
+                                           OnPartsChanged="StateHasChanged" />
                     </MudTabPanel>
                     <MudTabPanel Text="@($"NPRs")"
-                                 Disabled="@(RfqProject.NprRequests == null || RfqProject.NprRequests.Count == 0)"
+                                 Disabled="@(ViewModel.RfqProject.NprRequests == null || ViewModel.RfqProject.NprRequests.Count == 0)"
                                  Icon="@Icons.Material.Filled.RequestPage"
-                                 BadgeData="@(RfqProject.NprRequests?.Count ?? 0)"
+                                 BadgeData="@(ViewModel.RfqProject.NprRequests?.Count ?? 0)"
                                  BadgeColor="Color.Primary">
                         <div class="edit-rfq-panel">
-                            @if (RfqProject.NprRequests != null && RfqProject.NprRequests.Count > 0)
+                            @if (ViewModel.RfqProject.NprRequests != null && ViewModel.RfqProject.NprRequests.Count > 0)
                             {
-                                <NprRequestsEditor @ref="_ComponentNprEditor" RfqProject="@RfqProject" GlobalValue="@GlobalValue"/>
+                                <NprRequestsEditor @ref="_ComponentNprEditor" RfqProject="@ViewModel.RfqProject" GlobalValue="@ViewModel.GlobalValue"/>
                             }
                             else
                             {
