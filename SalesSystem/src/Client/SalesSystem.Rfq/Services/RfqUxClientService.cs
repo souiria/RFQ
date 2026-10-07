@@ -535,7 +535,7 @@ namespace SalesSystem.Rfq.Services
         //public async Task<UploadPartsRequestGrpcResponse> UploadPartsAsync(string projectId,
         //                                                                   byte[] fileData,
         //                                                                   string fileName,
-        //                                                                   Guid? userId,
+        //                                                                   Guid? _userId,
         //                                                                   long maxAllowedSize = 16_777_216)
         //{
         //    ArgumentException.ThrowIfNullOrEmpty(projectId);
@@ -551,7 +551,7 @@ namespace SalesSystem.Rfq.Services
         //        request.ProjectId = projectId;
         //        request.FileName = fileName;
         //        request.FileData = ByteString.CopyFrom(fileData);
-        //        request.UserId = userId.ToString();
+        //        request.UserId = _userId.ToString();
 
         //        UploadPartsRequestGrpcResponse response = await _Client.UploadPartsGrpcAsync(request, cancellationToken: timeoutCts.Token);
 

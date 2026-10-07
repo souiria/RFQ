@@ -260,58 +260,94 @@
         item.SearchResultPartNumbers.Clear();
         item.Comments = "";
 
-        Logger.GenericLogInformation($"Searching for part number: {item.CustomerPartNumber}");
+        /*
+         * Build the same multi-part-number search list used by
+         * EditRfq.SearchAllPartNumbersAsync:
+         * - PartNumber1 (falls back to CustomerPartNumber if empty)
+         * - PartNumber2
+         * - PartNumber3
+         */
+        List<string> partNumbersToSearch = new List<string>();
 
-        var cleanedUpPn = item.CustomerPartNumber?.Replace("-", "").Replace(" ", "").ToUpperInvariant();
-        if (string.IsNullOrEmpty(cleanedUpPn))
+        if (!string.IsNullOrWhiteSpace(item.PartNumber1))
+        {
+            partNumbersToSearch.Add(item.PartNumber1.Trim());
+        }
+        else if (!string.IsNullOrWhiteSpace(item.CustomerPartNumber))
+        {
+            partNumbersToSearch.Add(item.CustomerPartNumber.Trim());
+        }
+
+        if (!string.IsNullOrWhiteSpace(item.PartNumber2))
+        {
+            partNumbersToSearch.Add(item.PartNumber2.Trim());
+        }
+
+        if (!string.IsNullOrWhiteSpace(item.PartNumber3))
+        {
+            partNumbersToSearch.Add(item.PartNumber3.Trim());
+        }
+
+        partNumbersToSearch = partNumbersToSearch
+            .Where(partNumber => !string.IsNullOrWhiteSpace(partNumber))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (partNumbersToSearch.Count == 0)
         {
             Logger.GenericLogInformation($"No valid part number found for item with Row ID: {item.RowId}");
             await DialogService.ShowMessageBoxAsync("Search Part Number", $"No valid part number found for item with Row ID: {item.RowId}");
             return;
         }
 
+        Logger.GenericLogInformation($"Searching for part number(s): {string.Join(", ", partNumbersToSearch)}");
+
         try
         {
-            // Call SearchEmacsContainsCustomerPn
-            if (item.CustomerPartNumber == null)
-            {
-                Logger.GenericLogInformation("CustomerPartNumber is null");
-                return;
-            }
-
             SearchPartPricesGrpcResponse response = await RfqUxClientService.SearchPartPricesAsync(
-                new List<string> { item.CustomerPartNumber });
+                partNumbersToSearch);
 
-            PriceResponse? priceResponse = response.PriceResponse
-                .FirstOrDefault(pr =>
-                    string.Equals(
-                        pr.CustomerPartNumber,
-                        item.CustomerPartNumber,
-                        StringComparison.OrdinalIgnoreCase));
+            int index = 0;
 
-            if(priceResponse?.PriceInformation != null && priceResponse.PriceInformation.Count>0)
+            var commentData = new RfqDrawingPartNumberUxSearchResult();
+            commentData.User = "System";
+            commentData.Timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
+            commentData.Action = "Individual search";
+
+            // Process ALL returned price responses, one per searched part number
+            // (previously only the first match against CustomerPartNumber was used,
+            // dropping any results found via PartNumber2/PartNumber3).
+            foreach (PriceResponse priceResponse in response.PriceResponse)
             {
-                // Show custom dialog with MudList
-                int index = 0;
+                string searchedPartNumber = priceResponse.CustomerPartNumber?.Trim() ?? string.Empty;
+                bool isExactMatch = priceResponse.ExactMatch ?? false;
 
-                var commentData = new RfqDrawingPartNumberUxSearchResult();
-                commentData.User = "System";
-                commentData.Timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
-                commentData.Action = "Individual search";
-
-                // just add all to the search list
-                foreach (var priceInfo in priceResponse.PriceInformation)
+                if (priceResponse.PriceInformation == null)
                 {
-                    var matchedPartNumber = new RfqDrawingPartNumberUxModel();
-                    matchedPartNumber.IsExactMatch = priceInfo.SumitomoNumber
-                                                                .ToUpperInvariant()
-                                                                .CompareTo(item.CustomerPartNumber.ToUpperInvariant()) == 0;
-                    matchedPartNumber.Index = index++;
-                    matchedPartNumber.DrawingPartNumber = priceInfo.SumitomoNumber;
-                    matchedPartNumber.DrawingPartNumberPrice = priceInfo.Price is null ? 0.0m : (decimal)priceInfo.Price;
-                    item.SearchResultPartNumbers.Add(matchedPartNumber);
+                    continue;
                 }
 
+                foreach (var priceInfo in priceResponse.PriceInformation)
+                {
+                    var matchedPartNumber = new RfqDrawingPartNumberUxModel
+                    {
+                        Index = index++,
+                        CustomerPartNumber = searchedPartNumber,
+                        PartNumber1 = searchedPartNumber,
+                        DrawingPartNumber = priceInfo.SumitomoNumber ?? string.Empty,
+                        DrawingPartNumberPrice = priceInfo.Price is null ? 0.0m : (decimal)priceInfo.Price,
+                        PriceSource = priceInfo.PriceSource ?? string.Empty,
+                        IsExactMatch = isExactMatch,
+                        IsSwapped = false
+                    };
+
+                    item.SearchResultPartNumbers.Add(matchedPartNumber);
+                }
+            }
+
+            if (item.SearchResultPartNumbers.Count > 0)
+            {
+                // Show custom dialog with MudList
                 DialogParameters parameters = new DialogParameters
                 {
                     { "SearchedPartNumber", item },

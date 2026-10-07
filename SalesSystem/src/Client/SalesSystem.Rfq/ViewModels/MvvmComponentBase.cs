@@ -1,16 +1,20 @@
-using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
-
 namespace SalesSystem.Rfq.ViewModels
 {
     public abstract class MvvmComponentBase<TViewModel> : ComponentBase, IDisposable
-        where TViewModel : INotifyPropertyChanged, new()
+        where TViewModel : INotifyPropertyChanged
     {
-        protected TViewModel ViewModel { get; } = new();
+        // Resolved from DI so ViewModels can take constructor-injected dependencies
+        // (e.g. client services, ILogger, ISnackbar) instead of only supporting
+        // parameterless construction.
+        [Inject]
+        IServiceProvider ServiceProvider { get; set; } = null!;
+
+        TViewModel? _ViewModel;
+
+        protected TViewModel ViewModel => _ViewModel ??= ServiceProvider.GetRequiredService<TViewModel>();
 
         bool _Disposed;
+        bool _AsyncInitialized;
 
         protected override void OnInitialized()
         {
@@ -18,13 +22,22 @@ namespace SalesSystem.Rfq.ViewModels
             ViewModel.PropertyChanged += OnViewModelPropertyChanged;
         }
 
-        protected override async Task OnInitializedAsync()
+        protected override async Task OnParametersSetAsync()
         {
-            await base.OnInitializedAsync();
+            await base.OnParametersSetAsync();
 
-            if (ViewModel is IAsyncInitializable initializable)
+            // Cascading parameters (e.g. GlobalValue) are guaranteed to be applied
+            // to the ViewModel by the time OnParametersSet/OnParametersSetAsync runs,
+            // unlike OnInitializedAsync which can fire before parameters are set.
+            // Guard ensures InitializeAsync only runs once per component instance.
+            if (!_AsyncInitialized)
             {
-                await initializable.InitializeAsync();
+                _AsyncInitialized = true;
+
+                if (ViewModel is IAsyncInitializable initializable)
+                {
+                    await initializable.InitializeAsync();
+                }
             }
         }
 
@@ -44,10 +57,13 @@ namespace SalesSystem.Rfq.ViewModels
             if (disposing)
             {
                 // dispose managed resources
-                ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
-                if (ViewModel is IDisposable disposableVm)
+                if (_ViewModel is not null)
                 {
-                    disposableVm.Dispose();
+                    _ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+                    if (_ViewModel is IDisposable disposableVm)
+                    {
+                        disposableVm.Dispose();
+                    }
                 }
             }
 

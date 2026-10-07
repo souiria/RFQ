@@ -12,7 +12,6 @@
             services.AddScoped<RfqUxClientService>();
             services.AddScoped<DsiUxClientService>();
             services.AddScoped<CsvExportService>();
-            services.AddScoped<Components.Pages.RfqDashboardViewModel>();
             return services;
         }
     }

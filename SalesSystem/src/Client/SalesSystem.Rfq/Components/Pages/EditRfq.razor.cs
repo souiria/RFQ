@@ -356,7 +356,9 @@
                 DsiUxClientService.Harnesses
                     .Where(
                         harness =>
-                            harnessIds.Contains(harness.Id))
+                        {
+                            return harnessIds.Contains(harness.Id);
+                        })
                     .GroupBy(harness => harness.Id)
                     .Select(group => group.First());
 
@@ -798,8 +800,15 @@
         {
             try
             {
-                RfqDrawingPartNumberUxModel? matchedItem = _CompletedParts.FirstOrDefault(p => p?.RowId == updatedItem.RowId);
-                RfqDrawingPartNumberUxModel? unmatchedItem = _InProgressParts.FirstOrDefault(p => p?.RowId == updatedItem.RowId);
+                RfqDrawingPartNumberUxModel? matchedItem =
+                    _CompletedParts.FirstOrDefault(p =>
+                        ReferenceEquals(p, updatedItem) ||
+                        (updatedItem.RowId != 0 && p?.RowId == updatedItem.RowId));
+
+                RfqDrawingPartNumberUxModel? unmatchedItem =
+                    _InProgressParts.FirstOrDefault(p =>
+                        ReferenceEquals(p, updatedItem) ||
+                        (updatedItem.RowId != 0 && p?.RowId == updatedItem.RowId));
 
                 bool isInCompletedList = matchedItem != null;
                 bool isInInProgressList = unmatchedItem != null;
@@ -807,13 +816,23 @@
                 if (updatedItem.IsCompleted && isInInProgressList && unmatchedItem is not null)
                 {
                     _InProgressParts.Remove(unmatchedItem);
-                    _CompletedParts.Add(updatedItem);
+
+                    if (!_CompletedParts.Contains(updatedItem))
+                    {
+                        _CompletedParts.Add(updatedItem);
+                    }
+
                     Logger.GenericLogInformation($"EditRfq.HandlePartNumberUpdated - Moved part to matched: {updatedItem.CustomerPartNumber}");
                 }
                 else if (!updatedItem.IsCompleted && isInCompletedList && matchedItem is not null)
                 {
                     _CompletedParts.Remove(matchedItem);
-                    _InProgressParts.Add(updatedItem);
+
+                    if (!_InProgressParts.Contains(updatedItem))
+                    {
+                        _InProgressParts.Add(updatedItem);
+                    }
+
                     Logger.GenericLogInformation($"EditRfq.HandlePartNumberUpdated - Moved part to unmatched: {updatedItem.CustomerPartNumber}");
                 }
                 else if (isInCompletedList && matchedItem is not null)
@@ -1854,7 +1873,10 @@
 
             foreach (DsiComponentUxModel component in components)
             {
-                if (string.IsNullOrWhiteSpace(component.PartNumber1))
+                if (string.IsNullOrWhiteSpace(component.PartNumber1?.Trim()) 
+                    || (string.IsNullOrWhiteSpace(component.PartNumber1?.Trim()) 
+                        && string.IsNullOrWhiteSpace(component.PartNumber2?.Trim()) 
+                        && string.IsNullOrWhiteSpace(component.PartNumber3?.Trim())))
                 {
                     continue;
                 }
@@ -1862,9 +1884,30 @@
                 _InProgressParts.Add(component.ToUx(RfqProject.RowId));
             }
 
+            // Deduplicate entries by (PartNumber1, PartNumber2, PartNumber3), trimmed
+            _InProgressParts = DeduplicateByPartNumbers(_InProgressParts!);
+
             _ActiveTabIndex = 1; // Switch to "Parts Lists" tab
             StateHasChanged();
             await Task.CompletedTask;
+        }
+        static List<RfqDrawingPartNumberUxModel> DeduplicateByPartNumbers(IEnumerable<RfqDrawingPartNumberUxModel> parts)
+        {
+            HashSet<(string? PartNumber1, string? PartNumber2, string? PartNumber3)> seenKeys = new();
+            List<RfqDrawingPartNumberUxModel> uniqueParts = new();
+
+            foreach (RfqDrawingPartNumberUxModel part in parts)
+            {
+                (string? PartNumber1, string? PartNumber2, string? PartNumber3) key =
+                    (part.PartNumber1?.Trim(), part.PartNumber2?.Trim(), part.PartNumber3?.Trim());
+
+                if (seenKeys.Add(key))
+                {
+                    uniqueParts.Add(part);
+                }
+            }
+
+            return uniqueParts;
         }
 
         async Task UpdateSelectionAsync()

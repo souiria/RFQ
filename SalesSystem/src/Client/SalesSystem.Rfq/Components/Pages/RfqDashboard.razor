@@ -2,8 +2,9 @@
 @* @page "/{UserId:guid}" *@
 @using System.Globalization
 @using SalesSystem.Rfq.Components.Pages.Components
+@using SalesSystem.Rfq.ViewModels
 
-@inject RfqDashboardViewModel _vm
+@inherits MvvmComponentBase<RfqDashboardViewModel>
 
 <style>
     :root {
@@ -157,111 +158,95 @@
 
 </style>
 
-    <MudPaper class="rfq-dashboard">
-        @* Row 1: four equal KPI cards, 6vh high *@
-        <MudPaper class="kpi-row">
-            @foreach (var kpi in _vm.Kpis)
-            {
-                <MudPaper Elevation="6" Class="dashboard-pane kpi-card">
-                    <MudIcon Icon="@kpi.Icon"
-                             Color="@kpi.Color"
-                             Class="kpi-icon" />
+<MudPaper class="rfq-dashboard">
+    @* Row 1: four equal KPI cards, 6vh high *@
+    <MudPaper class="kpi-row">
+        @foreach (var kpi in ViewModel.Kpis)
+        {
+            <MudPaper Elevation="6" Class="dashboard-pane kpi-card">
+                <MudIcon Icon="@kpi.Icon"
+                            Color="@kpi.Color"
+                            Class="kpi-icon" />
 
-                    <div class="kpi-content">
-                        <MudText Class="kpi-label">@kpi.Label</MudText>
-                        <MudText Class="kpi-value">@kpi.Value</MudText>
-                    </div>
-                </MudPaper>
-            }
-        </MudPaper>
-
-        @* Row 2: 70% / 30%, 10vh high *@
-        <MudPaper class="chart-row">
-            <MudPaper Elevation="6" Class="dashboard-pane chart-pane">
-                <MudText Typo="Typo.subtitle1">Some Charts</MudText>
-            </MudPaper>
-
-            <MudPaper Elevation="6" Class="dashboard-pane chart-pane">
-                <MudText Typo="Typo.subtitle1">Another Chart</MudText>
-            </MudPaper>
-        </MudPaper>
-
-        @* Row 3: fills all remaining vertical space *@
-    <MudPaper class="data-row">
-
-            <MudPaper Elevation="6" Class="dashboard-pane data-pane">
-                <MudText Typo="Typo.h6" Class="pane-title">RFQ Successes</MudText>
-
-                <div class="table-host">
-                    <MudTable T="SuccessRow"
-                              Items="@_vm.Successes"
-                              Dense="true"
-                              FixedHeader="true"
-                              Height="100%"
-                              Class="success-table">
-
-                        <HeaderContent>
-                            <MudTh>Company</MudTh>
-                            <MudTh>Project</MudTh>
-                            <MudTh>Business Won</MudTh>
-                        </HeaderContent>
-
-                        <RowTemplate>
-                            <MudTd DataLabel="Company">
-                                <div class="company-cell">
-                                    <MudAvatar Class="company-avatar">
-                                        @context.Initials
-                                    </MudAvatar>
-
-                                    <div class="company-details">
-                                        <MudText Typo="Typo.body2" Class="company-name">
-                                            @context.Company
-                                        </MudText>
-                                        <MudText Typo="Typo.body2">
-                                            @context.Contact
-                                        </MudText>
-                                    </div>
-                                </div>
-                            </MudTd>
-
-                            <MudTd DataLabel="Project">
-                                <MudChip T="string"
-                                         Size="Size.Small"
-                                         Color="@context.PriorityColor">
-                                    @context.Priority
-                                </MudChip>
-                            </MudTd>
-
-                            <MudTd DataLabel="Business Won">
-                                @context.BusinessWon.ToString("C0", CultureInfo.InvariantCulture)
-                            </MudTd>
-                        </RowTemplate>
-                    </MudTable>
+                <div class="kpi-content">
+                    <MudText Class="kpi-label">@kpi.Label</MudText>
+                    <MudText Class="kpi-value">@kpi.Value</MudText>
                 </div>
             </MudPaper>
+        }
+    </MudPaper>
 
-            <MudPaper Elevation="6" Class="dashboard-pane data-pane">
-                <MudText Typo="Typo.h6" Class="pane-title">Recent RFQs</MudText>
+    @* Row 2: 70% / 30%, 10vh high *@
+    <MudPaper class="chart-row">
+        <MudPaper Elevation="6" Class="dashboard-pane chart-pane">
+            <MudText Typo="Typo.subtitle1">Some Charts</MudText>
+        </MudPaper>
 
-                <div class="table-host">
-                    <RecentRfqs />
-                </div>
-            </MudPaper>
+        <MudPaper Elevation="6" Class="dashboard-pane chart-pane">
+            <MudText Typo="Typo.subtitle1">Another Chart</MudText>
         </MudPaper>
     </MudPaper>
 
-@code {
+    @* Row 3: fills all remaining vertical space *@
+<MudPaper class="data-row">
 
-    // [Parameter]
-    // public Guid? UserId { get; set; }
+        <MudPaper Elevation="6" Class="dashboard-pane data-pane">
+            <MudText Typo="Typo.h6" Class="pane-title">RFQ Successes</MudText>
 
-    [CascadingParameter(Name = "GlobalValue")]
-    public GlobalValue? GlobalValue { get; set; }
+            <div class="table-host">
+                <MudTable T="SuccessRow"
+                            Items="@ViewModel.Successes"
+                            Dense="true"
+                            FixedHeader="true"
+                            Height="100%"
+                            Class="success-table">
 
-    protected override void OnParametersSet()
-    {
-        // _vm.UserId = UserId;
-        _vm.GlobalValue = GlobalValue;
-        base.OnParametersSet();
-    }
-}}
+                    <HeaderContent>
+                        <MudTh>Company</MudTh>
+                        <MudTh>Project</MudTh>
+                        <MudTh>Business Won</MudTh>
+                    </HeaderContent>
+
+                    <RowTemplate>
+                        <MudTd DataLabel="Company">
+                            <div class="company-cell">
+                                <MudAvatar Class="company-avatar">
+                                    @context.Initials
+                                </MudAvatar>
+
+                                <div class="company-details">
+                                    <MudText Typo="Typo.body2" Class="company-name">
+                                        @context.Company
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">
+                                        @context.Contact
+                                    </MudText>
+                                </div>
+                            </div>
+                        </MudTd>
+
+                        <MudTd DataLabel="Project">
+                            <MudChip T="string"
+                                        Size="Size.Small"
+                                        Color="@context.PriorityColor">
+                                @context.Priority
+                            </MudChip>
+                        </MudTd>
+
+                        <MudTd DataLabel="Business Won">
+                            @context.BusinessWon.ToString("C0", CultureInfo.InvariantCulture)
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </div>
+        </MudPaper>
+
+        <MudPaper Elevation="6" Class="dashboard-pane data-pane">
+            <MudText Typo="Typo.h6" Class="pane-title">Recent RFQs</MudText>
+
+            <div class="table-host">
+                <RecentRfqs />
+            </div>
+        </MudPaper>
+    </MudPaper>
+</MudPaper>

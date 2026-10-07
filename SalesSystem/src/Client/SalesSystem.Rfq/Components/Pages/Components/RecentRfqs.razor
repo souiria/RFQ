@@ -1,12 +1,6 @@
-﻿@using System.Collections.Generic
-@using MudBlazor.Utilities
-
-@using SalesSystem.Rfq.Models
-@inject RfqUxClientService RfqUxClientService
-@inject NavigationManager Navigation
-@inject ISnackbar Snackbar
-@inject ILogger<RecentRfqs> Logger
-@inject IDialogService DialogService
+﻿@using SalesSystem.Rfq.Models
+@using SalesSystem.Rfq.ViewModels
+@inherits MvvmComponentBase<RecentRfqsViewModel>
 
 <style>
     :root {
@@ -119,7 +113,7 @@
     }
 </style>
 
-@if (IsLoading)
+@if (ViewModel.IsLoading)
 {
     <div class="loading-container">
         <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large">
@@ -133,20 +127,20 @@ else
 {
     <MudDataGrid T="RfqProjectUxModel"
                  @ref="@_DataGrid"
-                 Items="@RfqUxClientService.RfqProjectUxs.Take(8)"
+                 Items="@ViewModel.RecentRfqs.Take(8)"
                  Dense="true"
                  FixedHeader="true"
                  Height="100%"
                  SortMode="SortMode.None"
                  Filterable="false"
-                 QuickFilter="@QuickFilter"
+                 QuickFilter="@ViewModel.QuickFilter"
                  Class="rfq-grid">
 
         <ToolBarContent>
             <div class="toolbar-row">
                 <div>
                     <MudTextField T="string"
-                                  @bind-Value="_quickSearch"
+                                  @bind-Value="ViewModel.QuickSearch"
                                   Placeholder="Quick search..."
                                   Adornment="Adornment.End"
                                   AdornmentIcon="@Icons.Material.Filled.Search"
@@ -158,14 +152,14 @@ else
                         <MudIconButton Icon="@Icons.Material.Filled.Refresh"
                                        Size="Size.Small"
                                        Color="Color.Primary"
-                                       @onclick="@(() => RefreshAsync())" />
+                                       @onclick="@(() => ViewModel.RefreshAsync())" />
                     </MudTooltip>
 
-                    <MudTooltip Text="@(_showActionsColumn ? "Hide Actions column" : "Show Actions column")">
+                    <MudTooltip Text="@(ViewModel.ShowActionsColumn ? "Hide Actions column" : "Show Actions column")">
                         <MudIconButton Size="Size.Small"
-                                       Color="@(_showActionsColumn ? Color.Default : Color.Warning)"
-                                       Icon="@(_showActionsColumn ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility)"
-                                       @onclick="@(() => _showActionsColumn = !_showActionsColumn)" />
+                                       Color="@(ViewModel.ShowActionsColumn ? Color.Default : Color.Warning)"
+                                       Icon="@(ViewModel.ShowActionsColumn ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility)"
+                                       @onclick="@(() => ViewModel.ShowActionsColumn = !ViewModel.ShowActionsColumn)" />
                     </MudTooltip>
                 </div>
             </div>
@@ -210,138 +204,22 @@ else
                             CellStyle="width:12%;"
                             HeaderClass="rfq-actions-header"
                             CellClass="rfq-actions-cell"
-                            Hidden="@(!_showActionsColumn)" StickyLeft="true">
+                            Hidden="@(!ViewModel.ShowActionsColumn)" StickyLeft="true">
 
                 <CellTemplate>
                     <div class="row-action-buttons">
                         <MudIconButton Icon="@Icons.Material.Filled.Visibility"
                                        Size="Size.Small"
                                        Color="Color.Primary"
-                                       OnClick="@(() => NavigateToEdit(context.Item))" />
+                                       OnClick="@(() => ViewModel.NavigateToEdit(context.Item))" />
 
                         <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                        Size="Size.Small"
                                        Color="Color.Secondary"
-                                       OnClick="@(() => DeleteAsync(context.Item))" />
+                                       OnClick="@(() => ViewModel.DeleteAsync(context.Item))" />
                     </div>
                 </CellTemplate>
             </TemplateColumn>
         </Columns>
     </MudDataGrid>
-}
-
-@code {
-    MudDataGrid<RfqProjectUxModel> _DataGrid = null!;
-    string? _SearchString = string.Empty;
-
-    // Actions column visibility
-    bool _showActionsColumn = true;
-
-    private string _quickSearch = string.Empty;
-
-    [CascadingParameter(Name = "GlobalValue")]
-    public GlobalValue? GlobalValue { get; set; }
-
-    private bool IsLoading = true;
-    protected override async Task OnInitializedAsync()
-    {
-        await RefreshAsync();
-        IsLoading = false;
-    }
-
-    async Task RefreshAsync()
-    {
-        try
-        {
-            _SearchString = string.Empty;
-            Logger.LogInformation("Loading RFQ projects...");
-            var count = await RfqUxClientService.GetAllRfqProjectAsync();
-            if (count <= 0)
-            {
-                Snackbar.Add("No RFQ projects found.", Severity.Info);
-            }
-            // FIX: Assign the correct type directly, do not use Concat (Concat does not mutate the original list)
-            // _RfqProjects = RfqUxClientService.RfqProjectUxs.Cast<RfqProjectUxModel>().ToList();
-            Logger.LogInformation($"Loaded {RfqUxClientService.RfqProjectUxs.Count} RFQ projects");
-
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "Failed to load RFQ projects");
-            Snackbar.Add("Failed to load RFQ projects.", Severity.Error);
-        }
-        finally
-        {
-            StateHasChanged();
-        }
-    }
-
-    private void NavigateToEdit(RfqProjectUxModel project)
-    {
-        if (GlobalValue?.UserId != null && GlobalValue.UserId != Guid.Empty)
-        {
-            Navigation.NavigateTo($"/editRfq/{project.RowId}");
-        }
-        else
-        {
-            Snackbar.Add("User ID is required to edit RFQ.", Severity.Warning);
-        }
-    }
-
-    private async Task DeleteAsync(RfqProjectUxModel project)
-    {
-        bool? result = await DialogService.ShowMessageBoxAsync(
-            "Delete RFQ Project",
-            $"Are you sure you want to delete RFQ #{project.RfqNumber}? This action cannot be undone.",
-            yesText: "Delete",
-            cancelText: "Cancel",
-            options: new DialogOptions() { MaxWidth = MaxWidth.Small });
-
-        if (result == true)
-        {
-            try
-            {
-                Logger.LogInformation($"Deleting RFQ project with RowId: {project.RowId}");
-                var response = await RfqUxClientService.DeleteRfqProjectByRowIdAsync(project.RowId);
-
-                if (response.SaveSuccess)
-                {
-                    Snackbar.Add($"RFQ #{project.RfqNumber} deleted successfully.", Severity.Success);
-                    Logger.LogInformation($"Successfully deleted RFQ project: {project.RfqNumber}");
-
-                    // Refresh the list
-                    await RfqUxClientService.GetAllRfqProjectAsync();
-                    StateHasChanged();
-                }
-                else
-                {
-                    Snackbar.Add($"Failed to delete RFQ: {response.Message}", Severity.Error);
-                    Logger.LogWarning($"Delete failed for RFQ {project.RfqNumber}: {response.Message}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, $"Error deleting RFQ project with RowId: {project.RowId}");
-                Snackbar.Add($"An error occurred while deleting RFQ #{project.RfqNumber}.", Severity.Error);
-            }
-        }
-    }
-
-    // quick filter - filter globally across multiple columns with the same input
-    private Func<RfqProjectUxModel, bool> QuickFilter => x =>
-    {
-        if (string.IsNullOrWhiteSpace(_SearchString))
-            return true;
-
-        if (!string.IsNullOrEmpty(x.CarModel) && x.CarModel.Contains(_SearchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        if (!string.IsNullOrEmpty(x.CustomerBusinessUnit) && x.CustomerBusinessUnit.Contains(_SearchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        if (!string.IsNullOrEmpty(x.RfqNumber) && x.RfqNumber.Contains(_SearchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        return false;
-    };
 }
