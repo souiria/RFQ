@@ -12,6 +12,8 @@
             services.AddScoped<RfqUxClientService>();
             services.AddScoped<DsiUxClientService>();
             services.AddScoped<CsvExportService>();
+            services.AddScoped<IDialogWorkflowService, DialogWorkflowService>();
+            services.AddScoped<NprRequestWorkflowService>();
             return services;
         }
     }

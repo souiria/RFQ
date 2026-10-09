@@ -1,4 +1,6 @@
-﻿namespace SalesSystem.Rfq
+﻿using SalesSystem.Rfq.ViewModels;
+
+namespace SalesSystem.Rfq
 {
     public static class HostBuilder
     {
@@ -40,6 +42,13 @@
             // Add additional generic services here (anything ServiceFabric specific
             // should go in Api.cs CreateServiceInstanceListeners method)
             // *********************************************************************
+
+            // MVVM ViewModels
+            builder.Services.AddTransient<RfqDashboardViewModel>();
+            builder.Services.AddTransient<RecentRfqsViewModel>();
+            builder.Services.AddTransient<ListRfqsViewModel>();
+            builder.Services.AddTransient<CreateRfqViewModel>();
+            builder.Services.AddTransient<EditRfqViewModel>();
 
             #region Additional Services
 

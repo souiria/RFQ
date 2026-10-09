@@ -32,3 +32,4 @@ global using RfqShared;
 global using SharedModels.Filtering;
 global using SharedModels.Global;
 global using System.DirectoryServices.AccountManagement;
+global using CommunityToolkit.Mvvm.ComponentModel;

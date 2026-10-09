@@ -1,4 +1,5 @@
 @using SalesSystem.Rfq.Models
+@using SalesSystem.Rfq.Enums
 @using MudBlazor
 @using System.Text.Json
 
@@ -31,6 +32,22 @@
                                     <MudText Typo="Typo.body2">
                                         <strong>Sumitomo Number:</strong> @(partNumber.DrawingPartNumber ?? "N/A")
                                     </MudText>
+                                    <MudText Typo="Typo.body2">
+                                        <strong>Price:</strong> @(partNumber.DrawingPartNumberPrice > 0 ? partNumber.DrawingPartNumberPrice.ToString("N5") : "N/A")
+                                        @if (!string.IsNullOrWhiteSpace(partNumber.PriceSource))
+                                        {
+                                            <span> (@partNumber.PriceSource)</span>
+                                        }
+                                    </MudText>
+                                    <MudButton Variant="Variant.Filled"
+                                               Color="Color.Success"
+                                               Size="Size.Small"
+                                               StartIcon="@Icons.Material.Filled.Check"
+                                               Disabled="@(partNumber.DrawingPartNumberPrice <= 0)"
+                                               OnClick="@(() => ApplyPriceMatch(partNumber))"
+                                               Class="mt-1 mb-2">
+                                        Use this price
+                                    </MudButton>
 
                                     @* NPR Results Section *@
                                     @if (IsLoadingNprData(partNumber.Index))
@@ -377,6 +394,78 @@
         {
             Logger.GenericLogError($"Error applying NPR data: {nprSearchResult.DrawingPartNumber}", ex);
             Snackbar.Add($"Error applying NPR data: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private void ApplyPriceMatch(RfqDrawingPartNumberUxModel candidate)
+    {
+        if (SearchedPartNumber == null)
+        {
+            Logger.GenericLogInformation("Cannot apply price match: SearchedPartNumber is null");
+            Snackbar.Add("Error: No part number to update", Severity.Error);
+            return;
+        }
+
+        if (candidate.DrawingPartNumberPrice <= 0)
+        {
+            Snackbar.Add("Selected candidate has no price", Severity.Warning);
+            return;
+        }
+
+        try
+        {
+            string matchedInputPartNumber = SearchedPartNumber.CustomerPartNumber;
+
+            Logger.GenericLogInformation($"Applying price match: Part={candidate.DrawingPartNumber}, Price={candidate.DrawingPartNumberPrice.ToString(new CultureInfo("fr-FR")):F5}, ExactMatch={candidate.IsExactMatch}");
+
+            // Move the picked candidate's data onto the searched row. Setting
+            // DrawingPartNumber + a positive DrawingPartNumberPrice makes
+            // RfqDrawingPartNumberUxModel.IsCompleted return true, which is
+            // exactly what the parent (EditRfq.HandlePartNumberUpdated) uses
+            // to move the row from _InProgressParts into _CompletedParts --
+            // the same mechanism SearchAllPartNumbersAsync relies on.
+            SearchedPartNumber.DrawingPartNumber = candidate.DrawingPartNumber;
+            SearchedPartNumber.DrawingPartNumberPrice = candidate.DrawingPartNumberPrice;
+            SearchedPartNumber.PriceSource = candidate.PriceSource;
+            SearchedPartNumber.IsExactMatch = candidate.IsExactMatch;
+            SearchedPartNumber.IsSwapped = false;
+            SearchedPartNumber.Status = candidate.IsExactMatch
+                ? RfqDrawingPartNumberStatus.ExactMatch
+                : RfqDrawingPartNumberStatus.ContainsMatch;
+
+            var commentData = new
+            {
+                User = _currentUser,
+                Timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                Action = "Price_Match_Applied",
+                CustomerPartNumber = matchedInputPartNumber,
+                DrawingPartNumber = SearchedPartNumber.DrawingPartNumber,
+                Price = SearchedPartNumber.DrawingPartNumberPrice,
+                PriceSource = SearchedPartNumber.PriceSource,
+                IsExactMatch = SearchedPartNumber.IsExactMatch
+            };
+
+            string commentJson = JsonSerializer.Serialize(commentData, new JsonSerializerOptions
+            {
+                WriteIndented = false
+            });
+
+            SearchedPartNumber.Comments = string.IsNullOrWhiteSpace(SearchedPartNumber.Comments)
+                ? commentJson
+                : SearchedPartNumber.Comments + $"||<<<{commentJson}";
+
+            Logger.GenericLogInformation($"Successfully applied price match to part number: {matchedInputPartNumber}/{SearchedPartNumber.DrawingPartNumber}, Price={SearchedPartNumber.DrawingPartNumberPrice.ToString(new CultureInfo("fr-FR")):F5}");
+            Snackbar.Add($"Applied match: {SearchedPartNumber.DrawingPartNumber} (${SearchedPartNumber.DrawingPartNumberPrice:N5})", Severity.Success);
+
+            // Close the dialog and return the updated part number so
+            // PartNumbersEditGrid can persist it and notify EditRfq via
+            // OnPartNumberUpdated to move it between the lists.
+            MudDialog.Close(DialogResult.Ok(SearchedPartNumber));
+        }
+        catch (Exception ex)
+        {
+            Logger.GenericLogError($"Error applying price match: {candidate.DrawingPartNumber}", ex);
+            Snackbar.Add($"Error applying price match: {ex.Message}", Severity.Error);
         }
     }
 

@@ -21,7 +21,7 @@
     <ServiceManifestRef ServiceManifestName="SF.Access.MastersPkg" ServiceManifestVersion="1.6.3" />
     <ConfigOverrides />
     <EnvironmentOverrides CodePackageRef="code">
-      <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Masters_ASPNETCORE_ENVIRONMENT]" />
+      <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Adsss_ASPNETCORE_ENVIRONMENT]" />
     </EnvironmentOverrides>
     <Policies>
       <EndpointBindingPolicy EndpointRef="ServiceEndpointHttps" CertificateRef="LocalCert" />
@@ -29,6 +29,18 @@
   </ServiceManifestImport>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SF.Access.RfqsPkg" ServiceManifestVersion="1.6.3" />
+
+    <ConfigOverrides />
+    <EnvironmentOverrides CodePackageRef="code">
+      <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Masters_ASPNETCORE_ENVIRONMENT]" />
+    </EnvironmentOverrides>
+    <Policies>
+      <EndpointBindingPolicy EndpointRef="ServiceEndpointHttps" CertificateRef="LocalCert" />
+    </Policies>
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="SF.Access.NprsPkg" ServiceManifestVersion="1.6.3" />
+
     <ConfigOverrides />
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Rfqs_ASPNETCORE_ENVIRONMENT]" />
@@ -38,20 +50,11 @@
     </Policies>
   </ServiceManifestImport>
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SF.Access.NprsPkg" ServiceManifestVersion="1.6.3" />
+    <ServiceManifestRef ServiceManifestName="SF.Access.AdsssPkg" ServiceManifestVersion="1.6.7" />
+
     <ConfigOverrides />
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Nprs_ASPNETCORE_ENVIRONMENT]" />
-    </EnvironmentOverrides>
-    <Policies>
-      <EndpointBindingPolicy EndpointRef="ServiceEndpointHttps" CertificateRef="LocalCert" />
-    </Policies>
-  </ServiceManifestImport>
-  <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SF.Access.AdsssPkg" ServiceManifestVersion="1.6.7" />
-    <ConfigOverrides />
-    <EnvironmentOverrides CodePackageRef="code">
-      <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Adsss_ASPNETCORE_ENVIRONMENT]" />
     </EnvironmentOverrides>
     <Policies>
       <EndpointBindingPolicy EndpointRef="ServiceEndpointHttps" CertificateRef="LocalCert" />
