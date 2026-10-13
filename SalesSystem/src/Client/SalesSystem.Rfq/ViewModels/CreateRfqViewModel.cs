@@ -160,9 +160,10 @@ namespace SalesSystem.Rfq.ViewModels
         public async Task OnReasonValueChangedAsync(string value)
         {
             ReasonValue = value;
-            await Task.Delay(0);
 
-            RfqReasonGrpc? reason = _RfqUxClientService.Reasons.FirstOrDefault(r => r.RfqReasonTitle == value);
+            RfqReasonGrpc? reason = await _RfqUxClientService.Reasons
+                .ToAsyncEnumerable()
+                .FirstOrDefaultAsync(r => r.RfqReasonTitle == value);
             LogReasonChanged(reason?.RowId, reason?.RfqReasonTitle);
         }
         #endregion

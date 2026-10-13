@@ -4,8 +4,6 @@
     {
         async Task<bool> PopulatePartNumberData(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (!_PartNumberRefreshInProgress)
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
@@ -13,7 +11,6 @@
                     _QueryPartNumberHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartNumbersQuery, List<PartNumberGrpc>>>();
                     _PartNumberRefreshInProgress = true;
                     GetPartNumbersQuery query = new GetPartNumbersQuery();
-                    await Task.Delay(1, cancellationToken);
                     Result<List<PartNumberGrpc>> results = await _QueryPartNumberHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -55,8 +52,6 @@
 
         public async Task<bool> CreatePartNumbers(PartNumberGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.PartNumberGrpcsToCreate == null || request.PartNumberGrpcsToCreate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "PartNumberGrpcRequest or PartNumberGrpcsToCreate cannot be null or empty.");
@@ -87,8 +82,6 @@
 
         public async Task<bool> UpdatePartNumbers(PartNumberGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.PartNumberGrpcsToUpdate == null || request.PartNumberGrpcsToUpdate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "PartNumberGrpcRequest or PartNumberGrpcsToUpdate cannot be null or empty.");
@@ -118,8 +111,6 @@
         }
         public async Task<bool> DeletePartNumbers(PartNumberGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.PartNumberGrpcsToDelete == null || request.PartNumberGrpcsToDelete.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "PartNumberGrpcRequest or PartNumberGrpcsToDelete cannot be null or empty.");

@@ -346,7 +346,7 @@
         #region CombinedParts
         public async Task<ListCombinedPartsGrpc> GetAllCombinedParts(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListCombinedParts.CombinedPartsGrpc.Any())
             {
                 if(takeAmount <= 0)
@@ -385,7 +385,7 @@
 
         public async Task<ListPartCategoryDetailGrpc> GetAllPartCategoryDetail(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListPartCatogoryDetail.PartCategoryDetailGrpc.Any())
             {
                 if(takeAmount <= 0)
@@ -407,7 +407,7 @@
 
         public async Task<ListPartCategoryDetailGrpc> GetPartCategoryDetailByCategoryCode(string categoryCode , CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListPartCatogoryDetail.PartCategoryDetailGrpc.Any())
             {
                 List<PartCategoryDetailGrpc> filteredList = _ListPartCatogoryDetail.PartCategoryDetailGrpc.Where(x => x.CategoryCode == categoryCode).ToList();
@@ -426,7 +426,7 @@
 
         public async Task<ListPartClassDetailGrpc> GetAllPartClassDetail(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListPartClassDetail.PartClassDetailGrpc.Any())
             {
                 if(takeAmount <= 0)
@@ -451,7 +451,7 @@
 
         public async Task<ListPartGroupsGrpc> GetAllPartGroups(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListPartGroups.PartGroupsGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -476,7 +476,7 @@
 
         public async Task<ListPartGroupsConstGrpc> GetAllPartGroupsConst(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListPartGroupsConst.PartGroupsConstGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -500,7 +500,7 @@
         #region CustomerData
         public async Task<ListCustomerDataGrpc> GetAllCustomerData(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListCustomerData.CustomerDataGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -524,7 +524,7 @@
         #region ColourCode
         public async Task<ListColourCodeGrpc> GetAllColourCode(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListColourCode.ColourCodeGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -548,7 +548,7 @@
         #region MaterialGroups
         public async Task<ListMaterialGroupsGrpc> GetAllMaterialGroups(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListMaterialGroups.MaterialGroupsGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -572,7 +572,7 @@
         #region MaterialTypes
         public async Task<ListMaterialTypesGrpc> GetAllMaterialTypes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListMaterialTypes.MaterialTypesGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -596,7 +596,7 @@
         #region NPACustomer
         public async Task<ListNPACustomerGrpc> GetAllNPACustomer(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListNPACustomer.NPACustomerGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -620,7 +620,7 @@
         #region NPASupplier
         public async Task<ListNPASupplierGrpc> GetAllNPASupplier(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListNPASupplier.NPASupplierGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -644,7 +644,7 @@
         #region Suppliers
         public async Task<ListSuppliersGrpc> GetAllSuppliers(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListSuppliers.SuppliersGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -668,7 +668,7 @@
         #region EmacsRFIView
         public async Task<ListEmacsRFIViewGrpc> GetAllEmacsRFIView(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListEmacsRFIView.EmacsRFIViewGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -692,7 +692,7 @@
         #region PARTMS
         public async Task<ListPARTMSGrpc> GetAllPARTMSGrpc(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListPARTMS.PARTMSGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -716,7 +716,7 @@
         #region AlternativeParts
         public async Task<ListAlternativePartsGrpc> GetAllAlternativePartsGrpc(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListAlternativeParts.AlternativePartsGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -751,7 +751,7 @@
                     _CombinedPartsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCombinedPartsQuery, List<CombinedPartsGrpc>>>();
                     _CombinedPartsRefreshInProgress = true;
                     GetCombinedPartsQuery query = new GetCombinedPartsQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<CombinedPartsGrpc>> results = await _CombinedPartsHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -782,7 +782,7 @@
                     _PartCatogoryDetailHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartCatogoryDetailQuery, List<PartCategoryDetailGrpc>>>();
                     _PartCatogoryDetailRefreshInProgress = true;
                     GetPartCatogoryDetailQuery query = new GetPartCatogoryDetailQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<PartCategoryDetailGrpc>> results = await _PartCatogoryDetailHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -814,7 +814,7 @@
                     _PartClassDetailHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartClassDetailQuery, List<PartClassDetailGrpc>>>();
                     _PartClassDetailRefreshInProgress = true;
                     GetPartClassDetailQuery query = new GetPartClassDetailQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<PartClassDetailGrpc>> results = await _PartClassDetailHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -845,7 +845,7 @@
                     _PartGroupsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartGroupsQuery, List<PartGroupsGrpc>>>();
                     _PartGroupsRefreshInProgress = true;
                     GetPartGroupsQuery query = new GetPartGroupsQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<PartGroupsGrpc>> results = await _PartGroupsHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -876,7 +876,7 @@
                     _PartGroupsConstHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartGroupsConstQuery, List<PartGroupsConstGrpc>>>();
                     _PartGroupsConstRefreshInProgress = true;
                     GetPartGroupsConstQuery query = new GetPartGroupsConstQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<PartGroupsConstGrpc>> results = await _PartGroupsConstHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -907,7 +907,7 @@
                     _CustomerDataHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCustomerDataGrpcQuery, List<CustomerDataGrpc>>>();
                     _CustomerDataRefreshInProgress = true;
                     GetCustomerDataGrpcQuery query = new GetCustomerDataGrpcQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<CustomerDataGrpc>> results = await _CustomerDataHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -938,7 +938,7 @@
                     _ColourCodeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetColourCodeQuery, List<ColourCodeGrpc>>>();
                     _ColourCodeRefreshInProgress = true;
                     GetColourCodeQuery query = new GetColourCodeQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<ColourCodeGrpc>> results = await _ColourCodeHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -969,7 +969,7 @@
                     _MaterialGroupsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetMaterialGroupsQuery, List<MaterialGroupsGrpc>>>();
                     _MaterialGroupsRefreshInProgress = true;
                     GetMaterialGroupsQuery query = new GetMaterialGroupsQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<MaterialGroupsGrpc>> results = await _MaterialGroupsHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -1000,7 +1000,7 @@
                     _MaterialTypesHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetMaterialTypesQuery, List<MaterialTypesGrpc>>>();
                     _MaterialTypesRefreshInProgress = true;
                     GetMaterialTypesQuery query = new GetMaterialTypesQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<MaterialTypesGrpc>> results = await _MaterialTypesHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -1031,7 +1031,7 @@
                     _NPACustomerHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetNPACustomerQuery, List<NPACustomerGrpc>>>();
                     _NPACustomerRefreshInProgress = true;
                     GetNPACustomerQuery query = new GetNPACustomerQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<NPACustomerGrpc>> results = await _NPACustomerHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -1062,7 +1062,7 @@
                     _NPASupplierHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetNPASupplierQuery, List<NPASupplierGrpc>>>();
                     _NPASupplierRefreshInProgress = true;
                     GetNPASupplierQuery query = new GetNPASupplierQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<NPASupplierGrpc>> results = await _NPASupplierHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -1093,7 +1093,7 @@
                     _SuppliersHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetSuppliersQuery, List<SuppliersGrpc>>>();
                     _SuppliersRefreshInProgress = true;
                     GetSuppliersQuery query = new GetSuppliersQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<SuppliersGrpc>> results = await _SuppliersHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -1124,7 +1124,7 @@
                     _EmacsRFIViewHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetEmacsRFIViewQuery, List<EmacsRFIViewGrpc>>>();
                     _EmacsRFIViewRefreshInProgress = true;
                     GetEmacsRFIViewQuery query = new GetEmacsRFIViewQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<EmacsRFIViewGrpc>> results = await _EmacsRFIViewHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -1155,7 +1155,7 @@
                     _PARTMSHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPARTMSQuery, List<PARTMSGrpc>>>();
                     _PARTMSRefreshInProgress = true;
                     GetPARTMSQuery query = new GetPARTMSQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<PARTMSGrpc>> results = await _PARTMSHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -1187,7 +1187,7 @@
                     _AlternativePartsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAlternativePartsQuery, List<AlternativePartsGrpc>>>();
                     _AlternativePartsRefreshInProgress = true;
                     GetAlternativePartsQuery query = new GetAlternativePartsQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<AlternativePartsGrpc>> results = await _AlternativePartsHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {

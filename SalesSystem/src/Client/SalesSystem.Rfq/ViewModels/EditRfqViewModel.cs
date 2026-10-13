@@ -269,7 +269,6 @@ namespace SalesSystem.Rfq.ViewModels
 
         async Task LoadNprRequests()
         {
-            await Task.Delay(1);
             List<RfqNprRequestUxModel>? nprRequests = await _RfqUxClientService.GetNprRequestsByRfqNumberAsync(RfqProject?.RfqNumber);
             if (nprRequests != null)
             {
@@ -492,9 +491,9 @@ namespace SalesSystem.Rfq.ViewModels
         {
             RfqProject!.RfqReasonId = value ?? 0;
 
-            await Task.Delay(0);
-
-            RfqReasonGrpc? reason = _RfqUxClientService.Reasons.FirstOrDefault(r => r.RowId == (value ?? 0));
+            RfqReasonGrpc? reason = await _RfqUxClientService.Reasons
+                .ToAsyncEnumerable()
+                .FirstOrDefaultAsync(r => r.RowId == (value ?? 0));
 
             _Logger.GenericLogInformation($"EditRfq.OnReasonValueChanged - Reason changed to {reason?.RowId} - {reason?.RfqReasonTitle}");
 

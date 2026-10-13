@@ -4,8 +4,6 @@
     {
         async Task<bool> PopulateMiscellaneousComponentTypeData(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (!_MiscellaneousComponentTypeRefreshInProgress)
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
@@ -13,7 +11,6 @@
                     _QueryMiscellaneousComponentTypeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetMiscellaneousComponentTypesQuery, List<MiscellaneousComponentTypeGrpc>>>();
                     _MiscellaneousComponentTypeRefreshInProgress = true;
                     GetMiscellaneousComponentTypesQuery query = new GetMiscellaneousComponentTypesQuery();
-                    await Task.Delay(1, cancellationToken);
                     Result<List<MiscellaneousComponentTypeGrpc>> results = await _QueryMiscellaneousComponentTypeHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -55,8 +52,6 @@
 
         public async Task<bool> CreateMiscellaneousComponentTypes(MiscellaneousComponentTypeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.MiscellaneousComponentTypeGrpcsToCreate == null || request.MiscellaneousComponentTypeGrpcsToCreate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "MiscellaneousComponentTypeGrpcRequest or MiscellaneousComponentTypeGrpcsToCreate cannot be null or empty.");
@@ -87,8 +82,6 @@
 
         public async Task<bool> UpdateMiscellaneousComponentTypes(MiscellaneousComponentTypeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.MiscellaneousComponentTypeGrpcsToUpdate == null || request.MiscellaneousComponentTypeGrpcsToUpdate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "MiscellaneousComponentTypeGrpcRequest or MiscellaneousComponentTypeGrpcsToUpdate cannot be null or empty.");

@@ -60,7 +60,7 @@
         #region MatSuppMst
         public async Task<ListMatSuppMstGrpc> GetAllMatSuppMstView(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListMatSuppMstView.MatSuppMstViewGrpc.Any())
             {
                 if(takeAmount <= 0)
@@ -84,7 +84,7 @@
         #region HarnessCostingCalculationData
         public async Task<ListHarnessCostingCalculationDataGrpc> GetHarnessCostingCalculationDataView(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if(_ListHarnessCostingCalculationDataView.HarnessCostingCalculationDataGrpc.Any())
             {
                 if(takeAmount <= 0)
@@ -117,7 +117,7 @@
                     _MatSuppMstViewHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetMattSuppMstViewQuery, List<MatSuppMstViewGrpc>>>();
                     _MatSuppMstViewRefreshInProgress = true;
                     GetMattSuppMstViewQuery query = new GetMattSuppMstViewQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<MatSuppMstViewGrpc>> results = await _MatSuppMstViewHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -147,7 +147,7 @@
                     _HarnessCostingCalculationDataViewHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetHarnessCostingCalculationDataViewQuery, List<HarnessCostingCalculationDataGrpc>>>();
                     _MatSuppMstViewRefreshInProgress = true;
                     GetHarnessCostingCalculationDataViewQuery query = new GetHarnessCostingCalculationDataViewQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<HarnessCostingCalculationDataGrpc>> results = await _HarnessCostingCalculationDataViewHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {

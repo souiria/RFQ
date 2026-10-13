@@ -575,7 +575,7 @@
         #region RfqDrawingPartNumbers
         public async Task<ListRfqDrawingPartNumberGrpc> GetAllRfqDrawingPartNumbers(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListRfqDrawingPartNumbersGrpc.RfqDrawingPartNumbers.Any())
             {
                 if(takeAmount <= 0)
@@ -597,7 +597,7 @@
 
         public async Task<ListRfqDrawingPartNumberGrpc> CreateRfqDrawingPartNumbers(RfqDrawingPartNumbersGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             _Logger.GenericLogInformation($"III RfqAccessService.CreateRfqDrawingPartNumbers - Entering with passed {request.RfqDrawingPartNumbersGrpcsToCreate.Count} parts passed in");
             ListRfqDrawingPartNumberGrpc responseList = new ListRfqDrawingPartNumberGrpc();
             if (request == null || request.RfqDrawingPartNumbersGrpcsToCreate == null || request.RfqDrawingPartNumbersGrpcsToCreate.Count == 0)
@@ -686,7 +686,7 @@
 
         public async Task<bool> UpdateRfqDrawingPartNumbers(RfqDrawingPartNumbersGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListRfqDrawingPartNumberGrpc responseList = new ListRfqDrawingPartNumberGrpc();
             if (request == null || request.RfqDrawingPartNumbersGrpcsToUpdate == null || request.RfqDrawingPartNumbersGrpcsToUpdate.Count == 0)
             {
@@ -715,7 +715,7 @@
 
         public async Task<bool> DeleteRfqDrawingPartNumbers(RfqDrawingPartNumbersGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListRfqDrawingPartNumberGrpc responseList = new ListRfqDrawingPartNumberGrpc();
             if (request == null || request.RfqDrawingPartNumbersGrpcsToDelete == null || request.RfqDrawingPartNumbersGrpcsToDelete.Count == 0)
             {
@@ -746,7 +746,7 @@
         #region RfqProject
         public async Task<ListRfqProjectGrpc> DeleteRfqProjectByRowId(RfqProjectGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListRfqProjectGrpc responseList = new ListRfqProjectGrpc();
 
             if (request == null || request.RowId == 0)
@@ -788,7 +788,7 @@
 
         public async Task<ListRfqProjectGrpc> GetAllRfqProjects(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
 
             
 
@@ -819,7 +819,7 @@
 
         public async Task<ListRfqProjectGrpc> CreateRfqProjects(RfqProjectGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListRfqProjectGrpc responseList = new ListRfqProjectGrpc();
             if (request == null || request.RfqProjectGrpcsToCreate == null || request.RfqProjectGrpcsToCreate.Count == 0)
             {
@@ -848,7 +848,7 @@
 
         public async Task<bool> UpdateRfqProjects(RfqProjectGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListRfqProjectGrpc responseList = new ListRfqProjectGrpc();
             if (request == null || request.RfqProjectGrpcsToUpdate == null || request.RfqProjectGrpcsToUpdate.Count == 0)
             {
@@ -891,7 +891,7 @@
 
         public async Task<ListRfqNotesGrpc> GetAllRfqNotes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListRfqNotesGrpc.RfqNotes.Any())
             {
                 if (takeAmount <= 0)
@@ -913,7 +913,7 @@
 
         public async Task<ListRfqNotesGrpc> CreateRfqNotes(RfqNotesGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListRfqNotesGrpc responseList = new ListRfqNotesGrpc();
             if (request == null || request.RfqNotesGrpcsToCreate == null || request.RfqNotesGrpcsToCreate.Count == 0)
             {
@@ -942,7 +942,7 @@
 
         public async Task<bool> UpdateRfqNotes(RfqNotesGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListRfqNotesGrpc responseList = new ListRfqNotesGrpc();
             if (request == null || request.RfqNotesGrpcsToUpdate == null || request.RfqNotesGrpcsToUpdate.Count == 0)
             {
@@ -986,7 +986,7 @@
 
         public async Task<ListRfqReasonGrpc> GetAllRfqReasons(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListRfqReasonsGrpc.RfqReasons.Any())
             {
                 if (takeAmount <= 0)
@@ -1008,7 +1008,7 @@
 
         public async Task<ListRfqReasonGrpc> CreateRfqReason(RfqReasonGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListRfqReasonGrpc responseList = new ListRfqReasonGrpc();
             if (request == null || request.RfqReasonGrpcsToCreate == null || request.RfqReasonGrpcsToCreate.Count == 0)
             {
@@ -1037,7 +1037,7 @@
 
         public async Task<bool> UpdateRfqReasons(RfqReasonGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListRfqReasonGrpc responseList = new ListRfqReasonGrpc();
             if (request == null || request.RfqReasonGrpcsToUpdate == null || request.RfqReasonGrpcsToUpdate.Count == 0)
             {
@@ -1081,7 +1081,7 @@
 
         public async Task<ListDsiBendGrpc> GetAllDsiBends(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiBendsGrpc.DsiBends.Any())
             {
                 if (takeAmount <= 0)
@@ -1103,7 +1103,7 @@
 
         public async Task<ListDsiBendGrpc> CreateDsiBends(DsiBendGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiBendGrpc responseList = new ListDsiBendGrpc();
             if (request == null || request.DsiBendGrpcsToCreate == null || request.DsiBendGrpcsToCreate.Count == 0)
             {
@@ -1134,7 +1134,7 @@
 
         public async Task<bool> UpdateDsiBends(DsiBendGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiBendGrpc responseList = new ListDsiBendGrpc();
             if (request == null || request.DsiBendGrpcsToUpdate == null || request.DsiBendGrpcsToUpdate.Count == 0)
             {
@@ -1178,7 +1178,7 @@
 
         public async Task<ListDsiBranchConfigurationGrpc> GetAllDsiBranchConfigurations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiBranchConfigurationsGrpc.DsiBranchConfigurations.Any())
             {
                 if (takeAmount <= 0)
@@ -1200,7 +1200,7 @@
 
         public async Task<ListDsiBranchConfigurationGrpc> CreateDsiBranchConfigurations(DsiBranchConfigurationGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiBranchConfigurationGrpc responseList = new ListDsiBranchConfigurationGrpc();
             if (request == null || request.DsiBranchConfigurationGrpcsToCreate == null || request.DsiBranchConfigurationGrpcsToCreate.Count == 0)
             {
@@ -1231,7 +1231,7 @@
 
         public async Task<bool> UpdateDsiBranchConfigurations(DsiBranchConfigurationGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiBranchConfigurationGrpc responseList = new ListDsiBranchConfigurationGrpc();
             if (request == null || request.DsiBranchConfigurationGrpcsToUpdate == null || request.DsiBranchConfigurationGrpcsToUpdate.Count == 0)
             {
@@ -1275,7 +1275,7 @@
 
         public async Task<ListDsiBranchConfigurationBendAssociationGrpc> GetAllDsiBranchConfigurationBendAssociations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiBranchConfigurationBendAssociationsGrpc.DsiBranchConfigurationBendAssociations.Any())
             {
                 if (takeAmount <= 0)
@@ -1297,7 +1297,7 @@
 
         public async Task<ListDsiBranchConfigurationBendAssociationGrpc> CreateDsiBranchConfigurationBendAssociations(DsiBranchConfigurationBendAssociationGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiBranchConfigurationBendAssociationGrpc responseList = new ListDsiBranchConfigurationBendAssociationGrpc();
             if (request == null || request.DsiBranchConfigurationBendAssociationGrpcsToCreate == null || request.DsiBranchConfigurationBendAssociationGrpcsToCreate.Count == 0)
             {
@@ -1328,7 +1328,7 @@
 
         public async Task<bool> UpdateDsiBranchConfigurationBendAssociations(DsiBranchConfigurationBendAssociationGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiBranchConfigurationBendAssociationGrpc responseList = new ListDsiBranchConfigurationBendAssociationGrpc();
             if (request == null || request.DsiBranchConfigurationBendAssociationGrpcsToUpdate == null || request.DsiBranchConfigurationBendAssociationGrpcsToUpdate.Count == 0)
             {
@@ -1372,7 +1372,7 @@
 
         public async Task<ListDsiBranchInsulationGrpc> GetAllDsiBranchInsulations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiBranchInsulationsGrpc.DsiBranchInsulations.Any())
             {
                 if (takeAmount <= 0)
@@ -1394,7 +1394,7 @@
 
         public async Task<ListDsiBranchInsulationGrpc> CreateDsiBranchInsulations(DsiBranchInsulationGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiBranchInsulationGrpc responseList = new ListDsiBranchInsulationGrpc();
             if (request == null || request.DsiBranchInsulationGrpcsToCreate == null || request.DsiBranchInsulationGrpcsToCreate.Count == 0)
             {
@@ -1425,7 +1425,7 @@
 
         public async Task<bool> UpdateDsiBranchInsulations(DsiBranchInsulationGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiBranchInsulationGrpc responseList = new ListDsiBranchInsulationGrpc();
             if (request == null || request.DsiBranchInsulationGrpcsToUpdate == null || request.DsiBranchInsulationGrpcsToUpdate.Count == 0)
             {
@@ -1469,7 +1469,7 @@
 
         public async Task<ListDsiBranchInsulationThroughNodeGrpc> GetAllDsiBranchInsulationThroughNodes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiBranchInsulationThroughNodesGrpc.DsiBranchInsulationThroughNodes.Any())
             {
                 if (takeAmount <= 0)
@@ -1491,7 +1491,7 @@
 
         public async Task<ListDsiBranchInsulationThroughNodeGrpc> CreateDsiBranchInsulationThroughNodes(DsiBranchInsulationThroughNodeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiBranchInsulationThroughNodeGrpc responseList = new ListDsiBranchInsulationThroughNodeGrpc();
             if (request == null || request.DsiBranchInsulationThroughNodeGrpcsToCreate == null || request.DsiBranchInsulationThroughNodeGrpcsToCreate.Count == 0)
             {
@@ -1522,7 +1522,7 @@
 
         public async Task<bool> UpdateDsiBranchInsulationThroughNodes(DsiBranchInsulationThroughNodeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiBranchInsulationThroughNodeGrpc responseList = new ListDsiBranchInsulationThroughNodeGrpc();
             if (request == null || request.DsiBranchInsulationThroughNodeGrpcsToUpdate == null || request.DsiBranchInsulationThroughNodeGrpcsToUpdate.Count == 0)
             {
@@ -1566,7 +1566,7 @@
 
         public async Task<ListDsiCavityMappingGrpc> GetAllDsiCavityMappings(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiCavityMappings.DsiCavityMappingGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -1588,7 +1588,7 @@
 
         public async Task<ListDsiCavityMappingGrpc> CreateDsiCavityMappings(DsiCavityMappingGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiCavityMappingGrpc responseList = new ListDsiCavityMappingGrpc();
             if (request == null || request.DsiCavityMappingGrpcsToCreate == null || request.DsiCavityMappingGrpcsToCreate.Count == 0)
             {
@@ -1619,7 +1619,7 @@
 
         public async Task<bool> UpdateDsiCavityMappings(DsiCavityMappingGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiCavityMappingGrpc responseList = new ListDsiCavityMappingGrpc();
             if (request == null || request.DsiCavityMappingGrpcsToUpdate == null || request.DsiCavityMappingGrpcsToUpdate.Count == 0)
             {
@@ -1663,7 +1663,7 @@
 
         public async Task<ListDsiCentreStripGrpc> GetAllDsiCentreStrips(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiCentreStripGrpc.DsiCentreStripGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -1685,7 +1685,7 @@
 
         public async Task<ListDsiCentreStripGrpc> CreateDsiCentreStrips(DsiCentreStripGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiCentreStripGrpc responseList = new ListDsiCentreStripGrpc();
             if (request?.DsiCentreStripGrpcsToCreate == null || request.DsiCentreStripGrpcsToCreate.Count == 0)
             {
@@ -1715,7 +1715,7 @@
 
         public async Task<bool> UpdateDsiCentreStrips(DsiCentreStripGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiCentreStripGrpcsToUpdate == null || request.DsiCentreStripGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -1757,7 +1757,7 @@
 
         public async Task<ListDsiCircuitOptionGrpc> GetAllDsiCircuitOptions(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiCircuitOptionGrpc.DsiCircuitOptionGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -1777,7 +1777,7 @@
 
         public async Task<ListDsiCircuitOptionGrpc> CreateDsiCircuitOptions(DsiCircuitOptionGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiCircuitOptionGrpc responseList = new ListDsiCircuitOptionGrpc();
             if (request?.DsiCircuitOptionGrpcsToCreate == null || request.DsiCircuitOptionGrpcsToCreate.Count == 0)
             {
@@ -1805,7 +1805,7 @@
 
         public async Task<bool> UpdateDsiCircuitOptions(DsiCircuitOptionGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiCircuitOptionGrpcsToUpdate == null || request.DsiCircuitOptionGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -1845,7 +1845,7 @@
 
         public async Task<ListDsiComponentGrpc> GetAllDsiComponents(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiComponentGrpc.DsiComponentGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -1865,7 +1865,7 @@
 
         public async Task<ListDsiComponentGrpc> CreateDsiComponents(DsiComponentGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiComponentGrpc responseList = new ListDsiComponentGrpc();
             if (request?.DsiComponentGrpcsToCreate == null || request.DsiComponentGrpcsToCreate.Count == 0)
             {
@@ -1893,7 +1893,7 @@
 
         public async Task<bool> UpdateDsiComponents(DsiComponentGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiComponentGrpcsToUpdate == null || request.DsiComponentGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -1933,7 +1933,7 @@
 
         public async Task<ListDsiCompositeDetailGrpc> GetAllDsiCompositeDetails(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiCompositeDetailGrpc.DsiCompositeDetailGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -1953,7 +1953,7 @@
 
         public async Task<ListDsiCompositeDetailGrpc> CreateDsiCompositeDetails(DsiCompositeDetailGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiCompositeDetailGrpc responseList = new ListDsiCompositeDetailGrpc();
             if (request?.DsiCompositeDetailGrpcsToCreate == null || request.DsiCompositeDetailGrpcsToCreate.Count == 0)
             {
@@ -1981,7 +1981,7 @@
 
         public async Task<bool> UpdateDsiCompositeDetails(DsiCompositeDetailGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiCompositeDetailGrpcsToUpdate == null || request.DsiCompositeDetailGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -2021,7 +2021,7 @@
 
         public async Task<ListDsiCompositeDetailCircuitOptionAssociationGrpc> GetAllDsiCompositeDetailCircuitOptionAssociations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiCompositeDetailCircuitOptionAssociationGrpc.DsiCompositeDetailCircuitOptionAssociationGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -2041,7 +2041,7 @@
 
         public async Task<ListDsiCompositeDetailCircuitOptionAssociationGrpc> CreateDsiCompositeDetailCircuitOptionAssociations(DsiCompositeDetailCircuitOptionAssociationGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiCompositeDetailCircuitOptionAssociationGrpc responseList = new ListDsiCompositeDetailCircuitOptionAssociationGrpc();
             if (request?.DsiCompositeDetailCircuitOptionAssociationGrpcsToCreate == null || request.DsiCompositeDetailCircuitOptionAssociationGrpcsToCreate.Count == 0)
             {
@@ -2069,7 +2069,7 @@
 
         public async Task<bool> UpdateDsiCompositeDetailCircuitOptionAssociations(DsiCompositeDetailCircuitOptionAssociationGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiCompositeDetailCircuitOptionAssociationGrpcsToUpdate == null || request.DsiCompositeDetailCircuitOptionAssociationGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -2109,7 +2109,7 @@
 
         public async Task<ListDsiCompositeOptionGrpc> GetAllDsiCompositeOptions(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiCompositeOptionGrpc.DsiCompositeOptionGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -2129,7 +2129,7 @@
 
         public async Task<ListDsiCompositeOptionGrpc> CreateDsiCompositeOptions(DsiCompositeOptionGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiCompositeOptionGrpc responseList = new ListDsiCompositeOptionGrpc();
             if (request?.DsiCompositeOptionGrpcsToCreate == null || request.DsiCompositeOptionGrpcsToCreate.Count == 0)
             {
@@ -2157,7 +2157,7 @@
 
         public async Task<bool> UpdateDsiCompositeOptions(DsiCompositeOptionGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiCompositeOptionGrpcsToUpdate == null || request.DsiCompositeOptionGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -2197,7 +2197,7 @@
 
         public async Task<ListDsiHarnessGrpc> GetAllDsiHarnesses(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiHarnessGrpc.DsiHarnessGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -2217,7 +2217,7 @@
 
         public async Task<ListDsiHarnessGrpc> CreateDsiHarnesses(DsiHarnessGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiHarnessGrpc responseList = new ListDsiHarnessGrpc();
             if (request?.DsiHarnessGrpcsToCreate == null || request.DsiHarnessGrpcsToCreate.Count == 0)
             {
@@ -2245,7 +2245,7 @@
 
         public async Task<bool> UpdateDsiHarnesses(DsiHarnessGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiHarnessGrpcsToUpdate == null || request.DsiHarnessGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -2285,7 +2285,7 @@
 
         public async Task<ListDsiHarnessScopeGrpc> GetAllDsiHarnessScopes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiHarnessScopeGrpc.DsiHarnessScopeGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -2305,7 +2305,7 @@
 
         public async Task<ListDsiHarnessScopeGrpc> CreateDsiHarnessScopes(DsiHarnessScopeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiHarnessScopeGrpc responseList = new ListDsiHarnessScopeGrpc();
             if (request?.DsiHarnessScopeGrpcsToCreate == null || request.DsiHarnessScopeGrpcsToCreate.Count == 0)
             {
@@ -2333,7 +2333,7 @@
 
         public async Task<bool> UpdateDsiHarnessScopes(DsiHarnessScopeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiHarnessScopeGrpcsToUpdate == null || request.DsiHarnessScopeGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -2373,7 +2373,7 @@
 
         public async Task<ListDsiHarnessScopeScopeAssociationGrpc> GetAllDsiHarnessScopeScopeAssociations(CancellationToken cancellationToken, int position, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiHarnessScopeScopeAssociationGrpc.DsiHarnessScopeScopeAssociationGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -2393,7 +2393,7 @@
 
         public async Task<ListDsiHarnessScopeScopeAssociationGrpc> CreateDsiHarnessScopeScopeAssociations(DsiHarnessScopeScopeAssociationGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiHarnessScopeScopeAssociationGrpc responseList = new ListDsiHarnessScopeScopeAssociationGrpc();
             if (request?.DsiHarnessScopeScopeAssociationGrpcsToCreate == null || request.DsiHarnessScopeScopeAssociationGrpcsToCreate.Count == 0)
             {
@@ -2423,7 +2423,7 @@
 
         public async Task<bool> UpdateDsiHarnessScopeScopeAssociations(DsiHarnessScopeScopeAssociationGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiHarnessScopeScopeAssociationGrpcsToUpdate == null || request.DsiHarnessScopeScopeAssociationGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -2466,7 +2466,7 @@
 
         public async Task<ListDsiManualBomQuantityGrpc> GetAllDsiManualBomQuantities(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiManualBomQuantityGrpc.DsiManualBomQuantityGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -2486,7 +2486,7 @@
 
         public async Task<ListDsiManualBomQuantityGrpc> CreateDsiManualBomQuantities(DsiManualBomQuantityGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiManualBomQuantityGrpc responseList = new ListDsiManualBomQuantityGrpc();
             if (request?.DsiManualBomQuantityGrpcsToCreate == null || request.DsiManualBomQuantityGrpcsToCreate.Count == 0)
             {
@@ -2514,7 +2514,7 @@
 
         public async Task<bool> UpdateDsiManualBomQuantities(DsiManualBomQuantityGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiManualBomQuantityGrpcsToUpdate == null || request.DsiManualBomQuantityGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -2554,7 +2554,7 @@
 
         public async Task<ListDsiMidWireComponentGrpc> GetAllDsiMidWireComponents(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiMidWireComponentGrpc.DsiMidWireComponentGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -2574,7 +2574,7 @@
 
         public async Task<ListDsiMidWireComponentGrpc> CreateDsiMidWireComponents(DsiMidWireComponentGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiMidWireComponentGrpc responseList = new ListDsiMidWireComponentGrpc();
             if (request?.DsiMidWireComponentGrpcsToCreate == null || request.DsiMidWireComponentGrpcsToCreate.Count == 0)
             {
@@ -2602,7 +2602,7 @@
 
         public async Task<bool> UpdateDsiMidWireComponents(DsiMidWireComponentGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiMidWireComponentGrpcsToUpdate == null || request.DsiMidWireComponentGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -2642,7 +2642,7 @@
 
         public async Task<ListDsiModuleChildDetailGrpc> GetAllDsiModuleChildDetails(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiModuleChildDetailGrpc.DsiModuleChildDetailGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -2662,7 +2662,7 @@
 
         public async Task<ListDsiModuleChildDetailGrpc> CreateDsiModuleChildDetails(DsiModuleChildDetailGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiModuleChildDetailGrpc responseList = new ListDsiModuleChildDetailGrpc();
             if (request?.DsiModuleChildDetailGrpcsToCreate == null || request.DsiModuleChildDetailGrpcsToCreate.Count == 0)
             {
@@ -2690,7 +2690,7 @@
 
         public async Task<bool> UpdateDsiModuleChildDetails(DsiModuleChildDetailGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiModuleChildDetailGrpcsToUpdate == null || request.DsiModuleChildDetailGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -2730,7 +2730,7 @@
 
         public async Task<ListDsiModuleCompatibilityGrpc> GetAllDsiModuleCompatibilities(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiModuleCompatibilityGrpc.DsiModuleCompatibilityGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -2750,7 +2750,7 @@
 
         public async Task<ListDsiModuleCompatibilityGrpc> CreateDsiModuleCompatibilities(DsiModuleCompatibilityGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiModuleCompatibilityGrpc responseList = new ListDsiModuleCompatibilityGrpc();
             if (request?.DsiModuleCompatibilityGrpcsToCreate == null || request.DsiModuleCompatibilityGrpcsToCreate.Count == 0)
             {
@@ -2778,7 +2778,7 @@
 
         public async Task<bool> UpdateDsiModuleCompatibilities(DsiModuleCompatibilityGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiModuleCompatibilityGrpcsToUpdate == null || request.DsiModuleCompatibilityGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -2818,7 +2818,7 @@
 
         public async Task<ListDsiMulticoreSpecificationGrpc> GetAllDsiMulticoreSpecifications(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiMulticoreSpecificationGrpc.DsiMulticoreSpecificationGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -2838,7 +2838,7 @@
 
         public async Task<ListDsiMulticoreSpecificationGrpc> CreateDsiMulticoreSpecifications(DsiMulticoreSpecificationGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiMulticoreSpecificationGrpc responseList = new ListDsiMulticoreSpecificationGrpc();
             if (request?.DsiMulticoreSpecificationGrpcsToCreate == null || request.DsiMulticoreSpecificationGrpcsToCreate.Count == 0)
             {
@@ -2866,7 +2866,7 @@
 
         public async Task<bool> UpdateDsiMulticoreSpecifications(DsiMulticoreSpecificationGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiMulticoreSpecificationGrpcsToUpdate == null || request.DsiMulticoreSpecificationGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -2906,7 +2906,7 @@
 
         public async Task<ListDsiPinMappingGrpc> GetAllDsiPinMappings(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiPinMappingGrpc.DsiPinMappingGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -2926,7 +2926,7 @@
 
         public async Task<ListDsiPinMappingGrpc> CreateDsiPinMappings(DsiPinMappingGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiPinMappingGrpc responseList = new ListDsiPinMappingGrpc();
             if (request?.DsiPinMappingGrpcsToCreate == null || request.DsiPinMappingGrpcsToCreate.Count == 0)
             {
@@ -2954,7 +2954,7 @@
 
         public async Task<bool> UpdateDsiPinMappings(DsiPinMappingGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiPinMappingGrpcsToUpdate == null || request.DsiPinMappingGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -2994,7 +2994,7 @@
 
         public async Task<ListDsiPinMappingCavityMappingAssociationGrpc> GetAllDsiPinMappingCavityMappingAssociations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiPinMappingCavityMappingAssociationGrpc.DsiPinMappingCavityMappingAssociationGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -3013,7 +3013,7 @@
 
         public async Task<ListDsiPinMappingCavityMappingAssociationGrpc> CreateDsiPinMappingCavityMappingAssociations(DsiPinMappingCavityMappingAssociationGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiPinMappingCavityMappingAssociationGrpc responseList = new ListDsiPinMappingCavityMappingAssociationGrpc();
             if (request?.DsiPinMappingCavityMappingAssociationGrpcsToCreate == null || request.DsiPinMappingCavityMappingAssociationGrpcsToCreate.Count == 0)
             {
@@ -3041,7 +3041,7 @@
 
         public async Task<bool> UpdateDsiPinMappingCavityMappingAssociations(DsiPinMappingCavityMappingAssociationGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiPinMappingCavityMappingAssociationGrpcsToUpdate == null || request.DsiPinMappingCavityMappingAssociationGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -3081,7 +3081,7 @@
 
         public async Task<ListDsiScopeGrpc> GetAllDsiScopes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiScopeGrpc.DsiScopeGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -3101,7 +3101,7 @@
 
         public async Task<ListDsiScopeGrpc> CreateDsiScopes(DsiScopeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiScopeGrpc responseList = new ListDsiScopeGrpc();
             if (request?.DsiScopeGrpcsToCreate == null || request.DsiScopeGrpcsToCreate.Count == 0)
             {
@@ -3129,7 +3129,7 @@
 
         public async Task<bool> UpdateDsiScopes(DsiScopeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiScopeGrpcsToUpdate == null || request.DsiScopeGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -3169,7 +3169,7 @@
 
         public async Task<ListDsiSupplierGrpc> GetAllDsiSuppliers(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiSupplierGrpc.DsiSupplierGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -3189,7 +3189,7 @@
 
         public async Task<ListDsiSupplierGrpc> CreateDsiSuppliers(DsiSupplierGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiSupplierGrpc responseList = new ListDsiSupplierGrpc();
             if (request?.DsiSupplierGrpcsToCreate == null || request.DsiSupplierGrpcsToCreate.Count == 0)
             {
@@ -3217,7 +3217,7 @@
 
         public async Task<bool> UpdateDsiSuppliers(DsiSupplierGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiSupplierGrpcsToUpdate == null || request.DsiSupplierGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -3257,7 +3257,7 @@
 
         public async Task<ListDsiTransformedCompositeDetailGrpc> GetAllDsiTransformedCompositeDetails(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiTransformedCompositeDetailGrpc.DsiTransformedCompositeDetailGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -3277,7 +3277,7 @@
 
         public async Task<ListDsiTransformedCompositeDetailGrpc> CreateDsiTransformedCompositeDetails(DsiTransformedCompositeDetailGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiTransformedCompositeDetailGrpc responseList = new ListDsiTransformedCompositeDetailGrpc();
             if (request?.DsiTransformedCompositeDetailGrpcsToCreate == null || request.DsiTransformedCompositeDetailGrpcsToCreate.Count == 0)
             {
@@ -3305,7 +3305,7 @@
 
         public async Task<bool> UpdateDsiTransformedCompositeDetails(DsiTransformedCompositeDetailGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiTransformedCompositeDetailGrpcsToUpdate == null || request.DsiTransformedCompositeDetailGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -3345,7 +3345,7 @@
 
         public async Task<ListDsiTransformedHarnessGrpc> GetAllDsiTransformedHarnesses(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiTransformedHarnessGrpc.DsiTransformedHarnessGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -3365,7 +3365,7 @@
 
         public async Task<ListDsiTransformedHarnessGrpc> CreateDsiTransformedHarnesses(DsiTransformedHarnessGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiTransformedHarnessGrpc responseList = new ListDsiTransformedHarnessGrpc();
             if (request?.DsiTransformedHarnessGrpcsToCreate == null || request.DsiTransformedHarnessGrpcsToCreate.Count == 0)
             {
@@ -3391,7 +3391,7 @@
 
         public async Task<bool> UpdateDsiTransformedHarnesses(DsiTransformedHarnessGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiTransformedHarnessGrpcsToUpdate == null || request.DsiTransformedHarnessGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -3431,7 +3431,7 @@
 
         public async Task<ListDsiTransformedModuleChildDetailGrpc> GetAllDsiTransformedModuleChildDetails(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiTransformedModuleChildDetailGrpc.DsiTransformedModuleChildDetailGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -3451,7 +3451,7 @@
 
         public async Task<ListDsiTransformedModuleChildDetailGrpc> CreateDsiTransformedModuleChildDetails(DsiTransformedModuleChildDetailGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiTransformedModuleChildDetailGrpc responseList = new ListDsiTransformedModuleChildDetailGrpc();
             if (request?.DsiTransformedModuleChildDetailGrpcsToCreate == null || request.DsiTransformedModuleChildDetailGrpcsToCreate.Count == 0)
             {
@@ -3477,7 +3477,7 @@
 
         public async Task<bool> UpdateDsiTransformedModuleChildDetails(DsiTransformedModuleChildDetailGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiTransformedModuleChildDetailGrpcsToUpdate == null || request.DsiTransformedModuleChildDetailGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -3517,7 +3517,7 @@
 
         public async Task<ListDsiUnitOfMeasureGrpc> GetAllDsiUnitOfMeasures(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiUnitOfMeasureGrpc.DsiUnitOfMeasureGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -3537,7 +3537,7 @@
 
         public async Task<ListDsiUnitOfMeasureGrpc> CreateDsiUnitOfMeasures(DsiUnitOfMeasureGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiUnitOfMeasureGrpc responseList = new ListDsiUnitOfMeasureGrpc();
             if (request?.DsiUnitOfMeasureGrpcsToCreate == null || request.DsiUnitOfMeasureGrpcsToCreate.Count == 0)
             {
@@ -3565,7 +3565,7 @@
 
         public async Task<bool> UpdateDsiUnitOfMeasures(DsiUnitOfMeasureGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiUnitOfMeasureGrpcsToUpdate == null || request.DsiUnitOfMeasureGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -3605,7 +3605,7 @@
 
         public async Task<ListDsiWireMulticoreMarkerGrpc> GetAllDsiWireMulticoreMarkers(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiWireMulticoreMarkerGrpc.DsiWireMulticoreMarkerGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -3625,7 +3625,7 @@
 
         public async Task<ListDsiWireMulticoreMarkerGrpc> CreateDsiWireMulticoreMarkers(DsiWireMulticoreMarkerGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiWireMulticoreMarkerGrpc responseList = new ListDsiWireMulticoreMarkerGrpc();
             if (request?.DsiWireMulticoreMarkerGrpcsToCreate == null || request.DsiWireMulticoreMarkerGrpcsToCreate.Count == 0)
             {
@@ -3653,7 +3653,7 @@
 
         public async Task<bool> UpdateDsiWireMulticoreMarkers(DsiWireMulticoreMarkerGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiWireMulticoreMarkerGrpcsToUpdate == null || request.DsiWireMulticoreMarkerGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -3693,7 +3693,7 @@
 
         public async Task<ListDsiWireSpecificationGrpc> GetAllDsiWireSpecifications(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiWireSpecificationGrpc.DsiWireSpecificationGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -3713,7 +3713,7 @@
 
         public async Task<ListDsiWireSpecificationGrpc> CreateDsiWireSpecifications(DsiWireSpecificationGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiWireSpecificationGrpc responseList = new ListDsiWireSpecificationGrpc();
             if (request?.DsiWireSpecificationGrpcsToCreate == null || request.DsiWireSpecificationGrpcsToCreate.Count == 0)
             {
@@ -3741,7 +3741,7 @@
 
         public async Task<bool> UpdateDsiWireSpecifications(DsiWireSpecificationGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiWireSpecificationGrpcsToUpdate == null || request.DsiWireSpecificationGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -3781,7 +3781,7 @@
 
         public async Task<ListDsiWireThroughNodeGrpc> GetAllDsiWireThroughNodes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDsiWireThroughNodeGrpc.DsiWireThroughNodeGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -3800,7 +3800,7 @@
         }
         public async Task<ListDsiWireThroughNodeGrpc> CreateDsiWireThroughNodes(DsiWireThroughNodeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListDsiWireThroughNodeGrpc responseList = new ListDsiWireThroughNodeGrpc();
             if (request?.DsiWireThroughNodeGrpcsToCreate == null || request.DsiWireThroughNodeGrpcsToCreate.Count == 0)
             {
@@ -3828,7 +3828,7 @@
 
         public async Task<bool> UpdateDsiWireThroughNodes(DsiWireThroughNodeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.DsiWireThroughNodeGrpcsToUpdate == null || request.DsiWireThroughNodeGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -3868,7 +3868,7 @@
 
         public async Task<ListRfqNprRequestGrpc> GetAllRfqNprRequest(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListRfqNprRequestGrpc.RfqNprRequestGrpcs.Any())
             {
                 if (takeAmount <= 0)
@@ -3888,7 +3888,7 @@
 
         public async Task<ListRfqNprRequestGrpc> CreateRfqNprRequest(RfqNprRequestGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             ListRfqNprRequestGrpc responseList = new ListRfqNprRequestGrpc();
             if (request?.RfqNprRequestGrpcsToCreate == null || request.RfqNprRequestGrpcsToCreate.Count == 0)
             {
@@ -3914,7 +3914,7 @@
 
         public async Task<bool> UpdateRfqNprRequest(RfqNprRequestGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.RfqNprRequestGrpcsToUpdate == null || request.RfqNprRequestGrpcsToUpdate.Count == 0)
             {
                 return false;
@@ -3950,7 +3950,7 @@
 
         public async Task<bool> DeleteRfqNprRequestById(RfqNprRequestGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (request?.RfqNprRequestGrpcsToDelete == null || request.RfqNprRequestGrpcsToDelete.Count == 0)
             {
                 return false;
@@ -3988,7 +3988,7 @@
         #endregion
         public async Task<NprValidationResultDto> ValidateNprItemsAsync(Collection<RfqNprRequestGrpc> items, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
 
             NprValidationResultDto result = new NprValidationResultDto();
 
@@ -4497,7 +4497,7 @@
                     _RfqDrawingPartNumbersHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetRfqDrawingPartNumberQuery, List<RfqDrawingPartNumberGrpc>>>();
                     _RfqDrawingPartNumbersRefreshInProgress = true;
                     GetRfqDrawingPartNumberQuery query = new GetRfqDrawingPartNumberQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<RfqDrawingPartNumberGrpc>> results = await _RfqDrawingPartNumbersHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -4527,7 +4527,7 @@
                     _RfqProjectHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetRfqProjectQuery, List<RfqProjectGrpc>>>();
                     _RfqProjectRefreshInProgress = true;
                     GetRfqProjectQuery query = new GetRfqProjectQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<RfqProjectGrpc>> results = await _RfqProjectHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -4557,7 +4557,7 @@
                     _RfqNotesHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetRfqNotesQuery, List<RfqNotesGrpc>>>();
                     _RfqNotesRefreshInProgress = true;
                     GetRfqNotesQuery query = new GetRfqNotesQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<RfqNotesGrpc>> results = await _RfqNotesHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -4588,7 +4588,7 @@
                     _RfqReasonHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetRfqReasonQuery, List<RfqReasonGrpc>>>();
                     _RfqReasonRefreshInProgress = true;
                     GetRfqReasonQuery query = new GetRfqReasonQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<RfqReasonGrpc>> results = await _RfqReasonHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -4620,7 +4620,7 @@
                     _DsiBendHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiBendQuery, List<DsiBendGrpc>>>();
                     _DsiBendRefreshInProgress = true;
                     GetDsiBendQuery query = new GetDsiBendQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiBendGrpc>> results = await _DsiBendHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -4652,7 +4652,7 @@
                     _DsiBranchConfigurationHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiBranchConfigurationQuery, List<DsiBranchConfigurationGrpc>>>();
                     _DsiBranchConfigurationRefreshInProgress = true;
                     GetDsiBranchConfigurationQuery query = new GetDsiBranchConfigurationQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiBranchConfigurationGrpc>> results = await _DsiBranchConfigurationHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -4684,7 +4684,7 @@
                     _DsiBranchConfigurationBendAssociationHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiBranchConfigurationBendAssociationQuery, List<DsiBranchConfigurationBendAssociationGrpc>>>();
                     _DsiBranchConfigurationBendAssociationRefreshInProgress = true;
                     GetDsiBranchConfigurationBendAssociationQuery query = new GetDsiBranchConfigurationBendAssociationQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiBranchConfigurationBendAssociationGrpc>> results = await _DsiBranchConfigurationBendAssociationHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -4716,7 +4716,7 @@
                     _DsiBranchInsulationHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiBranchInsulationQuery, List<DsiBranchInsulationGrpc>>>();
                     _DsiBranchInsulationRefreshInProgress = true;
                     GetDsiBranchInsulationQuery query = new GetDsiBranchInsulationQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiBranchInsulationGrpc>> results = await _DsiBranchInsulationHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -4748,7 +4748,7 @@
                     _DsiBranchInsulationThroughNodeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiBranchInsulationThroughNodeQuery, List<DsiBranchInsulationThroughNodeGrpc>>>();
                     _DsiBranchInsulationThroughNodeRefreshInProgress = true;
                     GetDsiBranchInsulationThroughNodeQuery query = new GetDsiBranchInsulationThroughNodeQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiBranchInsulationThroughNodeGrpc>> results = await _DsiBranchInsulationThroughNodeHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -4780,7 +4780,7 @@
                     _DsiCavityMappingHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiCavityMappingQuery, List<DsiCavityMappingGrpc>>>();
                     _DsiCavityMappingRefreshInProgress = true;
                     GetDsiCavityMappingQuery query = new GetDsiCavityMappingQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiCavityMappingGrpc>> results = await _DsiCavityMappingHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -4811,7 +4811,7 @@
                     _DsiCentreStripHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiCentreStripQuery, List<DsiCentreStripGrpc>>>();
                     _DsiCentreStripRefreshInProgress = true;
                     GetDsiCentreStripQuery query = new GetDsiCentreStripQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiCentreStripGrpc>> results = await _DsiCentreStripHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -4841,7 +4841,7 @@
                     _DsiCircuitOptionHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiCircuitOptionQuery, List<DsiCircuitOptionGrpc>>>();
                     _DsiCircuitOptionRefreshInProgress = true;
                     GetDsiCircuitOptionQuery query = new GetDsiCircuitOptionQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiCircuitOptionGrpc>> results = await _DsiCircuitOptionHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -4871,7 +4871,7 @@
                     _DsiComponentHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiComponentQuery, List<DsiComponentGrpc>>>();
                     _DsiComponentRefreshInProgress = true;
                     GetDsiComponentQuery query = new GetDsiComponentQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiComponentGrpc>> results = await _DsiComponentHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -4901,7 +4901,7 @@
                     _DsiCompositeDetailHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiCompositeDetailQuery, List<DsiCompositeDetailGrpc>>>();
                     _DsiCompositeDetailRefreshInProgress = true;
                     GetDsiCompositeDetailQuery query = new GetDsiCompositeDetailQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiCompositeDetailGrpc>> results = await _DsiCompositeDetailHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -4931,7 +4931,7 @@
                     _DsiCompositeDetailCircuitOptionAssociationHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiCompositeDetailCircuitOptionAssociationQuery, List<DsiCompositeDetailCircuitOptionAssociationGrpc>>>();
                     _DsiCompositeDetailCircuitOptionAssociationRefreshInProgress = true;
                     GetDsiCompositeDetailCircuitOptionAssociationQuery query = new GetDsiCompositeDetailCircuitOptionAssociationQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiCompositeDetailCircuitOptionAssociationGrpc>> results = await _DsiCompositeDetailCircuitOptionAssociationHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -4961,7 +4961,7 @@
                     _DsiCompositeOptionHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiCompositeOptionQuery, List<DsiCompositeOptionGrpc>>>();
                     _DsiCompositeOptionRefreshInProgress = true;
                     GetDsiCompositeOptionQuery query = new GetDsiCompositeOptionQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiCompositeOptionGrpc>> results = await _DsiCompositeOptionHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -4991,7 +4991,7 @@
                     _DsiHarnessHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiHarnessQuery, List<DsiHarnessGrpc>>>();
                     _DsiHarnessRefreshInProgress = true;
                     GetDsiHarnessQuery query = new GetDsiHarnessQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiHarnessGrpc>> results = await _DsiHarnessHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -5021,7 +5021,7 @@
                     _DsiHarnessScopeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiHarnessScopeQuery, List<DsiHarnessScopeGrpc>>>();
                     _DsiHarnessScopeRefreshInProgress = true;
                     GetDsiHarnessScopeQuery query = new GetDsiHarnessScopeQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiHarnessScopeGrpc>> results = await _DsiHarnessScopeHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -5051,7 +5051,7 @@
                     _DsiHarnessScopeScopeAssociationHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiHarnessScopeScopeAssociationQuery, List<DsiHarnessScopeScopeAssociationGrpc>>>();
                     _DsiHarnessScopeScopeAssociationRefreshInProgress = true;
                     GetDsiHarnessScopeScopeAssociationQuery query = new GetDsiHarnessScopeScopeAssociationQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiHarnessScopeScopeAssociationGrpc>> results = await _DsiHarnessScopeScopeAssociationHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -5081,7 +5081,7 @@
                     _DsiManualBomQuantityHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiManualBomQuantityQuery, List<DsiManualBomQuantityGrpc>>>();
                     _DsiManualBomQuantityRefreshInProgress = true;
                     GetDsiManualBomQuantityQuery query = new GetDsiManualBomQuantityQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiManualBomQuantityGrpc>> results = await _DsiManualBomQuantityHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -5111,7 +5111,7 @@
                     _DsiMidWireComponentHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiMidWireComponentQuery, List<DsiMidWireComponentGrpc>>>();
                     _DsiMidWireComponentRefreshInProgress = true;
                     GetDsiMidWireComponentQuery query = new GetDsiMidWireComponentQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiMidWireComponentGrpc>> results = await _DsiMidWireComponentHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -5141,7 +5141,7 @@
                     _DsiModuleChildDetailHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiModuleChildDetailQuery, List<DsiModuleChildDetailGrpc>>>();
                     _DsiModuleChildDetailRefreshInProgress = true;
                     GetDsiModuleChildDetailQuery query = new GetDsiModuleChildDetailQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiModuleChildDetailGrpc>> results = await _DsiModuleChildDetailHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -5171,7 +5171,7 @@
                     _DsiModuleCompatibilityHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiModuleCompatibilityQuery, List<DsiModuleCompatibilityGrpc>>>();
                     _DsiModuleCompatibilityRefreshInProgress = true;
                     GetDsiModuleCompatibilityQuery query = new GetDsiModuleCompatibilityQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiModuleCompatibilityGrpc>> results = await _DsiModuleCompatibilityHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -5201,7 +5201,7 @@
                     _DsiMulticoreSpecificationHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiMulticoreSpecificationQuery, List<DsiMulticoreSpecificationGrpc>>>();
                     _DsiMulticoreSpecificationRefreshInProgress = true;
                     GetDsiMulticoreSpecificationQuery query = new GetDsiMulticoreSpecificationQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiMulticoreSpecificationGrpc>> results = await _DsiMulticoreSpecificationHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -5231,7 +5231,7 @@
                     _DsiPinMappingHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiPinMappingQuery, List<DsiPinMappingGrpc>>>();
                     _DsiPinMappingRefreshInProgress = true;
                     GetDsiPinMappingQuery query = new GetDsiPinMappingQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiPinMappingGrpc>> results = await _DsiPinMappingHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -5261,7 +5261,7 @@
                     _DsiPinMappingCavityMappingAssociationHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiPinMappingCavityMappingAssociationQuery, List<DsiPinMappingCavityMappingAssociationGrpc>>>();
                     _DsiPinMappingCavityMappingAssociationRefreshInProgress = true;
                     GetDsiPinMappingCavityMappingAssociationQuery query = new GetDsiPinMappingCavityMappingAssociationQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiPinMappingCavityMappingAssociationGrpc>> results = await _DsiPinMappingCavityMappingAssociationHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -5291,7 +5291,7 @@
                     _DsiScopeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiScopeQuery, List<DsiScopeGrpc>>>();
                     _DsiScopeRefreshInProgress = true;
                     GetDsiScopeQuery query = new GetDsiScopeQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiScopeGrpc>> results = await _DsiScopeHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -5321,7 +5321,7 @@
                     _DsiSupplierHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiSupplierQuery, List<DsiSupplierGrpc>>>();
                     _DsiSupplierRefreshInProgress = true;
                     GetDsiSupplierQuery query = new GetDsiSupplierQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiSupplierGrpc>> results = await _DsiSupplierHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -5351,7 +5351,7 @@
                     _DsiTransformedCompositeDetailHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiTransformedCompositeDetailQuery, List<DsiTransformedCompositeDetailGrpc>>>();
                     _DsiTransformedCompositeDetailRefreshInProgress = true;
                     GetDsiTransformedCompositeDetailQuery query = new GetDsiTransformedCompositeDetailQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiTransformedCompositeDetailGrpc>> results = await _DsiTransformedCompositeDetailHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -5381,7 +5381,7 @@
                     _DsiTransformedHarnessHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiTransformedHarnessQuery, List<DsiTransformedHarnessGrpc>>>();
                     _DsiTransformedHarnessRefreshInProgress = true;
                     GetDsiTransformedHarnessQuery query = new GetDsiTransformedHarnessQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiTransformedHarnessGrpc>> results = await _DsiTransformedHarnessHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -5411,7 +5411,7 @@
                     _DsiTransformedModuleChildDetailHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiTransformedModuleChildDetailQuery, List<DsiTransformedModuleChildDetailGrpc>>>();
                     _DsiTransformedModuleChildDetailRefreshInProgress = true;
                     GetDsiTransformedModuleChildDetailQuery query = new GetDsiTransformedModuleChildDetailQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiTransformedModuleChildDetailGrpc>> results = await _DsiTransformedModuleChildDetailHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -5441,7 +5441,7 @@
                     _DsiUnitOfMeasureHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiUnitOfMeasureQuery, List<DsiUnitOfMeasureGrpc>>>();
                     _DsiUnitOfMeasureRefreshInProgress = true;
                     GetDsiUnitOfMeasureQuery query = new GetDsiUnitOfMeasureQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiUnitOfMeasureGrpc>> results = await _DsiUnitOfMeasureHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -5471,7 +5471,7 @@
                     _DsiWireMulticoreMarkerHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiWireMulticoreMarkerQuery, List<DsiWireMulticoreMarkerGrpc>>>();
                     _DsiWireMulticoreMarkerRefreshInProgress = true;
                     GetDsiWireMulticoreMarkerQuery query = new GetDsiWireMulticoreMarkerQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiWireMulticoreMarkerGrpc>> results = await _DsiWireMulticoreMarkerHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -5501,7 +5501,7 @@
                     _DsiWireSpecificationHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiWireSpecificationQuery, List<DsiWireSpecificationGrpc>>>();
                     _DsiWireSpecificationRefreshInProgress = true;
                     GetDsiWireSpecificationQuery query = new GetDsiWireSpecificationQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiWireSpecificationGrpc>> results = await _DsiWireSpecificationHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -5531,7 +5531,7 @@
                     _DsiWireThroughNodeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDsiWireThroughNodeQuery, List<DsiWireThroughNodeGrpc>>>();
                     _DsiWireThroughNodeRefreshInProgress = true;
                     GetDsiWireThroughNodeQuery query = new GetDsiWireThroughNodeQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DsiWireThroughNodeGrpc>> results = await _DsiWireThroughNodeHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -5561,7 +5561,7 @@
                     _RfqNprRequestHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetRfqNprRequestQuery, List<RfqNprRequestGrpc>>>();
                     _RfqNprRequestRefreshInProgress = true;
                     GetRfqNprRequestQuery query = new GetRfqNprRequestQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<RfqNprRequestGrpc>> results = await _RfqNprRequestHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -5588,7 +5588,7 @@
             IEnumerable<string> harnessTitle,
             CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
 
             ListDsiComponentGrpc response = new ListDsiComponentGrpc();
 

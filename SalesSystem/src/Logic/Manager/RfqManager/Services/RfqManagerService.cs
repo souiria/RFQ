@@ -1,4 +1,6 @@
-﻿namespace RfqModule.Services
+﻿using System.Diagnostics;
+
+namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {
@@ -42,11 +44,11 @@
             try
             {
                 // Call the Master service to get all masterCustomers
-                await Task.Delay(1);
+                //await Task.Delay(1);
                 CustomerGrpcRequest getCustomersRequest = new CustomerGrpcRequest();
                 getCustomersRequest.Position = request.Position;
                 getCustomersRequest.Takeamount = request.Take;
-                ListCustomerGrpc customers = _MasterClient.GetCustomerGrpc(getCustomersRequest);
+                ListCustomerGrpc customers = await _MasterClient.GetCustomerGrpcAsync(getCustomersRequest);
                 GetAllCustomersGrpcResponse getAllCustomersGrpcResponse = new GetAllCustomersGrpcResponse();                
                 foreach (Master.CustomerGrpc? masterCustomer in customers.CustomerGrpc)
                 {
@@ -70,7 +72,7 @@
         {
             try
             {
-                await Task.Delay(1);
+                // await Task.Delay(1);
                 _Projects.Clear();
                 GetProjectAssociationsByCustomerIdResponse response = new GetProjectAssociationsByCustomerIdResponse();
 
@@ -79,7 +81,7 @@
 #pragma warning disable CA1308
                 filterRequest.FilterExpression = $"CustomerBusinessHierarchyGuid != null && IsActive == true && CustomerBusinessHierarchyGuid.ToUpperInvariant() == \"{request.CustomerId.ToUpperInvariant()}\"";
 #pragma warning restore CA1308
-                MastersFilterResponseGrpc locations = _MasterClient.FilterMasterDataGrpc(filterRequest);
+                MastersFilterResponseGrpc locations = await _MasterClient.FilterMasterDataGrpcAsync(filterRequest);
                 // List<CustomerLocationGrpc> extractedLocations = ExtractMastersResponseData<CustomerLocationGrpc>(locations).ToList();
                 List<CustomerLocationGrpc> extractedLocations = locations.CustomerLocationGrpcList.CustomerLocationGrpc
                     .Select(loc => loc.ToCustomerLocation())
@@ -738,7 +740,7 @@
 
             try
             {
-                await Task.Delay(1);
+                //await Task.Delay(1);
 
                 RfqProjectGrpc rfqProject = new RfqProjectGrpc();
                 rfqProject.RowId = request.Project.RowId;
@@ -758,7 +760,7 @@
                 rfqProjectRequest.RfqGrpcRequestParameter.RequestType = 80;
                 rfqProjectRequest.RfqProjectGrpcsToUpdate.Add(rfqProject);
 
-                RfqCrudGrpcResponse updateResponse = _RfqClient.UpdateRfqProjectGrpc(rfqProjectRequest);
+                RfqCrudGrpcResponse updateResponse = await _RfqClient.UpdateRfqProjectGrpcAsync(rfqProjectRequest);
                 UpdateRfqProjectGrpcResponse response = new UpdateRfqProjectGrpcResponse();
                 response.Success = updateResponse.SaveSuccess;
                 response.Message = updateResponse.Message;
@@ -777,8 +779,6 @@
         {
             try
             {
-                await Task.Delay(1);
-
                 // Map each incoming part into a gRPC access DTO
                 // it'a RfqDrawingPartNumbersGrpc vs RfqModule.RfqDrawingPartNumberGrpc
                 // why a type is named RfqDrawingPartNumbersGrpc (plural) if accepted
@@ -794,7 +794,7 @@
                 rfqProjectRequest.RfqGrpcRequestParameter = new RfqGrpcRequestParameter();
                 rfqProjectRequest.RfqGrpcRequestParameter.RequestType = 80;
                 rfqProjectRequest.RfqDrawingPartNumbersGrpcsToUpdate.AddRange(partsToUpdate);
-                RfqCrudGrpcResponse updateResponse = _RfqClient.UpdateRfqDrawingPartNumbersGrpc(rfqProjectRequest);
+                RfqCrudGrpcResponse updateResponse = await _RfqClient.UpdateRfqDrawingPartNumbersGrpcAsync(rfqProjectRequest);
                 RfqCrudResponse response = new RfqCrudResponse();
                 response.SaveSuccess = updateResponse.SaveSuccess;  
                 response.Message = updateResponse.Message;
@@ -810,8 +810,6 @@
         {
             try
             {
-                await Task.Delay(1);
-
                 ListRfqDrawingPartNumberGrpc response = new ListRfqDrawingPartNumberGrpc();
 
                 RfqFilterRequest rfqFilterRequest = new RfqFilterRequest();
@@ -819,7 +817,7 @@
                 rfqFilterRequest.DatabaseList = "RFQDRAWINGPARTNUMBERGRPC";
                 rfqFilterRequest.FilterExpression = $"(RfqId != null && RfqId == {request.RfqId})";
 
-                RfqFilterResponse rfqFilterResponse = _RfqClient.FilterRfqGrpc(rfqFilterRequest);
+                RfqFilterResponse rfqFilterResponse = await _RfqClient.FilterRfqGrpcAsync(rfqFilterRequest);
 
                 if(rfqFilterResponse == null
                     || rfqFilterResponse.ListRfqDrawingPartNumbersGrpc == null
@@ -2734,14 +2732,13 @@
 
         public async Task<FilterGrpcResponse> FilterEmacsByExactPartNumber(FilterGrpcRequest request)
         {
-            await Task.Delay(1);
             EmacsFilterRequestGrpc emacsRequest = new EmacsFilterRequestGrpc();
             Collection<CombinedPartsGrpc> filteredList = new Collection<CombinedPartsGrpc>();
             FilterGrpcResponse response = new FilterGrpcResponse();
             string[] parametersToSearch = ["CustomerNumber", "SupplierNumber", "SumitomoNumber"];
             foreach (string parameter in parametersToSearch)
             {
-                EmacsFilterResponseGrpc partNumberResponse = FilterSumitomoNumber<EmacsFilterResponseGrpc>(request.StringValue, parameter, "==");
+                EmacsFilterResponseGrpc partNumberResponse = await FilterSumitomoNumber<EmacsFilterResponseGrpc>(request.StringValue, parameter, "==");
                 if (partNumberResponse.ListCombinedPartsGrpc != null)
                 {
                     filteredList = ExtractEmacsResponseData<CombinedPartsGrpc>(partNumberResponse);
@@ -2761,7 +2758,6 @@
 
         public async Task<FilterGrpcResponse> FilterEmacsByContainingPartNumber(FilterGrpcRequest request)
         {
-            await Task.Delay(1);
             EmacsFilterRequestGrpc emacsRequest = new EmacsFilterRequestGrpc();
             Collection<CombinedPartsGrpc> filteredList = new Collection<CombinedPartsGrpc>();
             FilterGrpcResponse response = new FilterGrpcResponse();
@@ -2771,7 +2767,7 @@
             uniformStringValue = uniformStringValue.ToUpperInvariant().Trim();
             foreach (string parameter in parametersToSearch)
             {
-                EmacsFilterResponseGrpc partNumberResponse = FilterSumitomoNumber<EmacsFilterResponseGrpc>(uniformStringValue, parameter, ".Contains");
+                EmacsFilterResponseGrpc partNumberResponse = await FilterSumitomoNumber<EmacsFilterResponseGrpc>(uniformStringValue, parameter, ".Contains");
                 if (partNumberResponse.ListCombinedPartsGrpc != null)
                 {
                     filteredList = ExtractEmacsResponseData<CombinedPartsGrpc>(partNumberResponse);
@@ -2789,22 +2785,62 @@
             return response;
         }
 
+        //public async Task<FilterGrpcResponse> FilterAdssBySumitomoPartNumber(FilterGrpcRequest request)
+        //{
+        //    await Task.Delay(1);
+        //    Adss.PartImageRequest adssRequest = new Adss.PartImageRequest();
+        //    adssRequest.PartNumber = request.StringValue;
+        //    // *** sync to async ***
+        //    Adss.PartImageReply partImageReply = await _AdssGrpcClient.GetPartImageAsync(adssRequest);
+        //    // Adss.PartImageReply partImageReply = _AdssGrpcClient.GetPartImage(adssRequest);
+        //    FilterGrpcResponse response = new FilterGrpcResponse();
+        //    if (partImageReply != null)
+        //    {
+        //        response.StringList.Add(adssRequest.PartNumber);
+        //        response.ByteList.Add(partImageReply.Data);
+        //        response.StringList2.Add(partImageReply.ContentType);
+        //        response.Success = true;
+        //    }
+        //    else
+        //    {
+        //        response.Success = false;
+        //    }
+
+        //    return response;
+        //}
         public async Task<FilterGrpcResponse> FilterAdssBySumitomoPartNumber(FilterGrpcRequest request)
         {
-            await Task.Delay(1);
-            Adss.PartImageRequest adssRequest = new Adss.PartImageRequest();
-            adssRequest.PartNumber = request.StringValue;
-            Adss.PartImageReply partImageReply = _AdssGrpcClient.GetPartImage(adssRequest);
             FilterGrpcResponse response = new FilterGrpcResponse();
-            if (partImageReply != null)
+            try
             {
-                response.StringList.Add(adssRequest.PartNumber);
-                response.ByteList.Add(partImageReply.Data);
-                response.StringList2.Add(partImageReply.ContentType);
-                response.Success = true;
+                Adss.PartImageRequest adssRequest = new Adss.PartImageRequest();
+                adssRequest.PartNumber = request.StringValue;
+
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                DateTime timeout = DateTime.UtcNow.AddSeconds(10); // Set the desired timeout duration in seconds
+                CallOptions callOptions = new CallOptions(deadline: timeout);
+                Adss.PartImageReply partImageReply = await _AdssGrpcClient.GetPartImageAsync(adssRequest, callOptions);
+
+                if (partImageReply != null)
+                {
+                    response.StringList.Add(adssRequest.PartNumber);
+                    response.ByteList.Add(partImageReply.Data);
+                    response.StringList2.Add(partImageReply.ContentType);
+                    response.Success = true;
+                }
+                else
+                {
+                    _Logger.GenericLogInformation($"ADSS gRPC call returned null for part {request.StringValue}");
+                    response.Success = false;
+                }
+
+                _Logger?.GenericLogInformation($">>> Rfqmanager.RfqManagerService.FilterAdssBySumitomoPartNumber took {sw.ElapsedMilliseconds} ms to retrieve image for {request.StringValue}");
+
             }
-            else
+            catch (RpcException rpcEx)
             {
+                _Logger.GenericLogError($"ADSS gRPC call failed (StatusCode={rpcEx.StatusCode}) for part {request.StringValue}", rpcEx);
                 response.Success = false;
             }
 
@@ -2812,11 +2848,10 @@
         }
         public async Task<FilterGrpcResponse> FilterNPRBySumitomoPartNumber(FilterGrpcRequest request)
         {
-            await Task.Delay(1);
             FilterGrpcResponse response = new FilterGrpcResponse();
             NPRFilterRequest filterRequest = new NPRFilterRequest();
             Collection<H1NPRViewGrpc> filteredList = new Collection<H1NPRViewGrpc>();
-            NPRFilterResponse nprResponse = FilterSumitomoNumber<NPRFilterResponse>(request.StringValue, "SumitomoNo", "==");
+            NPRFilterResponse nprResponse = await FilterSumitomoNumber<NPRFilterResponse>(request.StringValue, "SumitomoNo", "==");
             filteredList = ExtractNRPResponseData<H1NPRViewGrpc>(nprResponse);
             response.Success = true;
             foreach( H1NPRViewGrpc part in filteredList)
@@ -2837,11 +2872,10 @@
 
         public async Task<FilterGrpcResponse> FilterCPDBySumitomoPartNumber(FilterGrpcRequest request)
         {
-            await Task.Delay(1);
             FilterGrpcResponse response = new FilterGrpcResponse();
             CPDFilterRequest filterRequest = new CPDFilterRequest();
             Collection<MatSuppMstViewGrpc> filteredList = new Collection<MatSuppMstViewGrpc>();
-            CPDFilterResponse cpdResponse = FilterSumitomoNumber<CPDFilterResponse>(request.StringValue, "MaterialNo", "==");
+            CPDFilterResponse cpdResponse = await FilterSumitomoNumber<CPDFilterResponse>(request.StringValue, "MaterialNo", "==");
             filteredList = ExtractCPDResponseData<MatSuppMstViewGrpc>(cpdResponse);
             response.Success = true;
 
@@ -2864,11 +2898,10 @@
         }
         public async Task<FilterGrpcResponse> FilterRFQBySumitomoPartNumber(FilterGrpcRequest request)
         {
-            await Task.Delay(1);
             FilterGrpcResponse response = new FilterGrpcResponse();
             RfqFilterRequest filterRequest = new RfqFilterRequest();
             Collection<RfqDrawingPartNumberGrpc> filteredList = new Collection<RfqDrawingPartNumberGrpc>();
-            RfqFilterResponse rfqResponse = FilterSumitomoNumber<RfqFilterResponse>(request.StringValue, "SumitomoPartNumber", "==");
+            RfqFilterResponse rfqResponse = await FilterSumitomoNumber<RfqFilterResponse>(request.StringValue, "SumitomoPartNumber", "==");
             filteredList = ExtractRFQResponseData<RfqDrawingPartNumberGrpc>(rfqResponse);
             response.Success = true;
             foreach (RfqDrawingPartNumberGrpc part in filteredList)
@@ -2889,11 +2922,10 @@
 
         public async Task<FilterGrpcResponse> FilterNPRByCustomerPartNumber(FilterGrpcRequest request)
         {
-            await Task.Delay(1);
             FilterGrpcResponse response = new FilterGrpcResponse();
             NPRFilterRequest filterRequest = new NPRFilterRequest();
             Collection<H1NPRViewGrpc> filteredList = new Collection<H1NPRViewGrpc>();
-            NPRFilterResponse nprResponse = FilterSumitomoNumber<NPRFilterResponse>(request.StringValue, "CustomerNo", "==");
+            NPRFilterResponse nprResponse = await FilterSumitomoNumber<NPRFilterResponse>(request.StringValue, "CustomerNo", "==");
             filteredList = ExtractNRPResponseData<H1NPRViewGrpc>(nprResponse);
             response.Success = true;
             foreach (H1NPRViewGrpc part in filteredList)
@@ -2996,7 +3028,7 @@
 
             return false;
         }
-        T FilterSumitomoNumber<T>(string partNumber, string filterType, string filterOpperator)
+        async Task<T> FilterSumitomoNumber<T>(string partNumber, string filterType, string filterOpperator)
         {
             string filterExpression = string.Empty;
             if (filterOpperator == "==")
@@ -3018,25 +3050,25 @@
                 EmacsFilterRequestGrpc emacsRequest = new EmacsFilterRequestGrpc();
                 emacsRequest.FilterExpression = filterExpression;
                 emacsRequest.DatabaseList = "CombinedPartsGrpc";
-                EmacsFilterResponseGrpc filterResponse = _EmacsClient.FilterEmacsDataGrpc(emacsRequest);
+                EmacsFilterResponseGrpc filterResponse = await _EmacsClient.FilterEmacsDataGrpcAsync(emacsRequest);
                 return (T)(object)filterResponse;
                 case "NPRFilterResponse":
                 NPRFilterRequest nprRequest = new NPRFilterRequest();
                 nprRequest.FilterExpression = filterExpression;
                 nprRequest.DatabaseList = "H1NPRViewGrpc";
-                NPRFilterResponse filterNprResponse = _NPRGrpcClient.FilterNPRGrpc(nprRequest);
+                NPRFilterResponse filterNprResponse = await _NPRGrpcClient.FilterNPRGrpcAsync(nprRequest);
                 return (T)(object)filterNprResponse;
                 case "CPDFilterResponse":
                 CPDFilterRequest cpdRequest = new CPDFilterRequest();
                 cpdRequest.FilterExpression = filterExpression;
                 cpdRequest.DatabaseList = "MatSuppMstViewGrpc";
-                CPDFilterResponse filterCpdResponse = _CPDClient.FilterCPDGrpc(cpdRequest);
+                CPDFilterResponse filterCpdResponse = await _CPDClient.FilterCPDGrpcAsync(cpdRequest);
                 return (T)(object)filterCpdResponse;
                 case "RfqFilterResponse":
                 RfqFilterRequest rfqRequest = new RfqFilterRequest();
                 rfqRequest.FilterExpression = filterExpression;
                 rfqRequest.DatabaseList = "RfqDrawingPartNumbersGrpc";
-                RfqFilterResponse filterRfqResponse = _RfqClient.FilterRfqGrpc(rfqRequest);
+                RfqFilterResponse filterRfqResponse = await _RfqClient.FilterRfqGrpcAsync(rfqRequest);
                 return (T)(object)filterRfqResponse;
                 default:
                 throw new ArgumentException("Invalid type parameter");
