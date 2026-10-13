@@ -1,4 +1,5 @@
-﻿using static System.Net.Mime.MediaTypeNames;
+﻿using System.Diagnostics;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Adss.Endpoints.GrpcServices
 {
@@ -27,29 +28,59 @@ namespace Adss.Endpoints.GrpcServices
             Task<CommonTypes.HelloReply> result = Task.FromResult(reply);
             return result;
         }
-
-        public override async Task<PartImageReply> GetPartImage(PartImageRequest request, ServerCallContext context)
+    public override async Task<PartImageReply> GetPartImage(PartImageRequest request,ServerCallContext context)
         {
-            string partNumber = string.IsNullOrWhiteSpace(request.PartNumber) ? "noimage" : request.PartNumber;
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            string partNumber = string.IsNullOrWhiteSpace(request.PartNumber)
+                ? "noimage"
+                : request.PartNumber;
+
+            _Logger.GenericLogInformation(
+                $"ADSS gRPC START - Part {partNumber}, " +
+                $"Peer {context.Peer}");
+
             CancellationToken ct = context.CancellationToken;
-            (byte[]? imageBytes, string? contentType) = await _Svc.GetPartImageAsync(partNumber, ct);
+
+            _Logger.GenericLogInformation(
+                $"ADSS gRPC BEFORE service call - Part {partNumber}");
+
+            (byte[]? imageBytes, string? contentType) =
+                await _Svc.GetPartImageAsync(partNumber, ct);
+
+            _Logger.GenericLogInformation(
+                $"ADSS gRPC AFTER service call - Part {partNumber}, " +
+                $"ElapsedMs {sw.ElapsedMilliseconds}, " +
+                $"ImageLength {imageBytes?.Length ?? 0}, " +
+                $"ContentType {contentType}, " +
+                $"CancellationRequested {ct.IsCancellationRequested}");
+
             if (imageBytes == null || imageBytes.Length == 0)
             {
-                //  reply for 'no image' case return from _NoImage64 variable
                 ByteString noImageData = ByteString.CopyFrom(_NoImageBytes);
                 PartImageReply noImageReply = new PartImageReply();
                 noImageReply.Data = noImageData;
                 noImageReply.ContentType = _NoImageContentType;
-                _Logger.GenericLogInformation($"No image found for part number '{partNumber}'.RootPath = '{_Settings.RootPathServer}'.Returning default image.");
+
+                _Logger.GenericLogInformation(
+                    $"ADSS gRPC NO IMAGE - Part {partNumber}, " +
+                    $"ElapsedMs {sw.ElapsedMilliseconds}, " +
+                    $"RootPath {_Settings.RootPathServer}");
+
                 return noImageReply;
             }
 
-            //  reply for the case where an image is available
             ByteString imageData = ByteString.CopyFrom(imageBytes);
             PartImageReply imageReply = new PartImageReply();
             imageReply.Data = imageData;
             imageReply.ContentType = contentType;
-            _Logger.GenericLogInformation(information: $"Image found for part number '{partNumber}', returning image with content type '{contentType}'.");
+
+            _Logger.GenericLogInformation(
+                $"ADSS gRPC RETURN IMAGE - Part {partNumber}, " +
+                $"Bytes {imageBytes.Length}, " +
+                $"ElapsedMs {sw.ElapsedMilliseconds}");
+
             return imageReply;
         }
     }

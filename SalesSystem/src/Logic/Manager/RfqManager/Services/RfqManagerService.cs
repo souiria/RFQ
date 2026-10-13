@@ -2785,42 +2785,37 @@ namespace RfqModule.Services
             return response;
         }
 
-        //public async Task<FilterGrpcResponse> FilterAdssBySumitomoPartNumber(FilterGrpcRequest request)
-        //{
-        //    await Task.Delay(1);
-        //    Adss.PartImageRequest adssRequest = new Adss.PartImageRequest();
-        //    adssRequest.PartNumber = request.StringValue;
-        //    // *** sync to async ***
-        //    Adss.PartImageReply partImageReply = await _AdssGrpcClient.GetPartImageAsync(adssRequest);
-        //    // Adss.PartImageReply partImageReply = _AdssGrpcClient.GetPartImage(adssRequest);
-        //    FilterGrpcResponse response = new FilterGrpcResponse();
-        //    if (partImageReply != null)
-        //    {
-        //        response.StringList.Add(adssRequest.PartNumber);
-        //        response.ByteList.Add(partImageReply.Data);
-        //        response.StringList2.Add(partImageReply.ContentType);
-        //        response.Success = true;
-        //    }
-        //    else
-        //    {
-        //        response.Success = false;
-        //    }
-
-        //    return response;
-        //}
         public async Task<FilterGrpcResponse> FilterAdssBySumitomoPartNumber(FilterGrpcRequest request)
         {
             FilterGrpcResponse response = new FilterGrpcResponse();
+            Stopwatch sw = new Stopwatch();
+
             try
             {
+                _Logger.GenericLogInformation(
+                    $"ADSS Manager START - Part {request.StringValue}");
+
                 Adss.PartImageRequest adssRequest = new Adss.PartImageRequest();
                 adssRequest.PartNumber = request.StringValue;
 
-                Stopwatch sw = new Stopwatch();
                 sw.Start();
-                DateTime timeout = DateTime.UtcNow.AddSeconds(10); // Set the desired timeout duration in seconds
+
+                _Logger.GenericLogInformation(
+                    $"ADSS Manager BEFORE gRPC call - Part {request.StringValue}");
+
+                DateTime timeout = DateTime.UtcNow.AddSeconds(10);
                 CallOptions callOptions = new CallOptions(deadline: timeout);
-                Adss.PartImageReply partImageReply = await _AdssGrpcClient.GetPartImageAsync(adssRequest, callOptions);
+
+                Adss.PartImageReply partImageReply =
+                    await _AdssGrpcClient.GetPartImageAsync(adssRequest, callOptions);
+
+                sw.Stop();
+
+                _Logger.GenericLogInformation(
+                    $"ADSS Manager AFTER gRPC call - Part {request.StringValue}, " +
+                    $"ElapsedMs {sw.ElapsedMilliseconds}, " +
+                    $"ReplyNull {partImageReply == null}, " +
+                    $"DataLength {partImageReply?.Data.Length ?? 0}");
 
                 if (partImageReply != null)
                 {
@@ -2831,16 +2826,28 @@ namespace RfqModule.Services
                 }
                 else
                 {
-                    _Logger.GenericLogInformation($"ADSS gRPC call returned null for part {request.StringValue}");
+                    _Logger.GenericLogInformation(
+                        $"ADSS Manager returned null - Part {request.StringValue}");
+
                     response.Success = false;
                 }
 
-                _Logger?.GenericLogInformation($">>> Rfqmanager.RfqManagerService.FilterAdssBySumitomoPartNumber took {sw.ElapsedMilliseconds} ms to retrieve image for {request.StringValue}");
-
+                _Logger.GenericLogInformation(
+                    $"ADSS Manager END - Part {request.StringValue}, " +
+                    $"Success {response.Success}, " +
+                    $"ElapsedMs {sw.ElapsedMilliseconds}");
             }
             catch (RpcException rpcEx)
             {
-                _Logger.GenericLogError($"ADSS gRPC call failed (StatusCode={rpcEx.StatusCode}) for part {request.StringValue}", rpcEx);
+                sw.Stop();
+
+                _Logger.GenericLogError(
+                    $"ADSS Manager RPC ERROR - Part {request.StringValue}, " +
+                    $"StatusCode {rpcEx.StatusCode}, " +
+                    $"Detail {rpcEx.Status.Detail}, " +
+                    $"ElapsedMs {sw.ElapsedMilliseconds}",
+                    rpcEx);
+
                 response.Success = false;
             }
 
