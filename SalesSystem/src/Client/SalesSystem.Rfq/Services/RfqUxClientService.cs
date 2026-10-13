@@ -569,7 +569,6 @@ namespace SalesSystem.Rfq.Services
         public async Task<SearchResultUxModel> SearchEmacsExactCustomerPn(string customerPartNumber)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-            await Task.Delay(1);
             try
             {
                 FilterGrpcResponse response = await FilterByRequestTypeAsync(
@@ -599,7 +598,6 @@ namespace SalesSystem.Rfq.Services
         public async Task<SearchResultUxModel> SearchEmacsContainsCustomerPn(string customerPartNumber)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-            await Task.Delay(1);
             try
             {
                 FilterGrpcResponse response = await FilterByRequestTypeAsync(
@@ -662,7 +660,6 @@ namespace SalesSystem.Rfq.Services
         public async Task<SearchResultUxModel> SearchNprSewsePn(string sewsePartNumber)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-            await Task.Delay(1);
             try
             {
                 FilterGrpcResponse response = await FilterByRequestTypeAsync(
@@ -692,7 +689,6 @@ namespace SalesSystem.Rfq.Services
         public async Task<SearchResultUxModel> SearchNprCustomerNumber(string customerNumber)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-            await Task.Delay(1);
             try
             {
                 FilterGrpcResponse response = await FilterByRequestTypeAsync(
@@ -1229,9 +1225,8 @@ namespace SalesSystem.Rfq.Services
         }
         public async Task GetAllRFQStatusAsync()
         {
-            await Task.Delay(1);
             GetAllRFQStatusGrpcRequest request = new GetAllRFQStatusGrpcRequest();
-            RfqModule.ListRFQStatusGrpc response = _Client.GetAllRFQStatusGrpc(request);
+            RfqModule.ListRFQStatusGrpc response = await _Client.GetAllRFQStatusGrpcAsync(request);
             if(response != null && response.RFQStatusGrpc != null)
             {
                 _RFQStatuses.Clear();

@@ -4,8 +4,6 @@
     {
         async Task<bool> PopulateWireTypeData(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (!_WireTypeRefreshInProgress)
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
@@ -13,7 +11,6 @@
                     _QueryWireTypeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetWireTypesQuery, List<WireTypeGrpc>>>();
                     _WireTypeRefreshInProgress = true;
                     GetWireTypesQuery query = new GetWireTypesQuery();
-                    await Task.Delay(1, cancellationToken);
                     Result<List<WireTypeGrpc>> results = await _QueryWireTypeHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -54,8 +51,6 @@
         }
         public async Task<bool> CreateWireTypes(WireTypeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.WireTypeGrpcsToCreate == null || request.WireTypeGrpcsToCreate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "WireTypeGrpcRequest or WireTypeGrpcsToCreate cannot be null or empty.");
@@ -86,8 +81,6 @@
 
         public async Task<bool> UpdateWireTypes(WireTypeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.WireTypeGrpcsToUpdate == null || request.WireTypeGrpcsToUpdate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "WireTypeGrpcRequest or WireTypeGrpcsToUpdate cannot be null or empty.");

@@ -287,7 +287,7 @@
             int position = 0,
             int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
 
             if (_BusinessUnits.BusinessUnitGrpc.Any())
             {
@@ -324,7 +324,7 @@
             int position = 0,
             int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
 
             if (_UnitOfMeasures.UnitOfMeasureGrpc.Any())
             {
@@ -358,7 +358,7 @@
 
         public async Task<ListCurrencyGrpc> GetAllCurrencies(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_Currencies.CurrencyGrpc.Any())
             {
                 if(takeAmount <= 0)
@@ -384,7 +384,7 @@
 
         public async Task<ListCustomerGrpc> GetAllCustomerBusinessUnits(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_Customers.CustomerGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -428,7 +428,7 @@
 
         public async Task<ListCustomerProjectAssociationGrpc> GetAllCustomerProjectAssociations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_CustomerProjectAssociations.CustomerProjectAssociationGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -450,7 +450,7 @@
 
         public async Task<ListCustomerProjectAssociationGrpc> GetAllCustomerProjectAssociationsByUserId(string userId ,CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             _FilteredLocations.CustomerLocationGrpc.Clear();
             if (_CustomerProjectAssociations.CustomerProjectAssociationGrpc.Any() && _CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Any())
             {
@@ -503,7 +503,7 @@
 
         public async Task<ListCustomerSalesEntityGrpc> GetAllCustomerSalesEntities(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_CustomerSalesEntities.CustomerSalesEntityGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -525,7 +525,7 @@
 
         public async Task<ListCustomerBusinessUserAssociationGrpc> GetCustomerBusinessUserAssociations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_CustomerBusinessUserAssociations.CustomerBusinessUserAssociationGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -551,7 +551,7 @@
 
         public async Task<ListPlatformGrpc> GetAllPlatforms(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_Platforms.PlatformGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -573,7 +573,7 @@
 
         public async Task<ListProgramGrpc> GetAllPrograms(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_Programs.ProgramGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -595,7 +595,7 @@
 
         public async Task<ListProjectGrpc> GetAllProjects(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_Projects.ProjectGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -617,7 +617,7 @@
 
         public async Task<ListMilestoneGrpc> GetAllMilestones(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_Milestones.MilestoneGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -643,7 +643,7 @@
 
         public async Task<ListVehicleGrpc> GetAllVehicles(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_Vehicles.VehicleGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -669,7 +669,7 @@
 
         public async Task<ListSupplierGroupGrpc> GetAllSupplierGroups(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_SupplierGroups.SupplierGroupGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -695,7 +695,7 @@
 
         public async Task<ListSupplierGrpc> GetAllSuppliers(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_Suppliers.SupplierGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -721,7 +721,7 @@
 
         public async Task<ListProjectEngineeringAssociationGrpc> GetAllProjectEngineeringAssociations(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ProjectEngineeringAssociations.ProjectEngineeringAssociationGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -767,7 +767,7 @@
 
                     GetBusinessUnitsQuery query = new GetBusinessUnitsQuery();
 
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
 
                     Result<List<BusinessUnitGrpc>> results =
                         await _BusinessUnitHandler.Handle(query, cancellationToken);
@@ -807,7 +807,7 @@
 
                     GetUnitOfMeasuresQuery query = new GetUnitOfMeasuresQuery();
 
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
 
                     Result<List<UnitOfMeasureGrpc>> results =
                         await _UnitOfMeasureHandler.Handle(query, cancellationToken);
@@ -842,7 +842,7 @@
                     _CurrencyHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCurrenciesQuery, List<CurrencyGrpc>>>();
                     _CurrencyRefreshInProgress = true;
                     GetCurrenciesQuery query = new GetCurrenciesQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<CurrencyGrpc>> results = await _CurrencyHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -873,7 +873,7 @@
                     _CustomerHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllCustomerBusinessUnitsQuery, List<CustomerGrpc>>>();
                     _CustomerRefreshInProgress = true;
                     GetAllCustomerBusinessUnitsQuery query = new GetAllCustomerBusinessUnitsQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<CustomerGrpc>> results = await _CustomerHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -901,7 +901,7 @@
                     _CustomerLocationHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllCustomerLocationsQuery, List<CustomerLocationGrpc>>>();
                     _CustomerLocationRefreshInProgress = true;
                     GetAllCustomerLocationsQuery query = new GetAllCustomerLocationsQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<CustomerLocationGrpc>> results = await _CustomerLocationHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -929,7 +929,7 @@
                     _CustomerProjectAssociationsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllCustomerProjectAssociationsQuery, List<CustomerProjectAssociationGrpc>>>();
                     _CustomerProjectAssociationsRefreshInProgress = true;
                     GetAllCustomerProjectAssociationsQuery query = new GetAllCustomerProjectAssociationsQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<CustomerProjectAssociationGrpc>> results = await _CustomerProjectAssociationsHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -957,7 +957,7 @@
                     _CustomerSalesEntitiesHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllCustomerSalesEntitiesQuery, List <CustomerSalesEntityGrpc>>>();
                     _CustomerSalesEntitiesRefreshInProgress = true;
                     GetAllCustomerSalesEntitiesQuery query = new GetAllCustomerSalesEntitiesQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<CustomerSalesEntityGrpc>> results = await _CustomerSalesEntitiesHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -985,7 +985,7 @@
                     _CustomerBusinessUserAssociationsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCustomerBusinessUserAssociationsQuery, List<CustomerBusinessUserAssociationGrpc>>>();
                     _CustomerBusinessUserAssociationsRefreshInProgress = true;
                     GetCustomerBusinessUserAssociationsQuery query = new GetCustomerBusinessUserAssociationsQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<CustomerBusinessUserAssociationGrpc>> results = await _CustomerBusinessUserAssociationsHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -1017,7 +1017,7 @@
                     _PlatformHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllPlatformHierarchiesQuery, List<PlatformGrpc>>>();
                     _PlatformRefreshInProgress = true;
                     GetAllPlatformHierarchiesQuery query = new GetAllPlatformHierarchiesQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<PlatformGrpc>> results = await _PlatformHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -1045,7 +1045,7 @@
                     _ProgramHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllProgramHierarchiesQuery, List<ProgramGrpc>>>();
                     _ProgramRefreshInProgress = true;
                     GetAllProgramHierarchiesQuery query = new GetAllProgramHierarchiesQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<ProgramGrpc>> results = await _ProgramHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -1073,7 +1073,7 @@
                     _ProjectHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllProjectHierarchiesQuery, List<ProjectGrpc>>>();
                     _ProjectRefreshInProgress = true;
                     GetAllProjectHierarchiesQuery query = new GetAllProjectHierarchiesQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<ProjectGrpc>> results = await _ProjectHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -1101,7 +1101,7 @@
                     _MilestoneHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllMilestoneHierarchiesQuery, List<MilestoneGrpc>>>();
                     _MilestoneRefreshInProgress = true;
                     GetAllMilestoneHierarchiesQuery query = new GetAllMilestoneHierarchiesQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<MilestoneGrpc>> results = await _MilestoneHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -1133,7 +1133,7 @@
                     _VehicleHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllVehiclesQuery, List<VehicleGrpc>>>();
                     _VehicleRefreshInProgress = true;
                     GetAllVehiclesQuery query = new GetAllVehiclesQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<VehicleGrpc>> results = await _VehicleHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -1165,7 +1165,7 @@
                     _SupplierGroupHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllSupplierGroupsQuery, List<SupplierGroupGrpc>>>();
                     _SupplierGroupRefreshInProgress = true;
                     GetAllSupplierGroupsQuery query = new GetAllSupplierGroupsQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<SupplierGroupGrpc>> results = await _SupplierGroupHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -1197,7 +1197,7 @@
                     _SupplierHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllSuppliersQuery, List<SupplierGrpc>>>();
                     _SupplierRefreshInProgress = true;
                     GetAllSuppliersQuery query = new GetAllSuppliersQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<SupplierGrpc>> results = await _SupplierHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -1233,7 +1233,7 @@
 
                     GetProjectEngineeringAssociationsQuery query = new GetProjectEngineeringAssociationsQuery();
 
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
 
                     Result<List<ProjectEngineeringAssociationGrpc>> results =
                         await _ProjectEngineeringAssociationHandler.Handle(query, cancellationToken);

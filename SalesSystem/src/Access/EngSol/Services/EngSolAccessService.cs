@@ -63,7 +63,7 @@
 
         public async Task<List<DerivativeWiresGrpc>> GetDerivativeWiresByDerivativeId(int derivativeId, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             List<DerivativeWiresGrpc> reuturnWireList = new List<DerivativeWiresGrpc>();
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
@@ -85,7 +85,7 @@
         #region DerivativeParts
         public async Task<List<DerivativePartsGrpc>> GetDerivativePartsByDerivativeId(int derivativeId, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             List<DerivativePartsGrpc> reuturnPartList = new List<DerivativePartsGrpc>();
             using (IServiceScope scope = _ServiceProvider.CreateScope())
             {
@@ -108,7 +108,7 @@
 
         public async Task<ListDerivatives> GetAllDerivatives(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListDerivatives.DerivativeGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -130,7 +130,7 @@
 
         public async Task<DerivativeGrpc> GetDerivativeByDerivativeId(int derivativeId, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             DerivativeGrpc returnDerivative = new DerivativeGrpc();
             returnDerivative = _ListDerivatives.DerivativeGrpc.FirstOrDefault(x => x.DerivativeID == derivativeId) ?? new DerivativeGrpc();
             if (returnDerivative.DerivativeID != null)
@@ -172,7 +172,7 @@
                     _DerivativeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDerivativesQuery, List<DerivativeGrpc>>>();
                     _DerivativesRefreshInProgress = true;
                     GetDerivativesQuery query = new GetDerivativesQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<DerivativeGrpc>> results = await _DerivativeHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {

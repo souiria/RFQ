@@ -29,7 +29,6 @@
   </ServiceManifestImport>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SF.Access.RfqsPkg" ServiceManifestVersion="1.6.3" />
-
     <ConfigOverrides />
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Masters_ASPNETCORE_ENVIRONMENT]" />
@@ -40,7 +39,6 @@
   </ServiceManifestImport>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SF.Access.NprsPkg" ServiceManifestVersion="1.6.3" />
-
     <ConfigOverrides />
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Rfqs_ASPNETCORE_ENVIRONMENT]" />
@@ -51,7 +49,6 @@
   </ServiceManifestImport>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SF.Access.AdsssPkg" ServiceManifestVersion="1.6.7" />
-
     <ConfigOverrides />
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Nprs_ASPNETCORE_ENVIRONMENT]" />

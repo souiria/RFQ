@@ -4,8 +4,6 @@
     {
         async Task<bool> PopulateCrimpingProcessTypeData(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (!_CrimpingProcessTypeRefreshInProgress)
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
@@ -13,7 +11,6 @@
                     _QueryCrimpingProcessTypeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCrimpingProcessTypesQuery, List<CrimpingProcessTypeGrpc>>>();
                     _CrimpingProcessTypeRefreshInProgress = true;
                     GetCrimpingProcessTypesQuery query = new GetCrimpingProcessTypesQuery();
-                    await Task.Delay(1, cancellationToken);
                     Result<List<CrimpingProcessTypeGrpc>> results = await _QueryCrimpingProcessTypeHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -55,8 +52,6 @@
 
         public async Task<bool> CreateCrimpingProcessTypes(CrimpingProcessTypeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.CrimpingProcessTypeGrpcsToCreate == null || request.CrimpingProcessTypeGrpcsToCreate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "CrimpingProcessTypeGrpcRequest or CrimpingProcessTypeGrpcsToCreate cannot be null or empty.");
@@ -87,8 +82,6 @@
 
         public async Task<bool> UpdateCrimpingProcessTypes(CrimpingProcessTypeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.CrimpingProcessTypeGrpcsToUpdate == null || request.CrimpingProcessTypeGrpcsToUpdate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "CrimpingProcessTypeGrpcRequest or CrimpingProcessTypeGrpcsToUpdate cannot be null or empty.");

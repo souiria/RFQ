@@ -4,8 +4,6 @@
     {
         async Task<bool> PopulateFileNameData(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (!_FileNameRefreshInProgress)
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
@@ -13,7 +11,6 @@
                     _QueryFileNameHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetFileNamesQuery, List<FileNameGrpc>>>();
                     _FileNameRefreshInProgress = true;
                     GetFileNamesQuery query = new GetFileNamesQuery();
-                    await Task.Delay(1, cancellationToken);
                     Result<List<FileNameGrpc>> results = await _QueryFileNameHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -55,8 +52,6 @@
 
         public async Task<bool> CreateFileNames(FileNameGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.FileNameGrpcsToCreate == null || request.FileNameGrpcsToCreate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "FileNameGrpcRequest or FileNameGrpcsToCreate cannot be null or empty.");
@@ -87,8 +82,6 @@
 
         public async Task<bool> UpdateFileNames(FileNameGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.FileNameGrpcsToUpdate == null || request.FileNameGrpcsToUpdate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "FileNameGrpcRequest or FileNameGrpcsToUpdate cannot be null or empty.");
@@ -118,8 +111,6 @@
         }
         public async Task<bool> DeleteFileNames(FileNameGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.FileNameGrpcsToDelete == null || request.FileNameGrpcsToDelete.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "FileNameGrpcRequest or FileNameGrpcsToDelete cannot be null or empty.");

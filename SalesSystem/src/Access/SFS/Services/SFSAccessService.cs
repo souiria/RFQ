@@ -1,5 +1,4 @@
-﻿
-namespace SFS.Services
+﻿namespace SFS.Services
 {
     public class SFSAccessService : ISFSAccessService
     {
@@ -89,7 +88,7 @@ namespace SFS.Services
         async Task<bool> PopulateCarModelData(CancellationToken cancellationToken)
         {
             // TBD: Implement database loading logic here.
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
 
             if (!_CarModelRefreshInProgress)
             {
@@ -125,7 +124,7 @@ namespace SFS.Services
 
         public async Task<PeriodListViewGrpc> GetAllPeriods(CancellationToken cancellationToken)
         {
-            //await Task.Delay(1, cancellationToken);
+            //await Task.Delay(0, cancellationToken);
             //return _PeriodGrpcs;
             GetPeriodQuery getperiodModelQuery = new GetPeriodQuery();
             Result<List<PeriodViewGrpc>> result = await _PeriodQueryHandler.Handle(getperiodModelQuery, cancellationToken);
@@ -137,7 +136,7 @@ namespace SFS.Services
 
         public async Task<CustomerListViewGrpc> GetAllCustomers(CancellationToken cancellationToken)
         {
-            //await Task.Delay(1, cancellationToken);
+            //await Task.Delay(0, cancellationToken);
             //return _CustomerGrpcs;
             GetAllCustomerQuery getcustomerModelQuery = new GetAllCustomerQuery();
             Result<List<CustomerViewGrpc>> result = await _CustomerQueryHandler.Handle(getcustomerModelQuery, cancellationToken);
@@ -148,7 +147,7 @@ namespace SFS.Services
 
         public async Task<SiteListViewGrpc> GetAllSites(CancellationToken cancellationToken)
         {
-            //await Task.Delay(1, cancellationToken);
+            //await Task.Delay(0, cancellationToken);
             //return _SiteGrpcs;
             GetSiteQuery getsiteModelQuery = new GetSiteQuery();
             Result<List<SiteViewGrpc>> result = await _SiteQueryHandler.Handle(getsiteModelQuery, cancellationToken);
@@ -159,7 +158,7 @@ namespace SFS.Services
 
         public async Task<ForecastListViewGrpc> GetAllForecasts(CancellationToken cancellationToken)
         {
-            //await Task.Delay(1, cancellationToken);
+            //await Task.Delay(0, cancellationToken);
             //return _ForecastGrpcs;
             GetForecastQuery getcforecastModelQuery = new GetForecastQuery();
             Result<List<ForecastViewGrpc>> result = await _ForecastQueryHandler.Handle(getcforecastModelQuery, cancellationToken);
@@ -170,7 +169,7 @@ namespace SFS.Services
 
         public async Task<MonthlyVolumeDataListViewGrpc> GetMonthlyVolumes(CancellationToken cancellationToken)
         {
-            //await Task.Delay(1, cancellationToken);
+            //await Task.Delay(0, cancellationToken);
             //return _MonthlyVolumeGrpcs;
             GetMonthlyVolumeDataQuery getmonthlyModelQuery = new GetMonthlyVolumeDataQuery();
             Result<List<MonthlyVolumeDataViewGrpc>> result = await _MonthlyQueryHandler.Handle(getmonthlyModelQuery, cancellationToken);
@@ -181,7 +180,7 @@ namespace SFS.Services
 
         public async Task<CustomerNonWorkingDayListViewGrpc> GetCustomerNonWorkingDay(CancellationToken cancellationToken)
         {
-            //await Task.Delay(1, cancellationToken);
+            //await Task.Delay(0, cancellationToken);
             //return _CustomerNonWorkingDayGrpcs;
             GetCustomerNonWorkingDaysQuery getcustomerCalendarModelQuery = new GetCustomerNonWorkingDaysQuery();
             Result<List<CustomerNonWorkingDayViewGrpc>> result = await _CustomerCalendarQueryHandler.Handle(getcustomerCalendarModelQuery, cancellationToken);
@@ -192,7 +191,7 @@ namespace SFS.Services
 
         public async Task<CalculationTypeListViewGrpc> GetAllCalculationTypes(CancellationToken cancellationToken)
         {
-            //await Task.Delay(1, cancellationToken);
+            //await Task.Delay(0, cancellationToken);
             //return _CalculationTypeGrpcs;
             GetCalculationTypeQuery getcalculationModelQuery = new GetCalculationTypeQuery();
             Result<List<CalculationTypeViewGrpc>> result = await _CalculationQueryHandler.Handle(getcalculationModelQuery, cancellationToken);
@@ -203,7 +202,7 @@ namespace SFS.Services
 
         public async Task<DailyVolumeDataListViewGrpc> GetAllDailyVolumes(CancellationToken cancellationToken)
         {
-            //await Task.Delay(1, cancellationToken);
+            //await Task.Delay(0, cancellationToken);
             //return _DailyVolumeGrpcs;
             GetDailyVolumeDataQuery getdailyModelQuery = new GetDailyVolumeDataQuery();
             Result<List<DailyVolumeDataViewGrpc>> result = await _DailyQueryHandler.Handle(getdailyModelQuery, cancellationToken);

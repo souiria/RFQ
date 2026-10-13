@@ -127,7 +127,7 @@
         #region EdiCustomerParameters
         public async Task<ListEdiCustomerParameterGrpc> GetEdiCustomerParametersGrpcAsync(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListEdiCustomerParameters.EdiCustomerParameterGrpc.Any())
             {
                 return _ListEdiCustomerParameters;
@@ -145,7 +145,7 @@
 
         public async Task<ListEdiFileDataUploadDuplicatesGrpc> GetEdiFileDataUploadDuplicatesGrpcAsync(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListEdiFileDataUploadDuplicates.EdiFileDataUploadDuplicatesGrpc.Any())
             {
                 return _ListEdiFileDataUploadDuplicates;
@@ -159,7 +159,7 @@
 
         public async Task<ListEdiFileDataUploadGrpc> GetEdiFileDataUploadGrpcAsync(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListEdiFileDataUpload.EdiFileDataUploadGrpc.Any())
             {
                 return _ListEdiFileDataUpload;
@@ -177,7 +177,7 @@
 
         public async Task<ListEdiGlobalParametersGrpc> GetEdiGlobalParametersGrpcAsync(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListEdiGlobalParameters.EdiGlobalParametersGrpc.Any())
             {
                 return _ListEdiGlobalParameters;
@@ -195,7 +195,7 @@
 
         public async Task<ListEdiInvoiceInformationGrpc> GetEdiInvoiceInformationGrpcAsync(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListEdiInvoiceInformation.EdiInvoiceInformationGrpc.Any())
             {
                 return _ListEdiInvoiceInformation;
@@ -209,7 +209,7 @@
 
         public async Task<ListEdiInvoiceInformationDuplicatesGrpc> GetEdiInvoiceInformationDuplicatesGrpcAsync(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListEdiInvoiceInformationDuplicates.EdiInvoiceInformationDuplicateGrpc.Any())
             {
                 return _ListEdiInvoiceInformationDuplicates;
@@ -227,7 +227,7 @@
 
         public async Task<ListEdiInvoiceUnit4Grpc> GetEdiInvoiceUnit4GrpcAsync(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListEdiInvoiceUnit4.EdiInvoiceUnit4Grpc.Any())
             {
                 return _ListEdiInvoiceUnit4;
@@ -241,7 +241,7 @@
 
         public async Task<ListEdiZeroPriceExceptionsGrpc> GetEdiZeroPriceExceptionsGrpcAsync(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListEdiZeroPriceExceptions.EdiZeroPriceExceptionsGrpc.Any())
             {
                 return _ListEdiZeroPriceExceptions;
@@ -433,7 +433,7 @@
                     _EdiCustomerParameterHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCustomerParameterQuery, List<EdiCustomerParameterGrpc>>>();
                     _EdiCustomerParameterRefreshInProgress = true;
                     GetCustomerParameterQuery query = new GetCustomerParameterQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<EdiCustomerParameterGrpc>> results = await _EdiCustomerParameterHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -464,7 +464,7 @@
                     _EdiFileDataUploadDuplicatesHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetEdiFileDataUploadDuplicatesQuery, List<EdiFileDataUploadDuplicatesGrpc>>>();
                     _EdiFileDataUploadDuplicatesRefreshInProgress = true;
                     GetEdiFileDataUploadDuplicatesQuery query = new GetEdiFileDataUploadDuplicatesQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<EdiFileDataUploadDuplicatesGrpc>> results = await _EdiFileDataUploadDuplicatesHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -492,7 +492,7 @@
                     _EdiFileDataUploadHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetEdiFileDataUploadQuery, List<EdiFileDataUploadGrpc>>>();
                     _EdiFileDataUploadRefreshInProgress = true;
                     GetEdiFileDataUploadQuery query = new GetEdiFileDataUploadQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<EdiFileDataUploadGrpc>> results = await _EdiFileDataUploadHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -524,7 +524,7 @@
                     _EdiGlobalParameterHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetEdiGlobalParameterQuery, List<EdiGlobalParametersGrpc>>>();
                     _EdiGlobalParametersRefreshInProgress = true;
                     GetEdiGlobalParameterQuery query = new GetEdiGlobalParameterQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<EdiGlobalParametersGrpc>> results = await _EdiGlobalParameterHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -556,7 +556,7 @@
                     _EdiInvoiceInformationHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetEdiInvoiceInformationQuery, List<EdiInvoiceInformationGrpc>>>();
                     _EdiInvoiceInformationRefreshInProgress = true;
                     GetEdiInvoiceInformationQuery query = new GetEdiInvoiceInformationQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<EdiInvoiceInformationGrpc>> results = await _EdiInvoiceInformationHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -584,7 +584,7 @@
                     _EdiInvoiceInformationDuplicatesHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetEdiInvoiceInformationDuplicatesQuery, List<EdiInvoiceInformationDuplicateGrpc>>>();
                     _EdiInvoiceInformationDuplicatesRefreshInProgress = true;
                     GetEdiInvoiceInformationDuplicatesQuery query = new GetEdiInvoiceInformationDuplicatesQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<EdiInvoiceInformationDuplicateGrpc>> results = await _EdiInvoiceInformationDuplicatesHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -616,7 +616,7 @@
                     _EdiInvoiceUnit4Handler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetEdiInvoiceUnit4Query, List<EdiInvoiceUnit4Grpc>>>();
                     _EdiInvoiceUnit4RefreshInProgress = true;
                     GetEdiInvoiceUnit4Query query = new GetEdiInvoiceUnit4Query();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<EdiInvoiceUnit4Grpc>> results = await _EdiInvoiceUnit4Handler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -644,7 +644,7 @@
                     _ZeroPriceExceptionsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetZeroPriceExceptionsQuery, List<EdiZeroPriceExceptionsGrpc>>>();
                     _ZeroPriceExceptionsRefreshInProgress = true;
                     GetZeroPriceExceptionsQuery query = new GetZeroPriceExceptionsQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<EdiZeroPriceExceptionsGrpc>> results = await _ZeroPriceExceptionsHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {

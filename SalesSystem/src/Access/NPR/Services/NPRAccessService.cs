@@ -81,7 +81,7 @@
         #region H1NPRView
         public async Task<ListH1NPRViewGrpc> GetAllH1NPRView(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_H1NPRView.H1NPRViewGrpc.Any())
             {
                 if(takeAmount <= 0)
@@ -105,7 +105,7 @@
         #region RFQStatus
         public async Task<ListRFQStatusGrpc> GetAllRFQStatus(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_RFQStatus.RFQStatusGrpc.Any())
             {
                 if (takeAmount <= 0)
@@ -129,7 +129,7 @@
         #region NprApiData
         public async Task<CreateNprApiGrpcResponse> CreateNpr(CreateNprApiGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
 
             CreateNprApiGrpcResponse response = new CreateNprApiGrpcResponse();
 
@@ -341,7 +341,7 @@
                     _H1NPRViewHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetH1NPRViewQuery, List<H1NPRViewGrpc>>>();
                     _H1NPRViewRefreshInProgress = true;
                     GetH1NPRViewQuery query = new GetH1NPRViewQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<H1NPRViewGrpc>> results = await _H1NPRViewHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -368,7 +368,7 @@
                     _RFQStatusHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetRFQStatusQuery, List<RFQStatusGrpc>>>();
                     _RFQStatusRefreshInProgress = true;
                     GetRFQStatusQuery query = new GetRFQStatusQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<RFQStatusGrpc>> results = await _RFQStatusHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
