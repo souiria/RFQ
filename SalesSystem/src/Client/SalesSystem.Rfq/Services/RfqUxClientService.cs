@@ -629,13 +629,16 @@ namespace SalesSystem.Rfq.Services
         public async Task<SearchResultUxModel> SearchAdssSewsePn(string sewsePartNumber)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-            await Task.Delay(1);
             try
             {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
                 FilterGrpcResponse response = await FilterByRequestTypeAsync(
                     RfqManagerFilterType.FilterAdssBySumitomoPartNumber,
                     sewsePartNumber
                 );
+                sw.Stop();
+                _Logger?.GenericLogInformation($">>> RfqUXClient.RfqUxClientService.SearchAdssSewsePn took {sw.ElapsedMilliseconds} ms to retrieve image for {sewsePartNumber}");
 
                 if (response.Success
                     && response.StringList != null

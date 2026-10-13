@@ -1,4 +1,6 @@
-﻿namespace RfqModule.Services
+﻿using System.Diagnostics;
+
+namespace RfqModule.Services
 {
     public class RfqManagerService : IRfqManagerService
     {
@@ -2789,22 +2791,61 @@
             return response;
         }
 
+        //public async Task<FilterGrpcResponse> FilterAdssBySumitomoPartNumber(FilterGrpcRequest request)
+        //{
+        //    Adss.PartImageRequest adssRequest = new Adss.PartImageRequest();
+        //    adssRequest.PartNumber = request.StringValue;
+        //    // *** sync to async ***
+        //    Adss.PartImageReply partImageReply = await _AdssGrpcClient.GetPartImageAsync(adssRequest);
+        //    // Adss.PartImageReply partImageReply = _AdssGrpcClient.GetPartImage(adssRequest);
+        //    FilterGrpcResponse response = new FilterGrpcResponse();
+        //    if (partImageReply != null)
+        //    {
+        //        response.StringList.Add(adssRequest.PartNumber);
+        //        response.ByteList.Add(partImageReply.Data);
+        //        response.StringList2.Add(partImageReply.ContentType);
+        //        response.Success = true;
+        //    }
+        //    else
+        //    {
+        //        response.Success = false;
+        //    }
+
+        //    return response;
+        //}
         public async Task<FilterGrpcResponse> FilterAdssBySumitomoPartNumber(FilterGrpcRequest request)
         {
-            await Task.Delay(1);
-            Adss.PartImageRequest adssRequest = new Adss.PartImageRequest();
-            adssRequest.PartNumber = request.StringValue;
-            Adss.PartImageReply partImageReply = _AdssGrpcClient.GetPartImage(adssRequest);
             FilterGrpcResponse response = new FilterGrpcResponse();
-            if (partImageReply != null)
+            try
             {
-                response.StringList.Add(adssRequest.PartNumber);
-                response.ByteList.Add(partImageReply.Data);
-                response.StringList2.Add(partImageReply.ContentType);
-                response.Success = true;
+                Adss.PartImageRequest adssRequest = new Adss.PartImageRequest();
+                adssRequest.PartNumber = request.StringValue;
+
+
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                DateTime timeout = DateTime.UtcNow.AddSeconds(10); // Set the desired timeout duration in seconds
+                CallOptions callOptions = new CallOptions(deadline: timeout);
+                Adss.PartImageReply partImageReply = await _AdssGrpcClient.GetPartImageAsync(adssRequest, callOptions);
+
+                if (partImageReply != null)
+                {
+                    response.StringList.Add(adssRequest.PartNumber);
+                    response.ByteList.Add(partImageReply.Data);
+                    response.StringList2.Add(partImageReply.ContentType);
+                    response.Success = true;
+                }
+                else
+                {
+                    _Logger.GenericLogInformation($"ADSS gRPC call returned null for part {request.StringValue}");
+                    response.Success = false;
+                }
+                _Logger?.GenericLogInformation($">>> Rfqmanager.RfqManagerService.FilterAdssBySumitomoPartNumber took {sw.ElapsedMilliseconds} ms to retrieve image for {request.StringValue}");
+
             }
-            else
+            catch (RpcException rpcEx)
             {
+                _Logger.GenericLogError($"ADSS gRPC call failed (StatusCode={rpcEx.StatusCode}) for part {request.StringValue}", rpcEx);
                 response.Success = false;
             }
 
