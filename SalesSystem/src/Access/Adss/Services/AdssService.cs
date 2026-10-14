@@ -1,4 +1,6 @@
-﻿namespace Adss.Services
+﻿using System.Diagnostics;
+
+namespace Adss.Services
 {
     public class AdssService : IAdssService
     {
@@ -22,35 +24,90 @@
             }            
         }
 
-        public async Task<(byte[]? ImageBytes, string? ContentType)> GetPartImageAsync( string partNumber, CancellationToken ct = default)
+        public async Task<(byte[]? ImageBytes, string? ContentType)> GetPartImageAsync(
+     string partNumber,
+     CancellationToken ct = default)
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            _Logger.GenericLogInformation(
+                $"ADSS FILE START - Part {partNumber}, " +
+                $"RootPath {_RootPath}");
+
             if (string.IsNullOrWhiteSpace(partNumber))
             {
-            _Logger.GenericLogInformation(information: $"Part number is null or empty."); 
-            return (null, null);
+                _Logger.GenericLogInformation(
+                    "ADSS FILE EMPTY PART");
+
+                return (null, null);
             }
-            // 1) Try exact JPG for the part number (no loops, no other extensions)
+
             string candidate = Path.Combine(_RootPath, partNumber + ".jpg");
-            if (File.Exists(candidate))
+
+            _Logger.GenericLogInformation(
+                $"ADSS FILE BEFORE EXISTS - Path {candidate}");
+
+            bool imageExists = File.Exists(candidate);
+
+            _Logger.GenericLogInformation(
+                $"ADSS FILE AFTER EXISTS - Path {candidate}, " +
+                $"Exists {imageExists}, " +
+                $"ElapsedMs {sw.ElapsedMilliseconds}");
+
+            if (imageExists)
             {
-                _Logger.GenericLogInformation(information: $"Found image for part number {partNumber} at {candidate}");
+                _Logger.GenericLogInformation(
+                    $"ADSS FILE BEFORE READ - Path {candidate}");
+
                 byte[] bytes = await File.ReadAllBytesAsync(candidate, ct);
-                    return (bytes, "image/jpeg");
+
+                _Logger.GenericLogInformation(
+                    $"ADSS FILE AFTER READ - Path {candidate}, " +
+                    $"Bytes {bytes.Length}, " +
+                    $"ElapsedMs {sw.ElapsedMilliseconds}");
+
+                return (bytes, "image/jpeg");
             }
-            // 2) Look for an image without the laset two 00 in the part name if that is the case
-            if(8 < partNumber.Length && partNumber.EndsWith("00", StringComparison.InvariantCulture))
+
+            if (8 < partNumber.Length &&
+                partNumber.EndsWith("00", StringComparison.InvariantCulture))
             {
                 string shortName = partNumber.Substring(0, partNumber.Length - 2);
                 candidate = Path.Combine(_RootPath, shortName + ".jpg");
-                if (File.Exists(candidate))
+
+                _Logger.GenericLogInformation(
+                    $"ADSS FILE BEFORE SHORT EXISTS - Path {candidate}");
+
+                bool shortImageExists = File.Exists(candidate);
+
+                _Logger.GenericLogInformation(
+                    $"ADSS FILE AFTER SHORT EXISTS - Path {candidate}, " +
+                    $"Exists {shortImageExists}, " +
+                    $"ElapsedMs {sw.ElapsedMilliseconds}");
+
+                if (shortImageExists)
                 {
-                    _Logger.GenericLogInformation(information: $"Found image for shortened part number {shortName} of {partNumber} at {candidate}");
+                    _Logger.GenericLogInformation(
+                        $"ADSS FILE BEFORE SHORT READ - Path {candidate}");
+
                     byte[] bytes = await File.ReadAllBytesAsync(candidate, ct);
+
+                    _Logger.GenericLogInformation(
+                        $"ADSS FILE AFTER SHORT READ - Path {candidate}, " +
+                        $"Bytes {bytes.Length}, " +
+                        $"ElapsedMs {sw.ElapsedMilliseconds}");
+
                     return (bytes, "image/jpeg");
                 }
             }
-            // 3) Nothing found
+
+            _Logger.GenericLogInformation(
+                $"ADSS FILE NOT FOUND - Part {partNumber}, " +
+                $"ElapsedMs {sw.ElapsedMilliseconds}");
+
             return (null, null);
         }
+
     }
 }

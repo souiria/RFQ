@@ -209,6 +209,7 @@
                 options.MaxReceiveMessageSize = 64 * 1024 * 1024; // 16 MB
                 options.MaxSendMessageSize = 64 * 1024 * 1024;    // 16 MB
             })
+            .ConfigurePrimaryHttpMessageHandler(CreateHandlerWithClientCert)
             .ConfigureHttpClient(client =>
             {
                 client.Timeout = Timeout.InfiniteTimeSpan;
