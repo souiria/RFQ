@@ -4,8 +4,6 @@
     {
         async Task<bool> PopulateClipTypeData(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (!_ClipTypeRefreshInProgress)
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
@@ -13,7 +11,6 @@
                     _QueryClipTypeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetClipTypesQuery, List<ClipTypeGrpc>>>();
                     _ClipTypeRefreshInProgress = true;
                     GetClipTypesQuery query = new GetClipTypesQuery();
-                    await Task.Delay(1, cancellationToken);
                     Result<List<ClipTypeGrpc>> results = await _QueryClipTypeHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -35,7 +32,6 @@
 
         public async Task<ListClipTypeGrpc> ReadAllClipTypes(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
             if (_ClipTypeGrpcs.ClipTypeGrpcs.Any())
             {
                 if(takeAmount <= 0)
@@ -55,8 +51,6 @@
 
         public async Task<bool> CreateClipTypes(ClipTypeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.ClipTypeGrpcsToCreate == null || request.ClipTypeGrpcsToCreate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "ClipTypeGrpcRequest or ClipTypeGrpcsToCreate cannot be null or empty.");
@@ -87,8 +81,6 @@
 
         public async Task<bool> UpdateClipTypes(ClipTypeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.ClipTypeGrpcsToUpdate == null || request.ClipTypeGrpcsToUpdate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "ClipTypeGrpcRequest or ClipTypeGrpcsToUpdate cannot be null or empty.");

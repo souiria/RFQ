@@ -4,8 +4,6 @@
     {
         async Task<bool> PopulateMaterialTypeData(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (!_MaterialTypeRefreshInProgress)
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
@@ -13,7 +11,6 @@
                     _QueryMaterialTypeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetMaterialTypesQuery, List<MaterialTypeGrpc>>>();
                     _MaterialTypeRefreshInProgress = true;
                     GetMaterialTypesQuery query = new GetMaterialTypesQuery();
-                    await Task.Delay(1, cancellationToken);
                     Result<List<MaterialTypeGrpc>> results = await _QueryMaterialTypeHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -55,8 +52,6 @@
 
         public async Task<bool> CreateMaterialTypes(MaterialTypeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.MaterialTypeGrpcsToCreate == null || request.MaterialTypeGrpcsToCreate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "MaterialTypeGrpcRequest or MaterialTypeGrpcsToCreate cannot be null or empty.");
@@ -87,8 +82,6 @@
 
         public async Task<bool> UpdateMaterialTypes(MaterialTypeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.MaterialTypeGrpcsToUpdate == null || request.MaterialTypeGrpcsToUpdate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "MaterialTypeGrpcRequest or MaterialTypeGrpcsToUpdate cannot be null or empty.");

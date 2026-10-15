@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SF.Commercial.AccessType" ApplicationTypeVersion="1.5.9" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SF.Commercial.AccessType" ApplicationTypeVersion="1.7.2" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
+    <Parameter Name="SF.Access.Adsss_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
     <Parameter Name="SF.Access.Masters_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
     <Parameter Name="SF.Access.Rfqs_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
     <Parameter Name="SF.Access.Nprs_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
@@ -17,37 +18,7 @@
        should match the Name and Version attributes of the ServiceManifest element defined in the 
        ServiceManifest.xml file. -->
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SF.Access.MastersPkg" ServiceManifestVersion="1.6.0" />
-    <ConfigOverrides />
-    <EnvironmentOverrides CodePackageRef="code">
-      <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Masters_ASPNETCORE_ENVIRONMENT]" />
-    </EnvironmentOverrides>
-    <Policies>
-      <EndpointBindingPolicy EndpointRef="ServiceEndpointHttps" CertificateRef="LocalCert" />
-    </Policies>
-  </ServiceManifestImport>
-  <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SF.Access.RfqsPkg" ServiceManifestVersion="1.6.0" />
-    <ConfigOverrides />
-    <EnvironmentOverrides CodePackageRef="code">
-      <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Rfqs_ASPNETCORE_ENVIRONMENT]" />
-    </EnvironmentOverrides>
-    <Policies>
-      <EndpointBindingPolicy EndpointRef="ServiceEndpointHttps" CertificateRef="LocalCert" />
-    </Policies>
-  </ServiceManifestImport>
-  <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SF.Access.NprsPkg" ServiceManifestVersion="1.6.0" />
-    <ConfigOverrides />
-    <EnvironmentOverrides CodePackageRef="code">
-      <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Nprs_ASPNETCORE_ENVIRONMENT]" />
-    </EnvironmentOverrides>
-    <Policies>
-      <EndpointBindingPolicy EndpointRef="ServiceEndpointHttps" CertificateRef="LocalCert" />
-    </Policies>
-  </ServiceManifestImport>
-  <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SF.Access.AdsssPkg" ServiceManifestVersion="1.6.0" />
+    <ServiceManifestRef ServiceManifestName="SF.Access.MastersPkg" ServiceManifestVersion="1.7.0" />
     <ConfigOverrides />
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Adsss_ASPNETCORE_ENVIRONMENT]" />
@@ -57,7 +28,37 @@
     </Policies>
   </ServiceManifestImport>
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SF.Access.CPDsPkg" ServiceManifestVersion="1.6.0" />
+    <ServiceManifestRef ServiceManifestName="SF.Access.RfqsPkg" ServiceManifestVersion="1.7.0" />
+    <ConfigOverrides />
+    <EnvironmentOverrides CodePackageRef="code">
+      <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Masters_ASPNETCORE_ENVIRONMENT]" />
+    </EnvironmentOverrides>
+    <Policies>
+      <EndpointBindingPolicy EndpointRef="ServiceEndpointHttps" CertificateRef="LocalCert" />
+    </Policies>
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="SF.Access.NprsPkg" ServiceManifestVersion="1.7.0" />
+    <ConfigOverrides />
+    <EnvironmentOverrides CodePackageRef="code">
+      <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Rfqs_ASPNETCORE_ENVIRONMENT]" />
+    </EnvironmentOverrides>
+    <Policies>
+      <EndpointBindingPolicy EndpointRef="ServiceEndpointHttps" CertificateRef="LocalCert" />
+    </Policies>
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="SF.Access.AdsssPkg" ServiceManifestVersion="1.7.2" />
+    <ConfigOverrides />
+    <EnvironmentOverrides CodePackageRef="code">
+      <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Adsss_ASPNETCORE_ENVIRONMENT]" />
+    </EnvironmentOverrides>
+    <Policies>
+      <EndpointBindingPolicy EndpointRef="ServiceEndpointHttps" CertificateRef="LocalCert" />
+    </Policies>
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="SF.Access.CPDsPkg" ServiceManifestVersion="1.7.0" />
     <ConfigOverrides />
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.CPDs_ASPNETCORE_ENVIRONMENT]" />
@@ -67,7 +68,7 @@
     </Policies>
   </ServiceManifestImport>
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SF.Access.SFSsPkg" ServiceManifestVersion="1.6.0" />
+    <ServiceManifestRef ServiceManifestName="SF.Access.SFSsPkg" ServiceManifestVersion="1.7.0" />
     <ConfigOverrides />
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.SFSs_ASPNETCORE_ENVIRONMENT]" />
@@ -77,7 +78,7 @@
     </Policies>
   </ServiceManifestImport>
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SF.Access.EmacssPkg" ServiceManifestVersion="1.6.0" />
+    <ServiceManifestRef ServiceManifestName="SF.Access.EmacssPkg" ServiceManifestVersion="1.7.0" />
     <ConfigOverrides />
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Emacss_ASPNETCORE_ENVIRONMENT]" />
@@ -87,7 +88,7 @@
     </Policies>
   </ServiceManifestImport>
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SF.Access.EDIsPkg" ServiceManifestVersion="1.6.0" />
+    <ServiceManifestRef ServiceManifestName="SF.Access.EDIsPkg" ServiceManifestVersion="1.7.0" />
     <ConfigOverrides />
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.EDIs_ASPNETCORE_ENVIRONMENT]" />
@@ -97,7 +98,7 @@
     </Policies>
   </ServiceManifestImport>
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SF.Access.PurchasingsPkg" ServiceManifestVersion="1.6.0" />
+    <ServiceManifestRef ServiceManifestName="SF.Access.PurchasingsPkg" ServiceManifestVersion="1.7.0" />
     <ConfigOverrides />
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Purchasings_ASPNETCORE_ENVIRONMENT]" />
@@ -107,7 +108,7 @@
     </Policies>
   </ServiceManifestImport>
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SF.Access.CoresPkg" ServiceManifestVersion="1.6.0" />
+    <ServiceManifestRef ServiceManifestName="SF.Access.CoresPkg" ServiceManifestVersion="1.7.0" />
     <ConfigOverrides />
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.Cores_ASPNETCORE_ENVIRONMENT]" />
@@ -117,7 +118,7 @@
     </Policies>
   </ServiceManifestImport>
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SF.Access.CDbsPkg" ServiceManifestVersion="1.6.0" />
+    <ServiceManifestRef ServiceManifestName="SF.Access.CDbsPkg" ServiceManifestVersion="1.7.0" />
     <ConfigOverrides />
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.CDbs_ASPNETCORE_ENVIRONMENT]" />
@@ -127,7 +128,7 @@
     </Policies>
   </ServiceManifestImport>
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SF.Access.CAEsPkg" ServiceManifestVersion="1.6.0" />
+    <ServiceManifestRef ServiceManifestName="SF.Access.CAEsPkg" ServiceManifestVersion="1.7.0" />
     <ConfigOverrides />
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SF.Access.CAEs_ASPNETCORE_ENVIRONMENT]" />

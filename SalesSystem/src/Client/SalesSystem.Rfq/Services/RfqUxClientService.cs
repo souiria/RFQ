@@ -535,7 +535,7 @@ namespace SalesSystem.Rfq.Services
         //public async Task<UploadPartsRequestGrpcResponse> UploadPartsAsync(string projectId,
         //                                                                   byte[] fileData,
         //                                                                   string fileName,
-        //                                                                   Guid? userId,
+        //                                                                   Guid? _userId,
         //                                                                   long maxAllowedSize = 16_777_216)
         //{
         //    ArgumentException.ThrowIfNullOrEmpty(projectId);
@@ -551,7 +551,7 @@ namespace SalesSystem.Rfq.Services
         //        request.ProjectId = projectId;
         //        request.FileName = fileName;
         //        request.FileData = ByteString.CopyFrom(fileData);
-        //        request.UserId = userId.ToString();
+        //        request.UserId = _userId.ToString();
 
         //        UploadPartsRequestGrpcResponse response = await _Client.UploadPartsGrpcAsync(request, cancellationToken: timeoutCts.Token);
 
@@ -569,7 +569,6 @@ namespace SalesSystem.Rfq.Services
         public async Task<SearchResultUxModel> SearchEmacsExactCustomerPn(string customerPartNumber)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-            await Task.Delay(1);
             try
             {
                 FilterGrpcResponse response = await FilterByRequestTypeAsync(
@@ -599,7 +598,6 @@ namespace SalesSystem.Rfq.Services
         public async Task<SearchResultUxModel> SearchEmacsContainsCustomerPn(string customerPartNumber)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-            await Task.Delay(1);
             try
             {
                 FilterGrpcResponse response = await FilterByRequestTypeAsync(
@@ -629,13 +627,16 @@ namespace SalesSystem.Rfq.Services
         public async Task<SearchResultUxModel> SearchAdssSewsePn(string sewsePartNumber)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-            await Task.Delay(1);
             try
             {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
                 FilterGrpcResponse response = await FilterByRequestTypeAsync(
                     RfqManagerFilterType.FilterAdssBySumitomoPartNumber,
                     sewsePartNumber
                 );
+                sw.Stop();
+                _Logger?.GenericLogInformation($">>> RfqUXClient.RfqUxClientService.SearchAdssSewsePn took {sw.ElapsedMilliseconds} ms to retrieve image for {sewsePartNumber}");
 
                 if (response.Success
                     && response.StringList != null
@@ -659,7 +660,6 @@ namespace SalesSystem.Rfq.Services
         public async Task<SearchResultUxModel> SearchNprSewsePn(string sewsePartNumber)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-            await Task.Delay(1);
             try
             {
                 FilterGrpcResponse response = await FilterByRequestTypeAsync(
@@ -689,7 +689,6 @@ namespace SalesSystem.Rfq.Services
         public async Task<SearchResultUxModel> SearchNprCustomerNumber(string customerNumber)
         {
             using CancellationTokenSource timeoutCts = new CancellationTokenSource(_Timeout);
-            await Task.Delay(1);
             try
             {
                 FilterGrpcResponse response = await FilterByRequestTypeAsync(
@@ -1226,9 +1225,8 @@ namespace SalesSystem.Rfq.Services
         }
         public async Task GetAllRFQStatusAsync()
         {
-            await Task.Delay(1);
             GetAllRFQStatusGrpcRequest request = new GetAllRFQStatusGrpcRequest();
-            RfqModule.ListRFQStatusGrpc response = _Client.GetAllRFQStatusGrpc(request);
+            RfqModule.ListRFQStatusGrpc response = await _Client.GetAllRFQStatusGrpcAsync(request);
             if(response != null && response.RFQStatusGrpc != null)
             {
                 _RFQStatuses.Clear();

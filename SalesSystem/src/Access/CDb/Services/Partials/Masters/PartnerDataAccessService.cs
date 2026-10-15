@@ -4,8 +4,6 @@
     {
         async Task<bool> PopulatePartnerData(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (!_PartnerRefreshInProgress)
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
@@ -13,7 +11,6 @@
                     _QueryPartnerHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetPartnersQuery, List<PartnerGrpc>>>();
                     _PartnerRefreshInProgress = true;
                     GetPartnersQuery query = new GetPartnersQuery();
-                    await Task.Delay(1, cancellationToken);
                     Result<List<PartnerGrpc>> results = await _QueryPartnerHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -55,8 +52,6 @@
 
         public async Task<bool> CreatePartners(PartnerGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.PartnerGrpcsToCreate == null || request.PartnerGrpcsToCreate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "PartnerGrpcRequest or PartnerGrpcsToCreate cannot be null or empty.");
@@ -87,8 +82,6 @@
 
         public async Task<bool> UpdatePartners(PartnerGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.PartnerGrpcsToUpdate == null || request.PartnerGrpcsToUpdate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "PartnerGrpcRequest or PartnerGrpcsToUpdate cannot be null or empty.");

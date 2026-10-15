@@ -4,8 +4,6 @@
     {
         async Task<bool> PopulateCompositeComponentData(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (!_CompositeComponentRefreshInProgress)
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
@@ -13,7 +11,6 @@
                     _QueryComponentHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetComponentsQuery, List<CompositeComponentGrpc>>>();
                     _CompositeComponentRefreshInProgress = true;
                     GetComponentsQuery query = new GetComponentsQuery();
-                    await Task.Delay(1, cancellationToken);
                     Result<List<CompositeComponentGrpc>> results = await _QueryComponentHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -33,8 +30,6 @@
         }
         public async Task<bool> CreateCompositeComponents(CompositeComponentGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.CompositeComponentGrpcsToCreate == null || request.CompositeComponentGrpcsToCreate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "CompositeComponentGrpcRequest or CompositeComponentGrpcsToCreate cannot be null or empty.");
@@ -85,8 +80,6 @@
 
         public async Task<bool> UpdateCompositeComponents(CompositeComponentGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.CompositeComponentGrpcsToUpdate == null || request.CompositeComponentGrpcsToUpdate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "CompositeComponentGrpcRequest or CompositeComponentGrpcsToUpdate cannot be null or empty.");
@@ -117,8 +110,6 @@
 
         public async Task<bool> DeleteCompositeComponents(CompositeComponentGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.CompositeComponentGrpcsToDelete == null || request.CompositeComponentGrpcsToDelete.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "CompositeComponentGrpcRequest or CompositeComponentGrpcsToDelete cannot be null or empty.");

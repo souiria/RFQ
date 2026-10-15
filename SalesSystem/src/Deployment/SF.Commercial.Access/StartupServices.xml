@@ -35,8 +35,8 @@
         <SingletonPartition />
       </StatelessService>
     </Service>
-    <Service Name="SF.Access.Adsss" ServiceDnsName="Access.Adss.SalesSystem" ServicePackageActivationMode="ExclusiveProcess">
-      <StatelessService ServiceTypeName="SF.Access.AdssType" InstanceCount="[SF.Access.Adsss_InstanceCount]">
+    <Service Name="SF.Access.Adsss" ServiceDnsName="Access.Adsss.SalesSystem" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="SF.Access.AdsssType" InstanceCount="[SF.Access.Adsss_InstanceCount]">
         <SingletonPartition />
       </StatelessService>
     </Service>

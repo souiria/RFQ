@@ -4,8 +4,6 @@
     {
         async Task<bool> PopulateWaterproofTypeData(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (!_WaterproofTypeRefreshInProgress)
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
@@ -13,7 +11,6 @@
                     _QueryWaterproofTypeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetWaterproofTypesQuery, List<WaterproofTypeGrpc>>>();
                     _WaterproofTypeRefreshInProgress = true;
                     GetWaterproofTypesQuery query = new GetWaterproofTypesQuery();
-                    await Task.Delay(1, cancellationToken);
                     Result<List<WaterproofTypeGrpc>> results = await _QueryWaterproofTypeHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -55,8 +52,6 @@
 
         public async Task<bool> CreateWaterproofTypes(WaterproofTypeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.WaterproofTypeGrpcsToCreate == null || request.WaterproofTypeGrpcsToCreate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "WaterproofTypeGrpcRequest or WaterproofTypeGrpcsToCreate cannot be null or empty.");
@@ -87,8 +82,6 @@
 
         public async Task<bool> UpdateWaterproofTypes(WaterproofTypeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.WaterproofTypeGrpcsToUpdate == null || request.WaterproofTypeGrpcsToUpdate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "WaterproofTypeGrpcRequest or WaterproofTypeGrpcsToUpdate cannot be null or empty.");

@@ -1,0 +1,17 @@
+@using SalesSystem.Rfq.Models
+
+<div class="edit-rfq-panel">
+    <PartNumberSection PartNumbers="@InProgressParts"
+                        Label="In progress"
+                        BackgroundColor="var(--mud-palette-warning)"
+                        InitiallyExpanded="true"
+                        OnPartNumberDeleted="HandlePartNumberDeleted"
+                        OnPartNumberUpdated="HandlePartNumberUpdated"/>
+    <MudDivider Style="margin: 4px 0;"/>
+    <PartNumberSection PartNumbers="@CompletedParts"
+                        Label="Completed"
+                        BackgroundColor="var(--mud-palette-success)"
+                        InitiallyExpanded="false"
+                        OnPartNumberDeleted="HandlePartNumberDeleted"
+                        OnPartNumberUpdated="HandlePartNumberUpdated"/>
+</div>

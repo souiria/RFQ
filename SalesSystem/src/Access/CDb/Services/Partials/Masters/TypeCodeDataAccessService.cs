@@ -4,8 +4,6 @@
     {
         async Task<bool> PopulateTypeCodeData(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (!_TypeCodeRefreshInProgress)
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
@@ -13,7 +11,6 @@
                     _QueryTypeCodeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetTypeCodesQuery, List<TypeCodeGrpc>>>();
                     _TypeCodeRefreshInProgress = true;
                     GetTypeCodesQuery query = new GetTypeCodesQuery();
-                    await Task.Delay(1, cancellationToken);
                     Result<List<TypeCodeGrpc>> results = await _QueryTypeCodeHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -55,8 +52,6 @@
 
         public async Task<bool> CreateTypeCodes(TypeCodeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.TypeCodeGrpcsToCreate == null || request.TypeCodeGrpcsToCreate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "TypeCodeGrpcRequest or TypeCodeGrpcsToCreate cannot be null or empty.");
@@ -87,8 +82,6 @@
 
         public async Task<bool> UpdateTypeCodes(TypeCodeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.TypeCodeGrpcsToUpdate == null || request.TypeCodeGrpcsToUpdate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "TypeCodeGrpcRequest or TypeCodeGrpcsToUpdate cannot be null or empty.");

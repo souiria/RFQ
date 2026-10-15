@@ -53,7 +53,7 @@
         #region H1CPD
         public async Task<ListH1CPDGrpc> GetAllH1CPD(CancellationToken cancellationToken, int position = 0, int takeAmount = 0)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListH1CPDGrpc.H1CPD.Any())
             {
                 if (takeAmount <= 0)
@@ -88,7 +88,7 @@
                     _H1CPDHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetH1CPDQuery, List<H1CPDGrpc>>>();
                     _H1CPDRefreshInProgress = true;
                     GetH1CPDQuery query = new GetH1CPDQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<H1CPDGrpc>> results = await _H1CPDHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {

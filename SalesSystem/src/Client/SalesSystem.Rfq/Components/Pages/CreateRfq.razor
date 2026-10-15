@@ -1,12 +1,10 @@
 ﻿@page "/createRfq"
-@* @page "/createRfq/{UserId:guid}" *@
-@inject ISnackbar Snackbar
-@inject RfqUxClientService RfqUxClientService
-@inject ILogger<CreateRfq> Logger
-@inject IDialogService DialogService
-@inject NavigationManager NavigationManager
 @rendermode InteractiveServer
+@using System.Linq
 @using SalesSystem.Rfq.Components.Pages.Components
+@using SalesSystem.Rfq.ViewModels
+
+@inherits MvvmComponentBase<CreateRfqViewModel>
 
 <MudText Typo="Typo.h5" Class="mb-auto" Align="Align.Center">Create RFI/RFQ</MudText>
 <MudGrid Class="position-fixed">
@@ -17,31 +15,31 @@
             <MudPaper Class="pa-4" Style="flex: 0 0 25%; max-width:25%; min-width: 25%;">
                 <MudStack>
                     <MudSelect T="string"
-                               Value="CustomerValue"
-                               For="@(() => CustomerValue)"
-                               ValueChanged="OnCustomerValueChanged"
+                               Value="ViewModel.CustomerValue"
+                               For="@(() => ViewModel.CustomerValue)"
+                               ValueChanged="ViewModel.OnCustomerValueChangedAsync"
                                Label="Customer"
                                Placeholder="Please Select"
                                AdornmentIcon="@Icons.Material.Filled.People"
-                               Disabled="_UploadedSuccessfully"
+                               Disabled="ViewModel.UploadedSuccessfully"
                                AdornmentColor="Color.Primary">
-                        @foreach (var customer in RfqUxClientService.Customers)
+                        @foreach (var customer in ViewModel.Customers)
                         {
-                            <MudSelectItem Value="@customer?.CustomerBusinessGroupName">@customer?.CustomerBusinessGroupName</MudSelectItem>
+                            <MudSelectItem T="string" Value="@customer?.CustomerBusinessGroupName">@customer?.CustomerBusinessGroupName</MudSelectItem>
                         }
                     </MudSelect>
                     <MudSelect T="string"
-                               Value="ReasonValue"
-                               For="@(() => ReasonValue)"
-                               ValueChanged="OnReasonValueChanged"
+                               Value="ViewModel.ReasonValue"
+                               For="@(() => ViewModel.ReasonValue)"
+                               ValueChanged="ViewModel.OnReasonValueChangedAsync"
                                Label="Reason"
                                Placeholder="Please Select"
-                               Disabled="_UploadedSuccessfully"
+                               Disabled="ViewModel.UploadedSuccessfully"
                                AdornmentIcon="@Icons.Material.Filled.Checklist"
                                AdornmentColor="Color.Primary">
-                        @foreach (var reason in RfqUxClientService.Reasons)
+                        @foreach (var reason in ViewModel.Reasons)
                         {
-                            <MudSelectItem Value="@reason.RfqReasonTitle">@reason.RfqReasonTitle</MudSelectItem>
+                            <MudSelectItem T="string" Value="@reason.RfqReasonTitle">@reason.RfqReasonTitle</MudSelectItem>
                         }
                     </MudSelect>
                 </MudStack>
@@ -50,17 +48,16 @@
             @* Column 2: Project + VehicleVolume (25%) *@
             <MudPaper Class="pa-4" Style="flex: 0 0 25%; max-width:25%; min-width: 25%;">
                 <MudStack>
-                    @* CHANGED: MudSelect replaced with MudAutocomplete *@
                     <MudAutocomplete T="RfqCustomerProjectAssociationUxModel"
-                                     @bind-Value="SelectedProject"
+                                     @bind-Value="ViewModel.SelectedProject"
                                      Label="Project"
                                      Placeholder="Search project..."
-                                     SearchFunc="@SearchProjects"
+                                     SearchFunc="@ViewModel.SearchProjectsAsync"
                                      ToStringFunc="@(p => p != null ? $"{p.ProjectCode} - {p.CustomerName}" : "")"
                                      ResetValueOnEmptyText="true"
                                      CoerceText="true"
                                      CoerceValue="false"
-                                     Disabled="_UploadedSuccessfully"
+                                     Disabled="ViewModel.UploadedSuccessfully"
                                      AdornmentIcon="@Icons.Material.Filled.DesignServices"
                                      AdornmentColor="Color.Primary"
                                      Immediate="true"
@@ -80,9 +77,10 @@
                         </ItemTemplate>
                     </MudAutocomplete>
 
-                    <MudNumericField @bind-Value="VehicleVolume"
+                    <MudNumericField @bind-Value="ViewModel.VehicleVolume"
+                                     T="int"
                                      Label="Vehicle Volume"
-                                     Disabled="_UploadedSuccessfully"
+                                     Disabled="ViewModel.UploadedSuccessfully"
                                      Variant="Variant.Text"
                                      Min="0" />
                 </MudStack>
@@ -92,23 +90,23 @@
             <MudPaper Class="pa-2" Style="flex: 1 1 20%;  max-width:20%; min-width: 192px;">
                 <MudStack>
                     <MudSelect T="string"
-                               Value="QuotationValue"
-                               For="@(() => QuotationValue)"
-                               ValueChanged="OnQuotationValueChanged"
+                               Value="ViewModel.QuotationValue"
+                               For="@(() => ViewModel.QuotationValue)"
+                               ValueChanged="ViewModel.HandleQuotationValueChanged"
                                Label="Quotation Number"
                                Placeholder="Temp Values"
-                               Disabled="_UploadedSuccessfully"
+                               Disabled="ViewModel.UploadedSuccessfully"
                                Clearable="true"
                                AdornmentIcon="@Icons.Material.Filled.RequestQuote"
                                AdornmentColor="Color.Primary">
-                        @foreach (string quotationNumber in RfqUxClientService.QuotationNumbers)
+                        @foreach (string quotationNumber in ViewModel.QuotationNumbers)
                         {
-                            <MudSelectItem Value="@quotationNumber">@quotationNumber</MudSelectItem>
+                            <MudSelectItem T="string" Value="@quotationNumber">@quotationNumber</MudSelectItem>
                         }
                     </MudSelect>
                     <MudDatePicker Label="Deadline"
-                                   @bind-Date="_Date"
-                                   Disabled="_UploadedSuccessfully"
+                                   @bind-Date="ViewModel.Date"
+                                   Disabled="ViewModel.UploadedSuccessfully"
                                    DateFormat="dd.MM.yyyy" />
 
                 </MudStack>
@@ -117,9 +115,10 @@
             @* Column 4: File Manager (max 30%) *@
             <MudPaper Class="pa-2 w-100" Style="flex: 0 0 15%; max-width:15%; min-width: 192px;">
                 <FileManager @ref="_ComponentFileManager"
-                             FileObjects="FileObjects"
-                             OnFilesChanged="OnFilesChanged"
-                             UploadDisabled="@(!FileObjects.Any() || _UploadedSuccessfully)" />
+                             FileObjects="ViewModel.FileObjects"
+                             OnFilesAdded="ViewModel.AddFilesAsync"
+                             OnClearAllRequested="ViewModel.ClearFilesAsync"
+                             UploadDisabled="@(!ViewModel.FileObjects.Any() || ViewModel.UploadedSuccessfully)" />
             </MudPaper>
             <MudPaper Class="d-flex justify-center align-center pa-2">
                 <MudTooltip Text="Process Rfq Data and BOM Files">
@@ -127,8 +126,8 @@
                                 Variant="Variant.Filled"
                                Color="Color.Tertiary"
                                 Size="Size.Medium"
-                                Disabled="@ProcessDataDisabled"
-                                OnClick="@ProcessDataAsync">
+                                Disabled="@ViewModel.ProcessDataDisabled"
+                                OnClick="@ViewModel.ProcessDataAsync">
                         Process Rfq
                     </MudButton>
                 </MudTooltip>
@@ -141,10 +140,9 @@
             <div style="height: calc(100vh - 324px); display: flex; flex-direction: column; overflow: auto;">
                 @* File Cards Section *@
                 <FileCards @ref="_ComponentFileCards"
-                           FileObjects="FileObjects"
-                           OnRemoveFile="HandleFileRemoval" />
+                           FileObjects="ViewModel.FileObjects"
+                           OnRemoveFile="ViewModel.HandleFileRemovalAsync" />
             </div>
         </MudPaper>
     </MudItem>
 </MudGrid>
-

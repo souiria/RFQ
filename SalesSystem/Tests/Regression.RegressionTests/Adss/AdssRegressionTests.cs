@@ -45,7 +45,7 @@ namespace Regression.Tests.Adss
             ILogger<AdssGrpcService> grpcLogger = grpcLoggerMock.Object;
 
             _AdssService = new AdssService(options.Object, env.Object, adssLogger);
-            _GrpcService = new AdssGrpcService(_AdssService, grpcLogger);
+            _GrpcService = new AdssGrpcService(_AdssService, grpcLogger, options.Object);
         }
 
         [Test]

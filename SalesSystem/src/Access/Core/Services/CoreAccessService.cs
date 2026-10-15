@@ -45,7 +45,7 @@
 
         public async Task<ListUsersGrpc> GetAllUserList(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListUsers.Users.Any())
             {
                 return _ListUsers;
@@ -59,7 +59,7 @@
 
         public async Task<ListUsersGrpc> GetUserListByUserName(ReadUsersListGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
+            await Task.Delay(0, cancellationToken);
             if (_ListUsers.Users.Any())
             {
             }
@@ -92,7 +92,7 @@
                     _UserListHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetAllUsersQuery, List<UserListGrpc>>>();
                     _UserListRefreshInProgress = true;
                     GetAllUsersQuery query = new GetAllUsersQuery();
-                    await Task.Delay(1, cancellationToken);
+                    await Task.Delay(0, cancellationToken);
                     Result<List<UserListGrpc>> results = await _UserListHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {

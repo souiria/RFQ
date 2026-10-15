@@ -4,8 +4,6 @@
     {
         async Task<bool> PopulateCoverTypeData(CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (!_CoverTypeRefreshInProgress)
             {
                 using (IServiceScope scope = _ServiceProvider.CreateScope())
@@ -13,7 +11,6 @@
                     _QueryCoverTypeHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetCoverTypesQuery, List<CoverTypeGrpc>>>();
                     _CoverTypeRefreshInProgress = true;
                     GetCoverTypesQuery query = new GetCoverTypesQuery();
-                    await Task.Delay(1, cancellationToken);
                     Result<List<CoverTypeGrpc>> results = await _QueryCoverTypeHandler.Handle(query, cancellationToken);
                     if (results.Value.Count <= 0)
                     {
@@ -55,8 +52,6 @@
 
         public async Task<bool> CreateCoverTypes(CoverTypeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.CoverTypeGrpcsToCreate == null || request.CoverTypeGrpcsToCreate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "CoverTypeGrpcRequest or CoverTypeGrpcsToCreate cannot be null or empty.");
@@ -87,8 +82,6 @@
 
         public async Task<bool> UpdateCoverTypes(CoverTypeGrpcRequest request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1, cancellationToken);
-
             if (request == null || request.CoverTypeGrpcsToUpdate == null || request.CoverTypeGrpcsToUpdate.Count == 0)
             {
                 throw new ArgumentNullException(nameof(request), "CoverTypeGrpcRequest or CoverTypeGrpcsToUpdate cannot be null or empty.");
